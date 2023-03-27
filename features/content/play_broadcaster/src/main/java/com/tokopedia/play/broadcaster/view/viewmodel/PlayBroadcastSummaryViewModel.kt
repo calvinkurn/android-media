@@ -300,8 +300,8 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                 }
                 addAll(
                     playBroadcastMapper.mapToLiveTrafficUiMetrics(
-                        hydraConfigStore.getAuthorType(),
-                        reportChannelSummary.channel.metrics
+                        authorType = hydraConfigStore.getAuthorType(),
+                        metrics = reportChannelSummary
                     )
                 )
             }.toList()

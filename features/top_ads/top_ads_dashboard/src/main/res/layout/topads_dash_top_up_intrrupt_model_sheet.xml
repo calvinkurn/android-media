@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/interruptSheetDescriptionBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/topads_top_up_interrupt_sheet_top_bg"
+        app:layout_constraintBottom_toBottomOf="@id/interruptSheetDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        tools:text="Kamu sudah 10x tambah kredit minggu ini. Coba pakai Tambah Kredit Otomatis yuk."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/interruptSheetTitle"
+        app:layout_constraintVertical_bias="0.0"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/interruptSheetEducationPointOneIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/interruptSheetDescriptionBackground"
+        app:srcCompat="@drawable/icon_education_point" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/topads_credit_otomatis_title_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/interruptSheetEducationPointOneIcon"
+        app:layout_constraintTop_toTopOf="@id/interruptSheetEducationPointOneIcon"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointOneDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/topads_credit_otomatis_desc_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/interruptSheetEducationPointOne"
+        app:layout_constraintTop_toBottomOf="@+id/interruptSheetEducationPointOne"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/interruptSheetEducationPointTwoIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/interruptSheetEducationPointOneDescription"
+        app:srcCompat="@drawable/icon_education_point" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/topads_credit_otomatis_title_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/interruptSheetEducationPointTwoIcon"
+        app:layout_constraintTop_toTopOf="@id/interruptSheetEducationPointTwoIcon"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointTwoDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/topads_credit_otomatis_desc_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/interruptSheetEducationPointTwo"
+        app:layout_constraintTop_toBottomOf="@+id/interruptSheetEducationPointTwo"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/interruptSheetEducationPointThreeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/interruptSheetEducationPointTwoDescription"
+        app:srcCompat="@drawable/icon_education_point" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/topads_credit_otomatis_title_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/interruptSheetEducationPointThreeIcon"
+        app:layout_constraintTop_toTopOf="@id/interruptSheetEducationPointThreeIcon"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetEducationPointThreeDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        tools:text="Dapatkan bonus 9,5% Kredit TopAds tiap kali kreditmu ditambah otomatis!"
+        app:layout_constraintBottom_toTopOf="@+id/interruptSheetCancelButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/interruptSheetEducationPointThree"
+        app:layout_constraintTop_toBottomOf="@+id/interruptSheetEducationPointThree"
+        app:layout_constraintVertical_bias="0.0"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/interruptSheetCancelButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="true"
+        android:text="@string/top_ads_tambah_manual"
+        app:layout_constraintBottom_toTopOf="@id/interruptSheetBottomDivider"
+        app:layout_constraintEnd_toStartOf="@+id/interruptSheetApplyButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/interruptSheetApplyButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/auto_ads_status_inactive_button"
+        app:layout_constraintBottom_toTopOf="@id/interruptSheetBottomDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/interruptSheetCancelButton" />
+
+    <View
+        android:id="@+id/interruptSheetBottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toTopOf="@id/interruptSheetLearnMoreTypography"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetLearnMoreTypography"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/topads_dash_top_credit_interrupt_sheet_learn_more"
+        app:layout_constraintBottom_toTopOf="@id/interruptSheetLearnMoreLinkTypography"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/interruptSheetLearnMoreLinkTypography"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:text="@string/top_ads_pelajari_selengkapnya"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Pelajari Selengkapnya" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

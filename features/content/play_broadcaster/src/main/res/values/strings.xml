@@ -44,10 +44,10 @@
 
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
+    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif supaya calon penontonmu jadi penasaran!</string>
     <string name="play_prepare_cover_title_choose_template_title">Tambah produk dulu, ya</string>
     <string name="play_prepare_cover_title_choose_template_empty_description">Supaya foto produknya bisa ditampilkan di template cover pilihan untuk videomu.</string>
     <string name="play_prepare_cover_title_choose_template_description">Pilih warna &amp; judul cover yang sesuai dengan keinginan dan isi konten videomu.</string>
-    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
@@ -102,11 +102,12 @@
     <string name="play_summary_title">Laporan Live</string>
     <string name="play_summary_button_post_video">Posting Video</string>
     <string name="play_summary_button_post_video_now">Posting Video Sekarang</string>
-    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Detail</font></b>]]></string>
+    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
-    <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
-    <string name="play_summary_product_visit">Mengunjungi Produkmu</string>
+    <string name="play_summary_shop_visit">Mengunjungi tokomu</string>
+    <string name="play_summary_profile_visit">Mengunjungi profilmu</string>
+    <string name="play_summary_product_visit">Melihat Produkmu</string>
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Followers Baru</string>
@@ -297,6 +298,7 @@
     <string name="play_shorts_next_action_label">Lanjut</string>
     <string name="play_shorts_toolbar_title">Buat video sebagai</string>
     <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
+    <string name="play_shorts_title_form_hint">Tulis Judul Video</string>
     <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
 
     <string name="play_shorts_exit_confirmation_title">Yakin mau keluar?</string>

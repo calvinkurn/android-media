@@ -75,7 +75,7 @@
 
     <include
         layout="@layout/tokochat_global_error"
-        android:id="@+id/tokochat_global_error"
+        android:id="@+id/tokochat_include_global_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

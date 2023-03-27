@@ -18,7 +18,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
@@ -28,6 +27,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -94,6 +94,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -253,7 +254,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        parentViewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
+                        parentViewModel.submitAction(PlayBroadcastAction.SuccessOnBoardingUGC)
                     }
 
                     override fun clickNextOnTncOnboarding() {
@@ -287,7 +288,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is SellerTncBottomSheet -> {
                 childFragment.setDataSource(object : SellerTncBottomSheet.DataSource {
                     override fun getTitle(): String {
-                        return getString(com.tokopedia.content.common.R.string.play_bro_tnc_title)
+                        return getString(R.string.play_bro_tnc_title)
                     }
 
                     override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
@@ -779,14 +780,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             AccountStateInfoType.Banned -> showWarningInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
-                if (state.selectedAccount.isShop) {
-                    showTermsAndConditionBottomSheet()
-                } else {
-                    showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
-                }
+                showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
             }
             AccountStateInfoType.NoUsername -> {
                 showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
+            }
+            AccountStateInfoType.NotWhitelisted -> {
+                showTermsAndConditionBottomSheet()
             }
             AccountStateInfoType.Unknown -> return
         }
@@ -798,7 +798,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     ) {
         if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if(curr.shortVideoAllowed) {
+        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
             binding.bannerShorts.show()
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
         }

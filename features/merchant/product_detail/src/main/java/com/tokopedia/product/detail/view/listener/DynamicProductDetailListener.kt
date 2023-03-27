@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -71,6 +73,7 @@ interface DynamicProductDetailListener {
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
@@ -138,6 +141,11 @@ interface DynamicProductDetailListener {
         userStatistics: String,
         userLabel: String,
         componentTrackData: ComponentTrackDataModel
+    )
+    fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
     )
 
     /**
@@ -354,6 +362,12 @@ interface DynamicProductDetailListener {
      */
     fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 
+    fun onSocialProofItemClickTracking(
+        identifier: SocialProofUiModel.Identifier,
+        trackData: ComponentTrackDataModel?
+    )
+    fun onSocialProofItemImpression(socialProof: SocialProofUiModel)
+
     /**
      * ProductShippingViewHolder
      */
@@ -361,7 +375,8 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
@@ -370,10 +385,15 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     /**
      * ProductArViewHolder
      */
-    fun showArCoachMark(view:ConstraintLayout?)
+    fun showArCoachMark(view: ConstraintLayout?)
     fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
@@ -395,6 +415,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductBundlingViewHolder
      */
+    fun removeComponent(componentName: String)
+
     fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,
@@ -460,13 +482,20 @@ interface DynamicProductDetailListener {
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewClicked(
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewReload(pageName: String)
+
+    /**
+     * Thumbnail Variant
+     */
+    fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
+
+    fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
 }

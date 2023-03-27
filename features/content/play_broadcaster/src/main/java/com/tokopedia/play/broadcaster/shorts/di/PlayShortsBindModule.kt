@@ -211,6 +211,10 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
+    abstract fun bindBroadcastingConfigStore(configStore: BroadcastingConfigStoreImpl): BroadcastingConfigStore
+
+    @Binds
+    @PlayShortsScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
 
     @Binds

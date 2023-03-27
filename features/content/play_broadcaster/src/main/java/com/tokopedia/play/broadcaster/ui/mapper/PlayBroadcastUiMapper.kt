@@ -6,6 +6,8 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.config.GetBroadcastingConfigurationResponse
 import com.tokopedia.play.broadcaster.domain.model.Banned
 import com.tokopedia.play.broadcaster.domain.model.Chat
 import com.tokopedia.play.broadcaster.domain.model.Config
@@ -26,6 +28,8 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
+import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
@@ -80,32 +84,59 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
+    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
+            bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
+            fps = response.broadcasterGetBroadcastingConfig.config.fps,
+            maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
+            reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
+            videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
+            videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
+            videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
+        )
+    }
+
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
         LiveStreamInfoUiModel(
             ingestUrl = media.ingestUrl,
 
             )
 
-    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
-        if (authorType == TYPE_SHOP) {
-            mutableListOf(
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-            )
+    override fun mapToLiveTrafficUiMetrics(
+        authorType: String,
+        metrics: GetLiveStatisticsResponse.ReportChannelSummary
+    ): List<TrafficMetricUiModel> {
+        return if (authorType == TYPE_SHOP) {
+            mapToLiveTrafficUiMetrics(metrics.channel.metrics)
         } else {
-            mutableListOf(
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-            )
+            mapToLiveTrafficUiMetrics(metrics.channel.userMetrics)
         }
+    }
+
+    private fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> {
+        return mutableListOf(
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+        )
+    }
+
+    private fun mapToLiveTrafficUiMetrics(metrics: GetLiveStatisticsResponse.ReportUserChannelMetric): List<TrafficMetricUiModel> {
+        return mutableListOf(
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannel),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannel),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followProfile),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
+            TrafficMetricUiModel(TrafficMetricType.ProfileVisit, metrics.visitProfile),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerified)
+        )
+    }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
         totalView.totalViewFmt
@@ -549,6 +580,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.livestream.hasUsername,
+                hasAcceptTnc = it.hasAcceptTnc,
                 enable = it.livestream.enable,
             )
         }

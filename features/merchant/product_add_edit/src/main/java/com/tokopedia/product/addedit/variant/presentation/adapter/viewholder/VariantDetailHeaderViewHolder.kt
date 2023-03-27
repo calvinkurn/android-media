@@ -5,8 +5,11 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 
@@ -38,12 +41,13 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
     }
 
     private fun changeIndicatorIcon(isCollapsed: Boolean) {
-        accordionIndicator?.setImageResource(
-            if (isCollapsed)
-                R.drawable.product_add_edit_ic_chevron_down
+        accordionIndicator?.apply {
+            val iconRes = if (isCollapsed)
+                getIconUnifyDrawable(context, IconUnify.CHEVRON_DOWN, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             else
-                R.drawable.product_add_edit_ic_chevron_up
-        )
+                getIconUnifyDrawable(context, IconUnify.CHEVRON_UP, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            loadImage(iconRes)
+        }
     }
 
     companion object {

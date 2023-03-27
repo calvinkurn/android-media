@@ -12,6 +12,7 @@ interface HomeComponentTypeFactory {
     fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int
     fun type(reminderWidgetModel: ReminderWidgetModel): Int
     fun type(mixLeftDataModel: MixLeftDataModel): Int
+    fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int = 0
     fun type(mixTopDataModel: MixTopDataModel): Int
     fun type(productHighlightDataModel: ProductHighlightDataModel): Int
     fun type(lego4AutoDataModel: Lego4AutoDataModel): Int
@@ -28,4 +29,5 @@ interface HomeComponentTypeFactory {
     fun type(vpsDataModel: VpsDataModel): Int = 0
     fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
     fun type(lego4ProductDataModel: Lego4ProductDataModel): Int = 0
+    fun type(bannerRevampDataModel: BannerRevampDataModel): Int = 0
 }

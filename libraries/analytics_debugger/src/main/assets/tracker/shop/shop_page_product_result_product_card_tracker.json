@@ -7,6 +7,7 @@
       "eventCategory": "shop page - (buyer|seller)",
       "productId": ".+",
       "item_list": "/shoppage - (.+) - etalase chip (.+) - (login|non login) - search result",
+      "item_list_name": "/shoppage - (.+) - etalase chip (.+) - (login|non login) - search result",
       "dimension90": ".*",
       "shopId": ".+",
       "shopType": ".+",
@@ -26,7 +27,11 @@
         "item_variant": ".+",
         "item_category": ".+"
       }],
-      "eventLabel":".*"
+      "eventLabel":".*",
+      "businessUnit":"physical goods",
+      "userId":".*",
+      "trackerId":".*",
+      "currentSite":"tokopediamarketplace"
     },
     {
       "pageType": "/shoppage",
@@ -52,7 +57,11 @@
         "item_variant": ".+",
         "item_category": ".+"
       }],
-      "eventLabel":".*"
+      "eventLabel":".*",
+      "businessUnit":"physical goods",
+      "userId":".*",
+      "trackerId":".*",
+      "currentSite":"tokopediamarketplace"
     },
     {
       "pageType": "/shoppage",

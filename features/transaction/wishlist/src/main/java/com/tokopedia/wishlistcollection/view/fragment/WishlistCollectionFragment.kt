@@ -103,8 +103,8 @@ class WishlistCollectionFragment :
     private var activityWishlistCollection = ""
     private var isEligibleAddNewCollection = false
     private var wordingMaxLimitCollection = ""
-    private var bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection()
-    private var bottomSheetKebabMenu = BottomSheetKebabMenuWishlistCollection()
+    private var bottomSheetOnboarding: BottomSheetOnboardingWishlistCollection? = BottomSheetOnboardingWishlistCollection()
+    private var bottomSheetKebabMenu: BottomSheetKebabMenuWishlistCollection? = BottomSheetKebabMenuWishlistCollection()
     private var _allCollectionView: View? = null
     private var _createCollectionView: View? = null
     private var _firstAnchorKebabMenuView: View? = null
@@ -234,6 +234,12 @@ class WishlistCollectionFragment :
             coachMarkSharing1?.dismissCoachMark()
             coachMarkSharing2?.dismissCoachMark()
         }
+    }
+
+    override fun onDestroyView() {
+        bottomSheetOnboarding = null
+        bottomSheetKebabMenu = null
+        super.onDestroyView()
     }
 
     private fun observingData() {
@@ -722,9 +728,10 @@ class WishlistCollectionFragment :
     ) {
         bottomSheetKebabMenu =
             BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions, collectionIndicatorTitle)
-        bottomSheetKebabMenu.setListener(this@WishlistCollectionFragment)
-        if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetKebabMenu.show(childFragmentManager)
+        bottomSheetKebabMenu?.setOnDismissListener { bottomSheetKebabMenu = null }
+        bottomSheetKebabMenu?.setListener(this@WishlistCollectionFragment)
+        if (bottomSheetKebabMenu?.isAdded == true || childFragmentManager.isStateSaved) return
+        bottomSheetKebabMenu?.show(childFragmentManager)
     }
 
     override fun onCreateNewCollectionClicked() {
@@ -751,7 +758,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetKebabMenu.dismiss()
+        bottomSheetKebabMenu?.dismiss()
         val intent = Intent(context, WishlistCollectionEditActivity::class.java)
         intent.putExtra(COLLECTION_ID, collectionId)
         intent.putExtra(COLLECTION_NAME, collectionName)
@@ -759,7 +766,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetKebabMenu.dismiss()
+        bottomSheetKebabMenu?.dismiss()
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
@@ -770,7 +777,7 @@ class WishlistCollectionFragment :
         _collectionIndicatorTitle: String
     ) {
         _collectionIdShared = collectionId
-        bottomSheetKebabMenu.dismiss()
+        bottomSheetKebabMenu?.dismiss()
         var collectionType = ""
         if (_collectionIndicatorTitle.isEmpty()) {
             collectionType = COLLECTION_PRIVATE
@@ -856,9 +863,10 @@ class WishlistCollectionFragment :
 
     private fun showBottomSheetOnboarding() {
         bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection.newInstance()
-        bottomSheetOnboarding.setListener(this@WishlistCollectionFragment)
-        if (bottomSheetOnboarding.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetOnboarding.show(childFragmentManager)
+        bottomSheetOnboarding?.setOnDismissListener { bottomSheetOnboarding = null }
+        bottomSheetOnboarding?.setListener(this@WishlistCollectionFragment)
+        if (bottomSheetOnboarding?.isAdded == true || childFragmentManager.isStateSaved) return
+        bottomSheetOnboarding?.show(childFragmentManager)
     }
 
     private fun showWishlistCollectionSharingCoachMark(
@@ -903,19 +911,12 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing1.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItemSharing1.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing1, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
             }
         }
-    }
-
-    private fun isValidToShowCoachMark(): Boolean {
-        activity?.let {
-            return !it.isFinishing
-        }
-        return false
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
@@ -947,7 +948,7 @@ class WishlistCollectionFragment :
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == 0) {
                         coachMarkSharing2?.hideCoachMark()
-                        bottomSheetKebabMenu.dismiss()
+                        bottomSheetKebabMenu?.dismiss()
                         _firstAnchorKebabMenuView?.let { it1 ->
                             showWishlistCollectionSharingCoachMark(
                                 it1,
@@ -963,7 +964,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing2.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItemSharing2.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -1004,7 +1005,7 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_coachmark_try_create_wishlist)
             it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItem.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
@@ -1059,7 +1060,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onClickShowCoachmarkButton() {
-        bottomSheetOnboarding.dismiss()
+        bottomSheetOnboarding?.dismiss()
         _allCollectionView?.let { v1 ->
             _createCollectionView?.let { v2 ->
                 showWishlistCollectionCoachMark(v1, v2)
@@ -1068,7 +1069,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onClickSkipOnboardingButton() {
-        bottomSheetOnboarding.dismiss()
+        bottomSheetOnboarding?.dismiss()
     }
 
     override fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int) {

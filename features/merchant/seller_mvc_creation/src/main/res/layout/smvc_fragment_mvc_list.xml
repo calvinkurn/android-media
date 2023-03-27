@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_shadow="false"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:visibility="gone"
+        app:closeButtonVisibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBar"
+        app:search_bar_placeholder="@string/smvc_voucherlist_search_placeholder"
+        app:search_bar_show_icon="false"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/sortFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        app:sort_filter_type="advanced"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderPage"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageLarge"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle=""
+        app:unifyEmptyStateDescription="@string/smvc_voucherlist_empty_data_description_text"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStatePrimaryCTAText="@string/smvc_voucherlist_empty_data_description_buttontext"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageSmall"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle="@string/smvc_voucherlist_empty_data_search_title_text"
+        app:unifyEmptyStateDescription="@string/smvc_voucherlist_empty_data_search_description_text"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStateType="section"
+        app:unifyEmptyStateOrientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvVoucher"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="-6dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <include
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/smvc_fragment_mvc_list_footer"/>
+
+</LinearLayout>
