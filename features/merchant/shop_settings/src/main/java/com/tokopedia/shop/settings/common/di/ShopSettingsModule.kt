@@ -2,7 +2,6 @@ package com.tokopedia.shop.settings.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -15,7 +14,7 @@ import dagger.Provides
 /**
  * @author by furqan on 21/03/18.
  */
-@Module(includes = [ImageUploaderModule::class, GmCommonModule::class, ShopSettingsInfoViewModelModule::class, ShopCommonModule::class])
+@Module(includes = [ImageUploaderModule::class, ShopSettingsInfoViewModelModule::class, ShopCommonModule::class])
 class ShopSettingsModule {
 
     @Provides
