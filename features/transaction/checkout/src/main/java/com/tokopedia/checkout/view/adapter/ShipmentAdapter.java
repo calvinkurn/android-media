@@ -218,7 +218,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentUpsellV3ViewHolder.LAYOUT) {
-            return new ShipmentUpsellV3ViewHolder(view);
+            return new ShipmentUpsellV3ViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
