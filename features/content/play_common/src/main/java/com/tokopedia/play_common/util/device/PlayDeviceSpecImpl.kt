@@ -85,12 +85,7 @@ class PlayDeviceSpecImpl @Inject constructor(
          *
          * Source : https://developer.android.com/games/optimize/64-bit
          */
-        buildString {
-            Build.SUPPORTED_ABIS.forEach {
-                append(it)
-                append(", ")
-            }
-        }
+        Build.SUPPORTED_ABIS.joinToString()
     }
 
     companion object {
