@@ -31,6 +31,10 @@ android {
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 repositories {

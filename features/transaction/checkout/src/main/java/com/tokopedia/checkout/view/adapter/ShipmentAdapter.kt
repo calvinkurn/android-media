@@ -4,6 +4,14 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.checkout.databinding.CheckoutHolderItemEmasBinding
+import com.tokopedia.checkout.databinding.ItemCrossSellBinding
+import com.tokopedia.checkout.databinding.ItemDonationBinding
+import com.tokopedia.checkout.databinding.ItemInsuranceTncBinding
+import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
+import com.tokopedia.checkout.databinding.ItemShipmentButtonPaymentBinding
+import com.tokopedia.checkout.databinding.ItemShipmentTickerErrorBinding
+import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -164,29 +172,29 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentCostViewHolder(view, layoutInflater)
             }
             ITEM_VIEW_PROMO_CHECKOUT -> {
-                return PromoCheckoutViewHolder(view, shipmentAdapterActionListener)
+                return PromoCheckoutViewHolder(ItemPromoCheckoutBinding.bind(view), shipmentAdapterActionListener)
             }
             ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC -> {
-                return ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentInsuranceTncViewHolder(ItemInsuranceTncBinding.bind(view), shipmentAdapterActionListener)
             }
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 return ShipmentSellerCashbackViewHolder(view, sellerCashbackListener)
             }
             ShipmentDonationViewHolder.ITEM_VIEW_DONATION -> {
-                return ShipmentDonationViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentDonationViewHolder(ItemDonationBinding.bind(view), shipmentAdapterActionListener)
             }
             ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL -> {
-                return ShipmentCrossSellViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentCrossSellViewHolder(ItemCrossSellBinding.bind(view), shipmentAdapterActionListener)
             }
             ShipmentEmasViewHolder.ITEM_VIEW_EMAS -> {
-                return ShipmentEmasViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentEmasViewHolder(CheckoutHolderItemEmasBinding.bind(view), shipmentAdapterActionListener)
             }
             ITEM_VIEW_PAYMENT_BUTTON -> {
                 if (compositeSubscription == null || compositeSubscription!!.isUnsubscribed) {
                     compositeSubscription = CompositeSubscription()
                 }
                 return ShipmentButtonPaymentViewHolder(
-                    view,
+                    ItemShipmentButtonPaymentBinding.bind(view),
                     shipmentAdapterActionListener,
                     compositeSubscription!!
                 )
@@ -195,10 +203,10 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentTickerAnnouncementViewHolder(view, null)
             }
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
-                return ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener)
+                return ShippingCompletionTickerViewHolder(ItemTickerShippingCompletionBinding.bind(view), shipmentAdapterActionListener)
             }
             ITEM_VIEW_SHIPMENT_TICKER_ERROR -> {
-                return ShipmentTickerErrorViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentTickerErrorViewHolder(ItemShipmentTickerErrorBinding.bind(view))
             }
             ITEM_VIEW_UPLOAD -> {
                 return UploadPrescriptionViewHolder(view, uploadPrescriptionListener)
@@ -219,13 +227,13 @@ class ShipmentAdapter @Inject constructor(
         when (viewType) {
             ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS -> {
                 (holder as ShipmentRecipientAddressViewHolder).bindViewHolder(
-                    (data as RecipientAddressModel?)!!,
+                    data as RecipientAddressModel,
                     isShowOnboarding
                 )
             }
             ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM -> {
                 (holder as ShipmentItemViewHolder).bindViewHolder(
-                    (data as ShipmentCartItemModel?)!!,
+                    data as ShipmentCartItemModel,
                     shipmentDataList,
                     addressShipmentData,
                     ratesDataConverter
@@ -235,11 +243,11 @@ class ShipmentAdapter @Inject constructor(
                 (holder as PromoCheckoutViewHolder).bindViewHolder(data as LastApplyUiModel)
             }
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
-                (holder as ShipmentCostViewHolder).bindViewHolder((data as ShipmentCostModel?)!!)
+                (holder as ShipmentCostViewHolder).bindViewHolder(data as ShipmentCostModel)
             }
             ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC -> {
                 (holder as ShipmentInsuranceTncViewHolder).bindViewHolder(
-                    (data as ShipmentInsuranceTncModel?)!!,
+                    data as ShipmentInsuranceTncModel,
                     itemCount
                 )
             }
@@ -250,31 +258,31 @@ class ShipmentAdapter @Inject constructor(
                 (holder as ShipmentDonationViewHolder).bindViewHolder(shipmentDonationModel!!)
             }
             ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL -> {
-                (holder as ShipmentCrossSellViewHolder).bindViewHolder((data as ShipmentCrossSellModel?)!!)
+                (holder as ShipmentCrossSellViewHolder).bindViewHolder(data as ShipmentCrossSellModel)
             }
             ShipmentEmasViewHolder.ITEM_VIEW_EMAS -> {
                 (holder as ShipmentEmasViewHolder).bindViewHolder(egoldAttributeModel!!)
             }
             ITEM_VIEW_PAYMENT_BUTTON -> {
-                (holder as ShipmentButtonPaymentViewHolder).bindViewHolder((data as ShipmentButtonPaymentModel?)!!)
+                (holder as ShipmentButtonPaymentViewHolder).bindViewHolder(data as ShipmentButtonPaymentModel)
             }
             LAYOUT -> {
-                (holder as TickerAnnouncementViewHolder).bind((data as TickerAnnouncementHolderData?)!!)
+                (holder as TickerAnnouncementViewHolder).bind(data as TickerAnnouncementHolderData)
             }
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
-                (holder as ShippingCompletionTickerViewHolder).bindViewHolder((data as ShippingCompletionTickerModel?)!!)
+                (holder as ShippingCompletionTickerViewHolder).bindViewHolder(data as ShippingCompletionTickerModel)
             }
             ITEM_VIEW_SHIPMENT_TICKER_ERROR -> {
-                (holder as ShipmentTickerErrorViewHolder).bind((data as ShipmentTickerErrorModel?)!!)
+                (holder as ShipmentTickerErrorViewHolder).bind(data as ShipmentTickerErrorModel)
             }
             ITEM_VIEW_UPLOAD -> {
-                (holder as UploadPrescriptionViewHolder).bindViewHolder((data as UploadPrescriptionUiModel?)!!)
+                (holder as UploadPrescriptionViewHolder).bindViewHolder(data as UploadPrescriptionUiModel)
             }
             ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                (holder as ShipmentUpsellViewHolder).bind((data as ShipmentUpsellModel?)!!)
+                (holder as ShipmentUpsellViewHolder).bind(data as ShipmentUpsellModel)
             }
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                (holder as ShipmentNewUpsellViewHolder).bind((data as ShipmentNewUpsellModel?)!!)
+                (holder as ShipmentNewUpsellViewHolder).bind(data as ShipmentNewUpsellModel)
             }
         }
     }

@@ -3,30 +3,28 @@ package com.tokopedia.checkout.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.databinding.ItemShipmentTickerErrorBinding
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.ticker.Ticker
 
-class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
+class ShipmentTickerErrorViewHolder(private val binding: ItemShipmentTickerErrorBinding) : RecyclerView.ViewHolder(binding.root) {
 
     internal var data: ShipmentTickerErrorModel = ShipmentTickerErrorModel()
-    private val ticker: Ticker? = itemView.findViewById(R.id.shipment_ticker_error)
 
     fun bind(shipmentTickerErrorModel: ShipmentTickerErrorModel) {
         data = shipmentTickerErrorModel
         if (isEmptyTicker()) {
-            ticker?.gone()
+            binding.shipmentTickerError.gone()
         } else {
-            ticker?.setTextDescription(shipmentTickerErrorModel.errorMessage)
-            ticker?.visible()
-            ticker?.post {
-                ticker?.measure(
+            binding.shipmentTickerError.setTextDescription(shipmentTickerErrorModel.errorMessage)
+            binding.shipmentTickerError.visible()
+            binding.shipmentTickerError.post {
+                binding.shipmentTickerError.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
-                ticker?.requestLayout()
+                binding.shipmentTickerError.requestLayout()
             }
         }
     }

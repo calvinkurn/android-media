@@ -6,8 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -36,6 +33,8 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.FragmentShipmentBinding
+import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL
@@ -189,12 +188,11 @@ import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.Utils.setToasterCustomBottomHeight
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TimerUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.time.TimeHelper.timeBetweenRFC3339
 import com.tokopedia.utils.time.TimeHelper.timeSinceNow
 import rx.Emitter
@@ -224,9 +222,7 @@ class ShipmentFragment :
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
 
-    private var rvShipment: RecyclerView? = null
-    private var swipeToRefresh: SwipeToRefresh? = null
-    private var llNetworkErrorView: LinearLayout? = null
+    private var binding by autoClearedNullable<FragmentShipmentBinding>()
     private var progressDialogNormal: AlertDialog? = null
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
@@ -282,11 +278,6 @@ class ShipmentFragment :
     private var toasterThrottleSubscription: Subscription? = null
     private var toasterEmitter: Emitter<String>? = null
 
-    // count down component
-    private var cdLayout: View? = null
-    private var cdView: TimerUnify? = null
-    private var cdText: Typography? = null
-
     override fun initInjector() {
         if (activity != null) {
             val baseMainApplication = activity!!.application as BaseMainApplication
@@ -314,7 +305,7 @@ class ShipmentFragment :
         delayScrollToCoachmarkEpharmacySubscription?.unsubscribe()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
-        val countDownTimer = cdView?.timer
+        val countDownTimer = binding?.partialCountdown?.countDown?.timer
         countDownTimer?.cancel()
         shipmentPresenter.detachView()
     }
@@ -333,18 +324,13 @@ class ShipmentFragment :
     }
 
     override fun initView(view: View) {
-        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
-        rvShipment = view.findViewById(R.id.rv_shipment)
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
-        cdLayout = view.findViewById(R.id.partial_countdown)
-        cdView = view.findViewById(R.id.count_down)
-        cdText = view.findViewById(R.id.tv_count_down)
+        binding = FragmentShipmentBinding.bind(view)
         progressDialogNormal = AlertDialog.Builder(activity!!)
             .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
             .setCancelable(false)
             .create()
-        (rvShipment?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        rvShipment?.addItemDecoration(ShipmentItemDecoration())
+        (binding?.rvShipment?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        binding?.rvShipment?.addItemDecoration(ShipmentItemDecoration())
     }
 
     override fun onResume() {
@@ -510,8 +496,8 @@ class ShipmentFragment :
         isReloadAfterPriceChangeHigher: Boolean
     ) {
         shipmentAdapter.clearData()
-        rvShipment?.layoutManager = LinearLayoutManager(activity)
-        rvShipment?.adapter = shipmentAdapter
+        binding?.rvShipment?.layoutManager = LinearLayoutManager(activity)
+        binding?.rvShipment?.adapter = shipmentAdapter
         shipmentAdapter.addTickerErrorData(shipmentTickerErrorModel)
         if (tickerAnnouncementHolderData != null) {
             shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData)
@@ -623,11 +609,11 @@ class ShipmentFragment :
             )
         ) {
             val uploadPrescriptionPosition = shipmentAdapter.uploadPrescriptionPosition
-            rvShipment!!.scrollToPosition(uploadPrescriptionPosition)
-            rvShipment!!.post {
+            binding?.rvShipment?.scrollToPosition(uploadPrescriptionPosition)
+            binding?.rvShipment?.post {
                 if (activityContext != null) {
                     val viewHolder =
-                        rvShipment!!.findViewHolderForAdapterPosition(uploadPrescriptionPosition)
+                        binding?.rvShipment?.findViewHolderForAdapterPosition(uploadPrescriptionPosition)
                     if (viewHolder is UploadPrescriptionViewHolder) {
                         val item = CoachMark2Item(
                             viewHolder.itemView,
@@ -680,10 +666,10 @@ class ShipmentFragment :
 
                 override fun onNext(aLong: Long) {
                     if (!isUnsubscribed) {
-                        if (rvShipment!!.layoutManager != null) {
+                        if (binding?.rvShipment?.layoutManager != null) {
                             val linearSmoothScroller: LinearSmoothScroller =
                                 object : LinearSmoothScroller(
-                                    rvShipment!!.context
+                                    binding?.rvShipment!!.context
                                 ) {
                                     override fun getVerticalSnapPreference(): Int {
                                         return SNAP_TO_START
@@ -691,7 +677,7 @@ class ShipmentFragment :
                                 }
                             linearSmoothScroller.targetPosition =
                                 shipmentAdapter.firstShopPosition
-                            rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
+                            binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
                         }
                     }
                 }
@@ -742,12 +728,12 @@ class ShipmentFragment :
     }
 
     override fun showInitialLoading() {
-        swipeToRefresh?.isRefreshing = true
+        binding?.swipeRefreshLayout?.isRefreshing = true
     }
 
     override fun hideInitialLoading() {
-        swipeToRefresh?.isRefreshing = false
-        swipeToRefresh?.isEnabled = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
+        binding?.swipeRefreshLayout?.isEnabled = false
     }
 
     override fun showLoading() {
@@ -760,7 +746,7 @@ class ShipmentFragment :
         if (progressDialogNormal != null && progressDialogNormal!!.isShowing) {
             progressDialogNormal!!.dismiss()
         }
-        swipeToRefresh?.isEnabled = false
+        binding?.swipeRefreshLayout?.isEnabled = false
     }
 
     override fun showToastNormal(message: String) {
@@ -823,7 +809,7 @@ class ShipmentFragment :
     }
 
     private fun initializeToasterLocation() {
-        val layoutManager = rvShipment?.layoutManager as LinearLayoutManager?
+        val layoutManager = binding?.rvShipment?.layoutManager as LinearLayoutManager?
             ?: return
         val lastItemPosition = layoutManager.findLastVisibleItemPosition()
         if (lastItemPosition == RecyclerView.NO_POSITION || lastItemPosition >= shipmentAdapter.getShipmentDataList().size) {
@@ -841,15 +827,15 @@ class ShipmentFragment :
     }
 
     override fun renderErrorPage(message: String?) {
-        rvShipment?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.VISIBLE
+        binding?.rvShipment?.visibility = View.GONE
+        binding?.llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(
             activity,
-            llNetworkErrorView,
+            binding?.llNetworkErrorView,
             message
         ) {
-            llNetworkErrorView?.visibility = View.GONE
-            rvShipment?.visibility = View.VISIBLE
+            binding?.llNetworkErrorView?.visibility = View.GONE
+            binding?.rvShipment?.visibility = View.VISIBLE
             shipmentPresenter.processInitialLoadCheckoutPage(
                 isReloadData = false,
                 skipUpdateOnboardingState = true,
@@ -1194,14 +1180,11 @@ class ShipmentFragment :
     override fun navigateToSetPinpoint(message: String, locationPass: LocationPass?) {
         sendAnalyticsOnClickEditPinPointErrorValidation(message)
         if (view != null) {
-            val inflater = layoutInflater
-            val layout =
-                inflater.inflate(R.layout.toast_rectangle, view!!.findViewById(R.id.toast_layout))
-            val tvMessage = layout.findViewById<TextView>(R.id.tv_message)
-            tvMessage.text = message
+            val toastRectangleBinding = ToastRectangleBinding.inflate(layoutInflater, null, false)
+            toastRectangleBinding.tvMessage.text = message
             val toast = Toast(activity)
             toast.duration = Toast.LENGTH_LONG
-            toast.view = layout
+            toast.view = toastRectangleBinding.root
             toast.show()
         } else {
             Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -1976,7 +1959,7 @@ class ShipmentFragment :
             hideLoading()
             sendAnalyticsDropshipperNotComplete()
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
-                rvShipment!!.smoothScrollToPosition(errorPosition)
+                binding?.rvShipment?.smoothScrollToPosition(errorPosition)
                 onDataDisableToCheckout(null)
                 val message = activity!!.getString(R.string.message_error_dropshipper_empty)
                 showToastNormal(message)
@@ -2040,8 +2023,8 @@ class ShipmentFragment :
     }
 
     override fun onPriorityChecked(position: Int) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post {
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post {
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
             }
@@ -2052,8 +2035,8 @@ class ShipmentFragment :
     }
 
     override fun onInsuranceChecked(position: Int) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post {
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post {
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
@@ -2066,8 +2049,8 @@ class ShipmentFragment :
     }
 
     override fun onNeedUpdateViewItem(position: Int) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post { shipmentAdapter.notifyItemChanged(position) }
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post { shipmentAdapter.notifyItemChanged(position) }
         } else {
             shipmentAdapter.notifyItemChanged(position)
         }
@@ -2123,8 +2106,8 @@ class ShipmentFragment :
     }
 
     override fun onDonationChecked(checked: Boolean) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post { shipmentAdapter.updateDonation(checked) }
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post { shipmentAdapter.updateDonation(checked) }
         } else {
             shipmentAdapter.updateDonation(checked)
         }
@@ -2148,8 +2131,8 @@ class ShipmentFragment :
         crossSellModel: CrossSellModel,
         index: Int
     ) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post { shipmentAdapter.updateCrossSell(checked, crossSellModel) }
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post { shipmentAdapter.updateCrossSell(checked, crossSellModel) }
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel)
         }
@@ -2755,8 +2738,8 @@ class ShipmentFragment :
     }
 
     override fun onPurchaseProtectionChangeListener(position: Int) {
-        if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post {
+        if (binding?.rvShipment?.isComputingLayout == true) {
+            binding?.rvShipment?.post {
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
@@ -2800,7 +2783,7 @@ class ShipmentFragment :
         }
 
     private fun releaseBookingIfAny() {
-        if (cdLayout?.visibility == View.VISIBLE) {
+        if (binding?.partialCountdown?.root?.visibility == View.VISIBLE) {
             shipmentPresenter.releaseBooking()
         }
     }
@@ -2970,10 +2953,10 @@ class ShipmentFragment :
         val timer = shipmentPresenter.getCampaignTimer()
         if (timer != null && timer.showTimer) {
             val diff = timeBetweenRFC3339(timer.timerServer, timer.timerExpired)
-            cdLayout?.visibility = View.VISIBLE
-            cdText?.text = timer.timerDescription
-            cdView?.remainingMilliseconds = diff
-            cdView?.onFinish = {
+            binding?.partialCountdown?.root?.visibility = View.VISIBLE
+            binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
+            binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
+            binding?.partialCountdown?.countDown?.onFinish = {
                 val dialog =
                     newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
                 dialog.show(fragmentManager!!, "expired dialog")
@@ -3298,7 +3281,7 @@ class ShipmentFragment :
                 if (isTriggeredByPaymentButton) {
                     showToastNormal(activity!!.getString(R.string.message_error_courier_not_selected))
                 }
-                rvShipment!!.smoothScrollToPosition(position)
+                binding?.rvShipment?.smoothScrollToPosition(position)
             } else {
                 var notSelectCourierCount = 0
                 var firstFoundPosition = 0
@@ -3318,7 +3301,7 @@ class ShipmentFragment :
                     } else if (shipmentDataList[i] is UploadPrescriptionUiModel) {
                         val uploadPrescriptionUiModel =
                             shipmentDataList[i] as UploadPrescriptionUiModel
-                        val viewHolder = rvShipment!!.findViewHolderForAdapterPosition(i)
+                        val viewHolder = binding?.rvShipment?.findViewHolderForAdapterPosition(i)
                         if (viewHolder is UploadPrescriptionViewHolder) {
                             if (epharmacyError) {
                                 val toasterMessage: String = if (uploadPrescriptionUiModel.consultationFlow) {
@@ -3356,7 +3339,7 @@ class ShipmentFragment :
                         )
                     }
                 }
-                rvShipment?.smoothScrollToPosition(firstFoundPosition)
+                binding?.rvShipment?.smoothScrollToPosition(firstFoundPosition)
             }
         }
     }
@@ -3396,7 +3379,7 @@ class ShipmentFragment :
         get() = parentFragmentManager
 
     override fun scrollToPositionWithOffset(position: Int, dy: Float) {
-        val layoutManager = rvShipment!!.layoutManager
+        val layoutManager = binding?.rvShipment?.layoutManager
         if (layoutManager != null) {
             (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, dy.toInt())
         }
@@ -4005,7 +3988,7 @@ class ShipmentFragment :
                     }
                 }
             }
-            rvShipment?.smoothScrollToPosition(firstFoundPosition)
+            binding?.rvShipment?.smoothScrollToPosition(firstFoundPosition)
         }
     }
 
@@ -4073,7 +4056,7 @@ class ShipmentFragment :
             if (shipmentDataList[i] is UploadPrescriptionUiModel) {
                 val uploadPrescriptionUiModel = shipmentDataList[i] as UploadPrescriptionUiModel
                 if (uploadPrescriptionUiModel.consultationFlow && uploadPrescriptionUiModel.showImageUpload) {
-                    val viewHolder = rvShipment!!.findViewHolderForAdapterPosition(i)
+                    val viewHolder = binding?.rvShipment?.findViewHolderForAdapterPosition(i)
                     if (viewHolder is UploadPrescriptionViewHolder) {
                         ePharmacyAnalytics.clickPilihPembayaran(
                             viewHolder.getButtonNotes(),

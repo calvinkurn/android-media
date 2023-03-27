@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,21 +21,13 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by fwidjaja on 2020-02-26.
  */
-class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(view) {
+class PromoCheckoutViewHolder(private val binding: ItemPromoCheckoutBinding, private val actionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(binding.root) {
 
     private var isApplied = false
 
     companion object {
         @JvmStatic
         val ITEM_VIEW_PROMO_CHECKOUT = R.layout.item_promo_checkout
-    }
-
-    private val btnPromoCheckoutView by lazy {
-        view.findViewById<ButtonPromoCheckoutView>(R.id.promo_checkout_btn_shipment)
-    }
-
-    private val llSummaryTransaction by lazy {
-        view.findViewById<LinearLayout>(R.id.ll_summary_transaction)
     }
 
     fun bindViewHolder(lastApplyUiModel: LastApplyUiModel) {
@@ -56,7 +49,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
         }
 
-        btnPromoCheckoutView.apply {
+        binding.promoCheckoutBtnShipment.apply {
             title = titleValue
             desc = lastApplyUiModel.additionalInfo.messageInfo.detail
             state = ButtonPromoCheckoutView.State.ACTIVE
@@ -68,10 +61,10 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
         }
 
         if (lastApplyUiModel.additionalInfo.usageSummaries.isEmpty()) {
-            llSummaryTransaction.gone()
+            binding.llSummaryTransaction.gone()
         } else {
-            llSummaryTransaction.visible()
-            if (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
+            binding.llSummaryTransaction.visible()
+            if (hasChildren(binding.llSummaryTransaction)) binding.llSummaryTransaction.removeAllViews()
             generateChildrenView(lastApplyUiModel)
         }
     }
@@ -169,7 +162,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                 relativeLayout.addView(currencyValue)
             }
 
-            llSummaryTransaction.addView(relativeLayout)
+            binding.llSummaryTransaction.addView(relativeLayout)
         }
     }
 }
