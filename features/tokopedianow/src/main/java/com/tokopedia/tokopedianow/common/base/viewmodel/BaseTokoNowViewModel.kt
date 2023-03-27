@@ -141,10 +141,11 @@ open class BaseTokoNowViewModel(
 
     fun updateAddressData() = addressData.updateLocalData()
 
-    suspend fun getTickerDataAsync(): Deferred<Pair<Boolean, List<TickerData>>?> {
+    suspend fun getTickerDataAsync(warehouseId: String): Deferred<Pair<Boolean, List<TickerData>>?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
-                page = GetTargetedTickerUseCase.HOME_PAGE
+                page = GetTargetedTickerUseCase.HOME_PAGE,
+                warehouseId = warehouseId
             )
             TickerMapper.mapTickerData(tickerList)
         }) {

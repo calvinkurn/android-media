@@ -21,7 +21,7 @@ class GetTargetedTickerUseCase @Inject constructor(
         const val SEARCH_PAGE = "marketplace.now-search"
         const val TARGET_TYPE = "warehouse_id"
 
-        fun createGetTargetedTickerRequest(page: String, warehouseId: String = "344061") = GraphqlRequest(
+        fun createGetTargetedTickerRequest(page: String, warehouseId: String) = GraphqlRequest(
             GetTargetedTickerQuery,
             GetTargetedTickerResponse::class.java,
             variables = mapOf(
@@ -30,7 +30,7 @@ class GetTargetedTickerUseCase @Inject constructor(
                     targets = listOf(
                         GetTargetedTickerRequest.Target(
                             type = TARGET_TYPE,
-                            value = arrayListOf("344061")
+                            value = arrayListOf(warehouseId)
                         )
                     )
                 )
@@ -47,7 +47,7 @@ class GetTargetedTickerUseCase @Inject constructor(
 
     suspend fun execute(
         page: String,
-        warehouseId: String = "344061"
+        warehouseId: String
     ): GetTargetedTickerResponse {
         val targetRequest = GetTargetedTickerRequest(
             page = page,

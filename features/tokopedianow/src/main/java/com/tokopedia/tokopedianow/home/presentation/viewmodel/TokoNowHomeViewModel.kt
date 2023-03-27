@@ -260,7 +260,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val tickerData = getTickerDataAsync().await()
+            val tickerData = getTickerDataAsync(localCacheModel.warehouse_id).await()
 
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel

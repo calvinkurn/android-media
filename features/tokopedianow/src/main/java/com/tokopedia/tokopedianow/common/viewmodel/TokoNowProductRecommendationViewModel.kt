@@ -39,12 +39,12 @@ import javax.inject.Inject
 class TokoNowProductRecommendationViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val userSession: UserSessionInterface,
+    private val addressData: TokoNowLocalAddress,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
@@ -132,7 +132,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam) {
         launch {
-            val tickerData = getTickerDataAsync().await()
+            val tickerData = getTickerDataAsync(addressData.getWarehouseId().toString()).await()
             hasBlockedAddToCart = tickerData?.first.orFalse()
             getRecommendationCarousel(requestParam)
         }
