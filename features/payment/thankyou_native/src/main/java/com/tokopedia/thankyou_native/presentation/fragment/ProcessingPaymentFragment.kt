@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.thankyou_native.R
@@ -16,15 +17,19 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
 import kotlinx.android.synthetic.main.thank_fragment_processing.btnShopAgain
+import kotlinx.android.synthetic.main.thank_fragment_processing.carouselBanner
 import kotlinx.android.synthetic.main.thank_fragment_processing.featureListingContainer
 import kotlinx.android.synthetic.main.thank_fragment_processing.loadingLayout
 import kotlinx.android.synthetic.main.thank_fragment_processing.recommendationContainer
 import kotlinx.android.synthetic.main.thank_fragment_processing.rvBottomContent
 import kotlinx.android.synthetic.main.thank_fragment_processing.topAdsView
 import kotlinx.android.synthetic.main.thank_fragment_processing.topTicker
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvBannerTitle
 import kotlinx.android.synthetic.main.thank_fragment_processing.tvTotalAmount
+import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
@@ -49,6 +54,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
     override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
+    override fun getBannerTitle(): Typography? = tvBannerTitle
+    override fun getBannerCarousel(): CarouselUnify? = carouselBanner
 
     override fun getTopTickerView(): Ticker? = topTicker
 
@@ -100,11 +107,15 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     companion object {
         const val SCREEN_NAME = "Pembayaran Diproses"
-        fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
-                ProcessingPaymentFragment = ProcessingPaymentFragment().apply {
+        fun getFragmentInstance(
+            bundle: Bundle,
+            thanksPageData: ThanksPageData,
+            isWidgetOrderingEnabled: Boolean,
+        ): ProcessingPaymentFragment = ProcessingPaymentFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+                bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
             }
         }
 

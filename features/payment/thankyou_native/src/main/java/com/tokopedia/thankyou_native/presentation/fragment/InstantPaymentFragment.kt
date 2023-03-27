@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -57,6 +58,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
     override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
+    override fun getBannerTitle(): Typography? = tvBannerTitle
+    override fun getBannerCarousel(): CarouselUnify? = carouselBanner
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not required
@@ -285,12 +288,15 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     companion object {
         const val SCREEN_NAME = "Pembayaran Berhasil"
-        fun getFragmentInstance(bundle: Bundle?, thanksPageData: ThanksPageData)
-                : InstantPaymentFragment = InstantPaymentFragment().apply {
-
+        fun getFragmentInstance(
+            bundle: Bundle?,
+            thanksPageData: ThanksPageData,
+            isWidgetOrderingEnabled: Boolean,
+        ): InstantPaymentFragment = InstantPaymentFragment().apply {
             bundle?.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+                bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
             }
         }
     }

@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -25,12 +27,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
@@ -58,6 +62,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.BottomContentAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.BannerItemViewHolder
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -78,6 +83,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -96,6 +103,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
     abstract fun getTopTickerView(): Ticker?
     abstract fun getBottomContentRecyclerView(): RecyclerView?
+    abstract fun getBannerTitle(): Typography?
+    abstract fun getBannerCarousel(): CarouselUnify?
 
     private lateinit var dialogHelper: DialogHelper
 
@@ -126,6 +135,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private var digitalRecomTrackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
+    private var isWidgetOrderingEnabled: Boolean = true
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -141,7 +151,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             BottomContentFactory(this, this),
         )
     }
-    private val ENABLE_WIDGET_ORDER = true
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -152,6 +161,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
+            }
+            if (it.containsKey(ARG_IS_WIDGET_ORDERING_ENABLED)) {
+                isWidgetOrderingEnabled = it.getBoolean(ARG_IS_WIDGET_ORDERING_ENABLED)
             }
         }
         activity?.apply {
@@ -229,7 +241,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun addMarketPlaceRecommendation(containerView: LinearLayout?) {
         if (::thanksPageData.isInitialized) {
 
-            if (ENABLE_WIDGET_ORDER) {
+            if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     MarketplaceRecommendationWidgetModel(
                         thanksPageData,
@@ -266,7 +278,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     ) {
         if (::thanksPageData.isInitialized) {
 
-            if (ENABLE_WIDGET_ORDER) {
+            if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     DigitalRecommendationWidgetModel(
                         thanksPageData,
@@ -369,6 +381,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             bottomContentAdapter.setItems(it)
             bottomContentAdapter.notifyDataSetChanged()
         }
+
+        thanksPageDataViewModel.bannerLiveData.observe(viewLifecycleOwner) {
+            addBanner(it)
+        }
     }
 
     private fun updateLocalizingAddressData(data: GetDefaultChosenAddressResponse) {
@@ -437,7 +453,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun addDataToGyroRecommendationView(gyroRecommendation: GyroRecommendation) {
         if (::thanksPageData.isInitialized) {
-            if (ENABLE_WIDGET_ORDER) {
+            if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     GyroRecommendationWidgetModel(
                         gyroRecommendation,
@@ -463,7 +479,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addDataToTopAdsView(data: TopAdsRequestParams) {
-        if (ENABLE_WIDGET_ORDER) {
+        if (isWidgetOrderingEnabled) {
             thanksPageDataViewModel.addBottomContentWidget(data)
             return
         }
@@ -699,7 +715,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun showTopAdsHeadlineView(cpmModel: CpmModel) {
         topadsHeadlineView.hideShimmerView()
-        if (ENABLE_WIDGET_ORDER) {
+        if (isWidgetOrderingEnabled) {
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }
@@ -821,12 +837,53 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
+    private fun addBanner(banner: BannerWidgetModel) {
+        if (isWidgetOrderingEnabled) {
+            thanksPageDataViewModel.addBottomContentWidget(banner)
+
+            return
+        }
+
+        getBannerTitle()?.shouldShowWithAction(banner.title.isNotEmpty()) {
+            getBannerTitle()?.text = banner.title
+        }
+
+        getBannerCarousel()?.apply {
+            stage.removeAllViews()
+            banner.items.forEachIndexed { index, bannerItem ->
+                val imageView = ImageView(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                    )
+                    setMargin(
+                        if (index == Int.ZERO) IMAGE_MARGIN else IMAGE_GAP,
+                        0,
+                        if (index == banner.items.size - 1) IMAGE_MARGIN else IMAGE_GAP,
+                        0,
+                    )
+                    adjustViewBounds = true
+                    loadImageWithoutPlaceholder(bannerItem.assetUrl)
+                    setOnClickListener {
+                        RouteManager.route(context, bannerItem.applink)
+                    }
+                }
+
+                addItem(imageView)
+                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+                slideToShow =
+                    if (banner.items.size > 1) SLIDE_TO_SHOW_MULTIPLE_ITEM else SLIDE_TO_SHOW_1_ITEM
+            }
+        }
+    }
+
     companion object {
         const val TICKER_WARNING = "Warning"
         const val TICKER_INFO = "Info"
         const val TICKER_ERROR = "Error"
 
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
+        const val ARG_IS_WIDGET_ORDERING_ENABLED = "arg_is_enabled_ordering_enabled"
 
         /* Constant for toads headlines widget*/
         const val TOP_ADS_SRC = "thank_you_page"
@@ -836,5 +893,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
         const val CARD_NUMBER_MASKING_UNICODE = "\u25CF\u25CF\u25CF\u25CF "
         const val LAST_NUMBERS = 4
+
+        private val IMAGE_MARGIN = 16.toPx()
+        private val IMAGE_GAP = 8.toPx()
+        private const val SLIDE_TO_SHOW_1_ITEM = 1f
+        private const val SLIDE_TO_SHOW_MULTIPLE_ITEM = 1.1f
     }
 }

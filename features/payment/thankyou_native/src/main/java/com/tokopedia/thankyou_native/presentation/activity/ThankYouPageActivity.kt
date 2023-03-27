@@ -16,6 +16,7 @@ import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_THANK_YOU_PAGE_WIDGET_ORDERING_EXPERIMENT
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -60,6 +61,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     private val dialogController: DialogController by lazy {
         DialogController(GratificationPresenter(this))
     }
+
+    private val remoteConfig = FirebaseRemoteConfigImpl(this)
 
     fun getHeader(): HeaderUnify = thank_header
 
@@ -170,22 +173,46 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                FragmentByPaymentMode(ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                        ProcessingPaymentFragment.SCREEN_NAME)
+                FragmentByPaymentMode(
+                    ProcessingPaymentFragment.getFragmentInstance(
+                        bundle,
+                        thanksPageData,
+                        isWidgetOrderingEnabled(),
+                    ),
+                    ProcessingPaymentFragment.SCREEN_NAME,
+                )
             }
             is InstantPaymentPage -> {
-                FragmentByPaymentMode(InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                        InstantPaymentFragment.SCREEN_NAME)
+                FragmentByPaymentMode(
+                    InstantPaymentFragment.getFragmentInstance(
+                        bundle,
+                        thanksPageData,
+                        isWidgetOrderingEnabled(),
+                    ),
+                    InstantPaymentFragment.SCREEN_NAME,
+                )
             }
             is WaitingPaymentPage -> {
                 return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
                     is PaymentWaitingCOD -> {
-                        FragmentByPaymentMode(CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData),
-                                CashOnDeliveryFragment.SCREEN_NAME)
+                        FragmentByPaymentMode(
+                            CashOnDeliveryFragment.getFragmentInstance(
+                                bundle,
+                                thanksPageData,
+                                isWidgetOrderingEnabled(),
+                            ),
+                            CashOnDeliveryFragment.SCREEN_NAME,
+                        )
                     }
                     is PaymentWaiting -> {
-                        FragmentByPaymentMode(DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                                DeferredPaymentFragment.SCREEN_NAME)
+                        FragmentByPaymentMode(
+                            DeferredPaymentFragment.getFragmentInstance(
+                                bundle,
+                                thanksPageData,
+                                isWidgetOrderingEnabled(),
+                            ),
+                            DeferredPaymentFragment.SCREEN_NAME,
+                        )
                     }
                     else -> null
                 }
@@ -296,15 +323,22 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     companion object {
-        const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
+        private const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
     }
 
     private fun isGratifDisabled(): Boolean {
         return try {
-            val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(REMOTE_GRATIF_DISABLED, false)
         } catch (e: Exception) {
             false
+        }
+    }
+
+    private fun isWidgetOrderingEnabled(): Boolean {
+        return try {
+            return remoteConfig.getBoolean(ENABLE_THANK_YOU_PAGE_WIDGET_ORDERING_EXPERIMENT, true)
+        } catch (e: Exception) {
+            true
         }
     }
 
