@@ -32,7 +32,6 @@ class ContentCommentAnalytics @AssistedInject constructor(
     private val businessUnit: String
         get() = if (source.isPlay) KEY_BUSINESS_UNIT_PLAY else KEY_BUSINESS_UNIT_CONTENT
 
-
     override fun clickCommentIcon() {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_CONTENT)
@@ -264,7 +263,7 @@ class ContentCommentAnalytics @AssistedInject constructor(
             .setEventAction("view - success report comment")
             .setEventCategory(analyticModel.eventCategory)
             .setEventLabel(analyticModel.eventLabel)
-            .setCustomProperty(KEY_TRACKER_ID, if (source.isPlay) "42605" else "41594")
+            .setCustomProperty(KEY_TRACKER_ID, if (source.isPlay) "42606" else "41594")
             .setBusinessUnit(businessUnit)
             .setCurrentSite(KEY_MARKETPLACE)
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
@@ -277,7 +276,7 @@ class ContentCommentAnalytics @AssistedInject constructor(
     interface Creator {
         fun create(
             source: PageSource,
-            model: ContentCommentAnalyticsModel,
+            model: ContentCommentAnalyticsModel
         ): ContentCommentAnalytics
     }
 }
