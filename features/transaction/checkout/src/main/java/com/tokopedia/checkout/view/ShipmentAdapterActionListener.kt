@@ -81,14 +81,14 @@ interface ShipmentAdapterActionListener {
     fun onCourierPromoCanceled(shipperName: String?, promoCode: String?)
     fun onPurchaseProtectionLogicError()
     fun onPurchaseProtectionChangeListener(position: Int)
-    fun navigateToProtectionMore(cartItemModel: CartItemModel?)
+    fun navigateToProtectionMore(cartItemModel: CartItemModel)
     fun onProcessToPayment()
     fun onChangeTradeInDropOffClicked(latitude: String?, longitude: String?)
     val isTradeInByDropOff: Boolean
     fun hasSelectTradeInLocation(): Boolean
     fun onTradeInAddressTabChanged(addressPosition: Int)
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?)
-    fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean?, listAllPromoCodes: List<String>)
+    fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
     fun onSendAnalyticsViewPromoCheckoutApplied()
     fun onCheckShippingCompletionClicked()
     fun onShowTickerShippingCompletion()
@@ -97,9 +97,9 @@ interface ShipmentAdapterActionListener {
     fun onSwapInUserAddress()
     val currentFragmentManager: FragmentManager
     fun scrollToPositionWithOffset(position: Int, dy: Float)
-    fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?)
+    fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String)
     fun onClickRefreshErrorLoadCourier()
-    fun onViewErrorInCourierSection(errorMessage: String?)
+    fun onViewErrorInCourierSection(errorMessage: String)
     fun onClickSetPinpoint(position: Int)
     fun openAddOnProductLevelBottomSheet(
         cartItemModel: CartItemModel,
@@ -113,7 +113,7 @@ interface ShipmentAdapterActionListener {
 
     fun addOnProductLevelImpression(productId: String)
     fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>)
-    fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?)
+    fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel)
     fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel)
     fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
     fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)

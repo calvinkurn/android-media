@@ -303,7 +303,7 @@ class ShipmentItemViewHolder(
                 !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
             ) && shipmentCartItemModel.firstProductErrorIndex > -1
         ) {
-            val errorMessage = shipmentCartItemModel.unblockingErrorMessage
+            val errorMessage = shipmentCartItemModel.unblockingErrorMessage!!
             layoutWarningAndError.visibility = View.VISIBLE
             tickerError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
             tickerError.setDescriptionClickEvent(object : TickerCallback {

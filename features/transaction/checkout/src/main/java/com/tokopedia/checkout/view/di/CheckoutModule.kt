@@ -74,49 +74,6 @@ class CheckoutModule constructor(private val shipmentFragment: ShipmentFragment)
     @CheckoutScope
     fun provideAnalyticsListener(): AnalyticsActionListener = shipmentFragment
 
-//    @Provides
-//    @CheckoutScope
-//    fun provideShipmentPresenter(
-//        compositeSubscription: CompositeSubscription,
-//        checkoutGqlUseCase: CheckoutGqlUseCase,
-//        getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
-//        editAddressUseCase: EditAddressUseCase,
-//        changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
-//        saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
-//        ratesUseCase: GetRatesUseCase,
-//        ratesApiUseCase: GetRatesApiUseCase,
-//        ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
-//        stateConverter: RatesResponseStateConverter,
-//        clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
-//        shippingCourierConverter: ShippingCourierConverter,
-//        userSessionInterface: UserSessionInterface,
-//        analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-//        checkoutAnalytics: CheckoutAnalyticsCourierSelection,
-//        shipmentDataConverter: ShipmentDataConverter,
-//        releaseBookingUseCase: ReleaseBookingUseCase,
-//        prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
-//        epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
-//        validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
-//        gson: Gson,
-//        executorSchedulers: ExecutorSchedulers,
-//        eligibleForAddressUseCase: EligibleForAddressUseCase,
-//        updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-//    ): ShipmentContract.Presenter {
-//        return ShipmentPresenter(
-//            compositeSubscription,
-//            checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
-//            editAddressUseCase, changeShippingAddressGqlUseCase,
-//            saveShipmentStateGqlUseCase,
-//            ratesUseCase, ratesApiUseCase,
-//            clearCacheAutoApplyStackUseCase,
-//            stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-//            analyticsPurchaseProtection, checkoutAnalytics,
-//            shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-//            epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-//            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase, updateDynamicDataPassingUseCase
-//        )
-//    }
-
     @Provides
     @CheckoutScope
     fun provideShipmentAdapterActionListener(): ShipmentAdapterActionListener {

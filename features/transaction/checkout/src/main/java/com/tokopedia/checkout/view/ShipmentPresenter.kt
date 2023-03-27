@@ -2297,7 +2297,6 @@ class ShipmentPresenter @Inject constructor(
                         ticker.message =
                             response.successDataModel.tickerMessage
                         tickerAnnouncementHolderData.value = ticker
-//                        view?.updateTickerAnnouncementMessage()
                     }
                     view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
                 } catch (t: Throwable) {

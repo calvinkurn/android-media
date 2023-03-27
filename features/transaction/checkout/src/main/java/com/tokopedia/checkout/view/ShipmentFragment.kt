@@ -2772,12 +2772,12 @@ class ShipmentFragment :
         }
     }
 
-    override fun navigateToProtectionMore(cartItemModel: CartItemModel?) {
+    override fun navigateToProtectionMore(cartItemModel: CartItemModel) {
         val activity: Activity? = activity
         if (activity != null) {
             mTrackerPurchaseProtection.eventClickOnPelajari(
                 userSessionInterface.userId,
-                cartItemModel!!.protectionTitle,
+                cartItemModel.protectionTitle,
                 cartItemModel.protectionPricePerProduct,
                 cartItemModel.analyticsProductCheckoutData.productCategoryId
             )
@@ -3197,12 +3197,12 @@ class ShipmentFragment :
     }
 
     override fun onSendAnalyticsClickPromoCheckout(
-        isApplied: Boolean?,
+        isApplied: Boolean,
         listAllPromoCodes: List<String>
     ) {
         eventCheckoutClickPromoSection(
             listAllPromoCodes,
-            isApplied!!,
+            isApplied,
             userSessionInterface.userId
         )
     }
@@ -3211,9 +3211,9 @@ class ShipmentFragment :
         eventCheckoutViewPromoAlreadyApplied()
     }
 
-    private fun updateLogisticPromoData(promoUiModel: PromoUiModel?) {
+    private fun updateLogisticPromoData(promoUiModel: PromoUiModel) {
         val shipmentCartItemModels = shipmentAdapter.shipmentCartItemModelList ?: return
-        val voucherOrdersItemUiModels = promoUiModel!!.voucherOrderUiModels
+        val voucherOrdersItemUiModels = promoUiModel.voucherOrderUiModels
         for (voucherOrder in voucherOrdersItemUiModels) {
             if (voucherOrder.success && voucherOrder.type == "logistic") {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
@@ -3432,10 +3432,10 @@ class ShipmentFragment :
         }
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?) {
+    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String) {
         checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
-            shopId!!,
-            errorMessage!!
+            shopId,
+            errorMessage
         )
     }
 
@@ -3443,8 +3443,8 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier()
     }
 
-    override fun onViewErrorInCourierSection(errorMessage: String?) {
-        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage!!)
+    override fun onViewErrorInCourierSection(errorMessage: String) {
+        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage)
     }
 
     override fun onClickSetPinpoint(position: Int) {
@@ -3656,7 +3656,7 @@ class ShipmentFragment :
         shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel)
     }
 
-    override fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?) {
+    override fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel) {
         checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker()
     }
 
