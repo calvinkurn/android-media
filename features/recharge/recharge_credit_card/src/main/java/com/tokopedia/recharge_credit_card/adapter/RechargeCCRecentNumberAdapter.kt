@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.common.adapter
+package com.tokopedia.recharge_credit_card.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
-class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
-    RecyclerView.Adapter<TelcoRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
+class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
+    RecyclerView.Adapter<RechargeCCRecentNumberAdapter.RecentNumbersItemViewHolder>() {
 
-    private lateinit var listener: ActionListener
+    private var listener: ActionListener? = null
 
     fun setListener(listener: ActionListener) {
         this.listener = listener
@@ -39,29 +39,30 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
         private val textClientNumber: TextView = itemView.findViewById(R.id.common_topup_bills_recent_label)
         private val textProductName: TextView = itemView.findViewById(R.id.common_topup_bills_recent_product_name)
 
-        private lateinit var topupBillsRecommendation: TopupBillsRecommendation
+        private var topupBillsRecommendation: TopupBillsRecommendation? = null
 
         init {
             itemView.setOnClickListener {
-                listener.onClickRecentNumber(topupBillsRecommendation, adapterPosition)
+                topupBillsRecommendation?.let {
+                    listener?.onClickRecentNumber(it, adapterPosition)
+                }
             }
         }
 
         fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
             this.topupBillsRecommendation = topupBillsRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(
-                iconOperator,
-                topupBillsRecommendation.iconUrl,
+            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
                 ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
             if (topupBillsRecommendation.description.isEmpty()) {
-                textClientNumber.text = topupBillsRecommendation.clientNumber
+                textClientNumber.text = topupBillsRecommendation.label
             } else {
                 textClientNumber.text = topupBillsRecommendation.description
             }
 
             textProductName.text = topupBillsRecommendation.title
         }
+
     }
 
     interface ActionListener {
