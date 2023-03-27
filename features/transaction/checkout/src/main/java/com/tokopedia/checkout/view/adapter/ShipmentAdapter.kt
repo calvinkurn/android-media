@@ -12,6 +12,7 @@ import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
 import com.tokopedia.checkout.databinding.ItemShipmentButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemShipmentTickerErrorBinding
 import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
+import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -156,7 +157,7 @@ class ShipmentAdapter @Inject constructor(
         val view = layoutInflater.inflate(viewType, parent, false)
         when (viewType) {
             ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS -> {
-                return ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentRecipientAddressViewHolder(ViewItemShipmentRecipientAddressBinding.bind(view), shipmentAdapterActionListener)
             }
             ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM -> {
                 if (scheduleDeliverySubscription == null || scheduleDeliverySubscription!!.isUnsubscribed) {
