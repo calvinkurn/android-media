@@ -1,7 +1,10 @@
-package com.tokopedia.sellerfeedback.presentation.util
+package com.tokopedia.seller.active.common.features.sellerfeedback
 
 import android.content.Context
-import com.tokopedia.kotlin.extensions.remove
+
+/**
+ * Created by @ilhamsuaib on 21/03/23.
+ */
 
 class ScreenshotPreferenceManager(private val context: Context) {
 

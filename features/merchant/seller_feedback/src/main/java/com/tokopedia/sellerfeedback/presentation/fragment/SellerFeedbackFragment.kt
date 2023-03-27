@@ -25,6 +25,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
+import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
@@ -40,8 +42,6 @@ import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
-import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
-import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel

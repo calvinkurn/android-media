@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_form_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
+    <string name="feedback_form_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
+    <string name="feedback_form_settings">Pengaturan</string>
+    <string name="screenshot_seller_feedback_toaster_text">Screenshot terambil. Sekarang kamu bisa beri feedback tentang halaman ini.</string>
+    <string name="screenshot_seller_feedback_toaster_cta_text">Beri</string>
+</resources>

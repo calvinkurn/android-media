@@ -1,4 +1,4 @@
-package com.tokopedia.sellerfeedback.presentation.util
+package com.tokopedia.seller.active.common.features.sellerfeedback
 
 import android.content.Context
 import android.os.Handler
@@ -8,11 +8,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.sellerfeedback.R
+import com.tokopedia.seller.active.common.R
 import com.tokopedia.unifycomponents.Toaster
 
 /**
- * Created By @ilhamsuaib on 08/10/21
+ * Created by @ilhamsuaib on 21/03/23.
  */
 
 object SuccessToasterHelper {

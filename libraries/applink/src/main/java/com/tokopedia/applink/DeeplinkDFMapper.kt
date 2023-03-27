@@ -230,6 +230,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
+    const val DF_SELLER_FEEDBACK = "df_seller_feedback"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -680,6 +681,15 @@ object DeeplinkDFMapper : CoroutineScope {
 
             //Toko Chat
             add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_TOKOCHAT, R.string.title_applink_toko_chat))
+
+            //sellerapp
+            add(
+                DFP(
+                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
+                    DF_SELLER_FEEDBACK,
+                    R.string.title_seller_feedback
+                )
+            )
         }
     }
 
