@@ -920,12 +920,12 @@ class ShipmentFragment :
     }
 
     override fun renderCheckoutPageNoAddress(
-        shipmentAddressFormData: CartShipmentAddressFormData?,
+        cartShipmentAddressFormData: CartShipmentAddressFormData,
         isEligibleForRevampAna: Boolean
     ) {
         val token = Token()
-        token.ut = shipmentAddressFormData!!.keroUnixTime
-        token.districtRecommendation = shipmentAddressFormData.keroDiscomToken
+        token.ut = cartShipmentAddressFormData.keroUnixTime
+        token.districtRecommendation = cartShipmentAddressFormData.keroDiscomToken
         if (isEligibleForRevampAna) {
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
@@ -943,7 +943,6 @@ class ShipmentFragment :
     }
 
     override fun renderCheckoutPageNoMatchedAddress(
-        cartShipmentAddressFormData: CartShipmentAddressFormData?,
         addressState: Int
     ) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
@@ -953,9 +952,9 @@ class ShipmentFragment :
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
     }
 
-    override fun renderCheckoutCartSuccess(checkoutData: CheckoutData?) {
+    override fun renderCheckoutCartSuccess(checkoutData: CheckoutData) {
         val paymentPassData = PaymentPassData()
-        paymentPassData.redirectUrl = checkoutData!!.redirectUrl
+        paymentPassData.redirectUrl = checkoutData.redirectUrl
         paymentPassData.transactionId = checkoutData.transactionId
         paymentPassData.paymentId = checkoutData.paymentId
         paymentPassData.callbackSuccessUrl = checkoutData.callbackSuccessUrl
@@ -970,14 +969,14 @@ class ShipmentFragment :
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
     }
 
-    override fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData?) {
+    override fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData) {
         if (activity != null) {
-            val (title, desc, action) = priceValidationData!!.message
+            val message = priceValidationData.message
             val priceValidationDialog =
                 DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-            priceValidationDialog.setTitle(title)
-            priceValidationDialog.setDescription(desc)
-            priceValidationDialog.setPrimaryCTAText(action)
+            priceValidationDialog.setTitle(message.title)
+            priceValidationDialog.setDescription(message.desc)
+            priceValidationDialog.setPrimaryCTAText(message.action)
             priceValidationDialog.setPrimaryCTAClickListener {
                 shipmentPresenter.processInitialLoadCheckoutPage(
                     isReloadData = true,
@@ -988,12 +987,12 @@ class ShipmentFragment :
             }
             priceValidationDialog.show()
             val eventLabelBuilder = StringBuilder()
-            val (productChangesType, campaignType, productIds) = priceValidationData.trackerData
-            eventLabelBuilder.append(productChangesType)
+            val trackerData = priceValidationData.trackerData
+            eventLabelBuilder.append(trackerData.productChangesType)
             eventLabelBuilder.append(" - ")
-            eventLabelBuilder.append(campaignType)
+            eventLabelBuilder.append(trackerData.campaignType)
             eventLabelBuilder.append(" - ")
-            eventLabelBuilder.append(TextUtils.join(",", productIds))
+            eventLabelBuilder.append(trackerData.productIds.joinToString(","))
             checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString())
         }
     }
@@ -1003,12 +1002,12 @@ class ShipmentFragment :
         showToastError(message)
     }
 
-    override fun renderPrompt(prompt: Prompt?) {
+    override fun renderPrompt(prompt: Prompt) {
         val activity: Activity? = activity
         if (activity != null) {
             val promptDialog =
                 DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-            promptDialog.setTitle(prompt!!.title)
+            promptDialog.setTitle(prompt.title)
             promptDialog.setDescription(prompt.description)
             promptDialog.setPrimaryCTAText(prompt.button.text)
             promptDialog.setPrimaryCTAClickListener {
@@ -1019,7 +1018,6 @@ class ShipmentFragment :
                     }
                     mActivity.finish()
                 }
-                Unit
             }
             promptDialog.setOverlayClose(false)
             promptDialog.setCancelable(false)
@@ -1254,13 +1252,13 @@ class ShipmentFragment :
     }
 
     override fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(
-        eventLabel: String?,
-        userId: String?,
+        eventLabel: String,
+        userId: String,
         listProducts: List<Any>?
     ) {
         checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(
-            eventLabel!!,
-            userId!!,
+            eventLabel,
+            userId,
             listProducts
         )
     }
@@ -1682,15 +1680,15 @@ class ShipmentFragment :
         isCourierPromo: Boolean,
         duration: String?,
         isCod: Boolean,
-        shippingPriceMin: String?,
-        shippingPriceHigh: String?
+        shippingPriceMin: String,
+        shippingPriceHigh: String
     ) {
         checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(
             isCourierPromo,
             duration,
             isCod,
-            shippingPriceMin!!,
-            shippingPriceHigh!!
+            shippingPriceMin,
+            shippingPriceHigh
         )
     }
 
@@ -1730,8 +1728,8 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman()
     }
 
-    override fun sendAnalyticsScreenName(screenName: String?) {
-        checkoutAnalyticsCourierSelection.sendScreenName(activity, screenName!!)
+    override fun sendAnalyticsScreenName(screenName: String) {
+        checkoutAnalyticsCourierSelection.sendScreenName(activity, screenName)
     }
 
     override fun sendAnalyticsCourierNotComplete() {
@@ -1754,12 +1752,12 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaKurirPengiriman()
     }
 
-    override fun sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerId: String?) {
-        checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId!!)
+    override fun sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerId: String) {
+        checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId)
     }
 
-    override fun sendAnalyticsViewPromoAfterAdjustItem(msg: String?) {
-        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg!!)
+    override fun sendAnalyticsViewPromoAfterAdjustItem(msg: String) {
+        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg)
     }
 
     override fun onFinishChoosingShipment(
@@ -1832,20 +1830,8 @@ class ShipmentFragment :
                 courierHasReseted = true
                 break
             }
-//            val dataCheckoutRequests =
-//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-//                    shipmentCartItemModel.cartString,
-//                    selectedCourier.selectedShipper.serviceId.toString(),
-//                    selectedCourier.selectedShipper.shipperPrice.toString(),
-//                    shipmentCartItemModel.spId.toString()
-//                )
-//            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
         }
         if (!courierHasReseted) {
-//            val dataCheckoutRequests =
-//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-//                    shipmentCartItemModels
-//                )
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 null,
                 null,
@@ -1859,10 +1845,6 @@ class ShipmentFragment :
             )
         }
     }
-
-//    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>) {
-//        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
-//    }
 
     // Project ARMY, clear from promo BBO ticker
     override fun onCancelVoucherLogisticClicked(
@@ -1903,7 +1885,7 @@ class ShipmentFragment :
                         val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
                         notEligiblePromoHolderdata.promoTitle =
                             validateUsePromoRevampUiModel.promoUiModel.titleDescription
-                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
+                        if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
                             notEligiblePromoHolderdata.promoCode =
                                 validateUsePromoRevampUiModel.promoUiModel.codes[0]
                         }
@@ -2439,10 +2421,8 @@ class ShipmentFragment :
                             }
                         }
                         shipmentCartItemModel.voucherLogisticItemUiModel = null
-//                        benefitSummaryInfoUiModel = null
                         shipmentAdapter.clearTotalPromoStackAmount()
                         shipmentPresenter.updateShipmentCostModel()
-//                        shipmentAdapter.updateCheckoutButtonData(null)
                     }
                     shipmentAdapter.setSelectedCourier(
                         cartItemPosition,
@@ -2751,18 +2731,18 @@ class ShipmentFragment :
         shipperId: Int,
         spId: Int,
         itemPosition: Int,
-        shipmentDetailData: ShipmentDetailData?,
-        shipmentCartItemModel: ShipmentCartItemModel?,
+        shipmentDetailData: ShipmentDetailData,
+        shipmentCartItemModel: ShipmentCartItemModel,
         shopShipmentList: List<ShopShipment>?,
         isTradeInDropOff: Boolean
     ) {
         if (shopShipmentList != null && shopShipmentList.isNotEmpty()) {
-            shipmentDetailData!!.isTradein = isTradeIn
+            shipmentDetailData.isTradein = isTradeIn
             shipmentPresenter.processGetCourierRecommendation(
                 shipperId, spId, itemPosition, shipmentDetailData,
                 shipmentCartItemModel, shopShipmentList, true,
                 getProductForRatesRequest(shipmentCartItemModel),
-                shipmentCartItemModel!!.cartString, isTradeInDropOff,
+                shipmentCartItemModel.cartString, isTradeInDropOff,
                 shipmentAdapter.addressShipmentData, false, false
             )
         }
@@ -3194,10 +3174,6 @@ class ShipmentFragment :
         devicePrice: Long,
         diagnosticId: String
     ) {
-//        val dataCheckoutRequests =
-//            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-//                shipmentAdapter.shipmentCartItemModelList!!
-//            )
         var eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION
         var eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN
         var eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS
@@ -3280,12 +3256,10 @@ class ShipmentFragment :
 
     override fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>) {
         shipmentPresenter.setPromoBenefit(summariesUiModels)
-//        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
     }
 
     override fun resetPromoBenefit() {
         shipmentPresenter.resetPromoBenefit()
-//        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
         shipmentPresenter.updateShipmentCostModel()
     }
 
@@ -3541,12 +3515,10 @@ class ShipmentFragment :
 
     private fun doUpdateButtonPromoCheckout(promoUiModel: PromoUiModel) {
         shipmentPresenter.updatePromoCheckoutData(promoUiModel)
-//        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
     }
 
     override fun doResetButtonPromoCheckout() {
         shipmentPresenter.resetPromoCheckoutData()
-//        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
         resetPromoBenefit()
         clearPromoTrackingData()
     }
@@ -3812,13 +3784,13 @@ class ShipmentFragment :
         shipmentCartItemModel?.let { reloadCourier(it, lastSelectedCourierOrder, skipMvc) }
     }
 
-    override fun updateLocalCacheAddressData(userAddress: UserAddress?) {
+    override fun updateLocalCacheAddressData(userAddress: UserAddress) {
         val activity: Activity? = activity
         if (activity != null) {
             val lca = getLocalizingAddressData(
                 activity
             )
-            val tokonow = userAddress!!.tokoNow
+            val tokonow = userAddress.tokoNow
             if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || lca.address_id.isEmpty() || lca.address_id == "0") {
                 updateLocalizingAddressDataFromOther(
                     activity,
@@ -3854,11 +3826,11 @@ class ShipmentFragment :
     }
 
     override fun openAddOnProductLevelBottomSheet(
-        cartItemModel: CartItemModel?,
+        cartItemModel: CartItemModel,
         addOnWordingModel: AddOnWordingModel?
     ) {
         if (activity != null) {
-            val addOnsDataModel = cartItemModel!!.addOnProductLevelModel
+            val addOnsDataModel = cartItemModel.addOnProductLevelModel
             val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
@@ -3890,11 +3862,11 @@ class ShipmentFragment :
     }
 
     override fun openAddOnOrderLevelBottomSheet(
-        shipmentCartItemModel: ShipmentCartItemModel?,
+        cartItemModel: ShipmentCartItemModel,
         addOnWordingModel: AddOnWordingModel?
     ) {
-        if (activity != null && shipmentCartItemModel!!.addOnsOrderLevelModel != null) {
-            val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
+        if (activity != null && cartItemModel.addOnsOrderLevelModel != null) {
+            val addOnsDataModel = cartItemModel.addOnsOrderLevelModel
             val addOnBottomSheetModel = addOnsDataModel!!.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
@@ -3904,13 +3876,13 @@ class ShipmentFragment :
             if (addOnsDataModel.status == ADD_ON_STATUS_DISABLE) {
                 unavailableBottomSheetData = mapUnavailableBottomSheetOrderLevelData(
                     addOnBottomSheetModel,
-                    shipmentCartItemModel
+                    cartItemModel
                 )
             }
             if (addOnsDataModel.status == ADD_ON_STATUS_ACTIVE) {
                 availableBottomSheetData = mapAvailableBottomSheetOrderLevelData(
                     addOnWordingModel!!,
-                    shipmentCartItemModel
+                    cartItemModel
                 )
             }
             val addOnProductData = mapAddOnBottomSheetParam(
@@ -3922,17 +3894,17 @@ class ShipmentFragment :
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET)
-            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(shipmentCartItemModel.cartString)
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(cartItemModel.cartString)
         }
     }
 
-    override fun addOnProductLevelImpression(productId: String?) {
-        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId!!)
+    override fun addOnProductLevelImpression(productId: String) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
     }
 
-    override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>?) {
+    override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>) {
         val listCartString = ArrayList<String>()
-        for (cartItemModel in cartItemModelList!!) {
+        for (cartItemModel in cartItemModelList) {
             listCartString.add(cartItemModel.cartString)
         }
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString())
@@ -4015,22 +3987,22 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker()
     }
 
-    override fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?) {
+    override fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel) {
         if (context != null) {
             checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker()
-            RouteManager.route(context, shipmentUpsellModel!!.appLink)
+            RouteManager.route(context, shipmentUpsellModel.appLink)
         }
     }
 
-    override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
-        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel!!.isSelected)
+    override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
+        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel.isSelected)
     }
 
-    override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
+    override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
         startActivityForResult(
             getStartIntent(
                 requireContext(),
-                shipmentUpsellModel!!.appLink,
+                shipmentUpsellModel.appLink,
                 true,
                 true,
                 false,
@@ -4041,14 +4013,14 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected)
     }
 
-    override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
+    override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
         shipmentPresenter.isPlusSelected = false
         shipmentPresenter.cancelUpsell(
             true,
             true,
             false
         )
-        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel!!.isSelected)
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected)
     }
 
     override fun onViewFreeShippingPlusBadge() {
@@ -4056,7 +4028,7 @@ class ShipmentFragment :
     }
 
     override fun onChangeScheduleDelivery(
-        scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel,
         position: Int,
         donePublisher: PublishSubject<Boolean>
     ) {
@@ -4067,7 +4039,7 @@ class ShipmentFragment :
             ) {
                 val courierItemData =
                     shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
-                val newCourierItemData = clone(courierItemData!!, scheduleDeliveryUiModel!!)
+                val newCourierItemData = clone(courierItemData!!, scheduleDeliveryUiModel)
                 val hasNoPromo =
                     TextUtils.isEmpty(courierItemData.selectedShipper.logPromoCode) && TextUtils.isEmpty(
                         newCourierItemData.selectedShipper.logPromoCode
@@ -4115,7 +4087,6 @@ class ShipmentFragment :
                         }
                     }
                     shipmentCartItemModel.voucherLogisticItemUiModel = null
-//                    benefitSummaryInfoUiModel = null
                     shipmentAdapter.clearTotalPromoStackAmount()
                     shipmentPresenter.updateShipmentCostModel()
                     shipmentPresenter.updateCheckoutButtonData()
@@ -4222,38 +4193,38 @@ class ShipmentFragment :
         }
     }
 
-    override fun logOnErrorLoadCheckoutPage(throwable: Throwable?) {
-        logOnErrorLoadCheckoutPage(throwable!!, isOneClickShipment, isTradeIn, isTradeInByDropOff)
+    override fun logOnErrorLoadCheckoutPage(throwable: Throwable) {
+        logOnErrorLoadCheckoutPage(throwable, isOneClickShipment, isTradeIn, isTradeInByDropOff)
     }
 
     override fun logOnErrorLoadCourier(
-        throwable: Throwable?,
+        throwable: Throwable,
         itemPosition: Int,
-        boPromoCode: String?
+        boPromoCode: String
     ) {
         val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
         if (shipmentCartItemModel != null) {
             logOnErrorLoadCourier(
-                throwable!!,
+                throwable,
                 shipmentCartItemModel,
                 isOneClickShipment,
                 isTradeIn,
                 isTradeInByDropOff,
-                boPromoCode!!
+                boPromoCode
             )
         }
     }
 
-    override fun logOnErrorApplyBo(throwable: Throwable?, itemPosition: Int, boPromoCode: String?) {
+    override fun logOnErrorApplyBo(throwable: Throwable, itemPosition: Int, boPromoCode: String) {
         val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
         if (shipmentCartItemModel != null) {
             logOnErrorApplyBo(
-                throwable!!,
+                throwable,
                 shipmentCartItemModel,
                 isOneClickShipment,
                 isTradeIn,
                 isTradeInByDropOff,
-                boPromoCode!!
+                boPromoCode
             )
         }
     }
@@ -4309,23 +4280,23 @@ class ShipmentFragment :
     }
 
     override fun updateAddOnsDynamicDataPassing(
-        addOnsDataModel: AddOnsDataModel?,
-        addOnResult: AddOnResult?,
+        addOnsDataModel: AddOnsDataModel,
+        addOnResult: AddOnResult,
         identifier: Int,
-        cartString: String?,
-        cartId: Long?
+        cartString: String,
+        cartId: Long
     ) {
         // identifier : 0 = product level, 1  = order level
-        if (addOnResult!!.addOnData.isEmpty()) {
+        if (addOnResult.addOnData.isEmpty()) {
             // unchecked
             val uncheckedDynamicDataParam = DynamicDataParam()
             uncheckedDynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
             if (identifier == 1) {
                 uncheckedDynamicDataParam.level = ORDER_LEVEL
-                uncheckedDynamicDataParam.uniqueId = cartString!!
+                uncheckedDynamicDataParam.uniqueId = cartString
             } else if (identifier == 0) {
                 uncheckedDynamicDataParam.level = PRODUCT_LEVEL
-                uncheckedDynamicDataParam.parentUniqueId = cartString!!
+                uncheckedDynamicDataParam.parentUniqueId = cartString
                 uncheckedDynamicDataParam.uniqueId = cartId.toString()
             }
             updateCheckboxDynamicData(uncheckedDynamicDataParam, false)
@@ -4336,25 +4307,25 @@ class ShipmentFragment :
             if (identifier == 1) {
                 // order level
                 dynamicDataParam.level = ORDER_LEVEL
-                dynamicDataParam.uniqueId = cartString!!
+                dynamicDataParam.uniqueId = cartString
             } else if (identifier == 0) {
                 // product level
                 dynamicDataParam.level = PRODUCT_LEVEL
-                dynamicDataParam.parentUniqueId = cartString!!
+                dynamicDataParam.parentUniqueId = cartString
                 dynamicDataParam.uniqueId = cartId.toString()
             }
             updateCheckboxDynamicData(dynamicDataParam, true)
         }
     }
 
-    override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>?) {
+    override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>) {
         if (activity != null) {
             val shipmentDataList = shipmentAdapter.getShipmentDataList()
             var firstFoundPosition = 0
             shipment_loop@ for (i in shipmentDataList.indices) {
                 if (shipmentDataList[i] is ShipmentCartItemModel) {
                     val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
-                    for (uniqueId in unappliedBoPromoUniqueIds!!) {
+                    for (uniqueId in unappliedBoPromoUniqueIds) {
                         if (shipmentCartItemModel.cartString == uniqueId &&
                             (shipmentCartItemModel.selectedShipmentDetailData == null || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier == null)
                         ) {
@@ -4382,8 +4353,8 @@ class ShipmentFragment :
         return -1
     }
 
-    override fun getShipmentCartItemModel(adapterPosition: Int): ShipmentCartItemModel? {
-        return shipmentAdapter.getShipmentCartItemModelByIndex(adapterPosition)
+    override fun getShipmentCartItemModel(position: Int): ShipmentCartItemModel? {
+        return shipmentAdapter.getShipmentCartItemModelByIndex(position)
     }
 
     private fun onResultFromUpsell(data: Intent?) {

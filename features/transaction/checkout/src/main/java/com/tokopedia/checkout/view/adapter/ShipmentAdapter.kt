@@ -1034,7 +1034,7 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
-        return if (shipmentDataList.isNotEmpty() && index < shipmentDataList.size) {
+        return if (shipmentDataList.isNotEmpty() && index >= 0 && index < shipmentDataList.size) {
             if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
         } else {
             null

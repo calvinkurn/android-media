@@ -72,8 +72,8 @@ interface ShipmentAdapterActionListener {
         shipperId: Int,
         spId: Int,
         itemPosition: Int,
-        shipmentDetailData: ShipmentDetailData?,
-        shipmentCartItemModel: ShipmentCartItemModel?,
+        shipmentDetailData: ShipmentDetailData,
+        shipmentCartItemModel: ShipmentCartItemModel,
         shopShipmentList: List<ShopShipment>?,
         isTradeInDropOff: Boolean
     )
@@ -102,26 +102,26 @@ interface ShipmentAdapterActionListener {
     fun onViewErrorInCourierSection(errorMessage: String?)
     fun onClickSetPinpoint(position: Int)
     fun openAddOnProductLevelBottomSheet(
-        cartItemModel: CartItemModel?,
+        cartItemModel: CartItemModel,
         addOnWordingModel: AddOnWordingModel?
     )
 
     fun openAddOnOrderLevelBottomSheet(
-        cartItemModel: ShipmentCartItemModel?,
+        cartItemModel: ShipmentCartItemModel,
         addOnWordingModel: AddOnWordingModel?
     )
 
-    fun addOnProductLevelImpression(productId: String?)
-    fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>?)
+    fun addOnProductLevelImpression(productId: String)
+    fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>)
     fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?)
-    fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?)
-    fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?)
-    fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?)
-    fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?)
+    fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel)
+    fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
+    fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
+    fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
     fun onViewFreeShippingPlusBadge()
     fun onInsuranceInfoTooltipClickedTrackingAnalytics()
     fun onChangeScheduleDelivery(
-        scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel,
         position: Int,
         donePublisher: PublishSubject<Boolean>
     )

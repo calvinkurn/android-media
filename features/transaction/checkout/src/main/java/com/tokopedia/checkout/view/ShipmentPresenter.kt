@@ -632,10 +632,6 @@ class ShipmentPresenter @Inject constructor(
         this.listShipmentCrossSellModel = listShipmentCrossSellModel ?: ArrayList()
     }
 
-    override fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
-        this.shipmentButtonPayment.value = shipmentButtonPaymentModel ?: ShipmentButtonPaymentModel()
-    }
-
     private fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
         return shipmentCartItemModel.isStateLoadingCourierState
     }
@@ -839,7 +835,6 @@ class ShipmentPresenter @Inject constructor(
             checkIsUserEligibleForRevampAna(cartShipmentAddressFormData)
         } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
             view?.renderCheckoutPageNoMatchedAddress(
-                cartShipmentAddressFormData,
                 userAddress?.state ?: 0
             )
         } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.NO_ERROR) {
@@ -2522,7 +2517,7 @@ class ShipmentPresenter @Inject constructor(
         spId: Int,
         itemPosition: Int,
         shipmentDetailData: ShipmentDetailData?,
-        shipmentCartItemModel: ShipmentCartItemModel?,
+        shipmentCartItemModel: ShipmentCartItemModel,
         shopShipmentList: List<ShopShipment>,
         isInitialLoad: Boolean,
         products: ArrayList<Product>,
@@ -2541,7 +2536,7 @@ class ShipmentPresenter @Inject constructor(
         )
         val counter = if (codData == null) -1 else codData!!.counterCod
         val cornerId = this.recipientAddressModel.isCornerAddress
-        val pslCode = getLogisticPromoCode(shipmentCartItemModel!!)
+        val pslCode = getLogisticPromoCode(shipmentCartItemModel)
         val isLeasing = shipmentCartItemModel.isLeasingProduct
         val mvc = generateRatesMvcParam(cartString)
         val ratesParamBuilder = RatesParam.Builder(shopShipmentList, shippingParam)
@@ -2972,7 +2967,7 @@ class ShipmentPresenter @Inject constructor(
         uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
     }
 
-    override fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>?) {
+    override fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
         if (view != null) {
             val epharmacyGroupIds = HashSet<String>()
             val mapPrescriptionCount = HashMap<String?, Int>()
@@ -3211,23 +3206,17 @@ class ShipmentPresenter @Inject constructor(
         cartId: Long
     ) {
         addOnsDataModel.status = addOnResult.status
-        val (action, description, leftIconUrl, rightIconUrl, title) = addOnResult.addOnButton
-        val addOnButtonModel = AddOnButtonModel()
-        addOnButtonModel.action = action
-        addOnButtonModel.description = description
-        addOnButtonModel.title = title
-        addOnButtonModel.leftIconUrl = leftIconUrl
-        addOnButtonModel.rightIconUrl = rightIconUrl
-        addOnsDataModel.addOnsButtonModel = addOnButtonModel
-        val (description1, headerTitle, products, ticker) = addOnResult.addOnBottomSheet
+        val addOnButton = addOnResult.addOnButton
+        addOnsDataModel.addOnsButtonModel = AddOnButtonModel(addOnButton.leftIconUrl, addOnButton.rightIconUrl, addOnButton.description, addOnButton.action, addOnButton.title)
+        val addOnBottomSheet = addOnResult.addOnBottomSheet
         val addOnBottomSheetModel = AddOnBottomSheetModel()
-        addOnBottomSheetModel.headerTitle = headerTitle
-        addOnBottomSheetModel.description = description1
+        addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
+        addOnBottomSheetModel.description = addOnBottomSheet.description
         val addOnTickerModel = AddOnTickerModel()
-        addOnTickerModel.text = ticker.text
+        addOnTickerModel.text = addOnBottomSheet.ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
         val listProductAddOn = java.util.ArrayList<AddOnProductItemModel>()
-        for (product in products) {
+        for (product in addOnBottomSheet.products) {
             val addOnProductItemModel = AddOnProductItemModel()
             addOnProductItemModel.productName = product.productName
             addOnProductItemModel.productImageUrl = product.productImageUrl
@@ -3235,21 +3224,21 @@ class ShipmentPresenter @Inject constructor(
         }
         addOnBottomSheetModel.products = listProductAddOn
         addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = java.util.ArrayList<AddOnDataItemModel>()
+        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
         for (addOnData in addOnResult.addOnData) {
             val addOnDataItemModel = AddOnDataItemModel()
+            val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
-            val addOnNote = addOnData.addOnMetadata.addOnNote
-            val addOnMetadataItemModel = AddOnMetadataItemModel()
-            val addOnNoteItemModel = AddOnNoteItemModel()
-            addOnNoteItemModel.isCustomNote = addOnNote.isCustomNote
-            addOnNoteItemModel.notes = addOnNote.notes
-            addOnNoteItemModel.from = addOnNote.from
-            addOnNoteItemModel.to = addOnNote.to
-            addOnMetadataItemModel.addOnNoteItemModel = addOnNoteItemModel
-            addOnDataItemModel.addOnMetadata = addOnMetadataItemModel
+            addOnDataItemModel.addOnMetadata = AddOnMetadataItemModel(
+                AddOnNoteItemModel(
+                    addOnNote.isCustomNote,
+                    addOnNote.to,
+                    addOnNote.from,
+                    addOnNote.notes
+                )
+            )
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
@@ -3265,7 +3254,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String>, ArrayList<String>> {
+    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Pair<ArrayList<String>, ArrayList<String>> {
         val unappliedBoPromoUniqueIds = ArrayList<String>()
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
@@ -3275,7 +3264,7 @@ class ShipmentPresenter @Inject constructor(
         // loop to list voucher orders to be applied this will be used later
         val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
             ArrayList()
-        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel!!.promoUiModel.voucherOrderUiModels) {
+        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
             if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
                 if (voucherOrdersItemUiModel.messageUiModel.state == "green") {
@@ -3307,7 +3296,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun doUnapplyBo(uniqueId: String, promoCode: String) {
-        val itemAdapterPosition = view!!.getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId)
+        val itemAdapterPosition = view?.getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId) ?: -1
         val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             view?.resetCourier(itemAdapterPosition)
@@ -3374,9 +3363,9 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel) {
-        val itemAdapterPosition = view!!.getShipmentCartItemModelAdapterPositionByUniqueId(
+        val itemAdapterPosition = view?.getShipmentCartItemModelAdapterPositionByUniqueId(
             voucherOrdersItemUiModel.uniqueId
-        )
+        ) ?: -1
         val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             if (shipmentCartItemModel.voucherLogisticItemUiModel == null ||
@@ -3393,7 +3382,7 @@ class ShipmentPresenter @Inject constructor(
 
     override fun processBoPromoCourierRecommendation(
         itemPosition: Int,
-        voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?,
+        voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
         val selectedShipmentDetailData =
@@ -3410,7 +3399,7 @@ class ShipmentPresenter @Inject constructor(
         )
         val counter = if (codData == null) -1 else codData!!.counterCod
         val cornerId = recipientAddressModel.isCornerAddress
-        val pslCode = voucherOrdersItemUiModel!!.code
+        val pslCode = voucherOrdersItemUiModel.code
         val isLeasing = shipmentCartItemModel.isLeasingProduct
         val mvc = generateRatesMvcParam(cartString)
         val shopShipmentList = shipmentCartItemModel.shopShipmentList
@@ -3456,28 +3445,28 @@ class ShipmentPresenter @Inject constructor(
                 ratesPromoPublisher = PublishSubject.create()
                 compositeSubscription.add(
                     ratesPromoPublisher
-                        ?.concatMap { (shipperId, spId1, itemPosition1, shipmentCartItemModel1, shopShipmentList1, _, cartString1, isTradeInDropOff1, _, ratesParam, promoCode1): ShipmentGetCourierHolderData ->
+                        ?.concatMap { shipmentGetCourierHolderData ->
                             logisticPromoDonePublisher = PublishSubject.create()
-                            ratesUseCase.execute(ratesParam)
+                            ratesUseCase.execute(shipmentGetCourierHolderData.ratesParam)
                                 .map { shippingRecommendationData: ShippingRecommendationData? ->
                                     stateConverter.fillState(
                                         shippingRecommendationData!!,
-                                        shopShipmentList1,
-                                        spId1,
+                                        shipmentGetCourierHolderData.shopShipmentList,
+                                        shipmentGetCourierHolderData.spId,
                                         0
                                     )
                                 }.subscribe(
                                     GetBoPromoCourierRecommendationSubscriber(
                                         view!!,
                                         this,
-                                        cartString1,
-                                        promoCode1,
-                                        shipperId,
-                                        spId1,
-                                        itemPosition1,
+                                        shipmentGetCourierHolderData.cartString,
+                                        shipmentGetCourierHolderData.promoCode,
+                                        shipmentGetCourierHolderData.shipperId,
+                                        shipmentGetCourierHolderData.spId,
+                                        shipmentGetCourierHolderData.itemPosition,
                                         shippingCourierConverter,
-                                        shipmentCartItemModel1,
-                                        isTradeInDropOff1,
+                                        shipmentGetCourierHolderData.shipmentCartItemModel,
+                                        shipmentGetCourierHolderData.isTradeInDropOff,
                                         false,
                                         logisticPromoDonePublisher
                                     )
@@ -3612,7 +3601,7 @@ class ShipmentPresenter @Inject constructor(
         return true
     }
 
-    fun setCurrentDynamicDataParamFromSAF(
+    private fun setCurrentDynamicDataParamFromSAF(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         isOneClickShipment: Boolean
     ) {
