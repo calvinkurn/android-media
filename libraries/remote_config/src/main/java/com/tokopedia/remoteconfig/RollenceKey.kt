@@ -48,6 +48,7 @@ object RollenceKey {
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
+    const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
