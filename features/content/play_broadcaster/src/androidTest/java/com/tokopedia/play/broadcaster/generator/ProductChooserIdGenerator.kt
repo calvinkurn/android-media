@@ -128,7 +128,7 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockProductSetupViewModelFactory).apply {
+                ProductSetupFragment(mockProductSetupViewModelFactory, mockk(relaxed = true)).apply {
                     setDataSource(object : ProductSetupFragment.DataSource {
                         override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                             return emptyList()
