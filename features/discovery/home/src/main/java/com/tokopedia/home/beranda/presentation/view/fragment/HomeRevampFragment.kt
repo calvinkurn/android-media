@@ -1288,7 +1288,6 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
             scope = this.lifecycleScope,
