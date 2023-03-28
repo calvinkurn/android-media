@@ -123,7 +123,21 @@ class ContentCommentViewModel @AssistedInject constructor(
                             }
                         )
                     }
-                    newChild.addAll(selected, result.list)
+                    newChild.addAll(selected,
+                        result.list.distinctBy { item ->
+                            when (item) {
+                                is CommentUiModel.Item -> {
+                                    item.id//check id child
+                                }
+                                is CommentUiModel.Expandable -> {
+                                    item.commentType.parentId
+                                }
+                                else -> {
+                                    item
+                                }
+                            }
+                        }
+                    )
                     it.copy(
                         cursor = result.cursor,
                         list = newChild,
@@ -297,7 +311,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     val index = if (result.commentType.isChild) {
                         val selected = it.list
                             .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
-                        if (it.list[selected] !is CommentUiModel.Expandable) selected else return@launchCatchError
+                        selected
                     } else 0
                     val newList = it.list.toMutableList().apply {
                         add(index, result)
