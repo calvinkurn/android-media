@@ -310,9 +310,6 @@ class InboxContactUsFragment :
                 }
             })
             adapter = mAdapter
-            /*attachPaging(this, pagingConfig) { _, _ ->
-                viewModel.getTicketItems()
-            }*/
             addOnScrollListener(rvOnScrollListener)
         }
     }
