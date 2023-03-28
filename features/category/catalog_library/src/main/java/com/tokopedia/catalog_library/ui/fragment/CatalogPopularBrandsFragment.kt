@@ -19,10 +19,8 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
-import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandPage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.*
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
-import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -39,6 +37,7 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
 
     private var popularBrandsRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
+    private val trackingSet = HashSet<String>()
 
     companion object {
         fun newInstance(): CatalogPopularBrandsFragment {
@@ -206,11 +205,15 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         position: Int
     ) {
         super.onImpressedPopularPageItems(it, position)
-        CatalogAnalyticsBrandPage.sendImpressOnLihatButtonEvent(
-            "${it.name} - ${it.id} - position: $position",
-            userSessionInterface.userId
-        )
 
-        CatalogAnalyticsBrandPage.sendItemImpression(userSessionInterface.userId, position, it)
+        val uniqueTrackingKey = "${ActionKeys.IMPRESS_LIHAT_SEMUA_POPULAR_PAGE}-$position"
+        if (!trackingSet.contains(uniqueTrackingKey)) {
+            CatalogAnalyticsBrandPage.sendImpressOnLihatButtonEvent(
+                "${it.name} - ${it.id} - position: $position",
+                userSessionInterface.userId
+            )
+            CatalogAnalyticsBrandPage.sendItemImpression(userSessionInterface.userId, position, it)
+            trackingSet.add(uniqueTrackingKey)
+        }
     }
 }

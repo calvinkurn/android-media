@@ -29,13 +29,53 @@ object CatalogAnalyticsBrandLandingPage {
         list.add(itemMap)
 
         val dataLayer = DataLayer.mapOf(
-            EventKeys.KEY_EVENT, EventKeys.PRODUCT_VIEW,
+            EventKeys.KEY_EVENT, EventKeys.VIEW_ITEM_LIST,
             EventKeys.KEY_EVENT_CATEGORY, CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
             EventKeys.KEY_EVENT_ACTION, ActionKeys.IMPRESSION_ON_CATALOG,
             EventKeys.KEY_EVENT_LABEL, "brand page: $brandName - $brandId - category tab: {category-name/$categoryName} - {category-id/${product.categoryID}}",
             EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE,
             EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE,
             EventKeys.TRACKER_ID, TrackerId.IMPRESSION_ON_CATALOG_LIST_BRAND,
+            EventKeys.ITEM_LIST, "",
+            EventKeys.KEY_ECOMMERCE,
+            DataLayer.mapOf(
+                EventKeys.CURRENCY_CODE,
+                EventKeys.IDR,
+                EventKeys.IMPRESSIONS,
+                list
+            ),
+            TrackerConstant.USERID, userId
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(dataLayer)
+    }
+
+    fun sendOnTabClickEvent(
+        trackingQueue: TrackingQueue,
+        brandName: String,
+        brandId: String,
+        categoryName: String,
+        categoryId: String,
+        position: Int,
+        userId: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val itemMap = HashMap<String, Any>()
+
+        itemMap[EventKeys.CREATIVE_NAME] = categoryName
+        itemMap[EventKeys.CREATIVE_SLOT] = position
+        itemMap[EventKeys.ITEM_ID] = categoryId ?: ""
+        itemMap[EventKeys.ITEM_NAME] = "category tab"
+        list.add(itemMap)
+
+        val dataLayer = DataLayer.mapOf(
+            EventKeys.KEY_EVENT, EventKeys.SELECT_CONTENT,
+            EventKeys.KEY_EVENT_CATEGORY, CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
+            EventKeys.KEY_EVENT_ACTION, "click on category tab",
+            EventKeys.KEY_EVENT_LABEL, "ea click on category tab - brand page: $brandName - $brandId - category tab: {category-name/$categoryName} - {category-id/$categoryId}",
+            EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE,
+            EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE,
+            EventKeys.TRACKER_ID, "37374",
+            EventKeys.CATEGORY_ID, categoryId,
             EventKeys.ITEM_LIST, "",
             EventKeys.KEY_ECOMMERCE,
             DataLayer.mapOf(

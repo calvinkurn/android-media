@@ -27,8 +27,6 @@ class CatalogBrandCategoryItemVH(
         itemView.findViewById(R.id.catalog_brand_tabs)
     }
 
-    var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
-
     companion object {
         val LAYOUT = R.layout.item_catalog_brand_category_item
     }
@@ -36,9 +34,6 @@ class CatalogBrandCategoryItemVH(
     override fun bind(element: CatalogBrandCategoryDM?) {
         dataModel = element
         tabs?.tabLayout?.removeAllTabs()
-        tabSelectedListener?.let {
-            // tabs?.tabLayout?.removeOnTabSelectedListener(tabSelectedListener)
-        }
         tabs?.hasRightArrow = true
         var selectedIndex = 0
         categoryItems = arrayListOf(semua)
@@ -73,7 +68,8 @@ class CatalogBrandCategoryItemVH(
     override fun onTabSelected(tab: TabLayout.Tab?) {
         catalogLibraryListener.onBrandCategoryTabSelected(
             categoryItems[tab?.position ?: 0].categoryName ?: "",
-            categoryItems[tab?.position ?: 0].categoryId ?: ""
+            categoryItems[tab?.position ?: 0].categoryId ?: "",
+            tab?.position ?: 0
         )
     }
 

@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlin.LazyThreadSafetyMode.NONE
 
-class CatalogLihatItemVH(
+class CatalogLihatGridItemVH(
     val view: View,
     private val catalogLibraryListener:
         CatalogLibraryListener

@@ -67,6 +67,7 @@ interface CategoryKeys {
 
 interface ActionKeys {
     companion object {
+        const val IMPRESS_LIHAT_SEMUA_POPULAR_PAGE = "impress on lihat button"
         const val CLICK_CATEGORY_ON_BS = "click category on bottom sheet"
         const val IMPRESSION_ON_SPECIAL_CATEGORIES = "impression on special categories"
         const val IMPRESSION_ON_RELEVANT_CATALOGS = "impression on relevant catalogs"

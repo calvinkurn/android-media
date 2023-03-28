@@ -251,8 +251,17 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         openBottomSheet(brandIdStr)
     }
 
-    override fun onBrandCategoryTabSelected(categoryName: String, categoryId: String) {
-        super.onBrandCategoryTabSelected(categoryName, categoryId)
+    override fun onBrandCategoryTabSelected(categoryName: String, categoryId: String, position: Int) {
+        super.onBrandCategoryTabSelected(categoryName, categoryId, position)
+        CatalogAnalyticsBrandLandingPage.sendOnTabClickEvent(
+            trackingQueue,
+            brandNameStr,
+            brandIdStr,
+            categoryNameStr,
+            categoryIdStr,
+            position,
+            userSessionInterface.userId
+        )
         onChangeCategory(categoryName, categoryId, true)
     }
 

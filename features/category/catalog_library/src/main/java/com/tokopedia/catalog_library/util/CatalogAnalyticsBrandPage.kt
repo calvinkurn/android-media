@@ -12,7 +12,7 @@ object CatalogAnalyticsBrandPage {
     fun sendImpressOnLihatButtonEvent(eventLabel: String, userId: String) {
         Tracker.Builder()
             .setEvent("viewContentIris")
-            .setEventAction("impress on lihat button")
+            .setEventAction(ActionKeys.IMPRESS_LIHAT_SEMUA_POPULAR_PAGE)
             .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, "37368")

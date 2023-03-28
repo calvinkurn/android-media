@@ -38,7 +38,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
     }
 
     override fun type(data: CatalogLihatItemDM): Int {
-        return CatalogLihatItemVH.LAYOUT
+        return CatalogLihatGridItemVH.LAYOUT
     }
 
     override fun type(data: CatalogTopFiveDM): Int {
@@ -96,7 +96,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 catalogLibraryListener
             )
             CatalogLihatVH.LAYOUT -> CatalogLihatVH(view, catalogLibraryListener, recycledViewPool)
-            CatalogLihatItemVH.LAYOUT -> CatalogLihatItemVH(
+            CatalogLihatGridItemVH.LAYOUT -> CatalogLihatGridItemVH(
                 view,
                 catalogLibraryListener
             )

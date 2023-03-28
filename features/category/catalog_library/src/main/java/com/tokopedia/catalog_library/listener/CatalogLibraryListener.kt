@@ -26,7 +26,7 @@ interface CatalogLibraryListener {
         catalogId: String,
         applink: String
     ) {}
-    fun onBrandCategoryTabSelected(categoryName: String, categoryId: String) {}
+    fun onBrandCategoryTabSelected(categoryName: String, categoryId: String, position: Int) {}
     fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean = false) {}
     fun onBrandCategoryArrowClick() {}
 
