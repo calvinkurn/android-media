@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.viewholder
 import android.view.View
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -90,16 +91,18 @@ class ShipmentNewUpsellImprovementViewHolder(
                 HtmlLinkHelper(itemView.context, data.description).spannedString
             if (data.isSelected) {
                 checkoutUpsellBackgroundImage.setImageDrawable(
-                    MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.checkout_module_upsell_new_short_background
+                    VectorDrawableCompat.create(
+                        itemView.context.resources,
+                        R.drawable.checkout_module_upsell_new_short_background,
+                        itemView.context.theme
                     )
                 )
                 checkoutUpsellDescription.gone()
                 checkoutUpsellIcon.setImageDrawable(
-                    MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.checkout_module_upsell_opt_out
+                    VectorDrawableCompat.create(
+                        itemView.context.resources,
+                        R.drawable.checkout_module_upsell_opt_out,
+                        itemView.context.theme
                     )
                 )
                 checkoutUpsellCard.setOnClickListener {
@@ -108,9 +111,10 @@ class ShipmentNewUpsellImprovementViewHolder(
                 checkoutUpsellContentGroup.visible()
             } else {
                 checkoutUpsellBackgroundImage.setImageDrawable(
-                    MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.checkout_module_upsell_new_background
+                    VectorDrawableCompat.create(
+                        itemView.context.resources,
+                        R.drawable.checkout_module_upsell_new_background,
+                        itemView.context.theme
                     )
                 )
                 checkoutUpsellDescription.text = "${data.priceWording}/${data.duration}"
