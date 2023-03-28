@@ -706,13 +706,13 @@ class DigitalCartFragment :
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
                 if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
                     checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+                    checkoutBottomViewWidget.showCrossSellConsent()
                     renderConsentWidget(collectionPointMetadata)
-                    checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
                 }
             } else {
                 renderConsentJob?.cancel()
                 checkoutBottomViewWidget.isCheckoutButtonEnabled = true
-                checkoutBottomViewWidget.hideCrossSellConsentIfAvailable()
+                checkoutBottomViewWidget.hideCrossSellConsent()
             }
 
             viewModel.onSubscriptionChecked(fintechProduct, isChecked)
@@ -743,8 +743,8 @@ class DigitalCartFragment :
             renderConsentJob?.cancel()
             renderConsentJob = lifecycleScope.launch {
                 val consentParam = ConsentCollectionParam(
-                    collectionPointData.collectionPointId,
-                    collectionPointData.collectionPointVersion
+                    "",
+                    ""
                 )
                 checkoutBottomViewWidget.setUserConsentWidget(
                     viewLifecycleOwner,
