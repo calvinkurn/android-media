@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadat
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodParamOld
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponseOld
 import javax.inject.Inject
 
 private const val QUERY = """
@@ -39,14 +39,14 @@ private const val QUERY = """
 @GqlQuery("TokoFoodCheckoutGeneralOld", QUERY)
 class CheckoutGeneralTokoFoodUseCaseOld @Inject constructor(
     repository: GraphqlRepository
-) : GraphqlUseCase<CheckoutGeneralTokoFoodResponse>(repository) {
+) : GraphqlUseCase<CheckoutGeneralTokoFoodResponseOld>(repository) {
 
     init {
-        setTypeClass(CheckoutGeneralTokoFoodResponse::class.java)
+        setTypeClass(CheckoutGeneralTokoFoodResponseOld::class.java)
         setGraphqlQuery(TokoFoodCheckoutGeneralOld())
     }
 
-    suspend fun execute(params: CheckoutTokoFood): CheckoutGeneralTokoFoodResponse{
+    suspend fun execute(params: CheckoutTokoFood): CheckoutGeneralTokoFoodResponseOld {
         val param = generateParam(params)
         setRequestParams(param)
         return executeOnBackground()

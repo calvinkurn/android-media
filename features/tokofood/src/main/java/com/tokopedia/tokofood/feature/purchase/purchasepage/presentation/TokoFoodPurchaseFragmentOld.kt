@@ -51,7 +51,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivityOld
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModelOld
 import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -230,7 +230,7 @@ class TokoFoodPurchaseFragmentOld :
     }
 
     override fun onBackPressed() {
-        (activity as BaseTokofoodActivity).onBackPressed()
+        (activity as BaseTokofoodActivityOld).onBackPressed()
     }
 
     private fun initializeToolbar() {

@@ -62,7 +62,7 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivityOld
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModelOld
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -1123,7 +1123,7 @@ class TokoFoodHomeFragmentOld :
     }
 
     private fun initPerformanceMonitoring() {
-        pageLoadTimeMonitoring = (activity as? BaseTokofoodActivity)?.pageLoadTimeMonitoring
+        pageLoadTimeMonitoring = (activity as? BaseTokofoodActivityOld)?.pageLoadTimeMonitoring
         pageLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
     }
 
