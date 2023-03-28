@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment
 
+import android.content.Context
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
@@ -131,6 +132,8 @@ class AddTextFragment @Inject constructor(
         initFontColor()
         initTextChangeListener()
         initPositionButton()
+
+        setColorGradient()
     }
 
     override fun initObserver() {
@@ -235,19 +238,17 @@ class AddTextFragment @Inject constructor(
     private fun changeTextAndColor(icon: IconUnify) {
         isColorState = !isColorState
 
-        val iconRef = if (isColorState) {
+        if (isColorState) {
             viewBinding?.fontColorContainer?.show()
             viewBinding?.fontSelectionContainer?.hide()
 
-            IconUnify.TEXT
+            icon.setImage(IconUnify.TEXT)
         } else {
             viewBinding?.fontColorContainer?.hide()
             viewBinding?.fontSelectionContainer?.show()
 
-            IconUnify.ADD_CIRCLE
+            setColorGradient()
         }
-
-        icon.setImage(iconRef)
     }
 
     private fun initFontSelection() {
@@ -371,6 +372,13 @@ class AddTextFragment @Inject constructor(
     private fun implementAddTextData() {
         val bitmap = viewModel.getAddTextFilterOverlay()
         viewBinding?.overlayTest?.setImageBitmap(bitmap)
+    }
+
+    // Temporary, will be delete later when icon already on unify icon collection
+    private fun setColorGradient() {
+        viewBinding?.textColor?.setImageDrawable(
+            ContextCompat.getDrawable(requireContext(), editorR.drawable.ic_color_gradient)
+        )
     }
 
     companion object {
