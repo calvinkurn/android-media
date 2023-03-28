@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -70,13 +69,4 @@ class DynamicAttachmentTextViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_dynamic_content_code_106
     }
-}
-
-private fun LinearLayout.setContainerBackground(bg: Drawable?) {
-    val pl = paddingLeft
-    val pt = paddingTop
-    val pr = paddingRight
-    val pb = paddingBottom
-    background = bg
-    setPadding(pl, pt, pr, pb)
 }

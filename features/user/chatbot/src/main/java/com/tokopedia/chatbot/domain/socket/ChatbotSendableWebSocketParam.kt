@@ -16,6 +16,7 @@ import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyActionBu
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import org.json.JSONException
 
 object ChatbotSendableWebSocketParam {
 
@@ -391,7 +392,6 @@ object ChatbotSendableWebSocketParam {
                 ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
             )
             addProperty("dynamic_content", dynamicContent)
-            // TODO change this one
             addProperty("user_id", toUid.toLongOrZero())
         }
 
@@ -429,15 +429,11 @@ object ChatbotSendableWebSocketParam {
             bubbleUiModel.value
         )
         val dynamicButtonAction = DynamicButtonAction(bubbleContent)
-//
-//        return JsonObject().apply {
-//            add("button_action", buttonAction)
-//        }
 
-        try {
-            return Gson().toJson(dynamicButtonAction)
-        } catch (e: Exception) {
-            return ""
+        return try {
+            Gson().toJson(dynamicButtonAction)
+        } catch (e: JSONException) {
+            ""
         }
     }
 }
