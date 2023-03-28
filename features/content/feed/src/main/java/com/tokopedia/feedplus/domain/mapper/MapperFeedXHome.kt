@@ -76,7 +76,7 @@ object MapperFeedHome {
                         FeedCardCtaGradientModel(
                             color = color.color, position = color.position
                         )
-                    }.toList()
+                    }
                 )
             },
             ribbonImageUrl = card.ribbonImageUrl,
@@ -85,12 +85,12 @@ object MapperFeedHome {
             applinkProductList = card.applinkProductList,
             actionButtonLabel = card.actionButtonLabel,
             products = if (card.products.isNotEmpty())
-                card.products.map { product -> transformProduct(product) }.toList()
-            else card.tags.map { product -> transformProduct(product) }.toList(),
+                card.products.map { product -> transformProduct(product) }
+            else card.tags.map { product -> transformProduct(product) },
             totalProducts = card.totalProducts,
             campaign = transformCampaign(card.campaign),
             hasVoucher = card.hasVoucher,
-            media = card.media.map { media -> transformMedia(media) }.toList(),
+            media = card.media.map { media -> transformMedia(media) },
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
             views = transformView(card.views),
@@ -101,7 +101,7 @@ object MapperFeedHome {
             reportable = card.reportable,
             editable = card.editable,
             deletable = card.deletable,
-            detailScore = card.detailScore.map { score -> transformDetailScore(score) }.toList(),
+            detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt
@@ -122,10 +122,10 @@ object MapperFeedHome {
             campaign = transformCampaign(card.campaign),
             hasVoucher = card.hasVoucher,
             products = if (card.products.isNotEmpty())
-                card.products.map { product -> transformProduct(product) }.toList()
-            else card.tags.map { product -> transformProduct(product) }.toList(),
+                card.products.map { product -> transformProduct(product) }
+            else card.tags.map { product -> transformProduct(product) },
             totalProducts = card.totalProducts,
-            media = card.media.map { media -> transformMedia(media) }.toList(),
+            media = card.media.map { media -> transformMedia(media) },
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
             views = transformView(card.views),
@@ -136,7 +136,7 @@ object MapperFeedHome {
             reportable = card.reportable,
             editable = card.editable,
             deletable = card.deletable,
-            detailScore = card.detailScore.map { score -> transformDetailScore(score) }.toList(),
+            detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId
         )
@@ -191,12 +191,11 @@ object MapperFeedHome {
         coverUrl = media.coverUrl,
         mediaUrl = media.mediaUrl,
         applink = media.applink,
-        weblink = media.weblink,
         tagging = media.tagging.map { tag ->
             FeedMediaTagging(
-                tagIndex = tag.tagIndex, posX = tag.posX, posY = tag.posY
+                tagIndex = tag.tagIndex
             )
-        }.toList()
+        }
     )
 
     private fun transformCampaign(campaign: FeedXCampaign): FeedCardCampaignModel =
@@ -211,7 +210,7 @@ object MapperFeedHome {
                 FeedCardCampaignRestrictionModel(
                     isActive = restriction.isActive, label = restriction.label
                 )
-            }.toList()
+            }
         )
 
     private fun transformView(view: FeedXView): FeedViewModel = FeedViewModel(
@@ -246,7 +245,7 @@ object MapperFeedHome {
                     )
                 }, text = item.text
             )
-        }.toList()
+        }
     )
 
     private fun transformShare(share: FeedXShare): FeedShareModel = FeedShareModel(

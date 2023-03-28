@@ -224,8 +224,6 @@ class FeedXMedia(
     val mediaUrl: String = "",
     @SerializedName("appLink")
     val applink: String = "",
-    @SerializedName("webLink")
-    val weblink: String = "",
     @SerializedName("tagging")
     val tagging: List<FeedXMediaTagging> = emptyList(),
     @SerializedName("mods")
@@ -235,10 +233,6 @@ class FeedXMedia(
 class FeedXMediaTagging(
     @SerializedName("tagIndex")
     val tagIndex: Int = 0,
-    @SerializedName("posX")
-    val posX: Double = 0.0,
-    @SerializedName("posY")
-    val posY: Double = 0.0
 )
 
 class FeedXMediaRatio(

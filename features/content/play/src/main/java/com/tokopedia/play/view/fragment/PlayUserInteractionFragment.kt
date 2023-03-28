@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -23,10 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -569,6 +565,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     // TODO("Find better logic to improve this code")
     fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        if (view == null) return
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
@@ -1148,11 +1145,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun enterFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun doLeaveRoom() {

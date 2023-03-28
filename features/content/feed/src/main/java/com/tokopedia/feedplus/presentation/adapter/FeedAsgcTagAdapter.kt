@@ -8,7 +8,7 @@ import com.tokopedia.feedplus.databinding.ItemAsgcLabelBinding
 /**
  * Created By : Muhammad Furqan on 14/03/23
  */
-class FeedAsgcTagAdapter(private val labelList: List<String>) :
+class FeedAsgcTagAdapter(private val labelList: MutableList<String>) :
     RecyclerView.Adapter<FeedAsgcTagAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -20,6 +20,12 @@ class FeedAsgcTagAdapter(private val labelList: List<String>) :
     }
 
     override fun getItemCount(): Int = labelList.size
+
+    fun setItems(items: List<String>) {
+        labelList.clear()
+        labelList.addAll(items)
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(val binding: ItemAsgcLabelBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(label: String) {

@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
  * Created By : Muhammad Furqan on 14/03/23
  */
 class FeedAsgcTagsView(val recyclerView: RecyclerView) {
+    val adapter = FeedAsgcTagAdapter(mutableListOf())
     fun bindData(type: String, campaign: FeedCardCampaignModel) {
         val asgcList = mutableListOf<String>()
 
@@ -31,7 +32,7 @@ class FeedAsgcTagsView(val recyclerView: RecyclerView) {
         }
 
         if (asgcList.isNotEmpty()) {
-            val adapter = FeedAsgcTagAdapter(asgcList.toList())
+            adapter.setItems(asgcList)
             val layoutManager =
                 LinearLayoutManager(recyclerView.context, RecyclerView.HORIZONTAL, false)
 
