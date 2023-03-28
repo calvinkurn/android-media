@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import java.net.ConnectException
@@ -86,6 +87,10 @@ class ProductMediaRecomBottomSheetManager(
         RecomCarouselWidgetBasicListener,
         RecommendationCarouselTokonowListener {
 
+        companion object {
+            private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager.BottomSheet"
+        }
+
         private var binding by viewBinding(BsProductMediaRecomBinding::bind)
 
         init {
@@ -119,7 +124,9 @@ class ProductMediaRecomBottomSheetManager(
             recomItem: RecommendationItem,
             itemPosition: Int,
             adapterPosition: Int
-        ) {}
+        ) {
+            if (recomItem.isTopAds) onTopAdsProductCardImpressed(recomItem)
+        }
 
         override fun onRecomProductCardClicked(
             data: RecommendationCarouselData,
@@ -128,6 +135,7 @@ class ProductMediaRecomBottomSheetManager(
             itemPosition: Int,
             adapterPosition: Int
         ) {
+            if (recomItem.isTopAds) onTopAdsProductCardClicked(recomItem)
             RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -219,6 +227,29 @@ class ProductMediaRecomBottomSheetManager(
                 }
             )
             binding?.globalErrorProductMedia?.errorDescription?.text = errorMessage
+        }
+
+        private fun onTopAdsProductCardClicked(recomItem: RecommendationItem) {
+            val productId = recomItem.productId.toString()
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitClickUrl(
+                TOPADS_CLASS_NAME,
+                recomItem.clickUrl,
+                productId,
+                recomItem.name,
+                recomItem.imageUrl
+            )
+        }
+
+        private fun onTopAdsProductCardImpressed(recomItem: RecommendationItem) {
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                TOPADS_CLASS_NAME,
+                recomItem.trackerImageUrl,
+                recomItem.productId.toString(),
+                recomItem.name,
+                recomItem.imageUrl
+            )
         }
     }
 }
