@@ -204,7 +204,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
+                binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
             } else {
                 val paddingBottom = binding.root.paddingBottom
                 binding.root.setPadding(0, 0, 0, 16.toPx())
