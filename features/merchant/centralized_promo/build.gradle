@@ -33,7 +33,6 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     //features
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -45,29 +44,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.empty_state
-    implementation rootProject.ext.unifyDependencies.calendar
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.sortFilter
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation projectOrAar(rootProject.ext.libraries.interceptors)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -77,7 +64,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -85,8 +71,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.playServicesDependencies.playServiceWearable
-    implementation rootProject.ext.miscDependencies.wearRemoteInteraction
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -96,29 +80,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
-        exclude group: "com.google.android.gms", module: "play-services-plus"
-        exclude group: "com.google.android.gms", module: "play-services-location"
-        exclude group: "com.google.android.gms", module: "play-services-maps"
-        exclude group: "com.google.android.gms", module: "play-services-auth"
-        exclude group: "com.google.android.gms", module: "play-services-places"
-    }
-    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
-    androidTestImplementation rootProject.ext.miscDependencies.rxJava
-    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -140,4 +102,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
-apply from: '../../../compile-instrument-test.gradle'
