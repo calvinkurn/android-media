@@ -103,12 +103,10 @@ object DeepLinkMapperProductManage {
     fun getStockReminderInternalAppLink(deepLink: String): String {
         val segments = Uri.parse(deepLink).pathSegments
         val productId = segments[Int.ZERO]
-        val isVariant = segments[2]
-        val productName = segments[Int.ONE]
+        val isVariant = segments[Int.ONE]
         return UriUtil.buildUri(
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productId.toString(),
-            productName,
             isVariant
         )
     }
