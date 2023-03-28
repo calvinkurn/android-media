@@ -17,12 +17,12 @@ object ShipmentRollenceUtil {
     }
 
     @JvmStatic
-    fun getDefaultRollenceValue(): String {
+    private fun getDefaultRollenceValue(): String {
         return RollenceKey.CONTROL_VARIANT
     }
 
     @JvmStatic
-    fun getVariantRollenceValue(): String {
+    private fun getVariantRollenceValue(): String {
         return RollenceKey.EXPERIMENT_VARIANT
     }
 }
