@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.ItemSummaryTransactionCrossSellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
 class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBinding, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(binding.root) {
@@ -40,14 +39,14 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
         } else {
             binding.llCrossSell.removeAllViews()
             shipmentCost.listCrossSell.forEach { crossSell ->
-                val itemCrossSellView = layoutInflater.inflate(R.layout.item_summary_transaction_cross_sell, null, false) as RelativeLayout
+                val itemCrossSellView = ItemSummaryTransactionCrossSellBinding.inflate(layoutInflater, null, false)
 
-                val crossSellItemLabel = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_label)
+                val crossSellItemLabel = itemCrossSellView.tvCrossSellLabel
                 crossSellItemLabel.text = crossSell.crossSellModel.orderSummary.title
 
-                val crossSellItemPrice = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_price)
+                val crossSellItemPrice = itemCrossSellView.tvCrossSellPrice
                 crossSellItemPrice.text = getPriceFormat(crossSellItemLabel, crossSellItemPrice, crossSell.crossSellModel.price)
-                binding.llCrossSell.addView(itemCrossSellView)
+                binding.llCrossSell.addView(itemCrossSellView.root)
             }
             binding.llCrossSell.visibility = View.VISIBLE
         }

@@ -259,7 +259,7 @@ class ShipmentCartItemTopViewHolder(
                 ) &&
                 shipmentCartItemModel.firstProductErrorIndex > -1
             ) {
-                val errorMessage = shipmentCartItemModel.unblockingErrorMessage
+                val errorMessage = shipmentCartItemModel.unblockingErrorMessage ?: ""
                 binding.containerWarningAndError.root.visibility = View.VISIBLE
                 tickerError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
                 tickerError.setDescriptionClickEvent(object : TickerCallback {
@@ -300,7 +300,7 @@ class ShipmentCartItemTopViewHolder(
 
         fun onViewFreeShippingPlusBadge()
 
-        fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?)
+        fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String)
 
         fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel)
 

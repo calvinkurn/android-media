@@ -1,48 +1,44 @@
 package com.tokopedia.checkout.view
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
-import android.view.View
+import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.LayoutBottomsheetTradeInInfoBinding
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifyprinciples.Typography
 
 const val TRADE_IN_NORMAL_IMAGE_URL = TokopediaImageUrl.TRADE_IN_NORMAL_IMAGE_URL
 const val TRADE_IN_DROP_OFF_IMAGE_URL = TokopediaImageUrl.TRADE_IN_DROP_OFF_IMAGE_URL
 
 fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Context) {
     BottomSheetUnify().apply {
-        val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
-        setupContent(view, context)
+        val binding = LayoutBottomsheetTradeInInfoBinding.inflate(LayoutInflater.from(context), null, false)
+        setupContent(binding, context)
 
         showKnob = true
         showCloseIcon = false
         showHeader = false
         clearContentPadding = true
 
-        setChild(view)
+        setChild(binding.root)
         show(fragmentManager, "Trade In Info")
     }
 }
 
-private fun setupContent(view: View, context: Context) {
-    val tabTradeInInfo = view.findViewById<TabsUnify>(R.id.tab_trade_in_info)
+private fun setupContent(binding: LayoutBottomsheetTradeInInfoBinding, context: Context) {
+    val tabTradeInInfo = binding.tabTradeInInfo
     if (tabTradeInInfo.getUnifyTabLayout().tabCount == 0) {
         tabTradeInInfo.addNewTab(context.getString(R.string.title_trade_in_default_address))
         tabTradeInInfo.addNewTab(context.getString(R.string.title_trade_in_drop_off_address))
     }
 
-    val textTradeInInfo = view.findViewById<Typography>(R.id.text_trade_in_info)
-    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
-    val imgTradeInInfo = view.findViewById<ImageUnify>(R.id.img_trade_in_info)
+    binding.textTradeInInfo.text = MethodChecker.fromHtml(binding.root.resources.getString(R.string.checkout_trade_in_default_address_info_description))
+    val imgTradeInInfo = binding.imgTradeInInfo
     imgTradeInInfo.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
     tabTradeInInfo.tabLayout.getTabAt(0)?.select()
 
@@ -51,11 +47,13 @@ private fun setupContent(view: View, context: Context) {
             when (tab.position) {
                 0 -> {
                     imgTradeInInfo.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
-                    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
+                    binding.textTradeInInfo.text =
+                        MethodChecker.fromHtml(binding.root.resources.getString(R.string.checkout_trade_in_default_address_info_description))
                 }
                 1 -> {
                     imgTradeInInfo.loadImage(TRADE_IN_DROP_OFF_IMAGE_URL)
-                    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_drop_off_address_info_description))
+                    binding.textTradeInInfo.text =
+                        MethodChecker.fromHtml(binding.root.resources.getString(R.string.checkout_trade_in_drop_off_address_info_description))
                 }
             }
         }

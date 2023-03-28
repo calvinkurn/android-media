@@ -20,10 +20,10 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -139,26 +139,18 @@ class ShipmentCartItemViewHolder(
     private fun createProductInfoTextWithIcon(cartItemModel: CartItemModel): LinearLayout {
         val propertyLayoutWithIcon = LinearLayout(itemView.context)
         propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
-        val propertiesBinding = LayoutInflater.from(itemView.context)
-            .inflate(
-                com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,
-                null,
-                false
-            )
-        val propertyIcon =
-            propertiesBinding.findViewById<ImageUnify>(com.tokopedia.purchase_platform.common.R.id.pp_iv_product_info_add_on)
-        if (propertyIcon != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
+        ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), null, false)
+        val propertiesBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), null, false)
+        if (!TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
-                propertyIcon,
+                propertiesBinding.ppIvProductInfoAddOn,
                 cartItemModel.ethicalDrugDataModel.iconUrl
             )
         }
-        val propertyText =
-            propertiesBinding.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on)
-        if (propertyText != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
-            propertyText.text = cartItemModel.ethicalDrugDataModel.text
+        if (!TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
+            propertiesBinding.ppLabelProductInfoAddOn.text = cartItemModel.ethicalDrugDataModel.text
         }
-        propertyLayoutWithIcon.addView(propertiesBinding)
+        propertyLayoutWithIcon.addView(propertiesBinding.root)
         return propertyLayoutWithIcon
     }
 

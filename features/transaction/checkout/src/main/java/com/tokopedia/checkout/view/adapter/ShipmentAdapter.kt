@@ -12,6 +12,8 @@ import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
 import com.tokopedia.checkout.databinding.ItemShipmentButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemShipmentTickerErrorBinding
 import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
+import com.tokopedia.checkout.databinding.ItemUpsellBinding
+import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
@@ -60,7 +62,6 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPre
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder.Companion.ITEM_VIEW_UPLOAD
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
@@ -220,7 +221,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
-                return ShipmentCostViewHolder(view, layoutInflater)
+                return ShipmentCostViewHolder(ViewItemShipmentCostDetailsBinding.bind(view), layoutInflater)
             }
 
             ITEM_VIEW_PROMO_CHECKOUT -> {
@@ -272,7 +273,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentUpsellViewHolder(view, shipmentAdapterActionListener)
+                return ShipmentUpsellViewHolder(ItemUpsellBinding.bind(view), shipmentAdapterActionListener)
             }
 
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
@@ -1186,10 +1187,9 @@ class ShipmentAdapter @Inject constructor(
         return Pair(index, shipmentDataList[index] as CartItemModel)
     }
 
-
     private fun updateCartItems(shipmentCartItemModel: ShipmentCartItemModel) {
         val (firstItemPosition, _) = getFirstCartItemByCartString(shipmentCartItemModel.cartString)
-        val (expandPosition , expandData) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
+        val (expandPosition, expandData) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
 
         if (expandPosition != RecyclerView.NO_POSITION && expandData != null) {
             if (expandData.isExpanded) {
@@ -1261,7 +1261,7 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onViewFreeShippingPlusBadge()
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?) {
+    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String) {
         shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
     }
 
