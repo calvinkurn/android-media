@@ -5,6 +5,7 @@
     android:id="@+id/ll_item_product_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <View
@@ -96,10 +97,10 @@
         android:id="@+id/ll_frame_item_product_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rl_product_info"
@@ -249,10 +250,10 @@
             app:tickerType="warning" />
 
         <RelativeLayout
-            android:layout_marginBottom="8dp"
             android:id="@+id/rlayout_purchase_protection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkbox_ppp"
@@ -351,12 +352,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <include
+                android:id="@+id/item_shipment_gifting_addon_product_level"
                 layout="@layout/item_shipment_gifting_addon_product_level"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
         </LinearLayout>
 

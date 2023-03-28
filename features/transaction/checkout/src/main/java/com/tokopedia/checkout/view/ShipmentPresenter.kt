@@ -3324,7 +3324,6 @@ class ShipmentPresenter @Inject constructor(
                                         break
                                     }
                                     if (productsInfo?.products != null && productsInfo.shopId != null &&
-
                                         productsInfo.shopId!!.isNotBlankOrZero() &&
                                         shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
                                     ) {
@@ -3426,7 +3425,10 @@ class ShipmentPresenter @Inject constructor(
                                     productErrorCount
                                 )
                             shipmentCartItemModel.spId = 0
+                            view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                             view?.resetCourier(shipmentCartItemModel)
+                        } else {
+                            view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                         }
                     }
                 }
