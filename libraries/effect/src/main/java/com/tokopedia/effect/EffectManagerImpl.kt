@@ -12,6 +12,7 @@ import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode
 import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode.BEF_RESULT_SUC
 import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.effect.model.FaceFilter
 import com.tokopedia.effect.util.ImageUtil
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.effect.util.asset.AssetHelper
@@ -149,17 +150,20 @@ class EffectManagerImpl @Inject constructor(
         return OpenGLUtils.getExternalOESTextureID()
     }
 
-    override fun setPreset(presetId: String, value: Float) {
+    override fun setPreset(presetId: String, value: Float): Boolean {
         val key = "${assetHelper.presetDir}/$presetId"
 
-        mRenderManager?.setComposerNodes(arrayOf(key))
-        mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value)
-        mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value)
+        if(!mSavedComposerNodes.contains(presetId)) {
+            mRenderManager?.appendComposerNodes(arrayOf(key))
+            mSavedComposerNodes.add(key)
+        }
 
-        mSavedComposerNodes.add(key)
+        return mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value) == BEF_RESULT_SUC &&
+        mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value) == BEF_RESULT_SUC
     }
 
     override fun removePreset() {
+        /** TODO: remove preset node only */
         mRenderManager?.removeComposerNodes(mSavedComposerNodes.toTypedArray())
     }
 
@@ -169,7 +173,12 @@ class EffectManagerImpl @Inject constructor(
             mSavedComposerNodes.add(assetHelper.customFaceDir)
         }
 
-        return mRenderManager?.updateComposerNodes(assetHelper.customFaceDir, "whiten", value) == BEF_RESULT_SUC
+        return mRenderManager?.updateComposerNodes(assetHelper.customFaceDir, FaceFilter.getById(faceFilterId).key, value) == BEF_RESULT_SUC
+    }
+
+    override fun removeFaceFilter() {
+        mRenderManager?.removeComposerNodes(arrayOf(assetHelper.customFaceDir))
+        mSavedComposerNodes.remove(assetHelper.customFaceDir)
     }
 
     companion object {

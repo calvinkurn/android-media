@@ -50,9 +50,9 @@ data class FaceFilterUiModel(
     enum class Type(val id: String, val iconUnifyId: Int) {
         Unknown("", UNKNOWN_ICON_UNIFY),
         None("none", IconUnify.BLOCK),
-        Blur("blur", IconUnify.BLUR),
-        Sharpen("sharpen", IconUnify.SHARPEN),
-        Clarity("clarity", IconUnify.CLARITY);
+        Blur("buffing", IconUnify.BLUR),
+        Sharpen("shapings", IconUnify.SHARPEN),
+        Clarity("toning", IconUnify.CLARITY);
 
         companion object {
             fun getIconUnifyById(id: String): Int {

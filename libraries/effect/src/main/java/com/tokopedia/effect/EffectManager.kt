@@ -30,9 +30,11 @@ interface EffectManager {
 
     fun getExternalOESTextureID(): Int
 
-    fun setPreset(presetId: String, value: Float)
+    fun setPreset(presetId: String, value: Float): Boolean
 
     fun removePreset()
 
     fun setFaceFilter(faceFilterId: String, value: Float): Boolean
+
+    fun removeFaceFilter()
 }
