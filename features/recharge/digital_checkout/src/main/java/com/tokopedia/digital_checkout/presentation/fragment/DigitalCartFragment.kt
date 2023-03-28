@@ -743,8 +743,8 @@ class DigitalCartFragment :
             renderConsentJob?.cancel()
             renderConsentJob = lifecycleScope.launch {
                 val consentParam = ConsentCollectionParam(
-                    "",
-                    ""
+                    collectionPointData.collectionPointId,
+                    collectionPointData.collectionPointVersion
                 )
                 checkoutBottomViewWidget.setUserConsentWidget(
                     viewLifecycleOwner,
