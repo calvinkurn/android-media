@@ -1,34 +1,39 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
-import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.ChipGetInboxDetail
 import com.tokopedia.contactus.inboxtickets.data.model.ChipInboxDetails
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.SubmitRatingParam
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
-import javax.inject.Named
 
-const val COMMENT_ID = "commentID"
-const val CSAT_RATING = "rating"
-const val REASON = "reason"
+const val SUBMIT_RATING_QUERY =
+    """mutation SubmitRatingCSAT(${'$'}commentID: String!, ${'$'}rating: Int!, ${'$'}reason: String!) {
+   chipSubmitRatingCSAT(commentID: ${'$'}commentID, rating: ${'$'}rating, reason: ${'$'}reason) {
+     data {
+       isSuccess
+     }
+     messageError
+   }
+ }"""
 
 class SubmitRatingUseCase @Inject constructor(
-    @Named("submit_rating") val submitRatingQuery: String,
-    private val repository: ContactUsRepository
-) {
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<SubmitRatingParam, ChipInboxDetails>(dispatchers.io) {
 
-    fun createRequestParams(commentID: String, rating: Int, reason: String): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(COMMENT_ID, commentID)
-        requestParams.putInt(CSAT_RATING, rating)
-        requestParams.putString(REASON, reason)
-        return requestParams
+    fun createRequestParams(commentID: String, rating: Int, reason: String): SubmitRatingParam {
+        return SubmitRatingParam(commentID, rating, reason)
     }
 
-    suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail {
-        return repository.getGQLData(
-            submitRatingQuery,
-            ChipInboxDetails::class.java,
-            requestParams.parameters
-        ).getInboxDetail()
+    override fun graphqlQuery(): String {
+        return SUBMIT_RATING_QUERY
+    }
+
+    override suspend fun execute(params: SubmitRatingParam): ChipInboxDetails {
+        return repository.request(graphqlQuery(), params)
     }
 }

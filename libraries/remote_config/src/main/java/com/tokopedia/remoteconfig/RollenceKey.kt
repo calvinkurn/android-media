@@ -75,6 +75,9 @@ object RollenceKey {
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
 
+    // Fulfillment
+    const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
+
     //DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }
