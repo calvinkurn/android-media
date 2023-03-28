@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.utils.RemoteConfig
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.WidgetReviewGalleryVideoThumbnailBinding
@@ -101,9 +102,12 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         ivReviewGalleryVideoThumbnail.loadImage(videoUrl) {
             listener(onSuccess = { _, _ ->
                 onReviewVideoPlayerIsPaused()
-            }, onError = {
-                onReviewVideoPlayerError("")
-            })
+            }, onError = { throwable ->
+                    val errorCode = throwable?.let {
+                        ErrorHandler.getErrorMessagePair(context, it, ErrorHandler.Builder()).second
+                    }.orEmpty()
+                    onReviewVideoPlayerError(errorCode)
+                })
         }
     }
 
