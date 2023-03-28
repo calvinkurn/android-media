@@ -59,6 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:visibility="gone"
         app:labelTitle="@string/feed_live_label"
         app:labelType="highlight_dark_red"
         app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
@@ -66,7 +67,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/tv_feed_owner_name"
-        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile" />
+        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_feed_follow"
@@ -75,6 +77,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="16dp"
         android:text="@string/feed_component_follow"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -82,8 +85,9 @@
         app:layout_constraintStart_toEndOf="@id/label_feed_live"
         app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile"
         app:layout_goneMarginStart="4dp"
+        app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="text" />
+        app:unifyButtonVariant="ghost"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

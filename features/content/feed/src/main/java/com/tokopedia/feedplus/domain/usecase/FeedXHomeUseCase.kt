@@ -119,11 +119,8 @@ class FeedXHomeUseCase @Inject constructor(
                 coverURL
                 mediaURL
                 appLink
-                webLink
                 tagging {
                   tagIndex
-                  posX
-                  posY
                 }
               }
               tags {
@@ -191,11 +188,8 @@ class FeedXHomeUseCase @Inject constructor(
                 coverURL
                 mediaURL
                 appLink
-                webLink
                 tagging {
                   tagIndex
-                  posX
-                  posY
                 }
               }
               tags {
@@ -318,11 +312,8 @@ class FeedXHomeUseCase @Inject constructor(
                 coverURL
                 mediaURL
                 appLink
-                webLink
                 tagging {
                   tagIndex
-                  posX
-                  posY
                 }
               }
             }

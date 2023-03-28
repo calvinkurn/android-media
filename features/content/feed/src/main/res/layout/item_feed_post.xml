@@ -21,21 +21,25 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:indicator_type="CIRCLE"
-        app:layout_constraintBottom_toTopOf="@id/layout_author_info"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <include
         android:id="@+id/product_tag_view"
         layout="@layout/feed_product_tag_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/indicator_feed_content"
         tools:visibility="visible" />
-
 
     <include
         android:id="@+id/layout_author_info"
@@ -43,34 +47,59 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
-        app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/post_like_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/layout_author_info"
         app:typographyType="paragraph_2"
         tools:text="Post Caption" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/like_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_feed_asgc_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/feed_campaign_ribbon"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption" />
+
+    <include
+        android:id="@+id/feed_campaign_ribbon"
+        layout="@layout/layout_feed_campaign_ribbon"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <include
+        android:id="@+id/post_like_button"
+        layout="@layout/view_like_icon_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
@@ -137,6 +166,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="24dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_disable_clear_mode"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
@@ -159,5 +189,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
         tools:visibility="gone" />
+
+
+    <include
+        android:id="@+id/view_like"
+        layout="@layout/view_like"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

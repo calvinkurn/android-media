@@ -6,20 +6,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FollowShopModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
+import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,11 +39,12 @@ import javax.inject.Inject
 class FeedPostViewModel @Inject constructor(
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val likeContentUseCase: SubmitLikeContentUseCase,
     private val userSession: UserSessionInterface,
+    private val shopFollowUseCase: ShopFollowUseCase,
+    private val userFollowUseCase: ProfileFollowUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
-
-    var source: String = ""
 
     private val _feedHome = MutableLiveData<Result<FeedModel>>()
     val feedHome: LiveData<Result<FeedModel>>
@@ -42,7 +54,18 @@ class FeedPostViewModel @Inject constructor(
     val atcRespData: LiveData<FeedResult<Boolean>>
         get() = _atcResp
 
+    private val _followResult = MutableLiveData<Result<String>>()
+    val followResult: LiveData<Result<String>>
+        get() = _followResult
+
+    private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
+    val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
+        get() = _likeKolResp
+
+    private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
+
     fun fetchFeedPosts(
+        source: String,
         isNewData: Boolean = false,
         postId: String? = null,
     ) {
@@ -61,7 +84,10 @@ class FeedPostViewModel @Inject constructor(
             }
 
             val feedPostsDeferred = async {
-                getFeedPosts(cursor = _feedHome.value?.cursor.orEmpty())
+                getFeedPosts(
+                    source = source,
+                    cursor = _feedHome.value?.cursor.orEmpty()
+                )
             }
 
             _feedHome.value = try {
@@ -101,7 +127,7 @@ class FeedPostViewModel @Inject constructor(
     }
 
     private suspend fun getFeedPosts(
-        source: String = this.source,
+        source: String,
         cursor: String = "",
     ): FeedModel {
         return feedXHomeUseCase(
@@ -112,11 +138,95 @@ class FeedPostViewModel @Inject constructor(
         )
     }
 
+    fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
+        _suspendedFollowData.value =
+            FollowShopModel(
+                id = id,
+                encryptedId = encryptedId,
+                success = false,
+                isFollowing = false,
+                isShop = isShop
+            )
+    }
+
+    fun processSuspendedFollow() {
+        _suspendedFollowData.value?.let {
+            doFollow(it.id, it.encryptedId, it.isShop)
+        }
+    }
+
+    fun doFollow(id: String, encryptedId: String, isShop: Boolean) {
+        viewModelScope.launch {
+            try {
+                val response = withContext(dispatchers.io) {
+                    if (isShop) {
+                        val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
+                        FollowShopModel(
+                            id = id,
+                            encryptedId = encryptedId,
+                            success = response.followShop.success,
+                            isFollowing = response.followShop.isFollowing,
+                            isShop = true
+                        )
+                    } else {
+                        val response = userFollowUseCase.executeOnBackground(encryptedId)
+                        if (response.profileFollowers.errorCode.isNotEmpty()) {
+                            throw MessageErrorException(
+                                response.profileFollowers.messages.firstOrNull() ?: ""
+                            )
+                        }
+                        FollowShopModel(
+                            id = id,
+                            encryptedId = encryptedId,
+                            success = true,
+                            isFollowing = true,
+                            isShop = false
+                        )
+                    }
+                }
+
+                updateFollowStatus(response.id, response.isFollowing)
+                _followResult.value = Success(if (isShop) SHOP else USER)
+            } catch (it: Throwable) {
+                _followResult.value = Fail(it)
+            }
+        }
+    }
+
+    fun likeContent(contentId: String, action: FeedLikeAction, rowNumber: Int) {
+        _likeKolResp.value = FeedResult.Loading
+        viewModelScope.launch {
+            try {
+                likeContentUseCase.setRequestParams(
+                    SubmitLikeContentUseCase.createParam(contentId, action.value)
+                )
+                val response = likeContentUseCase.executeOnBackground()
+
+                if (response.doLikeKolPost.error.isNotEmpty()) {
+                    throw MessageErrorException(response.doLikeKolPost.error)
+                }
+                if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
+                    throw CustomUiMessageThrowable(R.string.feed_like_error_message)
+                }
+                val mappedResponse = mapLikeResponse(action, rowNumber)
+                _likeKolResp.value = FeedResult.Success(mappedResponse)
+            } catch (it: Throwable) {
+                _likeKolResp.value = FeedResult.Failure(it)
+            }
+        }
+    }
+
+    private fun mapLikeResponse(likeAction: FeedLikeAction, rowNumber: Int) =
+        LikeFeedDataModel(
+            rowNumber = rowNumber,
+            action = likeAction
+        )
+
     private suspend fun addToCartImplementation(
         productId: String,
         productName: String,
         price: String,
-        shopId: String,
+        shopId: String
     ): Boolean {
         val params = AddToCartUseCase.getMinimumParams(
             productId,
@@ -131,8 +241,40 @@ class FeedPostViewModel @Inject constructor(
             if (response.isDataError()) throw MessageErrorException(response.getAtcErrorMessage())
             return !response.isStatusError()
         } catch (e: Throwable) {
-            if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
-            else throw e
+            if (e is ResponseErrorException) {
+                throw MessageErrorException(e.localizedMessage)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private fun updateFollowStatus(id: String, isFollowing: Boolean) {
+        val currentValue = feedHome.value
+
+        currentValue?.let {
+            when (it) {
+                is Success -> {
+                    _feedHome.value = Success(it.data.copy(
+                        items = it.data.items.map { item ->
+                            when {
+                                item is FeedCardImageContentModel && item.author.id == id -> item.copy(
+                                    followers = item.followers.copy(
+                                        isFollowed = isFollowing
+                                    )
+                                )
+                                item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
+                                    followers = item.followers.copy(
+                                        isFollowed = isFollowing
+                                    )
+                                )
+                                else -> item
+                            }
+                        }
+                    ))
+                }
+                else -> {}
+            }
         }
     }
 
@@ -147,5 +289,10 @@ class FeedPostViewModel @Inject constructor(
             is Success -> data.items
             else -> emptyList()
         }
+
+    companion object {
+        private const val SHOP = "toko"
+        private const val USER = "akun"
+    }
 
 }

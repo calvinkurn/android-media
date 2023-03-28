@@ -9,7 +9,6 @@ data class FeedMediaModel(
     val coverUrl: String,
     val mediaUrl: String,
     val applink: String,
-    val weblink: String,
     val tagging: List<FeedMediaTagging>
 )
 
@@ -20,6 +19,4 @@ data class FeedMediaRatioModel(
 
 data class FeedMediaTagging(
     val tagIndex: Int,
-    val posX: Double,
-    val posY: Double
 )

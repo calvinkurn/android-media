@@ -10,5 +10,5 @@ enum class FeedXHeaderRequestFields(val value: String) {
     CREATION("creation"),
     TAB("tab"),
     LIVE("live"),
-    USER("user")
+    USER("user-profile")
 }
