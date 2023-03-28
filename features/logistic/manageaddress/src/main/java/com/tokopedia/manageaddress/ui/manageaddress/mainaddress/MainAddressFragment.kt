@@ -10,10 +10,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -63,6 +65,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -966,8 +970,33 @@ class MainAddressFragment :
         }
     }
 
+    private fun generateUserConsentWidget(): UserConsentWidget? {
+        return try {
+            val userConsent = UserConsentWidget(requireContext())
+            userConsent.load(
+                viewLifecycleOwner, this, ConsentCollectionParam(
+                    collectionId = viewModel.deleteCollectionId
+                )
+            )
+            userConsent
+        } catch (e: Exception) {
+            logToCrashlytics(e)
+            null
+        }
+    }
+
+    private fun logToCrashlytics(exception: Exception) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } else {
+            exception.printStackTrace()
+        }
+    }
+
     private fun showDeleteAddressDialog(addressId: String) {
         context?.apply {
+            val userConsent = generateUserConsentWidget()
+
             DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.title_delete_address_dialog))
                 setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
@@ -977,7 +1006,10 @@ class MainAddressFragment :
                 }
                 setPrimaryCTAClickListener {
                     dismiss()
-                    viewModel.deletePeopleAddress(addressId)
+                    viewModel.deletePeopleAddress(
+                        id = addressId,
+                        consentJson = userConsent?.generatePayloadData().orEmpty()
+                    )
                     isFromDeleteAddress = true
                 }
             }.show()

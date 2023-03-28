@@ -83,4 +83,10 @@ public class AddressConstants {
     public static final String PARAM_DISTRICT_ID = "districtId";
     public static final String PARAM_CURRENT_LOC = "currentLoc";
     public static final String PARAM_SOURCE = "source" ;
+
+    // User Consent
+    public static final String ADD_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625";
+    public static final String ADD_ADDRESS_COLLECTION_ID_PRODUCTION = ""; // To do, still waiting for collection id
+    public static final String EDIT_ADDRESS_COLLECTION_ID_STAGING = "e5a06379-2564-4357-8380-d2bf9e694340";
+    public static final String EDIT_ADDRESS_COLLECTION_ID_PRODUCTION = ""; // To do, still waiting for collection id
 }

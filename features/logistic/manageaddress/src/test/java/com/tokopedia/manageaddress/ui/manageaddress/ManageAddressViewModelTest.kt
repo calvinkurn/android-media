@@ -1,5 +1,7 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -39,6 +41,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +56,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -91,11 +96,15 @@ class ManageAddressViewModelTest {
         mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
+    private val context = mockk<Context>(relaxed = true)
+    private val sharedPrefs = mockk<SharedPreferences>(relaxed = true)
+
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
+        stubSharePrefs()
         manageAddressViewModel = ManageAddressViewModel(
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
@@ -118,6 +127,15 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.validateShareAddressState.observeForever(
             observerValidateShareAddressState
         )
+    }
+
+    @After
+    fun tearDown() {
+        TokopediaUrl.deleteInstance()
+    }
+
+    private fun stubSharePrefs() {
+        coEvery { context.getSharedPreferences(any(), any()) } returns sharedPrefs
     }
 
     @Test
@@ -238,14 +256,14 @@ class ManageAddressViewModelTest {
         )
 
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
     }
 
     @Test
     fun `Delete Address Fail`() {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } throws mockThrowable
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
@@ -485,7 +503,7 @@ class ManageAddressViewModelTest {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
 
         // When
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
 
         // Then
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
@@ -738,5 +756,35 @@ class ManageAddressViewModelTest {
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithAppAndWebUrl?.id }
         assert(tickerUiModel?.linkUrl == expected)
+    }
+
+    @Test
+    fun `verify get delete collection id staging is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
+
+        // When
+        TokopediaUrl.init(context)
+
+        // Then
+        assertEquals(
+            manageAddressViewModel.deleteCollectionId,
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_STAGING
+        )
+    }
+
+    @Test
+    fun `verify get delete collection id production is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
+
+        // When
+        TokopediaUrl.init(context)
+
+        // Then
+        assertEquals(
+            manageAddressViewModel.deleteCollectionId,
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_PRODUCTION
+        )
     }
 }

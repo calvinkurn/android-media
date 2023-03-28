@@ -1,5 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
@@ -13,6 +15,9 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,6 +34,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert
 import org.junit.Before
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,10 +60,26 @@ class AddressFormViewModelTest {
     private lateinit var addressFormViewModel: AddressFormViewModel
 
     private val defaultThrowable = Throwable("test error")
+    private val context = mockk<Context>(relaxed = true)
+    private val sharedPrefs = mockk<SharedPreferences>(relaxed = true)
 
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
+        stubSharePrefs()
+        initObserver()
+    }
+
+    @After
+    fun tearDown() {
+        TokopediaUrl.deleteInstance()
+    }
+
+    private fun stubSharePrefs() {
+        coEvery { context.getSharedPreferences(any(), any()) } returns sharedPrefs
+    }
+
+    private fun initObserver() {
         addressFormViewModel = AddressFormViewModel(repo)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
@@ -98,11 +120,11 @@ class AddressFormViewModelTest {
         )
 
         // Given
-        coEvery { repo.saveAddress(any(), any()) } returns fakeResponse
+        coEvery { repo.saveAddress(any(), any(), any()) } returns fakeResponse
 
         // When
         addressFormViewModel.saveDataModel = saveAddressDataModel
-        addressFormViewModel.saveAddress()
+        addressFormViewModel.saveAddress("")
 
         // Then
         verify { saveAddressObserver.onChanged(match { it is Success }) }
@@ -110,16 +132,16 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Save Address Data Fail`() {
-        coEvery { repo.saveAddress(any(), any()) } throws defaultThrowable
+        coEvery { repo.saveAddress(any(), any(), any()) } throws defaultThrowable
         addressFormViewModel.saveDataModel = saveAddressDataModel
-        addressFormViewModel.saveAddress()
+        addressFormViewModel.saveAddress("")
         verify { saveAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `verify when call save address but save address model is null`() {
         // When
-        addressFormViewModel.saveAddress()
+        addressFormViewModel.saveAddress("")
 
         // Then
         Assert.assertNull(addressFormViewModel.saveDataModel)
@@ -1143,6 +1165,71 @@ class AddressFormViewModelTest {
                 address1 = address,
                 address2 = "$latitude,$longitude"
             )
+        )
+    }
+
+    @Test
+    fun `verify get collection id add new address staging is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
+
+        // When
+        addressFormViewModel.isEdit = false
+        TokopediaUrl.init(context)
+
+        // Then
+        Assert.assertEquals(
+            addressFormViewModel.getCollectionId(),
+            AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
+        )
+    }
+
+    @Test
+    fun `verify get collection id add new address production is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
+
+        // When
+        addressFormViewModel.isEdit = false
+        TokopediaUrl.init(context)
+
+        // Then
+        Assert.assertEquals(
+            addressFormViewModel.getCollectionId(),
+            AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
+        )
+    }
+
+
+    @Test
+    fun `verify get collection id edit address staging is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
+
+        // When
+        addressFormViewModel.isEdit = true
+        TokopediaUrl.init(context)
+
+        // Then
+        Assert.assertEquals(
+            addressFormViewModel.getCollectionId(),
+            AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
+        )
+    }
+
+    @Test
+    fun `verify get collection id edit address production is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
+
+        // When
+        addressFormViewModel.isEdit = true
+        TokopediaUrl.init(context)
+
+        // Then
+        Assert.assertEquals(
+            addressFormViewModel.getCollectionId(),
+            AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
         )
     }
 }

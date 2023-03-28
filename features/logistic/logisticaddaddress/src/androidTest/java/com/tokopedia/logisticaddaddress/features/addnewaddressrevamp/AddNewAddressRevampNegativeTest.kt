@@ -43,6 +43,7 @@ class AddNewAddressRevampNegativeTest {
         AddAddressInterceptor.setupGraphqlMockResponse(context)
         logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
         logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_add)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -58,8 +59,8 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
-            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
+            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
             searchKotaKecamatan(KEYWORD)
@@ -67,6 +68,7 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -79,8 +81,8 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
-            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
+            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
             searchKotaKecamatan(KEYWORD)
@@ -88,6 +90,7 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -100,8 +103,8 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
-            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
+            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
             searchKotaKecamatan(KEYWORD)
@@ -109,6 +112,7 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }

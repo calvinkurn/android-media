@@ -38,6 +38,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -119,6 +121,13 @@ class ManageAddressViewModel @Inject constructor(
     val tickerState: LiveData<Result<TickerModel>>
         get() = _tickerState
 
+    val deleteCollectionId: String
+        get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_STAGING
+        } else {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_PRODUCTION
+        }
+
     private val compositeSubscription = CompositeSubscription()
 
     fun setupDataFromArgument(bundle: Bundle?) {
@@ -194,11 +203,11 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String) {
+    fun deletePeopleAddress(id: String, consentJson: String) {
         viewModelScope.launchCatchError(
             block = {
                 val resultDelete =
-                    deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow))
+                    deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow, consentJson))
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                     resultDelete.response.data.success == STATUS_SUCCESS
                 ) {

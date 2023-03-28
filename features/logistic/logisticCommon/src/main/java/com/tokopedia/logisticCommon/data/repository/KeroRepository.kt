@@ -160,7 +160,11 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun saveAddress(model: SaveAddressDataModel, source: String): AddAddressResponse {
+    suspend fun saveAddress(
+        model: SaveAddressDataModel,
+        source: String,
+        consentJson: String
+    ): AddAddressResponse {
         val param = AddAddressParam(
             addrName = model.addressName,
             receiverName = model.receiverName,
@@ -178,7 +182,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             setAsPrimaryAddress = model.setAsPrimaryAddresss,
             applyNameAsNewUserFullname = model.applyNameAsNewUserFullname,
             source = source,
-            isTokonowRequest = model.isTokonowRequest
+            isTokonowRequest = model.isTokonowRequest,
+            consentJson = consentJson
         )
         val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(

@@ -14,6 +14,9 @@ import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -162,11 +165,11 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun saveAddress() {
+    fun saveAddress(consentJson: String) {
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {
-                    val saveAddressData = repo.saveAddress(model, getSourceValue())
+                    val saveAddressData = repo.saveAddress(model, getSourceValue(), consentJson)
 
                     saveAddressData.keroAddAddress.data.takeIf {
                         it.isSuccess == 1
@@ -370,6 +373,22 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         tempAddress1 = address
         if (currentLat.isNotBlank() && currentLong.isNotBlank()) {
             tempAddress2 = "$currentLat,$currentLong"
+        }
+    }
+
+    fun getCollectionId(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
+            }
+        } else {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
+            }
         }
     }
 }

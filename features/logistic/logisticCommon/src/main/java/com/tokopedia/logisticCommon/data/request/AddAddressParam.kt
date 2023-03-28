@@ -40,5 +40,7 @@ data class AddAddressParam(
     @SerializedName("source")
     var source: String = "",
     @SerializedName("is_tokonow_request")
-    var isTokonowRequest: Boolean = false
+    var isTokonowRequest: Boolean = false,
+    @SerializedName("consent_json")
+    val consentJson: String = ""
 )
