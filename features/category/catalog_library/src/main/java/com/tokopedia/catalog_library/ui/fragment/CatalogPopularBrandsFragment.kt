@@ -18,6 +18,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
@@ -198,5 +199,18 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
             catalogId,
             userSessionInterface.userId
         )
+    }
+
+    override fun onImpressedPopularPageItems(
+        it: CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands,
+        position: Int
+    ) {
+        super.onImpressedPopularPageItems(it, position)
+        CatalogAnalyticsBrandPage.sendImpressOnLihatButtonEvent(
+            "${it.name} - ${it.id} - position: $position",
+            userSessionInterface.userId
+        )
+
+        CatalogAnalyticsBrandPage.sendItemImpression(userSessionInterface.userId, position, it)
     }
 }

@@ -52,8 +52,8 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
         }
     }
 
-    override fun onChangeCategory(categoryName: String, categoryId: String) {
-        super.onChangeCategory(categoryName, categoryId)
+    override fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean) {
+        super.onChangeCategory(categoryName, categoryId, isTabSelected)
         (parentFragment as? CatalogBrandLandingPageFragment)?.onChangeCategory(categoryName, categoryId)
         this.dismiss()
     }

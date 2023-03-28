@@ -49,5 +49,10 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     }
 
     public void onViewAttachedToWindow() {
+
+    }
+
+    public void onViewDetachedFromWindow() {
+
     }
 }

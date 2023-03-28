@@ -49,4 +49,9 @@ class CatalogLibraryAdapter(
         super.onViewAttachedToWindow(holder)
         holder.onViewAttachedToWindow()
     }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onViewDetachedFromWindow()
+    }
 }

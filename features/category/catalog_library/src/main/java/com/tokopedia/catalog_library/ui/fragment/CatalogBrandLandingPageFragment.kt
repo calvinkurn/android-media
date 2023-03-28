@@ -72,7 +72,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.shimmerForBrandLandingPage()
-    }
+        }
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -241,7 +241,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         updateUi()
-        if(productCount == 0){
+        if (productCount == 0) {
             onError(throwable)
         }
     }
@@ -253,18 +253,23 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     override fun onBrandCategoryTabSelected(categoryName: String, categoryId: String) {
         super.onBrandCategoryTabSelected(categoryName, categoryId)
-        onChangeCategory(categoryName, categoryId)
+        onChangeCategory(categoryName, categoryId, true)
     }
 
-    override fun onChangeCategory(categoryName: String, categoryId: String) {
-        super.onChangeCategory(categoryName, categoryId)
+    override fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean) {
+        super.onChangeCategory(categoryName, categoryId, isTabSelected)
         categoryIdStr = categoryId
         categoryNameStr = categoryName
         val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER] as? CatalogBrandCategoryDM
         catalogLibraryUiUpdater.clearAll()
-        categoryModel?.copy()?.let { cm ->
-            cm.selectedCategoryId = categoryId
-            catalogLibraryUiUpdater.updateModel(cm)
+        if (isTabSelected) {
+            categoryModel?.selectedCategoryId = categoryId
+            categoryModel?.let { catalogLibraryUiUpdater.updateModel(it) }
+        } else {
+            categoryModel?.copy()?.let { cm ->
+                cm.selectedCategoryId = categoryId
+                catalogLibraryUiUpdater.updateModel(cm)
+            }
         }
         setCategory(categoryId)
         getProducts()

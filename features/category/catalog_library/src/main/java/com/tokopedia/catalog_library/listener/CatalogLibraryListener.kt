@@ -1,6 +1,7 @@
 package com.tokopedia.catalog_library.listener
 
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
+import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 
 interface CatalogLibraryListener {
@@ -26,7 +27,7 @@ interface CatalogLibraryListener {
         applink: String
     ) {}
     fun onBrandCategoryTabSelected(categoryName: String, categoryId: String) {}
-    fun onChangeCategory(categoryName: String, categoryId: String) {}
+    fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean = false) {}
     fun onBrandCategoryArrowClick() {}
 
     fun categoryHorizontalCarouselImpression(
@@ -83,4 +84,6 @@ interface CatalogLibraryListener {
     }
 
     fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {}
+
+    fun onImpressedPopularPageItems(it: CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands, position: Int) {}
 }
