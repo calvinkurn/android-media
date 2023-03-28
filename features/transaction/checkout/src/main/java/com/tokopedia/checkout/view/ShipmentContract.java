@@ -38,8 +38,11 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -187,6 +190,10 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier, String cartString);
+
+        void doCheckout();
+
+        void updateAddOnsDynamicDataPassing(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, Long cartId);
 
         void onNeedUpdateViewItem(int position);
 
@@ -461,6 +468,16 @@ public interface ShipmentContract {
         void clearAllBoOnTemporaryUpsell();
 
         boolean validatePrescriptionOnBackPressed();
+
+        void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam);
+
+        DynamicDataPassingParamRequest getDynamicDataParam();
+
+        void validateDynamicData();
+
+        boolean isUsingDynamicDataPassing();
+
+        void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
 
         void getDynamicPlatformFee(PlatformFeeRequest platformFeeRequest);
     }

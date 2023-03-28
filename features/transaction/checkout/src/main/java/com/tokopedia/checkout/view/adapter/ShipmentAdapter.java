@@ -397,14 +397,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean validateLoadingItem(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.isStateLoadingCourierState();
+    }
+
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
             int cartItemErrorCounter = 0;
+            boolean hasLoadingItem = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
+                        if (!hasLoadingItem) {
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel);
+                        }
                         cartItemCounter++;
                     }
                 }
@@ -417,7 +425,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 double platformFee = shipmentCostModel.getDynamicPlatformFee().getFee() <= 0 ? 0 : shipmentCostModel.getDynamicPlatformFee().getFee();
                 double finalPrice = priceTotal + platformFee;
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) finalPrice, false));
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
             }
