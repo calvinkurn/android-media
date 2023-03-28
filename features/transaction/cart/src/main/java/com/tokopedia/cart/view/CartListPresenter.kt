@@ -492,7 +492,7 @@ class CartListPresenter @Inject constructor(
 
     private fun getChecklistCondition(): Int {
         var checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES
-        val cartShopHolderDataList = view?.getAllShopDataList()
+        val cartShopHolderDataList = view?.getAllGroupDataList()
 
         if ((cartShopHolderDataList?.size ?: 0) == 1) {
             cartShopHolderDataList?.get(0)?.productUiModelList?.let {
@@ -2225,7 +2225,7 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        val groupDataList = view?.getAllShopDataList()
+        val groupDataList = view?.getAllGroupDataList()
         if (groupDataList != null) {
             val boUniqueIds = mutableSetOf<String>()
             for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
@@ -2255,7 +2255,7 @@ class CartListPresenter @Inject constructor(
                         orderData = ClearPromoOrderData(
                             orders = cartPromoHolderData.values.map {
                                 ClearPromoOrder(
-                                    uniqueId = it.cartString,
+                                    uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
                                     codes = if (it.needToAddCodes) mutableListOf(group.boCode) else mutableListOf(),
                                     shopId = it.shopId.toLongOrZero(),

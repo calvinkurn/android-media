@@ -20,7 +20,7 @@ interface ICartListView : CustomerView {
 
     fun refreshCartWithSwipeToRefresh()
 
-    fun getAllShopDataList(): List<CartGroupHolderData>
+    fun getAllGroupDataList(): List<CartGroupHolderData>
 
     fun getAllCartDataList(): List<CartItemHolderData>
 

@@ -201,7 +201,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -249,7 +249,7 @@ class UpdateCartTest : BaseCartTest() {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -302,7 +302,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -344,7 +344,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN
@@ -393,7 +393,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN
@@ -437,7 +437,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN

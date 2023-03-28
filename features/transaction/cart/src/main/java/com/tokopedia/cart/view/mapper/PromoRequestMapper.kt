@@ -80,7 +80,7 @@ object PromoRequestMapper {
                         }
                     }
                     shopId = cartPromoHolderData.shopId.toLongOrZero()
-                    uniqueId = cartPromoHolderData.cartString
+                    uniqueId = cartPromoHolderData.cartStringOrder
                     boType = cartPromoHolderData.boMetadata.boType
                     warehouseId = cartPromoHolderData.warehouseId
                     isPo = cartPromoHolderData.isPo
@@ -106,7 +106,7 @@ object PromoRequestMapper {
         // get from voucher order first
         val promoCodes = arrayListOf<String>()
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartPromoHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder) {
                 if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
                 }
@@ -133,7 +133,7 @@ object PromoRequestMapper {
                         warehouseId = cartGroupHolderData.warehouseId,
                         boMetadata = cartGroupHolderData.boMetadata,
                         isPo = cartGroupHolderData.isPo,
-                        cartString = it.cartStringOrder,
+                        cartStringOrder = it.cartStringOrder,
                         cartStringGroup = it.cartString,
                         poDuration = it.shopHolderData.poDuration,
                         shopId = it.shopHolderData.shopId,
@@ -154,7 +154,7 @@ object PromoRequestMapper {
         // get from voucher order first
         val promoCodes = arrayListOf<String>()
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartPromoHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder) {
                 if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
                 }
@@ -173,7 +173,7 @@ object PromoRequestMapper {
         cartPromoHolderData: CartPromoHolderData,
     ): PromoRequestBoShipmentData {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartPromoHolderData.cartString &&
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder &&
                 voucherOrder.shippingId > 0 &&
                 voucherOrder.spId > 0 &&
                 voucherOrder.type == "logistic"
@@ -198,12 +198,12 @@ object PromoRequestMapper {
         lastValidateUsePromoRequest: ValidateUsePromoRequest?
     ): PromoRequestBoShipmentData {
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartPromoHolderData.cartString &&
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder &&
                 voucherOrder.shippingId > 0 &&
                 voucherOrder.spId > 0 &&
                 voucherOrder.type == "logistic"
             ) {
-                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartString }
+                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartStringOrder }
                 if (validateOrderRequest != null) {
                     return PromoRequestBoShipmentData(
                         voucherOrder.shippingId,
@@ -217,7 +217,7 @@ object PromoRequestMapper {
                 }
             }
         }
-        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartString }
+        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartStringOrder }
         if (validateOrderRequest != null && validateOrderRequest.spId > 0) {
             return PromoRequestBoShipmentData(
                 validateOrderRequest.shippingId,
@@ -256,7 +256,7 @@ object PromoRequestMapper {
             }
             val order = Order(
                 shopId = cartPromoHolderData.shopId.toLongOrZero(),
-                uniqueId = cartPromoHolderData.cartString,
+                uniqueId = cartPromoHolderData.cartStringOrder,
                 boType = cartPromoHolderData.boMetadata.boType,
                 product_details = listProductDetail,
                 codes = cartPromoHolderData.promoCodes.toMutableList(),
@@ -322,7 +322,7 @@ object PromoRequestMapper {
         )
         promoHolderDataMap.values.forEach { cartPromoHolderData ->
             val order = ClearPromoOrder(
-                uniqueId = cartPromoHolderData.cartString,
+                uniqueId = cartPromoHolderData.cartStringOrder,
                 boType = cartPromoHolderData.boMetadata.boType,
                 shopId = cartPromoHolderData.shopId.toLongOrZero(),
                 warehouseId = cartPromoHolderData.warehouseId,
