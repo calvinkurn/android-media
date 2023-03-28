@@ -27,7 +27,6 @@ class ShipmentNewUpsellImprovementViewHolder(
     private val actionListener: ShipmentAdapterActionListener? = null
 ) : RecyclerView.ViewHolder(itemView) {
 
-
     companion object {
 
         @JvmField
