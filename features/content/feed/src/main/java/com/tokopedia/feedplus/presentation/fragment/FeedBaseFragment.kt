@@ -36,7 +36,6 @@ import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
@@ -217,6 +216,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
+        feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
     }
 
@@ -349,10 +349,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        feedMainViewModel.updateUserInfo()
-        feedMainViewModel.fetchFeedTabs()
     override fun onPause() {
         super.onPause()
         mOnboarding?.dismiss()
@@ -361,7 +357,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun initMetaView(meta: MetaModel) {
         liveApplink = meta.liveApplink
-        profileApplink = meta.profileApplink
 
         mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
@@ -405,9 +400,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             if (meta.profilePhotoUrl.isNotEmpty()) {
                 binding.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
             }
-            binding.feedUserProfileImage.setOnClickListener {
-                RouteManager.route(binding.root.context, meta.profileApplink)
-            }
             binding.feedUserProfileImage.show()
         } else {
             binding.feedUserProfileImage.hide()
@@ -423,7 +415,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         binding.feedUserProfileImage.setOnClickListener {
             if (feedMainViewModel.isLoggedIn) {
-                RouteManager.route(binding.root.context, data.meta.profileApplink)
+                RouteManager.route(binding.root.context, meta.profileApplink)
             } else {
                 openLogin.launch()
             }
