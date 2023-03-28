@@ -168,7 +168,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
-            headerTitle = getString(R.string.brand_terpopuler)
+            headerTitle = brandNameStr
             setNavigationOnClickListener {
                 activity?.finish()
             }

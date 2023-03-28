@@ -14,7 +14,7 @@ class CatalogLibraryBrandLandingActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         toolbar?.hide()
         extractParameters()
-        return CatalogBrandLandingPageFragment.newInstance(brandId, "")
+        return CatalogBrandLandingPageFragment.newInstance(brandId, brandName)
     }
 
     private fun extractParameters() {

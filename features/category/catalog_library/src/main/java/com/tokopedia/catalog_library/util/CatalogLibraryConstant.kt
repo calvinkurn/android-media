@@ -28,6 +28,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
     const val CATALOG_SHIMMER_LIHAT_SEMUA_HORIZONTAL = 5
+    const val CATALOG_SHIMMER_POPULAR_BRAND = 6
 
     const val GRID_VIEW_STR = "grid view"
     const val LIST_VIEW_STR = "list view"

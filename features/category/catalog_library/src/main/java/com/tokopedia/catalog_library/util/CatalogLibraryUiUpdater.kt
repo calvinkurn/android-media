@@ -69,7 +69,7 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
             CatalogShimmerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS,
                 CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS,
-                CATALOG_SHIMMER_PRODUCTS
+                CatalogLibraryConstant.CATALOG_SHIMMER_POPULAR_BRAND
             )
         )
     }

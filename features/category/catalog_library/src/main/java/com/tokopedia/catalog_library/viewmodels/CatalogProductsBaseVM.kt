@@ -7,6 +7,7 @@ import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -93,7 +94,7 @@ class CatalogProductsBaseVM @Inject constructor(
         } else {
             "Semua katalog ${categoryName.lowercase()}"
         }
-        if (page == 1) {
+        if (sourceScreen != SOURCE_CATEGORY_BRAND_LANDING_PAGE && page == 1) {
             val productHeaderModel = CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,

@@ -55,7 +55,7 @@ class CatalogHomepageVM @Inject constructor(
                 true,
                 isGrid = true,
                 columnCount = 4,
-                marginForTitle = Margin(0, 52, 0, 16),
+                marginForTitle = Margin(24, 52, 0, 16),
             )
         listOfComponents.add(specialDataModel)
 

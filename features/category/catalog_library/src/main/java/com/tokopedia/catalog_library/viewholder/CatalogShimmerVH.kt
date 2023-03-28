@@ -5,6 +5,7 @@ import android.widget.LinearLayout
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_LIHAT_SEMUA
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_POPULAR_BRAND
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
@@ -24,24 +25,35 @@ class CatalogShimmerVH(val view: View) :
                 view.findViewById<LinearLayout>(R.id.viral_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.products_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.grid_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.popular_brand_ll).hide()
             }
             CATALOG_SHIMMER_VIRAL -> {
                 view.findViewById<LinearLayout>(R.id.top_five_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.viral_shimmer_ll).show()
                 view.findViewById<LinearLayout>(R.id.products_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.grid_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.popular_brand_ll).hide()
             }
             CATALOG_SHIMMER_PRODUCTS -> {
                 view.findViewById<LinearLayout>(R.id.top_five_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.viral_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.products_shimmer_ll).show()
                 view.findViewById<LinearLayout>(R.id.grid_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.popular_brand_ll).hide()
             }
             CATALOG_SHIMMER_LIHAT_SEMUA -> {
                 view.findViewById<LinearLayout>(R.id.top_five_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.viral_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.products_shimmer_ll).hide()
                 view.findViewById<LinearLayout>(R.id.grid_shimmer_ll).show()
+                view.findViewById<LinearLayout>(R.id.popular_brand_ll).hide()
+            }
+            CATALOG_SHIMMER_POPULAR_BRAND -> {
+                view.findViewById<LinearLayout>(R.id.top_five_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.viral_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.products_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.grid_shimmer_ll).hide()
+                view.findViewById<LinearLayout>(R.id.popular_brand_ll).show()
             }
         }
     }
