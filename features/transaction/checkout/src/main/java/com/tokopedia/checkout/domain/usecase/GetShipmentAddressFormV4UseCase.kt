@@ -25,9 +25,9 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<ShipmentAddressFormRequest, CartShipmentAddressFormData>(dispatchers.io) {
 
-    @GqlQuery(QUERY_SHIPMENT_ADDRESS_FORM, SHIPMENT_ADDRESS_FORM_V3_QUERY)
+    @GqlQuery(QUERY_SHIPMENT_ADDRESS_FORM, SHIPMENT_ADDRESS_FORM_V4_QUERY)
     override fun graphqlQuery(): String {
-        return SHIPMENT_ADDRESS_FORM_V3_QUERY
+        return SHIPMENT_ADDRESS_FORM_V4_QUERY
     }
 
     override suspend fun execute(params: ShipmentAddressFormRequest): CartShipmentAddressFormData {

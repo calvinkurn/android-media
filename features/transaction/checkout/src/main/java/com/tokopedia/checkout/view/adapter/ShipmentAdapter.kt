@@ -89,7 +89,6 @@ class ShipmentAdapter @Inject constructor(
         const val DEFAULT_ERROR_POSITION = -1
         const val HEADER_POSITION = 0
         const val SECOND_HEADER_POSITION = 1
-        private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
     }
 
     private val shipmentDataList: ArrayList<Any> = ArrayList()

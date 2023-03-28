@@ -11,17 +11,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
-import javax.inject.Named
 
 class ChangeShippingAddressGqlUseCase @Inject constructor(
-    @Named(CHANGE_SHIPPING_ADDRESS_MUTATION) private val queryString: String,
     private val graphqlUseCase: GraphqlUseCase,
     private val schedulers: ExecutorSchedulers
 ) : UseCase<SetShippingAddressData>() {
 
     companion object {
-        const val CHANGE_SHIPPING_ADDRESS_MUTATION = "CHANGE_SHIPPING_ADDRESS_MUTATION"
-
         const val CHANGE_SHIPPING_ADDRESS_PARAMS = "CHANGE_SHIPPING_ADDRESS_PARAMS"
         const val PARAM_CARTS = "carts"
         const val PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment"
@@ -29,7 +25,7 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(
 
     override fun createObservable(requestParam: RequestParams): Observable<SetShippingAddressData> {
         val params = requestParam.parameters[CHANGE_SHIPPING_ADDRESS_PARAMS] as HashMap<String, Any>
-        val graphqlRequest = GraphqlRequest(queryString, ChangeShippingAddressGqlResponse::class.java, params)
+        val graphqlRequest = GraphqlRequest(CHANGE_ADDRESS_CART, ChangeShippingAddressGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
@@ -48,3 +44,16 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(
             .observeOn(schedulers.main)
     }
 }
+
+const val CHANGE_ADDRESS_CART = """
+    mutation change_address_cart(${"$"}carts: [ParamsCartAddressUpdateCartType], ${"$"}is_one_click_shipment: Boolean) {
+        change_address_cart(carts: ${"$"}carts, is_one_click_shipment: ${"$"}is_one_click_shipment) {
+            status
+            error_message
+            data {
+                success
+                message
+            }
+        }
+    }
+"""
