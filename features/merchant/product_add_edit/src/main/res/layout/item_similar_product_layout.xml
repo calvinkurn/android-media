@@ -48,12 +48,13 @@
         app:layout_constraintStart_toEndOf="@id/tpg_product_price"
         app:layout_constraintTop_toTopOf="@id/tpg_product_price">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_gravity="center"
             android:layout_marginStart="6dp"
-            app:srcCompat="@drawable/aep_ic_star" />
+            app:icon_color_light_enable="@color/Unify_Y300"
+            app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_product_rating"

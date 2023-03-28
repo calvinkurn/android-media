@@ -172,8 +172,8 @@ class FeedXCardSubtitlesAnimationHandler(
     }
 
     companion object {
-        private const val START_DELAY = 2000L
-        private const val INTERVAL = 2000L
+        private const val START_DELAY = 3000L
+        private const val INTERVAL = 3000L
         private const val DURATION = 600L
     }
 }

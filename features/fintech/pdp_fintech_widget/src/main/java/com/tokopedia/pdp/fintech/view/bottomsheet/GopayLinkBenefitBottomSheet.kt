@@ -87,7 +87,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
                     FintechWidgetAnalyticsEvent.ActivationBottomSheetClick(
                         activationBottomSheetDetail?.userStatus ?: "",
                         activationBottomSheetDetail?.linkingStatus ?: "",
-                        activationBottomSheetDetail?.gatewayPartnerName ?: "",
+                        activationBottomSheetDetail?.gatewayCode ?: "",
                         activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText
                             ?: ""
                     )
@@ -95,7 +95,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
                     FintechWidgetAnalyticsEvent.ActivationBottomSheetClick(
                         activationBottomSheetDetail?.userStatus ?: "",
                         activationBottomSheetDetail?.linkingStatus ?: "",
-                        activationBottomSheetDetail?.gatewayPartnerName ?: "",
+                        activationBottomSheetDetail?.gatewayCode ?: "",
                         ""
                     )
             )

@@ -45,16 +45,17 @@ private const val NET_RETRY = 1
 class FeedPlusModule {
     @FeedPlusScope
     @Provides
-    fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            @FeedPlusQualifier retryPolicy: OkHttpRetryPolicy,
-                            @FeedPlusChuckQualifier chuckInterceptor: Interceptor,
-                            feedAuthInterceptor: com.tokopedia.feedplus.oldFeed.data.FeedAuthInterceptor
+    fun provideOkHttpClient(
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        @FeedPlusQualifier retryPolicy: OkHttpRetryPolicy,
+        @FeedPlusChuckQualifier chuckInterceptor: Interceptor,
+        feedAuthInterceptor: com.tokopedia.feedplus.oldFeed.data.FeedAuthInterceptor
     ): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
-                .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(feedAuthInterceptor)
+            .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(feedAuthInterceptor)
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor)
             clientBuilder.addInterceptor(chuckInterceptor)
@@ -66,10 +67,12 @@ class FeedPlusModule {
     @FeedPlusQualifier
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(NET_READ_TIMEOUT,
-                NET_WRITE_TIMEOUT,
-                NET_CONNECT_TIMEOUT,
-                NET_RETRY)
+        return OkHttpRetryPolicy(
+            NET_READ_TIMEOUT,
+            NET_WRITE_TIMEOUT,
+            NET_CONNECT_TIMEOUT,
+            NET_RETRY
+        )
     }
 
     @FeedPlusScope
@@ -77,9 +80,13 @@ class FeedPlusModule {
     @Provides
     fun provideChuckInterceptory(@ApplicationContext context: Context): Interceptor {
         val collector = ChuckerCollector(
-                context, GlobalConfig.isAllowDebuggingTools())
+            context,
+            GlobalConfig.isAllowDebuggingTools()
+        )
         return ChuckerInterceptor(
-                context, collector)
+            context,
+            collector
+        )
     }
 
     @FeedPlusScope
@@ -94,15 +101,17 @@ class FeedPlusModule {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
-    //SHOP COMMON
+    // SHOP COMMON
     @FeedPlusScope
     @Named("WS")
     @Provides
-    fun provideWsRetrofitDomain(okHttpClient: OkHttpClient,
-                                retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideWsRetrofitDomain(
+        okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
         return retrofitBuilder.baseUrl(TokopediaUrl.getInstance().WS)
-                .client(okHttpClient)
-                .build()
+            .client(okHttpClient)
+            .build()
     }
 
     @FeedPlusScope
@@ -134,10 +143,11 @@ class FeedPlusModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
     @FeedPlusScope
     @Provides
-    fun provideIrisSession(@ApplicationContext context: Context) : IrisSession =
-            IrisSession(context)
+    fun provideIrisSession(@ApplicationContext context: Context): IrisSession =
+        IrisSession(context)
 
     @FeedPlusScope
     @Provides
@@ -150,7 +160,6 @@ class FeedPlusModule {
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
-
 
     @FeedPlusScope
     @Provides

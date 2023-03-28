@@ -10,11 +10,15 @@ import com.tokopedia.content.common.report_content.model.FeedReportRequestParamM
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
@@ -48,9 +52,13 @@ class FeedMainViewModel @Inject constructor(
     val isInClearView: LiveData<Boolean>
         get() = _isInClearView
 
-    private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
-    val feedTabs: LiveData<Result<FeedTabsModel>>
+    private val _feedTabs = MutableLiveData<Result<List<FeedDataModel>>>()
+    val feedTabs: LiveData<Result<List<FeedDataModel>>>
         get() = _feedTabs
+
+    private val _metaData = MutableLiveData<Result<MetaModel>>()
+    val metaData: LiveData<Result<MetaModel>>
+        get() = _metaData
 
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
@@ -61,6 +69,10 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
+    private val _currentTabIndex = MutableLiveData<Int>()
+    val currentTabIndex: LiveData<Int>
+        get() = _currentTabIndex
+
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
@@ -70,6 +82,22 @@ class FeedMainViewModel @Inject constructor(
     private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
     val isLoggedIn: Boolean
         get() = _isLoggedIn.get()
+
+    fun changeCurrentTabByIndex(index: Int) {
+        _currentTabIndex.value = index
+    }
+
+    fun changeCurrentTabByType(type: String) {
+        feedTabs.value?.let {
+            if (it is Success) {
+                it.data.forEachIndexed { index, tab ->
+                    if (tab.type == type && tab.isActive) {
+                        _currentTabIndex.value = index
+                    }
+                }
+            }
+        }
+    }
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -94,13 +122,39 @@ class FeedMainViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 feedXHeaderUseCase.setRequestParams(
-                    FeedXHeaderUseCase.createParam()
+                    FeedXHeaderUseCase.createParam(
+                        listOf(
+                            FeedXHeaderRequestFields.TAB.value
+                        )
+                    )
                 )
                 feedXHeaderUseCase.executeOnBackground()
             }
-            _feedTabs.value = Success(
+            val mappedData =
                 MapperFeedTabs.transform(response.feedXHeaderData, userSession.isLoggedIn)
-            )
+            _feedTabs.value = Success(mappedData.data)
+        }) {
+            _feedTabs.value = Fail(it)
+        }
+    }
+
+    fun fetchFeedMetaData() {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                feedXHeaderUseCase.setRequestParams(
+                    FeedXHeaderUseCase.createParam(
+                        listOf(
+                            FeedXHeaderRequestFields.LIVE.value,
+                            FeedXHeaderRequestFields.CREATION.value,
+                            FeedXHeaderRequestFields.USER.value
+                        )
+                    )
+                )
+                feedXHeaderUseCase.executeOnBackground()
+            }
+            val mappedData =
+                MapperFeedTabs.transform(response.feedXHeaderData, userSession.isLoggedIn)
+            _metaData.value = Success(mappedData.meta)
 
             handleCreationData(
                 MapperFeedTabs.getCreationBottomSheetData(
@@ -108,10 +162,19 @@ class FeedMainViewModel @Inject constructor(
                 )
             )
         }) {
-            _feedTabs.value = Fail(it)
+            _metaData.value = Fail(it)
             _feedCreateContentBottomSheetData.value = Fail(it)
         }
     }
+
+    fun getTabType(index: Int): String =
+        feedTabs.value?.let {
+            if (it is Success && it.data.size > index) {
+                it.data[index].type
+            } else {
+                ""
+            }
+        } ?: ""
 
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
         viewModelScope.launchCatchError(block = {
@@ -137,13 +200,48 @@ class FeedMainViewModel @Inject constructor(
         _isInClearView.value = clearView
     }
 
+    /**
+     * Creation Button Position is Static :
+     * 1. Short
+     * 2. Post
+     * 3. Live
+     */
     private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
         val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
         val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
 
-        val creatorList =
-            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
-                (authorShopDataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+        val creatorList = mutableListOf<ContentCreationTypeItem>()
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_POST && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_POST && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_LIVE && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_LIVE && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
         _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 

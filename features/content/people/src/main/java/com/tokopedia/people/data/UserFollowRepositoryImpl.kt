@@ -10,11 +10,9 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.people.domains.GetFollowerListUseCase
 import com.tokopedia.people.domains.GetFollowingListUseCase
-import com.tokopedia.people.model.ProfileFollowerListBase
-import com.tokopedia.people.model.ProfileFollowingListBase
+import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserFollowMapper
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,14 +27,16 @@ class UserFollowRepositoryImpl @Inject constructor(
     private val shopMapper: ShopRecomUiMapper,
     private val userMapper: ProfileMutationMapper,
     private val userFollowMapper: UserFollowMapper,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : UserFollowRepository {
 
     override suspend fun followShop(shopId: String, action: ShopFollowAction): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = shopFollowUseCase.executeOnBackground(
-                shopId = shopId,
-                action = action,
+            val result = shopFollowUseCase(
+                shopFollowUseCase.createParams(
+                    shopId = shopId,
+                    action = action
+                )
             )
             shopMapper.mapShopFollow(result)
         }
@@ -58,17 +58,14 @@ class UserFollowRepositoryImpl @Inject constructor(
         username: String,
         cursor: String,
         limit: Int
-    ): Pair<List<ProfileUiModel.PeopleUiModel>, String> {
+    ): FollowListUiModel.Follower {
         return withContext(dispatcher.io) {
             val response = getFollowerListUseCase.executeOnBackground(
                 username = username,
                 cursor = cursor,
-                limit = limit,
+                limit = limit
             )
-            Pair(
-                userFollowMapper.mapMyFollowers(response, userSession.userId),
-                response.profileFollowers.newCursor
-            )
+            userFollowMapper.mapMyFollowers(response, userSession.userId)
         }
     }
 
@@ -76,17 +73,14 @@ class UserFollowRepositoryImpl @Inject constructor(
         username: String,
         cursor: String,
         limit: Int
-    ): Pair<List<ProfileUiModel.PeopleUiModel>, String> {
+    ): FollowListUiModel.Following {
         return withContext(dispatcher.io) {
             val response = getFollowingListUseCase.executeOnBackground(
                 username = username,
                 cursor = cursor,
-                limit = limit,
+                limit = limit
             )
-            Pair(
-                userFollowMapper.mapMyFollowing(response, userSession.userId),
-                response.profileFollowings.newCursor
-            )
+            userFollowMapper.mapMyFollowing(response, userSession.userId)
         }
     }
 }

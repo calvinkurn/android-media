@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -9,9 +8,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,10 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -150,7 +148,7 @@ class PlayUserInteractionFragment @Inject constructor(
     EngagementCarouselViewComponent.Listener,
     ExploreWidgetViewComponent.Listener {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
-    private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
+    private val gradientBackgroundView by viewComponent { GradientBackgroundViewComponent(it) }
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
     private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
@@ -160,7 +158,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val shareExperienceView by viewComponentOrNull { ShareExperienceViewComponent(it, R.id.view_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
-    private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
+    private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.scrollable_host_chat) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
@@ -179,7 +177,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(
+        listener = this,
+        resId = R.id.scrollable_host_engagement,
+        scope = viewLifecycleOwner.lifecycleScope,
+        container = it
+    ) }
 
     /**
      * Interactive
@@ -328,6 +331,10 @@ class PlayUserInteractionFragment @Inject constructor(
             channelType = playViewModel.channelType
         )
         bottomSheet.dismiss()
+    }
+
+    override fun onSeePerformanceClicked(bottomSheet: PlayMoreActionBottomSheet) {
+        router.route(context, playViewModel.performanceSummaryPageLink)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -558,6 +565,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     // TODO("Find better logic to improve this code")
     fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        if (view == null) return
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
@@ -855,7 +863,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1137,11 +1145,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun enterFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun doLeaveRoom() {
@@ -1360,7 +1368,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun isAllowAutoSwipe(status: Boolean) =
-        status && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown
+        status && !playViewModel.bottomInsets.isAnyShown &&
+            playNavigation.canNavigateNextPage() &&
+            !playViewModel.isAnyBottomSheetsShown &&
+            playViewModel.uiState.value.status.channelStatus.statusSource == PlayStatusSource.Socket &&
+            lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
@@ -1458,12 +1470,15 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun gradientBackgroundViewOnStateChanged(
         videoOrientation: VideoOrientation = playViewModel.videoOrientation,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (bottomInsets.isAnyShown ||
             (videoOrientation.isHorizontal && orientation.isPortrait)
         ) {
             gradientBackgroundView.hide()
+        } else if (isFreezeOrBanned) {
+            gradientBackgroundView.showTop()
         } else {
             gradientBackgroundView.show()
         }
@@ -1495,13 +1510,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun statsInfoViewOnStateChanged(
         channelType: PlayChannelType = playViewModel.channelType,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
-        if (isFreezeOrBanned) {
-            statsInfoView.hide()
-        } else if (!bottomInsets.isAnyShown && (orientation.isPortrait || !orientation.isCompact)) {
+        if (!bottomInsets.isAnyShown && (orientation.isPortrait || !orientation.isCompact)) {
             statsInfoView.show()
         } else {
             statsInfoView.hide()
@@ -1655,9 +1667,9 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        partner: PlayPartnerInfo
+        status: PlayStatusUiModel,
     ) {
-        if (!bottomInsets.isAnyShown && !address.shouldShow) {
+        if (!bottomInsets.isAnyShown && !address.shouldShow && status.channelStatus.statusType.isActive) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
@@ -1705,7 +1717,6 @@ class PlayUserInteractionFragment @Inject constructor(
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
         if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {
-            gradientBackgroundView.hide()
             likeCountView.hide()
             likeView.hide()
             quickReplyView?.hide()
@@ -1722,7 +1733,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
             videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
             toolbarViewOnStateChanged(isFreezeOrBanned = true)
-            statsInfoViewOnStateChanged(isFreezeOrBanned = true)
             pinnedViewOnStateChanged(isFreezeOrBanned = true)
 
             /**
@@ -2008,6 +2018,5 @@ class PlayUserInteractionFragment @Inject constructor(
 
         object OnScrubStarted : Event
         object OnScrubEnded : Event
-        object OnProductUpdate : Event
     }
 }

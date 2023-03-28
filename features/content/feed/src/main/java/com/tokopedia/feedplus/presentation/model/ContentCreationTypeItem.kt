@@ -4,7 +4,7 @@ data class ContentCreationTypeItem(
     val id: Int = 0,
     val name: String,
     var drawableIconId: Int = 0,
-    var isActive: Boolean?,
+    var isActive: Boolean = false,
     val type: CreateContentType,
     val applink: String = "",
     val weblink: String = "",

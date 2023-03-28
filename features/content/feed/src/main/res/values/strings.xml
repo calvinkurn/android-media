@@ -91,15 +91,38 @@ dari Feed.</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_clear_mode">Mode Nonton</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai %s.</string>
+    <string name="feeds_tag_product_99_more_text">Cek 99+ Produk</string>
     <string name="feeds_tag_product_text">Cek %s Produk</string>
     <string name="feeds_add_to_cart_success_text">1 barang berhasil ditambahkan ke keranjang</string>
     <string name="feeds_add_to_cart_toaster_action_text">Lihat</string>
     <string name="feed_share_title">%s post</string>
     <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
+    <string name="feed_post_sebagai">Post sebagai</string>
+    <string name="feed_selengkapnya_label">Selengkapnya</string>
+
+    <!-- No Content -->
+    <string name="feed_label_no_content_title">Yaah, belum ada konten</string>
+    <string name="feed_label_no_content_subtitle">Cek konten menarik di Untuk Kamu. Siapa tahu ada kreator keren yang bisa kamu follow.</string>
+    <string name="feed_label_no_content_button">Lihat Konten Lainnya</string>
+
+    <!--  Error Load  -->
+    <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
+    <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="feed_label_error_fetch_button">Coba Lagi</string>
     <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
+
+    <string name="feed_asgc_exclusive_follower">Eksklusif Follower Toko</string>
+
+    <string name="feed_message_success_follow">Berhasil follow %s ini!</string>
+    <string name="feed_message_failed_follow">Oops, gagal follow akun ini.</string>
+
+    <!-- Transcoding Livestream to VOD -->
+    <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
+    <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>
 
     <!--Uploading-->
     <string name="feed_uploading_title">Diproses</string>
