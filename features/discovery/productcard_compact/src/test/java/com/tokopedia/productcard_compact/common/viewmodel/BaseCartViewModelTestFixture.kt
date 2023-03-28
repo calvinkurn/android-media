@@ -9,7 +9,8 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.productcard_compact.common.helper.LocalAddress
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.productcard_compact.common.helper.LocalAddressHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -18,6 +19,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 
@@ -36,7 +38,7 @@ open class BaseCartViewModelTestFixture {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
-    private lateinit var addressData: LocalAddress
+    private lateinit var addressData: LocalAddressHelper
     private lateinit var userSession: UserSessionInterface
 
     @Before
@@ -56,7 +58,9 @@ open class BaseCartViewModelTestFixture {
             addressData,
             userSession,
             coroutineTestRule.dispatchers
-        )
+        ).apply {
+            miniCartSource = MiniCartSource.TokonowHome
+        }
 
         onGetIsOutOfCoverage_thenReturn(outOfCoverage = false)
     }
@@ -150,11 +154,27 @@ open class BaseCartViewModelTestFixture {
         verify(exactly = times) { addToCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyAddToCartUseCaseNotCalled() {
+        verify(exactly = 0) { addToCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyDeleteCartUseCaseCalled() {
         verify { deleteCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyDeleteCartUseNotCaseCalled() {
+        verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyUpdateCartUseCaseCalled() {
         verify { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyUpdateCartUseCaseNotCalled() {
+        verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyMiniCartSource(miniCartSource: MiniCartSource?) {
+        Assert.assertTrue(viewModel.miniCartSource == miniCartSource)
     }
 }

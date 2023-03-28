@@ -1,21 +1,25 @@
-package com.tokopedia.productcard_compact.common.util
+package com.tokopedia.productcard_compact.common.helper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesResponseToLocal
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import java.util.*
 import javax.inject.Inject
 
-class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val context: Context) {
+class LocalAddressHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
         private const val OOC_WAREHOUSE_ID = 0L
     }
 
     private var localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
+
+    fun getChooseAddressData() = try {
+        ChooseAddressUtils.getLocalizingAddressData(context)
+    } catch (throwable: Throwable) {
+        ChooseAddressConstant.emptyAddress
+    }
 
     fun updateLocalData() {
         if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)) {

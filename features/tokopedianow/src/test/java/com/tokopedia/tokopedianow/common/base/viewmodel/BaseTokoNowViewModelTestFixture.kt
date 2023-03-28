@@ -10,7 +10,6 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.productcard_compact.common.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,7 +49,7 @@ open class BaseTokoNowViewModelTestFixture {
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
-        viewModel = com.tokopedia.productcard_compact.common.viewmodel.BaseTokoNowViewModel(
+        viewModel = BaseTokoNowViewModel(
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,

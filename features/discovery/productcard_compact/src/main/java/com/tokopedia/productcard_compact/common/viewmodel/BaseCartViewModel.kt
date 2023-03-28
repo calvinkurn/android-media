@@ -19,7 +19,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard_compact.common.util.CoroutineUtil.launchWithDelay
-import com.tokopedia.productcard_compact.common.util.TokoNowLocalAddress
+import com.tokopedia.productcard_compact.common.helper.LocalAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +31,7 @@ open class BaseCartViewModel(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    private val addressData: TokoNowLocalAddress,
+    private val addressData: LocalAddressHelper,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -57,8 +57,7 @@ open class BaseCartViewModel(
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
-
-    protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
@@ -132,8 +131,6 @@ open class BaseCartViewModel(
     }
 
     fun getShopId(): Long = addressData.getShopId()
-
-    fun updateAddressData() = addressData.updateLocalData()
 
     private fun addItemToCart(
         productId: String,

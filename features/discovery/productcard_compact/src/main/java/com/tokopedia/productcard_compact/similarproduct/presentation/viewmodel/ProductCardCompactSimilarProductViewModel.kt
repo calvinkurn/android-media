@@ -12,8 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.productcard_compact.common.helper.ChooseAddressWrapper
-import com.tokopedia.productcard_compact.common.util.TokoNowLocalAddress
+import com.tokopedia.productcard_compact.common.helper.LocalAddressHelper
 import com.tokopedia.productcard_compact.common.viewmodel.BaseCartViewModel
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
@@ -25,20 +24,19 @@ import javax.inject.Inject
 
 class ProductCardCompactSimilarProductViewModel @Inject constructor(
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
-    private val chooseAddressWrapper: ChooseAddressWrapper,
     private val userSession: UserSessionInterface,
+    private val localAddressHelper: LocalAddressHelper,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseCartViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
-    addressData,
+    localAddressHelper,
     userSession,
     dispatchers
 ) {
@@ -88,7 +86,7 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
 
     private fun appendChooseAddressParams(): MutableMap<String, Any> {
         val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
-        val chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        val chooseAddressData = localAddressHelper.getChooseAddressData()
         warehouseId = chooseAddressData.warehouse_id
 
         if (chooseAddressData.city_id.isNotEmpty())
