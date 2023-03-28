@@ -56,10 +56,6 @@ open class ShopHomeAdapter(
         get() = visitables.indexOfFirst {
             it.javaClass == ShopHomeProductEtalaseTitleUiModel::class.java
         }.takeIf { it != -1 } ?: 0
-    private val shopProductEtalaseListPosition: Int
-        get() = visitables.indexOfFirst {
-            it.javaClass == ShopProductSortFilterUiModel::class.java
-        }.takeIf { it != -1 } ?: 0
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
@@ -666,5 +662,9 @@ open class ShopHomeAdapter(
                 visitables.lastIndexOf(lastShopWidgetUiModel)
             }
         }
+    }
+
+    fun getShopHomeWidgetData(): List<BaseShopHomeWidgetUiModel> {
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>()
     }
 }

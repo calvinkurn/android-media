@@ -11,8 +11,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard_compact.common.helper.ChooseAddressWrapper
-import com.tokopedia.productcard_compact.common.helper.LocalAddress
+import com.tokopedia.productcard_compact.common.util.TokoNowLocalAddress
 import com.tokopedia.productcard_compact.common.viewmodel.BaseCartViewModel
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
@@ -30,7 +31,7 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    addressData: LocalAddress,
+    addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseCartViewModel(
     addToCartUseCase,
@@ -68,8 +69,12 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
     var warehouseId: String = ""
         private set
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowHome
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
     }
 
@@ -108,7 +113,7 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
         layoutItemList.addAll(productList)
 
         miniCartData?.let {
-            setMiniCartData(it)
+            updateProductQuantity(it)
         }
 
         _visitableItems.postValue(layoutItemList)

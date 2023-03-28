@@ -18,4 +18,5 @@ object TalkConstants {
     const val DEFAULT_INITIAL_PAGE = 1
     const val DEFAULT_ITEM_LIMIT = 10
     const val SMART_REPLY_INFORMATION_PAGE = "https://seller.tokopedia.com/edu/fitur-smart-reply/"
+    const val SMART_REPLY_DECOMMISSION_REMOTE_CONFIG_KEY = "android_seller_app_smart_reply_talk_decommission_config"
 }

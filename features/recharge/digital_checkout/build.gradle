@@ -55,6 +55,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
 
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -66,8 +67,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.network)
-    
+
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -97,6 +99,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation(rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
     testImplementation rootProject.ext.testDependencies.archCoreTesting

@@ -22,10 +22,10 @@ import com.tokopedia.productcard_compact.similarproduct.presentation.bottomsheet
 import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder.SimilarProductListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.common.di.component.DaggerCommonComponent
 import com.tokopedia.productcard_compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -89,23 +89,9 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
         }
     }
 
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
-    }
-
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
         if(viewModel.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        if(viewModel.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }

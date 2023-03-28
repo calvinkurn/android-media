@@ -216,16 +216,6 @@ open class ShopPageTracking(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    fun clickManageShop(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.CLICK),
-            ShopPageTrackingConstant.CLICK_MANAGE_SHOP,
-            customDimensionShopPage
-        )
-    }
-
     fun clickAddProduct(customDimensionShopPage: CustomDimensionShopPage?) {
         sendGeneralEvent(
             ShopPageTrackingConstant.CLICK_SHOP_PAGE,
@@ -455,14 +445,6 @@ open class ShopPageTracking(
         eventMap[ShopPageTrackingConstant.CURRENT_SITE] = ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
         eventMap[ShopPageTrackingConstant.USER_ID] = userId.orEmpty()
         sendDataLayerEvent(eventMap)
-    }
-
-    private fun getEventReputationCategory(myShop: Boolean): String {
-        return if (myShop) {
-            "official store shop page - buyer"
-        } else {
-            "official store shop page - brand"
-        }
     }
 
     fun clickSettingButton(customDimension: CustomDimensionShopPage?) {

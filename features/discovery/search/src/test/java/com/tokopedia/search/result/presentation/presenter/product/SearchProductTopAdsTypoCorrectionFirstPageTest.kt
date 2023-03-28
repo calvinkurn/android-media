@@ -51,7 +51,10 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
             expectedRelatedKeyword
         )
         `Then verify view will set product list`()
-        `Then verify topAds products is replaced with typo correction`(expectedTopAds)
+        `Then verify topAds products is replaced with typo correction`(
+            searchProductModel,
+            expectedTopAds,
+        )
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -95,11 +98,17 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
     }
 
     private fun `Then verify topAds products is replaced with typo correction`(
+        searchProductModel: SearchProductModel,
         expectedTopAds: TopAdsModel
     ) {
         visitableList.filter { it is ProductItemDataView && it.isTopAds }
             .forEachIndexed { index, visitable ->
-                visitable.assertTopAdsProduct(expectedTopAds.data[index], index + 1)
+                visitable.assertTopAdsProduct(
+                    expectedTopAds.data[index],
+                    index + 1,
+                    searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
+                )
             }
     }
 

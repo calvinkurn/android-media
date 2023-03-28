@@ -44,7 +44,7 @@
 
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
-    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
+    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif supaya calon penontonmu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
@@ -90,11 +90,12 @@
     <string name="play_summary_title">Laporan Live</string>
     <string name="play_summary_button_post_video">Posting Video</string>
     <string name="play_summary_button_post_video_now">Posting Video Sekarang</string>
-    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Detail</font></b>]]></string>
+    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
-    <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
-    <string name="play_summary_product_visit">Mengunjungi Produkmu</string>
+    <string name="play_summary_shop_visit">Mengunjungi tokomu</string>
+    <string name="play_summary_profile_visit">Mengunjungi profilmu</string>
+    <string name="play_summary_product_visit">Melihat Produkmu</string>
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Followers Baru</string>

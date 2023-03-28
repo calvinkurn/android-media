@@ -179,6 +179,7 @@ object SearchTracking {
                 "dimension61", filterSortValue,
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
+                "dimension98",(!productCardModel.isOos()).toString(),
                 "id", productCardModel.productId,
                 "name", productCardModel.name,
                 "price", productCardModel.price.getDigits(),

@@ -3,6 +3,10 @@
     <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
     <string name="home_title">Tokopedia Seller</string>
 
+    <!-- Notification List -->
+    <string name="notification_list_text_open_from_phone">Buka di handphone</string>
+    <string name="content_description_app_icon">App Icon</string>
+
     <!-- New Order Summary -->
     <string name="new_order_summary_text_open_order">Open</string>
 

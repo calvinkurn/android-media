@@ -12,10 +12,13 @@ object ProductDetailRestrictionHelper {
     private const val RESTRICTION_CATEGORIES_PADDING_BOTTOM = 8
     private const val CAMPAIGN_TIER_PADDING_BOTTOM = 16
 
-    fun renderRestrictionUi(reData: RestrictionData?,
-                            isShopOwner: Boolean,
-                            isFavoriteShop: Boolean,
-                            reView: PartialButtonShopFollowersView?) {
+    fun renderRestrictionUi(
+        reData: RestrictionData?,
+        isShopOwner: Boolean,
+        isFavoriteShop: Boolean,
+        reView: PartialButtonShopFollowersView?,
+        impressLocationRestriction: () -> Unit = {}
+    ) {
 
         if (reData == null) {
             reView?.setupVisibility = false
@@ -48,6 +51,14 @@ object ProductDetailRestrictionHelper {
                         isShopOwner = isShopOwner,
                         shopFollowersView = reView
                 )
+            }
+            reData.restrictionLocationType() -> {
+                renderCommonRestrictionView(
+                    reData = reData,
+                    isShopOwner = isShopOwner,
+                    shopFollowersView = reView
+                )
+                impressLocationRestriction.invoke()
             }
             else -> {
                 reView?.setupVisibility = false

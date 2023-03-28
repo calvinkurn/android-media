@@ -97,7 +97,7 @@ class ProductCardCompactSimilarProductViewHolder(
                 isEnabled = true
 
                 setOnClickListener {
-                    listener?.addItemToCart(
+                    listener?.onCartQuantityChanged(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = product.minOrder
@@ -142,7 +142,7 @@ class ProductCardCompactSimilarProductViewHolder(
 
     private fun renderDeleteBtn(product: ProductCardCompactSimilarProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            listener?.deleteCartItem(product.id)
+            listener?.onCartQuantityChanged(product.id, product.shopId, QUANTITY_ZERO)
         }
     }
 
@@ -154,7 +154,7 @@ class ProductCardCompactSimilarProductViewHolder(
 
     private fun onQuantityChanged(product: ProductCardCompactSimilarProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
-        listener?.onQuantityChanged(product.id, product.shopId, input)
+        listener?.onCartQuantityChanged(product.id, product.shopId, input)
     }
 
     private fun onEditorAction(product: ProductCardCompactSimilarProductUiModel) {
@@ -178,9 +178,7 @@ class ProductCardCompactSimilarProductViewHolder(
     }
 
     interface SimilarProductListener {
-        fun deleteCartItem(productId: String)
-        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
-        fun addItemToCart(productId: String, shopId: String, quantity: Int)
+        fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int)
         fun onProductClicked(product: ProductCardCompactSimilarProductUiModel)
         fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel)
     }

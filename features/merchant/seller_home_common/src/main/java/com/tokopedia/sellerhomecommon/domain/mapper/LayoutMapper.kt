@@ -85,7 +85,8 @@ class LayoutMapper @Inject constructor(
 
             return WidgetLayoutUiModel(
                 widgetList = mappedList,
-                shopState = getShopState(response.layout.shopState)
+                shopState = getShopState(response.layout.shopState),
+                personaStatus = response.layout.personaStatus.orZero()
             )
         } else {
             throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)

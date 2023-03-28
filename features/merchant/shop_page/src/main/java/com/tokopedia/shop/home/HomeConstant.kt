@@ -4,10 +4,6 @@ object HomeConstant {
     const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 }
 
-object GqlQueryConstant {
-    const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
-}
-
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
