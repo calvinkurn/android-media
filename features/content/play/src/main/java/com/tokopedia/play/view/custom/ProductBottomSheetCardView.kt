@@ -127,13 +127,17 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.generateButton(lastButton.color)
 
         //Social Proof
-        val isSocialProofAvailable = (item.isShowRating || item.isShowSoldQuantity) && !section.config.type.isUpcoming
-        binding.ivPlayProductStars.showWithCondition(item.isShowRating && !section.config.type.isUpcoming)
-        binding.tvPlayProductSocialProof.showWithCondition(isSocialProofAvailable)
-        binding.tvPlayProductSocialProof.text = buildString {
-            append(item.rating)
-            append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
-            append(context.resources.getString(R.string.play_social_proof_sold, item.soldQuantity))
+        if (section.config.type.isUpcoming) {
+            binding.ivPlayProductStars.hide()
+            binding.tvPlayRatingAndSoldQuantity.hide()
+        } else {
+            binding.ivPlayProductStars.showWithCondition(item.isShowRating)
+            binding.tvPlayRatingAndSoldQuantity.show()
+            binding.tvPlayRatingAndSoldQuantity.text = buildString {
+                append(item.rating)
+                append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
+                append(if (item.isShowSoldQuantity) context.resources.getString(R.string.play_social_proof_sold, item.soldQuantity) else "")
+            }
         }
     }
 
