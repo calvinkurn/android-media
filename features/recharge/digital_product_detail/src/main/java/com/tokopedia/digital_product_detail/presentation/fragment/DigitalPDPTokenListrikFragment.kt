@@ -62,7 +62,6 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTok
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -796,9 +795,7 @@ class DigitalPDPTokenListrikFragment :
                             this
                         )
                         binding?.run {
-                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
-                            } ?: 0
+                            val defaultPadding: Int = rechargePdpTokenListrikClientNumberWidget.height
                             val dynamicPadding = defaultPadding + extraPadding
                             rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }

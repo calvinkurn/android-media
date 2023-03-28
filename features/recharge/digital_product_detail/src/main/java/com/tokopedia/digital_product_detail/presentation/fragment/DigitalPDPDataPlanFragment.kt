@@ -78,7 +78,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -1231,9 +1230,7 @@ class DigitalPDPDataPlanFragment :
                             this
                         )
                         binding?.run {
-                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpPaketDataClientNumberWidget.height.pxToDp(it)
-                            } ?: 0
+                            val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
                             val dynamicPadding = defaultPadding + extraPadding
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
