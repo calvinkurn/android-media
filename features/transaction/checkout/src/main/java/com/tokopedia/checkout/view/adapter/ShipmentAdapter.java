@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.utils.ShipmentRollenceUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -171,7 +172,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         } else if (item instanceof ShipmentNewUpsellModel) {
-            if (((ShipmentNewUpsellModel) item).getEnableNewUpsellImprovement()) {
+            if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
                 return ShipmentNewUpsellImprovementViewHolder.LAYOUT;
             } else {
                 return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
