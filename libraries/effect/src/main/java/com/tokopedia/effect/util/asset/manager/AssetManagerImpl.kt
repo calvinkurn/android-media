@@ -23,9 +23,10 @@ class AssetManagerImpl @Inject constructor(
         return try {
             withContext(dispatchers.io) {
                 val fileNameWithExtension = if(fileName.endsWith(ZIP_EXTENSION)) fileName else fileName + ZIP_EXTENSION
-                val completePath = filePath + File.separator + fileNameWithExtension
+                val completeFilePath = filePath + File.separator + fileNameWithExtension
+                val completeDirPath = filePath + File.separator + fileName
 
-                val file = File(filePath)
+                val file = File(completeDirPath)
                 if (!file.exists()) {
                     if(FileUtil.writeResponseBodyToDisk(
                             filePath,
@@ -33,9 +34,9 @@ class AssetManagerImpl @Inject constructor(
                             responseBody
                         )
                     ) {
-                        val isUnzipSuccess = FileUtil.unzipFile(completePath, folderPath)
+                        val isUnzipSuccess = FileUtil.unzipFile(completeFilePath, folderPath)
                         if (isUnzipSuccess) {
-                            FileUtil.deleteFile(completePath)
+                            FileUtil.deleteFile(completeFilePath)
                         }
                         isUnzipSuccess
                     }
