@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -57,6 +55,7 @@ import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceW
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DeviceUtil.generateATokenRechargeCheckout
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
@@ -721,14 +720,15 @@ class DigitalCartFragment :
     private fun handleCrossSellConsent(fintechProduct: FintechProduct, isSubscriptionChecked: Boolean) {
         binding?.run {
             if (isSubscriptionChecked) {
-                checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
-                renderConsentWidget(collectionPointMetadata)
-                checkoutBottomViewWidget.showConsentIfAvailable()
+                if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
+                    checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+                    renderConsentWidget(collectionPointMetadata)
+                }
             } else {
                 renderConsentJob?.cancel()
                 checkoutBottomViewWidget.isCheckoutButtonEnabled = true
-                checkoutBottomViewWidget.hideConsentIfAvailable()
+                checkoutBottomViewWidget.hideConsent()
             }
         }
     }
@@ -745,8 +745,8 @@ class DigitalCartFragment :
                     return metadata
                 }
             }
-        } catch (e: JsonSyntaxException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+        } catch (e: Exception) {
+            DigitalCheckoutUtil.logExceptionToCrashlytics(e)
         }
 
         return CollectionPointMetadata()
@@ -766,7 +766,7 @@ class DigitalCartFragment :
                         this@DigitalCartFragment,
                         consentParam
                     )
-                    checkoutBottomViewWidget.showConsentIfAvailable()
+                    checkoutBottomViewWidget.showConsent()
                 }
             }
         }

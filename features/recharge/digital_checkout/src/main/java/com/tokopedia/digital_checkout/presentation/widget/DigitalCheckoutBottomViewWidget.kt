@@ -37,8 +37,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
         true
     )
 
-    private var isConsentAvailable: Boolean = false
-
     var promoButtonTitle: String = ""
         set(title) {
             field = title
@@ -111,7 +109,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     }
                 }
             }
-            isConsentAvailable = consentCollectionParam.collectionId.isNotEmpty()
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
         }
     }
@@ -155,12 +152,12 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     fun getConsentPayload(): String =
         binding.viewUserConsentWidget.generatePayloadData()
 
-    fun showConsentIfAvailable() {
-        if (isConsentAvailable) binding.viewUserConsentWidget.show()
+    fun showConsent() {
+        binding.viewUserConsentWidget.show()
     }
 
-    fun hideConsentIfAvailable() {
-        if (isConsentAvailable) binding.viewUserConsentWidget.hide()
+    fun hideConsent() {
+        binding.viewUserConsentWidget.hide()
     }
 
     fun hideCrossSellConsent() {
