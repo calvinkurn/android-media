@@ -350,6 +350,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        if (attachmentType != DYNAMIC_ATTACHMENT) {
+            return false
+        }
         val dynamicAttachment = GsonBuilder().create().fromJson(
             pojo.attachment?.attributes,
             DynamicAttachment::class.java
