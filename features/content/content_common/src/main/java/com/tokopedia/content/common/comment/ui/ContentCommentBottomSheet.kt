@@ -360,12 +360,12 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
+        analytics?.longClickComment()
+
         viewModel.submitAction(CommentAction.SelectComment(item))
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
-
-        analytics?.longClickComment()
     }
 
     override fun onMentionClicked(appLink: String) {
@@ -448,12 +448,13 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private fun deleteCommentChecker() {
         requireInternet {
-            viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
             analytics?.clickRemoveComment()
+            viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
         viewModel.submitAction(
             CommentAction.ReportComment(
                 feedReportRequestParamModel.copy(
@@ -461,7 +462,6 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         )
-        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
