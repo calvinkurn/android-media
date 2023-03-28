@@ -1,6 +1,6 @@
 package com.tokopedia.effect.util.asset.checker
 
-import com.tokopedia.effect.util.asset.AssetPathHelper
+import com.tokopedia.effect.util.asset.checker.AssetHelper
 import java.io.File
 import javax.inject.Inject
 
@@ -8,23 +8,23 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on March 09, 2023
  */
 class AssetCheckerImpl @Inject constructor(
-    private val assetPathHelper: AssetPathHelper,
+    private val assetHelper: AssetHelper,
 ) : AssetChecker {
 
     override suspend fun isLicenseAvailable(licenseName: String): Boolean {
-        return File(assetPathHelper.licenseDir).listFiles()?.any { it.name == licenseName } ?: false
+        return File(assetHelper.licenseDir).listFiles()?.any { it.name == licenseName } ?: false
     }
 
     override suspend fun isModelAvailable(): Boolean {
-        return File(assetPathHelper.modelDir).exists()
+        return File(assetHelper.modelDir).exists()
     }
 
     override suspend fun isCustomFaceAvailable(): Boolean {
-        return File(assetPathHelper.customFaceDir).exists()
+        return File(assetHelper.customFaceDir).exists()
     }
 
     override suspend fun isPresetFileAvailable(presetName: String): Boolean {
-        val file = File(assetPathHelper.getPresetFilePath(presetName))
+        val file = File(assetHelper.getPresetFilePath(presetName))
         return file.exists()
     }
 }

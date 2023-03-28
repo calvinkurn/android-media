@@ -269,7 +269,12 @@ class BeautificationSetupFragment @Inject constructor(
         curr: BeautificationConfigUiModel,
     ) {
         if(prev == curr) return
-        if(prev?.selectedFaceFilter?.id == curr.selectedFaceFilter?.id && prev?.selectedPreset?.id == curr.selectedPreset?.id) return
+
+        if(prev?.selectedFaceFilter?.id == curr.selectedFaceFilter?.id &&
+            prev?.selectedFaceFilter?.value == curr.selectedFaceFilter?.value &&
+            prev?.selectedPreset?.id == curr.selectedPreset?.id &&
+            prev?.selectedPreset?.value == curr.selectedPreset?.value
+        ) return
 
         setupSlider()
     }

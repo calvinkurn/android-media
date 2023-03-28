@@ -59,7 +59,12 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): ConfigurationUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
+        val response = getConfigurationUseCase(
+            GetConfigurationUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+            )
+        )
 
         return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
             .copy(
