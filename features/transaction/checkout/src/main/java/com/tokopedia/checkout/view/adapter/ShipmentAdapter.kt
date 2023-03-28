@@ -53,6 +53,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -280,7 +281,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCartItemTopViewHolder.LAYOUT -> {
-                return ShipmentCartItemTopViewHolder(view)
+                return ShipmentCartItemTopViewHolder(view, this@ShipmentAdapter)
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
@@ -459,10 +460,10 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItemModel>) {
+    fun addCartItemDataList1(shipmentCartItems: List<ShipmentCartItemModel>) {
         this.shipmentCartItemModelList = shipmentCartItems
         shipmentCartItems.forEach { shipmentCartItem ->
-            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
+//            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
                 shipmentCartItem.cartItemModels.forEach {
                     shipmentDataList.add(it)
@@ -480,6 +481,31 @@ class ShipmentAdapter @Inject constructor(
             }
             shipmentDataList.add(shipmentCartItem)
         }
+        checkDataForCheckout()
+    }
+
+    fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItem>) {
+        this.shipmentCartItemModelList = shipmentCartItems.filterIsInstance(ShipmentCartItemModel::class.java)
+//        shipmentCartItems.forEach { shipmentCartItem ->
+//            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
+//            if (shipmentCartItem.isStateAllItemViewExpanded) {
+//                shipmentCartItem.cartItemModels.forEach {
+//                    shipmentDataList.add(it)
+//                }
+//            } else {
+//                shipmentDataList.add(shipmentCartItem.cartItemModels.first())
+//            }
+//            if (shipmentCartItem.cartItemModels.size > 1) {
+//                shipmentDataList.add(
+//                    CartItemExpandModel(
+//                        cartString = shipmentCartItem.cartString,
+//                        cartSize = shipmentCartItem.cartItemModels.size
+//                    )
+//                )
+//            }
+//            shipmentDataList.add(shipmentCartItem)
+//        }
+        shipmentDataList.addAll(shipmentCartItems)
         checkDataForCheckout()
     }
 
@@ -1167,15 +1193,15 @@ class ShipmentAdapter @Inject constructor(
 
     private fun getShipmentCartItemTopByCartString(cartString: String): Pair<Int, ShipmentCartItemTopModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemTopModel && data.shipmentCartItemModel.cartString == cartString
+            data is ShipmentCartItemTopModel && data.cartString == cartString
         }
         return Pair(index, shipmentDataList[index] as ShipmentCartItemTopModel)
     }
 
     private fun updateShipmentCartItemTop(shipmentCartItemModel: ShipmentCartItemModel) {
         val (position, data) = getShipmentCartItemTopByCartString(shipmentCartItemModel.cartString)
-        val updatedData = data.copy(shipmentCartItemModel = shipmentCartItemModel)
-        shipmentDataList[position] = updatedData
+//        val updatedData = data.copy(shipmentCartItemModel = shipmentCartItemModel)
+//        shipmentDataList[position] = updatedData
         notifyItemChanged(position)
     }
 

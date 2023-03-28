@@ -87,7 +87,6 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -119,6 +118,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -485,7 +485,7 @@ class ShipmentFragment :
         recipientAddressModel: RecipientAddressModel,
         shipmentUpsellModel: ShipmentUpsellModel,
         shipmentNewUpsellModel: ShipmentNewUpsellModel,
-        shipmentCartItemModelList: List<ShipmentCartItemModel>,
+        shipmentCartItemModelList: List<ShipmentCartItem>,
         shipmentDonationModel: ShipmentDonationModel?,
         shipmentCrossSellModelList: List<ShipmentCrossSellModel>,
         lastApplyUiModel: LastApplyUiModel,
@@ -543,7 +543,7 @@ class ShipmentFragment :
                     (i + 1).toString(),
                     eventLabel,
                     digitalProductName,
-                    getCrossSellChildCategoryId(shipmentCartItemModelList)
+                    getCrossSellChildCategoryId(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
                 )
             }
         }
@@ -551,7 +551,7 @@ class ShipmentFragment :
             // Don't show donation, egold, promo section if all shop is error
             var errorShopCount = 0
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel.isError) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.isError) {
                     errorShopCount++
                 }
             }
@@ -569,7 +569,7 @@ class ShipmentFragment :
         }
         shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel)
         if (shipmentCartItemModelList.isNotEmpty()) {
-            addShippingCompletionTicker(shipmentCartItemModelList[0].isEligibleNewShippingExperience)
+            addShippingCompletionTicker(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isEligibleNewShippingExperience)
         }
         if (isInitialRender) {
             sendEEStep2()
@@ -708,9 +708,9 @@ class ShipmentFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if ((
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -1039,7 +1039,7 @@ class ShipmentFragment :
     override fun renderEditAddressSuccess(latitude: String, longitude: String) {
         shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude)
         val position = shipmentAdapter.lastChooseCourierItemPosition
-        val hasItemWithDisableChangeCourier = shipmentPresenter.shipmentCartItemModelList.firstOrNull { it.isDisableChangeCourier }
+        val hasItemWithDisableChangeCourier = shipmentPresenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).firstOrNull { it.isDisableChangeCourier }
         if (hasItemWithDisableChangeCourier != null) {
             // refresh page
             shipmentPresenter.processInitialLoadCheckoutPage(
@@ -2370,9 +2370,9 @@ class ShipmentFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -2503,13 +2503,13 @@ class ShipmentFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartItemPosition)
         } else {
@@ -3445,10 +3445,12 @@ class ShipmentFragment :
     private fun onViewTickerPaymentError(errorMessage: String) {
         val shipmentCartItemModelList = shipmentPresenter.shipmentCartItemModelList
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
-                shipmentCartItemModel.shopId.toString(),
-                errorMessage
-            )
+            if (shipmentCartItemModel is ShipmentCartItemModel) {
+                checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
+                    shipmentCartItemModel.shopId.toString(),
+                    errorMessage
+                )
+            }
         }
     }
 

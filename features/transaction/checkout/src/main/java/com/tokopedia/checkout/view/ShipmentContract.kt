@@ -27,6 +27,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -312,7 +313,7 @@ interface ShipmentContract {
         )
 
         var recipientAddressModel: RecipientAddressModel
-        var shipmentCartItemModelList: List<ShipmentCartItemModel>
+        var shipmentCartItemModelList: List<ShipmentCartItem>
 
         val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?>
         val shipmentTickerErrorModel: ShipmentTickerErrorModel

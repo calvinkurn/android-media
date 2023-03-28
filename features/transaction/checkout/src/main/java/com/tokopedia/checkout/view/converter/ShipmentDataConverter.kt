@@ -14,9 +14,12 @@ import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -180,8 +183,8 @@ class ShipmentDataConverter @Inject constructor() {
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         hasTradeInDropOffAddress: Boolean,
         username: String
-    ): List<ShipmentCartItemModel> {
-        val shipmentCartItemModels: MutableList<ShipmentCartItemModel> = ArrayList()
+    ): List<ShipmentCartItem> {
+        val shipmentCartItemModels: MutableList<ShipmentCartItem> = ArrayList()
         if (cartShipmentAddressFormData.groupAddress.isEmpty()) {
             return shipmentCartItemModels
         }
@@ -189,7 +192,7 @@ class ShipmentDataConverter @Inject constructor() {
         val groupShopList = cartShipmentAddressFormData.groupAddress[0].groupShop
         var isFirstPlusProductHasPassed = false
         for (groupShop in groupShopList) {
-            val shipmentCartItemModel = ShipmentCartItemModel()
+            val shipmentCartItemModel = ShipmentCartItemModel(cartString = groupShop.cartString)
             shipmentCartItemModel.isDropshipperDisable =
                 cartShipmentAddressFormData.isDropshipperDisable
             shipmentCartItemModel.isOrderPrioritasDisable =
@@ -246,6 +249,55 @@ class ShipmentDataConverter @Inject constructor() {
                 shipmentCartItemModel.coachmarkPlus = CoachmarkPlusData()
             }
             shipmentCartItemModel.enablerLabel = groupShop.groupShopData.first().shop.enablerLabel
+
+            // top
+            val shipmentCartItemTopModel =
+                ShipmentCartItemTopModel(
+                    cartString = groupShop.cartString,
+                    isError = shipmentCartItemModel.isError,
+                    errorTitle = shipmentCartItemModel.errorTitle ?: "",
+                    errorDescription = shipmentCartItemModel.errorDescription ?: "",
+                    isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
+                    unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage ?: "",
+                    firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
+                    isTriggerScrollToErrorProduct = shipmentCartItemModel.isTriggerScrollToErrorProduct,
+                    isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
+                    shopId = shipmentCartItemModel.shopId,
+                    shopName = shipmentCartItemModel.shopName ?: "",
+                    orderNumber = shipmentCartItemModel.orderNumber,
+                    preOrderInfo = shipmentCartItemModel.preOrderInfo ?: "",
+                    freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl ?: "",
+                    isFreeShippingPlus = shipmentCartItemModel.isFreeShippingPlus,
+                    hasSeenFreeShippingBadge = shipmentCartItemModel.hasSeenFreeShippingBadge,
+                    shopLocation = shipmentCartItemModel.shopLocation ?: "",
+                    shopAlertMessage = shipmentCartItemModel.shopAlertMessage ?: "",
+                    shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData,
+                    isTokoNow = shipmentCartItemModel.isTokoNow,
+                    shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
+                    shopTicker = shipmentCartItemModel.shopTicker,
+                    enablerLabel = shipmentCartItemModel.enablerLabel,
+                    hasTradeInItem = shipmentCartItemModel.cartItemModels.firstOrNull { it.isValidTradeIn } != null,
+                    isFulfillment = shipmentCartItemModel.isFulfillment,
+                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: "",
+                    isStateAllItemViewExpanded = shipmentCartItemModel.isStateAllItemViewExpanded
+                )
+
+            shipmentCartItemModels.add(shipmentCartItemTopModel)
+            if (shipmentCartItemModel.isStateAllItemViewExpanded) {
+                shipmentCartItemModel.cartItemModels.forEach {
+                    shipmentCartItemModels.add(it)
+                }
+            } else {
+                shipmentCartItemModels.add(shipmentCartItemModel.cartItemModels.first())
+            }
+            if (shipmentCartItemModel.cartItemModels.size > 1) {
+                shipmentCartItemModels.add(
+                    CartItemExpandModel(
+                        cartString = shipmentCartItemModel.cartString,
+                        cartSize = shipmentCartItemModel.cartItemModels.size
+                    )
+                )
+            }
             shipmentCartItemModels.add(shipmentCartItemModel)
         }
         return shipmentCartItemModels
@@ -300,7 +352,7 @@ class ShipmentDataConverter @Inject constructor() {
         shipmentCartItemModel.shopName = shop.shopName
         shipmentCartItemModel.shopAlertMessage = shop.shopAlertMessage
         shipmentCartItemModel.shopTypeInfoData = shop.shopTypeInfoData
-        shipmentCartItemModel.cartString = groupShop.cartString
+//        shipmentCartItemModel.cartString = groupShop.cartString
         shipmentCartItemModel.shippingId = groupShop.shippingId
         shipmentCartItemModel.spId = groupShop.spId
         shipmentCartItemModel.boCode = groupShop.boCode
@@ -372,7 +424,7 @@ class ShipmentDataConverter @Inject constructor() {
         receiverName: String,
         addOnWordingModel: AddOnWordingModel
     ): CartItemModel {
-        val cartItemModel = CartItemModel()
+        val cartItemModel = CartItemModel(cartString = groupShop.cartString)
         cartItemModel.cartId = product.cartId
         cartItemModel.productId = product.productId
         cartItemModel.productCatId = product.productCatId.toLong()
@@ -448,7 +500,7 @@ class ShipmentDataConverter @Inject constructor() {
         cartItemModel.ethicalDrugDataModel = product.ethicalDrugs
         cartItemModel.addOnDefaultFrom = username
         cartItemModel.addOnDefaultTo = receiverName
-        cartItemModel.cartString = groupShop.cartString
+//        cartItemModel.cartString = groupShop.cartString
         cartItemModel.warehouseId = groupShop.fulfillmentId.toString()
         cartItemModel.isTokoCabang = groupShop.isFulfillment
         cartItemModel.cartItemPosition = index

@@ -76,9 +76,9 @@ data class CartItemModel(
     var addOnDefaultFrom: String = "",
     var addOnDefaultTo: String = "",
     var isTokoCabang: Boolean = false,
-    var cartString: String = "",
+    override val cartString: String,
     var warehouseId: String = "",
     var ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     var cartItemPosition: Int = 0,
     var addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel()
-) : Parcelable
+) : Parcelable, ShipmentCartItem

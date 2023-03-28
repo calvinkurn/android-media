@@ -46,7 +46,7 @@ data class ShipmentCartItemModel(
     var addOnDefaultTo: String? = null,
 
     // Cart item state
-    var cartString: String = "",
+    override val cartString: String,
     var shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",
@@ -136,7 +136,7 @@ data class ShipmentCartItemModel(
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
     var shouldResetCourier: Boolean = false
-) : Parcelable {
+) : Parcelable, ShipmentCartItem {
 
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
@@ -147,7 +147,7 @@ data class ShipmentCartItemModel(
             shipmentCartItemModel: ShipmentCartItemModel,
             cartItemModels: ArrayList<CartItemModel>
         ): ShipmentCartItemModel {
-            val newShipmentCartItemModel = ShipmentCartItemModel()
+            val newShipmentCartItemModel = ShipmentCartItemModel(cartString = shipmentCartItemModel.cartString)
             newShipmentCartItemModel.selectedShipmentDetailData =
                 shipmentCartItemModel.selectedShipmentDetailData
             newShipmentCartItemModel.cartItemModels = cartItemModels
@@ -173,7 +173,6 @@ data class ShipmentCartItemModel(
             newShipmentCartItemModel.shopShipmentList = shipmentCartItemModel.shopShipmentList
             newShipmentCartItemModel.orderNumber = shipmentCartItemModel.orderNumber
             newShipmentCartItemModel.isHidingCourier = shipmentCartItemModel.isHidingCourier
-            newShipmentCartItemModel.cartString = shipmentCartItemModel.cartString
             newShipmentCartItemModel.shippingId = shipmentCartItemModel.shippingId
             newShipmentCartItemModel.spId = shipmentCartItemModel.spId
             newShipmentCartItemModel.dropshiperName = shipmentCartItemModel.dropshiperName
