@@ -1,6 +1,6 @@
 package com.tokopedia.effect.util.asset.checker
 
-import com.tokopedia.effect.util.asset.checker.AssetHelper
+import com.tokopedia.effect.util.asset.AssetHelper
 import java.io.File
 import javax.inject.Inject
 

@@ -2,7 +2,6 @@ package com.tokopedia.effect
 
 import android.app.ActivityManager
 import android.content.Context
-import android.graphics.SurfaceTexture
 import android.opengl.GLES20
 import android.util.Log
 import android.view.Surface
@@ -13,8 +12,8 @@ import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode
 import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.effect.util.ImageUtil
-import com.tokopedia.effect.util.asset.AssetPathHelper
 import com.tokopedia.effect.util.asset.checker.AssetChecker
+import com.tokopedia.effect.util.asset.AssetHelper
 import javax.inject.Inject
 
 /**
@@ -23,7 +22,7 @@ import javax.inject.Inject
 class EffectManagerImpl @Inject constructor(
     private val context: Context,
     private val assetChecker: AssetChecker,
-    private val assetPathHelper: AssetPathHelper,
+    private val assetHelper: AssetHelper,
 ) : EffectManager {
 
     private var mRenderManager: RenderManager? = null
@@ -52,8 +51,8 @@ class EffectManagerImpl @Inject constructor(
         val renderManager = RenderManager()
         val statusCode = renderManager.init(
             context,
-            assetPathHelper.modelDir,
-            assetPathHelper.licenseFilePath,
+            assetHelper.modelDir,
+            assetHelper.licenseFilePath,
             context.cacheDir.absolutePath,
             true,
             false,
@@ -148,7 +147,8 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun setPreset(presetId: String, value: Float) {
-        val key = "${assetPathHelper.presetDir}/$presetId"
+        val key = "${assetHelper.presetDir}/$presetId"
+
         mRenderManager?.setComposerNodesWithTags(arrayOf(key), arrayOf(presetId))
         mRenderManager?.updateComposerNodes(key, "Makeup_ALL", value)
     }

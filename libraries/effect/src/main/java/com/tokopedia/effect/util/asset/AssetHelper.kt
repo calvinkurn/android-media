@@ -1,4 +1,4 @@
-package com.tokopedia.effect.util.asset.checker
+package com.tokopedia.effect.util.asset
 
 import android.content.Context
 import android.webkit.URLUtil
@@ -29,6 +29,14 @@ class AssetHelper @Inject constructor(
 
     val presetDir: String = composeMakeupDir
         .appendPath(COMPOSE_PRESET_MAKEUP_DIR)
+
+    val licenseFilePath: String
+        get() {
+            val licenseFolder = File(licenseDir)
+            val licenseName = licenseFolder.listFiles()?.firstOrNull()?.name ?: return ""
+
+            return licenseDir.appendPath(licenseName)
+        }
 
     fun getPresetFilePath(presetName: String) = presetDir.appendPath(presetName)
 
