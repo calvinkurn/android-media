@@ -45,7 +45,7 @@ class AssetHelper @Inject constructor(
     }
 
     fun getFileNameFromLink(link: String): String {
-        return if(URLUtil.isValidUrl(link)) link.substring(link.lastIndexOf(PATH_SEPARATOR) + 1)
+        return if(URLUtil.isValidUrl(link)) link.substring(link.lastIndexOf(File.separator) + 1)
         else ""
     }
 
@@ -69,7 +69,6 @@ class AssetHelper @Inject constructor(
         private const val COMPOSE_CUSTOM_FACE_MAKEUP_DIR = "beauty_Android_standard"
         private const val COMPOSE_PRESET_MAKEUP_DIR = "style_makeup"
 
-        private const val PATH_SEPARATOR = "/"
         private const val EXTENSION_SEPARATOR = "."
     }
 }
