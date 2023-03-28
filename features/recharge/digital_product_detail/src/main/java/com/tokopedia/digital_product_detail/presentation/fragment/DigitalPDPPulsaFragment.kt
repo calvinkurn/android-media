@@ -45,7 +45,6 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -479,10 +478,8 @@ class DigitalPDPPulsaFragment :
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else {
-                setupDynamicScrollViewPadding()
             }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -1040,7 +1037,7 @@ class DigitalPDPPulsaFragment :
                         )
                         binding?.run {
                             val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
+                                rechargePdpPulsaClientNumberWidget.height
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding
                             rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)

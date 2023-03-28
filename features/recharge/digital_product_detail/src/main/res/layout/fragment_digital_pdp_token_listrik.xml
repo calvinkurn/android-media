@@ -34,7 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:layout_marginTop="@dimen/nested_scroll_view_margin"
         app:layout_constraintTop_toTopOf="@id/recharge_pdp_token_listrik_client_number_widget"
         app:layout_constraintBottom_toTopOf="@id/recharge_pdp_token_listrik_buy_widget">
 
