@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.adapter.factory
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.viewholder.*
@@ -70,7 +69,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogLihatListItemVH.LAYOUT
     }
 
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
+    override fun createViewHolder(view: View, type: Int): CatalogLibraryAbstractViewHolder<*> {
         return when (type) {
             CatalogTopFiveItemVH.LAYOUT -> CatalogTopFiveItemVH(
                 view,
@@ -110,7 +109,8 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 catalogLibraryListener
             )
             CatalogBrandCategoryItemVH.LAYOUT -> CatalogBrandCategoryItemVH(
-                view,catalogLibraryListener
+                view,
+                catalogLibraryListener
             )
             CatalogContainerItemVH.LAYOUT -> CatalogContainerItemVH(
                 view,
@@ -120,7 +120,8 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 view
             )
             CatalogShimmerVH.LAYOUT -> CatalogShimmerVH(view)
-            else -> super.createViewHolder(view, type)
+
+            else -> super.createViewHolder(view, type) as CatalogLibraryAbstractViewHolder<*>
         }
     }
 }

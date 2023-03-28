@@ -1,7 +1,6 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatListItemDM
@@ -22,7 +21,7 @@ class CatalogLihatListItemVH(
     val view: View,
     private val catalogLibraryListener:
         CatalogLibraryListener
-) : AbstractViewHolder<CatalogLihatListItemDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogLihatListItemDM>(view) {
     var dataModel: CatalogLihatListItemDM? = null
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {

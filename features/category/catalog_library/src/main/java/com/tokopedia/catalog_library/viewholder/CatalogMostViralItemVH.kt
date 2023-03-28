@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.viewholder
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
@@ -18,7 +17,7 @@ import com.tokopedia.user.session.UserSession
 class CatalogMostViralItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogMostViralDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogMostViralDM>(view) {
 
     private val mostViralImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_product_viral_image)

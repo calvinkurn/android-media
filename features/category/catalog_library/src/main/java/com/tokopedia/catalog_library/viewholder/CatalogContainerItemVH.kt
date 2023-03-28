@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
@@ -24,7 +23,7 @@ import com.tokopedia.unifyprinciples.Typography
 class CatalogContainerItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogContainerDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogContainerDM>(view) {
 
     private val title: Typography by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.container_titile)
@@ -87,7 +86,7 @@ class CatalogContainerItemVH(
     private fun renderRecyclerView(element: CatalogContainerDM) {
         containerRV.apply {
             layoutManager = if (element.isGrid) {
-                addItemDecoration(GridSpacingItemDecoration(CatalogLihatVH.COLUMN_COUNT,0.toPx(),false))
+                addItemDecoration(GridSpacingItemDecoration(CatalogLihatVH.COLUMN_COUNT, 0.toPx(), false))
                 GridLayoutManager(itemView.context, element.columnCount)
             } else {
                 LinearLayoutManager(itemView.context, element.orientationRecyclerView, false)
@@ -108,7 +107,5 @@ class CatalogContainerItemVH(
             containerRV.layoutParams = params
             containerRV.requestLayout()
         }
-
-
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_LIHAT_SEMUA
@@ -13,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class CatalogShimmerVH(val view: View) :
-    AbstractViewHolder<CatalogShimmerDM>(view) {
+    CatalogLibraryAbstractViewHolder<CatalogShimmerDM>(view) {
     companion object {
         val LAYOUT = R.layout.item_catalog_library_shimmer_product
     }

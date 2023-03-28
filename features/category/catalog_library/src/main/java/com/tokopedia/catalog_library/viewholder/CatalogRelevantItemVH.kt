@@ -2,7 +2,6 @@ package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDM
@@ -15,7 +14,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
-class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : AbstractViewHolder<CatalogRelevantDM>(view) {
+class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : CatalogLibraryAbstractViewHolder<CatalogRelevantDM>(view) {
 
     private var dataModel: CatalogRelevantDM? = null
 

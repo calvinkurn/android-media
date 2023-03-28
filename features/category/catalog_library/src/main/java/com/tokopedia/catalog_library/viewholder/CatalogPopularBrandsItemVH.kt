@@ -1,7 +1,6 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogPopularBrandsDM
@@ -12,7 +11,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSession
 
-class CatalogPopularBrandsItemVH(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : AbstractViewHolder<CatalogPopularBrandsDM>(view) {
+class CatalogPopularBrandsItemVH(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : CatalogLibraryAbstractViewHolder<CatalogPopularBrandsDM>(view) {
 
     private var dataModel: CatalogPopularBrandsDM? = null
 

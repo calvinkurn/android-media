@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.viewholder
 import android.os.Handler
 import android.view.View
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogBrandCategoryDM
@@ -15,7 +14,7 @@ class CatalogBrandCategoryItemVH(
     val view: View,
     private val catalogLibraryListener:
         CatalogLibraryListener
-) : AbstractViewHolder<CatalogBrandCategoryDM>(view), TabLayout.OnTabSelectedListener {
+) : CatalogLibraryAbstractViewHolder<CatalogBrandCategoryDM>(view), TabLayout.OnTabSelectedListener {
 
     var dataModel: CatalogBrandCategoryDM? = null
     private val semua = CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList(

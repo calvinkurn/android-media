@@ -1,7 +1,6 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDM
@@ -15,7 +14,7 @@ import com.tokopedia.user.session.UserSession
 class CatalogTopFiveItemVH(
     private val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogTopFiveDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogTopFiveDM>(view) {
     private var dataModel: CatalogTopFiveDM? = null
 
     private val topFiveImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {

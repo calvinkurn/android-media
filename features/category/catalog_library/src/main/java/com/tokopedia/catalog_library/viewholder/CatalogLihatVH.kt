@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog_library.R
@@ -26,7 +25,7 @@ class CatalogLihatVH(
     private val view: View,
     private val catalogLibraryListener: CatalogLibraryListener,
     private val sharedRecycledViewPool: RecycledViewPool
-) : AbstractViewHolder<CatalogLihatDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogLihatDM>(view) {
 
     private val accordionView: AccordionUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.lihat_category_accordion_view)
@@ -55,7 +54,7 @@ class CatalogLihatVH(
         getAccordionData(element.catalogLibraryDataList, element.isAsc, element.isTypeList, element.activeCategoryId)
     }
 
-    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean, isTypeList : Boolean, activeCategoryId :String) {
+    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean, isTypeList: Boolean, activeCategoryId: String) {
         accordionView.apply {
             addGroup(
                 setExpandableChildView(catalogLibraryData, isAsc, isTypeList, activeCategoryId)
@@ -66,8 +65,8 @@ class CatalogLihatVH(
     private fun setExpandableChildView(
         catalogLibraryData: CategoryData?,
         isAsc: Boolean,
-        isTypeList : Boolean,
-        activeCategoryId : String,
+        isTypeList: Boolean,
+        activeCategoryId: String
     ): AccordionDataUnify {
         val listAdapter = CatalogLibraryAdapter(
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build(),
@@ -78,10 +77,10 @@ class CatalogLihatVH(
         expandableLayout.findViewById<RecyclerView>(R.id.lihat_grid_view).apply {
             setRecycledViewPool(sharedRecycledViewPool)
             adapter = listAdapter
-            layoutManager = if(isTypeList){
+            layoutManager = if (isTypeList) {
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            }else {
-                addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT,0,false))
+            } else {
+                addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, 0, false))
                 GridLayoutManager(view.context, COLUMN_COUNT)
             }
         }
@@ -91,7 +90,8 @@ class CatalogLihatVH(
                 catalogLibraryData?.childCategoryList,
                 catalogLibraryData?.rootCategoryName,
                 catalogLibraryData?.rootCategoryId,
-                isAsc,isTypeList,
+                isAsc,
+                isTypeList,
                 activeCategoryId
             )
         )
@@ -108,11 +108,11 @@ class CatalogLihatVH(
         rootCategoryId: String?,
         isAsc: Boolean,
         isTypeList: Boolean,
-        activeCategoryId : String,
+        activeCategoryId: String
     ): MutableList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         childCategoryList?.forEach {
-            if(isTypeList){
+            if (isTypeList) {
                 visitableList.add(
                     CatalogLihatListItemDM(
                         CATALOG_LIHAT_SEMUA_ITEM,
@@ -125,7 +125,7 @@ class CatalogLihatVH(
                         activeCategoryId
                     )
                 )
-            }else {
+            } else {
                 visitableList.add(
                     CatalogLihatItemDM(
                         CATALOG_LIHAT_SEMUA_ITEM,
