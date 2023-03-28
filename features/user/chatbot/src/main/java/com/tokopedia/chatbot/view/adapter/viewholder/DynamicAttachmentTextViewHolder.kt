@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.toMessageUiModel
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode106Binding
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
@@ -39,7 +40,8 @@ class DynamicAttachmentTextViewHolder(
             binding?.messageLayoutWithReply?.fxChat
         )
         ChatbotMessageViewHolderBinder.bindChatReadStatus(
-            uiModel, binding?.messageLayoutWithReply
+            uiModel,
+            binding?.messageLayoutWithReply
         )
         ChatBackground.bindBackground(binding?.chatLayoutContainer, true)
 
@@ -47,6 +49,14 @@ class DynamicAttachmentTextViewHolder(
             messageLayoutWithReply.fxChat?.message?.text = uiModel.message
             messageLayoutWithReply.replyBubbleContainer?.hide()
             messageLayoutWithReply.background = bindBackground()
+            messageLayoutWithReply.fxChat?.setOnLongClickListener {
+                replyBubbleListener.showReplyOption(uiModel.toMessageUiModel())
+                return@setOnLongClickListener true
+            }
+            messageLayoutWithReply.fxChat?.message?.setOnLongClickListener {
+                replyBubbleListener.showReplyOption(uiModel.toMessageUiModel(), messageLayoutWithReply.fxChat?.message)
+                return@setOnLongClickListener true
+            }
         }
     }
 
