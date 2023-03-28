@@ -25,6 +25,8 @@ class GetPersonaDataUseCase @Inject constructor(
     companion object {
         private const val ERROR_PERSONA_VALUE_IS_EMPTY = "Error : Persona status is empty"
         private const val ERROR_PERSONA_LIST_IS_EMPTY = "Error : Persona list is empty"
+        private const val ERROR_PERSONA_NAME_IS_NOT_VALID =
+            "Error : Persona with name `%s` is not valid"
     }
 
     suspend fun execute(shopId: String, page: String): PersonaDataUiModel {
@@ -51,16 +53,21 @@ class GetPersonaDataUseCase @Inject constructor(
     }
 
     private fun getPersonaData(
-        data: PersonaStatusModel,
-        personaList: List<PersonaUiModel>
+        data: PersonaStatusModel, personaList: List<PersonaUiModel>
     ): PersonaDataUiModel {
         val persona = personaList.firstOrNull {
             it.value.equals(data.persona, true)
         }
+        if (persona == null) {
+            val message = String.format(
+                ERROR_PERSONA_NAME_IS_NOT_VALID, data.persona
+            )
+            throw MessageErrorException(message)
+        }
         return PersonaDataUiModel(
             persona = data.persona,
             personaStatus = getPersonaStatusType(data.status),
-            personaData = persona ?: PersonaUiModel(value = data.persona)
+            personaData = persona
         )
     }
 
