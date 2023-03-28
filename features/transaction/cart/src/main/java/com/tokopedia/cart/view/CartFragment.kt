@@ -3323,7 +3323,7 @@ class CartFragment :
         return cartAdapter.allAvailableCartItemData
     }
 
-    override fun getAllShopDataList(): List<CartGroupHolderData> {
+    override fun getAllGroupDataList(): List<CartGroupHolderData> {
         return cartAdapter.allShopGroupDataList
     }
 
