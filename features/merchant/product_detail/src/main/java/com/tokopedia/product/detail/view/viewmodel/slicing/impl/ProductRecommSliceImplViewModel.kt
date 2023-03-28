@@ -11,8 +11,8 @@ import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommendationSlice
-import com.tokopedia.product.detail.view.viewmodel.slicing.ViewModelSlice
+import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommSliceViewModel
+import com.tokopedia.product.detail.view.viewmodel.slicing.SliceViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -20,7 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 /**
@@ -28,10 +28,10 @@ import javax.inject.Inject
  * Project name: android-tokopedia-core
  **/
 
-class ProductRecommendationSliceImpl @Inject constructor(
+class ProductRecommSliceImplViewModel @Inject constructor(
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
     private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>
-) : ViewModelSlice(), ProductRecommendationSlice {
+) : SliceViewModel(), ProductRecommSliceViewModel {
 
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
@@ -68,8 +68,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
             return
         }
 
-        scope.launch(scope.coroutineContext) {
-            try {
+        launch {
+            runCatching {
                 val response = getRecommendationUseCase.get().getData(
                     GetRecommendationRequestParam(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
@@ -84,9 +84,9 @@ class ProductRecommendationSliceImpl @Inject constructor(
                 } else {
                     Fail(MessageErrorException())
                 }
-            } catch (t: Throwable) {
+            }.onFailure {
                 alreadyHitRecom.remove(pageName)
-                _loadViewToView.value = Throwable(pageName, t).asFail()
+                _loadViewToView.value = Throwable(pageName, it).asFail()
             }
         }
     }
@@ -95,8 +95,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
         val nonNullPage = page ?: ProductDetailConstant.DEFAULT_PAGE_NUMBER
         val nonNullProductId = productId.orEmpty()
 
-        scope.launch(scope.coroutineContext) {
-            try {
+        launch {
+            runCatching {
                 val requestParams = GetRecommendationRequestParam(
                     pageNumber = nonNullPage,
                     pageName = pageName,
@@ -109,8 +109,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
                 } else {
                     _verticalRecommendation.value = dataResponse.asSuccess()
                 }
-            } catch (t: Throwable) {
-                _verticalRecommendation.value = Fail(t)
+            }.onFailure {
+                _verticalRecommendation.value = Fail(it)
             }
         }
     }
@@ -120,8 +120,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
         annotationChip: AnnotationChip,
         productId: String
     ) {
-        scope.launch(scope.coroutineContext) {
-            try {
+        launch {
+            runCatching {
                 if (!GlobalConfig.isSellerApp()) {
                     val requestParams = GetRecommendationRequestParam(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
@@ -129,7 +129,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
                         queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                         productIds = arrayListOf(productId)
                     )
-                    val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+                    val recommendationResponse =
+                        getRecommendationUseCase.get().getData(requestParams)
                     val updatedData = if (recommendationResponse.isNotEmpty() &&
                         recommendationResponse.first().recommendationItemList.isNotEmpty()
                     ) {
@@ -144,13 +145,13 @@ class ProductRecommendationSliceImpl @Inject constructor(
                         annotationChip
                     )
                 }
-            } catch (t: Throwable) {
+            }.onFailure {
                 updateFilterTopadsProduct(
                     null,
                     recommendationDataModel,
                     annotationChip
                 )
-                _statusFilterTopAdsProduct.postValue(t.asFail())
+                _statusFilterTopAdsProduct.postValue(it.asFail())
             }
         }
     }
@@ -188,8 +189,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
             return
         }
 
-        scope.launch(scope.coroutineContext) {
-            try {
+        launch {
+            runCatching {
                 val response = getProductRecommendationUseCase.get().executeOnBackground(
                     GetProductRecommendationUseCase.createParams(
                         productId = productId,
@@ -198,9 +199,8 @@ class ProductRecommendationSliceImpl @Inject constructor(
                         miniCartData = miniCart
                     )
                 )
-
                 _loadTopAdsProduct.value = response.asSuccess()
-            } catch (t: Throwable) {
+            }.onFailure {
                 _loadTopAdsProduct.value = Throwable(pageName).asFail()
             }
         }

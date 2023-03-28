@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.Result
  * Project name: android-tokopedia-core
  **/
 
-interface ProductRecommendationSlice {
+interface ProductRecommSliceViewModel {
 
     val loadViewToView: LiveData<Result<RecommendationWidget>>
 
