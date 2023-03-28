@@ -7,7 +7,6 @@ object ShipmentRollenceUtil {
 
     @JvmStatic
     fun enableCheckoutNewUpsellImprovement(): Boolean {
-        //return true // for testing
         try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance()
                 .abTestPlatform.getString(RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT, getDefaultRollenceValue())
