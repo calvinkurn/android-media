@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -19,8 +18,8 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMasterPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistParser
+import java.net.HttpURLConnection
 import java.net.URL
-import kotlin.system.measureTimeMillis
 
 private const val SCHEME_HTTPS = "https"
 private const val M3U8_EXTENSION = ".m3u8"
@@ -63,36 +62,31 @@ class M3U8ModelLoader : ModelLoader<String, Bitmap> {
 class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitmap> {
 
     companion object {
-        private const val TAG = "M3U8DataFetcher"
+        private const val REQUEST_METHOD_GET = "GET"
     }
 
     private var isCancelled: Boolean = false
+    private var connection: HttpURLConnection? = null
 
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
-        Log.d(TAG, "Begin load $masterPlaylistUrl")
-        val loadTime = measureTimeMillis {
-            try {
-                val firstSegmentUrl = findFirstSegmentUrl()
-                if (!isCancelled && firstSegmentUrl.isBlank()) {
-                    throw GlideException(
-                        String.format(M3U8_UNABLE_FIND_SEGMENT_ERROR_FORMAT, masterPlaylistUrl)
-                    )
-                } else {
-                    val bitmap = getFirstFrameBitmap(firstSegmentUrl)
-                    callback.onDataReady(bitmap)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed load $masterPlaylistUrl", e)
-                callback.onLoadFailed(e)
+        try {
+            val firstSegmentUrl = findFirstSegmentUrl()
+            if (!isCancelled && firstSegmentUrl.isBlank()) {
+                throw GlideException(
+                    String.format(M3U8_UNABLE_FIND_SEGMENT_ERROR_FORMAT, masterPlaylistUrl)
+                )
+            } else {
+                val bitmap = getFirstFrameBitmap(firstSegmentUrl)
+                callback.onDataReady(bitmap)
             }
+        } catch (e: Exception) {
+            callback.onLoadFailed(e)
         }
-        Log.d(TAG, "Finished load $masterPlaylistUrl in $loadTime ms")
     }
 
     override fun cleanup() {}
 
     override fun cancel() {
-        Log.d(TAG, "Cancelled load $masterPlaylistUrl")
         isCancelled = true
     }
 
@@ -106,37 +100,51 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
 
     private fun findFirstSegmentUrl(url: String = masterPlaylistUrl): String {
         if (isCancelled) {
-            Log.d(TAG, "Cancelled load $masterPlaylistUrl, not searching for first segment URL")
             return ""
         }
 
-        return URL(url).openStream().buffered().use {
-            when (val hlsPlaylist = HlsPlaylistParser().parse(Uri.parse(url), it)) {
-                is HlsMasterPlaylist -> {
-                    hlsPlaylist.mediaPlaylistUrls.firstOrNull()?.let { firstMediaPlaylist ->
-                        findFirstSegmentUrl(firstMediaPlaylist.toString())
-                    }.orEmpty()
-                }
-                is HlsMediaPlaylist -> {
-                    hlsPlaylist.segments.firstOrNull()?.let { firstSegment ->
-                        composeSegmentUrl(firstSegment, hlsPlaylist)
-                    }.orEmpty()
-                }
-                else -> ""
+        setupConnection(url)
+        return processHlsPlaylist(loadHlsPlaylist(url))
+    }
+
+    private fun setupConnection(url: String) {
+        connection = URL(url).openConnection() as? HttpURLConnection
+        connection?.requestMethod = REQUEST_METHOD_GET
+    }
+
+    private fun loadHlsPlaylist(url: String): HlsPlaylist? {
+        val hlsPlaylist = connection?.inputStream?.buffered()?.use {
+            HlsPlaylistParser().parse(Uri.parse(url), it)
+        }
+        connection?.disconnect()
+        return hlsPlaylist
+    }
+
+    private fun processHlsPlaylist(hlsPlaylist: HlsPlaylist?): String {
+        return when (hlsPlaylist) {
+            is HlsMasterPlaylist -> {
+                hlsPlaylist.mediaPlaylistUrls.firstOrNull()?.let { firstMediaPlaylist ->
+                    findFirstSegmentUrl(firstMediaPlaylist.toString())
+                }.orEmpty()
             }
+            is HlsMediaPlaylist -> {
+                hlsPlaylist.segments.firstOrNull()?.let { firstSegment ->
+                    composeSegmentUrl(firstSegment, hlsPlaylist)
+                }.orEmpty()
+            }
+            else -> ""
         }
     }
 
     private fun getFirstFrameBitmap(url: String): Bitmap? {
         if (isCancelled) {
-            Log.d(TAG, "Cancelled load $masterPlaylistUrl, not searching for first frame bitmap")
             return null
         }
 
         val retriever = MediaMetadataRetriever()
         return try {
             retriever.setDataSource(url, mutableMapOf())
-            retriever.frameAtTime
+            retriever.getFrameAtTime(0L, MediaMetadataRetriever.OPTION_CLOSEST)
         } catch (t: Throwable) {
             null
         } finally {
