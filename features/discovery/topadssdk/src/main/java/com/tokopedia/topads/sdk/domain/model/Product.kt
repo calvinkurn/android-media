@@ -39,6 +39,7 @@ private const val KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED =
 private const val KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order"
 private const val KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average"
 private const val KEY_CUSTOM_VIDEO_URL = "customvideo_url"
+private const val KEY_STOCK_INFO = "stock_info"
 private const val KEY_PARENT_ID = "parent_id"
 
 @Parcelize
@@ -175,6 +176,10 @@ data class Product(
     @SerializedName(KEY_CUSTOM_VIDEO_URL)
     @Expose
     var customVideoUrl: String = "",
+
+    @SerializedName(KEY_STOCK_INFO)
+    @Expose
+    var stock_info:StockInfo = StockInfo(),
 
     @SerializedName(KEY_PARENT_ID)
     @Expose

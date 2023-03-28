@@ -1,3 +1,4 @@
+
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
@@ -59,6 +60,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -107,6 +109,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
 import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
@@ -361,6 +365,9 @@ open class HomeRevampFragment :
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
     private var refreshLayoutOld: ToggleableSwipeRefreshLayout? = null
@@ -588,6 +595,9 @@ open class HomeRevampFragment :
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
+        context?.let {
+            HomeRollenceController.fetchAtfRollenceValue(it)
+        }
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
@@ -605,7 +615,11 @@ open class HomeRevampFragment :
 
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
-                            requestStatusBarLight()
+                            if (HomeRollenceController.isUsingAtf2Variant()) {
+                                requestStatusBarDark()
+                            } else {
+                                requestStatusBarLight()
+                            }
                         }
 
                         override fun onSwitchToLightToolbar() {
@@ -614,7 +628,8 @@ open class HomeRevampFragment :
 
                         override fun onYposChanged(yOffset: Int) {
                         }
-                    }
+                    },
+                    isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
                 )
             )
             val icons = IconBuilder(
@@ -636,6 +651,7 @@ open class HomeRevampFragment :
         } else {
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
+
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
@@ -916,15 +932,19 @@ open class HomeRevampFragment :
         }
     }
 
+    override fun goToLogin() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+        }
+    }
+
     private fun initStickyLogin() {
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                context?.let {
-                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
-                }
+                goToLogin()
             }
 
             override fun onDismiss() {
@@ -1436,7 +1456,7 @@ open class HomeRevampFragment :
             CategoryNavigationCallback(context, this),
             RechargeBUWidgetCallback(context, this),
             bannerCarouselCallback,
-            DynamicIconComponentCallback(context, this),
+            DynamicIconComponentCallback(context, this, homePrefController),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
             this,
