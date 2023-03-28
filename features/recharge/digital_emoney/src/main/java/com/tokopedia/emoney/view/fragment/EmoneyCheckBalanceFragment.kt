@@ -30,6 +30,7 @@ import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -45,8 +46,9 @@ import javax.inject.Inject
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    protected lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
-    protected lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
+    private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
+    private lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
+    private lateinit var jakcardBalanceViewModel: JakCardBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     val errorHanlderBuilder = ErrorHandler.Builder().apply {
@@ -69,6 +71,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
             tapcashBalanceViewModel = viewModelProvider.get(TapcashBalanceViewModel::class.java)
+            jakcardBalanceViewModel = viewModelProvider.get(JakCardBalanceViewModel::class.java)
         }
     }
 
@@ -126,6 +129,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
                     DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+        } else if(CardUtils.isJakCard(intent)) {
+            issuerActive = ISSUER_ID_JAKCARD
+            showLoading(getOperatorName(issuerActive))
+            jakcardBalanceViewModel.procesJakCardTagIntent(IsoDep.get(tag))
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
@@ -279,6 +286,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         )
                     }
                     else -> return@let
+                }
+            }
+        })
+
+        jakcardBalanceViewModel.jakCardInquiry.observe(viewLifecycleOwner, Observer {
+            it.error?.let { error ->
+                when (error.status) {
+                    0 -> showCardLastBalance(it)
                 }
             }
         })
