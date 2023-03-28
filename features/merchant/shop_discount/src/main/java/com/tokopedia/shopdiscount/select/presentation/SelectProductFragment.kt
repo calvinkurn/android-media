@@ -40,7 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.URLEncoder
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class SelectProductFragment : BaseDaggerFragment() {
@@ -62,7 +62,6 @@ class SelectProductFragment : BaseDaggerFragment() {
             }
             return fragment
         }
-
     }
 
     private var binding by autoClearedNullable<FragmentSelectProductBinding>()
@@ -140,7 +139,6 @@ class SelectProductFragment : BaseDaggerFragment() {
 
                 override fun onDismiss() {
                 }
-
             })
         }
     }
@@ -180,7 +178,6 @@ class SelectProductFragment : BaseDaggerFragment() {
             }
         }
     }
-
 
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
@@ -268,7 +265,6 @@ class SelectProductFragment : BaseDaggerFragment() {
 
             binding?.recyclerView?.gone()
             binding?.emptyState?.visible()
-
         } else {
             renderList(data, data.size >= PAGE_SIZE)
             binding?.recyclerView?.visible()
@@ -340,7 +336,7 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun showDisableReason(disableReason: String) {
-        val wording : String = when{
+        val wording: String = when {
             disableReason == DISABLED_REASON_PRODUCT_ALREADY_HAS_DISCOUNT -> getString(R.string.sd_product_already_on_discount)
             disableReason.isNotEmpty() -> disableReason
             else -> getString(R.string.sd_product_already_on_discount)
@@ -381,10 +377,9 @@ class SelectProductFragment : BaseDaggerFragment() {
             requestId,
             page,
             keyword,
-            viewModel.shouldDisableProductSelection(),
+            viewModel.shouldDisableProductSelection()
         )
     }
-
 
     private fun displayError() {
         binding?.run {
@@ -396,7 +391,6 @@ class SelectProductFragment : BaseDaggerFragment() {
                 viewModel.getSellerBenefits()
             }
         }
-
     }
 
     private fun clearSearchBar() {
@@ -406,10 +400,9 @@ class SelectProductFragment : BaseDaggerFragment() {
             viewModel.getRequestId(),
             FIRST_PAGE,
             EMPTY_STRING,
-            viewModel.shouldDisableProductSelection(),
+            viewModel.shouldDisableProductSelection()
         )
     }
-
 
     private fun redirectToDesktopPage() {
         if (!isAdded) return
@@ -458,7 +451,6 @@ class SelectProductFragment : BaseDaggerFragment() {
             endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(
                 endlessLayoutManagerListener
             )
-
         }
         endlessRecyclerViewScrollListener?.apply {
             binding?.recyclerView?.addOnScrollListener(this)
@@ -478,7 +470,6 @@ class SelectProductFragment : BaseDaggerFragment() {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
     }
-
 
     private fun showLoading() {
         productAdapter.showLoading()

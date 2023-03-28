@@ -7,9 +7,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.ItemShopDiscountManageDiscountGlobalErrorLayoutBinding
-import com.tokopedia.shopdiscount.databinding.ItemShopDiscountProductDetailListGlobalErrorLayoutBinding
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountManageDiscountGlobalErrorUiModel
-import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailListGlobalErrorUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopDiscountManageDiscountGlobalErrorViewHolder(
@@ -41,5 +39,4 @@ class ShopDiscountManageDiscountGlobalErrorViewHolder(
             }
         }
     }
-
 }

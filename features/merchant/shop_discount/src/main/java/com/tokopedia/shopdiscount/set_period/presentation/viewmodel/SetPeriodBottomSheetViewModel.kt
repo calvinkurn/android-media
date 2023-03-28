@@ -14,7 +14,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 class SetPeriodBottomSheetViewModel @Inject constructor(
@@ -46,13 +47,13 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
         get() = _benefit
     private var benefitPackageName = EMPTY_STRING
 
-    val defaultStartDate: Date by  lazy {
+    val defaultStartDate: Date by lazy {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         calendar.time
     }
 
-    val defaultMembershipEndDate: Date by  lazy {
+    val defaultMembershipEndDate: Date by lazy {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.YEAR, ONE_YEAR)
         calendar.time
@@ -66,8 +67,8 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
             }
             _benefit.value = Success(result)
         }, onError = {
-            _benefit.value = Fail(it)
-        })
+                _benefit.value = Fail(it)
+            })
     }
 
     fun onOneYearPeriodSelected() {
@@ -135,12 +136,11 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
         return benefitPackageName
     }
 
-    fun setMaxDate(date: Date){
+    fun setMaxDate(date: Date) {
         maxDate = date
     }
 
     fun getMaxDate(): Date {
         return maxDate
     }
-
 }

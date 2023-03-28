@@ -16,13 +16,13 @@ import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDisco
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageVariantFragmentListener
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
-import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant.SELLER_EDU_R2_ABUSIVE_URL
-import com.tokopedia.shopdiscount.utils.formatter.NumberFormatter
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.thousandFormattedWithoutCurrency
+import com.tokopedia.shopdiscount.utils.formatter.NumberFormatter
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.utils.formatter.SpannableHelper
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.ImageUnify
@@ -33,7 +33,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.math.round
 
@@ -93,7 +93,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
                 textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
                 textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
                 textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount
-                tickerR2AbusiveError =  layoutFieldContainer.tickerR2AbusiveError
+                tickerR2AbusiveError = layoutFieldContainer.tickerR2AbusiveError
                 quantityEditorMaxOrder = layoutFieldContainer.quantityEditorMaxOrder
             }
         }
@@ -162,7 +162,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
             uiModel.selectedPeriodChip,
             mode
         )
-        bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
+        bottomSheet.setOnApplyClickListener { setPeriodResultModel, selectedPeriodChip ->
             setSelectedPeriodChip(selectedPeriodChip, uiModel)
             setDiscountPeriodBasedOnBottomSheetResult(
                 setPeriodResultModel,
@@ -411,14 +411,13 @@ class ShopDiscountManageProductVariantItemViewHolder(
                             averageSoldPrice.getCurrencyFormatted()
                         )
                         setHtmlDescription(tickerDesc)
-                        setDescriptionClickEvent(object: TickerCallback {
+                        setDescriptionClickEvent(object : TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                 applyRecommendedSoldPriceToDiscountedPrice(averageSoldPrice)
                             }
 
                             override fun onDismiss() {
                             }
-
                         })
                     }
                 }
@@ -464,7 +463,8 @@ class ShopDiscountManageProductVariantItemViewHolder(
 
     private fun redirectToWebViewR2AbusiveSellerInformation() {
         RouteManager.route(
-            itemView.context, String.format(
+            itemView.context,
+            String.format(
                 "%s?url=%s",
                 ApplinkConst.WEBVIEW,
                 SELLER_EDU_R2_ABUSIVE_URL
@@ -475,10 +475,11 @@ class ShopDiscountManageProductVariantItemViewHolder(
     private fun getMinDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {
         val originalPrice = uiModel.variantMinOriginalPrice.orZero()
         val minDiscountPrice = (originalPrice.toDouble() * 0.01).toInt()
-        return if(minDiscountPrice < 100)
+        return if (minDiscountPrice < 100) {
             100
-        else
+        } else {
             minDiscountPrice
+        }
     }
 
     private fun getMaxDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {
@@ -523,9 +524,11 @@ class ShopDiscountManageProductVariantItemViewHolder(
     ): String {
         return RangeFormatterUtil.getFormattedRangeString(
             minOriginalPrice,
-            maxOriginalPrice, {
+            maxOriginalPrice,
+            {
                 it.getCurrencyFormatted()
-            }, { min, max ->
+            },
+            { min, max ->
                 String.format(
                     getString(R.string.shop_discount_manage_product_discount_original_price_format),
                     min.getCurrencyFormatted(),
@@ -561,7 +564,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
     }
 
     private fun getFormattedDiscountPeriod(
-        uiModel: ShopDiscountManageProductVariantItemUiModel,
+        uiModel: ShopDiscountManageProductVariantItemUiModel
     ): String {
         val startDate = uiModel.startDate
         val endDate = uiModel.endDate
@@ -573,5 +576,4 @@ class ShopDiscountManageProductVariantItemViewHolder(
             endDateFormatted
         )
     }
-
 }

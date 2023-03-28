@@ -1,7 +1,6 @@
 package com.tokopedia.shopdiscount.manage.data.request
 
 import android.annotation.SuppressLint
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
@@ -10,7 +9,7 @@ data class GetSlashPriceProductListRequest(
     @SerializedName("request_header")
     var requestHeader: RequestHeader = RequestHeader(),
     @SerializedName("filter")
-    var filter: Filter = Filter(),
+    var filter: Filter = Filter()
 ) {
     data class Filter(
         @SerializedName("page")

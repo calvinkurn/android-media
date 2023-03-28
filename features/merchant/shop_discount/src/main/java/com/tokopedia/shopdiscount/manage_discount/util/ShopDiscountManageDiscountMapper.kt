@@ -2,12 +2,12 @@ package com.tokopedia.shopdiscount.manage_discount.util
 
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shopdiscount.common.data.request.RequestHeader
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
+import com.tokopedia.shopdiscount.common.data.request.RequestHeader
+import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
 import com.tokopedia.shopdiscount.manage_discount.data.request.GetSlashPriceSetupProductListRequest
 import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductSubmissionResponse
-import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
 import com.tokopedia.shopdiscount.manage_discount.data.response.GetSlashPriceSetupProductListResponse
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceProductSubmissionUiModel
@@ -15,7 +15,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlash
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.utils.date.toDate
 import java.lang.Exception
-import java.util.*
+import java.util.Date
 
 object ShopDiscountManageDiscountMapper {
 
@@ -105,10 +105,11 @@ object ShopDiscountManageDiscountMapper {
         selectedProductVariantId: String
     ): List<ShopDiscountSetupProductUiModel.SetupProductData> {
         return productResponse.variants.filter {
-            if (selectedProductVariantId.isNotEmpty())
+            if (selectedProductVariantId.isNotEmpty()) {
                 it.productId == selectedProductVariantId
-            else
+            } else {
                 true
+            }
         }.map {
             ShopDiscountSetupProductUiModel.SetupProductData(
                 productId = it.productId,
@@ -267,7 +268,7 @@ object ShopDiscountManageDiscountMapper {
             listProductData = listOf(
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
                     productId = productId,
-                    position = position,
+                    position = position
                 )
             )
         )

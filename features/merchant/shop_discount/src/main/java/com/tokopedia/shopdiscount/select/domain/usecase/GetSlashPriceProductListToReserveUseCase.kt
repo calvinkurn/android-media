@@ -12,11 +12,10 @@ import com.tokopedia.shopdiscount.select.data.request.SortRequest
 import com.tokopedia.shopdiscount.select.data.response.GetSlashPriceProductListToReserveResponse
 import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetSlashPriceProductListToReserveUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
+    private val repository: GraphqlRepository
 ) : GraphqlUseCase<GetSlashPriceProductListToReserveResponse>(repository) {
 
     companion object {
@@ -74,17 +73,16 @@ class GetSlashPriceProductListToReserveUseCase @Inject constructor(
         source: String = CAMPAIGN,
         ip: String = EMPTY_STRING,
         useCase: String = EMPTY_STRING,
-        sortBy: String= EMPTY_STRING,
+        sortBy: String = EMPTY_STRING,
         sortType: String = EMPTY_STRING,
-        requestId : String,
+        requestId: String,
         page: Int,
         pageSize: Int = 20,
         keyword: String = EMPTY_STRING,
-        showcaseIds: List<String>  = emptyList(),
+        showcaseIds: List<String> = emptyList(),
         categoryIds: List<String> = emptyList(),
         warehouseIds: List<String> = emptyList()
     ) {
-
         val request = GetSlashPriceProductListToReserveRequest(
             RequestHeader(source, ip, useCase),
             requestId,
@@ -94,6 +92,4 @@ class GetSlashPriceProductListToReserveUseCase @Inject constructor(
         val params = mapOf(REQUEST_PARAM_KEY to request)
         setRequestParams(params)
     }
-
-
 }

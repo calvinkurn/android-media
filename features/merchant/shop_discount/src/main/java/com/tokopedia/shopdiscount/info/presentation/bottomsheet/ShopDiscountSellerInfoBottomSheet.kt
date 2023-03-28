@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,8 +18,8 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSellerInfoBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
-import com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
 import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSellerInfoBottomSheetViewModel
+import com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -32,7 +31,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
@@ -72,7 +71,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeSlashPriceTickerData() {
-        viewModel.slashPriceTickerLiveData.observe(viewLifecycleOwner, {
+        viewModel.slashPriceTickerLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val uiModel = it.data
@@ -83,7 +82,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                 is Fail -> {
                 }
             }
-        })
+        }
     }
 
     private fun populateTickerData(listTicker: List<TickerData>) {
@@ -93,7 +92,6 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     redirectLink(linkUrl)
                 }
-
             })
             tickerInfo?.apply {
                 show()
@@ -107,7 +105,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeSellerInfoBenefitLiveData() {
-        viewModel.sellerInfoLiveData.observe(viewLifecycleOwner, {
+        viewModel.sellerInfoLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -118,13 +116,12 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                         setQuotaLeftSection(it.data)
                         setExpirySection(it.data)
                     }
-
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun setExpirySection(data: ShopDiscountSellerInfoUiModel) {
@@ -237,7 +234,6 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
         globalErrorLayout?.hide()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -300,5 +296,4 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             }
         }
     }
-
 }
