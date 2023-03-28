@@ -77,7 +77,10 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFee;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
 import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
+import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel;
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
@@ -134,7 +137,6 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -156,7 +158,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
@@ -245,6 +246,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int ADD_ON_STATUS_DISABLE = 2;
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
+
+    private static final String PLATFORM_FEE_CODE = "platform_fee";
 
     private static final String KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids";
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
@@ -4173,6 +4176,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void checkPlatformFee() {
+        ShipmentPlatformFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
+        if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
+        && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
+            shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        } else {
+            getPlatformFeeData();
+        }
+    }
+
+    @Override
+    public void refetchPlatformFee() {
+        shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee().setLoading(true);
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostItemIndex());
+        getPlatformFeeData();
+    }
+
+    private void getPlatformFeeData() {
         PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
         platformFeeRequest.setGatewayCode("CREDITCARD");
         platformFeeRequest.setProfileCode("TKPD_APPS");
@@ -4181,13 +4201,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showPlatformFeeData() {
-
+    public void showPlatformFeeData(PaymentFeeGqlResponse platformFeeData) {
+        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+        for (PaymentFee paymentFee : platformFeeData.getResponse().getData()) {
+            if (paymentFee.getCode().equalsIgnoreCase(PLATFORM_FEE_CODE)) {
+                platformFeeModel.setTitle(paymentFee.getTitle());
+                platformFeeModel.setFee(paymentFee.getFee());
+                platformFeeModel.setMinRange(paymentFee.getMinRange());
+                platformFeeModel.setMaxRange(paymentFee.getMaxRange());
+                platformFeeModel.setShowTooltip(paymentFee.getShowTooltip());
+                platformFeeModel.setTickerDesc(paymentFee.getTooltipInfo());
+                platformFeeModel.setSlashedFeeTitle(paymentFee.getSlashedLabel());
+                platformFeeModel.setSlashedFee(paymentFee.getSlashedFee() * -1);
+            }
+        }
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
     }
 
     @Override
     public void showPlatformFeeSkeletonLoading() {
-
+        shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee().setLoading(true);
+        shipmentAdapter.updateShipmentCostModel();
     }
 
     @Override

@@ -9,14 +9,22 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
-class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(itemView) {
+class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater,
+                             private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
 
     private val mRlShipmentCostLayout: RelativeLayout = itemView.findViewById(R.id.rl_shipment_cost)
     private val mTvTotalItemLabel: TextView = itemView.findViewById(R.id.tv_total_item_label)
@@ -52,10 +60,12 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvSummaryAddOnPrice: Typography = itemView.findViewById(R.id.tv_summary_add_on_price)
     private val mTickerPlatformFeeInfo: Ticker = itemView.findViewById(R.id.ticker_platform_fee_info)
     private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_label)
-    private val mIvPlatformFeeIconInfo: Typography = itemView.findViewById(R.id.ic_dynamic_platform_fee_info)
+    private val mIvPlatformFeeIconInfo: IconUnify = itemView.findViewById(R.id.ic_dynamic_platform_fee_info)
     private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_value)
     private val mTvDiscountPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_label)
     private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_value)
+    private val mLoaderPlatformFeeLabel: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_label)
+    private val mLoaderPlatformFeeValue: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_value)
 
     @SuppressLint("StringFormatInvalid")
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
@@ -107,7 +117,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvBookingFee.text = getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
         renderAddOnCost(shipmentCost)
-        renderPlatformFee(shipmentCost)
+        renderPlatformFee(shipmentCost.dynamicPlatformFee)
     }
 
     private fun renderDiscount(shipmentCost: ShipmentCostModel) {
@@ -170,8 +180,61 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         }
     }
 
-    private fun renderPlatformFee(shipmentCost: ShipmentCostModel) {
+    private fun renderPlatformFee(platformFeeModel: ShipmentPlatformFeeModel) {
+        if (platformFeeModel.isLoading) {
+            mTickerPlatformFeeInfo.gone()
+            mTvPlatformFeeLabel.gone()
+            mIvPlatformFeeIconInfo.gone()
+            mTvPlatformFeeValue.gone()
+            mTvDiscountPlatformFeeLabel.gone()
+            mTvDiscountPlatformFeeValue.gone()
+            mLoaderPlatformFeeLabel.visible()
+            mLoaderPlatformFeeValue.visible()
+        } else {
+            if (platformFeeModel.isShowTooltip) {
+                mTickerPlatformFeeInfo.visible()
+                mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.tickerDesc)
+                mTickerPlatformFeeInfo.closeButtonVisibility = View.GONE
+                mTickerPlatformFeeInfo.setDescriptionClickEvent(object: TickerCallback{
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        shipmentAdapterActionListener.refetchPlatformFee();
+                    }
 
+                    override fun onDismiss() { }
+
+                })
+            } else {
+                if (platformFeeModel.title.isEmpty()) {
+                    mLoaderPlatformFeeLabel.gone()
+                    mLoaderPlatformFeeValue.gone()
+                    mTickerPlatformFeeInfo.gone()
+                    mTvPlatformFeeLabel.gone()
+                    mIvPlatformFeeIconInfo.gone()
+                    mTvPlatformFeeValue.gone()
+                    mTvDiscountPlatformFeeLabel.gone()
+                    mTvDiscountPlatformFeeValue.gone()
+                } else {
+                    mLoaderPlatformFeeLabel.gone()
+                    mLoaderPlatformFeeValue.gone()
+                    mTickerPlatformFeeInfo.gone()
+                    mTvPlatformFeeLabel.visible()
+                    mTvPlatformFeeLabel.text = platformFeeModel.title
+                    mIvPlatformFeeIconInfo.visible()
+                    mTvPlatformFeeValue.visible()
+                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+
+                    if (platformFeeModel.slashedFeeTitle.isNotEmpty()) {
+                        mTvDiscountPlatformFeeLabel.visible()
+                        mTvDiscountPlatformFeeLabel.text = platformFeeModel.slashedFeeTitle
+                        mTvDiscountPlatformFeeValue.visible()
+                        mTvDiscountPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+                    } else {
+                        mTvDiscountPlatformFeeLabel.gone()
+                        mTvDiscountPlatformFeeValue.gone()
+                    }
+                }
+            }
+        }
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

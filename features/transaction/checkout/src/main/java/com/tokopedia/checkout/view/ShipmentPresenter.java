@@ -3317,15 +3317,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         dynamicPlatformFeeUseCase.setParams(request);
         dynamicPlatformFeeUseCase.execute(
-                cartShipmentAddressFormData -> {
+                platformFeeData -> {
                     if (getView() != null) {
-                        getView().showPlatformFeeData();
+                        getView().showPlatformFeeData(platformFeeData);
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
-
                     Timber.d(throwable);
                     if (getView() != null) {
+                        // TODO: wording to show if failed to load on client side?
                         getView().showPlatformFeeTickerFailedToLoad();
                     }
                     return Unit.INSTANCE;

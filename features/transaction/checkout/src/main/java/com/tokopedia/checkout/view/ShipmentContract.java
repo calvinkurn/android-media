@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
 import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
@@ -213,7 +214,7 @@ public interface ShipmentContract {
 
         void hidePlatformFeeTickerFailedToLoad();
 
-        void showPlatformFeeData();
+        void showPlatformFeeData(PaymentFeeGqlResponse platformFeeData);
     }
 
     interface AnalyticsActionListener {

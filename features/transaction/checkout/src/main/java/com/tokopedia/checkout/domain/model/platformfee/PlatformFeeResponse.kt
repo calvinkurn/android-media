@@ -36,6 +36,8 @@ class PaymentFee(
     val showTooltip: Boolean = false,
     @SerializedName("slashed_fee")
     val slashedFee: Int = 0,
+    @SerializedName("slashed_label")
+    val slashedLabel: String = "",
     @SerializedName("tooltip_info")
     val tooltipInfo: String = "",
     @SerializedName("min_range")

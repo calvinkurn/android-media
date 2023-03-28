@@ -48,10 +48,11 @@ class DynamicPlatformFeeUseCase @Inject constructor(
                     "code": "platform_fee",
                     "title": "Biaya Jasa Aplikasi",
                     "fee": 1000,
-                    "tooltip_info": "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu. Jumlah biaya jasa aplikasi disesuaikan dengan total tagihan dan metode pembayaran kamu.",
+                    "tooltip_info": "Biaya jasa aplikasi gagal ditampilkan. Kamu bisa lanjut ke Pembayaran buat lihat Total Tagihan atau muat ulang",
                     "show_tooltip": true,
-                    "show_slashed": false,
-                    "slashed_fee": 0
+                    "show_slashed": true,
+                    "slashed_fee": 500,
+                    "slashed_label": "Diskon Jasa Aplikasi"
                   }
                 ]
               }

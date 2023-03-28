@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
@@ -200,7 +201,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, scheduleDeliverySubscription);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
-            return new ShipmentCostViewHolder(view, layoutInflater);
+            return new ShipmentCostViewHolder(view, layoutInflater, shipmentAdapterActionListener);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
             return new PromoCheckoutViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
@@ -413,7 +414,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
-                String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
+                double platformFee = shipmentCostModel.getDynamicPlatformFee().getFee() <= 0 ? 0 : shipmentCostModel.getDynamicPlatformFee().getFee();
+                double finalPrice = priceTotal + platformFee;
+                String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) finalPrice, false));
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
@@ -885,11 +888,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
+                shipmentAdapterActionListener.checkPlatformFee();
                 return true;
-
-                // check flag for dynamic platform fee
-                // hit new platform fee API
-                // sini
             }
         }
         return false;
@@ -912,6 +912,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateShipmentCostModel() {
+        System.out.println("++ masuk updateShipmentCostModel");
         if (shipmentCostModel == null) return;
         double totalWeight = 0;
         double totalPrice = 0;
@@ -1330,7 +1331,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         lastApplyUiModel = LastApplyUiMapper.INSTANCE.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel);
     }
 
+    public void setPlatformFeeData(ShipmentPlatformFeeModel platformFeeModel) {
+        if (shipmentCostModel != null) {
+            shipmentCostModel.setDynamicPlatformFee(platformFeeModel);
+        }
+        notifyItemChanged(getShipmentCostPosition());
+    }
+
     public void resetPromoCheckoutData() {
         lastApplyUiModel = new LastApplyUiModel();
+    }
+
+    public int getShipmentCostItemIndex() {
+        return shipmentDataList.indexOf(shipmentCostModel);
     }
 }

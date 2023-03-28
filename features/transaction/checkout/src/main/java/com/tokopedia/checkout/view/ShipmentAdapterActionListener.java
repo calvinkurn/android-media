@@ -158,4 +158,6 @@ public interface ShipmentAdapterActionListener {
     void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher);
 
     void checkPlatformFee();
+
+    void refetchPlatformFee();
 }
