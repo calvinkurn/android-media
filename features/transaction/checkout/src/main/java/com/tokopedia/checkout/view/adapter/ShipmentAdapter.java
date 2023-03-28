@@ -171,7 +171,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         } else if (item instanceof ShipmentNewUpsellModel) {
-            if (((ShipmentNewUpsellModel) item).isNewUpsellImprovement()) {
+            if (((ShipmentNewUpsellModel) item).getEnableNewUpsellImprovement()) {
                 return ShipmentNewUpsellImprovementViewHolder.LAYOUT;
             } else {
                 return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;

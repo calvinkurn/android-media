@@ -6,7 +6,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 object ShipmentRollenceUtil {
 
     @JvmStatic
-    fun isEnableRollenceCheckoutNewUpsellImprovement(): Boolean {
+    fun enableCheckoutNewUpsellImprovement(): Boolean {
         //return true // for testing
         try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance()

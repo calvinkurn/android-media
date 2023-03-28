@@ -753,9 +753,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setRecipientAddressModel(newAddress);
 
         this.shipmentUpsellModel = shipmentDataConverter.getShipmentUpsellModel(cartShipmentAddressFormData.getUpsell());
-        this.shipmentNewUpsellModel = shipmentDataConverter.getShipmentNewUpsellModel(cartShipmentAddressFormData.getNewUpsell());
-        this.shipmentNewUpsellModel.setNewUpsellImprovement(
-                ShipmentRollenceUtil.isEnableRollenceCheckoutNewUpsellImprovement()
+        this.shipmentNewUpsellModel = shipmentDataConverter.getShipmentNewUpsellModel(
+                cartShipmentAddressFormData.getNewUpsell(),
+                ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()
         );
 
         if (cartShipmentAddressFormData.getDonation() != null) {

@@ -464,7 +464,7 @@ public class ShipmentDataConverter {
         return shipmentUpsellModel;
     }
 
-    public ShipmentNewUpsellModel getShipmentNewUpsellModel(NewUpsellData upsellData) {
+    public ShipmentNewUpsellModel getShipmentNewUpsellModel(NewUpsellData upsellData, boolean enableUpsellNewImprovement) {
         ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
         shipmentUpsellModel.setShow(upsellData.isShow());
         shipmentUpsellModel.setSelected(upsellData.isSelected());
@@ -479,6 +479,8 @@ public class ShipmentDataConverter {
         shipmentUpsellModel.setId(upsellData.getId());
         shipmentUpsellModel.setAdditionalVerticalId(upsellData.getAdditionalVerticalId());
         shipmentUpsellModel.setTransactionType(upsellData.getTransactionType());
+        shipmentUpsellModel.setEnableNewUpsellImprovement(enableUpsellNewImprovement);
+        shipmentUpsellModel.setLoading(false);
         return shipmentUpsellModel;
     }
 
