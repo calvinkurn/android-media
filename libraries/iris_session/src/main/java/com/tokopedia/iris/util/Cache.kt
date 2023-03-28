@@ -18,4 +18,13 @@ class Cache(context: Context) {
     fun isEnabled() : Boolean {
         return sharedPreferences.getBoolean(IRIS_ENABLED, true)
     }
+
+    fun setPerformanceEnabled(isEnabled: Boolean) {
+        editor.putBoolean(IRIS_PERFORMANCE_ENABLED, isEnabled)
+        editor.commit()
+    }
+
+    fun isPerformanceEnabled() : Boolean {
+        return sharedPreferences.getBoolean(IRIS_PERFORMANCE_ENABLED, true)
+    }
 }

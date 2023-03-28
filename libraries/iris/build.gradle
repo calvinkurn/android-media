@@ -30,6 +30,7 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

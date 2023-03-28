@@ -8,15 +8,18 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.iris.util.DATABASE_NAME
 import com.tokopedia.iris.data.db.dao.TrackingDao
+import com.tokopedia.iris.data.db.dao.TrackingPerfDao
+import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 
 /**
  * @author okasurya on 10/18/18.
  */
 
-@Database(entities = [Tracking::class], version = 2)
+@Database(entities = [Tracking::class, PerformanceTracking::class], version = 3)
 abstract class IrisDb : RoomDatabase() {
     abstract fun trackingDao(): TrackingDao
+    abstract fun trackingPerfDao(): TrackingPerfDao
 
     companion object {
         // For Singleton instantiation
