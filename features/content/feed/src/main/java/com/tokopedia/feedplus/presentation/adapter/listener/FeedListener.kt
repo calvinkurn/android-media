@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -10,8 +11,9 @@ interface FeedListener {
     fun disableClearView()
     fun inClearViewMode(): Boolean
     fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
-    fun changeTab(type: String)
+    fun changeTab()
     fun reload()
+    fun getVideoPlayer(): FeedExoPlayer
 
     fun setReminder()
     fun onTimerFinishUpcoming()
@@ -44,5 +46,6 @@ interface FeedListener {
         weblink: String,
         imageUrl: String
     )
+
     fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int)
 }

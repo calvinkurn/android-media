@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.iconunify.IconUnify
 
@@ -27,7 +26,7 @@ class FeedNoContentViewHolder(
             btnShowOtherContent.text =
                 root.context.getString(R.string.feed_label_no_content_button)
             btnShowOtherContent.setOnClickListener {
-                listener.changeTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+                listener.changeTab()
             }
         }
     }

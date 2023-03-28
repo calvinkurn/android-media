@@ -30,6 +30,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -90,6 +91,8 @@ class FeedFragment :
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
     private var isInClearViewMode: Boolean = false
+
+    private var videoPlayer: FeedExoPlayer? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -155,6 +158,10 @@ class FeedFragment :
             isNewData = true,
             postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
         )
+
+        context?.let {
+            videoPlayer = FeedExoPlayer(it)
+        }
 
         initView()
         observeClearViewData()
@@ -284,14 +291,22 @@ class FeedFragment :
         }
     }
 
-    override fun changeTab(type: String) {
-        feedMainViewModel.changeCurrentTabByType(type)
+    override fun changeTab() {
+        feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
     }
 
     override fun reload() {
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
         adapter?.showLoading()
+    }
+
+    override fun getVideoPlayer(): FeedExoPlayer {
+        if (videoPlayer == null) {
+            videoPlayer = FeedExoPlayer(requireContext())
+        }
+
+        return videoPlayer!!
     }
 
     override fun onProductTagButtonClicked(
@@ -550,10 +565,16 @@ class FeedFragment :
         feedPostViewModel.followResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    showToast(getString(feedR.string.feed_message_success_follow), Toaster.TYPE_NORMAL)
+                    showToast(
+                        getString(feedR.string.feed_message_success_follow),
+                        Toaster.TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
-                    showToast(getString(feedR.string.feed_message_failed_follow), Toaster.TYPE_ERROR)
+                    showToast(
+                        getString(feedR.string.feed_message_failed_follow),
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
         }
@@ -569,16 +590,13 @@ class FeedFragment :
                     onSuccessLikeResponse(it.data)
                 }
                 is FeedResult.Failure -> {
-                    when (it.error) {
-                        else -> {
-                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                requireContext().getString((it.error as CustomUiMessageThrowable).errorMessageId)
-                            } else {
-                                ErrorHandler.getErrorMessage(requireContext(), it.error)
-                            }
-                            showToast(errorMessage, Toaster.TYPE_ERROR)
-                        }
+                    val error = it.error
+                    val errorMessage = if (error is CustomUiMessageThrowable) {
+                        requireContext().getString(error.errorMessageId)
+                    } else {
+                        ErrorHandler.getErrorMessage(requireContext(), it.error)
                     }
+                    showToast(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
         }

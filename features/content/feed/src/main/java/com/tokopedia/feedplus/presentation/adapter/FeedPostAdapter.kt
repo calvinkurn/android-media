@@ -27,10 +27,10 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
     }
 
     fun updateLikeUnlikeData(rowNumber: Int, like: FeedLikeModel) {
-        if ((list?.size ?: 0) > rowNumber) {
-            when (val item = list[rowNumber]) {
+        if (visitables.size > rowNumber) {
+            when (val item = visitables[rowNumber]) {
                 is FeedCardImageContentModel -> {
-                    list[rowNumber] = item.copy(like = like)
+                    visitables[rowNumber] = item.copy(like = like)
                 }
                 // TODO Furqan add for other type of models
             }
