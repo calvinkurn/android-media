@@ -31,24 +31,20 @@ class GetPersonaDataUseCase @Inject constructor(
 
     suspend fun execute(shopId: String, page: String): PersonaDataUiModel {
         return withContext(dispatchers.io) {
-            try {
-                val personaStatusAsync = async { getPersonaStatusUseCase.execute(shopId, page) }
-                val personaListAsync = async { getPersonaListUseCase.execute() }
+            val personaStatusAsync = async { getPersonaStatusUseCase.execute(shopId, page) }
+            val personaListAsync = async { getPersonaListUseCase.execute() }
 
-                val personaStatus = personaStatusAsync.await()
-                val personaList = personaListAsync.await()
+            val personaStatus = personaStatusAsync.await()
+            val personaList = personaListAsync.await()
 
-                if (personaStatus.persona.isBlank()) {
-                    throw MessageErrorException(ERROR_PERSONA_VALUE_IS_EMPTY)
-                }
-                if (personaList.isEmpty()) {
-                    throw MessageErrorException(ERROR_PERSONA_LIST_IS_EMPTY)
-                }
-
-                return@withContext getPersonaData(personaStatus, personaList)
-            } catch (e: Exception) {
-                throw e
+            if (personaStatus.persona.isBlank()) {
+                throw MessageErrorException(ERROR_PERSONA_VALUE_IS_EMPTY)
             }
+            if (personaList.isEmpty()) {
+                throw MessageErrorException(ERROR_PERSONA_LIST_IS_EMPTY)
+            }
+
+            return@withContext getPersonaData(personaStatus, personaList)
         }
     }
 
