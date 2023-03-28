@@ -136,7 +136,7 @@ class ProductBottomSheetCardView(
             binding.tvPlayRatingAndSoldQuantity.text = buildString {
                 append(item.rating)
                 append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
-                append(if (item.isShowSoldQuantity) context.resources.getString(R.string.play_social_proof_sold, item.soldQuantity) else "")
+                append(item.soldQuantity)
             }
         }
     }
