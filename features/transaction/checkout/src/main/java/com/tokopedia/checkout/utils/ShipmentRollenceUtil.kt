@@ -2,6 +2,7 @@ package com.tokopedia.checkout.utils
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import timber.log.Timber
 
 object ShipmentRollenceUtil {
 
@@ -9,9 +10,13 @@ object ShipmentRollenceUtil {
     fun enableCheckoutNewUpsellImprovement(): Boolean {
         try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance()
-                .abTestPlatform.getString(RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT, getDefaultRollenceValue())
+                .abTestPlatform.getString(
+                    RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT,
+                    getDefaultRollenceValue()
+                )
             return (remoteConfigRollenceValue == getVariantRollenceValue())
         } catch (e: Exception) {
+            Timber.e(e)
             return false
         }
     }
