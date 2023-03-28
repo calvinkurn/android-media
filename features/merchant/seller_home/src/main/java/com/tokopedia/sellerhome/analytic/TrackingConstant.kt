@@ -12,10 +12,8 @@ object TrackingConstant {
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
     const val SCREEN_NAME = "screenName"
-    const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
-    const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT = "businessUnit"
     const val TRACKER_ID = "trackerId"
 
@@ -23,7 +21,6 @@ object TrackingConstant {
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
     const val VIEW_PG_IRIS = "viewPGIris"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
-    const val OPEN_SCREEN = "openScreen"
     const val CLICK_HOMEPAGE = "clickHomepage"
     const val CLICK_PG = "clickPG"
 
@@ -107,7 +104,6 @@ object TrackingConstant {
 
     //other value
     const val SCREEN_NAME_SELLER_HOME = "Seller Home"
-    const val ADS_PROMOTION = "/adspromotion"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val PHYSICAL_GOODS = "physical goods"

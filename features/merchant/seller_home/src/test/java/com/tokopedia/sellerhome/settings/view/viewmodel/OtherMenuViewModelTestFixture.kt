@@ -11,7 +11,7 @@ import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.sellerhome.domain.usecase.*
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations

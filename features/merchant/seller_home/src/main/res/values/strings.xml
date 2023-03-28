@@ -69,67 +69,6 @@
     <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
     <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
     <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
-
-    <!--  Centralized Promo  -->
-    <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
-    <string name="sh_lbl_create_promotion">Buat Promosi</string>
-    <string name="sh_lbl_create_promotion_desc">Pasang promosi untuk tingkatkan performa tokomu.</string>
-    <string name="sah_label_promo_and_ads">Fitur promosi aktifmu</string>
-    <string name="sah_label_on_going_promotion_retry">Ketuk ikon untuk memuat ulang</string>
-    <string name="sah_label_on_going_promotion_error">Data tidak dapat ditampilkan</string>
-    <string name="sh_coachmark_title_on_going_promo">Promosi aktif dan selesai</string>
-    <string name="sh_coachmark_desc_on_going_promo">Lebih mudah memantau perkembangan status promosi aktif dan selesai di tokomu di sini.</string>
-    <string name="sh_coachmark_title_promo_creation">Pilihan promosi</string>
-    <string name="sh_coachmark_desc_promo_creation">Temukan beragam pilihan promosi yang sesuai kebutuhan tokomu.</string>
-    <string name="centralized_promo_broadcast_chat_extra_free_quota">%1$d kuota gratis</string>
-    <string name="centralized_promo_promo_creation_topads_title">TopAds</string>
-    <string name="centralized_promo_promo_creation_topads_description">Iklankan produkmu untuk menjangkau lebih banyak pembeli</string>
-    <string name="centralized_promo_promo_creation_broadcast_chat_title">Broadcast Chat</string>
-    <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
-    <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
-    <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
-    <string name="centralized_promo_promo_creation_voucher_product_title">Kupon Produk</string>
-    <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
-    <string name="centralized_promo_promo_creation_tokopedia_play_title">Tokopedia Play</string>
-    <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
-    <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
-    <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
-    <string name="centralized_promo_promo_creation_tokomember_title">TokoMember</string>
-    <string name="centralized_promo_promo_creation_tokomember_description">Tingkatin pendapatan toko dengan beri keanggotaan eksklusif ke pembeli setia.</string>
-    <string name="centralized_promo_promo_creation_tokomember_tag_label">Baru</string>
-    <string name="centralized_promo_promo_creation_slash_price_new_info">Khusus PM PRO Expert</string>
-    <string name="centralized_promo_promo_creation_slash_price_tag_label">Baru</string>
-
-    <string name="centralized_promo_promo_creation_flash_sale_toko_title">Flash Sale Toko</string>
-    <string name="centralized_promo_promo_creation_flash_sale_toko_description">Buat campaign Flash Sale sendiri khusus di halaman tokomu.</string>
-    <string name="centralized_promo_promo_creation_flash_sale_toko_new_info">Khusus PM PRO dan OS</string>
-    <string name="centralized_promo_promo_creation_flash_sale_toko_tag_label">Baru</string>
-
-    <!-- First merchant voucher -->
-    <string name="centralized_promo_first_voucher_label">First Voucher</string>
-    <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>
-    <string name="centralized_promo_bottomsheet_product_coupon_title">Keuntungan pakai Kupon Produk!</string>
-    <string name="centralized_promo_bottomsheet_tokopedia_play_title">Live sekarang</string>
-    <string name="centralized_promo_bottomsheet_detail">Berbagai keuntungan:</string>
-    <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
-    <string name="centralized_promo_bottomsheet_product_coupon_next">Buat Kupon</string>
-    <string name="centralized_promo_bottomsheet_tokopedia_play_next">Lanjut Live Sekarang</string>
-    <string name="centralized_promo_bottomsheet_increase_sell">Tarik lebih banyak pelanggan</string>
-    <string name="centralized_promo_bottomsheet_increase_sell_desc">Dengan tetap mempertahankan citra brand toko dan harga barang.</string>
-    <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
-    <string name="centralized_promo_bottomsheet_time_desc">Cukup atur anggaran dan periode promosi sesuai strategi penjualanmu.</string>
-    <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
-    <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
-    <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
-    <string name="centralized_promo_bottomsheet_selected_product">Pasang khusus di produk pilihan</string>
-    <string name="centralized_promo_bottomsheet_selected_product_desc">Atur detail voucher ke produk tertentu sesuai kebutuhan penjualan.</string>
-    <string name="centralized_promo_bottomsheet_flexible_discount">Lebih fleksibel kelola promosi</string>
-    <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih manfaat promosi yang cocok dengan produk-produk pilihanmu.</string>
-    <string name="centralized_promo_bottomsheet_quick_sold_out">Stok produkmu cepat laris</string>
-    <string name="centralized_promo_bottomsheet_quick_sold_out_desc">Pasang minimum pembelian ke produk pilihan yang banyak dicari.</string>
-    <string name="centralized_promo_bottomsheet_quick_live_desc">Bisa cepat nge-live dengan mudah</string>
-    <string name="centralized_promo_bottomsheet_interact_viewer_desc">Berinteraksi langsung dengan banyak penonton</string>
-    <string name="centralized_promo_bottomsheet_game_prize_desc">Bikin penonton betah dengan buat game hadiah</string>
     
     <!-- Other menu header revamp -->
     <string name="sah_new_other_shop_open">Toko Buka</string>
@@ -181,7 +120,6 @@
     <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
     <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="sah_empty_layout_message">Oops, kamu tidak punya izin untuk melihat konten di halaman Home</string>
-    <string name="centralized_promo_description"><![CDATA[<b> %s </b> \u2022 %s]]></string>
     <!-- Admin Restriction -->
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
@@ -225,7 +163,6 @@
     <string name="sah_select_date_range">Pilih rentang waktu</string>
     <string name="trx_refresh">Refresh</string>
     <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
-    <string name="text_badge_new">Baru</string>
     <string name="sah_new_other_tokomember">TokoMember</string>
     <string name="sah_new_seller_welcoming_dialog_title">Halo, %1$s. Selamat datang di Tokopedia Seller!</string>
     <string name="sah_new_seller_welcoming_dialog_description">Kelola toko jadi lebih mudah dengan tampilan baru. Pelajari dulu, yuk.</string>
@@ -239,9 +176,6 @@
     <string name="sah_new_seller_welcoming_coach_mark_title_4">Fitur lain yang tidak kalah penting</string>
     <string name="sah_new_seller_welcoming_coach_mark_description_4">Temukan fitur lainnya seperti Statistik, Iklan dan Promosi, Ulasan, Diskusi, Komplain di sini.</string>
     <string name="sah_i_understang">Saya Mengerti</string>
-
-    <string name="centralize_promo_flash_sale_title_coachmark">Buat kupon apa pun di satu tempat</string>
-    <string name="centralize_promo_flash_sale_desc_coachmark">Sekarang buat kupon dengan tipe promo dan target pembeli apa pun lebih praktis lewat satu pintu, di satu halaman yang sama.</string>
 
     <!-- Wear Os -->
     <string name="wearos_install_popup_title">Install App Untuk Wear OS</string>

@@ -160,6 +160,7 @@ ext {
             cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
+			centralizedPromo				: ":features:merchant:centralized_promo",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewCommon                    : ":features:merchant:review_common",
