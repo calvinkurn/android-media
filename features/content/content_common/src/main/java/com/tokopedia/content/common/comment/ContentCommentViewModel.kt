@@ -70,7 +70,8 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastParentCursor,
                 )
                 _comments.update {
-                    val contentSame = it.list.zip(result.list).any { item -> item.first == item.second }
+                    val contentSame =
+                        it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
@@ -293,8 +294,13 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 _comments.getAndUpdate {
+                    val index = if (result.commentType.isChild) {
+                        val selected = it.list
+                            .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
+                        if (it.list[selected] !is CommentUiModel.Expandable) selected else return@launchCatchError
+                    } else 0
                     val newList = it.list.toMutableList().apply {
-                        add(0, result)
+                        add(index, result)
                     }
                     it.copy(list = newList)
                 }
