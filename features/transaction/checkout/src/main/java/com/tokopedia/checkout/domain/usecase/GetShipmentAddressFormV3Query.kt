@@ -667,6 +667,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 additional_vertical_id
                 transaction_type
               }
+              dynamic_data_passing {
+                is_ddp
+                dynamic_data
+              }
             }
           }
         }"""
