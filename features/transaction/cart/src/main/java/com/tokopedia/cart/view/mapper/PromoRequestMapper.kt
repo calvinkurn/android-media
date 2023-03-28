@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartPromoHolderData
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -24,10 +25,13 @@ object PromoRequestMapper {
     ): ValidateUsePromoRequest {
         return ValidateUsePromoRequest().apply {
             val tmpOrders = mutableListOf<OrdersItem>()
-            selectedCartGroupHolderDataList.forEach { cartShopHolderData ->
+            val selectedPromoHolderDataList: MutableCollection<CartPromoHolderData> = mapSelectedCartGroupToPromoData(
+                selectedCartGroupHolderDataList
+            ).values
+            selectedPromoHolderDataList.forEach { cartPromoHolderData ->
                 val ordersItem = OrdersItem().apply {
                     val tmpProductDetails = mutableListOf<ProductDetailsItem>()
-                    cartShopHolderData.productUiModelList.forEach { cartItemHolderData ->
+                    cartPromoHolderData.productUiModelList.forEach { cartItemHolderData ->
                         if (cartItemHolderData.isSelected) {
                             val productDetailsItem = ProductDetailsItem(
                                 productId = cartItemHolderData.productId.toLongOrZero(),
@@ -42,12 +46,12 @@ object PromoRequestMapper {
                         if (it is PromoUiModel) {
                             codes = getPromoCodesFromValidateUseByUniqueId(
                                 it,
-                                cartShopHolderData
+                                cartPromoHolderData
                             ).toMutableList()
 
                             val boShipmentData = getShippingFromValidateUseByUniqueId(
                                 it,
-                                cartShopHolderData,
+                                cartPromoHolderData,
                                 lastValidateUsePromoRequest
                             )
                             shippingId = boShipmentData.shippingId
@@ -60,11 +64,11 @@ object PromoRequestMapper {
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
-                                cartShopHolderData
+                                cartPromoHolderData
                             ).toMutableList()
                             val boShipmentData = getShippingFromLastApplyByUniqueId(
                                 it,
-                                cartShopHolderData
+                                cartPromoHolderData
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
@@ -75,12 +79,12 @@ object PromoRequestMapper {
                             etaText = boShipmentData.etaText
                         }
                     }
-                    shopId = cartShopHolderData.shopId.toLongOrZero()
-                    uniqueId = cartShopHolderData.cartString
-                    boType = cartShopHolderData.boMetadata.boType
-                    warehouseId = cartShopHolderData.warehouseId
-                    isPo = cartShopHolderData.isPo
-                    poDuration = cartShopHolderData.poDuration.toIntOrZero()
+                    shopId = cartPromoHolderData.shopId.toLongOrZero()
+                    uniqueId = cartPromoHolderData.cartString
+                    boType = cartPromoHolderData.boMetadata.boType
+                    warehouseId = cartPromoHolderData.warehouseId
+                    isPo = cartPromoHolderData.isPo
+                    poDuration = cartPromoHolderData.poDuration.toIntOrZero()
                 }
                 tmpOrders.add(ordersItem)
             }
@@ -98,11 +102,11 @@ object PromoRequestMapper {
         }
     }
 
-    private fun getPromoCodesFromLastApplyByUniqueId(lastApplyPromo: LastApplyPromo, cartGroupHolderData: CartGroupHolderData): List<String> {
+    private fun getPromoCodesFromLastApplyByUniqueId(lastApplyPromo: LastApplyPromo, cartPromoHolderData: CartPromoHolderData): List<String> {
         // get from voucher order first
         val promoCodes = arrayListOf<String>()
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartGroupHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartString) {
                 if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
                 }
@@ -114,14 +118,43 @@ object PromoRequestMapper {
 
         // if there is no promo code on voucher order, check from ui model (got from cart response)
         // Otherwise return empty list (ui model promo codes default value)
-        return cartGroupHolderData.promoCodes
+        return cartPromoHolderData.promoCodes
     }
 
-    private fun getPromoCodesFromValidateUseByUniqueId(promoUiModel: PromoUiModel, cartGroupHolderData: CartGroupHolderData): List<String> {
+    fun mapSelectedCartGroupToPromoData(selectedCartGroupHolderDataList: List<CartGroupHolderData>): HashMap<String, CartPromoHolderData> {
+        val groupPromoHolderDataMap = hashMapOf<String, CartPromoHolderData>()
+        val groupCartStringSet = hashSetOf<String>()
+        selectedCartGroupHolderDataList.forEach { cartGroupHolderData ->
+            cartGroupHolderData.productUiModelList.forEach {
+                val cartStringOrder = it.cartStringOrder
+                if (!groupPromoHolderDataMap.containsKey(cartStringOrder)) {
+                    groupPromoHolderDataMap[cartStringOrder] = CartPromoHolderData(
+                        promoCodes = cartGroupHolderData.promoCodes,
+                        warehouseId = cartGroupHolderData.warehouseId,
+                        boMetadata = cartGroupHolderData.boMetadata,
+                        isPo = cartGroupHolderData.isPo,
+                        cartString = it.cartStringOrder,
+                        cartStringGroup = it.cartString,
+                        poDuration = it.shopHolderData.poDuration,
+                        shopId = it.shopHolderData.shopId,
+                        needToAddCodes = !groupCartStringSet.contains(it.cartString)
+                    )
+                }
+                val selectedPromoHolderData = groupPromoHolderDataMap[cartStringOrder]
+                selectedPromoHolderData?.apply {
+                    productUiModelList.add(it)
+                }
+                groupCartStringSet.add(cartGroupHolderData.cartString)
+            }
+        }
+        return groupPromoHolderDataMap
+    }
+
+    private fun getPromoCodesFromValidateUseByUniqueId(promoUiModel: PromoUiModel, cartPromoHolderData: CartPromoHolderData): List<String> {
         // get from voucher order first
         val promoCodes = arrayListOf<String>()
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartGroupHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartString) {
                 if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
                 }
@@ -132,15 +165,15 @@ object PromoRequestMapper {
         }
         // if there is no promo code on voucher order, check from ui model (got from cart response)
         // Otherwise return empty list (ui model promo codes default value)
-        return cartGroupHolderData.promoCodes
+        return cartPromoHolderData.promoCodes
     }
 
     private fun getShippingFromLastApplyByUniqueId(
         lastApplyPromo: LastApplyPromo,
-        cartGroupHolderData: CartGroupHolderData
+        cartPromoHolderData: CartPromoHolderData,
     ): PromoRequestBoShipmentData {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartGroupHolderData.cartString &&
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartString &&
                 voucherOrder.shippingId > 0 &&
                 voucherOrder.spId > 0 &&
                 voucherOrder.type == "logistic"
@@ -161,16 +194,16 @@ object PromoRequestMapper {
 
     private fun getShippingFromValidateUseByUniqueId(
         promoUiModel: PromoUiModel,
-        cartGroupHolderData: CartGroupHolderData,
+        cartPromoHolderData: CartPromoHolderData,
         lastValidateUsePromoRequest: ValidateUsePromoRequest?
     ): PromoRequestBoShipmentData {
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartGroupHolderData.cartString &&
+            if (voucherOrder.uniqueId == cartPromoHolderData.cartString &&
                 voucherOrder.shippingId > 0 &&
                 voucherOrder.spId > 0 &&
                 voucherOrder.type == "logistic"
             ) {
-                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartGroupHolderData.cartString }
+                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartString }
                 if (validateOrderRequest != null) {
                     return PromoRequestBoShipmentData(
                         voucherOrder.shippingId,
@@ -184,7 +217,7 @@ object PromoRequestMapper {
                 }
             }
         }
-        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartGroupHolderData.cartString }
+        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.cartString }
         if (validateOrderRequest != null && validateOrderRequest.spId > 0) {
             return PromoRequestBoShipmentData(
                 validateOrderRequest.shippingId,
@@ -204,10 +237,13 @@ object PromoRequestMapper {
         availableCartGroupHolderDataList: List<CartGroupHolderData>
     ): PromoRequest {
         val orders = mutableListOf<Order>()
-        availableCartGroupHolderDataList.forEach { cartShopHolderData ->
+        val selectedPromoHolderDataList = mapSelectedCartGroupToPromoData(
+            availableCartGroupHolderDataList
+        ).values
+        selectedPromoHolderDataList.forEach { cartPromoHolderData ->
             val listProductDetail = mutableListOf<ProductDetail>()
             var hasCheckedItem = false
-            cartShopHolderData.productUiModelList.forEach { cartItem ->
+            cartPromoHolderData.productUiModelList.forEach { cartItem ->
                 if (!hasCheckedItem && cartItem.isSelected) {
                     hasCheckedItem = true
                 }
@@ -219,11 +255,11 @@ object PromoRequestMapper {
                 listProductDetail.add(productDetail)
             }
             val order = Order(
-                shopId = cartShopHolderData.shopId.toLongOrZero(),
-                uniqueId = cartShopHolderData.cartString,
-                boType = cartShopHolderData.boMetadata.boType,
+                shopId = cartPromoHolderData.shopId.toLongOrZero(),
+                uniqueId = cartPromoHolderData.cartString,
+                boType = cartPromoHolderData.boMetadata.boType,
                 product_details = listProductDetail,
-                codes = cartShopHolderData.promoCodes.toMutableList(),
+                codes = cartPromoHolderData.promoCodes.toMutableList(),
                 isChecked = hasCheckedItem
             )
             orders.add(order)
@@ -281,14 +317,17 @@ object PromoRequestMapper {
         availableCartGroupHolderDataList: List<CartGroupHolderData>
     ): ClearPromoOrderData? {
         val orders = arrayListOf<ClearPromoOrder>()
-        availableCartGroupHolderDataList.forEach { cartShopHolderData ->
+        val promoHolderDataMap = mapSelectedCartGroupToPromoData(
+            availableCartGroupHolderDataList
+        )
+        promoHolderDataMap.values.forEach { cartPromoHolderData ->
             val order = ClearPromoOrder(
-                uniqueId = cartShopHolderData.cartString,
-                boType = cartShopHolderData.boMetadata.boType,
-                shopId = cartShopHolderData.shopId.toLongOrZero(),
-                warehouseId = cartShopHolderData.warehouseId,
-                isPo = cartShopHolderData.isPo,
-                poDuration = cartShopHolderData.poDuration
+                uniqueId = cartPromoHolderData.cartString,
+                boType = cartPromoHolderData.boMetadata.boType,
+                shopId = cartPromoHolderData.shopId.toLongOrZero(),
+                warehouseId = cartPromoHolderData.warehouseId,
+                isPo = cartPromoHolderData.isPo,
+                poDuration = cartPromoHolderData.poDuration
             )
             orders.add(order)
         }

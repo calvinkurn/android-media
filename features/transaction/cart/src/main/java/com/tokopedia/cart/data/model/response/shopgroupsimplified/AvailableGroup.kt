@@ -34,9 +34,9 @@ data class AvailableGroup(
     @SerializedName("group_shop_v2_cart")
     val groupShopCartData: List<GroupShopCart> = emptyList()
 ) {
-    fun isOWOC(): Boolean {
-        return uiGroupType == GROUP_TYPE_OWOC
-    }
+    fun isUsingOWOCDesign(): Boolean = uiGroupType == GROUP_TYPE_OWOC
+    
+    fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
     
     companion object {
         private const val GROUP_TYPE_OWOC = 1

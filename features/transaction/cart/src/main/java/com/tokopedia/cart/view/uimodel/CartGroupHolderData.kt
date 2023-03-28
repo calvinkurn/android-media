@@ -6,15 +6,14 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartGroupHolderData(
-    val groupType: Int = 0,
-    val uiGroupType: Int = 0,
-    val groupInformation: GroupInformation = GroupInformation(),
+    var groupType: Int = 0,
+    var uiGroupType: Int = 0,
+    var groupInformation: GroupInformation = GroupInformation(),
     var cartString: String = "",
-    var shopMap: HashMap<String, CartShopHolderData> = HashMap(),
-    var shopId: String = "",
+//    var shopId: String = "",
     var groupName: String = "",
     var groupBadge: String = "",
-    var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+//    var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     var isFulfillment: Boolean = false,
     var fulfillmentName: String = "",
     var fulfillmentBadgeUrl: String = "",
@@ -40,10 +39,10 @@ data class CartGroupHolderData(
     var isError: Boolean = false,
     var promoCodes: List<String> = emptyList(),
     var shopShipments: List<ShopShipment> = emptyList(),
-    var districtId: String = "",
-    var postalCode: String = "",
-    var latitude: String = "",
-    var longitude: String = "",
+//    var districtId: String = "",
+//    var postalCode: String = "",
+//    var latitude: String = "",
+//    var longitude: String = "",
     var boMetadata: BoMetadata = BoMetadata(),
     var cartShopGroupTicker: CartShopGroupTickerData = CartShopGroupTickerData(),
     var addOnText: String = "",
@@ -52,7 +51,7 @@ data class CartGroupHolderData(
     var addOnType: Int = 0,
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
-    var poDuration: String = "",
+//    var poDuration: String = "",
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
@@ -68,12 +67,14 @@ data class CartGroupHolderData(
 
     fun deepCopy(): CartGroupHolderData {
         return CartGroupHolderData(
+            groupType = this.groupType,
+            uiGroupType = this.uiGroupType,
+            groupInformation = this.groupInformation,
             cartString = this.cartString,
-            shopMap = this.shopMap,
-            shopId = this.shopId,
+//            shopId = this.shopId,
             groupName = this.groupName,
             groupBadge = this.groupBadge,
-            shopTypeInfo = this.shopTypeInfo,
+//            shopTypeInfo = this.shopTypeInfo,
             isFulfillment = this.isFulfillment,
             fulfillmentName = this.fulfillmentName,
             fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
@@ -97,10 +98,10 @@ data class CartGroupHolderData(
             isError = this.isError,
             promoCodes = this.promoCodes.toMutableList(),
             shopShipments = this.shopShipments.toMutableList(),
-            districtId = this.districtId,
-            postalCode = this.postalCode,
-            latitude = this.latitude,
-            longitude = this.longitude,
+//            districtId = this.districtId,
+//            postalCode = this.postalCode,
+//            latitude = this.latitude,
+//            longitude = this.longitude,
             boMetadata = this.boMetadata,
             cartShopGroupTicker = this.cartShopGroupTicker,
             addOnText = this.addOnText,
@@ -108,12 +109,14 @@ data class CartGroupHolderData(
             addOnId = this.addOnId,
             warehouseId = this.warehouseId,
             isPo = this.isPo,
-            poDuration = this.poDuration,
+//            poDuration = this.poDuration,
             boCode = this.boCode
         )
     }
     
-    fun isOWOC(): Boolean = uiGroupType == GROUP_TYPE_OWOC
+    fun isUsingOWOCDesign(): Boolean = uiGroupType == GROUP_TYPE_OWOC
+    
+    fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"

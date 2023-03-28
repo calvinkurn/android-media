@@ -100,7 +100,8 @@ class ValidateUsePromoCheckoutMapper {
                 uniqueId = voucherOrdersItem.uniqueId,
                 messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
                 shippingId = voucherOrdersItem.shippingId,
-                spId = voucherOrdersItem.spId
+                spId = voucherOrdersItem.spId,
+                cartStringGroup = voucherOrdersItem.cartStringGroup
             )
         }
 

@@ -335,6 +335,13 @@ class CartItemViewHolder constructor(
             binding.llShopHeader.visible()
             val shopHolderData = data.shopHolderData
             binding.tvShopName.text = Utils.getHtmlFormat(shopHolderData.shopName)
+            binding.tvShopName.setOnClickListener {
+                actionListener?.onCartShopNameClicked(
+                    data.shopHolderData.shopId,
+                    data.shopHolderData.shopName,
+                    data.shopHolderData.isTokoNow
+                )
+            }
             if (shopHolderData.shopTypeInfo.shopBadge.isNotBlank()) {
                 ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopHolderData.shopTypeInfo.shopBadge)
                 binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopHolderData.shopTypeInfo.title)

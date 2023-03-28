@@ -906,6 +906,23 @@ class CartAdapter constructor(
         return Pair(startingIndex, cartGroupList)
     }
 
+    private fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isUsingOWOCDesign()) {
+            val groupPromoHolderDataMap = hashMapOf<String, MutableList<CartItemHolderData>>()
+            cartGroupHolderData.productUiModelList.forEach {
+                it.isShopShown = false
+                val cartStringOrder = it.cartStringOrder
+                if (!groupPromoHolderDataMap.containsKey(cartStringOrder)) {
+                    groupPromoHolderDataMap[cartStringOrder] = arrayListOf()
+                }
+                groupPromoHolderDataMap[cartStringOrder]?.add(it)
+            }
+            groupPromoHolderDataMap.forEach { (_, value) ->
+                value.firstOrNull()?.isShopShown = true
+            }
+        }
+    }
+
     fun getCartShopHolderIndexByCartId(cartId: String): Int {
         loop@ for ((index, any) in cartDataList.withIndex()) {
             if (any is CartGroupHolderData) {
@@ -1079,6 +1096,7 @@ class CartAdapter constructor(
                             toBeRemovedIndices.add(index)
                         } else {
                             // update selection
+                            updateShopShownByCartGroup(data)
                             data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
                             data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {

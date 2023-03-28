@@ -29,6 +29,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
 import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
@@ -2105,15 +2106,18 @@ class CartListPresenter @Inject constructor(
                     destinationLongitude = lca?.long
                     destinationLatitude = lca?.lat
                     destinationPostalCode = lca?.postal_code
-                    originDistrictId = cartGroupHolderData.districtId
-                    originLongitude = cartGroupHolderData.longitude
-                    originLatitude = cartGroupHolderData.latitude
-                    originPostalCode = cartGroupHolderData.postalCode
+                    // TODO: Fix Param 
+//                    originDistrictId = cartGroupHolderData.districtId
+//                    originLongitude = cartGroupHolderData.longitude
+//                    originLatitude = cartGroupHolderData.latitude
+//                    originPostalCode = cartGroupHolderData.postalCode
                     weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
-                    shopId = cartGroupHolderData.shopId
-                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
+                    // TODO: Fix Param 
+//                    shopId = cartGroupHolderData.shopId
+//                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
+                    // TODO: replace uniqueId 
                     uniqueId = cartGroupHolderData.cartString
                     isFulfillment = cartGroupHolderData.isFulfillment
                     boMetadata = cartGroupHolderData.boMetadata
@@ -2221,44 +2225,45 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        val shopDataList = view?.getAllShopDataList()
-        if (shopDataList != null) {
+        val groupDataList = view?.getAllShopDataList()
+        if (groupDataList != null) {
             val boUniqueIds = mutableSetOf<String>()
             for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
                     if (voucherOrderUiModel.messageUiModel.state == "green") {
-                        shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode =
+                        groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.boCode =
                             voucherOrderUiModel.code
-                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
+                        boUniqueIds.add(voucherOrderUiModel.cartStringGroup)
                     }
                 }
             }
-            for (shop in shopDataList) {
-                if (shop.boCode.isNotEmpty() && !boUniqueIds.contains(shop.cartString)) {
-                    clearBo(shop)
+            for (group in groupDataList) {
+                if (group.boCode.isNotEmpty() && !boUniqueIds.contains(group.cartString)) {
+                    clearBo(group)
                 }
             }
         }
     }
 
-    private fun clearBo(shop: CartGroupHolderData) {
+    private fun clearBo(group: CartGroupHolderData) {
         launch {
             try {
+                val cartPromoHolderData = PromoRequestMapper.mapSelectedCartGroupToPromoData(listOf(group))
                 clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                         orderData = ClearPromoOrderData(
-                            orders = listOf(
+                            orders = cartPromoHolderData.values.map {
                                 ClearPromoOrder(
-                                    uniqueId = shop.cartString,
-                                    boType = shop.boMetadata.boType,
-                                    codes = mutableListOf(shop.boCode),
-                                    shopId = shop.shopId.toLongOrZero(),
-                                    isPo = shop.isPo,
-                                    poDuration = shop.poDuration,
-                                    warehouseId = shop.warehouseId
+                                    uniqueId = it.cartString,
+                                    boType = group.boMetadata.boType,
+                                    codes = if (it.needToAddCodes) mutableListOf(group.boCode) else mutableListOf(),
+                                    shopId = it.shopId.toLongOrZero(),
+                                    isPo = group.isPo,
+                                    poDuration = it.poDuration,
+                                    warehouseId = group.warehouseId
                                 )
-                            )
+                            }
                         )
                     )
                 ).executeOnBackground()
@@ -2269,8 +2274,8 @@ class CartListPresenter @Inject constructor(
 //        compositeSubscription.add(
 //            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe()
 //        )
-        shop.promoCodes = ArrayList(shop.promoCodes).apply { remove(shop.boCode) }
-        shop.boCode = ""
+        group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
+        group.boCode = ""
     }
 
     override fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {

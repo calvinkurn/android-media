@@ -135,7 +135,6 @@ object CartUiModelMapper {
         }
         cartData.availableSection.availableGroupGroups.forEachIndexed { index, availableGroup ->
             val productUiModelList = mutableListOf<CartItemHolderData>()
-            val shopMap: HashMap<String, CartShopHolderData> = HashMap()
             val groupShopCount = availableGroup.groupShopCartData.count()
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = CartShopHolderData().apply { 
@@ -163,22 +162,22 @@ object CartUiModelMapper {
                             product = product,
                             group = availableGroup,
                             unavailableSection = null,
-                            availableShop = availableShop
+                            availableShop = availableShop,
+                            shopData = shopUiModel
                         ).apply { 
-                            shopHolderData = shopUiModel
-                            isShopShown = availableGroup.isOWOC() && cartDetailIndex == 0
+                            isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0
                         }
                         productUiModelList.add(productUiModel)
                     }
                 }
                 productUiModelList.lastOrNull()?.isFinalItem = shopIndex == groupShopCount - 1
-                shopMap[availableShop.shop.shopId] = shopUiModel
             }
             val groupUiModel = CartGroupHolderData().apply {
                 this.productUiModelList = productUiModelList
-                this.shopMap = shopMap
                 cartString = availableGroup.cartString
-                shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId ?: ""
+//                shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId ?: ""
+                groupType = availableGroup.groupType
+                uiGroupType = availableGroup.uiGroupType
                 groupName = availableGroup.groupInformation.name
                 groupBadge = availableGroup.groupInformation.badgeUrl
 //                isFulfillment = availableGroup.isFulfillment
@@ -213,10 +212,10 @@ object CartUiModelMapper {
                 promoCodes = availableGroup.promoCodes
 //                shopTypeInfo = availableGroup.shop.shopTypeInfo
                 shopShipments = mapShopShipment(availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopShipments ?: emptyList())
-                districtId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.districtId ?: ""
-                postalCode = availableGroup.groupShopCartData.getOrNull(0)?.shop?.postalCode ?: ""
-                longitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.longitude ?: ""
-                latitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.latitude ?: ""
+//                districtId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.districtId ?: ""
+//                postalCode = availableGroup.groupShopCartData.getOrNull(0)?.shop?.postalCode ?: ""
+//                longitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.longitude ?: ""
+//                latitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.latitude ?: ""
                 boMetadata = availableGroup.boMetadata
                 cartShopGroupTicker = CartShopGroupTickerData(
                     enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
@@ -226,10 +225,10 @@ object CartUiModelMapper {
                 mapAddOnData(availableGroup.giftingAddOn, availableGroup.epharmacyConsultationInfo)
                 warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
                 isPo = availableGroup.shipmentInformation.preorder.isPreorder
-                poDuration =
-                    availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)
-                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
-                        ?: "0"
+//                poDuration =
+//                    availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)
+//                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
+//                        ?: "0"
                 boCode =
                     cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
                         it.uniqueId == cartString && it.shippingId > 0 &&
@@ -347,6 +346,23 @@ object CartUiModelMapper {
             }
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
+                val shopUiModel = CartShopHolderData().apply {
+                    shopId = unavailableGroup.shop.shopId
+                    shopName = unavailableGroup.shop.shopName
+                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
+                    isTokoNow = unavailableGroup.shop.isTokoNow
+                    incidentInfo = unavailableGroup.shop.shopAlertMessage
+                    maximumWeightWording = unavailableGroup.shop.maximumWeightWording
+                    shopShipments = mapShopShipment(unavailableGroup.shop.shopShipments)
+                    districtId = unavailableGroup.shop.districtId
+                    postalCode = unavailableGroup.shop.postalCode
+                    latitude = unavailableGroup.shop.latitude
+                    longitude = unavailableGroup.shop.longitude
+                    poDuration = unavailableGroup.cartDetails.getOrNull(0)
+                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
+                        ?: "0"
+                    enablerLabel = if (unavailableGroup.shop.enabler.showLabel) unavailableGroup.shop.enabler.labelName else ""
+                }
                 unavailableGroup.cartDetails.forEach { cartDetail ->
                     cartDetail.products.forEach { product ->
                         val productUiModel = mapProductUiModel(
@@ -355,17 +371,18 @@ object CartUiModelMapper {
                             product = product,
                             group = unavailableGroup,
                             unavailableSection = unavailableSection,
-                            availableShop = null
+                            availableShop = null,
+                            shopData = shopUiModel
                         )
                         productUiModelList.add(productUiModel)
                     }
                     productUiModelList.lastOrNull()?.isFinalItem = true
                 }
-                val shopUiModel = CartGroupHolderData().apply {
+                val groupUiModel = CartGroupHolderData().apply {
                     this.productUiModelList = productUiModelList
                     cartString = unavailableGroup.cartString
-                    shopId = unavailableGroup.shop.shopId
                     groupName = unavailableGroup.shop.shopName
+                    groupBadge = unavailableGroup.shop.shopTypeInfo.shopBadge
                     isFulfillment = unavailableGroup.isFulfillment
                     fulfillmentName =
                         if (unavailableGroup.isFulfillment) {
@@ -388,7 +405,7 @@ object CartUiModelMapper {
                         unavailableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
-                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
+//                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 &&
@@ -397,12 +414,8 @@ object CartUiModelMapper {
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
                     isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
-                    poDuration =
-                        unavailableGroup.cartDetails.getOrNull(0)
-                            ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
-                            ?: "0"
                 }
-                unavailableSectionList.add(shopUiModel)
+                unavailableSectionList.add(groupUiModel)
                 unavailableSectionList.addAll(productUiModelList)
             }
         }
@@ -460,7 +473,8 @@ object CartUiModelMapper {
         product: Product,
         group: Any,
         unavailableSection: UnavailableSection?,
-        availableShop: GroupShopCart?
+        availableShop: GroupShopCart?,
+        shopData: CartShopHolderData
     ): CartItemHolderData {
         return CartItemHolderData().apply {
             when (group) {
@@ -495,6 +509,7 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            shopHolderData = shopData
             needPrescription = product.ethicalDrug.needPrescription
             butuhResepText = product.ethicalDrug.text
             butuhResepIconUrl = product.ethicalDrug.iconUrl

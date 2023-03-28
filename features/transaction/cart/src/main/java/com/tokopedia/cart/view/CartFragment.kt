@@ -1187,18 +1187,22 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> 
+                                group.cartString == voucher.cartStringGroup 
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder ->
+                                shopOrder.cartStringOrder == voucher.uniqueId
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"
@@ -1230,18 +1234,22 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> 
+                                group.cartString == voucher.cartStringGroup 
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder ->
+                                shopOrder.cartStringOrder == voucher.uniqueId
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"
@@ -1276,18 +1284,22 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> 
+                                group.cartString == voucher.cartStringGroup 
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder -> 
+                                shopOrder.cartStringOrder == voucher.uniqueId 
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"
@@ -2199,10 +2211,11 @@ class CartFragment :
             }
         }
         if (cartGroupHolderData.cartShopGroupTicker.enableBoAffordability) {
-            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-                cartGroupHolderData.cartShopGroupTicker.cartIds,
-                cartGroupHolderData.shopId
-            )
+            // TODO: fix tracker 
+//            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+//                cartGroupHolderData.cartShopGroupTicker.cartIds,
+//                cartGroupHolderData.shopId
+//            )
         }
     }
 
@@ -2216,11 +2229,12 @@ class CartFragment :
     }
 
     override fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        cartPageAnalytics.eventViewBoTickerWording(
-            cartGroupHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
-            cartGroupHolderData.cartShopGroupTicker.cartIds,
-            cartGroupHolderData.shopId
-        )
+        // TODO: Fix tracker 
+//        cartPageAnalytics.eventViewBoTickerWording(
+//            cartGroupHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
+//            cartGroupHolderData.cartShopGroupTicker.cartIds,
+//            cartGroupHolderData.shopId
+//        )
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -4381,10 +4395,11 @@ class CartFragment :
     override fun onExpandAvailableItem(index: Int) {
         val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
         if (cartShopBottomHolderData != null) {
+            // TODO: Fix Tracker 
             if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
+//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
             } else {
-                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
+//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
             }
             cartShopBottomHolderData.shopData.isCollapsed = false
             cartAdapter.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
@@ -4402,7 +4417,8 @@ class CartFragment :
             val cartShopHolderData = groupData.first()
             val cartShopBottomHolderData = groupData.last()
             if (cartShopHolderData is CartGroupHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
-                cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
+                // TODO: Fix Tracker 
+//                cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
                 cartShopHolderData.isCollapsed = false
                 cartShopHolderData.clickedCollapsedProductIndex = index
                 cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)

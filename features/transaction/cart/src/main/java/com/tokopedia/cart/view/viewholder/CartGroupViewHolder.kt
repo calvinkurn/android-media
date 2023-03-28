@@ -114,21 +114,28 @@ class CartGroupViewHolder(
     }
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
-        val shopName = cartGroupHolderData.groupName
-        binding.tvShopName.text = Utils.getHtmlFormat(shopName)
-        binding.tvShopName.setOnClickListener {
-            actionListener.onCartShopNameClicked(
-                cartGroupHolderData.shopId,
-                cartGroupHolderData.groupName,
-                cartGroupHolderData.isTokoNow
-            )
+        val groupName = cartGroupHolderData.groupName
+        binding.tvShopName.text = Utils.getHtmlFormat(groupName)
+        if (!cartGroupHolderData.isTypeOWOC()) {
+            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopId
+            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopName
+            binding.tvShopName.setOnClickListener {
+                actionListener.onCartShopNameClicked(
+                    shopId,
+                    shopName,
+                    cartGroupHolderData.isTokoNow
+                )
+            }   
+        }
+        else {
+            binding.tvShopName.setOnClickListener(null)
         }
     }
 
     private fun renderGroupBadge(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.groupBadge.isNotBlank()) {
             ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, cartGroupHolderData.groupBadge)
-            val contentDescription = if (cartGroupHolderData.isOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.shopTypeInfo.title
+            val contentDescription = if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopTypeInfo?.title
             binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, contentDescription)
             binding.imageShopBadge.show()
         }
@@ -380,7 +387,8 @@ class CartGroupViewHolder(
                         cartGroupHolderData.addOnId
                     )
                 } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shopId, cartGroupHolderData.productUiModelList)
+                    // TODO: Fix Tracker 
+//                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shopId, cartGroupHolderData.productUiModelList)
                 }
             }
             if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
