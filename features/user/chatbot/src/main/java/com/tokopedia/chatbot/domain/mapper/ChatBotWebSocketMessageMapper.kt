@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.domain.mapper
 
 import android.text.TextUtils
 import androidx.annotation.NonNull
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
@@ -58,10 +58,8 @@ import javax.inject.Inject
  * @author by nisie on 10/12/18.
  */
 
-class ChatBotWebSocketMessageMapper @Inject constructor() :
+class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) :
     WebsocketMessageMapper() {
-
-    private val gson = GsonBuilder().create()
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
         return if (pojo.showRating || pojo.ratingStatus != 0) {

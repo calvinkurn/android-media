@@ -11,7 +11,6 @@ import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicButtonAction
 import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyActionBubbleContent
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -315,29 +314,6 @@ object ChatbotSendableWebSocketParam {
         return json
     }
 
-    fun generateParamSendImage(
-        messageId: String,
-        path: String,
-        imageObj: String,
-        startTime: String,
-        toUid: String
-    ): JsonObject {
-        val json = JsonObject()
-        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
-        val data = JsonObject().apply {
-            addProperty("message_id", messageId.convertMessageIdToLong())
-            addProperty("message", "Uploaded Image")
-            addProperty("start_time", startTime)
-            addProperty("to_uid", toUid)
-            addProperty("file_path", path)
-            addProperty("image_obj", imageObj)
-            addProperty("attachment_type", AttachmentType.Companion.TYPE_IMAGE_UPLOAD.toIntOrZero())
-            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
-        }
-        json.add("data", data)
-        return json
-    }
-
     fun getReadMessage(messageId: String): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
@@ -384,7 +360,7 @@ object ChatbotSendableWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
-        val dynamicContent: String = generateDynamicContent(bubbleUiModel)
+        val dynamicContent = generateDynamicContent(bubbleUiModel)
 
         val attribute = JsonObject().apply {
             addProperty(
@@ -428,10 +404,9 @@ object ChatbotSendableWebSocketParam {
             bubbleUiModel.text,
             bubbleUiModel.value
         )
-        val dynamicButtonAction = DynamicButtonAction(bubbleContent)
-
+        //   val dynamicButtonAction = DynamicButtonAction(content)
         return try {
-            Gson().toJson(dynamicButtonAction)
+            Gson().toJson(content)
         } catch (e: JSONException) {
             ""
         }
