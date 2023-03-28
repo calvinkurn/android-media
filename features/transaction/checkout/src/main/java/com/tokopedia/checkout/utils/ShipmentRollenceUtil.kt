@@ -7,13 +7,23 @@ object ShipmentRollenceUtil {
 
     @JvmStatic
     fun isEnableRollenceCheckoutNewUpsellImprovement(): Boolean {
-        return true // for testing
+        //return true // for testing
         try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance()
-                .abTestPlatform.getString(RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT, RollenceKey.CONTROL_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.EXPERIMENT_VARIANT)
+                .abTestPlatform.getString(RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT, getDefaultRollenceValue())
+            return (remoteConfigRollenceValue == getVariantRollenceValue())
         } catch (e: Exception) {
             return false
         }
+    }
+
+    @JvmStatic
+    fun getDefaultRollenceValue(): String {
+        return RollenceKey.CONTROL_VARIANT
+    }
+
+    @JvmStatic
+    fun getVariantRollenceValue(): String {
+        return RollenceKey.EXPERIMENT_VARIANT
     }
 }
