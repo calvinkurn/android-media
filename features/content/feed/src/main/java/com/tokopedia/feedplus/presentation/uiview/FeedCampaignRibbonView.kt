@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
 import android.graphics.drawable.GradientDrawable
-import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -122,11 +121,6 @@ class FeedCampaignRibbonView(
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
-                    Toast.makeText(
-                        root.context,
-                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     tyFeedCampaignRibbonTitle.text =
                         "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
 //                    renderRibbonByType(campaign.isReminderActive)
@@ -135,48 +129,28 @@ class FeedCampaignRibbonView(
 //                    }
                 }
                 FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-                    Toast.makeText(
-                        root.context,
-                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     tyFeedCampaignRibbonTitle.text = ctaModel.text
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> {
-                    root.setTransition(root.currentState, R.id.initial_title_with_timer_and_icon)
-                    root.transitionToEnd()
-                    root.progress = 1f
-
-                    Toast.makeText(
-                        root.context,
-                        "Flash Sale Ongoing",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
                     tyFeedCampaignRibbonTitle.text = campaign.shortName
                     tyFeedCampaignRibbonSubtitle.text = product?.stockWording
                     val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
                     pbFeedCampaignRibbon.setValue(value, true)
 
                     startDelayProcess(TWO_SECOND) {
-                        Toast.makeText(root.context, "Change Background to Gradient", Toast.LENGTH_SHORT).show()
                         setBackgroundGradient(ctaModel)
 
                         startDelayProcess(THREE_SECOND) {
-                            Toast.makeText(root.context, "Run Three Seconds", Toast.LENGTH_SHORT).show()
-
                             root.setTransition(root.currentState, R.id.availability_state)
                             root.transitionToEnd()
                         }
                     }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
-                    Toast.makeText(
-                        root.context,
-                        "Flash Sale Upcoming",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                    root.setTransition(
+                        R.id.initial_title_with_timer_and_icon,
+                        R.id.initial_title_with_timer_and_icon
+                    )
                     root.transitionToEnd()
                     root.progress = 1f
 

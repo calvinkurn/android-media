@@ -238,6 +238,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ty_feed_campaign_ribbon_subtitle"
             app:layout_constraintVertical_chainStyle="packed" />
+        <Constraint
+            android:id="@+id/timer_feed_campaign_ribbon"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/timer_feed_campaign_ribbon"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/timer_feed_campaign_ribbon"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
     <Transition
         app:constraintSetEnd="@+id/availability_state"
