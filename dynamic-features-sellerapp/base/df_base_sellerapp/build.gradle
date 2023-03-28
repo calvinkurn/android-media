@@ -139,4 +139,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
     implementation projectOrAar(rootProject.ext.features.sellerPersona)
+    implementation projectOrAar(rootProject.ext.features.centralizedPromo)
 }
