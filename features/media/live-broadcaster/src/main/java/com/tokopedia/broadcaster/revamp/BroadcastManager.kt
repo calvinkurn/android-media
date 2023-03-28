@@ -3,11 +3,14 @@ package com.tokopedia.broadcaster.revamp
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.net.Uri
+import android.opengl.GLES20
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.BroadcasterUtil
@@ -19,14 +22,19 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.effect.EffectManager
-import com.tokopedia.effect.util.ImageUtil
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
 import com.wmspanel.libstream.gles.EglCore
 import com.wmspanel.libstream.gles.WindowSurface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
@@ -62,6 +70,8 @@ class BroadcastManager @Inject constructor(
 
     /** Joe : mCodecSurface works with mStreamerSurface for pushing */
     private var mCodecSurface: WindowSurface? = null
+
+    private var mRenderThread: Thread? = null
 
     // texture
     private var mTextureId = 0
@@ -292,30 +302,7 @@ class BroadcastManager @Inject constructor(
             }
         }
 
-        mStreamerGL = builder.build()
-        if (mStreamerGL == null) {
-            broadcastInitStateChanged(
-                BroadcastInitState.Error(
-                    BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
-                )
-            )
-            return
-        }
-
-        mStreamer = mStreamerGL
-
-        // Streamer build succeeded, can start Video/Audio capture
-        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
-        startVideoCapture()
-        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
-        startAudioCapture()
-
         if(withByteplus) {
-            effectManager.init(
-                surfaceSize.width,
-                surfaceSize.height,
-            )
-
             // initialize surface texture
             mTextureId = effectManager.getExternalOESTextureID()
             mSurfaceTexture = SurfaceTexture(mTextureId)
@@ -327,6 +314,13 @@ class BroadcastManager @Inject constructor(
 
             val glSurface = Surface(mSurfaceTexture)
             mGLSurface = glSurface
+
+            builder.setSurface(glSurface)
+
+            effectManager.init(
+                surfaceSize.width,
+                surfaceSize.height,
+            )
 
             mSurfaceTexture?.setOnFrameAvailableListener {
                 mGLHandler?.post {
@@ -383,6 +377,24 @@ class BroadcastManager @Inject constructor(
                 mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
             }
         }
+
+        mStreamerGL = builder.build()
+        if (mStreamerGL == null) {
+            broadcastInitStateChanged(
+                BroadcastInitState.Error(
+                    BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                )
+            )
+            return
+        }
+
+        mStreamer = mStreamerGL
+
+        // Streamer build succeeded, can start Video/Audio capture
+        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
+        startVideoCapture()
+        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
+        startAudioCapture()
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
             BroadcasterAdaptiveBitrate.Builder(
@@ -452,8 +464,6 @@ class BroadcastManager @Inject constructor(
         val success = createConnection(connectionConfig)
         if (success) broadcastStateChanged(BroadcastState.Started)
     }
-
-    private var mRenderThread: Thread? = null
 
     private fun initHandler() {
         mRenderThread = Thread(
@@ -552,13 +562,17 @@ class BroadcastManager @Inject constructor(
         // finally release streamer, after release(), the object is no longer available
         // if a Streamer is in released state, all methods will throw an IllegalStateException
         mStreamer?.release()
+        mStreamerSurface?.release()
+        mDisplaySurface?.release()
+
         // sanitize Streamer object holder
         mStreamer = null
+        mStreamerGL = null
+        mStreamerSurface = null
+        mDisplaySurface = null
 
         // discard adaptive bitrate calculator
         mAdaptiveBitrate = null
-
-        mStreamerGL = null
 
         broadcastInitStateChanged(BroadcastInitState.Uninitialized)
     }
@@ -567,6 +581,9 @@ class BroadcastManager @Inject constructor(
         mContext = null
         mHandler = null
         mSelectedCamera = null
+
+        mRenderThread?.interrupt()
+        mRenderThread = null
     }
 
     override fun flip() {
@@ -602,8 +619,12 @@ class BroadcastManager @Inject constructor(
         mStatisticTimerInterval = interval
     }
 
+    override fun setPreset(presetId: String, value: Float) {
+        effectManager.setPreset(presetId, value)
+    }
+
     override fun getHandler(): Handler? {
-        return mHandler
+        return mGLHandler
     }
 
     override fun onConnectionStateChanged(

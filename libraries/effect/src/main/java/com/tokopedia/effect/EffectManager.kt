@@ -11,15 +11,6 @@ interface EffectManager {
     )
 
     fun process(
-        srcTexture: Int,
-        cameraRotation: Int,
-        width: Int,
-        height: Int,
-        surfaceWidth: Int,
-        surfaceHeight: Int
-    )
-
-    fun process(
         textureId: Int,
         textureWidth: Int,
         textureHeight: Int,
@@ -38,4 +29,6 @@ interface EffectManager {
     fun setCameraPosition(isFront: Boolean)
 
     fun getExternalOESTextureID(): Int
+
+    fun setPreset(presetId: String, value: Float)
 }

@@ -36,6 +36,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
@@ -78,10 +79,12 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -325,6 +328,18 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun observeUiState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                if(it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset &&
+                    it.value.beautificationConfig.selectedPreset?.isRemoveEffect == false) {
+                    if(::broadcaster.isInitialized) {
+                        val selectedPreset = it.value.beautificationConfig.selectedPreset
+                        broadcaster.setPreset(selectedPreset?.id.orEmpty(), selectedPreset?.value.orZero().toFloat())
+                    }
+                }
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {

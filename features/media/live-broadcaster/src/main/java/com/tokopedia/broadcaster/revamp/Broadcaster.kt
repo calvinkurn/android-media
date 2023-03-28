@@ -44,6 +44,8 @@ interface Broadcaster {
 
     fun enableStatistic(interval: Long)
 
+    fun setPreset(presetId: String, value: Float)
+
     val broadcastState: BroadcastState
 
     val broadcastInitState: BroadcastInitState

@@ -92,9 +92,9 @@ class EffectManagerImpl @Inject constructor(
             1.0f
         )
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        var destinationTexture = mImageUtil?.prepareTexture(textureWidth, textureHeight)
+        var destinationTexture = mImageUtil.prepareTexture(textureWidth, textureHeight)
         val transition = ImageUtil.Transition().rotate(Surface.ROTATION_0.toFloat()).flip(false, false).reverse()
-        val texture2D = mImageUtil?.transferTextureToTexture(
+        val texture2D = mImageUtil.transferTextureToTexture(
             textureId,
             BytedEffectConstants.TextureFormat.Texture_Oes,
             BytedEffectConstants.TextureFormat.Texure2D,
@@ -105,62 +105,12 @@ class EffectManagerImpl @Inject constructor(
 
         val timestamp = System.nanoTime()
         val ret = mRenderManager?.processTexture(texture2D, destinationTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
-//        if (isEffectApplied()) {
-//            mEffectManager?.setCameraPosition(true)
-//            // Conduct special effects operation, output texture is 2D texture with upright face
-//            val ret = mEffectManager?.process(
-//                texture2D.orZero(),
-//                destinationTexture.orZero(),
-//                size.width,
-//                size.height,
-//                Rotation.CLOCKWISE_ROTATE_0,
-//                timestamp
-//            ) ?: false
-//            if (ret == false) {
-//                // revert back to original texture
-//                destinationTexture = texture2D
-//            }
-//        } else {
-//            destinationTexture = texture2D
-//        }
+
+        if(ret == false) {
+            destinationTexture = texture2D
+        }
 
         return destinationTexture
-    }
-
-    override fun process(
-        srcTexture: Int,
-        cameraRotation: Int,
-        width: Int,
-        height: Int,
-        surfaceWidth: Int,
-        surfaceHeight: Int
-    ) {
-//        GLES20.glClearColor(TEST_R0 / 255.0f, TEST_G0 / 255.0f, TEST_B0 / 255.0f, 1.0f)
-//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-//
-//        var dstTexture = srcTexture
-//
-//        val transition = ImageUtil.Transition().rotate(cameraRotation.toFloat()).flip(false, true).reverse()
-//
-//        val texture2D = mImageUtil.transferTextureToTexture(
-//            dstTexture,
-//            BytedEffectConstants.TextureFormat.Texture_Oes,
-//            BytedEffectConstants.TextureFormat.Texure2D,
-//            width,
-//            height,
-//            transition
-//        )
-//
-//        dstTexture = mImageUtil.prepareTexture(width, height)
-//
-//        /** TODO: is it always true? */
-//        setCameraPosition(true)
-//        val timestamp = System.currentTimeMillis()
-//
-//        val ret = mRenderManager?.processTexture(texture2D, dstTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
-//        if (GlobalConfig.DEBUG) {
-//            Log.d(this::class.java.name, "EffectManager: $ret")
-//        }
     }
 
     override fun drawFrameBase(
@@ -195,6 +145,12 @@ class EffectManagerImpl @Inject constructor(
 
     override fun getExternalOESTextureID(): Int {
         return OpenGLUtils.getExternalOESTextureID()
+    }
+
+    override fun setPreset(presetId: String, value: Float) {
+        val key = "${assetPathHelper.presetDir}/$presetId"
+        mRenderManager?.setComposerNodesWithTags(arrayOf(key), arrayOf(presetId))
+        mRenderManager?.updateComposerNodes(key, "Makeup_ALL", value)
     }
 
     companion object {
