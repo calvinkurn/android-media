@@ -196,6 +196,7 @@ class AffiliateHomeFragment :
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                 IconBuilder()
+                    .addIcon(IconList.ID_NOTIFICATION) {}
                     .addIcon(IconList.ID_BILL) {
                         openHistoryActivity()
                     }
