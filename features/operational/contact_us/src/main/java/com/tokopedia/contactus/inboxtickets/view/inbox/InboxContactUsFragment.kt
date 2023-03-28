@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -40,6 +41,7 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.mapToSelectionFilterObject
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -49,6 +51,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import kotlinx.coroutines.flow.collect
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class InboxContactUsFragment :
@@ -121,9 +126,9 @@ class InboxContactUsFragment :
         super.onResume()
         showProgressBar()
         resetPaging()
-        viewModel.getTopBotStatus()
         viewModel.restartPageOfList()
         viewModel.getTicketItems()
+        viewModel.getTopBotStatus()
     }
 
     private fun initView() {
@@ -131,6 +136,7 @@ class InboxContactUsFragment :
         setupPaging()
         setOptionsFilter()
         settingOnClickListener()
+        settingClickListenerOfErrorPage()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(
             MethodChecker.getDrawable(
                 context ?: return,
@@ -169,6 +175,7 @@ class InboxContactUsFragment :
     }
 
     private fun handleEffect(uiEffect: InboxUiEffect) {
+        hideErrorPage()
         when (uiEffect) {
             is InboxUiEffect.EmptyTicket -> {
                 hideList()
@@ -189,6 +196,7 @@ class InboxContactUsFragment :
                     }
                     uiEffect.isFirstPage -> {
                         loadDataIntoRecyclerView(uiEffect)
+                        notifyLoadResult(uiEffect.isHasNext)
                     }
                     else -> {
                         notifyLoadResult(uiEffect.isHasNext)
@@ -197,13 +205,48 @@ class InboxContactUsFragment :
                 }
             }
             is InboxUiEffect.FetchInboxError -> {
-                val errorMessage = ErrorHandler.getErrorMessage(context, uiEffect.throwable)
-                binding?.rvEmailList.showToasterErrorWithCta(
-                    errorMessage,
-                    context?.getString(R.string.contact_us_ok).orEmpty()
-                )
+                hideProgressBar()
+                showErrorPage(uiEffect.throwable)
+                showToastWhenNeeded(uiEffect.throwable)
             }
         }
+    }
+
+    private fun showToastWhenNeeded(throwable: Throwable) {
+        if(!throwable.isInternetException() || !mAdapter.isEmpty) {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            binding?.rvEmailList.showToasterErrorWithCta(
+                errorMessage,
+                context?.getString(R.string.contact_us_ok).orEmpty()
+            )
+        }
+    }
+
+    private fun showErrorPage(throwable: Throwable) {
+        if(mAdapter.isEmpty) {
+            binding?.viewOfContent?.hide()
+            binding?.layoutErrorGlobal?.show()
+            binding?.homeGlobalError?.run {
+                setType(getTypeOfErrorGlobal(throwable))
+            }
+        }
+    }
+
+    private fun getTypeOfErrorGlobal(throwable: Throwable): Int {
+        return if(throwable.isInternetException()){
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun Throwable.isInternetException() : Boolean {
+        return  this is SocketException || this is SocketTimeoutException || this is UnknownHostException
+    }
+
+    private fun hideErrorPage(){
+        binding?.viewOfContent?.show()
+        binding?.layoutErrorGlobal?.hide()
     }
 
     private fun loadDataIntoRecyclerView(data : InboxUiEffect.LoadNextPageSuccess){
@@ -306,6 +349,19 @@ class InboxContactUsFragment :
         }
     }
 
+    private fun settingClickListenerOfErrorPage(){
+        binding?.layoutErrorGlobal?.run {
+            binding?.homeGlobalError?.run {
+                errorSecondaryAction.hide()
+                setActionClickListener {
+                    showProgressBar()
+                    viewModel.getTopBotStatus()
+                    viewModel.getTicketItems()
+                }
+            }
+        }
+    }
+
     private fun showBottomFragment(options: List<InboxFilterSelection>) {
         val BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment"
         bottomFragment =
@@ -391,7 +447,8 @@ class InboxContactUsFragment :
         applink: String
     ) {
         chatWidget?.show()
-        chatWidget?.setToolTipDescription(welcomeMessage)
+        val tolTipMessage = getWelcomeMessage(welcomeMessage)
+        chatWidget?.setToolTipDescription(tolTipMessage)
         chatWidget?.setToolTipButtonLister(object : ChatWidgetToolTip.ChatWidgetToolTipListener {
             override fun onClickToolTipButton() {
                 sendGTMClickChatButton()
@@ -399,6 +456,12 @@ class InboxContactUsFragment :
             }
         })
         showChatBotWidgetNotification(isHasUnReadNotification)
+    }
+
+    private fun getWelcomeMessage(message : String) : String {
+        return message.ifEmpty {
+            getString(R.string.tool_tip_tanya_default_value)
+        }
     }
 
     private fun showChatBotWidgetNotification(isShowNotification: Boolean) {

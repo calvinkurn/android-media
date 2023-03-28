@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -25,7 +24,7 @@ class PartialProductItemViewHolder(
     partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel,
+    private var element: ProductListUiModel.ProductUiModel
 ) : View.OnClickListener {
 
     companion object {
@@ -56,7 +55,7 @@ class PartialProductItemViewHolder(
 
     init {
         setupClickListeners()
-        setupCardProductAlpha()
+        setupCardProductAlpha(element.isPof)
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
@@ -86,12 +85,17 @@ class PartialProductItemViewHolder(
         if (oldItem.insurance != newItem.insurance) {
             setupInsurance(newItem.insurance)
         }
+
+        if (oldItem.isPof != newItem.isPof) {
+            setupCardProductAlpha(newItem.isPof)
+        }
+
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
     }
 
-    private fun setupCardProductAlpha() {
-        container?.alpha = if (element.isPof) {
-             CARD_ALPHA_POF
+    private fun setupCardProductAlpha(isPof: Boolean) {
+        container?.alpha = if (isPof) {
+            CARD_ALPHA_POF
         } else {
             CARD_ALPHA_NON_POF
         }

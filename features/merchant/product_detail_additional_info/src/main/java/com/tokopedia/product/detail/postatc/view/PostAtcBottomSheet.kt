@@ -26,8 +26,10 @@ import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
 import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Result
@@ -40,6 +42,8 @@ import javax.inject.Inject
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
+
+        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
 
         const val TAG = "post_atc_bs"
 
@@ -250,6 +254,34 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         }
 
         goToCart(cartId)
+    }
+
+    override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        if (recommendationItem.isTopAds) {
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitClickUrl(
+                TOPADS_CLASS_NAME,
+                recommendationItem.clickUrl,
+                productId,
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
+        goToProduct(productId)
+    }
+
+    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
+        if (recommendationItem.isTopAds) {
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                TOPADS_CLASS_NAME,
+                recommendationItem.trackerImageUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
     }
 
     /**
