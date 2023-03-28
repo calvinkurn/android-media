@@ -25,6 +25,8 @@ class EffectManagerImpl @Inject constructor(
     private val assetHelper: AssetHelper,
 ) : EffectManager {
 
+    private val mSavedComposerNodes = mutableSetOf<String>()
+
     private var mRenderManager: RenderManager? = null
 
     private val mImageUtil: ImageUtil by lazy { ImageUtil() }
@@ -150,7 +152,13 @@ class EffectManagerImpl @Inject constructor(
         val key = "${assetHelper.presetDir}/$presetId"
 
         mRenderManager?.setComposerNodesWithTags(arrayOf(key), arrayOf(presetId))
-        mRenderManager?.updateComposerNodes(key, "Makeup_ALL", value)
+        mRenderManager?.updateComposerNodes(key, PRESET_KEY, value)
+
+        mSavedComposerNodes.add(key)
+    }
+
+    override fun removePreset() {
+        mRenderManager?.removeComposerNodes(mSavedComposerNodes.toTypedArray())
     }
 
     companion object {
@@ -159,5 +167,7 @@ class EffectManagerImpl @Inject constructor(
         private const val TEST_R0 = 0
         private const val TEST_G0 = 136
         private const val TEST_B0 = 0
+
+        private const val PRESET_KEY = "Makeup_ALL"
     }
 }

@@ -330,11 +330,15 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                if(it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset &&
-                    it.value.beautificationConfig.selectedPreset?.isRemoveEffect == false) {
+                if(it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset) {
                     if(::broadcaster.isInitialized) {
-                        val selectedPreset = it.value.beautificationConfig.selectedPreset
-                        broadcaster.setPreset(selectedPreset?.id.orEmpty(), selectedPreset?.value.orZero().toFloat())
+                        val selectedPreset = it.value.beautificationConfig.selectedPreset ?: return@collectLatest
+
+                        if(selectedPreset.isRemoveEffect) {
+                            broadcaster.removePreset()
+                        } else {
+                            broadcaster.setPreset(selectedPreset.id, selectedPreset.value.toFloat())
+                        }
                     }
                 }
             }

@@ -31,4 +31,6 @@ interface EffectManager {
     fun getExternalOESTextureID(): Int
 
     fun setPreset(presetId: String, value: Float)
+
+    fun removePreset()
 }

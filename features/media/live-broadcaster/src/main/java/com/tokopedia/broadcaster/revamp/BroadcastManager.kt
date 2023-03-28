@@ -623,6 +623,10 @@ class BroadcastManager @Inject constructor(
         effectManager.setPreset(presetId, value)
     }
 
+    override fun removePreset() {
+        effectManager.removePreset()
+    }
+
     override fun getHandler(): Handler? {
         return mGLHandler
     }

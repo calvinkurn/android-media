@@ -46,6 +46,8 @@ interface Broadcaster {
 
     fun setPreset(presetId: String, value: Float)
 
+    fun removePreset()
+
     val broadcastState: BroadcastState
 
     val broadcastInitState: BroadcastInitState
