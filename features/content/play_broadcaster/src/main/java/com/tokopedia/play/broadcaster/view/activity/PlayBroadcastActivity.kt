@@ -330,11 +330,24 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                if(it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset) {
-                    if(::broadcaster.isInitialized) {
+                if (it.prevValue?.beautificationConfig?.selectedFaceFilter != it.value.beautificationConfig.selectedFaceFilter) {
+                    if (::broadcaster.isInitialized) {
+                        val selectedFaceFilter = it.value.beautificationConfig.selectedFaceFilter ?: return@collectLatest
+
+                        if (selectedFaceFilter.isRemoveEffect) {
+
+                        } else {
+                            val success = broadcaster.setFaceFilter(selectedFaceFilter.id, selectedFaceFilter.value.toFloat())
+                            Log.d("<LOG>", "setFaceFilter $success")
+                        }
+                    }
+                }
+
+                if (it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset) {
+                    if (::broadcaster.isInitialized) {
                         val selectedPreset = it.value.beautificationConfig.selectedPreset ?: return@collectLatest
 
-                        if(selectedPreset.isRemoveEffect) {
+                        if (selectedPreset.isRemoveEffect) {
                             broadcaster.removePreset()
                         } else {
                             broadcaster.setPreset(selectedPreset.id, selectedPreset.value.toFloat())

@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.bef.effectsdk.OpenGLUtils
 import com.bytedance.labcv.effectsdk.BytedEffectConstants
 import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode
+import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode.BEF_RESULT_SUC
 import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.effect.util.ImageUtil
@@ -151,14 +152,24 @@ class EffectManagerImpl @Inject constructor(
     override fun setPreset(presetId: String, value: Float) {
         val key = "${assetHelper.presetDir}/$presetId"
 
-        mRenderManager?.setComposerNodesWithTags(arrayOf(key), arrayOf(presetId))
-        mRenderManager?.updateComposerNodes(key, PRESET_KEY, value)
+        mRenderManager?.setComposerNodes(arrayOf(key))
+        mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value)
+        mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value)
 
         mSavedComposerNodes.add(key)
     }
 
     override fun removePreset() {
         mRenderManager?.removeComposerNodes(mSavedComposerNodes.toTypedArray())
+    }
+
+    override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
+        if(!mSavedComposerNodes.contains(assetHelper.customFaceDir)) {
+            mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir))
+            mSavedComposerNodes.add(assetHelper.customFaceDir)
+        }
+
+        return mRenderManager?.updateComposerNodes(assetHelper.customFaceDir, "whiten", value) == BEF_RESULT_SUC
     }
 
     companion object {
@@ -168,6 +179,7 @@ class EffectManagerImpl @Inject constructor(
         private const val TEST_G0 = 136
         private const val TEST_B0 = 0
 
-        private const val PRESET_KEY = "Makeup_ALL"
+        private const val PRESET_MAKEUP_KEY = "Makeup_ALL"
+        private const val PRESET_FILTER_KEY = "Filter_ALL"
     }
 }

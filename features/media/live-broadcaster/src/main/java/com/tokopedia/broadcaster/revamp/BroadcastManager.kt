@@ -627,6 +627,10 @@ class BroadcastManager @Inject constructor(
         effectManager.removePreset()
     }
 
+    override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
+        return effectManager.setFaceFilter(faceFilterId, value)
+    }
+
     override fun getHandler(): Handler? {
         return mGLHandler
     }

@@ -33,4 +33,6 @@ interface EffectManager {
     fun setPreset(presetId: String, value: Float)
 
     fun removePreset()
+
+    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
 }

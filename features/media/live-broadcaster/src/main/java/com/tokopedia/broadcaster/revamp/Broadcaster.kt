@@ -48,6 +48,8 @@ interface Broadcaster {
 
     fun removePreset()
 
+    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
+
     val broadcastState: BroadcastState
 
     val broadcastInitState: BroadcastInitState
