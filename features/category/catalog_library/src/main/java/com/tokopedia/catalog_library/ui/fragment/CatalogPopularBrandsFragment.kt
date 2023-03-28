@@ -122,7 +122,7 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.setUpForPopularBrand()
+        catalogLibraryUiUpdater.shimmerForPopularBrands()
         updateUi()
     }
 

@@ -9,7 +9,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER
 
 class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibraryDM>) {
 
-    fun setUpForLandingPage() {
+    fun shimmerForLandingPage() {
         updateModel(
             CatalogShimmerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
@@ -33,7 +33,7 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
     }
 
-    fun setUpForHomePage() {
+    fun shimmerForHomePage() {
         updateModel(
             CatalogShimmerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
@@ -64,7 +64,7 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
     }
 
-    fun setUpForPopularBrand() {
+    fun shimmerForPopularBrands() {
         updateModel(
             CatalogShimmerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS,
@@ -74,7 +74,7 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
     }
 
-    fun setUpForBrandLanding() {
+    fun shimmerForBrandLandingPage() {
         updateModel(
             CatalogShimmerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_CATEGORY_HEADER,

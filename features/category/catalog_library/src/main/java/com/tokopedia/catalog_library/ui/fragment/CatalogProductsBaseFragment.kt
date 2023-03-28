@@ -22,9 +22,10 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
     abstract var source: String
     private var categoryId = ""
     private var brandId = ""
-
+    protected var productCount = 0
     private var sortType = SORT_TYPE_CATALOG
     private val rows = TOTAL_ROWS_CATALOG
+    private var pageNumber = 1
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
@@ -80,7 +81,7 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productsBaseVM?.getCatalogListData(source, categoryId, sortType, rows, page, brandId)
+                productsBaseVM?.getCatalogListData(source, categoryId, sortType, rows, pageNumber, brandId)
             }
         }
     }
@@ -91,6 +92,7 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
     }
 
     private fun resetPage() {
+        pageNumber = 1
         loadMoreTriggerListener?.resetState()
     }
 
@@ -99,6 +101,8 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     onProductsLoaded(it.data.listOfComponents)
+                    productCount += it.data.listOfComponents.size
+                    pageNumber += 1
                     loadMoreTriggerListener?.updateStateAfterGetData()
                 }
 

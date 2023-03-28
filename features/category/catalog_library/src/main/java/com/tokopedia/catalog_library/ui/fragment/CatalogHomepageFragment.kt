@@ -74,10 +74,12 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForHomePage()
+            it.shimmerForHomePage()
         }
 
-    override var baseRecyclerView: RecyclerView? = catalogHomeRecyclerView
+    override var baseRecyclerView: RecyclerView?
+        get() = catalogHomeRecyclerView
+        set(value) {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -175,6 +177,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
             catalogHomeRecyclerView?.show()
             globalError?.hide()
             getDataFromViewModel()
+            getProducts()
         }
     }
 
@@ -233,8 +236,12 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
-        // TODO shimmer remove or show whole error logic
-        onError(throwable)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        updateUi()
+        if(productCount == 0){
+            onError(throwable)
+        }
     }
 
     override fun categoryHorizontalCarouselImpression(

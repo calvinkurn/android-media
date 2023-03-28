@@ -71,8 +71,8 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForBrandLanding()
-        }
+            it.shimmerForBrandLandingPage()
+    }
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -91,7 +91,9 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         }
     }
 
-    override var baseRecyclerView: RecyclerView? = catalogLandingRecyclerView
+    override var baseRecyclerView: RecyclerView?
+        get() = catalogLandingRecyclerView
+        set(value) {}
 
     override var source: String = CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE
 
@@ -184,9 +186,6 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun onError(e: Throwable) {
-        if (catalogLibraryUiUpdater.hasData()) {
-            return
-        }
         catalogLandingRecyclerView?.hide()
         if (e is UnknownHostException ||
             e is SocketTimeoutException
@@ -203,6 +202,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
             addShimmer()
             updateUi()
             getDataFromViewModel()
+            getProducts()
         }
     }
 
@@ -211,7 +211,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.setUpForBrandLanding()
+        catalogLibraryUiUpdater.shimmerForBrandLandingPage()
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -238,7 +238,12 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
-        onError(throwable)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        updateUi()
+        if(productCount == 0){
+            onError(throwable)
+        }
     }
 
     override fun onBrandCategoryArrowClick() {

@@ -260,7 +260,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             categoryIdentifier ?: "",
             userSessionInterface.userId
         )
-        (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryIdentifier ?: "", categoryName)
+        (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryName, categoryIdentifier ?: "")
     }
 
     private fun addShimmer() {

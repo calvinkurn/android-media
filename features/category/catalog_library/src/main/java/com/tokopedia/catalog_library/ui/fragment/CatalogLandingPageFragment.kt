@@ -17,16 +17,12 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
-import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.util.ActionKeys
-import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.*
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
-import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -70,7 +66,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForLandingPage()
+            it.shimmerForLandingPage()
         }
 
     @Inject
@@ -89,7 +85,9 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         }
     }
 
-    override var baseRecyclerView: RecyclerView? = catalogLandingRecyclerView
+    override var baseRecyclerView: RecyclerView?
+        get() = catalogLandingRecyclerView
+        set(value) {}
 
     override var source: String = CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
 
@@ -124,6 +122,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private fun initViews(view: View) {
         globalError = view.findViewById(R.id.global_error_page)
+        initHeaderTitle(view)
         setupRecyclerView(view)
     }
 
@@ -146,7 +145,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         landingPageViewModel.catalogLandingPageLiveDataResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    // TODO if data not received for an API . Remove its shimmer component
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }
@@ -154,9 +152,13 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
                 }
 
                 is Fail -> {
-                    onError(it.throwable)
+                    (it.throwable as? CatalogLibraryResponseException)?.let { exception ->
+                        catalogLibraryUiUpdater.removeModel(exception.shimmerType)
+                        updateUi()
+                    }
                 }
             }
+
             landingPageViewModel.categoryName.observe(viewLifecycleOwner) { categoryName ->
                 this.categoryName = categoryName
                 view?.let { v -> initHeaderTitle(v) }
@@ -174,7 +176,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun updateUi() {
-        catalogLandingRecyclerView?.show()
         val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -200,6 +201,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
             addShimmer()
             updateUi()
             getDataFromViewModel()
+            getProducts()
         }
     }
 
@@ -217,29 +219,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.apply {
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
-                )
-            )
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
-                )
-            )
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-                )
-            )
-        }
+        catalogLibraryUiUpdater.shimmerForLandingPage()
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -266,7 +246,12 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
-        onError(throwable)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        updateUi()
+        if(productCount == 0){
+            onError(throwable)
+        }
     }
 
     override fun catalogProductsCategoryLandingImpression(

@@ -24,7 +24,7 @@ class CatalogProductsBaseVM @Inject constructor(
     val shimmerLiveData: LiveData<Boolean> =
         _shimmerLiveData
 
-    var sourceScreen: String = ""
+    private var sourceScreen: String = ""
 
     fun getCatalogListData(
         source: String,
