@@ -288,7 +288,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCartItemTopViewHolder.LAYOUT -> {
-                return ShipmentCartItemTopViewHolder(view)
+                return ShipmentCartItemTopViewHolder(view, this@ShipmentAdapter)
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
@@ -1486,10 +1486,9 @@ class ShipmentAdapter @Inject constructor(
         return Pair(index, shipmentDataList[index] as CartItemModel)
     }
 
-
     private fun updateCartItems(shipmentCartItemModel: ShipmentCartItemModel) {
         val (firstItemPosition, _) = getFirstCartItemByCartString(shipmentCartItemModel.cartString)
-        val (expandPosition , expandData) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
+        val (expandPosition, expandData) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
 
         if (expandPosition != RecyclerView.NO_POSITION && expandData != null) {
             if (expandData.isExpanded) {
