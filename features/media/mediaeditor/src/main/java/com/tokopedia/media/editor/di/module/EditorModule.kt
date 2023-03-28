@@ -92,6 +92,12 @@ abstract class EditorModule {
 
     @Binds
     @ActivityScope
+    internal abstract fun provideAddTextFilterRepository(
+        repository: AddTextFilterRepositoryImpl
+    ): AddTextFilterRepository
+
+    @Binds
+    @ActivityScope
     internal abstract fun provideSaveEditorHomeAnalytics(
         analytics: EditorHomeAnalyticsImpl
     ): EditorHomeAnalytics

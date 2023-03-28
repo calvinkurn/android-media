@@ -3,20 +3,16 @@ package com.tokopedia.media.editor.ui.activity.addtext
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.system.Os
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.AddTextFragment
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
 
-class AddTextActivity: BaseEditorActivity() {
+class AddTextActivity : BaseEditorActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -32,7 +28,6 @@ class AddTextActivity: BaseEditorActivity() {
 
     fun finishPage() {
         val intent = Intent()
-
         try {
             val result = (fragment as AddTextFragment).getInputResult()
             intent.putExtra(ADD_TEXT_RESULT, result)
@@ -60,7 +55,15 @@ class AddTextActivity: BaseEditorActivity() {
             this.addTextValue?.let { viewModel.textData = it }
         }
 
-        initObserver()
+        intent.getIntExtra(ADD_TEXT_MODE, -1).apply {
+            viewModel.setPageMode(this)
+
+            if (this == TEXT_MODE) {
+                initObserverInput()
+            } else {
+                hideHeaderAction()
+            }
+        }
     }
 
     override fun initInjector() {
@@ -79,7 +82,7 @@ class AddTextActivity: BaseEditorActivity() {
         return fragmentProvider().addTextFragment()
     }
 
-    private fun initObserver() {
+    private fun initObserverInput() {
         viewModel.textInput.observe(this) {
             if (it.isNotEmpty()) {
                 showHeaderAction()
@@ -92,10 +95,14 @@ class AddTextActivity: BaseEditorActivity() {
     companion object {
         const val ADD_TEXT_PARAM = "intent_data.add_text"
         const val ADD_TEXT_RESULT = "result_data.add_text"
+        const val ADD_TEXT_MODE = "mode_data.add_text"
 
         const val ADD_TEXT_REQUEST_CODE = 389
 
         private const val HEADER_TITLE = "Tambah teks"
         private const val HEADER_ACTION = "Simpan"
+
+        const val TEXT_MODE = 0
+        const val POSITION_MODE = 1
     }
 }

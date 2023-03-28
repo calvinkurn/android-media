@@ -7,9 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -58,6 +56,10 @@ class AddTextFragment @Inject constructor(
      */
     private val textStyleItemRef: Array<AddTextStyleItem?> = Array(3) { null }
     private var activeStyleIndex = TEXT_STYLE_REGULAR
+    set(value) {
+        field = value
+        viewModel.textData.textStyle = value
+    }
 
     /**
      * 0 -> center
@@ -65,13 +67,25 @@ class AddTextFragment @Inject constructor(
      * 2 -> right
      */
     private var alignmentIndex = TEXT_ALIGNMENT_CENTER
+    set(value) {
+        field = value
+        viewModel.textData.textAlignment = value
+    }
 
     private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
     private var activeColorIndex = 0
+    set(value) {
+        field = value
+        viewModel.textData.textColor = colorList[value]
+    }
 
     private var isColorState = false
 
     private var positionIndex = TEXT_POSITION_BOTTOM
+    set(value) {
+        field = value
+        viewModel.textData.textPosition = value
+    }
 
     fun getInputResult(): EditorAddTextUiModel {
         return EditorAddTextUiModel(
@@ -98,12 +112,25 @@ class AddTextFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        when(viewModel.pageMode.value) {
+            AddTextActivity.TEXT_MODE -> {
+                viewBinding?.textOverlayContainer?.show()
+            }
+            AddTextActivity.POSITION_MODE -> {
+                viewBinding?.let {
+                    it.positionOverlayContainer.show()
+                    it.actionBtnContainer.show()
+                }
+            }
+        }
+
         initStartValue()
         initScreenHeight()
         initFontSelection()
         initListener()
         initFontColor()
         initTextChangeListener()
+        initPositionButton()
     }
 
     override fun initObserver() {
@@ -132,9 +159,21 @@ class AddTextFragment @Inject constructor(
                 positionViewContainer.getChildAt(i).setOnClickListener {
                     try {
                         positionIndex = i
-                        (activity as AddTextActivity).finishPage()
+                        implementAddTextData()
                     } catch (_: Exception) {}
                 }
+            }
+
+            it.btnCancel.setOnClickListener {
+                try {
+                    (activity as AddTextActivity).finish()
+                } catch (_: Exception) {}
+            }
+
+            it.btnSave.setOnClickListener {
+                try {
+                    (activity as AddTextActivity).finishPage()
+                } catch (_: Exception) {}
             }
         }
     }
@@ -313,7 +352,30 @@ class AddTextFragment @Inject constructor(
         positionIndex = viewModel.textData.textPosition
     }
 
+    private fun initPositionButton() {
+        val positionViewContainer = viewBinding?.positionOverlayContainer
+
+        positionViewContainer?.post {
+            positionViewContainer.let {
+                val size = (Math.min(it.width, it.height) * POSITION_BOX_PERCENTAGE).toInt()
+                for (i in 0 until it.childCount) {
+                    it.getChildAt(i).layoutParams.apply {
+                        width = size
+                        height = size
+                    }
+                }
+            }
+        }
+    }
+
+    private fun implementAddTextData() {
+        val bitmap = viewModel.getAddTextFilterOverlay()
+        viewBinding?.overlayTest?.setImageBitmap(bitmap)
+    }
+
     companion object {
         private const val SCREEN_NAME = "AddTextInputPage"
+
+        private const val POSITION_BOX_PERCENTAGE = 0.2f
     }
 }

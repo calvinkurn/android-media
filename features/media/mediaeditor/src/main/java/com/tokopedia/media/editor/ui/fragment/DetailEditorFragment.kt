@@ -413,6 +413,7 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddFreeText() {
         val intent = Intent(activity, AddTextActivity::class.java)
         intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
+        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.TEXT_MODE)
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
@@ -421,7 +422,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onChangePosition() {
-        isEdited = true
+        val intent = Intent(activity, AddTextActivity::class.java)
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
+        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.POSITION_MODE)
+        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
     override fun onTemplateSave() {
@@ -1242,7 +1246,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     fun showAddTextTips() {
-        EditorAddTextTipsBottomSheet().show(childFragmentManager, bottomSheetTag)
+        EditorAddTextTipsBottomSheet().show(childFragmentManager, BOTTOM_SHEET_TAG)
     }
 
     private fun showAddLogoPicker() {
@@ -1333,79 +1337,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementAddTextData(textData: EditorAddTextUiModel) {
-        val bitmap =
-            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        val padding = 16f.toPx()
-        val sizePercentage = 1 / 12f // 8,3%
-        val fontSize = originalImageHeight * sizePercentage
-
-        val mTextPaint = TextPaint()
-        activity?.let {
-            mTextPaint.textSize = fontSize
-            mTextPaint.color = textData.getColor(it)
-
-            val typeFace = getTypeface(it, TYPEFACE)
-            mTextPaint.typeface = Typeface.create(typeFace, textData.getTypeFaceStyle())
-        }
-
-        val alignment = textData.getLayoutAlignment()
-        var mTextLayout = StaticLayout(
-            textData.textValue,
-            mTextPaint,
-            (canvas.width - padding).toInt(),
-            alignment,
-            1.0f,
-            0.0f,
-            false
+        val bitmap = viewModel.getAddTextFilterOverlay(
+            Pair(originalImageWidth, originalImageHeight),
+            textData
         )
-//        var mTextLayout: StaticLayout? = null
-
-        canvas.save()
-
-        when (textData.textPosition) {
-            EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
-                mTextLayout = StaticLayout(
-                    textData.textValue,
-                    mTextPaint,
-                    (canvas.height - padding).toInt(),
-                    alignment,
-                    1.0f,
-                    0.0f,
-                    false
-                )
-                val yOffset = canvas.width - mTextLayout.height - padding
-                canvas.rotate(-90f)
-                canvas.translate(-(canvas.height.toFloat() + padding), yOffset)
-            }
-            EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
-                mTextLayout = StaticLayout(
-                    textData.textValue,
-                    mTextPaint,
-                    (canvas.height - padding).toInt(),
-                    alignment,
-                    1.0f,
-                    0.0f,
-                    false
-                )
-
-                val yOffset = -(mTextLayout.height + padding)
-                canvas.rotate(90f)
-                canvas.translate(padding, yOffset)
-            }
-            EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
-                var yOffset = canvas.height - mTextLayout.height - padding
-                canvas.translate(padding, yOffset)
-            }
-            EditorAddTextUiModel.TEXT_POSITION_TOP -> {
-                canvas.translate(padding, 0f)
-            }
-        }
-
-        mTextLayout.draw(canvas)
-        canvas.restore()
-
         viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmap)
     }
 

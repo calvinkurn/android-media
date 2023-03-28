@@ -34,7 +34,8 @@ class DetailEditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val getWatermarkUseCase: GetWatermarkUseCase,
     private val bitmapCreationRepository: BitmapCreationRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository
+    private val addLogoFilterRepository: AddLogoFilterRepository,
+    private val addTextFilterRepository: AddTextFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -225,6 +226,13 @@ class DetailEditorViewModel @Inject constructor(
         return getImageSize(url).let { (width, height) ->
             bitmapCreationRepository.isBitmapOverflow(width, height)
         }
+    }
+
+    fun getAddTextFilterOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap {
+        return addTextFilterRepository.generateTextOverlay(
+            size,
+            data
+        )
     }
 
     private fun initializeWatermarkAsset() {
