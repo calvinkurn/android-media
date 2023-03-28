@@ -4,7 +4,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 
-class ShopOpenRevampTracking() {
+class ShopOpenRevampTracking {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
 
