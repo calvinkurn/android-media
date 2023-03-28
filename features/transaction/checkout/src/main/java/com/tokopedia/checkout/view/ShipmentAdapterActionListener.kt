@@ -97,6 +97,7 @@ interface ShipmentAdapterActionListener {
     fun onSwapInUserAddress()
     val currentFragmentManager: FragmentManager
     fun scrollToPositionWithOffset(position: Int, dy: Float)
+    fun scrollToPositionWithOffset(position: Int)
     fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String)
     fun onClickRefreshErrorLoadCourier()
     fun onViewErrorInCourierSection(errorMessage: String)

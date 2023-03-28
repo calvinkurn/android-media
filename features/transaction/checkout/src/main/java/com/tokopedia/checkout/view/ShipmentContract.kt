@@ -173,6 +173,7 @@ interface ShipmentContract {
             cartString: String,
             cartId: Long
         )
+
         fun onNeedUpdateViewItem(position: Int)
         fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>)
         fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
@@ -185,6 +186,7 @@ interface ShipmentContract {
         fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
         fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
         fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
+        fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel)
     }
 
     interface AnalyticsActionListener {
