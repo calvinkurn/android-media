@@ -12,6 +12,9 @@ enum class FaceFilter(
     Sharpen(id = "shapings", key = "sharp"),
     Toning(id = "toning", key = "whiten");
 
+    val isUnknown: Boolean
+        get() = this == Unknown
+
     companion object {
         fun getById(id: String): FaceFilter {
             return values().firstOrNull { it.id == id } ?: Unknown

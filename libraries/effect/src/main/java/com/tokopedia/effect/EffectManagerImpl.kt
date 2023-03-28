@@ -13,6 +13,7 @@ import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode.BEF_RE
 import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.effect.model.FaceFilter
+import com.tokopedia.effect.model.Preset
 import com.tokopedia.effect.util.ImageUtil
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.effect.util.asset.AssetHelper
@@ -27,7 +28,8 @@ class EffectManagerImpl @Inject constructor(
     private val assetHelper: AssetHelper,
 ) : EffectManager {
 
-    private val mSavedComposerNodes = mutableSetOf<String>()
+    private var mFaceFilterApplied = FaceFilter.Unknown
+    private var mPresetApplied = Preset.Unknown
 
     private var mRenderManager: RenderManager? = null
 
@@ -150,35 +152,41 @@ class EffectManagerImpl @Inject constructor(
         return OpenGLUtils.getExternalOESTextureID()
     }
 
-    override fun setPreset(presetId: String, value: Float): Boolean {
+    override fun setPreset(presetId: String, value: Float) {
         val key = "${assetHelper.presetDir}/$presetId"
 
-        if(!mSavedComposerNodes.contains(presetId)) {
+        if(mPresetApplied.isUnknown) {
             mRenderManager?.appendComposerNodes(arrayOf(key))
-            mSavedComposerNodes.add(key)
         }
 
-        return mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value) == BEF_RESULT_SUC &&
+        val isSuccess = mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value) == BEF_RESULT_SUC &&
         mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value) == BEF_RESULT_SUC
+
+        if(isSuccess) {
+            mPresetApplied = Preset(key = key)
+        }
     }
 
     override fun removePreset() {
-        /** TODO: remove preset node only */
-        mRenderManager?.removeComposerNodes(mSavedComposerNodes.toTypedArray())
+        mRenderManager?.removeComposerNodes(arrayOf(mPresetApplied.key))
     }
 
-    override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
-        if(!mSavedComposerNodes.contains(assetHelper.customFaceDir)) {
+    override fun setFaceFilter(faceFilterId: String, value: Float) {
+        if(mFaceFilterApplied.isUnknown) {
             mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir))
-            mSavedComposerNodes.add(assetHelper.customFaceDir)
         }
 
-        return mRenderManager?.updateComposerNodes(assetHelper.customFaceDir, FaceFilter.getById(faceFilterId).key, value) == BEF_RESULT_SUC
+        val faceFilter = FaceFilter.getById(faceFilterId)
+        val isSuccess = mRenderManager?.updateComposerNodes(assetHelper.customFaceDir, faceFilter.key, value) == BEF_RESULT_SUC
+
+        if(isSuccess) {
+            mFaceFilterApplied = faceFilter
+        }
     }
 
     override fun removeFaceFilter() {
         mRenderManager?.removeComposerNodes(arrayOf(assetHelper.customFaceDir))
-        mSavedComposerNodes.remove(assetHelper.customFaceDir)
+        mFaceFilterApplied = FaceFilter.Unknown
     }
 
     companion object {

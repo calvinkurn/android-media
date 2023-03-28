@@ -619,16 +619,16 @@ class BroadcastManager @Inject constructor(
         mStatisticTimerInterval = interval
     }
 
-    override fun setPreset(presetId: String, value: Float): Boolean {
-        return effectManager.setPreset(presetId, value)
+    override fun setPreset(presetId: String, value: Float) {
+        effectManager.setPreset(presetId, value)
     }
 
     override fun removePreset() {
         effectManager.removePreset()
     }
 
-    override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
-        return effectManager.setFaceFilter(faceFilterId, value)
+    override fun setFaceFilter(faceFilterId: String, value: Float) {
+        effectManager.setFaceFilter(faceFilterId, value)
     }
 
     override fun removeFaceFilter() {

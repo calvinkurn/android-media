@@ -330,7 +330,7 @@ class PlayBroadcastActivity : BaseActivity(),
                         if (selectedFaceFilter.isRemoveEffect) {
                             broadcaster.removeFaceFilter()
                         } else {
-                            val success = broadcaster.setFaceFilter(selectedFaceFilter.id, selectedFaceFilter.value.toFloat())
+                            broadcaster.setFaceFilter(selectedFaceFilter.id, selectedFaceFilter.value.toFloat())
                         }
                     }
                 }

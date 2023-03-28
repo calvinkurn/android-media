@@ -44,11 +44,11 @@ interface Broadcaster {
 
     fun enableStatistic(interval: Long)
 
-    fun setPreset(presetId: String, value: Float): Boolean
+    fun setPreset(presetId: String, value: Float)
 
     fun removePreset()
 
-    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
+    fun setFaceFilter(faceFilterId: String, value: Float)
 
     fun removeFaceFilter()
 
