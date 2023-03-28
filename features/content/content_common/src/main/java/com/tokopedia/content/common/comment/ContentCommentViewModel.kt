@@ -104,14 +104,14 @@ class ContentCommentViewModel @AssistedInject constructor(
                     commentType = param.commentType,
                     cursor = param.lastChildCursor
                 )
-                _comments.getAndUpdate {
-                    val selected = it.list
+                _comments.update { curr ->
+                    val selected = curr.list
                         .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
                     val parent =
-                        it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
+                        curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
                         addAll(
-                            it.list.mapIndexed { index, model ->
+                            curr.list.mapIndexed { index, model ->
                                 if (index == selected && model is CommentUiModel.Expandable) {
                                     model.copy(
                                         isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
@@ -123,22 +123,8 @@ class ContentCommentViewModel @AssistedInject constructor(
                             }
                         )
                     }
-                    newChild.addAll(selected,
-                        result.list.distinctBy { item ->
-                            when (item) {
-                                is CommentUiModel.Item -> {
-                                    item.id//check id child
-                                }
-                                is CommentUiModel.Expandable -> {
-                                    item.commentType.parentId
-                                }
-                                else -> {
-                                    item
-                                }
-                            }
-                        }
-                    )
-                    it.copy(
+                    newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
+                    curr.copy(
                         cursor = result.cursor,
                         list = newChild,
                     )
