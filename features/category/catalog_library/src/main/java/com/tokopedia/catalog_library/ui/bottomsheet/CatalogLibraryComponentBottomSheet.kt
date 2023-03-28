@@ -12,6 +12,7 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
 
     private var categoryId: String = ""
     private var brandId: String = ""
+    private var brandName: String = ""
 
     init {
         isFullpage = true
@@ -35,32 +36,38 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
         if (arguments != null) {
             categoryId = requireArguments().getString(ARG_EXTRA_CATEGORY_ID, "")
             brandId = requireArguments().getString(ARG_EXTRA_BRAND_ID, "")
+            brandName = requireArguments().getString(ARG_EXTRA_BRAND_NAME, "")
         }
         setTitle("Kategori")
-        if(savedInstanceState == null) {
-            childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogLihatSemuaPageFragment.newInstance(true,categoryId,brandId)).commit()
+        if (savedInstanceState == null) {
+            childFragmentManager.beginTransaction().replace(
+                R.id.frame_content,
+                CatalogLihatSemuaPageFragment.newInstance(true, categoryId, brandId, brandName)
+            ).commit()
+        }
+
+        setCloseClickListener {
+            (parentFragment as? CatalogBrandLandingPageFragment)?.dismissKategoriBottomSheet()
+            this.dismiss()
         }
     }
 
-    private fun dismissCatalogComponentBottomSheet() {
+    override fun onChangeCategory(categoryName: String, categoryId: String) {
+        super.onChangeCategory(categoryName, categoryId)
+        (parentFragment as? CatalogBrandLandingPageFragment)?.onChangeCategory(categoryName, categoryId)
         this.dismiss()
-    }
-
-    override fun onChangeCategory(categoryId: String) {
-        super.onChangeCategory(categoryId)
-        (parentFragment as? CatalogBrandLandingPageFragment)?.onChangeCategory(categoryId)
-        dismissCatalogComponentBottomSheet()
     }
 
     companion object {
         private const val ARG_EXTRA_CATEGORY_ID = "ARG_EXTRA_CATEGORY_ID"
         private const val ARG_EXTRA_BRAND_ID = "ARG_EXTRA_BRAND_ID"
-        fun newInstance(categoryId : String,brandId : String): CatalogLibraryComponentBottomSheet {
+        private const val ARG_EXTRA_BRAND_NAME = "ARG_EXTRA_BRAND_NAME"
+        fun newInstance(categoryId: String, brandId: String): CatalogLibraryComponentBottomSheet {
             return CatalogLibraryComponentBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_EXTRA_CATEGORY_ID, categoryId)
                     putString(ARG_EXTRA_BRAND_ID, brandId)
+                    putString(ARG_EXTRA_BRAND_NAME, brandName)
                 }
             }
         }

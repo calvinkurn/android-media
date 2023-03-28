@@ -77,9 +77,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
             it.setUpForHomePage()
         }
 
-    override var baseRecyclerView: RecyclerView?
-        get() = catalogHomeRecyclerView
-        set(value) {}
+    override var baseRecyclerView: RecyclerView? = catalogHomeRecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,9 +115,9 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         homepageViewModel?.getPopularBrands()
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override var source: String = CatalogLibraryConstant.SOURCE_HOMEPAGE
+
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         DaggerCatalogLibraryComponent.builder()
@@ -182,11 +180,11 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
 
     override fun onLihatSemuaTextClick(applink: String) {
         super.onLihatSemuaTextClick(applink)
-        if(applink.contains(CatalogLibraryConstant.APP_LINK_POPULAR_BRANDS)){
+        if (applink.contains(CatalogLibraryConstant.APP_LINK_POPULAR_BRANDS)) {
             CatalogAnalyticsHomePage.sendClickLihatSemuaOnPopularBrandsEvent(
                 userSessionInterface.userId
             )
-        }else {
+        } else {
             CatalogAnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
                 UserSession(context).userId
             )
@@ -196,7 +194,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
 
     override fun onPopularBrandsHomeClick(brandName: String, brandId: String, position: String) {
         super.onPopularBrandsHomeClick(brandName, brandId, position)
-        RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_BRANDS}$brandId")
+        RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_BRANDS}$brandId/$brandName")
         CatalogAnalyticsHomePage.sendClickBrandOnPopularBrandsEvent(
             "$brandName - $brandId - $position",
             userSessionInterface.userId
@@ -239,17 +237,16 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         onError(throwable)
     }
 
-
     override fun categoryHorizontalCarouselImpression(
-        creativeName : String,
+        creativeName: String,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
         userId: String,
-        trackerId : String,
-        eventAction : String,
+        trackerId: String,
+        eventAction: String
     ) {
-        val uniqueTrackingKey = "${eventAction}-$creativeSlot"
+        val uniqueTrackingKey = "$eventAction-$creativeSlot"
         if (!trackingSet.contains(uniqueTrackingKey)) {
             CatalogAnalyticsHomePage.sendImpressionOnCatalogsEvent(
                 trackerId,

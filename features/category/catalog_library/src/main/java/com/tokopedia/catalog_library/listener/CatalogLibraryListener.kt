@@ -8,24 +8,35 @@ interface CatalogLibraryListener {
     fun onLihatSemuaTextClick(applink: String) {}
     fun onProductCardClicked(applink: String?) {}
     fun onCategoryItemClicked(categoryIdentifier: String?) {}
-    fun onPopularBrandsHomeClick(brandName: String, brandId: String, position : String){}
-    fun onPopularBrandsLihatSemuaClick(brandName: String, brandId: String, position : String,
-                                       eventAction : String, trackerId : String){}
-    fun onPopularBrandsClick(brandName: String, brandId: String, position : String,
-                             catalogName :String, catalogId: String, applink: String){}
-    fun onBrandCategoryTabSelected(categoryName : String, categoryId : String){}
-    fun onChangeCategory(categoryId : String){}
-    fun onBrandCategoryArrowClick(){}
-
+    fun onCategoryItemClicked(categoryIdentifier: String?, categoryName: String = "") {}
+    fun onPopularBrandsHomeClick(brandName: String, brandId: String, position: String) {}
+    fun onPopularBrandsLihatSemuaClick(
+        brandName: String,
+        brandId: String,
+        position: String,
+        eventAction: String,
+        trackerId: String
+    ) {}
+    fun onPopularBrandsClick(
+        brandName: String,
+        brandId: String,
+        position: String,
+        catalogName: String,
+        catalogId: String,
+        applink: String
+    ) {}
+    fun onBrandCategoryTabSelected(categoryName: String, categoryId: String) {}
+    fun onChangeCategory(categoryName: String, categoryId: String) {}
+    fun onBrandCategoryArrowClick() {}
 
     fun categoryHorizontalCarouselImpression(
-        creativeName : String,
+        creativeName: String,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
         userId: String,
-        trackerId : String,
-        eventAction : String
+        trackerId: String,
+        eventAction: String
     ) {
     }
 
@@ -57,9 +68,9 @@ interface CatalogLibraryListener {
 
     fun categoryListImpression(
         trackerId: String,
-        eventCategory : String,
-        eventAction : String,
-        eventLabel : String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -71,5 +82,5 @@ interface CatalogLibraryListener {
     ) {
     }
 
-    fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM){}
+    fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {}
 }

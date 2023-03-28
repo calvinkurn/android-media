@@ -53,4 +53,5 @@ object CatalogLibraryConstant {
 
     const val SOURCE_HOMEPAGE = "source homepage"
     const val SOURCE_CATEGORY_LANDING_PAGE = "source category landing page"
+    const val SOURCE_CATEGORY_BRAND_LANDING_PAGE = "source category brand landing page"
 }

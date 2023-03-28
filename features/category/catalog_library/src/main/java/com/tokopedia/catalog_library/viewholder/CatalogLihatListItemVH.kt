@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatListItemDM
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
@@ -52,9 +51,9 @@ class CatalogLihatListItemVH(
         childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
         }
-        if(dataModel?.activeCategoryId == dataModel?.catalogLibraryChildDataListItem?.categoryId){
+        if (dataModel?.activeCategoryId == dataModel?.catalogLibraryChildDataListItem?.categoryId) {
             lihatItemIconCheck?.show()
-        }else {
+        } else {
             lihatItemIconCheck?.hide()
         }
         lihatItemTitle?.text = childDataItem?.categoryName ?: ""
@@ -68,7 +67,8 @@ class CatalogLihatListItemVH(
                 UserSession(itemView.context).userId
             )
             catalogLibraryListener.onCategoryItemClicked(
-                childDataItem?.categoryId ?: ""
+                childDataItem?.categoryId ?: "",
+                childDataItem?.categoryName ?: ""
             )
         }
     }

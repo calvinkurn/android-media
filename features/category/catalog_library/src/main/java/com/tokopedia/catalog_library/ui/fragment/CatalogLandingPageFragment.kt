@@ -89,14 +89,11 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         }
     }
 
-    override var baseRecyclerView: RecyclerView?
-        get() = catalogLandingRecyclerView
-        set(value) {}
+    override var baseRecyclerView: RecyclerView? = catalogLandingRecyclerView
 
-    override fun getScreenName(): String {
-        // TODO send Screen Name if any GTM
-        return ""
-    }
+    override var source: String = CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
+
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         DaggerCatalogLibraryComponent.builder()

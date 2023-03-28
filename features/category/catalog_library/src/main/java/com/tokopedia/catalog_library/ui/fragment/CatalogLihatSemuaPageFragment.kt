@@ -48,6 +48,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var isOriginBrand = false
     private var categoryId = ""
     private var brandId = ""
+    private var brandName = ""
 
     companion object {
         const val DEFAULT_ASC_SORT_ORDER = "0"
@@ -55,13 +56,19 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         private const val ARG_IS_ORIGIN_BRAND = "ARG_IS_ORIGIN_BRAND"
         private const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
         private const val ARG_BRAND_ID = "ARG_BRAND_ID"
-        fun newInstance(isOriginBrand : Boolean = false,
-                        categoryId : String = "",brandId : String = ""): CatalogLihatSemuaPageFragment {
+        private const val ARG_BRAND_NAME = "ARG_BRAND_NAME"
+        fun newInstance(
+            isOriginBrand: Boolean = false,
+            categoryId: String = "",
+            brandId: String = "",
+            brandName: String = ""
+        ): CatalogLihatSemuaPageFragment {
             return CatalogLihatSemuaPageFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_IS_ORIGIN_BRAND, isOriginBrand)
                     putString(ARG_CATEGORY_ID, categoryId)
                     putString(ARG_BRAND_ID, brandId)
+                    putString(ARG_BRAND_NAME, brandName)
                 }
             }
         }
@@ -97,9 +104,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf())
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         DaggerCatalogLibraryComponent.builder()
@@ -129,17 +134,17 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         brandId = arguments?.getString(ARG_BRAND_ID) ?: ""
     }
 
-    private fun makeApiCall(orderType : String = DEFAULT_ASC_SORT_ORDER) {
-        if(isOriginBrand){
-            lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
-        }else {
+    private fun makeApiCall(orderType: String = DEFAULT_ASC_SORT_ORDER) {
+        if (isOriginBrand) {
+            lihatViewModel?.getLihatSemuaByBrandData(categoryId, brandId)
+        } else {
             lihatViewModel?.getLihatSemuaPageData(orderType)
         }
     }
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.lihat_semua_page_header).apply {
-            if(isOriginBrand){
+            if (isOriginBrand) {
                 hide()
             }
             setNavigationOnClickListener {
@@ -156,7 +161,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         addShimmer()
     }
 
-    private fun initChips(view : View) {
+    private fun initChips(view: View) {
         sortAsc = view.findViewById(R.id.chip_sort_asc)
         sortDesc = view.findViewById(R.id.chip_sort_desc)
         sortAsc?.setOnClickListener {
@@ -179,7 +184,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 UserSession(context).userId
             )
         }
-        if(isOriginBrand){
+        if (isOriginBrand) {
             sortAsc?.hide()
             sortDesc?.hide()
         }
@@ -242,19 +247,20 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     override fun onCategoryItemClicked(categoryIdentifier: String?) {
         super.onCategoryItemClicked(categoryIdentifier)
-        if(isOriginBrand){
-            CatalogAnalyticsBrandLandingPage.sendClickCategoryOnBottomSheetEvent(
-                "brand page: {brand-name} - $brandId - category: {category-name} - $categoryIdentifier",
-                categoryIdentifier ?: "",
-                userSessionInterface.userId
-            )
-            (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryIdentifier ?: "")
-        }else {
-            RouteManager.route(
-                context,
-                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
-            )
-        }
+        RouteManager.route(
+            context,
+            "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
+        )
+    }
+
+    override fun onCategoryItemClicked(categoryIdentifier: String?, categoryName: String) {
+        super.onCategoryItemClicked(categoryIdentifier, categoryName)
+        CatalogAnalyticsBrandLandingPage.sendClickCategoryOnBottomSheetEvent(
+            "brand page: $brandName - $brandId - category: $categoryName - $categoryIdentifier",
+            categoryIdentifier ?: "",
+            userSessionInterface.userId
+        )
+        (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryIdentifier ?: "", categoryName)
     }
 
     private fun addShimmer() {
@@ -272,14 +278,18 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     override fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {
         super.onAccordionStateChange(expanded, element)
-
+        val expandCollapse = if (expanded) "expand" else "collapse"
+        CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
+            "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
+            userSessionInterface.userId
+        )
     }
 
     override fun categoryListImpression(
         trackerId: String,
-        eventCategory : String,
-        eventAction : String,
-        eventLabel : String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -290,11 +300,11 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         userId: String
     ) {
         val uniqueTrackingKey =
-            "${eventAction}-$parentCategoryId-$position"
+            "$eventAction-$parentCategoryId-$position"
         if (!categoryTrackingSet.contains(uniqueTrackingKey)) {
             CatalogAnalyticsLihatSemuaPage.sendImpressionOnCategoryListEvent(
                 trackerId, eventCategory, eventAction,
-                extractEventLabel(eventLabel,trackerId,categoryName,categoryId),
+                extractEventLabel(eventLabel, trackerId, categoryName, categoryId),
                 trackingQueue,
                 parentCategoryName,
                 parentCategoryId,
@@ -309,10 +319,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
-    private fun extractEventLabel(eventLabel : String, trackerId  : String,categoryName: String ,categoryId: String) : String{
-        return if(trackerId == IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING)
-            "brand page: {brand-name} - $brandId - category: $categoryName - $categoryId"
-        else eventLabel
+    private fun extractEventLabel(eventLabel: String, trackerId: String, categoryName: String, categoryId: String): String {
+        return if (trackerId == IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING) {
+            "brand page: $brandName - $brandId - category: $categoryName - $categoryId"
+        } else {
+            eventLabel
+        }
     }
 
     override fun onPause() {

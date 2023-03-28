@@ -24,13 +24,17 @@ class CatalogProductsBaseVM @Inject constructor(
     val shimmerLiveData: LiveData<Boolean> =
         _shimmerLiveData
 
+    var sourceScreen: String = ""
+
     fun getCatalogListData(
+        source: String,
         categoryId: String,
         sortType: Int,
         rows: Int,
         page: Int = 1,
-        brandId : String = ""
+        brandId: String = ""
     ) {
+        sourceScreen = source
         addProductShimmer()
         catalogProductsUseCase.cancelJobs()
         catalogProductsUseCase.getCatalogProductsData(
@@ -84,15 +88,10 @@ class CatalogProductsBaseVM @Inject constructor(
         page: Int = 1
     ): ArrayList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
-        val title = if (categoryName == "") {
+        val title = if (categoryName.isBlank()) {
             CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE
         } else {
             "Semua katalog ${categoryName.lowercase()}"
-        }
-        val source = if (categoryName == "") {
-            CatalogLibraryConstant.SOURCE_HOMEPAGE
-        } else {
-            CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
         }
         if (page == 1) {
             val productHeaderModel = CatalogContainerDM(
@@ -100,11 +99,7 @@ class CatalogProductsBaseVM @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
                 null,
-                marginForTitle = if (categoryName == "") {
-                    Margin(36, 16, 0, 16)
-                } else {
-                    Margin(32, 16, 0, 16)
-                }
+                marginForTitle = Margin(32, 16, 0, 16)
             )
             visitableList.add(productHeaderModel)
         }
@@ -114,7 +109,7 @@ class CatalogProductsBaseVM @Inject constructor(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     "${CatalogLibraryConstant.CATALOG_PRODUCT}_${product.id}",
                     product,
-                    source,
+                    sourceScreen,
                     categoryName
                 )
             )

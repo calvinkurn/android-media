@@ -34,7 +34,7 @@ interface EventKeys {
         const val CREATIVE_NAME_SPECIAL_VALUE = "kategori spesial buatmu"
         const val CREATIVE_NAME_RELEVANT_VALUE = "cek katalognya produk incaranmu"
         const val CREATIVE_NAME_BRAND_VALUE = "cek katalognya produk incaranmu"
-        const val CREATIVE_NAME_CATEGORY_LIST_VALUE = ""
+        const val CREATIVE_NAME_CATEGORY_LIST_VALUE = "brand terpopuler di katalog"
 
         const val KEY_EVENT = "event"
         const val KEY_EVENT_CATEGORY = "eventCategory"
@@ -92,11 +92,13 @@ interface ActionKeys {
         const val IMPRESSION_ON_MOST_VIRAL_CATALOG_IN_CATEGORY =
             "impression on most viral catalog in category"
         const val IMPRESSION_ON_CATALOG_LIST_IN_CATEGORY = "impression on catalog list in category"
+        const val IMPRESSION_ON_CATALOG = "impress catalog"
         const val CLICK_CATALOG_ON_TOP_5_CATALOGS_IN_CATEGORY =
             "click catalog on top 5 catalogs in category"
         const val CLICK_CATALOG_ON_MOST_VIRAL_CATALOG_IN_CATEGORY =
             "click on most viral catalog in category"
         const val CLICK_ON_CATALOG_LIST_IN_CATEGORY = "click on catalog list in category"
+        const val CLICK_ON_CATALOG = "click catalog "
     }
 }
 
@@ -116,9 +118,11 @@ interface TrackerId {
         const val IMPRESSION_ON_TOP_5_CATALOGS_IN_CATEGORY = "33785"
         const val IMPRESSION_ON_MOST_VIRAL_CATALOG_IN_CATEGORY = "33786"
         const val IMPRESSION_ON_CATALOG_LIST_IN_CATEGORY = "33787"
+        const val IMPRESSION_ON_CATALOG_LIST_BRAND = "37375"
         const val CLICK_CATALOG_ON_TOP_5_CATALOGS_IN_CATEGORY = "33788"
         const val CLICK_CATALOG_ON_MOST_VIRAL_CATALOG_IN_CATEGORY = "33789"
         const val CLICK_ON_CATALOG_LIST_IN_CATEGORY = "33790"
+        const val CLICK_ON_CATALOG_LIST_IN_BRAND = "37376"
 
         const val IMPRESSION_ON_CATEGORY_LIST = "33791"
         const val IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING = "37382"

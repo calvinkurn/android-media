@@ -1,102 +1,70 @@
 package com.tokopedia.catalog_library.util
 
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.CategoryKeys.Companion.CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.constant.TrackerConstant
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object CatalogAnalyticsBrandLandingPage {
 
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3502
-    // Tracker ID: 37373
-    fun sendImpressOnCategoryTabEvent (eventLabel: String, promotions: String, userId: String) {
-        Tracker.Builder()
-            .setEvent("view_item")
-            .setEventAction("impress on category tab")
-            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "37373")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
-            .setCustomProperty("promotions", promotions)
-            .setUserId(userId)
-            .build()
-            .send()
+    fun sendImpressionOnCatalogListEvent(
+        trackingQueue: TrackingQueue,
+        brandName: String,
+        brandId: String,
+        categoryName: String,
+        product: CatalogListResponse.CatalogGetList.CatalogsProduct,
+        position: Int,
+        userId: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val itemMap = HashMap<String, Any>()
+
+        itemMap[EventKeys.INDEX] = position
+        itemMap[EventKeys.ITEM_NAME] = product.name ?: ""
+        itemMap[EventKeys.ITEM_BRAND] = product.brand ?: ""
+        itemMap[EventKeys.ITEM_CATEGORY] = product.categoryID ?: ""
+        itemMap[EventKeys.PRICE] = product.marketPrice ?: ""
+        list.add(itemMap)
+
+        val dataLayer = DataLayer.mapOf(
+            EventKeys.KEY_EVENT, EventKeys.PRODUCT_VIEW,
+            EventKeys.KEY_EVENT_CATEGORY, CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
+            EventKeys.KEY_EVENT_ACTION, ActionKeys.IMPRESSION_ON_CATALOG,
+            EventKeys.KEY_EVENT_LABEL, "brand page: $brandName - $brandId - category tab: {category-name/$categoryName} - {category-id/${product.categoryID}}",
+            EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE,
+            EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE,
+            EventKeys.TRACKER_ID, TrackerId.IMPRESSION_ON_CATALOG_LIST_BRAND,
+            EventKeys.ITEM_LIST, "",
+            EventKeys.KEY_ECOMMERCE,
+            DataLayer.mapOf(
+                EventKeys.CURRENCY_CODE,
+                EventKeys.IDR,
+                EventKeys.IMPRESSIONS,
+                list
+            ),
+            TrackerConstant.USERID, userId
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(dataLayer)
     }
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3502
-    // Tracker ID: 37374
-    fun sendClickOnCategoryTabEvent (eventLabel: String, categoryId: String, promotions: String, userId: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.SELECT_CONTENT)
-            .setEventAction("click on category tab")
-            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "37374")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
-            .setCustomProperty("promotions", promotions)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3502
-    // Tracker ID: 37375
-    fun sendImpressCatalogEvent (eventLabel: String, categoryId: String, itemList: String, items: String, userId: String) {
-        Tracker.Builder()
-            .setEvent("view_item_list")
-            .setEventAction("impress catalog")
-            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "37375")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty("item_list", itemList)
-            .setCustomProperty("items", items)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3502
-    // Tracker ID: 37376
-    fun sendClickCatalogEvent (eventLabel: String, catalogId: String, categoryId: String, itemList: String, items: String, userId: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.SELECT_CONTENT)
-            .setEventAction("click catalog")
-            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "37376")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCustomProperty("catalogId", catalogId)
-            .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty("item_list", itemList)
-            .setCustomProperty("items", items)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3502
-    // Tracker ID: 37378
-    fun sendClickExpandBottomSheetButtonEvent (eventLabel: String, businessUnit: String, currentSite: String, userId: String) {
+
+    fun sendClickExpandBottomSheetButtonEvent(eventLabel: String, userId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction("click expand bottom sheet button")
             .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, "37378")
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
             .setUserId(userId)
             .build()
             .send()
     }
 
-    fun sendClickCloseBottomSheetButtonEvent (eventLabel: String, businessUnit: String, currentSite: String, userId: String) {
+    fun sendClickCloseBottomSheetButtonEvent(eventLabel: String, userId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction("click close bottom sheet button")
@@ -111,7 +79,7 @@ object CatalogAnalyticsBrandLandingPage {
             .send()
     }
 
-    fun sendClickCollapseExpandOnBottomSheetEvent (eventLabel: String, businessUnit: String, currentSite: String, userId: String) {
+    fun sendClickCollapseExpandOnBottomSheetEvent(eventLabel: String, userId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction("click collapse expand on bottom sheet")
@@ -126,24 +94,7 @@ object CatalogAnalyticsBrandLandingPage {
             .send()
     }
 
-    fun sendImpressCategoryOnBottomSheetEvent (eventLabel: String, itemList: String, items: String, userId: String) {
-        Tracker.Builder()
-            .setEvent("view_item_list")
-            .setEventAction("impress category on bottom sheet")
-            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "37382")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty("item_list", itemList)
-            .setCustomProperty("items", items)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_BRANDS)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-
-    fun sendClickCategoryOnBottomSheetEvent (eventLabel: String, categoryId: String, userId: String) {
+    fun sendClickCategoryOnBottomSheetEvent(eventLabel: String, categoryId: String, userId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction(ActionKeys.CLICK_CATEGORY_ON_BS)
@@ -159,4 +110,3 @@ object CatalogAnalyticsBrandLandingPage {
             .send()
     }
 }
-

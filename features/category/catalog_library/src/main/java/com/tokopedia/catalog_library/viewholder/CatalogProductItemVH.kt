@@ -6,9 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDM
-import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
-import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -65,7 +63,21 @@ class CatalogProductItemVH(
                     }
                     CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
                         CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
-                            dataModel?.categoryName ?: "",
+                            "category: ${dataModel?.categoryName} - ${it1.categoryID} - catalog: ${it1.name} - ${it1.id}",
+                            ActionKeys.CLICK_ON_CATALOG_LIST_IN_CATEGORY,
+                            CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
+                            TrackerId.CLICK_ON_CATALOG_LIST_IN_CATEGORY,
+                            it1,
+                            layoutPosition - 2,
+                            UserSession(itemView.context).userId
+                        )
+                    }
+                    CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE -> {
+                        CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
+                            "category: ${dataModel?.categoryName} - ${it1.categoryID} - catalog: ${it1.name} - ${it1.id}",
+                            ActionKeys.CLICK_ON_CATALOG,
+                            CategoryKeys.CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
+                            TrackerId.CLICK_ON_CATALOG_LIST_IN_BRAND,
                             it1,
                             layoutPosition - 2,
                             UserSession(itemView.context).userId
@@ -89,6 +101,14 @@ class CatalogProductItemVH(
                     )
                 }
                 CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
+                    catalogLibraryListener.catalogProductsCategoryLandingImpression(
+                        dataModel?.categoryName ?: "",
+                        it,
+                        layoutPosition - 2,
+                        UserSession(itemView.context).userId
+                    )
+                }
+                CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE -> {
                     catalogLibraryListener.catalogProductsCategoryLandingImpression(
                         dataModel?.categoryName ?: "",
                         it,

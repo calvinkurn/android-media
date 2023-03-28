@@ -19,6 +19,7 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
 
     private var linearLayoutManager: LinearLayoutManager? = null
     abstract var baseRecyclerView: RecyclerView?
+    abstract var source: String
     private var categoryId = ""
     private var brandId = ""
 
@@ -49,7 +50,7 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
         categoryId = categoryIdStr
     }
 
-    fun setBrandId (brandId : String){
+    fun setBrandId(brandId: String) {
         this.brandId = brandId
     }
 
@@ -79,14 +80,14 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page,brandId)
+                productsBaseVM?.getCatalogListData(source, categoryId, sortType, rows, page, brandId)
             }
         }
     }
 
     fun getProducts() {
         resetPage()
-        productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page = 1, brandId = brandId)
+        productsBaseVM?.getCatalogListData(source, categoryId, sortType, rows, page = 1, brandId = brandId)
     }
 
     private fun resetPage() {
