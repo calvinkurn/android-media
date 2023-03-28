@@ -80,7 +80,7 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
                 callback.onDataReady(bitmap)
             }
         } catch (e: Exception) {
-            callback.onLoadFailed(e)
+            callback.onLoadFailed(M3U8LoaderException().apply { initCause(e) })
         }
     }
 
@@ -176,6 +176,8 @@ class M3U8ModelLoaderFactory : ModelLoaderFactory<String, Bitmap> {
 
     override fun teardown() {}
 }
+
+class M3U8LoaderException : Exception()
 
 private fun String.getVideoID(): String {
     return Uri.parse(this).getQueryParameter(M3U8_VIDEO_ID_QUERY_PARAM).orEmpty()
