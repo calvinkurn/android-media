@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain.pojo.replyBox
+package com.tokopedia.chatbot.domain.pojo.dynamicAttachment
 
 import com.google.gson.annotations.SerializedName
 

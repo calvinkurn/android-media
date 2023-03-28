@@ -1137,7 +1137,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 }
                             }
                         }
-                    }
+                    }    
                 }
             }
         }

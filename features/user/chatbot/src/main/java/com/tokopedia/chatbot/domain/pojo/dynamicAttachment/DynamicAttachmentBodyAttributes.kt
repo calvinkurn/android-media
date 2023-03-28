@@ -1,8 +1,8 @@
-package com.tokopedia.chatbot.domain.pojo.replyBox
+package com.tokopedia.chatbot.domain.pojo.dynamicAttachment
 
 import com.google.gson.annotations.SerializedName
 
-data class ReplyBoxAttribute(
+data class DynamicAttachmentBodyAttributes(
     @SerializedName("content_code")
     val contentCode: Int?,
     @SerializedName("render_target")
