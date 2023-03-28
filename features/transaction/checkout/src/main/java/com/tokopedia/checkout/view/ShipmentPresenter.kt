@@ -1558,11 +1558,25 @@ class ShipmentPresenter @Inject constructor(
                                 eventCheckoutViewPromoMessage(errMessage)
                                 view?.showToastError(errMessage)
                                 view?.resetCourier(cartPosition)
+                                view?.getShipmentCartItemModel(cartPosition)?.let {
+                                    clearCacheAutoApply(it, promoCode)
+                                    clearOrderPromoCodeFromLastValidateUseRequest(
+                                        cartString,
+                                        promoCode
+                                    )
+                                }
                             } else {
                                 view?.showToastError(
                                     DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
                                 )
                                 view?.resetCourier(cartPosition)
+                                view?.getShipmentCartItemModel(cartPosition)?.let {
+                                    clearCacheAutoApply(it, promoCode)
+                                    clearOrderPromoCodeFromLastValidateUseRequest(
+                                        cartString,
+                                        promoCode
+                                    )
+                                }
                             }
                         }
                         shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
@@ -1591,6 +1605,13 @@ class ShipmentPresenter @Inject constructor(
                         } else {
                             view?.showToastError(e.message)
                             view?.resetCourier(cartPosition)
+                            view?.getShipmentCartItemModel(cartPosition)?.let {
+                                clearCacheAutoApply(it, promoCode)
+                                clearOrderPromoCodeFromLastValidateUseRequest(
+                                    cartString,
+                                    promoCode
+                                )
+                            }
                         }
                         view?.logOnErrorApplyBo(e, cartPosition, promoCode)
                         shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
@@ -3621,17 +3642,19 @@ class ShipmentPresenter @Inject constructor(
                     dynamicDataParam.addOn = getAddOnFromSAF(groupShop.addOns, isOneClickShipment)
                     listDataParam.add(dynamicDataParam)
                 }
-                for (product in groupShop.products) {
-                    // product level
-                    if (product.addOnProduct.status == 1) {
-                        val dynamicDataParam = DynamicDataParam()
-                        dynamicDataParam.level = PRODUCT_LEVEL
-                        dynamicDataParam.parentUniqueId = groupShop.cartString
-                        dynamicDataParam.uniqueId = product.cartId.toString()
-                        dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
-                        dynamicDataParam.addOn =
-                            getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
-                        listDataParam.add(dynamicDataParam)
+                for (groupShopV2 in groupShop.groupShopData) {
+                    for (product in groupShopV2.products) {
+                        // product level
+                        if (product.addOnProduct.status == 1) {
+                            val dynamicDataParam = DynamicDataParam()
+                            dynamicDataParam.level = PRODUCT_LEVEL
+                            dynamicDataParam.parentUniqueId = groupShop.cartString
+                            dynamicDataParam.uniqueId = product.cartId.toString()
+                            dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
+                            dynamicDataParam.addOn =
+                                getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
+                            listDataParam.add(dynamicDataParam)
+                        }
                     }
                 }
             }

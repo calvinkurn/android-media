@@ -8,6 +8,8 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellI
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
@@ -47,7 +49,6 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
@@ -153,7 +154,7 @@ class ShipmentMapper @Inject constructor() {
             newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
-            isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
+            isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp && false
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
         }
     }
@@ -184,7 +185,7 @@ class ShipmentMapper @Inject constructor() {
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                 GroupAddress().apply {
-                    isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    isError = groupAddress.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = groupAddress.errors.joinToString()
                     userAddress = mapUserAddress(groupAddress)
                     groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
@@ -200,12 +201,12 @@ class ShipmentMapper @Inject constructor() {
         isDisablePPP: Boolean
     ): MutableList<GroupShop> {
         val groupShopListResult = arrayListOf<GroupShop>()
-        groupAddress.groupShop.forEach {
+        groupAddress.groupShop2.forEach {
             groupShopListResult.add(
                 GroupShop().apply {
-                    isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    isError = it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
-                    hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
+                    hasUnblockingError = it.unblockingErrors.isNotEmpty()
                     unblockingErrorMessage = it.unblockingErrors.joinToString()
                     shippingId = it.shippingId
                     spId = it.spId
@@ -224,12 +225,17 @@ class ShipmentMapper @Inject constructor() {
                     fulfillmentBadgeUrl = it.tokoCabangInfo.badgeUrl
                     fulfillmentName = it.tokoCabangInfo.message
                     shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
-                    shop = mapShopData(it.shop)
+                    val mapGroupShopV2List = mapGroupShopV2List(
+                        it,
+                        it.groupShopV2,
+                        groupAddress,
+                        shipmentAddressFormDataResponse,
+                        isDisablePPP
+                    )
+                    groupShopData = mapGroupShopV2List.first
+                    firstProductErrorIndex = mapGroupShopV2List.second
                     addOns = mapAddOnsData(it.addOns)
                     shopShipments = mapShopShipments(it.shopShipments)
-                    val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
-                    products = mapProducts.first
-                    firstProductErrorIndex = mapProducts.second
                     isDisableChangeCourier = it.isDisableChangeCourier
                     autoCourierSelection = it.autoCourierSelection
                     boMetadata = it.boMetadata
@@ -243,7 +249,8 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapProducts(
-        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
+        groupShop2: GroupShop2,
+        groupShop: GroupShopV2,
         groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean,
@@ -255,6 +262,7 @@ class ShipmentMapper @Inject constructor() {
             cartDetail.products.forEach { product ->
                 val productResult = Product().apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
+                        groupShop2,
                         product,
                         groupAddress.userAddress,
                         groupShop,
@@ -265,7 +273,7 @@ class ShipmentMapper @Inject constructor() {
                     if (product.tradeInInfo.isValidTradeIn) {
                         productPrice = product.tradeInInfo.newDevicePrice
                     }
-                    isError = !product.errors.isNullOrEmpty() ||
+                    isError = product.errors.isNotEmpty() ||
                         shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
                         cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
@@ -358,9 +366,10 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapAnalyticsProductCheckoutData(
+        groupShop2: GroupShop2,
         product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
         userAddress: UserAddress,
-        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
+        groupShop: GroupShopV2,
         cod: Cod,
         promoSAFResponse: PromoSAFResponse,
         shopTypeInfoData: ShopTypeInfoData
@@ -382,7 +391,7 @@ class ShipmentMapper @Inject constructor() {
             productVariant = ""
             productBrand = ""
             productQuantity = product.productQuantity
-            warehouseId = groupShop.warehouse.warehouseId.toString()
+            warehouseId = groupShop2.warehouse.warehouseId.toString()
             productWeight = product.productWeight.toString()
             buyerAddressId = userAddress.addressId
             shippingDuration = ""
@@ -394,7 +403,7 @@ class ShipmentMapper @Inject constructor() {
             } else {
                 false.toString()
             }
-            isFulfillment = groupShop.isFulfillment.toString()
+            isFulfillment = groupShop2.isFulfillment.toString()
             isDiscountedPrice = product.productOriginalPrice > 0
             campaignId = product.campaignId
             promoSAFResponse.lastApply.data.trackingDetails.forEach {
@@ -439,6 +448,29 @@ class ShipmentMapper @Inject constructor() {
         }
 
         return shipProdListResult
+    }
+
+    private fun mapGroupShopV2List(
+        groupShop2: GroupShop2,
+        groupShopV2List: List<GroupShopV2>,
+        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+        isDisablePPP: Boolean
+    ): Pair<List<com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2>, Int> {
+        var firstProductErrorIndex = -1
+        return groupShopV2List.map {
+            val shop = mapShopData(it.shop)
+            val mapProducts = mapProducts(groupShop2, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+            val products = mapProducts.first
+            if (firstProductErrorIndex == -1) {
+                firstProductErrorIndex = mapProducts.second
+            }
+            com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2(
+                it.cartStringOrder,
+                shop,
+                products
+            )
+        } to firstProductErrorIndex
     }
 
     private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
@@ -682,21 +714,6 @@ class ShipmentMapper @Inject constructor() {
             listAllPromoCodes.add(it.code)
         }
         return listAllPromoCodes
-    }
-
-    private fun mapListRedPromos(promoData: Data?): List<String> {
-        val listRedStates = arrayListOf<String>()
-        if (promoData?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-            promoData?.codes?.forEach { promoCode ->
-                listRedStates.add(promoCode)
-            }
-        }
-        promoData?.voucherOrders?.forEach {
-            if (it.message.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-                listRedStates.add(it.code)
-            }
-        }
-        return listRedStates
     }
 
     private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo): LastApplyAdditionalInfoUiModel {
@@ -1009,29 +1026,34 @@ class ShipmentMapper @Inject constructor() {
                 if (groupShop.isError) {
                     hasError = true
                 }
-                var totalProductError = 0
+                var allProductsError = true
                 var defaultErrorMessage = ""
                 var allProductsHaveSameError = true
-                for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || errorMessage.isNotEmpty()) {
-                        hasError = true
-                        totalProductError++
-                        if (defaultErrorMessage.isEmpty()) {
-                            defaultErrorMessage = errorMessage
-                        } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
-                            allProductsHaveSameError = false
+                for (groupShopV2 in groupShop.groupShopData) {
+                    for (product in groupShopV2.products) {
+                        if (product.isError || product.errorMessage.isNotEmpty()) {
+                            hasError = true
+                            if (defaultErrorMessage.isEmpty()) {
+                                defaultErrorMessage = product.errorMessage
+                            } else if (allProductsHaveSameError && defaultErrorMessage != product.errorMessage) {
+                                allProductsHaveSameError = false
+                            }
+                        } else {
+                            allProductsError = false
                         }
                     }
                 }
-                if (totalProductError == groupShop.products.size) {
+                if (allProductsError) {
                     if (!groupShop.isError) {
                         groupShop.isError = true
                         groupShop.errorMessage = defaultErrorMessage
                     }
-                    for (product in groupShop.products) {
-                        if (allProductsHaveSameError) {
-                            product.isError = false
-                            product.errorMessage = ""
+                    if (allProductsHaveSameError) {
+                        for (groupShopV2 in groupShop.groupShopData) {
+                            for (product in groupShopV2.products) {
+                                product.isError = false
+                                product.errorMessage = ""
+                            }
                         }
                     }
                 }

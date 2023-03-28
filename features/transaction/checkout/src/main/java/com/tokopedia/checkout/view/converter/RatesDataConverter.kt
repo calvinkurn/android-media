@@ -102,14 +102,15 @@ class RatesDataConverter @Inject constructor() {
         shipmentCartData.destinationLongitude =
             if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null
         shipmentCartData.destinationPostalCode = userAddress.postalCode
-        shipmentCartData.originDistrictId = groupShop.shop.districtId
+        // TODO: fix group shop
+        shipmentCartData.originDistrictId = groupShop.groupShopData.first().shop.districtId
         shipmentCartData.originLatitude =
-            if (!isNullOrEmpty(groupShop.shop.latitude)) groupShop.shop.latitude else null
+            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.latitude)) groupShop.groupShopData.first().shop.latitude else null
         shipmentCartData.originLongitude =
-            if (!isNullOrEmpty(groupShop.shop.longitude)) groupShop.shop.longitude else null
-        shipmentCartData.originPostalCode = groupShop.shop.postalCode
-        shipmentCartData.categoryIds = getCategoryIds(groupShop.products)
-        shipmentCartData.productInsurance = if (isForceInsurance(groupShop.products)) 1 else 0
+            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.longitude)) groupShop.groupShopData.first().shop.longitude else null
+        shipmentCartData.originPostalCode = groupShop.groupShopData.first().shop.postalCode
+        shipmentCartData.categoryIds = getCategoryIds(groupShop.groupShopData.first().products)
+        shipmentCartData.productInsurance = if (isForceInsurance(groupShop.groupShopData.first().products)) 1 else 0
         shipmentCartData.shopShipments = groupShop.shopShipments
         val shippingNames = getShippingNames(groupShop.shopShipments)
         shipmentCartData.shippingNames = shippingNames

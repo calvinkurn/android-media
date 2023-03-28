@@ -46,17 +46,19 @@ class ShipmentDataConverter @Inject constructor() {
         var isTradeIn = false
         if (cartShipmentAddressFormData.groupAddress[0].groupShop.isNotEmpty()) {
             for (groupShop in cartShipmentAddressFormData.groupAddress[0].groupShop) {
-                if (groupShop.products.isNotEmpty()) {
-                    var foundData = false
-                    for (product in groupShop.products) {
-                        if (product.tradeInInfoData.isValidTradeIn) {
-                            isTradeIn = true
-                            foundData = true
+                for (groupShopV2 in groupShop.groupShopData) {
+                    if (groupShopV2.products.isNotEmpty()) {
+                        var foundData = false
+                        for (product in groupShopV2.products) {
+                            if (product.tradeInInfoData.isValidTradeIn) {
+                                isTradeIn = true
+                                foundData = true
+                                break
+                            }
+                        }
+                        if (foundData) {
                             break
                         }
-                    }
-                    if (foundData) {
-                        break
                     }
                 }
             }
@@ -228,9 +230,10 @@ class ShipmentDataConverter @Inject constructor() {
                 groupShop.courierSelectionErrorData.title
             shipmentCartItemModel.courierSelectionErrorDescription =
                 groupShop.courierSelectionErrorData.description
-            shipmentCartItemModel.isTokoNow = groupShop.shop.isTokoNow
-            shipmentCartItemModel.shopTickerTitle = groupShop.shop.shopTickerTitle
-            shipmentCartItemModel.shopTicker = groupShop.shop.shopTicker
+            // todo: fix group shop
+            shipmentCartItemModel.isTokoNow = groupShop.groupShopData.first().shop.isTokoNow
+            shipmentCartItemModel.shopTickerTitle = groupShop.groupShopData.first().shop.shopTickerTitle
+            shipmentCartItemModel.shopTicker = groupShop.groupShopData.first().shop.shopTicker
             if (shipmentCartItemModel.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,
@@ -242,7 +245,7 @@ class ShipmentDataConverter @Inject constructor() {
             } else {
                 shipmentCartItemModel.coachmarkPlus = CoachmarkPlusData()
             }
-            shipmentCartItemModel.enablerLabel = groupShop.shop.enablerLabel
+            shipmentCartItemModel.enablerLabel = groupShop.groupShopData.first().shop.enablerLabel
             shipmentCartItemModels.add(shipmentCartItemModel)
         }
         return shipmentCartItemModels
@@ -292,7 +295,7 @@ class ShipmentDataConverter @Inject constructor() {
         shipmentCartItemModel.isFreeShippingPlus =
             shipmentInformationData.freeShippingGeneral.isBoTypePlus()
         shipmentCartItemModel.shopLocation = shipmentInformationData.shopLocation
-        val shop = groupShop.shop
+        val shop = groupShop.groupShopData.first().shop
         shipmentCartItemModel.shopId = shop.shopId
         shipmentCartItemModel.shopName = shop.shopName
         shipmentCartItemModel.shopAlertMessage = shop.shopAlertMessage
@@ -322,7 +325,7 @@ class ShipmentDataConverter @Inject constructor() {
             receiverName = userAddress.receiverName
         }
         shipmentCartItemModel.addOnDefaultTo = receiverName
-        val products = groupShop.products
+        val products = groupShop.groupShopData.first().products
         val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
 
         // This is something that not well planned
@@ -374,7 +377,7 @@ class ShipmentDataConverter @Inject constructor() {
         cartItemModel.productId = product.productId
         cartItemModel.productCatId = product.productCatId.toLong()
         cartItemModel.name = product.productName
-        cartItemModel.shopName = groupShop.shop.shopName
+        cartItemModel.shopName = groupShop.groupShopData.first().shop.shopName
         cartItemModel.imageUrl = product.productImageSrc200Square
         cartItemModel.currency = product.productPriceCurrency
         if (product.productWholesalePrice != 0.0) {
