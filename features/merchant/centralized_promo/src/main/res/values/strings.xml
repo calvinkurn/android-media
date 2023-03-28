@@ -60,6 +60,13 @@
     <string name="centralized_promo_bottomsheet_interact_viewer_desc">Berinteraksi langsung dengan banyak penonton</string>
     <string name="centralized_promo_bottomsheet_game_prize_desc">Bikin penonton betah dengan buat game hadiah</string>
 
+    <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
+    <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
+
+    <string name="centralized_promo_content_desc_image_promo_post">image promo post</string>
+    <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
+    <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
+
     <string name="centralize_promo_flash_sale_title_coachmark">Buat kupon apa pun di satu tempat</string>
     <string name="centralize_promo_flash_sale_desc_coachmark">Sekarang buat kupon dengan tipe promo dan target pembeli apa pun lebih praktis lewat satu pintu, di satu halaman yang sama.</string>
 
@@ -68,5 +75,6 @@
     <string name="centralized_promo_description"><![CDATA[<b> %s </b> \u2022 %s]]></string>
 
     <string name="text_badge_new">Baru</string>
+    <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
 
 </resources>

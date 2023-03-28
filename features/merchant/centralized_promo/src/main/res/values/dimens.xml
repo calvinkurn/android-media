@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="centralized_promo_dimen_minus_2dp">-2dp</dimen>
+    <dimen name="centralized_promo_dimen_minus_4dp">-4dp</dimen>
+    <dimen name="centralized_promo_on_going_divider_height">1dp</dimen>
+    <dimen name="centralized_promo_on_going_item_margin">2dp</dimen>
+    <dimen name="centralized_promo_dimen_4dp">4dp</dimen>
     <dimen name="centralized_promo_dimen_10dp">10dp</dimen>
+    <dimen name="centralized_promo_dimen_12dp">12dp</dimen>
+    <dimen name="centralized_promo_text_shimmer_height_12dp">12dp</dimen>
+    <dimen name="centralized_promo_promo_creation_desc_line_height">18sp</dimen>
+    <dimen name="centralized_promo_on_going_caret_icon_size">18dp</dimen>
+    <dimen name="centralized_promo_text_shimmer_height_18dp">18dp</dimen>
+    <dimen name="centralized_promo_promo_creation_icon_size">56dp</dimen>
+    <dimen name="centralized_promo_promo_creation_card_top_margin">28dp</dimen>
+    <dimen name="centralized_promo_image_shimmer_height_150dp">150dp</dimen>
+    <dimen name="centralized_promo_on_going_promo_item_width">160dp</dimen>
+    <dimen name="centralized_promo_text_shimmer_width_200dp">200dp</dimen>
+    <dimen name="centralized_promo_text_shimmer_width_300dp">300dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_margin_top">6dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_recyclerview_margin_top">14dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_item_icon_margin">2dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_item_title_margin_start">12dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_item_padding_bottom">24dp</dimen>
+    <dimen name="centralized_promo_first_voucher_bottomsheet_padding_bottom">24dp</dimen>
 </resources>

@@ -96,13 +96,8 @@
     <string name="seller_home_logout_button">Keluar</string>
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
-    <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
-    <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
     <string name="sah_stock_location_ticker_title">Hanya menampilkan stok lokasi utama</string>
     <string name="sah_stock_location_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
-    <string name="centralized_promo_content_desc_image_promo_post">image promo post</string>
-    <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
-    <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
     <string name="sah_content_desc_image_widget_error">image widget error</string>
     <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
     <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
@@ -162,7 +157,6 @@
     <string name="info_commission_breakdown">Untuk mempelajari detail biaya layanan per kategori bisa kamu pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;.</string>
     <string name="sah_select_date_range">Pilih rentang waktu</string>
     <string name="trx_refresh">Refresh</string>
-    <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
     <string name="sah_new_other_tokomember">TokoMember</string>
     <string name="sah_new_seller_welcoming_dialog_title">Halo, %1$s. Selamat datang di Tokopedia Seller!</string>
     <string name="sah_new_seller_welcoming_dialog_description">Kelola toko jadi lebih mudah dengan tampilan baru. Pelajari dulu, yuk.</string>

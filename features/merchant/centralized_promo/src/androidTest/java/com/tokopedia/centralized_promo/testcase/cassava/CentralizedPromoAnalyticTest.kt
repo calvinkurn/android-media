@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.testcase.cassava
+package com.tokopedia.centralized_promo.testcase.cassava
 
 import android.content.Intent
 import androidx.test.espresso.Espresso
@@ -20,8 +20,8 @@ import org.junit.Test
 class CentralizedPromoAnalyticTest {
 
     companion object {
-        private const val CENTRALIZED_PROMO_PAGE_OPEN = "tracker/merchant/seller_home/centralized_promo_page_open.json"
-        private const val CENTRALIZED_PROMO_CREATE_BUTTON_CLICK = "tracker/merchant/seller_home/centralized_promo_bottom_sheet_create_button_click.json"
+        private const val CENTRALIZED_PROMO_PAGE_OPEN = "tracker/merchant/centralized_promo/centralized_promo_page_open.json"
+        private const val CENTRALIZED_PROMO_CREATE_BUTTON_CLICK = "tracker/merchant/centralized_promo/centralized_promo_bottom_sheet_create_button_click.json"
     }
 
     @get:Rule

@@ -81,6 +81,23 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms", module: "play-services-plus"
+        exclude group: "com.google.android.gms", module: "play-services-location"
+        exclude group: "com.google.android.gms", module: "play-services-maps"
+        exclude group: "com.google.android.gms", module: "play-services-auth"
+        exclude group: "com.google.android.gms", module: "play-services-places"
+    }
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.liveData
