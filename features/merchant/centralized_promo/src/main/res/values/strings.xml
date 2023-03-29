@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Centralized Promo</string>
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
     <string name="sh_lbl_create_promotion">Buat Promosi</string>
     <string name="sh_lbl_create_promotion_desc">Pasang promosi untuk tingkatkan performa tokomu.</string>
