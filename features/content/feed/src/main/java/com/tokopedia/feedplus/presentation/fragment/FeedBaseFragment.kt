@@ -172,7 +172,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     override fun onDestroyView() {
-        binding.viewVerticalSwipeOnboarding.hideAnimated()
         _binding = null
         adapter = null
         super.onDestroyView()
