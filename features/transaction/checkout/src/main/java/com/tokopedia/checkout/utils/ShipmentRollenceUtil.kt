@@ -21,12 +21,10 @@ object ShipmentRollenceUtil {
         }
     }
 
-    @JvmStatic
     private fun getDefaultRollenceValue(): String {
         return RollenceKey.CONTROL_VARIANT
     }
 
-    @JvmStatic
     private fun getVariantRollenceValue(): String {
         return RollenceKey.EXPERIMENT_VARIANT
     }
