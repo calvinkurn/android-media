@@ -30,6 +30,8 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     }
 
     private fun setCarousel(carousel: CarouselUnify) {
+        var index = 0
+
         carousel.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
@@ -50,14 +52,22 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
 
                     // temporary image, will be replace later
                     view.findViewById<AppCompatImageView>(editorR.id.carousel_item_img).loadImage(
-                        "https://picsum.photos/1080"
+                        if (index == 0) {
+                            BOTTOM_SHEET_RIBBON_TEXT
+                        } else {
+                            BOTTOM_SHEET_FREE_TEXT
+                        }
                     )
                 } catch (_: Exception) {}
+
+                index++
             }
         }
     }
 
     companion object{
         private const val TIPS_TITLE = "Tips tambah teks"
+        private const val BOTTOM_SHEET_FREE_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/867a9134-b77a-4fca-b2e1-2e8fcc86c4fa.png"
+        private const val BOTTOM_SHEET_RIBBON_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/b1ee7176-286f-489c-ba3b-68de920462e9.png"
     }
 }
