@@ -42,6 +42,7 @@ import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +68,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     @Inject
     lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
+
+    @Inject
+    lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
     private var adapter: FeedPagerAdapter? = null
 
@@ -305,11 +309,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                         duration = Toaster.LENGTH_LONG,
                                         actionText = getString(R.string.feed_upload_shorts_see_video),
                                         actionListener = {
-//                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-//                                                uploadData.authorId,
-//                                                uploadData.authorType,
-//                                                uploadData.shortsId
-//                                            )
+                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                                status.authorId,
+                                                status.authorType,
+                                                status.contentId
+                                            )
                                             RouteManager.route(
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,

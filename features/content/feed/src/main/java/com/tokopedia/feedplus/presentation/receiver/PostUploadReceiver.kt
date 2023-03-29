@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
@@ -19,10 +18,8 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import java.lang.ref.WeakReference
 
 /**
@@ -70,29 +67,12 @@ class PostUploadReceiver @AssistedInject constructor(
                 LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
             }
         }
-
-//        return flow {
-//            emit(UploadInfo.Progress(10, ""))
-//            delay(5000)
-//            emit(UploadInfo.Progress(30, ""))
-//            delay(5000)
-//            emit(UploadInfo.Progress(40, ""))
-//            delay(5000)
-//            emit(UploadInfo.Progress(80, ""))
-//            delay(5000)
-//            emit(UploadInfo.Progress(100, ""))
-//            delay(5000)
-//            emit(UploadInfo.Failed("") {
-//                Log.d("UPLOAD FAILED", "Retry")
-//            })
-//        }
     }
 
     private fun onProgress(intent: Intent): UploadInfo {
         val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, -1)
         val thumbnailUrl = intent.getStringExtra(UPLOAD_FIRST_IMAGE).orEmpty()
 
-        Log.d("Upload Posts", "Progress: $progress, Thumbnail: $thumbnailUrl, Extras: ${intent.extras}")
         return UploadInfo(
             UploadType.Post,
             UploadStatus.Progress(progress, thumbnailUrl)
@@ -104,13 +84,11 @@ class PostUploadReceiver @AssistedInject constructor(
         val thumbnailUrl = intent.getStringExtra(UPLOAD_FIRST_IMAGE).orEmpty()
 
         return if (isSuccess) {
-            Log.d("Upload Posts", "Finished, Extras: ${intent.extras}")
             UploadInfo(
                 UploadType.Post,
-                UploadStatus.Finished(""),
+                UploadStatus.Finished("", "", ""),
             )
         } else {
-            Log.d("Upload Posts", "Failed, Extras: ${intent.extras}")
             UploadInfo(
                 UploadType.Post,
                 UploadStatus.Failed(thumbnailUrl) {
