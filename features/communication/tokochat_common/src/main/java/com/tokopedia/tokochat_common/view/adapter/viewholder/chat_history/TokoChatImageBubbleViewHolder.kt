@@ -37,13 +37,15 @@ class TokoChatImageBubbleViewHolder(
         bindStatus(element)
         bindTime(element)
         bindOnClick(element)
+        bindRetryUploadButton(element.isFailed())
+        handleImageDelivered(element)
     }
 
     // Hide retry button, hide loading
     fun bindWithSuccessPayload(element: TokoChatImageBubbleUiModel) {
         bindRetryButton(element)
         bindLoader(false)
-        bindRetryUploadButton(false)
+        bindRetryUploadButton(element.isFailed())
     }
 
     // Show retry button, hide loading
@@ -91,7 +93,7 @@ class TokoChatImageBubbleViewHolder(
     }
 
     private fun bindRetryButton(element: TokoChatImageBubbleUiModel) {
-        if (element.shouldRetry) {
+        if (element.shouldRetryLoad) {
             binding?.tokochatIconImageBubbleError?.show()
         } else {
             binding?.tokochatIconImageBubbleError?.hide()
@@ -115,9 +117,9 @@ class TokoChatImageBubbleViewHolder(
             bindLoader(true)
         }
         binding?.tokochatIconImageBubbleErrorUpload?.setOnClickListener {
-            bindImagePlaceHolder()
             bindLoader(true)
-            // Resend image
+            bindRetryUploadButton(false)
+            tokoChatImageAttachmentListener.resendImage(element)
         }
     }
 
@@ -137,8 +139,10 @@ class TokoChatImageBubbleViewHolder(
         binding?.tokochatIconImageBubbleErrorUpload?.showWithCondition(shouldShow)
     }
 
-    private fun bindImagePlaceHolder() {
-        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble_gradient)
+    private fun handleImageDelivered(element: TokoChatImageBubbleUiModel) {
+        if (element.isSent()) {
+            tokoChatImageAttachmentListener.onImageDelivered(element)
+        }
     }
 
     companion object {
@@ -148,7 +152,7 @@ class TokoChatImageBubbleViewHolder(
 
     enum class PAYLOAD(val key: String) {
         PAYLOAD_SUCCESS("isSuccess"),
-        PAYLOAD_ERROR_LOAD("isErrorLoad"),
+        PAYLOAD_ERROR("isError"),
         PAYLOAD_ERROR_UPLOAD("isErrorUpload")
     }
 }

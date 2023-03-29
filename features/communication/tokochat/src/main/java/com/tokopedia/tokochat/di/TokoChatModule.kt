@@ -40,8 +40,8 @@ object TokoChatModule {
 
     @ActivityScope
     @Provides
-    internal fun provideTopchatCacheManager(@ApplicationContext context: Context): TokoChatCacheManager {
-        val topchatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
-        return TokoChatCacheManagerImpl(topchatCachePref)
+    internal fun provideTokoChatCacheManager(@ApplicationContext context: Context): TokoChatCacheManager {
+        val tokoChatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
+        return TokoChatCacheManagerImpl(tokoChatCachePref)
     }
 }

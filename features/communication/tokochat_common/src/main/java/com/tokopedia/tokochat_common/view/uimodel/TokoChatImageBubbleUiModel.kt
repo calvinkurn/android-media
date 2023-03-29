@@ -9,15 +9,15 @@ import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiMod
  */
 open class TokoChatImageBubbleUiModel protected constructor(
     builder: Builder
-): TokoChatSendableBaseUiModel(builder) {
+) : TokoChatSendableBaseUiModel(builder) {
 
     var imageId: String = builder.imageId
         private set
-    var imagePath: String = builder.imagePath
+    var imagePath: String = ""
         private set
-    var shouldRetry: Boolean = builder.shouldRetry
+    var shouldRetryLoad: Boolean = false
         private set
-    var isImageReady: Boolean = builder.isImageReady
+    var isImageReady: Boolean = false
         private set
     val impressHolder = ImpressHolder()
 
@@ -27,28 +27,15 @@ open class TokoChatImageBubbleUiModel protected constructor(
     }
 
     fun updateShouldRetry(shouldRetry: Boolean) {
-        this.shouldRetry = shouldRetry
+        this.shouldRetryLoad = shouldRetry
     }
 
     open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatImageBubbleUiModel>() {
 
         internal var imageId = ""
-        internal var imagePath = ""
-        internal var shouldRetry = false
-        internal var isImageReady = false
 
         fun withImageId(imageId: String): Builder {
             this.imageId = imageId
-            return self()
-        }
-
-        fun withImageUrl(imagePath: String): Builder {
-            this.imagePath = imagePath
-            return self()
-        }
-
-        fun withShouldRetry(shouldRetry: Boolean): Builder {
-            this.shouldRetry = shouldRetry
             return self()
         }
 

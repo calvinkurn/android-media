@@ -302,38 +302,21 @@ open class TokoChatFragment :
     }
 
     private fun observeImageAttachmentStatus() {
-        observe(viewModel.imageUploadStatus) { pair ->
-            val imageId = pair.first
-            when (pair.second) {
-                is Success -> {
-                    // Update image attachment state
-                    adapter.getImageAttachmentPositionWithId(imageId)?.let {
-                        val payloads = adapter.createPayloads(
-                            TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_SUCCESS.key,
-                            true
-                        )
-                        adapter.notifyItemChanged(it, payloads)
-                    }
-                }
-                is Fail -> {
-                    // Show toaster and send newrelic with error handler
-                    if (view != null && context != null) {
-                        Toaster.build(
-                            view = view!!,
-                            text = ErrorHandler.getErrorMessage(context, (pair.second as Fail).throwable),
-                            duration = Toaster.LENGTH_LONG,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
-                    // Update image attachment state
-                    adapter.getImageAttachmentPositionWithId(imageId)?.let {
-                        val payloads = adapter.createPayloads(
-                            TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_UPLOAD.key,
-                            true
-                        )
-                        adapter.notifyItemChanged(it, payloads)
-                    }
-                }
+        observe(viewModel.imageUploadError) {
+            if (view != null && context != null) {
+                Toaster.build(
+                    view = view!!,
+                    text = ErrorHandler.getErrorMessage(context, it.second),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            }
+            adapter.getImageAttachmentPositionWithId(it.first)?.let { position ->
+                val payloads = adapter.createPayloads(
+                    TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_UPLOAD.key,
+                    true
+                )
+                adapter.notifyItemChanged(position, payloads)
             }
         }
     }
@@ -1011,6 +994,11 @@ open class TokoChatFragment :
         )
     }
 
+    override fun onImageDelivered(element: TokoChatImageBubbleUiModel) {
+        // Remove from cache if image delivered
+        viewModel.imageAttachmentMap.remove(element.imageId)
+    }
+
     // error load image handler
     private fun onErrorLoadImage(
         element: TokoChatImageBubbleUiModel
@@ -1023,7 +1011,7 @@ open class TokoChatFragment :
             adapter.getImageAttachmentPositionWithId(element.imageId)?.let {
                 // create payload with correct value
                 val payload = adapter.createPayloads(
-                    TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_LOAD.key,
+                    TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR.key,
                     true
                 )
                 // notify
@@ -1155,6 +1143,10 @@ open class TokoChatFragment :
                 viewModel.source
             )
         }
+    }
+
+    override fun resendImage(element: TokoChatImageBubbleUiModel) {
+        viewModel.resendImage(element.imageId)
     }
 
     override fun onClickReadMore(element: TokoChatMessageBubbleUiModel) {

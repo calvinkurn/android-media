@@ -23,7 +23,7 @@ class TokoChatImageBubbleDelegate(
             (payloads.getBoolean(TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_SUCCESS.key)) -> {
                 holder.bindWithSuccessPayload(item)
             }
-            (payloads.getBoolean(TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_LOAD.key)) -> {
+            (payloads.getBoolean(TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR.key)) -> {
                 holder.bindWithErrorLoadPayload(item)
             }
             (payloads.getBoolean(TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_UPLOAD.key)) -> {
