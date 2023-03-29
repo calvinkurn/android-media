@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
@@ -19,8 +18,11 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
-import com.tokopedia.catalog_library.util.*
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandPage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
+import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -33,7 +35,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener {
+class CatalogPopularBrandsFragment : CatalogLibraryBaseFragment(), CatalogLibraryListener {
 
     private var popularBrandsRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
@@ -45,12 +47,14 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         }
     }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
+
+    @Inject
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
+
     private val popularBrandsVM by lazy {
         viewModelFactory?.let {
             ViewModelProvider(this, it).get(CatalogPopularBrandsVM::class.java)
@@ -179,7 +183,7 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
             trackerId,
             eventAction,
             "$brandName - $brandId - $position",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
     }
 
@@ -196,7 +200,7 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         CatalogAnalyticsBrandPage.sendClickOnCatalogEvent(
             "$brandName - $brandId - $position ; destination catalog: $catalogName - $catalogId",
             catalogId,
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
     }
 
@@ -210,9 +214,9 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         if (!trackingSet.contains(uniqueTrackingKey)) {
             CatalogAnalyticsBrandPage.sendImpressOnLihatButtonEvent(
                 "${it.name} - ${it.id} - position: $position",
-                userSessionInterface.userId
+                userSessionInterface?.userId ?: ""
             )
-            CatalogAnalyticsBrandPage.sendItemImpression(userSessionInterface.userId, position, it)
+            CatalogAnalyticsBrandPage.sendItemImpression(userSessionInterface?.userId ?: "", position, it)
             trackingSet.add(uniqueTrackingKey)
         }
     }

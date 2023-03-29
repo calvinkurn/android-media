@@ -51,6 +51,7 @@ object CatalogLibraryConstant {
     const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
     const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"
     const val CATALOG_HOME_HEADING_POPULAR_BRANDS = "Brand terpopuler di katalog"
+    const val LINK_CATALOG_LIBRARY_LITE = "tokopedia://webview?url=https://www.tokopedia.com/catalog&allow_override=false"
 
     const val SOURCE_HOMEPAGE = "source homepage"
     const val SOURCE_CATEGORY_LANDING_PAGE = "source category landing page"

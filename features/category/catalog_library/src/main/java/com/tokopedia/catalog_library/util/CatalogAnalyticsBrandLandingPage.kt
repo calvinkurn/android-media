@@ -10,7 +10,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 object CatalogAnalyticsBrandLandingPage {
 
     fun sendImpressionOnCatalogListEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         brandName: String,
         brandId: String,
         categoryName: String,
@@ -46,11 +46,11 @@ object CatalogAnalyticsBrandLandingPage {
             ),
             TrackerConstant.USERID, userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     fun sendOnTabClickEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         brandName: String,
         brandId: String,
         categoryName: String,
@@ -63,7 +63,7 @@ object CatalogAnalyticsBrandLandingPage {
 
         itemMap[EventKeys.CREATIVE_NAME] = categoryName
         itemMap[EventKeys.CREATIVE_SLOT] = position
-        itemMap[EventKeys.ITEM_ID] = categoryId ?: ""
+        itemMap[EventKeys.ITEM_ID] = categoryId
         itemMap[EventKeys.ITEM_NAME] = "category tab"
         list.add(itemMap)
 
@@ -86,7 +86,7 @@ object CatalogAnalyticsBrandLandingPage {
             ),
             TrackerConstant.USERID, userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     fun sendClickExpandBottomSheetButtonEvent(eventLabel: String, userId: String) {

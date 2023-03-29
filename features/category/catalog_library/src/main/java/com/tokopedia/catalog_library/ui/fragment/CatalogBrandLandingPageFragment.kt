@@ -47,18 +47,24 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     private var categoryIdStr = ""
     private var categoryNameStr = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
+    private val productsTrackingSet = HashSet<String>()
+
+    @JvmField
+    @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var trackingQueue: TrackingQueue? = null
 
-    private val brandLandingPageViewModel: CatalogLihatSemuaPageVM by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(CatalogLihatSemuaPageVM::class.java)
+    private val brandLandingPageViewModel by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(this, it).get(CatalogLihatSemuaPageVM::class.java)
+        }
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -76,10 +82,6 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.shimmerForBrandLandingPage()
         }
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-    private val productsTrackingSet = HashSet<String>()
 
     companion object {
         const val ARG_BRAND_ID = "ARG_BRAND_ID"
@@ -152,7 +154,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun setObservers() {
-        brandLandingPageViewModel.catalogLihatLiveDataResponse.observe(viewLifecycleOwner) {
+        brandLandingPageViewModel?.catalogLihatLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
@@ -209,7 +211,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun getDataFromViewModel() {
-        brandLandingPageViewModel.getLihatSemuaByBrandData(categoryIdStr, brandIdStr, false)
+        brandLandingPageViewModel?.getLihatSemuaByBrandData(categoryIdStr, brandIdStr, false)
     }
 
     private fun addShimmer() {
@@ -259,7 +261,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
             categoryNameStr,
             categoryIdStr,
             position,
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
         onChangeCategory(categoryName, categoryId, true)
     }
@@ -286,7 +288,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     private fun openBottomSheet(brandIdStr: String) {
         CatalogAnalyticsBrandLandingPage.sendClickExpandBottomSheetButtonEvent(
             "brand page: $brandNameStr - $brandIdStr - category tab: {category-name/$categoryNameStr} - {category-id/$categoryIdStr}",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
         val catalogComparisonBottomSheet = CatalogLibraryComponentBottomSheet.newInstance(
             categoryIdStr,
@@ -318,13 +320,13 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 
     fun dismissKategoriBottomSheet() {
         CatalogAnalyticsBrandLandingPage.sendClickCloseBottomSheetButtonEvent(
             "$brandNameStr - $brandIdStr",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
     }
 }

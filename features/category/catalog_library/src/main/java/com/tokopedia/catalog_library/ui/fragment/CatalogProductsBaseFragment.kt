@@ -5,7 +5,6 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
@@ -15,19 +14,19 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
+abstract class CatalogProductsBaseFragment : CatalogLibraryBaseFragment() {
 
-    private var linearLayoutManager: LinearLayoutManager? = null
-    abstract var baseRecyclerView: RecyclerView?
-    abstract var source: String
     private var categoryId = ""
     private var brandId = ""
     protected var productCount = 0
     private var sortType = SORT_TYPE_CATALOG
     private val rows = TOTAL_ROWS_CATALOG
     private var pageNumber = 1
-
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var linearLayoutManager: LinearLayoutManager? = null
+
+    abstract var baseRecyclerView: RecyclerView?
+    abstract var source: String
 
     @JvmField
     @Inject

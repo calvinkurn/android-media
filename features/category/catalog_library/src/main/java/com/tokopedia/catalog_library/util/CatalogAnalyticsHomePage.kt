@@ -4,15 +4,12 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME
-import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME_RELEVANT_VALUE
-import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME_SPECIAL_VALUE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_SLOT
 import com.tokopedia.catalog_library.util.EventKeys.Companion.INDEX
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_BRAND
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_CATEGORY
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_ID
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_NAME
-import com.tokopedia.catalog_library.util.EventKeys.Companion.KEY_ECOMMERCE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PRICE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PRODUCT_VIEW
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PROMOTIONS
@@ -38,7 +35,7 @@ object CatalogAnalyticsHomePage {
         trackerId : String,
         eventAction : String,
         creativeName : String,
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
@@ -67,10 +64,10 @@ object CatalogAnalyticsHomePage {
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
-                KEY_ECOMMERCE to hashMapOf(
+                EventKeys.KEY_ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to list
                     )
@@ -81,8 +78,7 @@ object CatalogAnalyticsHomePage {
     }
 
     fun sendImpressionOnCatalogListEvent(
-        trackingQueue: TrackingQueue,
-        categoryName: String,
+        trackingQueue: TrackingQueue?,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
         userId: String
@@ -115,7 +111,7 @@ object CatalogAnalyticsHomePage {
             ),
             TrackerConstant.USERID, userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     /**

@@ -37,6 +37,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
 
     private var catalogHomeRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
+    private val trackingSet = HashSet<String>()
 
     companion object {
         fun getInstance(): CatalogHomepageFragment {
@@ -47,24 +48,26 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
+
+    @Inject
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var trackingQueue: TrackingQueue? = null
+
     private val homepageViewModel by lazy {
         viewModelFactory?.let {
             ViewModelProvider(this, it).get(CatalogHomepageVM::class.java)
         }
     }
+
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
             this
         )
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-    private val trackingSet = HashSet<String>()
-    private val catalogsTrackingSet = HashSet<String>()
 
     private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
@@ -185,11 +188,11 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         super.onLihatSemuaTextClick(applink)
         if (applink.contains(CatalogLibraryConstant.APP_LINK_POPULAR_BRANDS)) {
             CatalogAnalyticsHomePage.sendClickLihatSemuaOnPopularBrandsEvent(
-                userSessionInterface.userId
+                userSessionInterface?.userId ?: ""
             )
         } else {
             CatalogAnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
-                UserSession(context).userId
+                UserSession(context).userId  ?: ""
             )
         }
         RouteManager.route(context, applink)
@@ -200,7 +203,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_BRANDS}$brandId/$brandName")
         CatalogAnalyticsHomePage.sendClickBrandOnPopularBrandsEvent(
             "$brandName - $brandId - $position",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
     }
 
@@ -272,20 +275,19 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         userId: String
     ) {
         val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST}-$position"
-        if (!catalogsTrackingSet.contains(uniqueTrackingKey)) {
+        if (!trackingSet.contains(uniqueTrackingKey)) {
             CatalogAnalyticsHomePage.sendImpressionOnCatalogListEvent(
                 trackingQueue,
-                catgoryName,
                 product,
                 position,
                 userId
             )
-            catalogsTrackingSet.add(uniqueTrackingKey)
+            trackingSet.add(uniqueTrackingKey)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 }

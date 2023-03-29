@@ -20,7 +20,7 @@ object CatalogAnalyticsLihatSemuaPage {
         eventCategory : String,
         eventAction : String,
         eventLabel : String,
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -59,7 +59,7 @@ object CatalogAnalyticsLihatSemuaPage {
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
                 EventKeys.KEY_ECOMMERCE to hashMapOf(

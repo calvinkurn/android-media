@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
@@ -21,7 +20,10 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
-import com.tokopedia.catalog_library.util.*
+import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandLandingPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.util.TrackerId.Companion.IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
@@ -38,7 +40,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
+class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibraryListener {
 
     private var catalogLihatPageRecyclerView: RecyclerView? = null
     private var sortAsc: ChipsUnify? = null
@@ -49,6 +51,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var categoryId = ""
     private var brandId = ""
     private var brandName = ""
+    private val categoryTrackingSet = HashSet<String>()
 
     companion object {
         const val DEFAULT_ASC_SORT_ORDER = "0"
@@ -74,21 +77,23 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-    private val categoryTrackingSet = HashSet<String>()
-
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
-    private val lihatViewModel by lazy {
-        viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLihatSemuaPageVM::class.java)
-        }
-    }
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var trackingQueue: TrackingQueue? = null
+
+    private val lihatViewModel by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(this, it)[CatalogLihatSemuaPageVM::class.java]
+        }
+    }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
@@ -258,7 +263,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         CatalogAnalyticsBrandLandingPage.sendClickCategoryOnBottomSheetEvent(
             "brand page: $brandName - $brandId - category: $categoryName - $categoryIdentifier",
             categoryIdentifier ?: "",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
         (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryName, categoryIdentifier ?: "")
     }
@@ -281,7 +286,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         val expandCollapse = if (expanded) "expand" else "collapse"
         CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
             "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
-            userSessionInterface.userId
+            userSessionInterface?.userId ?: ""
         )
     }
 
@@ -329,6 +334,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 }

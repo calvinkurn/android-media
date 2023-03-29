@@ -21,7 +21,7 @@ object CatalogAnalyticsCategoryLandingPage {
     }
 
     fun sendImpressionOnTopCatalogsInCategoryEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         categoryName: String,
         categoryId: String,
         catalogName: String,
@@ -54,7 +54,7 @@ object CatalogAnalyticsCategoryLandingPage {
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
                 EventKeys.KEY_ECOMMERCE to hashMapOf(
@@ -101,7 +101,7 @@ object CatalogAnalyticsCategoryLandingPage {
     }
 
     fun sendImpressionOnCatalogListEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         categoryName: String,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
@@ -144,7 +144,7 @@ object CatalogAnalyticsCategoryLandingPage {
             TrackerConstant.USERID,
             userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     /**

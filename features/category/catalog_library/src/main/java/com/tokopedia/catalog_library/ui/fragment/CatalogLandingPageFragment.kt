@@ -24,6 +24,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
+import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -42,15 +44,26 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     private var categoryIdStr = ""
     private var categoryName = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
+    private val productsTrackingSet = HashSet<String>()
+    private val topCatalogsTrackingSet = HashSet<String>()
+
+    @JvmField
+    @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
-    private val landingPageViewModel: CatalogLandingPageVM by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(CatalogLandingPageVM::class.java)
+    @Inject
+    @JvmField
+    var trackingQueue: TrackingQueue? = null
+
+
+    private val landingPageViewModel by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(this, it).get(CatalogLandingPageVM::class.java)
+        }
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -68,11 +81,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.shimmerForLandingPage()
         }
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-    private val productsTrackingSet = HashSet<String>()
-    private val topCatalogsTrackingSet = HashSet<String>()
 
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
@@ -142,7 +150,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun setObservers() {
-        landingPageViewModel.catalogLandingPageLiveDataResponse.observe(viewLifecycleOwner) {
+        landingPageViewModel?.catalogLandingPageLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
@@ -159,7 +167,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
                 }
             }
 
-            landingPageViewModel.categoryName.observe(viewLifecycleOwner) { categoryName ->
+            landingPageViewModel?.categoryName?.observe(viewLifecycleOwner) { categoryName ->
                 this.categoryName = categoryName
                 view?.let { v -> initHeaderTitle(v) }
             }
@@ -206,12 +214,12 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel.getCatalogTopFiveData(
+        landingPageViewModel?.getCatalogTopFiveData(
             categoryIdStr,
             SORT_TYPE_TOP_FIVE,
             TOTAL_ROWS_TOP_FIVE
         )
-        landingPageViewModel.getCatalogMostViralData(
+        landingPageViewModel?.getCatalogMostViralData(
             categoryIdStr,
             SORT_TYPE_VIRAL,
             TOTAL_ROWS_VIRAL
@@ -294,6 +302,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 }

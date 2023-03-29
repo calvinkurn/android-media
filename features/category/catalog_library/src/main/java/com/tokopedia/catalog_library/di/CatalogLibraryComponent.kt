@@ -5,7 +5,7 @@ import com.tokopedia.catalog_library.ui.fragment.*
 import dagger.Component
 
 @CatalogLibraryScope
-@Component(modules = [CatalogLibraryUseCaseModule::class,
+@Component(modules = [CatalogLibraryModule::class,
     ViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface CatalogLibraryComponent {
