@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel.slicing.impl
+package com.tokopedia.product.detail.view.viewmodel.product_detail.impl
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +11,8 @@ import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommSliceViewModel
-import com.tokopedia.product.detail.view.viewmodel.slicing.SliceViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.SubViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -20,7 +20,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 /**
@@ -28,10 +27,10 @@ import javax.inject.Inject
  * Project name: android-tokopedia-core
  **/
 
-class ProductRecommSliceImplViewModel @Inject constructor(
+class ProductRecommSubViewModel @Inject constructor(
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
     private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>
-) : SliceViewModel(), ProductRecommSliceViewModel {
+) : SubViewModel(), IProductRecommSubViewModel {
 
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 

@@ -22,8 +22,8 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
-import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.slicing.impl.ProductRecommSliceImplViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -194,7 +194,7 @@ abstract class BasePdpViewModelTest {
             remoteConfigInstance,
             userSessionInterface,
             { affiliateCookieHelper },
-            productRecommSliceViewModel = ProductRecommSliceImplViewModel(
+            productRecommSubViewModel = ProductRecommSubViewModel(
                 getRecommendationUseCase = { getRecommendationUseCase },
                 getProductRecommendationUseCase = { getProductRecommendationUseCase }
             )

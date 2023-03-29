@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel.slicing
+package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -8,7 +8,7 @@ import kotlin.coroutines.CoroutineContext
  * Created by yovi.putra on 24/03/23"
  * Project name: android-tokopedia-core
  **/
-abstract class SliceViewModel {
+abstract class SubViewModel {
 
     protected lateinit var scope: CoroutineScope
 

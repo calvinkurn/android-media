@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel.slicing
+package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.Result
  * Project name: android-tokopedia-core
  **/
 
-interface ProductRecommSliceViewModel {
+interface IProductRecommSubViewModel {
 
     val loadViewToView: LiveData<Result<RecommendationWidget>>
 

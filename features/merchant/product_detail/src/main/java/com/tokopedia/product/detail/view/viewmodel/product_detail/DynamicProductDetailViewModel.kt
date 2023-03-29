@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel
+package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -84,8 +84,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommSliceViewModel
-import com.tokopedia.product.detail.view.viewmodel.slicing.impl.ProductRecommSliceImplViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -151,8 +150,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSliceViewModel: ProductRecommSliceImplViewModel
-) : BaseViewModel(dispatcher.main), ProductRecommSliceViewModel by productRecommSliceViewModel {
+    productRecommSubViewModel: ProductRecommSubViewModel
+) : BaseViewModel(dispatcher.main), IProductRecommSubViewModel by productRecommSubViewModel {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -290,7 +289,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
-        productRecommSliceViewModel.invoke(scope = viewModelScope)
+        productRecommSubViewModel.invoke(scope = viewModelScope)
         iniQuantityFlow()
     }
 

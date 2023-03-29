@@ -6,8 +6,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
-import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommSliceViewModel
-import com.tokopedia.product.detail.view.viewmodel.slicing.impl.ProductRecommSliceImplViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeoutException
  **/
 
 @ExperimentalCoroutinesApi
-class ProductRecommSliceViewModelTest {
+class ProductRecommSubViewModelTest {
 
     @RelaxedMockK
     lateinit var getProductRecommendationUseCase: GetProductRecommendationUseCase
@@ -56,14 +56,14 @@ class ProductRecommSliceViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: ProductRecommSliceViewModel
+    private lateinit var viewModel: IProductRecommSubViewModel
 
     @Before
     fun beforeTest() {
         MockKAnnotations.init(this)
         mockkStatic(GlobalConfig::class)
 
-        viewModel = ProductRecommSliceImplViewModel(
+        viewModel = ProductRecommSubViewModel(
             getRecommendationUseCase = { getRecommendationUseCase },
             getProductRecommendationUseCase = { getProductRecommendationUseCase }
         ).apply {
