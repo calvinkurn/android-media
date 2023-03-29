@@ -30,6 +30,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -648,17 +649,19 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generatePersonalizedData(product: DynamicProductInfoP1, startTime: Long) = PersonalizedCampaignModel(
-        product.data.campaign.campaignTypeName,
-        product.data.price.priceFmt,
-        product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
-        product.data.campaign.percentageAmount,
-        startTime,
-        (
-            product.data.campaign.endDateUnix
-                ?: ""
-            ).toLongOrZero()
-    )
+    fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
+        val upcomingCampaign = productP2?.upcomingCampaigns?.get(product.basic.productID)
+        val startTime = upcomingCampaign?.startDate.toLongOrZero()
+        return PersonalizedCampaignModel(
+            product.data.campaign.campaignTypeName,
+            upcomingCampaign?.campaignTypeName ?: "",
+            product.data.price.priceFmt,
+            product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+            product.data.campaign.percentageAmount,
+            startTime,
+            (product.data.campaign.endDateUnix).toLongOrZero()
+        )
+    }
 
     fun generateAffiliateShareData(
         productInfo: DynamicProductInfoP1,

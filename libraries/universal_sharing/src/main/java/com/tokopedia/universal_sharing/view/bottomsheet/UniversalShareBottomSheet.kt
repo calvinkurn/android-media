@@ -378,6 +378,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     // Variable to set personalized campaign
     private var personalizedMessage = ""
     private var personalizedImage = ""
+    private var personalizedCampaignModel: PersonalizedCampaignModel? = null
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -1243,6 +1244,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      * this function is used to set personalized campaign message and output
      */
     fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        personalizedCampaignModel = model
         val context = LinkerManager.getInstance().context
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
@@ -1310,12 +1312,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun isPersonalizedCampaignActive(): Boolean = personalizedCampaignModel != null
+
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = transformOgImageURL(ogImageUrl)
-            this.campaignInfo = personalizedImage
+
+            if (isPersonalizedCampaignActive()) {
+                val campaignName = personalizedCampaignModel?.getCampaignName() ?: ""
+                imageGeneratorParam = this.copy(campaignInfo = personalizedImage, campaignName = campaignName)
+            }
         }
 
         lifecycleScope.launchCatchError(block = {

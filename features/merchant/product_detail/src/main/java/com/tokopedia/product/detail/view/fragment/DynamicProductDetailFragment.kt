@@ -3871,12 +3871,8 @@ open class DynamicProductDetailFragment :
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                 ?.map { it.urlOriginal } ?: emptyList()
-            val startTime = viewModel.p2Data.value?.upcomingCampaigns?.getOrDefault(
-                viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-                null
-            )?.startDate.toLongOrZero()
             val personalizedCampaignModel = viewModel.getDynamicProductInfoP1?.let { product ->
-                generatePersonalizedData(product, startTime)
+                generatePersonalizedData(product, viewModel.p2Data.value)
             } ?: PersonalizedCampaignModel()
 
             shareProductInstance?.showUniversalShareBottomSheet(

@@ -7,7 +7,8 @@ import com.tokopedia.universal_sharing.util.DateUtil
  * @param endTime in unix form
  */
 data class PersonalizedCampaignModel(
-    val campaignName: String = "",
+    val ongoingCampaignName: String = "",
+    val upcomingCampaignName: String = "",
     val price: String = "",
     val isThematicCampaign: Boolean = false,
     val discountPercentage: Float = 0F,
@@ -30,6 +31,20 @@ data class PersonalizedCampaignModel(
             return CampaignStatus.UPCOMING
         } else {
             return CampaignStatus.NO_CAMPAIGN
+        }
+    }
+
+    /**
+     * get campaign name based on [getCampaignStatus]
+     * @return [ongoingCampaignName] when [getCampaignStatus] == [CampaignStatus.END_SOON] or [CampaignStatus.ON_GOING]
+     * @return [upcomingCampaignName] when [getCampaignStatus] == [CampaignStatus.UPCOMING]
+     */
+    fun getCampaignName(): String {
+        return when (getCampaignStatus()) {
+            CampaignStatus.NO_CAMPAIGN -> ""
+            CampaignStatus.ON_GOING -> ongoingCampaignName
+            CampaignStatus.END_SOON -> ongoingCampaignName
+            CampaignStatus.UPCOMING -> upcomingCampaignName
         }
     }
 
