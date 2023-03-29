@@ -19,7 +19,7 @@ class CatalogLibraryBrandLandingActivity : BaseSimpleActivity() {
 
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-        brandId = if (pathSegments.size > 1) pathSegments[1] ?: "" else ""
-        brandName = if (pathSegments.size > 2) pathSegments[2] ?: "" else ""
+        brandId = if (pathSegments.size > 0) pathSegments[0] ?: "" else ""
+        brandName = if (pathSegments.size > 1) pathSegments[1] ?: "" else ""
     }
 }
