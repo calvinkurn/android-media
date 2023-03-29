@@ -18,8 +18,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
-import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
-import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -157,10 +155,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? BaseActivity
-        ) { summaryModel, type, view ->
-
-        }
-
+        )
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))

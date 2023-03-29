@@ -15,13 +15,14 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import okhttp3.internal.checkDuration
 import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
 class PerformanceTrace(val traceName: String) {
     companion object {
         private const val PERF_TIMEOUT = 10000
+        private const val FLOW_TIMEOUT = 5000L
+        private const val FLOW_REPLAY = 1
         const val TYPE_TTFL = "TTFL"
         const val TYPE_TTIL = "TTIL"
         const val GLOBAL_LAYOUT_DEBOUNCE = 500L
@@ -43,7 +44,7 @@ class PerformanceTrace(val traceName: String) {
 
     init {
         startCurrentTimeMillis = System.currentTimeMillis()
-        performanceMonitoring.startTrace(traceName)
+        performanceMonitoring.startTrace("perf_trace_$traceName")
     }
 
     var performanceTraceJob: Job? = null
@@ -62,14 +63,9 @@ class PerformanceTrace(val traceName: String) {
         currentLoadableComponentList = objList.filterIsInstance<LoadableComponent>().toMutableList()
     }
 
-    fun checkIfLoadingIsFinished(): Boolean {
+    fun isLoadingFinished(): Boolean {
         if (timeoutExceeded()) return true
-        currentLoadableComponentList.filterIsInstance<LoadableComponent>().forEach {
-            if (it.isLoading()) {
-                return false
-            }
-        }
-        return true
+        return currentLoadableComponentList.any { it is LoadableComponent && !it.isLoading() }
     }
 
     private fun timeoutExceeded(): Boolean {
@@ -84,7 +80,8 @@ class PerformanceTrace(val traceName: String) {
         v: View,
         scope: LifecycleCoroutineScope,
         touchListenerActivity: TouchListenerActivity?,
-        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
+        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit =
+            { _,_,_ -> },
         ) {
         val remoteConfig = FirebaseRemoteConfigImpl(v.context)
         val isPerformanceTraceEnabled = remoteConfig.getBoolean(
@@ -99,7 +96,7 @@ class PerformanceTrace(val traceName: String) {
                     val viewgroup = v as ViewGroup
                     setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
                     setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
-                    touchListenerActivity?.addListener { cancelPerformancetrace(STATE_TOUCH) }
+                    touchListenerActivity?.addListener { cancelPerformanceTrace(STATE_TOUCH) }
                 }) {
             }
         }
@@ -110,20 +107,22 @@ class PerformanceTrace(val traceName: String) {
             ATTR_CONDITION, state)
     }
 
-    fun cancelPerformancetrace(state: String) {
-        performanceTraceJob?.cancel()
-        performanceMonitoring.putCustomAttribute(
-            ATTR_CONDITION, state)
-        performanceMonitoring.stopTrace()
+    fun cancelPerformanceTrace(state: String) {
+        if (performanceTraceJob?.isCancelled == false) {
+            performanceTraceJob?.cancel()
+            performanceMonitoring.putCustomAttribute(
+                ATTR_CONDITION, state)
+            performanceMonitoring.stopTrace()
 
-        if (summaryModel.get().timeToInitialLayout != null) {
-            PerformanceTraceDebugger.logTrace(
-                "Performance TTFL trace finished."
-            )
-        } else {
-            PerformanceTraceDebugger.logTrace(
-                "Performance TTIL trace cancelled due to scroll event / error"
-            )
+            if (summaryModel.get().timeToInitialLayout != null) {
+                PerformanceTraceDebugger.logTrace(
+                    "Performance TTFL trace finished."
+                )
+            } else {
+                PerformanceTraceDebugger.logTrace(
+                    "Performance TTIL trace cancelled due to scroll event / error"
+                )
+            }
         }
     }
 
@@ -138,10 +137,10 @@ class PerformanceTrace(val traceName: String) {
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutTTIL)
 
         outputSharedFlow = sharedFlow.debounce(GLOBAL_LAYOUT_DEBOUNCE).map {
-            if (checkIfLoadingIsFinished()) {
+            if (isLoadingFinished()) {
                 onTTILFinished(onLaunchTimeFinished, it, viewgroup, onGlobalLayoutTTIL)
             }
-        }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+        }.shareIn(scope, SharingStarted.WhileSubscribed(FLOW_TIMEOUT), FLOW_REPLAY)
         outputSharedFlow.launchIn(scope)
     }
 
@@ -194,9 +193,7 @@ class PerformanceTrace(val traceName: String) {
         onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
         viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
         performanceMonitoring.putMetric(TYPE_TTIL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
-        performanceMonitoring.putCustomAttribute(
-            ATTR_CONDITION, STATE_SUCCESS)
-        performanceMonitoring.stopTrace()
+        cancelPerformanceTrace(STATE_SUCCESS)
     }
 
     private fun createViewPerformanceModel(view: View) = ViewPerformanceModel(

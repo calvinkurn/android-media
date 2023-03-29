@@ -42,7 +42,6 @@ import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
-import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -209,8 +208,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
-import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1206,7 +1203,7 @@ open class HomeRevampFragment :
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
-                        performanceTrace.cancelPerformancetrace(PerformanceTrace.STATE_ERROR)
+                        performanceTrace.cancelPerformanceTrace(PerformanceTrace.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1312,8 +1309,7 @@ open class HomeRevampFragment :
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
-        ) { summaryModel, type, view ->
-        }
+        )
         observeSearchHint()
     }
 
