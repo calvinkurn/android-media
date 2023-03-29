@@ -175,7 +175,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
             if(resultCode == Activity.RESULT_OK){
                 val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
                 if (state != null) {
-                    Toaster.build(container_home, "Yay! Perubahan Kartu TokoMembe disimpan.").show()
+                    Toaster.build(container_home, "Yay! Perubahan Kartu TokoMember disimpan.").show()
                     tokomemberDashHomeViewmodel.refreshHomeData(state)
                 }
             }
