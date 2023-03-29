@@ -71,8 +71,10 @@ private fun ResultDialog(
                 NestTypography(
                     modifier = Modifier.padding(vertical = 8.dp),
                     text = title,
-                    textStyle = NestTheme.typography.heading2.copy(NestTheme.colors.NN._950),
-                    textAlign = TextAlign.Center
+                    textStyle = NestTheme.typography.heading2.copy(
+                        NestTheme.colors.NN._950,
+                        textAlign = TextAlign.Center
+                    )
                 )
                 HtmlLinkHelper(
                     LocalContext.current,
@@ -81,8 +83,10 @@ private fun ResultDialog(
                     NestTypography(
                         text = this,
                         modifier = Modifier.padding(vertical = 8.dp),
-                        textStyle = NestTheme.typography.body2.copy(NestTheme.colors.NN._950),
-                        textAlign = TextAlign.Center
+                        textStyle = NestTheme.typography.body2.copy(
+                            NestTheme.colors.NN._950,
+                            textAlign = TextAlign.Center
+                        )
                     )
                 }
                 NestButton(text = buttonText, modifier = Modifier.padding(top = 16.dp)) {
