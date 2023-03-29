@@ -1,4 +1,4 @@
-package com.example.login_helper
+package com.tokopedia.loginHelper
 
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
