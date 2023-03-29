@@ -42,23 +42,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardColorAdapter
@@ -82,10 +66,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_create_card_container.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
 const val DP_COLOR_ITEM_DECORATOR = 12
 const val COLOR_DEFAULT_POSITION = 0
@@ -339,14 +320,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
 
     private fun proceedIntroLogic(mTmCardModifyInput: TmCardModifyInput) {
         if (TmInternetCheck.isConnectedToInternet(context)) {
-            activity?.let {
-                val loader = LoaderDialog(it)
-                loader.setLoadingText(it.getString(R.string.tm_loader_create_card))
-                loader.show()
-            }
-            Timer().schedule(3000){
-                tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
-            }
+            tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
         }
         else{
             noInternetUi { proceedIntroLogic(mTmCardModifyInput) }

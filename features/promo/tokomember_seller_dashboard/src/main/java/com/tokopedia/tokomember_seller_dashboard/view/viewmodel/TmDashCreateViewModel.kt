@@ -52,7 +52,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import java.io.File
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 const val SOURCE_ID_VIP = "mxzxFi"
 const val SOURCE_ID_PREMIUM = "togDTI"
@@ -200,11 +203,13 @@ class TmDashCreateViewModel @Inject constructor(
     fun modifyShopCard(tmCardModifyInput: TmCardModifyInput){
         tokomemberDashEditCardUsecase.cancelJobs()
         _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.loading())
-        tokomemberDashEditCardUsecase.modifyShopCard( {
-            _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.success(it))
-        }, {
-            _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.error(it))
-        },tmCardModifyInput)
+        Timer().schedule(3000) {
+            tokomemberDashEditCardUsecase.modifyShopCard({
+                _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.success(it))
+            }, {
+                _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.error(it))
+            }, tmCardModifyInput)
+        }
     }
 
     fun createCoupon(tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest){
