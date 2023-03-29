@@ -289,7 +289,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
-        productRecommSubViewModel.invoke(scope = viewModelScope)
+        productRecommSubViewModel.register(scope = viewModelScope)
         iniQuantityFlow()
     }
 

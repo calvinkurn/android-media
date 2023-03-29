@@ -10,22 +10,22 @@ import kotlin.coroutines.CoroutineContext
  **/
 abstract class SubViewModel {
 
-    protected lateinit var scope: CoroutineScope
+    protected lateinit var coroutineScope: CoroutineScope
 
-    private val coroutineContext by lazy { scope.coroutineContext }
+    private val mCoroutineContext by lazy { coroutineScope.coroutineContext }
 
-    operator fun invoke(scope: CoroutineScope) {
-        this.scope = scope
-        afterInvoke()
+    fun register(scope: CoroutineScope) {
+        if (::coroutineScope.isInitialized) {
+            throw IllegalArgumentException("${this::class.java.simpleName} can only be registered once")
+        }
+        this.coroutineScope = scope
     }
 
-    open fun afterInvoke() {}
-
     protected fun launch(
-        context: CoroutineContext = coroutineContext,
+        context: CoroutineContext = mCoroutineContext,
         block: suspend CoroutineScope.() -> Unit
     ) {
-        scope.launch(context = context) {
+        coroutineScope.launch(context = context) {
             block()
         }
     }
