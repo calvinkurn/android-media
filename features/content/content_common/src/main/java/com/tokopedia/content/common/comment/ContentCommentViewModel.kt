@@ -70,7 +70,8 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastParentCursor,
                 )
                 _comments.update {
-                    val contentSame = it.list.zip(result.list).any { item -> item.first == item.second }
+                    val contentSame =
+                        it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
@@ -103,14 +104,14 @@ class ContentCommentViewModel @AssistedInject constructor(
                     commentType = param.commentType,
                     cursor = param.lastChildCursor
                 )
-                _comments.getAndUpdate {
-                    val selected = it.list
+                _comments.update { curr ->
+                    val selected = curr.list
                         .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
                     val parent =
-                        it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
+                        curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
                         addAll(
-                            it.list.mapIndexed { index, model ->
+                            curr.list.mapIndexed { index, model ->
                                 if (index == selected && model is CommentUiModel.Expandable) {
                                     model.copy(
                                         isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
@@ -122,8 +123,8 @@ class ContentCommentViewModel @AssistedInject constructor(
                             }
                         )
                     }
-                    newChild.addAll(selected, result.list)
-                    it.copy(
+                    newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
+                    curr.copy(
                         cursor = result.cursor,
                         list = newChild,
                     )
@@ -293,8 +294,13 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 _comments.getAndUpdate {
+                    val index = if (result.commentType.isChild) {
+                        val selected = it.list
+                            .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
+                        selected
+                    } else 0
                     val newList = it.list.toMutableList().apply {
-                        add(0, result)
+                        add(index, result)
                     }
                     it.copy(list = newList)
                 }

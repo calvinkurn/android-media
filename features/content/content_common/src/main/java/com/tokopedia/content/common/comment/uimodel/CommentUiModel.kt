@@ -49,7 +49,6 @@ sealed interface CommentUiModel {
 
 sealed class CommentType {
     open val parentId = "0"
-    open var isNewlyAdded = false
 
     object Parent : CommentType()
 
@@ -59,10 +58,10 @@ sealed class CommentType {
     }
 }
 
-val CommentType.isParent: Boolean
+val CommentType.isParent : Boolean
     get() = this == CommentType.Parent
 
-val CommentType.isChild: Boolean
+val CommentType.isChild : Boolean
     get() = this is CommentType.Child
 
 data class CommentParam(

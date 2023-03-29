@@ -8,6 +8,7 @@ import com.tokopedia.content.common.comment.MentionedSpanned
 import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isChild
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
@@ -56,15 +57,14 @@ class CommentViewHolder {
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
-                val childView = item.commentType is CommentType.Child && !item.commentType.isNewlyAdded
                 val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
                 val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
                 ivCommentPhoto.updateLayoutParams {
-                    width = if (childView) layout24 else layout32
-                    height = if (childView) layout24 else layout32
+                    width = if (item.commentType.isChild) layout24 else layout32
+                    height = if (item.commentType.isChild) layout24 else layout32
                 }
                 root.setPadding(
-                    if (childView) 48.toPx() else 8.toPx(),
+                    if (item.commentType.isChild) 48.toPx() else 8.toPx(),
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom

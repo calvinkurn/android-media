@@ -89,6 +89,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
     fun showReportLayoutWhenLaporkanClicked() {
         binding.let {
+            it.root.layoutParams.height = maxSheetHeight
             it.viewReportGroup.visible()
             it.rvFeedMenu.gone()
         }
@@ -109,12 +110,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         binding.reportFinalLayout.root.visible()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        binding.root.maxHeight = maxSheetHeight
-    }
-
     private fun setupView() {
         binding.rvFeedMenu.adapter = adapter
         adapter.updateData(mFeedMenuItemList)
@@ -123,6 +118,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         binding.rvReportItem.adapter = reportAdapter
         reportAdapter.updateList(listOfCommentReport)
 
+        binding.rvFeedMenu.isNestedScrollingEnabled = false
     }
 
     fun setListener(listener: Listener?) {

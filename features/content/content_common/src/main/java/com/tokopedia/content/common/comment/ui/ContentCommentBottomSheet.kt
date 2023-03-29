@@ -209,7 +209,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
+                binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
@@ -296,11 +296,8 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
-                    CommentEvent.ReportSuccess -> {
-                        sheetMenu.setFinalView()
-                        analytics?.impressSuccessReport()
-                    }
-                    CommentEvent.ReportSuccess -> {
+                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(0)
                     }
@@ -314,7 +311,6 @@ class ContentCommentBottomSheet @Inject constructor(
                         binding.newComment.requestFocus()
                         showKeyboard(true)
                     }
-                    CommentEvent.ReplySuccess -> binding.rvComment.scrollToPosition(0)
                 }
             }
         }

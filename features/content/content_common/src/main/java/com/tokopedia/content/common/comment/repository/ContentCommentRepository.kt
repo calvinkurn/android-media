@@ -18,7 +18,7 @@ interface ContentCommentRepository {
         commentType: CommentType,
         comment: String,
         commenterType: UserType,
-    ): CommentUiModel
+    ): CommentUiModel.Item
 
     suspend fun reportComment(
         param: FeedReportRequestParamModel,

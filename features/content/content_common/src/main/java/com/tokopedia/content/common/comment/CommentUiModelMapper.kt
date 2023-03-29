@@ -59,7 +59,7 @@ class CommentUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel {
+    fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel.Item {
         val username = comment.userInfo.username.ifBlank { comment.userInfo.username }
             .ifBlank { comment.userInfo.name }
         return CommentUiModel.Item(
@@ -69,9 +69,7 @@ class CommentUiModelMapper @Inject constructor() {
             appLink = comment.userInfo.linkDetail.appLink,
             content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
             createdTime = convertTime(comment.createdTime),
-            commentType = comment.parentId.convertToCommentType.apply {
-                isNewlyAdded = true
-            },
+            commentType = comment.parentId.convertToCommentType,
             childCount = "0",
             isOwner = true,
             isReportAllowed = false,

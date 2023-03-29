@@ -49,7 +49,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         commentType: CommentType,
         comment: String,
         commenterType: UserType
-    ): CommentUiModel = withContext(dispatchers.io) {
+    ): CommentUiModel.Item = withContext(dispatchers.io) {
         return@withContext if (!isCommentAllowed) throw MessageErrorException(CommentException.SendCommentFailed.message)
         else {
             val type =
