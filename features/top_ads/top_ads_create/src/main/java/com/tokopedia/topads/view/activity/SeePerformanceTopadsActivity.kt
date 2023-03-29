@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CURRENT_SITE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
@@ -31,6 +32,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils.convertMoneyToValue
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
+import com.tokopedia.topads.trackers.SeePerformanceTopadsTracker
 import com.tokopedia.topads.view.fragment.AdsPerformanceDateRangePickerBottomSheet
 import com.tokopedia.topads.view.fragment.ListBottomSheet
 import com.tokopedia.topads.view.model.SeePerformanceTopAdsViewModel
@@ -55,6 +57,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var selectedDateFrom: Date? = null
     private var selectedDateTo: Date? = null
     private var productId: String = ""
+    private var currentSite: String = ""
     private var dateFilterType: Int = 1
     private var startDate: String = ""
     private var endDate: String = ""
@@ -78,6 +81,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         setContentView(R.layout.activity_see_performance_topads)
         initInjector()
         productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
+        currentSite = intent.data?.getQueryParameter(CURRENT_SITE).orEmpty()
         openMainBottomSheet()
         firstFetch()
     }
@@ -316,9 +320,18 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         seePerformanceTopAdsViewModel?.goalId?.observe(this) {
             mainBottomSheetBinding.adPlacementFilter.chipText = when (it) {
-                1 -> getString(R.string.topads_ads_performance_all_placements_filter_title)
-                2 -> getString(R.string.topads_ads_performance_in_search_filter_title)
-                3 -> getString(R.string.topads_ads_performance_in_recommendation_filter_title)
+                1 -> {
+                    SeePerformanceTopadsTracker.clickIklanSemuaPenempatan(currentSite)
+                    getString(R.string.topads_ads_performance_all_placements_filter_title)
+                }
+                2 -> {
+                    SeePerformanceTopadsTracker.clickIklanPencarian(currentSite)
+                    getString(R.string.topads_ads_performance_in_search_filter_title)
+                }
+                3 -> {
+                    SeePerformanceTopadsTracker.clickIklanRekomendasi(currentSite)
+                    getString(R.string.topads_ads_performance_in_recommendation_filter_title)
+                }
                 else -> ""
             }
         }
@@ -326,15 +339,18 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
     private fun attachClickListeners() {
         mainBottomSheetBinding.errorCtaButton.setOnClickListener {
+            SeePerformanceTopadsTracker.clickMuatUlang(currentSite)
             showMainBottomSheetLoading()
             firstFetch()
         }
 
         mainBottomSheetBinding.dateFilter.setOnClickListener {
+            SeePerformanceTopadsTracker.clickDateRange(currentSite)
             showChooseDateBottomSheet()
         }
 
         mainBottomSheetBinding.adPlacementFilter.setOnClickListener {
+            SeePerformanceTopadsTracker.clickPenempatanIklan(currentSite)
             showAdsPlacingFilterBottomSheet()
         }
 
@@ -351,6 +367,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeStatusIklan.adStatusDropdown.setOnClickListener {
+            SeePerformanceTopadsTracker.clickStatusIklan(currentSite)
             showStatusIklanBottomSheet()
         }
 
@@ -448,6 +465,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeTips.tips.setOnClickListener {
+            SeePerformanceTopadsTracker.clickExpandTips(currentSite)
             mainBottomSheetBinding.includeTips.tipsGroup.visibility =
                 if (mainBottomSheetBinding.includeTips.tipsGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
@@ -461,6 +479,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeTips.tipsViewMoreButton.setOnClickListener {
+            SeePerformanceTopadsTracker.clickIklanLihatSelengkapnya(currentSite)
             RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, TIPS_VIEW_MORE)
         }
 
@@ -477,6 +496,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroupBtn.setOnClickListener {
+            SeePerformanceTopadsTracker.clickExpandGroupSettings(currentSite)
             mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility =
                 if (mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
@@ -490,6 +510,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeAdGroupManual.manualBtnSubmit.setOnClickListener {
+            SeePerformanceTopadsTracker.clickGroupIklan(currentSite)
             val intent =
                 RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, MpTopadsConst.CONST_2)
@@ -506,6 +527,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeAdGroupAutomatic.automaticBtnSubmit.setOnClickListener {
+            SeePerformanceTopadsTracker.clickIklanOtomatis(currentSite)
             val intent = RouteManager.getIntent(
                 this, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
             )
@@ -514,6 +536,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.setOnClickListener {
+            SeePerformanceTopadsTracker.clickCreditTopads(currentSite)
             mainBottomSheetBinding.includeTambahKredit.creditsLoader.visibility = View.VISIBLE
             mainBottomSheetBinding.includeTambahKredit.creditAmount.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility = View.INVISIBLE
@@ -521,13 +544,16 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includeTambahKredit.addCredit.setOnClickListener {
+            SeePerformanceTopadsTracker.clickTambahKredit(currentSite)
             val intent = Intent(this, TopAdsAddCreditActivity::class.java)
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
             startActivityForResult(intent, REQUEST_CODE)
+            SeePerformanceTopadsTracker.viewKreditPage(currentSite)
         }
     }
 
     private fun hideMainBottomSheetContent() {
+        SeePerformanceTopadsTracker.viewErrorFetching(currentSite)
         mainBottomSheetBinding.mainLoader.visibility = View.GONE
         mainBottomSheetBinding.errorText.visibility = View.VISIBLE
         mainBottomSheetBinding.errorCtaButton.visibility = View.VISIBLE
@@ -789,8 +815,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.VISIBLE
         mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.INVISIBLE
         val updatedStatus = when (action) {
-            "3" -> STATUS_IKLAN_ACTION_DEACTIVATE
-            else -> STATUS_IKLAN_ACTION_ACTIVATE
+            "3" -> {
+                SeePerformanceTopadsTracker.clickStatusIklanTidakAktif(currentSite)
+                STATUS_IKLAN_ACTION_DEACTIVATE
+            }
+            else -> {
+                SeePerformanceTopadsTracker.clickStatusIklanAktif(currentSite)
+                STATUS_IKLAN_ACTION_ACTIVATE
+            }
         }
         seePerformanceTopAdsViewModel?.setProductAction(
             updatedStatus,

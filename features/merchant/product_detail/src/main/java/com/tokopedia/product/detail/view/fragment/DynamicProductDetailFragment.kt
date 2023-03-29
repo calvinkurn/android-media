@@ -335,6 +335,7 @@ open class DynamicProductDetailFragment :
         private const val DEBOUNCE_CLICK = 750
         private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
+        private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
 
         fun newInstance(
             productId: String? = null,
@@ -4461,7 +4462,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }
