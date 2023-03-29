@@ -19,7 +19,7 @@ interface Iris {
      */
     fun saveEvent(map: Map<String, Any>)
 
-    fun trackPerformance(screenName: String, ttilInMs: Long, ttflInMs: Long)
+    fun trackPerformance(irisPerformanceData: IrisPerformanceData)
 
     fun saveEvent(bundle: Bundle)
 

@@ -125,11 +125,11 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         }
     }
 
-    override fun trackPerformance(screenName: String, ttilInMs: Long, ttflInMs: Long) {
+    override fun trackPerformance(irisPerformanceData: IrisPerformanceData) {
         if (cache.isPerformanceEnabled()) {
             launch(coroutineContext) {
                 try {
-                    saveEventPerformance(screenName, ttilInMs, ttflInMs)
+                    saveEventPerformance(irisPerformanceData)
                 } catch (e: Exception) {
                     ServerLogger.log(
                         Priority.P1,
@@ -175,10 +175,10 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         }
     }
 
-    suspend private fun saveEventPerformance(screenName: String, ttilInMs: Long, ttflInMs: Long) {
+    suspend private fun saveEventPerformance(irisPerformanceData: IrisPerformanceData) {
         val trackingRepository = TrackingRepository.getInstance(context)
 
-        val resultEvent = TrackingMapper.reformatPerformanceEvent(screenName, ttilInMs, ttflInMs, session.getSessionId())
+        val resultEvent = TrackingMapper.reformatPerformanceEvent(irisPerformanceData, session.getSessionId())
         trackingRepository.savePerformanceEvent(resultEvent.toString())
         setAlarm(true, force = false)
     }

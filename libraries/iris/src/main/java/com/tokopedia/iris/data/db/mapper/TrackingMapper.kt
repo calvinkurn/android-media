@@ -3,6 +3,7 @@ package com.tokopedia.iris.data.db.mapper
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.*
@@ -204,24 +205,22 @@ class TrackingMapper {
         }
 
         fun reformatPerformanceEvent(
-            screenName: String,
-            ttilInMs: Long,
-            ttflInMs: Long,
+            irisPerformanceData: IrisPerformanceData,
             sessionId: String
         ): JSONObject {
             return try {
                 return JSONObject().apply {
-                    put(KEY_SCREEN, screenName)
+                    put(KEY_SCREEN, irisPerformanceData.screenName)
                     put(KEY_EVENT, VALUE_EVENT_PERFORMANCE)
                     put(KEY_EVENT_GA, VALUE_EVENT_PERFORMANCE)
                     put(KEY_METRICS, JSONArray().apply {
                         put(JSONObject().apply {
                             put(KEY, "ttil")
-                            put(VALUE, ttilInMs)
+                            put(VALUE, irisPerformanceData.ttflInMs)
                         })
                         put(JSONObject().apply {
                             put(KEY, "ttfl")
-                            put(VALUE, ttflInMs)
+                            put(VALUE, irisPerformanceData.ttflInMs)
                         })
                     })
                     put("iris_session_id", sessionId)
