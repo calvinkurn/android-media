@@ -1,23 +1,29 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
-import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.emoney.domain.request.JakCardRequestMapper
+import com.tokopedia.emoney.domain.request.JakCardStatus
+import com.tokopedia.emoney.domain.response.JakCardResponseMapper
+import com.tokopedia.emoney.domain.usecase.GetJakCardUseCase
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import java.io.IOException
 import javax.inject.Inject
 
-class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispatcher):
-    BaseViewModel(dispatcher)  {
+class JakCardBalanceViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatcher,
+    private val jakCardUseCase: GetJakCardUseCase
+): BaseViewModel(dispatcher)  {
 
     private var errorCardMessageMutable = SingleLiveEvent<Throwable>()
     val errorCardMessage: LiveData<Throwable>
@@ -39,6 +45,7 @@ class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispa
 
                     val selectRequest = NFCUtils.stringToByteArrayRadix(getSelectAIDCommand())
                     val selectResponse = isoDep.transceive(selectRequest)
+                    val selectResponseString = NFCUtils.toHex(selectResponse)
                     if (NFCUtils.isCommandFailed(selectResponse)) {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
@@ -48,20 +55,10 @@ class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispa
                         if (NFCUtils.isCommandFailed(checkBalanceResponse)) {
                             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
-                            val separatedHexResult = separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
-                            val balance = convertHexBalanceToIntBalance(separatedHexResult)
-
-                            jakCardInquiryMutable.postValue(
-                                EmoneyInquiry(
-                                    attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                                        lastBalance = balance,
-                                        buttonText = "Halo"
-                                    ),
-                                    error = EmoneyInquiryError(
-                                        status = 0,
-                                    )
-                                )
-                            )
+                            val cardNumber = getCardNumberFromSelectResponse(selectResponseString)
+                            val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
+                            val lastBalance = convertHexBalanceToIntBalance(separatedCheckBalanceString)
+                            getPendingBalanceProcess(selectResponseString, cardNumber, lastBalance)
                         }
                     }
 
@@ -72,6 +69,27 @@ class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispa
             }
         } else {
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        }
+    }
+
+
+    private fun getPendingBalanceProcess(selectResponseString: String, cardNumber: String, lastBalance: Int) {
+        launchCatchError(block = {
+            val paramGetPendingBalanceQuery = JakCardRequestMapper.createGetPendingBalanceParam(
+                selectResponseString,
+                cardNumber,
+                lastBalance
+            )
+
+            val result = jakCardUseCase.execute(paramGetPendingBalanceQuery)
+
+            if (result.data.status == JakCardStatus.WRITE.status && result.data.attributes.cryptogram.isNotEmpty()){
+                //TODO INIT LOAD UPDATE SALDO
+            } else {
+                jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
+            }
+        }){
+            errorCardMessageMutable.postValue(it)
         }
     }
 
@@ -91,6 +109,10 @@ class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispa
         val size = response.length
         val maxResponseLength = size - CODE_RESPONSE_SIZE
         return response.substring(Int.ZERO, maxResponseLength)
+    }
+
+    private fun getCardNumberFromSelectResponse(selectResponseString: String): String {
+        return selectResponseString.substring(16, 32)
     }
 
     companion object {

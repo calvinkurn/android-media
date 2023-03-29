@@ -28,6 +28,7 @@ import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.domain.request.JakCardStatus
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
@@ -290,11 +291,21 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        jakcardBalanceViewModel.jakCardInquiry.observe(viewLifecycleOwner, Observer {
-            it.error?.let { error ->
-                when (error.status) {
-                    0 -> showCardLastBalance(it)
+        jakcardBalanceViewModel.jakCardInquiry.observe(viewLifecycleOwner, Observer { jakCardInquiry ->
+            jakCardInquiry.attributesEmoneyInquiry?.let { attribute ->
+                when(attribute.status) {
+                    JakCardStatus.DONE.status -> showCardLastBalance(jakCardInquiry)
+                    JakCardStatus.ERROR.status -> jakCardInquiry.error?.let { error ->
+                        showError(error.title)
+                    }
                 }
+            }
+        })
+
+        jakcardBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+            context?.let { context ->
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, errorMessage, errorHanlderBuilder)
+                showError(errorMessage.first.orEmpty())
             }
         })
     }
