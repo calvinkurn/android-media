@@ -98,13 +98,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named(AtcConstant.MUTATION_ATC_EXTERNAL)
-    fun provideAddToCartExternalMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_external)
-    }
-
-    @Provides
-    @CartScope
     @Named(FollowShopUseCase.MUTATION_NAME)
     fun provideFollowShopMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)

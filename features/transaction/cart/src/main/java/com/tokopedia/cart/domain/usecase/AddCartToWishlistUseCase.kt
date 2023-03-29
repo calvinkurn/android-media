@@ -30,8 +30,7 @@ class AddCartToWishlistUseCase @Inject constructor(
         )
         return this
     }
-
-
+    
     @GqlQuery(QUERY_ADD_CART_TO_WISHLIST, ADD_TO_WISHLIST_QUERY)
     override suspend fun executeOnBackground(): AddCartToWishlistData {
         val request = GraphqlRequest(AddCartToWishlistQuery(), AddCartToWishlistGqlResponse::class.java, params)

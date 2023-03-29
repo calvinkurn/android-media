@@ -1823,16 +1823,28 @@ class CartListPresenter @Inject constructor(
 
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
-        val requestParams = RequestParams.create()
-        requestParams.putString(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId.toString())
-        requestParams.putString(AddToCartExternalUseCase.PARAM_USER_ID, userSessionInterface.userId)
-        compositeSubscription.add(
-            addToCartExternalUseCase.createObservable(requestParams)
-                .subscribeOn(schedulers.io)
-                .unsubscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe(AddToCartExternalSubscriber(view))
-        )
+        
+        addToCartExternalUseCase
+            .setParams(productId.toString(), userSessionInterface.userId)
+            .execute(
+                onSuccess = { model ->
+                    view?.let { cartListView ->
+                        cartListView.hideProgressLoading()
+                        if (model.message.isNotEmpty()) {
+                            cartListView.showToastMessageGreen(model.message[0])
+                        }
+                        cartListView.refreshCartWithSwipeToRefresh()
+                    }
+                },
+                onError = { throwable ->
+                    Timber.d(throwable)
+                    view?.let {
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(throwable)
+                        it.refreshCartWithSwipeToRefresh()
+                    }
+                }
+            )
     }
 
     override fun redirectToLite(url: String) {
