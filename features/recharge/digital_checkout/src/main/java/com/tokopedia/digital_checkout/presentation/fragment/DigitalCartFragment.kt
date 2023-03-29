@@ -1080,8 +1080,7 @@ class DigitalCartFragment :
 
     private fun isGotoPlus(): Boolean {
         return cartPassData?.categoryId == GOTO_PLUS_CATEGORY_ID &&
-            cartPassData?.operatorId == GOTO_PLUS_OPERATOR_ID &&
-            cartPassData?.productId == GOTO_PLUS_PRODUCT_ID
+            cartPassData?.operatorId == GOTO_PLUS_OPERATOR_ID
     }
 
     private fun hasProductConsent(): Boolean {
@@ -1106,7 +1105,6 @@ class DigitalCartFragment :
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
         private const val GOTO_PLUS_CATEGORY_ID = "129"
         private const val GOTO_PLUS_OPERATOR_ID = "9475"
-        private const val GOTO_PLUS_PRODUCT_ID = "24159"
 
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
         private const val ZERO_DOUBLE = 0.0
