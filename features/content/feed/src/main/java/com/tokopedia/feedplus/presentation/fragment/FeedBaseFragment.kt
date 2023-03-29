@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.R
@@ -72,6 +73,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
+    @Inject
+    lateinit var router: Router
+
     private var adapter: FeedPagerAdapter? = null
 
     private var liveApplink: String = ""
@@ -108,7 +112,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         appLinkTabPosition = TAB_SECOND_INDEX
     }
 
-    private val router = registerForActivityResult(RouteContract()) {}
+    private val openAppLink = registerForActivityResult(RouteContract()) {}
 
     private val onNonLoginGoToFollowingTab =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -179,7 +183,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
             CreateContentType.CREATE_LIVE -> {
-                router.launch(ApplinkConst.PLAY_BROADCASTER)
+                openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
             CreateContentType.CREATE_POST -> {
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
@@ -311,7 +315,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                                 status.authorType,
                                                 status.contentId
                                             )
-                                            RouteManager.route(
+                                            router.route(
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,
                                                 status.contentId,
@@ -416,9 +420,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         binding.feedUserProfileImage.setOnClickListener {
             if (feedMainViewModel.isLoggedIn) {
-                router.launch(meta.profileApplink)
+                openAppLink.launch(meta.profileApplink)
             } else {
-                router.launch(ApplinkConst.LOGIN)
+                openAppLink.launch(ApplinkConst.LOGIN)
             }
         }
 
@@ -551,7 +555,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun onNavigateToLive() {
-        router.launch(liveApplink)
+        openAppLink.launch(liveApplink)
     }
 
     private fun showJustLoggedInToaster() {
