@@ -98,13 +98,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named(FollowShopUseCase.MUTATION_NAME)
-    fun provideFollowShopMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
-    }
-
-    @Provides
-    @CartScope
     fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
         return EPharmacyAnalytics(userSession.userId)
     }
