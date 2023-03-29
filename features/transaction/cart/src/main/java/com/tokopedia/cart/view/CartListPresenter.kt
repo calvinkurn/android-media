@@ -548,9 +548,9 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
-        view?.let {
+        view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in it.getAllAvailableCartDataList()) {
+            for (data in cartListView.getAllAvailableCartDataList()) {
                 if (!data.isError) {
                     cartItemDataList.add(data)
                 }
@@ -558,31 +558,31 @@ class CartListPresenter @Inject constructor(
 
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
-                launch {
-                    try {
-                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                            updateCartRequestList = updateCartRequestList,
-                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                            cartId = cartId,
-                            getCartState = getCartState
-                        )
-                        val updateAndReloadCartListData = updateAndReloadCartUseCase
-                            .setParams(updateCartWrapperRequest)
-                            .executeOnBackground()
-                        it.hideProgressLoading()
-                        processInitialGetCartData(
-                            updateAndReloadCartListData.cartId, 
-                            initialLoad = false,
-                            isLoadingTypeRefresh = true, 
-                            updateAndReloadCartListData.getCartState
-                        )
-                    } catch (e: Throwable) { 
-                        it.hideProgressLoading()
-                        it.showToastMessageRed(e)
-                    }
-                }
+                val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                    updateCartRequestList = updateCartRequestList,
+                    source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                    cartId = cartId,
+                    getCartState = getCartState
+                )
+                updateAndReloadCartUseCase
+                    .setParams(updateCartWrapperRequest)
+                    .execute(
+                        onSuccess = { updateAndReloadCartListData ->
+                            cartListView.hideProgressLoading()
+                            processInitialGetCartData(
+                                updateAndReloadCartListData.cartId,
+                                initialLoad = false,
+                                isLoadingTypeRefresh = true,
+                                updateAndReloadCartListData.getCartState
+                            )
+                        },
+                        onError = { throwable ->
+                            cartListView.hideProgressLoading()
+                            cartListView.showToastMessageRed(throwable)
+                        }
+                    )
             } else {
-                it.hideProgressLoading()
+                cartListView.hideProgressLoading()
             }
         }
     }
@@ -1897,25 +1897,25 @@ class CartListPresenter @Inject constructor(
 
     override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
         lastValidateUseRequest = promoRequest
-        launch {
-            try {
-                val getLastApplyResponse = getLastApplyPromoUseCase
-                    .setParam(promoRequest)
-                    .executeOnBackground()
-                setUpdateCartAndValidateUseLastResponse(
-                    UpdateAndValidateUseData().apply {
-                        promoUiModel = getLastApplyResponse.promoUiModel
+        getLastApplyPromoUseCase
+            .setParam(promoRequest)
+            .execute(
+                onSuccess = { getLastApplyResponse ->
+                    setUpdateCartAndValidateUseLastResponse(
+                        UpdateAndValidateUseData().apply {
+                            promoUiModel = getLastApplyResponse.promoUiModel
+                        }
+                    )
+                    isLastApplyResponseStillValid = false
+                    view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
+                },
+                onError = { throwable ->
+                    if (throwable is AkamaiErrorException) {
+                        view?.showToastMessageRed(throwable)
                     }
-                )
-                isLastApplyResponseStillValid = false
-                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-            } catch (e: Throwable) {
-                if (e is AkamaiErrorException) {
-                    view?.showToastMessageRed(e)
+                    view?.showPromoCheckoutStickyButtonInactive()
                 }
-                view?.showPromoCheckoutStickyButtonInactive()
-            }
-        }
+            )
     }
 
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
