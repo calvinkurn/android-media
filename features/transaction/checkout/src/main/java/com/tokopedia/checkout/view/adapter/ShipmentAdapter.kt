@@ -280,7 +280,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCartItemTopViewHolder.LAYOUT -> {
-                return ShipmentCartItemTopViewHolder(view)
+                return ShipmentCartItemTopViewHolder(view, this@ShipmentAdapter)
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {

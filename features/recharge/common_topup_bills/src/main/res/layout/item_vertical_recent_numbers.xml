@@ -7,7 +7,7 @@
     android:padding="@dimen/layout_lvl1">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/telco_recent_img_layout"
+        android:id="@+id/common_topup_bills_recent_img_layout"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_margin="@dimen/spacing_lvl1"
@@ -19,7 +19,7 @@
         app:cardCornerRadius="@dimen/layout_lvl2" >
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/telco_recent_icon_operator"
+            android:id="@+id/common_topup_bills_recent_icon_operator"
             android:layout_width="@dimen/spacing_lvl7"
             android:layout_height="@dimen/spacing_lvl7"
             android:layout_gravity="center"
@@ -29,27 +29,27 @@
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/telco_recent_client_number"
+        android:id="@+id/common_topup_bills_recent_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/telco_recent_img_layout"
-        app:layout_constraintBottom_toTopOf="@id/telco_recent_product_name"
+        app:layout_constraintStart_toEndOf="@id/common_topup_bills_recent_img_layout"
+        app:layout_constraintBottom_toTopOf="@id/common_topup_bills_recent_product_name"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         tools:text="081322867354" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/telco_recent_product_name"
+        android:id="@+id/common_topup_bills_recent_product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@id/telco_recent_img_layout"
-        app:layout_constraintTop_toBottomOf="@id/telco_recent_client_number"
+        app:layout_constraintStart_toEndOf="@id/common_topup_bills_recent_img_layout"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_recent_label"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
