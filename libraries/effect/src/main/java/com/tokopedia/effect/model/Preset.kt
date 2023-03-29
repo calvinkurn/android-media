@@ -4,7 +4,8 @@ package com.tokopedia.effect.model
  * Created By : Jonathan Darwin on March 28, 2023
  */
 data class Preset(
-    val key: String
+    val key: String,
+    val value: Float,
 ) {
     val isUnknown: Boolean
         get() = this == Unknown
@@ -12,7 +13,8 @@ data class Preset(
     companion object {
         val Unknown: Preset
             get() = Preset(
-                key = ""
+                key = "",
+                value = 0f
             )
     }
 }

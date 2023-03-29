@@ -49,6 +49,8 @@ import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -323,29 +325,8 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                if (it.prevValue?.beautificationConfig?.selectedFaceFilter != it.value.beautificationConfig.selectedFaceFilter) {
-                    if (::broadcaster.isInitialized) {
-                        val selectedFaceFilter = it.value.beautificationConfig.selectedFaceFilter ?: return@collectLatest
-
-                        if (selectedFaceFilter.isRemoveEffect) {
-                            broadcaster.removeFaceFilter()
-                        } else {
-                            broadcaster.setFaceFilter(selectedFaceFilter.id, selectedFaceFilter.value.toFloat())
-                        }
-                    }
-                }
-
-                if (it.prevValue?.beautificationConfig?.selectedPreset != it.value.beautificationConfig.selectedPreset) {
-                    if (::broadcaster.isInitialized) {
-                        val selectedPreset = it.value.beautificationConfig.selectedPreset ?: return@collectLatest
-
-                        if (selectedPreset.isRemoveEffect) {
-                            broadcaster.removePreset()
-                        } else {
-                            broadcaster.setPreset(selectedPreset.id, selectedPreset.value.toFloat())
-                        }
-                    }
-                }
+                renderFaceFilter(it.prevValue?.beautificationConfig?.selectedFaceFilter, it.value.beautificationConfig.selectedFaceFilter)
+                renderPreset(it.prevValue?.beautificationConfig?.selectedPreset, it.value.beautificationConfig.selectedPreset)
             }
         }
 
@@ -381,6 +362,48 @@ class PlayBroadcastActivity : BaseActivity(),
                     else -> {}
                 }
             }
+        }
+    }
+
+    private fun renderFaceFilter(
+        prev: FaceFilterUiModel?,
+        value: FaceFilterUiModel?,
+    ) {
+        if (prev == value) return
+
+        if (::broadcaster.isInitialized) {
+            val selectedFaceFilter = value ?: return
+            applyFaceFilter(selectedFaceFilter)
+        }
+    }
+
+    private fun renderPreset(
+        prev: PresetFilterUiModel?,
+        value: PresetFilterUiModel?,
+    ) {
+        if (prev == value) return
+
+        if (::broadcaster.isInitialized) {
+            val selectedPreset = value ?: return
+            applyPreset(selectedPreset)
+        }
+    }
+
+    private fun applyFaceFilter(vararg faceFilters: FaceFilterUiModel) {
+        faceFilters.forEach { faceFilter ->
+            if (faceFilter.isRemoveEffect) {
+                broadcaster.removeFaceFilter()
+            } else {
+                broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
+            }
+        }
+    }
+
+    private fun applyPreset(preset: PresetFilterUiModel) {
+        if (preset.isRemoveEffect) {
+            broadcaster.removePreset()
+        } else {
+            broadcaster.setPreset(preset.id, preset.value.toFloat())
         }
     }
 

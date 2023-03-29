@@ -264,6 +264,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
         }
 
+    val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
+        get() = _beautificationConfig.value.faceFiltersWithoutNoneOption
+
     val selectedFaceFilter: FaceFilterUiModel?
         get() = _beautificationConfig.value.selectedFaceFilter
 
