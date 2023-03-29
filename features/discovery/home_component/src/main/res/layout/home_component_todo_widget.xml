@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
+            android:paddingVertical="12dp"
             tools:visibility="visible">
 
             <include
@@ -59,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
+            android:layout_marginVertical="12dp"
             app:unify_local_load_title="@string/mission_widget_failed_title"
             app:unify_local_load_description="@string/mission_widget_failed_description"
             android:visibility="gone"

@@ -60,6 +60,7 @@
             app:layout_constraintWidth_default="wrap"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/image_todo_widget"
             app:layout_constraintEnd_toStartOf="@id/cta_todo_widget"
             app:layout_constraintTop_toTopOf="@id/image_todo_widget"

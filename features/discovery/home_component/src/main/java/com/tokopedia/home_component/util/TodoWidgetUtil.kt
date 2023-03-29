@@ -8,7 +8,6 @@ import com.tokopedia.home_component.R
  * Created by frenzel
  */
 object TodoWidgetUtil {
-    private const val FE_PARAM_KEY_CLOSE = "close"
     private const val TODO_WIDGET_OUTER_RIGHT_PADDING = 14f
     private const val TODO_WIDGET_INSIDE_LEFT_RIGHT_PADDING = 12f
     private const val TODO_WIDGET_IMAGE_TO_CONTENT_PADDING = 12f
