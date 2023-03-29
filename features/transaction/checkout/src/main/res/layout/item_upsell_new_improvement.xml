@@ -17,7 +17,6 @@
             android:id="@+id/checkout_upsell_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:card_background_color="@color/Unify_Background"
             app:card_type="border">
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -65,77 +65,102 @@ class ShipmentNewUpsellImprovementViewHolder(
         itemView.findViewById(R.id.checkout_upsell_loading_group)
 
     fun bind(data: ShipmentNewUpsellModel) {
+        if (data.isLoading) {
+            renderLoading()
+        } else {
+            renderContent(data)
+        }
+    }
+
+    private fun renderLoading() {
         checkoutUpsellCard.setCardUnifyBackgroundColor(
             MethodChecker.getColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
-        if (data.isLoading) {
-            checkoutUpsellContentGroup.gone()
-            checkoutUpsellBackgroundImage.invisible()
-            checkoutUpsellIcon.invisible()
-            checkoutUpsellLogoLoader.type = LoaderUnify.TYPE_CIRCLE
-            checkoutUpsellTitle1Loader.type = LoaderUnify.TYPE_RECT
-            checkoutUpsellTitle2Loader.type = LoaderUnify.TYPE_RECT
-            checkoutUpsellDescriptionLoader.type = LoaderUnify.TYPE_RECT
-            checkoutUpsellLoadingGroup.visible()
-        } else {
-            checkoutUpsellOuterContainer.setContainerColor(ContainerUnify.GREEN)
-            checkoutUpsellBackgroundImage.visible()
-            checkoutUpsellBackgroundImage.cornerRadius = Int.ZERO
-            checkoutUpsellLogoContainer.radius = CARD_VIEW_MAX_RADIUS.toPx().toFloat()
-            checkoutUpsellLogo.setImageUrl(data.image)
-            checkoutUpsellTitle.text =
-                HtmlLinkHelper(itemView.context, data.description).spannedString
-            if (data.isSelected) {
-                checkoutUpsellBackgroundImage.setImageDrawable(
-                    VectorDrawableCompat.create(
-                        itemView.context.resources,
-                        R.drawable.checkout_module_upsell_new_short_background,
-                        itemView.context.theme
-                    )
-                )
-                checkoutUpsellDescription.gone()
-                checkoutUpsellIcon.setImageDrawable(
-                    VectorDrawableCompat.create(
-                        itemView.context.resources,
-                        R.drawable.checkout_module_upsell_opt_out,
-                        itemView.context.theme
-                    )
-                )
-                checkoutUpsellCard.setOnClickListener {
-                    actionListener?.onClickCancelNewUpsellCard(data)
-                }
-                checkoutUpsellContentGroup.visible()
-            } else {
-                checkoutUpsellBackgroundImage.setImageDrawable(
-                    VectorDrawableCompat.create(
-                        itemView.context.resources,
-                        R.drawable.checkout_module_upsell_new_background,
-                        itemView.context.theme
-                    )
-                )
-                checkoutUpsellDescription.text = "${data.priceWording}/${data.duration}"
-                checkoutUpsellDescription.visible()
-                checkoutUpsellIcon.setImageDrawable(
-                    getIconUnifyDrawable(
-                        itemView.context,
-                        IconUnify.CHEVRON_RIGHT
-                    )
-                )
-                checkoutUpsellCard.setOnClickListener {
-                    actionListener?.onClickApplyNewUpsellCard(data)
-                }
-                checkoutUpsellContentGroup.visible()
-            }
-            checkoutUpsellIcon.visible()
-            checkoutUpsellLoadingGroup.gone()
+        checkoutUpsellContentGroup.gone()
+        checkoutUpsellBackgroundImage.setImageDrawable(
+            VectorDrawableCompat.create(
+                itemView.context.resources,
+                R.drawable.checkout_module_upsell_new_background,
+                itemView.context.theme
+            )
+        )
+        checkoutUpsellBackgroundImage.invisible()
+        checkoutUpsellIcon.invisible()
+        checkoutUpsellLogoLoader.type = LoaderUnify.TYPE_CIRCLE
+        checkoutUpsellTitle1Loader.type = LoaderUnify.TYPE_RECT
+        checkoutUpsellTitle2Loader.type = LoaderUnify.TYPE_RECT
+        checkoutUpsellDescriptionLoader.type = LoaderUnify.TYPE_RECT
+        checkoutUpsellLoadingGroup.visible()
+    }
 
-            if (!data.hasSeenUpsell) {
-                data.hasSeenUpsell = true
-                actionListener?.onViewNewUpsellCard(data)
+    private fun renderContent(data: ShipmentNewUpsellModel) {
+        checkoutUpsellCard.setCardUnifyBackgroundColor(
+            MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
+        checkoutUpsellOuterContainer.setContainerColor(ContainerUnify.GREEN)
+        checkoutUpsellBackgroundImage.cornerRadius = Int.ZERO
+        checkoutUpsellBackgroundImage.visible()
+        checkoutUpsellLogoContainer.radius = CARD_VIEW_MAX_RADIUS.toPx().toFloat()
+        checkoutUpsellLogo.setImageUrl(data.image)
+        checkoutUpsellTitle.text = HtmlLinkHelper(itemView.context, data.description).spannedString
+        if (data.isSelected) {
+            checkoutUpsellBackgroundImage.setImageDrawable(
+                VectorDrawableCompat.create(
+                    itemView.context.resources,
+                    R.drawable.checkout_module_upsell_new_short_background,
+                    itemView.context.theme
+                )
+            )
+            checkoutUpsellDescription.gone()
+            checkoutUpsellIcon.setImageDrawable(
+                VectorDrawableCompat.create(
+                    itemView.context.resources,
+                    R.drawable.checkout_module_upsell_opt_out,
+                    itemView.context.theme
+                )
+            )
+            checkoutUpsellCard.setOnClickListener {
+                actionListener?.onClickCancelNewUpsellCard(data)
             }
+            checkoutUpsellContentGroup.visible()
+        } else {
+            checkoutUpsellBackgroundImage.setImageDrawable(
+                VectorDrawableCompat.create(
+                    itemView.context.resources,
+                    R.drawable.checkout_module_upsell_new_background,
+                    itemView.context.theme
+                )
+            )
+            checkoutUpsellDescription.text =
+                itemView.context.getString(
+                    R.string.checkout_label_upsell_description,
+                    data.priceWording,
+                    data.duration
+                )
+            checkoutUpsellDescription.visible()
+            checkoutUpsellIcon.setImageDrawable(
+                getIconUnifyDrawable(
+                    itemView.context,
+                    IconUnify.CHEVRON_RIGHT
+                )
+            )
+            checkoutUpsellCard.setOnClickListener {
+                actionListener?.onClickApplyNewUpsellCard(data)
+            }
+            checkoutUpsellContentGroup.visible()
+        }
+        checkoutUpsellIcon.visible()
+        checkoutUpsellLoadingGroup.gone()
+
+        if (!data.hasSeenUpsell) {
+            data.hasSeenUpsell = true
+            actionListener?.onViewNewUpsellCard(data)
         }
     }
 }
