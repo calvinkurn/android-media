@@ -18,6 +18,18 @@ object JakCardRequestMapper {
        )
     }
 
+    fun createGetTopUpParam(cardData: String, cardNumber: String, lastBalance: Int, amount: Int): JakCardRequest {
+        return createJakCardParam(
+            cardNumber = cardNumber,
+            cardData = cardData,
+            amount = amount,
+            lastBalance = lastBalance,
+            stan = EMPTY_REQ,
+            refNo = EMPTY_REQ,
+            action = JakCardAction.TOP_UP.action
+        )
+    }
+
 
 
     private fun createJakCardParam(cardNumber: String, cardData: String, amount: Int,

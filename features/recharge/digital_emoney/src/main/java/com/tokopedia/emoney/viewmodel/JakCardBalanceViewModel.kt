@@ -84,8 +84,50 @@ class JakCardBalanceViewModel @Inject constructor(
             val result = jakCardUseCase.execute(paramGetPendingBalanceQuery)
 
             if (result.data.status == JakCardStatus.WRITE.status && result.data.attributes.cryptogram.isNotEmpty()){
-                //TODO INIT LOAD UPDATE SALDO
+                processInitLoad(selectResponseString, cardNumber, lastBalance, result.data.attributes.cryptogram)
             } else {
+                jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
+            }
+        }){
+            errorCardMessageMutable.postValue(it)
+        }
+    }
+
+    private fun processInitLoad(selectResponseString: String, cardNumber: String, lastBalance: Int, cryptogram: String) {
+        val initLoadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
+        val initLoadResponse = isoDep.transceive(initLoadRequest)
+        val initLoadResponseString = NFCUtils.toHex(initLoadResponse)
+
+        if (NFCUtils.isCommandFailed(initLoadResponse)) {
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        } else {
+            val cardData = getCardDataTopUp(
+                separateWithSuccessCode(initLoadResponseString),
+                getDepositFromSelectResponse(selectResponseString),
+                getCardExpiryFromSelectResponse(selectResponseString)
+            )
+
+            val amount = convertHexBalanceToIntBalance(getAmountFromCryptogram(cryptogram))
+
+            getTopUpProcess(cardData, cardNumber, lastBalance, amount)
+        }
+    }
+
+
+    private fun getTopUpProcess(cardData: String, cardNumber: String, lastBalance: Int, amount: Int) {
+        launchCatchError(block = {
+            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(
+                cardData,
+                cardNumber,
+                lastBalance,
+                amount
+            )
+
+            val result = jakCardUseCase.execute(paramGetTopUpQuery)
+            if (result.data.status == JakCardStatus.WRITE.status && result.data.attributes.cryptogram.isNotEmpty()){
+                //TODO TOP UP CONFIRMATION FLOW
+            } else {
+                //TODO ASSESS THIS
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
             }
         }){
@@ -113,6 +155,22 @@ class JakCardBalanceViewModel @Inject constructor(
 
     private fun getCardNumberFromSelectResponse(selectResponseString: String): String {
         return selectResponseString.substring(16, 32)
+    }
+
+    private fun getDepositFromSelectResponse(selectResponseString: String): String {
+        return selectResponseString.substring(74, 82)
+    }
+
+    private fun getCardExpiryFromSelectResponse(selectResponseString: String): String {
+        return selectResponseString.substring(50, 58)
+    }
+
+    private fun getCardDataTopUp(initLoadResponse: String, deposit: String, cardExpiry: String): String {
+        return initLoadResponse+deposit+cardExpiry
+    }
+
+    private fun getAmountFromCryptogram(cryptogram: String): String {
+        return cryptogram.substring(10, 18)
     }
 
     companion object {
