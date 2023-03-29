@@ -12,20 +12,20 @@ object ShipmentRollenceUtil {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance()
                 .abTestPlatform.getString(
                     RollenceKey.CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT,
-                    getDefaultRollenceValue()
+                    getDefaultRollenceValueForNewUpsellImprovement()
                 )
-            return (remoteConfigRollenceValue == getVariantRollenceValue())
+            return (remoteConfigRollenceValue == getVariantRollenceValueForNewUpsellImprovement())
         } catch (e: Exception) {
             Timber.e(e)
             return false
         }
     }
 
-    private fun getDefaultRollenceValue(): String {
+    private fun getDefaultRollenceValueForNewUpsellImprovement(): String {
         return RollenceKey.CONTROL_VARIANT
     }
 
-    private fun getVariantRollenceValue(): String {
-        return RollenceKey.EXPERIMENT_VARIANT
+    private fun getVariantRollenceValueForNewUpsellImprovement(): String {
+        return RollenceKey.TREATMENT_VARIANT
     }
 }

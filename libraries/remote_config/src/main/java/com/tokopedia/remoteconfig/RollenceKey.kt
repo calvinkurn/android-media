@@ -47,6 +47,7 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
+    const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
 
