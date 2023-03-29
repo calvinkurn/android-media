@@ -69,7 +69,6 @@ class LoginHelperViewModelTest {
     private lateinit var viewModel: LoginHelperViewModel
     private lateinit var userSession: UserSessionInterface
 
-    private val fetchFailedErrorMessage = "Fetch Failed"
     private val throwable = Throwable("Error")
     private val email = "sourav.saikia@tokopedia.com"
     private val password = "abc123456"
@@ -300,7 +299,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password,true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
