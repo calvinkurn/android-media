@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_NEW_PRODUC
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_RESTOCK
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_DISCOUNT
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH_SALE
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -28,8 +29,9 @@ import kotlin.math.roundToInt
  */
 enum class FeedCampaignRibbonType {
     ASGC_GENERAL, ASGC_DISCOUNT,
-    ASGC_FLASH_SALE_UPCOMING, ASGC_FLASH_SALE_ONGOING,
-    TITLE_ONLY
+    ASGC_FLASH_SALE_UPCOMING,
+    ASGC_FLASH_SALE_ONGOING,
+    ASGC_SPECIAL_RELEASE
 }
 
 class FeedCampaignRibbonView(
@@ -38,7 +40,7 @@ class FeedCampaignRibbonView(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    var type: FeedCampaignRibbonType = FeedCampaignRibbonType.TITLE_ONLY
+    var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
 
     fun bindData(
         modelType: String,
@@ -65,23 +67,18 @@ class FeedCampaignRibbonView(
         type == TYPE_FEED_ASGC_SHOP_DISCOUNT -> FeedCampaignRibbonType.ASGC_DISCOUNT
         type == TYPE_FEED_ASGC_SHOP_FLASH_SALE && isOngoing -> FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING
         type == TYPE_FEED_ASGC_SHOP_FLASH_SALE && !isOngoing -> FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING
-        else -> FeedCampaignRibbonType.TITLE_ONLY
+        type == TYPE_FEED_ASGC_SPECIAL_RELEASE -> FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE
+        else -> FeedCampaignRibbonType.ASGC_GENERAL
     }
 
     private fun setBackgroundGradient(cta: FeedCardCtaModel) {
         with(binding) {
             when {
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isEmpty() -> {
-//                    root.background =
-//                        GradientDrawable(
-//                            GradientDrawable.Orientation.LEFT_RIGHT,
-//                            intArrayOf(
-//                                cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely(),
-//                                cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
-//                            )
-//                        ).apply {
-//                            cornerRadius = CORNER_RADIUS
-//                        }
+                    root.background = MethodChecker.getDrawable(
+                        root.context,
+                        R.drawable.bg_feed_campaign_ribbon_general_gradient
+                    )
                 }
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
                     root.background = GradientDrawable(
@@ -109,6 +106,22 @@ class FeedCampaignRibbonView(
                         R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
                     )
                 }
+                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && cta.colorGradient.isEmpty() -> {
+                    root.background = MethodChecker.getDrawable(
+                        root.context,
+                        R.drawable.bg_feed_campaign_ribbon_special_release_gradient
+                    )
+                }
+                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && cta.colorGradient.isNotEmpty() -> {
+                    root.background = GradientDrawable(
+                        GradientDrawable.Orientation.LEFT_RIGHT,
+                        cta.colorGradient.map {
+                            it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                        }.toIntArray()
+                    ).apply {
+                        cornerRadius = CORNER_RADIUS
+                    }
+                }
             }
         }
     }
@@ -123,10 +136,10 @@ class FeedCampaignRibbonView(
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
                     tyFeedCampaignRibbonTitle.text =
                         "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
-//                    renderRibbonByType(campaign.isReminderActive)
-//                    startDelayProcess(TWO_SECOND) {
-//                        setBackgroundGradient(ctaModel)
-//                    }
+
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient(ctaModel)
+                    }
                 }
                 FeedCampaignRibbonType.ASGC_DISCOUNT -> {
                     tyFeedCampaignRibbonTitle.text = ctaModel.text
@@ -161,6 +174,14 @@ class FeedCampaignRibbonView(
                             root.setTransition(root.currentState, R.id.start_in_state)
                             root.transitionToEnd()
                         }
+                    }
+                }
+                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
+                    tyFeedCampaignRibbonTitle.text =
+                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
+
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient(ctaModel)
                     }
                 }
                 else -> {}
