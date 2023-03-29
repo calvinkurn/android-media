@@ -1210,8 +1210,8 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromIntentData(data: Intent) {
         val result = ImagePickerResultExtractor.extract(data)
-        val imagePickerResult = result.imageUrlOrPathList as ArrayList
-        val originalImageUrl = result.originalImageUrl as ArrayList
+        val imagePickerResult = ArrayList<String>(result.imageUrlOrPathList as ArrayList)
+        val originalImageUrl = ArrayList<String>(result.originalImageUrl as ArrayList)
         val isEditted = result.isEditted as ArrayList
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
@@ -1234,8 +1234,8 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromPicker(data: Intent) {
         val result = MediaPicker.result(data)
-        val imagePickerResult = result.editedImages as ArrayList
-        val originalImageUrl = result.originalPaths as ArrayList
+        val imagePickerResult = ArrayList<String>(result.editedImages)
+        val originalImageUrl = ArrayList<String>(result.originalPaths)
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                 viewModel.isDuplicate ||

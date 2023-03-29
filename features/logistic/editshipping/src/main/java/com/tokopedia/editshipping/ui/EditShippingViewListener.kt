@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.ui
 
 import android.content.Context
-import android.view.View
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping

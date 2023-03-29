@@ -1,7 +1,17 @@
 package com.tokopedia.editshipping.domain.mapper
 
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
-import com.tokopedia.logisticCommon.data.response.shippingeditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.PartnerIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShopIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.TickerContentModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.UiContentModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
+import com.tokopedia.logisticCommon.data.response.shippingeditor.DataShippingEditorPopup
+import com.tokopedia.logisticCommon.data.response.shippingeditor.PartnerId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShopId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.TickerContent
+import com.tokopedia.logisticCommon.data.response.shippingeditor.UiContent
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Warehouses
 import javax.inject.Inject
 
 class ValidateShippingNewMapper @Inject constructor() {
@@ -46,42 +56,41 @@ class ValidateShippingNewMapper @Inject constructor() {
 
     private fun mapWarehouses(it: Warehouses): WarehousesModel {
         return WarehousesModel(
-                    it.warehouseId,
-                    it.warehouseName,
-                    it.districtId,
-                    it.districtName,
-                    it.cityId,
-                    it.cityName,
-                    it.provinceId,
-                    it.provinceName,
-                    it.status,
-                    it.postalCode,
-                    it.isDefault,
-                    it.latLon,
-                    it.latitude,
-                    it.longitude,
-                    it.addressDetail,
-                    it.country,
-                    it.isFulfillment,
-                    it.warehouseType,
-                    it.email,
-                    mapShopId(it.shopId),
-                    mapPartnerId(it.partnerId)
-            )
+            it.warehouseId,
+            it.warehouseName,
+            it.districtId,
+            it.districtName,
+            it.cityId,
+            it.cityName,
+            it.provinceId,
+            it.provinceName,
+            it.status,
+            it.postalCode,
+            it.isDefault,
+            it.latLon,
+            it.latitude,
+            it.longitude,
+            it.addressDetail,
+            it.country,
+            it.isFulfillment,
+            it.warehouseType,
+            it.email,
+            mapShopId(it.shopId),
+            mapPartnerId(it.partnerId)
+        )
     }
 
-    private fun mapShopId(response: ShopId) : ShopIdModel {
+    private fun mapShopId(response: ShopId): ShopIdModel {
         return ShopIdModel().apply {
             int64 = response.int64
             valid = response.valid
         }
     }
 
-    private fun mapPartnerId(response: PartnerId) : PartnerIdModel {
+    private fun mapPartnerId(response: PartnerId): PartnerIdModel {
         return PartnerIdModel().apply {
             int64 = response.int64
             valid = response.valid
         }
     }
-
 }

@@ -385,14 +385,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean validateLoadingItem(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.isStateLoadingCourierState();
+    }
+
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
             int cartItemErrorCounter = 0;
+            boolean hasLoadingItem = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
+                        if (!hasLoadingItem) {
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel);
+                        }
                         cartItemCounter++;
                     }
                 }
@@ -403,7 +411,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
             }
@@ -1100,13 +1108,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnOrderLevelPosition() {
+    public int getAddOnOrderLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                    if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                        return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                        if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                            return i;
+                        }
                     }
                 }
             }
@@ -1114,18 +1124,20 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnProductLevelPosition() {
+    public int getAddOnProductLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
-                    for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                        if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
-                            if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                                return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
+                        for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
+                            if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
+                                if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                                    return i;
+                                }
                             }
                         }
-                    }
+                    }    
                 }
             }
         }
