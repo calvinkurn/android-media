@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherChoiceOfTargetViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.ChoiceOfVoucherUiModel
@@ -19,6 +20,7 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.smvc_intro_voucher_choice_of_target_viewholder
+        private const val IMAGE_URL_BACKGROUND = "https://images.tokopedia.net/img/android/seller-mvc/bg_voucher_target_buyer.png"
     }
 
     private var binding: SmvcIntroVoucherChoiceOfTargetViewholderBinding? by viewBinding()
@@ -26,7 +28,7 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
     override fun bind(element: ChoiceOfVoucherUiModel?) {
         binding?.apply {
             title.text = element?.title.toBlankOrString()
-            containerLayout.setBackgroundResource(R.drawable.bg_intro_choice_of_target)
+            imgBackground.loadImage(IMAGE_URL_BACKGROUND)
             element?.list?.getOrNull(ZEROTH_INDEX)?.let {
                 viewFlexibleForCoupons.setDataForHtml(
                     it.benefitTitle,
