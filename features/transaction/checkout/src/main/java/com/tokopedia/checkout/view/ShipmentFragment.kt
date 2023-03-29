@@ -83,10 +83,10 @@ import com.tokopedia.coachmark.CoachMarkPreference.hasShown
 import com.tokopedia.coachmark.CoachMarkPreference.setShown
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -3661,20 +3661,21 @@ class ShipmentFragment :
             )
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION)
         } else {
-            val uploadPrescriptionIntent = RouteManager.getIntent(
-                activityContext,
-                UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
-            )
-            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION)
-            ePharmacyAnalytics.clickLampirkanResepDokter(
-                uploadPrescriptionUiModel.getWidgetState(),
-                buttonText,
-                buttonNotes,
-                uploadPrescriptionUiModel.epharmacyGroupIds,
-                uploadPrescriptionUiModel.enablerNames,
-                uploadPrescriptionUiModel.shopIds,
-                uploadPrescriptionUiModel.cartIds
-            )
+            onMiniConsultationResult(EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE, null)
+//            val uploadPrescriptionIntent = RouteManager.getIntent(
+//                activityContext,
+//                UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
+//            )
+//            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION)
+//            ePharmacyAnalytics.clickLampirkanResepDokter(
+//                uploadPrescriptionUiModel.getWidgetState(),
+//                buttonText,
+//                buttonNotes,
+//                uploadPrescriptionUiModel.epharmacyGroupIds,
+//                uploadPrescriptionUiModel.enablerNames,
+//                uploadPrescriptionUiModel.shopIds,
+//                uploadPrescriptionUiModel.cartIds
+//            )
         }
     }
 
@@ -3701,15 +3702,47 @@ class ShipmentFragment :
         if (resultCode == EPHARMACY_REDIRECT_CART_RESULT_CODE) {
             finish()
         } else if (resultCode == EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE) {
-            if (data == null) {
-                return
-            }
-            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
-                EPHARMACY_CONSULTATION_RESULT_EXTRA
+//            if (data == null) {
+//                return
+//            }
+//            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
+//                EPHARMACY_CONSULTATION_RESULT_EXTRA
+//            )
+            val newResult = arrayListOf(
+                EPharmacyMiniConsultationResult(
+                    shopInfo = listOf(
+                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                            products = arrayListOf(
+                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                    isEthicalDrug = true,
+                                    itemWeight = 0.0,
+                                    name = "",
+                                    productId = 5232131732,
+                                    productImage = "",
+                                    productTotalWeightFmt = "",
+                                    quantity = ""
+                                )
+                            ),
+                            shopId = "14005189",
+                            partnerLogoUrl = "",
+                            shopLocation = "",
+                            shopLogoUrl = "",
+                            shopName = "",
+                            shopType = ""
+                        )
+                    ),
+                    epharmacyGroupId = "",
+                    consultationStatus = 4,
+                    consultationString = "",
+                    prescription = emptyList(),
+                    partnerConsultationId = "",
+                    tokoConsultationId = "",
+                    prescriptionImages = emptyList()
+                )
             )
-            if (results != null) {
-                shipmentPresenter.setMiniConsultationResult(results)
-            }
+//            if (results != null) {
+            shipmentPresenter.setMiniConsultationResult(newResult)
+//            }
         }
     }
 

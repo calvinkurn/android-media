@@ -220,7 +220,6 @@ class ShipmentCartItemTopViewHolder(
                     }
 
                     override fun onDismiss() {
-                        // todo: handle gone shop ticker
                         shipmentCartItemTopModel.shopTicker = ""
                         tickerWarningCloseable.gone()
                     }

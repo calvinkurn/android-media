@@ -2861,7 +2861,6 @@ class ShipmentPresenter @Inject constructor(
                                             break
                                         }
                                         if (productsInfo?.shopId != null &&
-
                                             productsInfo.shopId!!.isNotBlankOrZero() &&
                                             shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
                                         ) {
@@ -2909,6 +2908,7 @@ class ShipmentPresenter @Inject constructor(
                                                                             true
                                                                         shipmentCartItemModel.spId =
                                                                             0
+                                                                        view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                                                                         view?.resetCourier(
                                                                             shipmentCartItemModel
                                                                         )
@@ -2970,6 +2970,7 @@ class ShipmentPresenter @Inject constructor(
                                     )
                                 shipmentCartItemModel.spId = 0
                                 shipmentCartItemModel.shouldResetCourier = true
+                                view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                                 view?.resetCourier(shipmentCartItemModel)
                             }
                         }
@@ -3082,6 +3083,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 shipmentCartItemModel.isCustomEpharmacyError =
                                                                     true
                                                                 shipmentCartItemModel.spId = 0
+                                                                view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                                                                 view?.resetCourier(
                                                                     shipmentCartItemModel
                                                                 )
@@ -3142,8 +3144,6 @@ class ShipmentPresenter @Inject constructor(
                             shipmentCartItemModel.spId = 0
                             view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                             view?.resetCourier(shipmentCartItemModel)
-                        } else {
-                            view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                         }
                     }
                 }
