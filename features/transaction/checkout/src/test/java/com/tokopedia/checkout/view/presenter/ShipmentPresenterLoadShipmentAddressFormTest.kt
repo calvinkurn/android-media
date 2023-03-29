@@ -1719,7 +1719,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             priceWording = "Rp100",
             duration = "duration",
             summaryInfo = "wording",
-            buttonText = "button"
+            buttonText = "button",
         )
         coEvery {
             getShipmentAddressFormV3UseCase.setParams(
@@ -1777,7 +1777,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
-                buttonText = "button"
+                buttonText = "button",
+                isLoading = false,
             ),
             presenter.shipmentNewUpsellModel
         )
