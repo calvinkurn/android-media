@@ -33,7 +33,7 @@ class FirstTimePromoActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sah_transparent_base)
+        setContentView(R.layout.activity_centralized_promo_transparent_base)
         setOrientation()
     }
 
