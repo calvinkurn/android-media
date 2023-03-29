@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -56,6 +57,15 @@ public class PerformanceMonitoring {
             trace.putMetric(parameter, value);
             metrics.put(parameter, value);
         }
+    }
+
+    public String getTraceName() {
+        return traceName;
+    }
+
+    public Long getMetrics(String key) {
+        var value = metrics.get(key);
+        return Objects.requireNonNullElse(value, 0L);
     }
 
     /**

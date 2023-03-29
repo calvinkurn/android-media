@@ -209,18 +209,21 @@ class TrackingMapper {
             sessionId: String
         ): JSONObject {
             return try {
+                if (irisPerformanceData.isDataInvalid()) {
+                    return JSONObject()
+                }
                 return JSONObject().apply {
                     put(KEY_SCREEN, irisPerformanceData.screenName)
                     put(KEY_EVENT, VALUE_EVENT_PERFORMANCE)
                     put(KEY_EVENT_GA, VALUE_EVENT_PERFORMANCE)
                     put(KEY_METRICS, JSONArray().apply {
                         put(JSONObject().apply {
-                            put(KEY, "ttil")
+                            put(KEY, "ttfl")
                             put(VALUE, irisPerformanceData.ttflInMs)
                         })
                         put(JSONObject().apply {
-                            put(KEY, "ttfl")
-                            put(VALUE, irisPerformanceData.ttflInMs)
+                            put(KEY, "ttil")
+                            put(VALUE, irisPerformanceData.ttilInMs)
                         })
                     })
                     put("iris_session_id", sessionId)

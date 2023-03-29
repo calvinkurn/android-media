@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.performance.perf
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -8,6 +9,8 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PERFORMANCE_TRACE
@@ -32,6 +35,7 @@ class PerformanceTrace(val traceName: String) {
         const val STATE_SUCCESS = "success"
         const val STATE_TIMEOUT = "timeout"
     }
+
     private var startCurrentTimeMillis = 0L
     private var currentLoadableComponentList = mutableListOf<LoadableComponent>()
 
@@ -48,12 +52,19 @@ class PerformanceTrace(val traceName: String) {
 
     var performanceTraceJob: Job? = null
 
-    fun debugPerformanceTrace(activity: Activity?, summaryModel: SummaryModel, type: String, view: View) {
+    fun debugPerformanceTrace(
+        activity: Activity?,
+        summaryModel: SummaryModel,
+        type: String,
+        view: View
+    ) {
         activity?.takeScreenshot(type, view)
         if (type == TYPE_TTIL) {
-            Toaster.build(view, "" +
-                "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
-                "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+            Toaster.build(
+                view, "" +
+                        "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
+                        "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n"
+            ).show()
 
         }
     }
@@ -85,7 +96,7 @@ class PerformanceTrace(val traceName: String) {
         scope: LifecycleCoroutineScope,
         touchListenerActivity: TouchListenerActivity?,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
-        ) {
+    ) {
         val remoteConfig = FirebaseRemoteConfigImpl(v.context)
         val isPerformanceTraceEnabled = remoteConfig.getBoolean(
             ENABLE_PERFORMANCE_TRACE, true
@@ -107,13 +118,15 @@ class PerformanceTrace(val traceName: String) {
 
     fun setPageState(state: String) {
         performanceMonitoring.putCustomAttribute(
-            ATTR_CONDITION, state)
+            ATTR_CONDITION, state
+        )
     }
 
     fun cancelPerformancetrace(state: String) {
         performanceTraceJob?.cancel()
         performanceMonitoring.putCustomAttribute(
-            ATTR_CONDITION, state)
+            ATTR_CONDITION, state
+        )
         performanceMonitoring.stopTrace()
 
         if (summaryModel.get().timeToInitialLayout != null) {
@@ -184,19 +197,38 @@ class PerformanceTrace(val traceName: String) {
 
     private fun onTTILFinished(
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
-        it: View,
+        view: View,
         viewgroup: ViewGroup,
         onGlobalLayoutTTIL: OnGlobalLayoutListener
     ) {
         PerformanceTraceDebugger.logTrace(
             "TTIL Captured: ${summaryModel.get().timeToInitialLayout?.inflateTime} ms"
         )
-        onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
+        onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, view)
         viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
-        performanceMonitoring.putMetric(TYPE_TTIL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
+        performanceMonitoring.putMetric(
+            TYPE_TTIL,
+            summaryModel.get().timeToInitialLayout?.inflateTime ?: 0L
+        )
         performanceMonitoring.putCustomAttribute(
-            ATTR_CONDITION, STATE_SUCCESS)
+            ATTR_CONDITION, STATE_SUCCESS
+        )
         performanceMonitoring.stopTrace()
+
+        sendIrisPerformance(view.context, performanceMonitoring)
+    }
+
+    private fun sendIrisPerformance(
+        context: Context,
+        performanceMonitoring: PerformanceMonitoring
+    ) {
+        IrisAnalytics.getInstance(context).trackPerformance(
+            IrisPerformanceData(
+                performanceMonitoring.traceName,
+                performanceMonitoring.getMetrics(TYPE_TTFL),
+                performanceMonitoring.getMetrics(TYPE_TTIL)
+            )
+        )
     }
 
     private fun createViewPerformanceModel(view: View) = ViewPerformanceModel(
@@ -214,7 +246,8 @@ class PerformanceTrace(val traceName: String) {
     }
 
     private fun getId(view: View): String {
-        return if (view.id == View.NO_ID) "no-id-"+view.hashCode().toString() else view.resources.getResourceName(view.id)
+        return if (view.id == View.NO_ID) "no-id-" + view.hashCode()
+            .toString() else view.resources.getResourceName(view.id)
     }
 
     private fun validateTTFL(viewPerfFromNode: ViewPerformanceModel?) {

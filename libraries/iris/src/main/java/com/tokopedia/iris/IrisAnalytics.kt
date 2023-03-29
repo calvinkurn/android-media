@@ -178,9 +178,12 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
     suspend private fun saveEventPerformance(irisPerformanceData: IrisPerformanceData) {
         val trackingRepository = TrackingRepository.getInstance(context)
 
-        val resultEvent = TrackingMapper.reformatPerformanceEvent(irisPerformanceData, session.getSessionId())
-        trackingRepository.savePerformanceEvent(resultEvent.toString())
-        setAlarm(true, force = false)
+        val resultEvent =
+            TrackingMapper.reformatPerformanceEvent(irisPerformanceData, session.getSessionId())
+        if (resultEvent.length() > 0) {
+            trackingRepository.savePerformanceEvent(resultEvent.toString())
+            setAlarm(true, force = false)
+        }
     }
 
     @Deprecated(
