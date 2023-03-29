@@ -223,23 +223,19 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
         }
-
-        if (productsList.isEmpty()) {
-            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
-        } else {
-            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
-        }
         updateUi()
     }
 
     override fun onShimmerAdded() {
+        catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
+        updateUi()
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         updateUi()
-        if(productCount == 0){
+        if (productCount == 0) {
             onError(throwable)
         }
     }

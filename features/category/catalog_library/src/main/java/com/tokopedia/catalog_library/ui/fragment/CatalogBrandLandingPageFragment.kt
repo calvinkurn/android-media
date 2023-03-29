@@ -20,8 +20,11 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogBrandCategoryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
-import com.tokopedia.catalog_library.util.*
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandLandingPage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_CATEGORY_HEADER
+import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -200,7 +203,6 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
             catalogLandingRecyclerView?.show()
             global_error_page.hide()
             addShimmer()
-            updateUi()
             getDataFromViewModel()
             getProducts()
         }
@@ -212,6 +214,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     private fun addShimmer() {
         catalogLibraryUiUpdater.shimmerForBrandLandingPage()
+        updateUi()
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -225,16 +228,12 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
         }
-
-        if (productsList.isEmpty()) {
-            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
-        } else {
-            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
-        }
         updateUi()
     }
 
     override fun onShimmerAdded() {
+        catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
+        updateUi()
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
