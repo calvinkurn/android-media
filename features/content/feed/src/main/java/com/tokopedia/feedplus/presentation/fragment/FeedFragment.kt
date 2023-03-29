@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -85,7 +84,6 @@ class FeedFragment :
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
 
@@ -205,7 +203,7 @@ class FeedFragment :
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                adapter?.showClearView(layoutManager?.findFirstVisibleItemPosition() ?: 0)
+                adapter?.showClearView(binding.rvFeedPost.currentItem)
             }
 
             else -> {}
@@ -494,20 +492,15 @@ class FeedFragment :
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
             if (adapter!!.itemCount == 0) {
                 adapter?.showLoading()
             }
 
-            PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
-            it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
-            it.rvFeedPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                        layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
-                    ) {
+            it.rvFeedPost.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == SCROLL_STATE_IDLE && it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)) {
                         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
                     }
                 }
