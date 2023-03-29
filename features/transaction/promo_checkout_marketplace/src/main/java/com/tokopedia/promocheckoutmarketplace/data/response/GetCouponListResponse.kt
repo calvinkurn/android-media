@@ -208,6 +208,10 @@ data class AdditionalBoData(
     val code: String = "",
     @SerializedName("unique_id")
     val uniqueId: String = "",
+    @SerializedName("cart_string_group")
+    val cartStringGroup: String = "",
+    @SerializedName("shipping_metadata")
+    val shippingMetadata: ShippingMetadata = ShippingMetadata(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     val shippingId: Int = 0,
@@ -328,4 +332,11 @@ data class BottomSheet(
     val imageUrl: String = "",
     @SerializedName("button_txt")
     val buttonText: String = ""
+)
+
+data class ShippingMetadata(
+    @SerializedName("unique_id")
+    val uniqueId: String = "",
+    @SerializedName("json_string")
+    val jsonString: String = ""
 )

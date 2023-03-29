@@ -1119,7 +1119,7 @@ class CartFragment :
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -2182,7 +2182,7 @@ class CartFragment :
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -2282,7 +2282,7 @@ class CartFragment :
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -4286,7 +4286,7 @@ class CartFragment :
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else if (cartItemHolderData.isTokoNow) {
             if (tokoNowProductUpdater == null) {
                 compositeSubscription.add(

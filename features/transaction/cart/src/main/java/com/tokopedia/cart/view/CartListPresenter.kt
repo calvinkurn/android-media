@@ -3,6 +3,7 @@ package com.tokopedia.cart.view
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -11,6 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
+import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
@@ -23,7 +25,7 @@ import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
-import com.tokopedia.cart.domain.usecase.UpdateCartAndValidateUseUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
@@ -34,8 +36,6 @@ import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
 import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
-import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
-import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
 import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
@@ -74,6 +74,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -128,8 +129,9 @@ class CartListPresenter @Inject constructor(
     private val addToCartExternalUseCase: AddToCartExternalUseCase,
     private val seamlessLoginUsecase: SeamlessLoginUsecase,
     private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-    private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
+    private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
     private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
+    private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
@@ -360,7 +362,7 @@ class CartListPresenter @Inject constructor(
             val params = view.generateGeneralParamValidateUse()
             if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
                 view.showPromoCheckoutStickyButtonLoading()
-                doUpdateCartAndValidateUse(params)
+                doUpdateCartAndGetLastApply(params)
             }
             processUpdateCartCounter()
         }
@@ -559,22 +561,29 @@ class CartListPresenter @Inject constructor(
 
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
-                val requestParams = RequestParams.create()
-                requestParams.putObject(
-                    UpdateCartAndValidateUseUseCase.PARAM_UPDATE_CART_REQUEST,
-                    updateCartRequestList
-                )
-                requestParams.putString(
-                    UpdateCartAndValidateUseUseCase.PARAM_KEY_SOURCE,
-                    UpdateCartAndValidateUseUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES
-                )
-                requestParams.putString(GetCartRevampV3UseCase.PARAM_KEY_SELECTED_CART_ID, cartId)
-                requestParams.putInt(GetCartRevampV3UseCase.PARAM_KEY_STATE, getCartState)
-
-                compositeSubscription.add(
-                    updateAndReloadCartUseCase.createObservable(requestParams)
-                        .subscribe(UpdateAndReloadCartSubscriber(it, this))
-                )
+                launch {
+                    try {
+                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            cartId = cartId,
+                            getCartState = getCartState
+                        )
+                        val updateAndReloadCartListData = updateAndReloadCartUseCase
+                            .setParams(updateCartWrapperRequest)
+                            .executeOnBackground()
+                        it.hideProgressLoading()
+                        processInitialGetCartData(
+                            updateAndReloadCartListData.cartId, 
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true, 
+                            updateAndReloadCartListData.getCartState
+                        )
+                    } catch (e: Throwable) { 
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(e)
+                    }
+                }
             } else {
                 it.hideProgressLoading()
             }
@@ -1902,7 +1911,7 @@ class CartListPresenter @Inject constructor(
         )
     }
 
-    override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
+    override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()
             cartListView.getAllSelectedCartDataList().let { listCartItemData ->
@@ -1915,31 +1924,38 @@ class CartListPresenter @Inject constructor(
 
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
-                val requestParams = RequestParams.create()
-                requestParams.putObject(
-                    UpdateCartAndValidateUseUseCase.PARAM_UPDATE_CART_REQUEST,
-                    updateCartRequestList
-                )
-                requestParams.putString(
-                    UpdateCartAndValidateUseUseCase.PARAM_KEY_SOURCE,
-                    UpdateCartAndValidateUseUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES
-                )
-                requestParams.putObject(
-                    OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-                    promoRequest
-                )
                 lastValidateUseRequest = promoRequest
-
-                compositeSubscription.add(
-                    updateCartAndValidateUseUseCase.createObservable(requestParams)
-                        .subscribe(
-                            UpdateCartAndValidateUseSubscriber(
-                                cartListView,
-                                this,
-                                promoTicker.enable
-                            )
-                        )
-                )
+                
+                launch {
+                   try {
+                       val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                           updateCartRequestList = updateCartRequestList,
+                           source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                           getLastApplyPromoRequest = promoRequest
+                       )
+                       val updateCartDataResponse = updateCartAndGetLastApplyUseCase
+                           .setParams(updateCartWrapperRequest)
+                           .executeOnBackground()
+                       updateCartDataResponse.updateCartData?.let { updateCartData ->
+                           if (updateCartData.isSuccess) {
+                               updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                   setLastApplyNotValid()
+                                   setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
+                                   setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
+                                   cartListView.updatePromoCheckoutStickyButton(promoUiModel)
+                               }
+                           }
+                       }
+                   } catch (e: Throwable) {
+                       if (e is AkamaiErrorException) {
+                           doClearAllPromo()
+                           if (!promoTicker.enable) {
+                               cartListView.showToastMessageRed(e)
+                           }
+                       }
+                       cartListView.renderPromoCheckoutButtonActiveDefault(emptyList())
+                   }
+                }
             } else {
                 cartListView.hideProgressLoading()
             }

@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
-const val VALIDATE_USE_QUERY = """
-    mutation validateUsePromoRevamp(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
-      validate_use_promo_revamp(params: ${"$"}params, chosen_address: ${"$"}chosen_address) {
+const val GET_LAST_APPLY_QUERY = """
+    mutation getLastApplyPromo(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
+      get_last_apply_promo(params: ${"$"}params, chosen_address: ${"$"}chosen_address) {
         status
         message
          error_code
@@ -198,12 +198,3 @@ const val VALIDATE_USE_QUERY = """
       }
     }
 """
-
-const val CLEAR_CACHE_AUTO_APPLY_QUERY = """
-            mutation clearCacheAutoApplyStack(${"$"}serviceID: String!, ${"$"}promoCode: [String], ${"$"}isOCC: Boolean, ${"$"}orderData: OrderDataInput) {
-                clearCacheAutoApplyStack(serviceID: ${"$"}serviceID, promoCode: ${"$"}promoCode, isOCC: ${"$"}isOCC, orderData: ${"$"}orderData) {
-                    Success
-                    ticker_message
-                    default_empty_promo_message
-                }
-            }"""

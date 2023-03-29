@@ -85,6 +85,9 @@ object PromoRequestMapper {
                     warehouseId = cartPromoHolderData.warehouseId
                     isPo = cartPromoHolderData.isPo
                     poDuration = cartPromoHolderData.poDuration.toIntOrZero()
+                    cartStringGroup = cartPromoHolderData.cartStringGroup
+                    // TODO: Get From Cart Revamp V4 
+                    shippingMetadata = ""
                 }
                 tmpOrders.add(ordersItem)
             }
@@ -260,7 +263,10 @@ object PromoRequestMapper {
                 boType = cartPromoHolderData.boMetadata.boType,
                 product_details = listProductDetail,
                 codes = cartPromoHolderData.promoCodes.toMutableList(),
-                isChecked = hasCheckedItem
+                isChecked = hasCheckedItem,
+                cartStringGroup = cartPromoHolderData.cartStringGroup,
+                // TODO: Get From Cart Revamp v4 
+                shippingMetadata = ""
             )
             orders.add(order)
         }
