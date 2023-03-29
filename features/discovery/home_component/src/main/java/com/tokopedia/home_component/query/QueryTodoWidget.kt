@@ -11,7 +11,7 @@ import com.tokopedia.home_component.query.QueryTodoWidget.TODO_WIDGET_QUERY_NAME
 internal object QueryTodoWidget {
     const val TODO_WIDGET_QUERY_NAME = "TodoWidgetQuery"
     const val TODO_WIDGET_QUERY = "query getHomeToDoWidget(\$param: String!, \$location: String!) {\n" +
-        "   getHomeToDoWidget(\$param: param, \$location: location) {\n" +
+        "   getHomeToDoWidget(param: \$param, location: \$location) {\n" +
         "       toDos {\n" +
         "           id\n" +
         "           dataSource\n" +
