@@ -156,7 +156,7 @@ interface ICartListView : CustomerView {
 
     fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean
 
-    fun generateGeneralParamValidateUse(): ValidateUsePromoRequest
+    fun generateGeneralParamGetLastApply(): ValidateUsePromoRequest
 
     fun resetRecentViewList()
 

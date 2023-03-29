@@ -18,7 +18,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 
 object PromoRequestMapper {
 
-    fun generateValidateUseRequestParams(
+    fun generateGetLastApplyRequestParams(
         promoData: Any?,
         selectedCartGroupHolderDataList: List<CartGroupHolderData>,
         lastValidateUsePromoRequest: ValidateUsePromoRequest?

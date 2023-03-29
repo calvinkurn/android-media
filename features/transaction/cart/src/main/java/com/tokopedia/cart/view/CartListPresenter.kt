@@ -37,7 +37,6 @@ import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
-import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
@@ -75,7 +74,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -130,7 +128,6 @@ class CartListPresenter @Inject constructor(
     private val seamlessLoginUsecase: SeamlessLoginUsecase,
     private val updateCartCounterUseCase: UpdateCartCounterUseCase,
     private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
-    private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
     private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
@@ -359,7 +356,7 @@ class CartListPresenter @Inject constructor(
                 isFromEditBundle
             )
 
-            val params = view.generateGeneralParamValidateUse()
+            val params = view.generateGeneralParamGetLastApply()
             if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
                 view.showPromoCheckoutStickyButtonLoading()
                 doUpdateCartAndGetLastApply(params)
@@ -1898,17 +1895,27 @@ class CartListPresenter @Inject constructor(
         }
     }
 
-    override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
-        val requestParams = RequestParams.create()
-        requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+    override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
         lastValidateUseRequest = promoRequest
-        compositeSubscription.add(
-            validateUsePromoRevampUseCase.createObservable(requestParams)
-                .subscribeOn(schedulers.io)
-                .unsubscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe(ValidateUseSubscriber(view, this))
-        )
+        launch {
+            try {
+                val getLastApplyResponse = getLastApplyPromoUseCase
+                    .setParam(promoRequest)
+                    .executeOnBackground()
+                setUpdateCartAndValidateUseLastResponse(
+                    UpdateAndValidateUseData().apply {
+                        promoUiModel = getLastApplyResponse.promoUiModel
+                    }
+                )
+                isLastApplyResponseStillValid = false
+                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
+            } catch (e: Throwable) {
+                if (e is AkamaiErrorException) {
+                    view?.showToastMessageRed(e)
+                }
+                view?.showPromoCheckoutStickyButtonInactive()
+            }
+        }
     }
 
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {

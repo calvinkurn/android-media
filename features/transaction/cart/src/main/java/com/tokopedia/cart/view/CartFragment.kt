@@ -722,7 +722,7 @@ class CartFragment :
             val intent =
                 RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
             val promoRequest = generateParamsCouponList()
-            val validateUseRequest = generateParamValidateUsePromoRevamp()
+            val validateUseRequest = generateParamGetLastApplyPromo()
             intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CART)
             intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
             intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
@@ -1116,7 +1116,7 @@ class CartFragment :
     }
 
     private fun reloadAppliedPromoFromGlobalCheck() {
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndGetLastApply(params)
@@ -2179,7 +2179,7 @@ class CartFragment :
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
 
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateGeneralParamGetLastApply()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndGetLastApply(params)
@@ -2279,7 +2279,7 @@ class CartFragment :
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
         validateGoToCheckout()
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndGetLastApply(params)
@@ -2968,12 +2968,12 @@ class CartFragment :
         return allPromoApplied
     }
 
-    private fun generateParamValidateUsePromoRevamp(): ValidateUsePromoRequest {
+    private fun generateParamGetLastApplyPromo(): ValidateUsePromoRequest {
         return when {
             dPresenter.isLastApplyValid() -> {
                 val lastApplyPromo =
                     dPresenter.getCartListData()?.promo?.lastApplyPromo ?: LastApplyPromo()
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     lastApplyPromo,
                     cartAdapter.selectedCartGroupHolderData,
                     null
@@ -2983,7 +2983,7 @@ class CartFragment :
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel =
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     promoUiModel,
                     cartAdapter.selectedCartGroupHolderData,
                     dPresenter.getLastValidateUseRequest()
@@ -2991,7 +2991,7 @@ class CartFragment :
             }
 
             else -> {
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     null,
                     cartAdapter.selectedCartGroupHolderData,
                     null
@@ -4245,7 +4245,7 @@ class CartFragment :
                 getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
             promoCheckoutBtnCart.setOnClickListener {
                 renderPromoCheckoutLoading()
-                dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
+                dPresenter.doGetLastApply(generateParamGetLastApplyPromo())
             }
         }
     }
@@ -4283,7 +4283,7 @@ class CartFragment :
         }
 
         validateGoToCheckout()
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndGetLastApply(params)
@@ -4314,8 +4314,8 @@ class CartFragment :
         routeToPromoCheckoutMarketplacePage()
     }
 
-    override fun generateGeneralParamValidateUse(): ValidateUsePromoRequest {
-        return generateParamValidateUsePromoRevamp()
+    override fun generateGeneralParamGetLastApply(): ValidateUsePromoRequest {
+        return generateParamGetLastApplyPromo()
     }
 
     override fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean {
