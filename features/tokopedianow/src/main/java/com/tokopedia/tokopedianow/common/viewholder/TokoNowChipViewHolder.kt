@@ -12,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowChipViewHolder(
     itemView: View,
-    private val listener: ChipListener
+    private val listener: ChipListener?
 ) : AbstractViewHolder<TokoNowChipUiModel>(itemView) {
 
     companion object {
@@ -55,7 +55,7 @@ class TokoNowChipViewHolder(
 
     private fun setOnClickListener(chip: TokoNowChipUiModel) {
         binding?.root?.setOnClickListener {
-            listener.onClickChipItem(chip)
+            listener?.onClickChipItem(chip)
         }
     }
 

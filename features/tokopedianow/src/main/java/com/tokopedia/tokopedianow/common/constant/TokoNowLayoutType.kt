@@ -44,5 +44,6 @@ annotation class TokoNowLayoutType {
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
         const val COUPON_CLAIM = "coupon_claim"
+        const val CHIP_CAROUSEL = "chip_carousel"
     }
 }
