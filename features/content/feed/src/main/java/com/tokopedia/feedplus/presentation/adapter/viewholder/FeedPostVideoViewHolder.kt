@@ -100,6 +100,7 @@ class FeedPostVideoViewHolder(
         with(binding) {
             feedVideoJob = scope.launch {
                 playerFeedVideo.player = videoPlayer.getExoPlayer()
+                playerControl.player = videoPlayer.getExoPlayer()
                 playerFeedVideo.videoSurfaceView?.setOnClickListener {
                     if (playerFeedVideo.player?.isPlaying == true) {
                         videoPlayer.pause()
