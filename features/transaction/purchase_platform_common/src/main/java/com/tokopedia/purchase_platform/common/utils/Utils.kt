@@ -81,6 +81,7 @@ fun String.isBlankOrZero(): Boolean {
 }
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
+const val DEFAULT_THROTTLE_IN_MILIS = 2_000L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
     Observable.create({ emitter: Emitter<Boolean> ->
         view.setOnClickListener {
@@ -88,6 +89,16 @@ fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): 
         }
     }, Emitter.BackpressureMode.LATEST)
         .debounce(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
+
+fun rxViewClickThrottle(view: View, timeout: Long = DEFAULT_THROTTLE_IN_MILIS): Observable<Boolean> =
+    Observable.create({ emitter: Emitter<Boolean> ->
+        view.setOnClickListener {
+            emitter.onNext(true)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .throttleFirst(timeout, TimeUnit.MILLISECONDS)
         .subscribeOn(AndroidSchedulers.mainThread())
         .observeOn(AndroidSchedulers.mainThread())
 
