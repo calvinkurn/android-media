@@ -16,8 +16,6 @@ class AddCartToWishlistUseCase @Inject constructor(
 ) : UseCase<AddCartToWishlistData>() {
 
     companion object {
-        const val PARAM_ADD_CART_TO_WISHLIST_REQUEST = "PARAM_ADD_CART_TO_WISHLIST_REQUEST"
-
         private const val PARAM = "params"
         private const val PARAM_KEY_CART_IDS = "cart_ids"
 

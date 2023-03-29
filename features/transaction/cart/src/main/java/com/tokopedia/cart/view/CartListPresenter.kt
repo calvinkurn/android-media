@@ -15,7 +15,6 @@ import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
@@ -947,12 +946,6 @@ class CartListPresenter @Inject constructor(
         view?.let {
             val addCartToWishlistRequest = AddCartToWishlistRequest()
             addCartToWishlistRequest.cartIds = listOf(cartId)
-
-            val requestParams = RequestParams.create()
-            requestParams.putObject(
-                AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST,
-                addCartToWishlistRequest
-            )
             
             addCartToWishlistUseCase.setParams(addCartToWishlistRequest)
                 .execute(
