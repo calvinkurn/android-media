@@ -15,6 +15,7 @@ import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
@@ -190,6 +191,8 @@ class CartListPresenter @Inject constructor(
         private const val SOURCE_CART = "cart"
 
         private const val MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD = 1000000.0
+
+        private const val STATUS_OK = "OK"
     }
 
     override fun attachView(view: ICartListView) {
@@ -951,20 +954,29 @@ class CartListPresenter @Inject constructor(
                 AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST,
                 addCartToWishlistRequest
             )
-
-            compositeSubscription.add(
-                addCartToWishlistUseCase.createObservable(requestParams)
-                    .subscribe(
-                        AddCartToWishlistSubscriber(
-                            it,
-                            productId,
-                            cartId,
-                            isLastItem,
-                            source,
-                            forceExpandCollapsedUnavailableItems
-                        )
-                    )
-            )
+            
+            addCartToWishlistUseCase.setParams(addCartToWishlistRequest)
+                .execute(
+                    onSuccess = { data ->
+                        view?.let { cartListView ->
+                            if (data.status == STATUS_OK) {
+                                if (data.success == 1) {
+                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                                } else {
+                                    cartListView.showToastMessageRed(data.message)
+                                }
+                            } else {
+                                cartListView.showToastMessageRed(data.message)
+                            }
+                        }
+                    },
+                    onError = { throwable ->
+                        view?.let { cartListView ->
+                            Timber.e(throwable)
+                            cartListView.showToastMessageRed(throwable)
+                        }
+                    }
+                )
         }
     }
 
