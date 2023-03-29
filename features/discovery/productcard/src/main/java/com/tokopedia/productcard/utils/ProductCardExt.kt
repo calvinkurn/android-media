@@ -626,7 +626,7 @@ private fun Label.determineOverlayLabelType(labelGroupType: String) {
     if (labelGroupType.startsWith('#')) {
         setCustomOverlayLabelType(labelGroupType)
     } else {
-        val unifyLabelType = labelGroupType.toUnifyLabelType()
+        val unifyLabelType = labelGroupType.toOverlayUnifyLabelType()
 
         if (unifyLabelType != -1) setLabelType(unifyLabelType)
         else trySetCustomOverlayLabelType(labelGroupType)
@@ -644,6 +644,31 @@ private fun Label.trySetCustomOverlayLabelType(labelGroupType: String) {
     val colorHexInt = ContextCompat.getColor(context, colorRes)
     val colorHexString = "#${Integer.toHexString(colorHexInt)}"
     setCustomOverlayLabelType(colorHexString)
+}
+
+internal fun String?.toOverlayUnifyLabelType(): Int {
+    return when (this) {
+        LIGHT_GREY -> Label.HIGHLIGHT_LIGHT_GREY
+        LIGHT_BLUE -> Label.HIGHLIGHT_LIGHT_BLUE
+        LIGHT_GREEN -> Label.HIGHLIGHT_LIGHT_GREEN
+        LIGHT_RED -> Label.HIGHLIGHT_LIGHT_RED
+        LIGHT_ORANGE -> Label.HIGHLIGHT_LIGHT_ORANGE
+        LIGHT_TEAL -> Label.HIGHLIGHT_LIGHT_TEAL
+        DARK_GREY -> Label.HIGHLIGHT_DARK_GREY
+        DARK_BLUE -> Label.HIGHLIGHT_DARK_BLUE
+        DARK_GREEN -> Label.HIGHLIGHT_DARK_GREEN
+        DARK_RED -> Label.HIGHLIGHT_DARK_RED
+        DARK_ORANGE -> Label.HIGHLIGHT_DARK_ORANGE
+        DARK_TEAL -> Label.HIGHLIGHT_DARK_TEAL
+        GENERAL_GREY -> Label.GENERAL_GREY
+        GENERAL_BLUE -> Label.GENERAL_BLUE
+        GENERAL_GREEN -> Label.GENERAL_GREEN
+        GENERAL_RED -> Label.GENERAL_RED
+        GENERAL_ORANGE -> Label.GENERAL_ORANGE
+        GENERAL_TEAL -> Label.GENERAL_TEAL
+        LABEL_ON_IMAGE -> Label.HIGHLIGHT_DARK_IMAGE_LABEL
+        else -> -1
+    }
 }
 
 internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {

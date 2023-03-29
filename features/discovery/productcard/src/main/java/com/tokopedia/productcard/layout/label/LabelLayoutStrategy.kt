@@ -56,4 +56,9 @@ interface LabelLayoutStrategy {
         labelOverlayStatus: Label?,
         productCardModel: ProductCardModel,
     )
+
+    fun renderProductStatusLabel(
+        labelProductStatus: Label?,
+        productCardModel: ProductCardModel,
+    )
 }

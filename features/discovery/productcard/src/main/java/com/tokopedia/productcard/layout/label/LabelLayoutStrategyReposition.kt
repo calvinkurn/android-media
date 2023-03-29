@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -286,6 +287,20 @@ class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         } else {
             renderLabelOverlay(false, labelOverlayBackground, labelOverlay, overlayLabel)
             renderLabelOverlayStatus(false, labelOverlayStatus, overlayLabel)
+        }
+    }
+
+    override fun renderProductStatusLabel(
+        labelProductStatus: Label?,
+        productCardModel: ProductCardModel
+    ) {
+        val productStatusLabel = productCardModel.getLabelProductStatus()
+        val isShowProductStatus = !productCardModel.isShowLabelOverlay()
+            && productStatusLabel != null
+        if (isShowProductStatus) {
+            labelProductStatus?.initLabelGroup(productStatusLabel)
+        } else {
+            labelProductStatus?.hide()
         }
     }
 }

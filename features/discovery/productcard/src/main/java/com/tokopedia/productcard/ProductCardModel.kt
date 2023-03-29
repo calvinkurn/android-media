@@ -267,10 +267,8 @@ data class ProductCardModel (
 
     fun isShowLabelOverlay(): Boolean {
         val labelOverlay = getLabelOverlay()
-        val labelProductStatus = getLabelProductStatus()
 
-        return labelProductStatus == null
-                && labelOverlay != null
+        return labelOverlay != null
                 && labelOverlay.title.isNotEmpty()
                 && (labelOverlay.imageUrl.isNotEmpty() || labelOverlay.type.isNotEmpty())
     }

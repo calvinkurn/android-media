@@ -21,11 +21,14 @@ import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_ETA
 import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_ON_IMAGE
 import com.tokopedia.productcard.utils.LABEL_OVERLAY
 import com.tokopedia.productcard.utils.LABEL_PRICE
+import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
 import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.LIGHT_ORANGE
 import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
+import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
@@ -51,6 +54,8 @@ internal val productCardGridTestData =
             testInlineEta(),
             testCampaignOverlay(),
             testGimmickOverlay(),
+            testStatusOverlay(),
+            testBestSellerOverlay(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -73,6 +78,8 @@ internal val productCardGridViewStubTestData =
             testInlineEta(),
             testCampaignOverlay(),
             testGimmickOverlay(),
+            testStatusOverlay(),
+            testBestSellerOverlay(),
         )
 
 private fun testSimilarProductButton(): ProductCardModelMatcher {
@@ -604,8 +611,11 @@ private fun testCampaignOverlay(): ProductCardModelMatcher {
 }
 
 private fun testGimmickOverlay(): ProductCardModelMatcher {
-    val labelGimmickOverlay =
-        LabelGroup(position = LABEL_OVERLAY, title = "Terbaru", type = LIGHT_ORANGE)
+    val labelGimmickOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Terbaru",
+        type = LABEL_ON_IMAGE
+    )
     val productCardModel = ProductCardModel(
         productName = "Long Image",
         productImageUrl = productImageUrl,
@@ -623,6 +633,76 @@ private fun testGimmickOverlay(): ProductCardModelMatcher {
         R.id.labelOverlayBackground to isNotDisplayed(),
         R.id.labelOverlay to isNotDisplayed(),
         R.id.labelOverlayStatus to isDisplayedWithText(labelGimmickOverlay.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testBestSellerOverlay(): ProductCardModelMatcher {
+    val labelGimmickOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Terlaris",
+        type = LIGHT_ORANGE
+    )
+    val labelBestSeller = LabelGroup(
+        position = LABEL_BEST_SELLER,
+        title = "Terlaris",
+        type = LIGHT_ORANGE
+    )
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.GIMMICK,
+        labelGroupList = listOf(
+            labelGimmickOverlay,
+            labelBestSeller,
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelOverlayBackground to isNotDisplayed(),
+        R.id.labelOverlay to isNotDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelGimmickOverlay.title),
+        R.id.labelBestSeller to isNotDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testStatusOverlay(): ProductCardModelMatcher {
+    val labelStatusOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "PreOrder",
+        type = TRANSPARENT_BLACK
+    )
+    val labelProductStatus = LabelGroup(
+        position = LABEL_PRODUCT_STATUS,
+        title = "PreOrder",
+        type = TRANSPARENT_BLACK
+    )
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.GIMMICK,
+        labelGroupList = listOf(
+            labelStatusOverlay,
+            labelProductStatus
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelOverlayBackground to isNotDisplayed(),
+        R.id.labelOverlay to isNotDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelStatusOverlay.title),
+        R.id.labelProductStatus to isNotDisplayed()
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

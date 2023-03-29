@@ -251,4 +251,11 @@ class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
             productCardModel.getLabelOverlay(),
         )
     }
+
+    override fun renderProductStatusLabel(
+        labelProductStatus: Label?,
+        productCardModel: ProductCardModel
+    ) {
+        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+    }
 }

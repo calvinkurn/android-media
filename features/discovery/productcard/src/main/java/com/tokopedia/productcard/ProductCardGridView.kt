@@ -196,6 +196,13 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             videoProduct,
         )
 
+        productCardModel.layoutStrategy.renderOverlayLabel(
+            labelOverlayBackground,
+            labelOverlay,
+            labelOverlayStatus,
+            productCardModel,
+        )
+
         productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
@@ -216,7 +223,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
-        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        productCardModel.layoutStrategy.renderProductStatusLabel(labelProductStatus, productCardModel)
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
@@ -250,13 +257,6 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         productCardModel.layoutStrategy.renderLabelReposition(
             labelRepositionBackground,
             labelReposition,
-            productCardModel,
-        )
-
-        productCardModel.layoutStrategy.renderOverlayLabel(
-            labelOverlayBackground,
-            labelOverlay,
-            labelOverlayStatus,
             productCardModel,
         )
     }
