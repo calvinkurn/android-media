@@ -10,7 +10,7 @@ import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_DIGITS
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
 
-object RechargeCCMapper {
+object RechargeCCWidgetMapper {
     fun mapFavoriteChipsToWidgetModels(favoriteChipModels: List<FavoriteChipModel>): List<RechargeClientNumberChipModel> {
         return favoriteChipModels.map { chip ->
             val formattedClientNumber = RechargeCCUtil.concatStringWith16D(
