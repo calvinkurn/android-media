@@ -1735,26 +1735,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             }
             else if(preset.assetStatus == BeautificationAssetStatus.NotDownloaded) {
-                updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
-
-                viewModelScope.launchCatchError(block = {
-                    val isSuccess = repo.downloadPresetAsset(
-                        url = preset.assetLink,
-                        fileName = preset.id,
-                    )
-
-                    if(isSuccess) {
-                        updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
-                    }
-                    else {
-                        throw Exception("Something went wrong")
-                    }
-                }) { throwable ->
-                    updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
-                    _uiEvent.emit(
-                        PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable, preset)
-                    )
-                }
+                downloadPreset(preset)
             }
         }
     }
@@ -1779,11 +1760,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             try {
                 downloadInitialBeautificationAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
-                /** TODO: reinit broadcaster & setup beautification sdk on the next PR */
+
+                val notDownloadedActivePreset = beautificationConfig.presets.firstOrNull { it.active && it.assetStatus == BeautificationAssetStatus.NotDownloaded }
+                if (notDownloadedActivePreset != null) {
+                    downloadPreset(notDownloadedActivePreset, forceActive = true)
+                }
             } catch (e: Exception) {
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
 
-                if(_allowRetryDownloadAsset.value) {
+                if (_allowRetryDownloadAsset.value) {
                     _allowRetryDownloadAsset.value = false
                     throw e
                 }
@@ -1834,12 +1819,47 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun downloadPreset(preset: PresetFilterUiModel, forceActive: Boolean = false) {
+        viewModelScope.launchCatchError(block = {
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
+
+            val isSuccess = repo.downloadPresetAsset(
+                url = preset.assetLink,
+                fileName = preset.id,
+            )
+
+            if (isSuccess) {
+                updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
+
+                if (forceActive) {
+                    _beautificationConfig.update {
+                        it.copy(
+                            presets = it.presets.map { item ->
+                                if (item.id == preset.id) item.copy(active = true)
+                                else item
+                            }
+                        )
+                    }
+                }
+            }
+            else {
+                throw Exception("Something went wrong")
+            }
+        }) { throwable ->
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
+            _uiEvent.emit(
+                PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable, preset)
+            )
+        }
+    }
+
     private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
         _beautificationConfig.update {
             it.copy(
                 presets = it.presets.map { item ->
                     item.copy(
-                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus
+                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus,
+                        active = if(preset.id == item.id) false else item.active
                     )
                 }
             )
