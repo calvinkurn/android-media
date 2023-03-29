@@ -479,7 +479,6 @@ public class ShipmentDataConverter {
         shipmentUpsellModel.setId(upsellData.getId());
         shipmentUpsellModel.setAdditionalVerticalId(upsellData.getAdditionalVerticalId());
         shipmentUpsellModel.setTransactionType(upsellData.getTransactionType());
-        shipmentUpsellModel.setLoading(false);
         return shipmentUpsellModel;
     }
 
