@@ -30,6 +30,8 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -148,6 +150,8 @@ class ProductListPresenter @Inject constructor(
     private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
     private val recommendationPresenterDelegate: RecommendationPresenterDelegate,
     private val adsLowOrganic: AdsLowOrganic,
+    @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
+    private val remoteConfig: RemoteConfig,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -202,6 +206,14 @@ class ProductListPresenter @Inject constructor(
         private set
     private val adsInjector = AdsInjector()
     private val postProcessingFilter = PostProcessingFilter()
+    private val newCardType by lazy {
+        try {
+            remoteConfig.getString(RollenceKey.PRODUCT_CARD_EXPERIMENT, "")
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -358,6 +370,7 @@ class ProductListPresenter @Inject constructor(
             keyword,
             isShowLocalSearchRecommendation(),
             externalReference,
+            newCardType,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)

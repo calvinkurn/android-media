@@ -1,0 +1,17 @@
+package com.tokopedia.productcard.layout
+
+import com.tokopedia.productcard.layout.eta.EtaLayoutStrategy
+import com.tokopedia.productcard.layout.eta.EtaLayoutStrategyControl
+import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
+import com.tokopedia.productcard.layout.label.LabelLayoutStrategyFashionReposition
+import com.tokopedia.productcard.layout.image.ImageLayoutStrategy
+import com.tokopedia.productcard.layout.image.ImageLayoutStrategyControl
+import com.tokopedia.productcard.layout.label.LabelLayoutStrategyReposition
+import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
+import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyControl
+
+class LayoutStrategyReposition: LayoutStrategy,
+    ImageLayoutStrategy by ImageLayoutStrategyControl(),
+    LabelLayoutStrategy by LabelLayoutStrategyReposition(),
+    VariantLayoutStrategy by VariantLayoutStrategyControl(),
+    EtaLayoutStrategy by EtaLayoutStrategyControl()

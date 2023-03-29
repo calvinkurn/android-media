@@ -75,16 +75,24 @@ class SmallGridProductItemViewHolder(
     }
 
     private fun ProductItemDataView.getProductImage(): String {
-        return if (getProductListTypeEnum() == ProductCardModel.ProductListType.LONG_IMAGE)
+        return if (getProductListTypeEnum().needBiggerImage())
             imageUrl700
         else
             imageUrl300
     }
 
+    private fun ProductCardModel.ProductListType.needBiggerImage() : Boolean {
+        return this == ProductCardModel.ProductListType.LONG_IMAGE
+            || this == ProductCardModel.ProductListType.PORTRAIT
+    }
+
     private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
-        return when(productListType) {
-            SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
-            SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+        return when {
+            productListType == SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
+            productListType == SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            productListType == SearchConstant.NewCardType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
+            productListType == SearchConstant.NewCardType.PORTRAIT && isPortrait -> ProductCardModel.ProductListType.PORTRAIT
+            productListType == SearchConstant.NewCardType.ETA -> ProductCardModel.ProductListType.ETA
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

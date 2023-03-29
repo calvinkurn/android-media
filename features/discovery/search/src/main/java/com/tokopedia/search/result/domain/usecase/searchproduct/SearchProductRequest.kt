@@ -212,6 +212,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     applink
                     customVideoURL
                     parentId
+                    isPortrait
                 }
                 violation {
                     headerText
@@ -300,6 +301,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     }
                     customvideo_url
                     parent_id
+                    isPortrait
                 }
                 shop{
                     id

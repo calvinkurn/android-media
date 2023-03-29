@@ -1,25 +1,13 @@
-package com.tokopedia.productcard.fashion
+package com.tokopedia.productcard.layout.label
 
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import android.widget.Space
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.video_widget.VideoPlayerView
 
-internal interface FashionStrategy {
-    fun setupImageRatio(
-        constraintLayoutProductCard: ConstraintLayout?,
-        imageProduct: ImageView?,
-        mediaAnchorProduct: Space?,
-        videoProduct: VideoPlayerView?,
-    )
-
-    fun getImageHeight(imageWidth: Int): Int
-
+interface LabelLayoutStrategy {
     fun renderLabelReposition(
         labelRepositionBackground: ImageView?,
         labelReposition: Typography?,
@@ -54,23 +42,18 @@ internal interface FashionStrategy {
 
     fun renderLabelPrice(view: View, productCardModel: ProductCardModel)
 
-    fun renderVariant(
-        willShowVariant: Boolean,
-        view: View,
+    fun configContentPosition(view: View)
+
+    fun renderCampaignLabel(
+        labelCampaignBackground: ImageView?,
+        labelCampaign: Typography?,
         productCardModel: ProductCardModel,
     )
 
-    val sizeCharLimit: Int
-
-    val extraCharSpace: Int
-
-    val colorLimit: Int
-
-    fun getLabelVariantSizeCount(productCardModel: ProductCardModel, colorVariantTaken: Int): Int
-
-    fun getLabelVariantColorCount(colorVariant: List<ProductCardModel.LabelGroupVariant>): Int
-
-    fun isSingleLine(willShowVariant: Boolean): Boolean
-
-    fun configContentPosition(view: View)
+    fun renderOverlayLabel(
+        labelOverlayBackground: ImageView?,
+        labelOverlay: Typography?,
+        labelOverlayStatus: Label?,
+        productCardModel: ProductCardModel,
+    )
 }

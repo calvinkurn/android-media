@@ -7,19 +7,24 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
+import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.fulfillmentBadgeImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.isNotDisplayed
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDimensionRatio
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.DARK_GREY
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
+import com.tokopedia.productcard.utils.LABEL_ETA
 import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_OVERLAY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LIGHT_GREEN
+import com.tokopedia.productcard.utils.LIGHT_ORANGE
 import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
@@ -41,6 +46,11 @@ internal val productCardGridTestData =
             testShopLocationReposition(),
             testContentReposition(),
             testLongImage(),
+            testPortraitImage(),
+            testEta(),
+            testInlineEta(),
+            testCampaignOverlay(),
+            testGimmickOverlay(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -58,6 +68,11 @@ internal val productCardGridViewStubTestData =
             testShopLocationReposition(),
             testContentReposition(),
             testLongImage(),
+            testPortraitImage(),
+            testEta(),
+            testInlineEta(),
+            testCampaignOverlay(),
+            testGimmickOverlay(),
         )
 
 private fun testSimilarProductButton(): ProductCardModelMatcher {
@@ -498,4 +513,117 @@ private fun testLongImage(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
+private fun testPortraitImage(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.PORTRAIT,
+    )
 
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardImage to withDimensionRatio(LONG_IMAGE_RATIO),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testEta(): ProductCardModelMatcher {
+    val labelEta = LabelGroup(position = LABEL_ETA, title = "Tiba Besok")
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.CONTROL,
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        labelGroupList = listOf(
+            labelEta,
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.textViewETA to isDisplayedWithText(labelEta.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testInlineEta(): ProductCardModelMatcher {
+    val labelEta = LabelGroup(position = LABEL_ETA, title = "Tiba Besok")
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.ETA,
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        labelGroupList = listOf(
+            labelEta,
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.textViewInlineETA to isDisplayedWithText(labelEta.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testCampaignOverlay(): ProductCardModelMatcher {
+    val labelCampaignOverlay =
+        LabelGroup(position = LABEL_OVERLAY, title = "Semarak Ramadan", imageUrl = campaignLabelUrl)
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.GIMMICK,
+        labelGroupList = listOf(
+            labelCampaignOverlay,
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelOverlayBackground to isDisplayed(),
+        R.id.labelOverlay to isDisplayedWithText(labelCampaignOverlay.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testGimmickOverlay(): ProductCardModelMatcher {
+    val labelGimmickOverlay =
+        LabelGroup(position = LABEL_OVERLAY, title = "Terbaru", type = LIGHT_ORANGE)
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.GIMMICK,
+        labelGroupList = listOf(
+            labelGimmickOverlay,
+        )
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelOverlayBackground to isNotDisplayed(),
+        R.id.labelOverlay to isNotDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelGimmickOverlay.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}

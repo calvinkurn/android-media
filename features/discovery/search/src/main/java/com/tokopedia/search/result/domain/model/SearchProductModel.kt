@@ -520,6 +520,10 @@ data class SearchProductModel(
             @SerializedName("parentId")
             @Expose
             val parentId: String = "",
+
+            @SerializedName("isPortrait")
+            @Expose
+            val isPortrait: Boolean = false,
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()

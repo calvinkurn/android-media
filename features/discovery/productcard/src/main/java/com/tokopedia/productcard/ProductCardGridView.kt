@@ -20,7 +20,6 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -133,6 +132,15 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val labelReposition: Typography by lazy(NONE) {
         findViewById(R.id.labelReposition)
     }
+    private val labelOverlayBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelOverlayBackground)
+    }
+    private val labelOverlay: Typography? by lazy(NONE) {
+        findViewById(R.id.labelOverlay)
+    }
+    private val labelOverlayStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelOverlayStatus)
+    }
     private var isUsingViewStub = false
 
     constructor(context: Context) : super(context) {
@@ -181,29 +189,27 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        productCardModel.fashionStrategy.setupImageRatio(
+        productCardModel.layoutStrategy.setupImageRatio(
             constraintLayoutProductCard,
             imageProduct,
             mediaAnchorProduct,
             videoProduct,
         )
 
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
+        productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
             productCardModel,
         )
 
-        productCardModel.fashionStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
+        productCardModel.layoutStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
 
-        productCardModel.fashionStrategy.renderLabelBestSellerCategorySide(
+        productCardModel.layoutStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
             productCardModel,
         )
 
-        productCardModel.fashionStrategy.renderLabelBestSellerCategoryBottom(
+        productCardModel.layoutStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
             productCardModel,
         )
@@ -241,9 +247,16 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_OVERLAY
 
-        productCardModel.fashionStrategy.renderLabelReposition(
+        productCardModel.layoutStrategy.renderLabelReposition(
             labelRepositionBackground,
             labelReposition,
+            productCardModel,
+        )
+
+        productCardModel.layoutStrategy.renderOverlayLabel(
+            labelOverlayBackground,
+            labelOverlay,
+            labelOverlayStatus,
             productCardModel,
         )
     }
@@ -306,6 +319,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        labelOverlayBackground?.glideClear()
         cartExtension.clear()
         video.clear()
     }

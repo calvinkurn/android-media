@@ -200,4 +200,10 @@ public interface SearchConstant {
         String VAR_LONG_IMG = "var_long_img";
         String VAR_REPOSITION = "var_reposition";
     }
+
+    interface NewCardType {
+        String GIMMICK = "gimmick";
+        String PORTRAIT = "portrait";
+        String ETA = "eta";
+    }
 }

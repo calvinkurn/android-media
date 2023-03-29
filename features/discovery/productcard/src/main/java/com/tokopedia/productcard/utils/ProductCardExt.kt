@@ -1,21 +1,16 @@
 package com.tokopedia.productcard.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Outline
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
-import android.view.Gravity
 import android.view.TouchDelegate
 import android.view.View
-import android.view.ViewOutlineProvider
 import android.view.ViewStub
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -580,6 +575,75 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Con
             unifyRColor.Unify_NN0
         )
     }
+}
+
+internal fun renderLabelOverlay(
+    isShow: Boolean,
+    labelOverlayBackground: ImageView?,
+    labelOverlay: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (isShow && labelGroup != null) {
+        labelOverlayBackground?.let {
+            it.show()
+            it.rotationX = 180f
+            it.loadImageTopRightCrop(labelGroup.imageUrl)
+        }
+
+        labelOverlay?.let {
+            it.show()
+            it.text = MethodChecker.fromHtml(labelGroup.title)
+        }
+    } else {
+        labelOverlayBackground?.hide()
+        labelOverlay?.hide()
+    }
+}
+
+internal fun renderLabelOverlayStatus(
+    isShow: Boolean,
+    labelOverlayStatus: Label?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if(isShow && labelGroup != null) {
+        labelOverlayStatus?.let {
+            it.show()
+            it.showOverlayLabel(labelGroup)
+        }
+    } else {
+        labelOverlayStatus?.hide()
+    }
+}
+
+private fun Label.showOverlayLabel(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.determineOverlayLabelType(labelGroup.type)
+    }
+}
+
+private fun Label.determineOverlayLabelType(labelGroupType: String) {
+    if (labelGroupType.startsWith('#')) {
+        setCustomOverlayLabelType(labelGroupType)
+    } else {
+        val unifyLabelType = labelGroupType.toUnifyLabelType()
+
+        if (unifyLabelType != -1) setLabelType(unifyLabelType)
+        else trySetCustomOverlayLabelType(labelGroupType)
+    }
+}
+
+private fun Label.setCustomOverlayLabelType(colorHexString: String) {
+    unlockFeature = true
+
+    setLabelType(colorHexString)
+}
+
+private fun Label.trySetCustomOverlayLabelType(labelGroupType: String) {
+    val colorRes = labelGroupType.toUnifyLabelColor(context)
+    val colorHexInt = ContextCompat.getColor(context, colorRes)
+    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+    setCustomOverlayLabelType(colorHexString)
 }
 
 internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {

@@ -40,6 +40,7 @@ private const val KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order"
 private const val KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average"
 private const val KEY_CUSTOM_VIDEO_URL = "customvideo_url"
 private const val KEY_PARENT_ID = "parent_id"
+private const val KEY_IS_PORTRAIT = "isPortrait"
 
 @Parcelize
 data class Product(
@@ -182,6 +183,10 @@ data class Product(
     var isTopAds: Boolean = false,
     var recommendationType: String = "",
     var isLoaded: Boolean = false,
-    var isHasAddToCartButton: Boolean = false
+    var isHasAddToCartButton: Boolean = false,
+
+    @SerializedName(KEY_IS_PORTRAIT)
+    @Expose
+    val isPortrait: Boolean = false,
 
 ) : Parcelable
