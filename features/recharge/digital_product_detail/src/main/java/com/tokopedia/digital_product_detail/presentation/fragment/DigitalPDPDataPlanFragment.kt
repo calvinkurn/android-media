@@ -658,12 +658,6 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetRecommendations(recommendations: RecommendationWidgetModel) {
-        val dummy = RecommendationWidgetModel("Dummy",
-            listOf(RecommendationCardWidgetModel(
-                title = "dummy ha",
-                price = "20000"
-            )    )
-        )
         renderRecommendation(recommendations)
     }
 

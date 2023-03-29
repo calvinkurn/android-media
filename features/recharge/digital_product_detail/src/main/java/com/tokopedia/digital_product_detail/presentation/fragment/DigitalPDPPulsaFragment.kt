@@ -67,7 +67,6 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategor
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
