@@ -46,6 +46,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -58,7 +61,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -78,6 +80,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
@@ -449,7 +452,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM),
                 isEdit = it.getBoolean(EXTRA_IS_EDIT),
                 source = it.getString(PARAM_SOURCE, ""),
-                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY),
+                districtName = it.getString(EXTRA_DISTRICT_NAME),
+                cityName = it.getString(EXTRA_CITY_NAME)
             )
 
             getGmsAvailability(it)
@@ -473,6 +478,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         } else if (viewModel.isGetPinPointOnly || viewModel.isPositiveFlow) {
             if (viewModel.getAddress().hasPinpoint()) {
                 viewModel.getLocationFromLatLong()
+            } else if (viewModel.hasDistrictAndCityName) {
+                viewModel.getGeocodeByDistrictAndCityName()
             } else {
                 getCurrentLocation()
             }
@@ -580,6 +587,24 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             when (it) {
                 is Success -> {
                     showBoundaries(it.data.geometry.listCoordinates)
+                }
+            }
+        }
+
+        viewModel.mapsGeocodeState.observe(viewLifecycleOwner) {
+            when (it) {
+                is MapsGeocodeState.Success -> {
+                    moveMap(getLatLng(it.location.lat, it.location.lng), ZOOM_LEVEL)
+                    viewModel.getLocationFromLatLong()
+                }
+                is MapsGeocodeState.Fail -> {
+                    when {
+                        it.errorMessage.orEmpty().contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
+                        else -> {
+                            viewModel.showIllustrationMap = true
+                            showNotFoundLocation()
+                        }
+                    }
                 }
             }
         }
@@ -1220,6 +1245,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         EXTRA_IS_GET_PINPOINT_ONLY,
                         extra.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
                     )
+                    putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
+                    putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
                 }
             }
         }
