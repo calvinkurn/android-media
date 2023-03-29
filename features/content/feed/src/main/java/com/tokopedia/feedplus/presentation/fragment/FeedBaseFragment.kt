@@ -230,6 +230,25 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (isJustLoggedIn) showJustLoggedInToaster()
         isJustLoggedIn = false
 
+        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
+            OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
+                        )
+                    )
+                }
+                onChangeTab(position)
+            }
+        })
+
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
@@ -252,6 +271,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                             it.throwable.localizedMessage,
                             Toast.LENGTH_SHORT
                         ).show()
+                        else -> {}
                     }
                 }
             }
@@ -473,24 +493,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
-        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
-                        )
-                    )
-                }
-                onChangeTab(position)
-            }
-        })
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
