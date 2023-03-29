@@ -2,11 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -108,6 +104,9 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -142,7 +141,8 @@ class ShipmentPresenterEditAddressPinpointTest {
             TestSchedulers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPlatformFeeUseCase
         )
         presenter.attachView(view)
     }

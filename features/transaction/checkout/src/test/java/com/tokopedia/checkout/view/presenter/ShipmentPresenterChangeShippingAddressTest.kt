@@ -103,6 +103,9 @@ class ShipmentPresenterChangeShippingAddressTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
+    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+
+    @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
     @MockK(relaxed = true)
@@ -142,7 +145,8 @@ class ShipmentPresenterChangeShippingAddressTest {
             TestSchedulers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPlatformFeeUseCase
         )
         presenter.attachView(view)
     }

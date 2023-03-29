@@ -121,6 +121,9 @@ class ShipmentPresenterDisableFeatureTest {
     @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private val gson = Gson()
@@ -157,7 +160,8 @@ class ShipmentPresenterDisableFeatureTest {
             TestSchedulers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPlatformFeeUseCase
         )
         presenter.attachView(view)
     }

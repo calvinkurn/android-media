@@ -111,6 +111,9 @@ class ShipmentPresenterUpdateDynamicDataTest {
     @MockK(relaxed = true)
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var updateDynamicDataParams = DynamicDataPassingParamRequest()
 
@@ -146,7 +149,8 @@ class ShipmentPresenterUpdateDynamicDataTest {
             TestSchedulers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPlatformFeeUseCase
         )
         presenter.attachView(view)
     }

@@ -122,6 +122,9 @@ class ShipmentPresenterBoPromoTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
+    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+
+    @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
     @MockK(relaxed = true)
@@ -165,7 +168,8 @@ class ShipmentPresenterBoPromoTest {
             TestSchedulers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPlatformFeeUseCase
         )
         presenter.attachView(view)
         presenter = spyk(presenter)
