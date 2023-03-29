@@ -477,6 +477,7 @@ class TicketFragment :
             }
 
             is InboxDetailUiEffect.GetDetailInboxDetailFailed -> {
+                hideProgressBar()
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
                         activity?.getString(R.string.contact_us_something_went_wrong).orEmpty()

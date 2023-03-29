@@ -91,23 +91,9 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         }
     }
 
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
-    }
-
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
         if(userSession.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        if(userSession.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }
