@@ -78,8 +78,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private var adapter: FeedPagerAdapter? = null
 
-    private var liveApplink: String = ""
-
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
     private var isJustLoggedIn: Boolean
@@ -361,8 +359,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        liveApplink = meta.liveApplink
-
         mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
                 if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
@@ -415,7 +411,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         binding.btnFeedLive.setOnClickListener {
-            onNavigateToLive()
+            openAppLink.launch(meta.liveApplink)
         }
 
         binding.feedUserProfileImage.setOnClickListener {
@@ -552,10 +548,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 }
             }
         }
-    }
-
-    private fun onNavigateToLive() {
-        openAppLink.launch(liveApplink)
     }
 
     private fun showJustLoggedInToaster() {
