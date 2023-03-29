@@ -16,14 +16,14 @@ import com.tokopedia.media.loader.utils.mediaLoad
 internal object MediaLoaderApi {
 
     fun loadImage(imageView: ImageView, properties: Properties) {
-        val dataAsString = properties.data.toString()
+        val source = properties.data
         val context = imageView.context
 
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
 
         // handling empty url
-        if (properties.data is String && dataAsString.isEmpty()) {
+        if (properties.data is String && source.toString().isEmpty()) {
             return
         }
 
@@ -34,7 +34,7 @@ internal object MediaLoaderApi {
         }
 
         // set the imageView's size only if the consumer needs a blur-hash as a placeholder
-        if (properties.blurHash && dataAsString.isValidUrl()) {
+        if (properties.blurHash && source is String && source.toString().isValidUrl()) {
             properties.setImageSize(
                 width = imageView.measuredWidth,
                 height = imageView.measuredHeight
