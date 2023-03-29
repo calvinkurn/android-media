@@ -8,8 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
+import com.tokopedia.sellerhomecommon.domain.model.ParamCarouselWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -79,7 +79,7 @@ class GetCarouselDataUseCase(
             val dataKeys = dataKey.map {
                 DataKeyModel(
                     key = it,
-                    jsonParams = DynamicParameterModel(
+                    jsonParams = ParamCarouselWidgetModel(
                         page = pageNumber,
                         limit = limits
                     ).toJsonString()

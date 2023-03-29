@@ -10,8 +10,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.UnificationMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
@@ -39,7 +40,7 @@ class GetUnificationDataUseCase @Inject constructor(
 
     private var shopId: String = String.EMPTY
     private var widgets: List<UnificationWidgetUiModel> = emptyList()
-    private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
+    private var dynamicParameter: ParamCommonWidgetModel = ParamCommonWidgetModel()
 
     override val classType: Class<GetUnificationDataResponse>
         get() = GetUnificationDataResponse::class.java
@@ -57,7 +58,7 @@ class GetUnificationDataUseCase @Inject constructor(
     fun setParam(
         shopId: String,
         widgets: List<UnificationWidgetUiModel>,
-        dynamicParameter: DynamicParameterModel
+        dynamicParameter: ParamCommonWidgetModel
     ) {
         this.shopId = shopId
         this.widgets = widgets
@@ -159,8 +160,13 @@ class GetUnificationDataUseCase @Inject constructor(
         isFromCache: Boolean
     ): TableDataUiModel {
         val metricParam = getMetricParamFromTab(tab.metricParam)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
-            listOf(dataKeyModel), dynamicParameter.copy(
+            listOf(dataKeyModel), dynamicParam.copy(
                 subPageSource = metricParam.subPageSource
             )
         )
@@ -181,8 +187,8 @@ class GetUnificationDataUseCase @Inject constructor(
         return tableResult
     }
 
-    private fun getMetricParamFromTab(metricParam: String): DynamicParameterModel {
-        return Gson().fromJson(metricParam, DynamicParameterModel::class.java)
+    private fun getMetricParamFromTab(metricParam: String): ParamTableWidgetModel {
+        return Gson().fromJson(metricParam, ParamTableWidgetModel::class.java)
     }
 
     companion object {
