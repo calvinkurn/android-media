@@ -13,4 +13,16 @@ data class FeedAuthorModel(
     val applink: String = "",
     val encryptedUserId: String = "",
     val isLive: Boolean = false
-)
+) {
+
+    val isShop: Boolean
+        get() = type == TYPE_SHOP
+
+    val isUser: Boolean
+        get() = type == TYPE_USER
+
+    companion object {
+        const val TYPE_SHOP = 2
+        const val TYPE_USER = 3
+    }
+}

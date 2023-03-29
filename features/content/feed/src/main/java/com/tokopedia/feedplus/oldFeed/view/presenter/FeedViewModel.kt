@@ -115,11 +115,11 @@ class FeedViewModel @Inject constructor(
     private val doFollowUseCase: ProfileFollowUseCase,
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileMutationMapper: ProfileMutationMapper,
-    private val getFollowingUseCase: GetFollowingUseCase,
+    private val getFollowingUseCase: GetFollowingUseCase
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
-        private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
+        private const val ERROR_FOLLOW_MESSAGE = "Oops, gagal mem-follow."
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
@@ -221,7 +221,7 @@ class FeedViewModel @Inject constructor(
 
     fun updateFollowStatus() {
         val authorIds = currentFollowState.map { item -> Pair(item.key, item.value.first) }.toList()
-        if (authorIds.isNotEmpty())
+        if (authorIds.isNotEmpty()) {
             viewModelScope.launchCatchError(block = {
                 val shopIdsToUpdate = mutableMapOf<String, Boolean>()
                 val response = withContext(baseDispatcher.io) {
@@ -244,7 +244,8 @@ class FeedViewModel @Inject constructor(
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
                         currentFollowState[item.userId] = Pair(
-                            currentFollowState[item.userId]?.first ?: 0, item.status
+                            currentFollowState[item.userId]?.first ?: 0,
+                            item.status
                         )
                     }
                 }
@@ -252,13 +253,14 @@ class FeedViewModel @Inject constructor(
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
             }
+        }
     }
 
     fun processFollowStatusUpdate(
         currentList: MutableList<Visitable<*>>,
         data: Map<String, Boolean>
     ): MutableList<Visitable<*>> {
-        var newList = mutableListOf<Visitable<*>>();
+        var newList = mutableListOf<Visitable<*>>()
 
         if (data.isNotEmpty()) {
             newList = currentList.map { item ->
@@ -363,7 +365,6 @@ class FeedViewModel @Inject constructor(
                                 )
 
                                 else -> item
-
                             }
                         } ?: item
                     } else {
@@ -631,8 +632,10 @@ class FeedViewModel @Inject constructor(
     fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
-                shopFollowUseCase.executeOnBackground(
-                    shopId = promotedShopViewModel.shop.id
+                shopFollowUseCase(
+                    shopFollowUseCase.createParams(
+                        shopId = promotedShopViewModel.shop.id
+                    )
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
@@ -836,8 +839,10 @@ class FeedViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
-                shopFollowUseCase.executeOnBackground(
-                    shopId = shopId
+                shopFollowUseCase(
+                    shopFollowUseCase.createParams(
+                        shopId = shopId
+                    )
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
@@ -939,8 +944,7 @@ class FeedViewModel @Inject constructor(
 
     private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedNewUseCase.
-            execute(
+            return getDynamicFeedNewUseCase.execute(
                 cursor = currentCursor,
                 screenName = SCREEN_NAME_UPDATE_TAB
             )
@@ -1110,9 +1114,11 @@ class FeedViewModel @Inject constructor(
 
                 val result = when (currentItem.type) {
                     FOLLOW_TYPE_SHOP -> {
-                        val request = shopFollowUseCase.executeOnBackground(
-                            shopId = currentItem.id.toString(),
-                            action = if (currentState == FOLLOW) UnFollow else Follow
+                        val request = shopFollowUseCase(
+                            shopFollowUseCase.createParams(
+                                shopId = currentItem.id.toString(),
+                                action = if (currentState == FOLLOW) UnFollow else Follow
+                            )
                         )
                         shopRecomMapper.mapShopFollow(request)
                     }

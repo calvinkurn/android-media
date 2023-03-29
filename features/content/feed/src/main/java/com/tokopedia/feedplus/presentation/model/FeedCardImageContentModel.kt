@@ -1,6 +1,10 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_LONG_VIDEO
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_POST
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 
 /**
@@ -25,7 +29,6 @@ data class FeedCardImageContentModel(
     val campaign: FeedCardCampaignModel,
     val hasVoucher: Boolean,
     val media: List<FeedMediaModel>,
-    val tags: List<FeedCardProductModel>,
     val hashtagApplinkFmt: String,
     val hashtagWeblinkFmt: String,
     val views: FeedViewModel,
@@ -51,17 +54,12 @@ data class FeedCardImageContentModel(
 
     val isTypeSGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() &&
-            media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
+            media.first().type != TYPE_FEED_LONG_VIDEO && author.type == AUTHOR_SGC
 
     val isTypeUGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
 
     companion object {
-        const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
-        const val TYPE_FEED_X_CARD_PLACEHOLDER = "FeedXCardPlaceholder"
-        const val TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT = "FeedXCardProductsHighlight"
-        const val TYPE_LONG_VIDEO: String = "long-video"
-
         private const val AUTHOR_SGC = 2
         private const val AUTHOR_UGC = 3
     }

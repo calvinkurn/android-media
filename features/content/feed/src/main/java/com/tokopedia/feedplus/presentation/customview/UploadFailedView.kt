@@ -20,13 +20,6 @@ class UploadFailedView : ConstraintLayout {
         defStyleAttr
     )
 
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
-
     private val binding = ViewUploadFailedBinding.inflate(
         LayoutInflater.from(context),
         this

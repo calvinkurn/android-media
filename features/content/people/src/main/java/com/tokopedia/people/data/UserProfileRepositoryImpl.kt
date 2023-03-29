@@ -9,7 +9,17 @@ import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Com
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.people.domains.*
+import com.tokopedia.people.domains.GetFollowerListUseCase
+import com.tokopedia.people.domains.GetFollowingListUseCase
+import com.tokopedia.people.domains.GetUserProfileTabUseCase
+import com.tokopedia.people.domains.PlayPostContentUseCase
+import com.tokopedia.people.domains.PostBlockUserUseCase
+import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
+import com.tokopedia.people.domains.UserDetailsUseCase
+import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.model.ProfileFollowerListBase
+import com.tokopedia.people.model.ProfileFollowingListBase
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -73,14 +83,18 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFeedPosts(userID: String, cursor: String, limit: Int): UserFeedPostsUiModel {
+    override suspend fun getFeedPosts(
+        userID: String,
+        cursor: String,
+        limit: Int
+    ): UserFeedPostsUiModel {
         return withContext(dispatcher.io) {
             return@withContext mapper.mapFeedPosts(
                 getUserProfileFeedPostsUseCase.executeOnBackground(
                     userID = userID,
                     cursor = cursor,
-                    limit = limit,
-                ),
+                    limit = limit
+                )
             )
         }
     }
@@ -98,20 +112,21 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
-        val result = shopRecomUseCase.executeOnBackground(
-            screenName = VAL_SCREEN_NAME_USER_PROFILE,
-            limit = VAL_LIMIT,
-            cursor = cursor,
-        )
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel =
+        withContext(dispatcher.io) {
+            val result = shopRecomUseCase.executeOnBackground(
+                screenName = VAL_SCREEN_NAME_USER_PROFILE,
+                limit = VAL_LIMIT,
+                cursor = cursor
+            )
 
-        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
-    }
+            return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
+        }
 
     override suspend fun getUserProfileTab(userID: String): ProfileTabUiModel {
         return withContext(dispatcher.io) {
             val result = getUserProfileTabUseCase.executeOnBackground(
-                userID = userID,
+                userID = userID
             )
             return@withContext mapper.mapProfileTab(result)
         }

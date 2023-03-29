@@ -39,6 +39,7 @@ class GetConsentCollectionUseCase @Inject constructor(
                       uiDescription
                       alwaysMandatory
                       personalDataType
+                      dataElementType
                     }
                   }
                   notices {

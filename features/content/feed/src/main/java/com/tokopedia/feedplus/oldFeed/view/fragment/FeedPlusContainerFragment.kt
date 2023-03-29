@@ -159,7 +159,8 @@ class FeedPlusContainerFragment :
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
-    @JvmField @Inject
+    @JvmField
+    @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
 
     @Inject
@@ -318,13 +319,17 @@ class FeedPlusContainerFragment :
             it.setToolbarPageName(FEED_PAGE)
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setIcon(getToolbarIcons())
-            it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+            it.setupSearchbar(
+                hints = listOf(HintData()),
+                searchbarClickCallback = ::onImageSearchClick
+            )
         }
     }
 
     private fun getToolbarIcons(): IconBuilder {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-            .addIcon(getInboxIcon()) { onInboxButtonClick() }
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
         icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
         icons.apply {
@@ -480,6 +485,7 @@ class FeedPlusContainerFragment :
             }
         }
     }
+
     private fun goToVideo() {
         if (canGoToVideo()) {
             view_pager.currentItem = pagerAdapter.getVideoTabIndex()
@@ -531,6 +537,7 @@ class FeedPlusContainerFragment :
             badgeNumberCart
         ) // notify badge after toolbar created
     }
+
     private fun registerNewFeedReceiver() {
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
@@ -569,7 +576,7 @@ class FeedPlusContainerFragment :
                     postProgressUpdateView?.hide()
                     Toaster.build(
                         view = requireView(),
-                        text = getString(R.string.feed_upload_shorts_success),
+                        text = getString(R.string.feed_upload_content_success),
                         duration = Toaster.LENGTH_LONG,
                         type = Toaster.TYPE_NORMAL,
                         actionText = getString(R.string.feed_upload_shorts_see_video),
@@ -579,7 +586,11 @@ class FeedPlusContainerFragment :
                                 uploadData.authorType,
                                 uploadData.shortsId
                             )
-                            RouteManager.route(requireContext(), ApplinkConst.PLAY_DETAIL, uploadData.shortsId)
+                            RouteManager.route(
+                                requireContext(),
+                                ApplinkConst.PLAY_DETAIL,
+                                uploadData.shortsId
+                            )
                         }
                     ).show()
                 }
@@ -675,7 +686,11 @@ class FeedPlusContainerFragment :
 
             override fun onPageSelected(position: Int) {
                 toolBarAnalytics.clickOnVideoTabOnFeedPage(position, userSession.userId)
-                toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+                toolBarAnalytics.createAnalyticsForOpenScreen(
+                    position,
+                    userSession.isLoggedIn.toString(),
+                    userSession.userId
+                )
                 updateArgumentValueAsPerSelectedTab(position)
 
                 updateFeedUpdateVisibility(position)
@@ -718,14 +733,16 @@ class FeedPlusContainerFragment :
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+        val feedData =
+            data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         feedData.forEach {
             tab_layout?.addNewTab(it.title)
         }
 
         pagerAdapter.setItemList(feedData)
-        viewPager?.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
+        viewPager?.currentItem =
+            if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         viewPager?.offscreenPageLimit = pagerAdapter.count
         feed_loading.visibility = View.GONE
         feed_error.visibility = View.GONE
@@ -744,6 +761,7 @@ class FeedPlusContainerFragment :
             onCoachmarkFinish()
         }
     }
+
     private fun openTabAsPerParamValue() {
         when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
             EXPLORE_TAB_POSITION -> goToExplore()
@@ -775,8 +793,10 @@ class FeedPlusContainerFragment :
             } else {
                 feedFloatingButton.hide()
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
     }
+
     private fun canGoToVideo(): Boolean {
         return pagerAdapter.isVideoTabExist()
     }
@@ -803,10 +823,22 @@ class FeedPlusContainerFragment :
                 entryPointAnalytic.clickCreatePostEntryPoint()
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
-                intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
-                intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                intent.putExtra(
+                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                intent.putExtra(
+                    BundleData.MAX_MULTI_SELECT_ALLOWED,
+                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                )
+                intent.putExtra(
+                    BundleData.TITLE,
+                    getString(feedComponentR.string.feed_post_sebagai)
+                )
+                intent.putExtra(
+                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
@@ -842,7 +874,12 @@ class FeedPlusContainerFragment :
             ivFeedUser.onUrlLoaded = { isSuccess ->
                 if (!isSuccess) {
                     ivFeedUser.post {
-                        ivFeedUser.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_user_profile_default))
+                        ivFeedUser.setImageDrawable(
+                            MethodChecker.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_user_profile_default
+                            )
+                        )
                     }
                 }
             }
@@ -903,7 +940,10 @@ class FeedPlusContainerFragment :
         fabFeed.menuOpen = false
     }
 
-    private fun showOnboardingStepsCoachmark(shouldShowShortVideoCoachmark: Boolean, shouldShowUserProfileCoachmark: Boolean) {
+    private fun showOnboardingStepsCoachmark(
+        shouldShowShortVideoCoachmark: Boolean,
+        shouldShowUserProfileCoachmark: Boolean
+    ) {
         var anchorMap: Map<String, View> = mutableMapOf()
 
         ivFeedUser?.let {
@@ -988,6 +1028,7 @@ class FeedPlusContainerFragment :
         }
         updateVisibility(false)
     }
+
     fun videoTabAutoPlayJumboWidget() {
         try {
             val fragment = pagerAdapter.getRegisteredFragment(viewPager?.currentItem ?: 0)
@@ -998,6 +1039,7 @@ class FeedPlusContainerFragment :
             Timber.e(e)
         }
     }
+
     fun updateFeedUpdateVisibility(position: Int) {
         try {
             val feedFragment = pagerAdapter.getRegisteredFragment(FEED_FRAGMENT_INDEX)

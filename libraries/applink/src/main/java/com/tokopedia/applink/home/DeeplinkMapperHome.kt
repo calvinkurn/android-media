@@ -46,7 +46,6 @@ object DeeplinkMapperHome {
         } else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV)) {
             return ApplinkConsInternalNavigation.MAIN_NAVIGATION
         } else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1) {
-            //TODO("Adjust for new unified feed")
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
         } else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2) {
             return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT

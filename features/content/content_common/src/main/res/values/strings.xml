@@ -141,5 +141,7 @@
 
     <!--Report Bottom Sheet -->
     <string name="feed_common_reason_type_fraud" translatable="false">fraud</string>
+    <string name="feed_menu_report_bs_header">Laporkan</string>
+
 
 </resources>

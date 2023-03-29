@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.feedplus.databinding.BottomSheetFeedContentCreationBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedCreationTypeAdapter
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedCreationTypeViewHolder
@@ -52,9 +51,6 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)
-        clearClose(true)
-        clearHeader(true)
-
     }
 
     private fun setupView() {
@@ -66,7 +62,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if(!isAdded) show(fragmentManager, TAG)
+        if (!isAdded) show(fragmentManager, TAG)
     }
 
     fun setData(contentAccountList: List<ContentCreationTypeItem>): FeedContentCreationTypeBottomSheet {
@@ -79,7 +75,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): FeedContentCreationTypeBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedContentCreationTypeBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
