@@ -8,10 +8,28 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.media.editor.R as editorR
 
 class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
+    private var carouselIndex = 0
+    set(value) {
+        if (value > btnTextCollection.size - 1) {
+            dismiss()
+            return
+        }
+        field = value
+        updateBtnAndCarousel()
+    }
+
+    private var btnRef: UnifyButton? = null
+    private var carouselRef: CarouselUnify? = null
+
+    private val btnTextCollection = listOf<String>(
+        "Lanjut",
+        "Oke, Mengerti"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,18 +39,21 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
         setTitle(TIPS_TITLE)
         inflater.inflate(editorR.layout.add_text_tips_bottomsheet, null)?.apply {
             setChild(this)
-            setCarousel(
-                findViewById(editorR.id.tips_text_carousel)
-            )
+
+            carouselRef = findViewById(editorR.id.tips_text_carousel)
+            btnRef = findViewById(editorR.id.btn_next)
+
+            setCarousel()
+            setBtnListener()
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setCarousel(carousel: CarouselUnify) {
+    private fun setCarousel() {
         var index = 0
 
-        carousel.apply {
+        carouselRef?.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
             freeMode = false
@@ -63,6 +84,17 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
                 index++
             }
         }
+    }
+
+    private fun setBtnListener() {
+        btnRef?.setOnClickListener {
+            carouselIndex++
+        }
+    }
+
+    private fun updateBtnAndCarousel() {
+        btnRef?.text = btnTextCollection[carouselIndex]
+        carouselRef?.activeIndex = carouselIndex
     }
 
     companion object{

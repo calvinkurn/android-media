@@ -410,13 +410,9 @@ class DetailEditorFragment @Inject constructor(
     }
 
     // === Listener add text
-    override fun onAddFreeText() {
-        openAddTextActivity()
-    }
+    override fun onAddFreeText() {}
 
-    override fun onAddSingleBackgroundText() {
-        isEdited = true
-    }
+    override fun onAddSingleBackgroundText() {}
 
     override fun onChangePosition() {
         val intent = Intent(activity, AddTextActivity::class.java)
@@ -646,6 +642,10 @@ class DetailEditorFragment @Inject constructor(
                 setImageView(data.resultUrl ?: url, false)
                 viewBinding?.imgPreviewOverlay?.setOnClickListener {
                     openAddTextActivity()
+                }
+
+                if (data.addTextValue == null) {
+                    showAddTextTips()
                 }
             }
         }
@@ -1248,7 +1248,14 @@ class DetailEditorFragment @Inject constructor(
     }
 
     fun showAddTextTips() {
-        EditorAddTextTipsBottomSheet().show(childFragmentManager, BOTTOM_SHEET_TAG)
+        EditorAddTextTipsBottomSheet().apply {
+            show(this@DetailEditorFragment.childFragmentManager, BOTTOM_SHEET_TAG)
+            if (data.addTextValue == null) {
+                setOnDismissListener {
+                    openAddTextActivity()
+                }
+            }
+        }
     }
 
     private fun showAddLogoPicker() {
