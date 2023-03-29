@@ -239,8 +239,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun initAnchorTabMenu() {
         anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
-        binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
-        binding?.headerCompHolder?.adapter = anchorTabAdapter
+        binding?.rvAnchorTab?.layoutManager = anchorTabLinearLayoutManager
+        binding?.rvAnchorTab?.adapter = anchorTabAdapter
     }
 
     private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
@@ -827,7 +827,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val transparentUnify = android.R.color.transparent
         val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
         navToolbar?.setBackgroundColor(transparentColor)
-        binding?.headerCompHolder?.setBackgroundColor(transparentColor)
+        binding?.rvAnchorTab?.setBackgroundColor(transparentColor)
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
         binding?.dtViewBackgroundImage?.visible()
 
@@ -840,7 +840,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val whiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_NN0
         val whiteColor = ResourcesCompat.getColor(requireContext().resources, whiteUnify, null)
         navToolbar?.setBackgroundColor(whiteColor)
-        binding?.headerCompHolder?.setBackgroundColor(whiteColor)
+        binding?.rvAnchorTab?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
         statusBarState = AnchorTabStatus.MINIMIZE
@@ -894,7 +894,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             override val homeMainAnchorTabHeight: Int
                 get() {
-                    return binding?.headerCompHolder?.height ?: 0
+                    return binding?.rvAnchorTab?.height ?: 0
                 }
         }
     }
