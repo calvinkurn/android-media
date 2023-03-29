@@ -2490,7 +2490,7 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
      },
      {
-          "destination_activity": "com.tokopedia.loginHelper.presentation.LoginHelperActivity",
+          "destination_activity": "com.tokopedia.login_helper.presentation.LoginHelperActivity",
           "deeplink": "tokopedia-android-internal://global/login-helper",
           "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
      }
