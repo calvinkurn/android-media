@@ -234,7 +234,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                     override fun onProductSetupDismissed() {
                         if (productSetupPendingToaster == null) return
-                        toaster.showToaster(productSetupPendingToaster)
+                        toaster.showToaster(productSetupPendingToaster.orEmpty())
                         productSetupPendingToaster = null
                     }
                 })
