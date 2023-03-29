@@ -133,4 +133,7 @@
     <string name="checkout_epharmacy_coachmark_description">Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~</string>
     <string name="checkout_error_unblocking_message">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
     <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
+
+    <!--PLATFORM FEE-->
+    <string name="platform_fee_title_info">Tentang %s</string>
 </resources>

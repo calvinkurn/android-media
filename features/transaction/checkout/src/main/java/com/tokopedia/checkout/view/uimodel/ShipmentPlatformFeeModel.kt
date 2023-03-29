@@ -13,5 +13,5 @@ data class ShipmentPlatformFeeModel(
         var maxRange: Double = 0.0,
         var isLoading: Boolean = false,
         var isShowTooltip: Boolean = false,
-        var tickerDesc: String = ""
+        var tooltip: String = ""
 ) : Parcelable

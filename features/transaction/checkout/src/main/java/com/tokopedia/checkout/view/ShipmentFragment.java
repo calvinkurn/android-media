@@ -205,6 +205,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.TimerUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
@@ -4295,6 +4296,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         getPlatformFeeData();
     }
 
+    @Override
+    public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPlatformFeeModel platformFeeModel) {
+        View childView = View.inflate(getContext(), R.layout.bottom_sheet_platform_fee_info, null);
+        Typography tvPlatformFeeInfo = childView.findViewById(R.id.tv_platform_fee_info);
+        tvPlatformFeeInfo.setText(platformFeeModel.getTooltip());
+
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.getTitle()));
+        bottomSheetUnify.setShowCloseIcon(true);
+        bottomSheetUnify.setChild(childView);
+        bottomSheetUnify.show(getChildFragmentManager(), null);
+    }
+
     private void getPlatformFeeData() {
         PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
         platformFeeRequest.setGatewayCode("CREDITCARD");
@@ -4313,7 +4327,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 platformFeeModel.setMinRange(paymentFee.getMinRange());
                 platformFeeModel.setMaxRange(paymentFee.getMaxRange());
                 platformFeeModel.setShowTooltip(paymentFee.getShowTooltip());
-                platformFeeModel.setTickerDesc(paymentFee.getTooltipInfo());
+                platformFeeModel.setTooltip(paymentFee.getTooltipInfo());
                 platformFeeModel.setSlashedFeeTitle(paymentFee.getSlashedLabel());
                 platformFeeModel.setSlashedFee(paymentFee.getSlashedFee() * -1);
             }

@@ -48,7 +48,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
                     "code": "platform_fee",
                     "title": "Biaya Jasa Aplikasi",
                     "fee": 1000,
-                    "tooltip_info": "Biaya jasa aplikasi gagal ditampilkan. Kamu bisa lanjut ke Pembayaran buat lihat Total Tagihan atau muat ulang",
+                    "tooltip_info": "Biaya jasa aplikasi kami pakai untuk kasih kamu layanan terbaik. Jumlahnya disesuaikan dengan total tagihanmu.",
                     "show_tooltip": true,
                     "show_slashed": true,
                     "slashed_fee": 500,

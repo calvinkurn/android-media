@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -160,4 +161,6 @@ public interface ShipmentAdapterActionListener {
     void checkPlatformFee();
 
     void refetchPlatformFee();
+
+    void showPlatformFeeTooltipInfoBottomSheet(ShipmentPlatformFeeModel platformFeeModel);
 }

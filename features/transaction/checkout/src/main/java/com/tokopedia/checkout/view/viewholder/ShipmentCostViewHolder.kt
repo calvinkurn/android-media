@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
@@ -191,47 +190,41 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mLoaderPlatformFeeLabel.visible()
             mLoaderPlatformFeeValue.visible()
         } else {
-            if (platformFeeModel.isShowTooltip) {
-                mTickerPlatformFeeInfo.visible()
-                mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.tickerDesc)
-                mTickerPlatformFeeInfo.closeButtonVisibility = View.GONE
-                mTickerPlatformFeeInfo.setDescriptionClickEvent(object: TickerCallback{
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        shipmentAdapterActionListener.refetchPlatformFee();
-                    }
+            mTickerPlatformFeeInfo.gone()
 
-                    override fun onDismiss() { }
-
-                })
+            if (platformFeeModel.title.isEmpty()) {
+                mLoaderPlatformFeeLabel.gone()
+                mLoaderPlatformFeeValue.gone()
+                mTvPlatformFeeLabel.gone()
+                mIvPlatformFeeIconInfo.gone()
+                mTvPlatformFeeValue.gone()
+                mTvDiscountPlatformFeeLabel.gone()
+                mTvDiscountPlatformFeeValue.gone()
             } else {
-                if (platformFeeModel.title.isEmpty()) {
-                    mLoaderPlatformFeeLabel.gone()
-                    mLoaderPlatformFeeValue.gone()
-                    mTickerPlatformFeeInfo.gone()
-                    mTvPlatformFeeLabel.gone()
-                    mIvPlatformFeeIconInfo.gone()
-                    mTvPlatformFeeValue.gone()
+                mLoaderPlatformFeeLabel.gone()
+                mLoaderPlatformFeeValue.gone()
+                mTvPlatformFeeLabel.visible()
+                mTvPlatformFeeLabel.text = platformFeeModel.title
+                mTvPlatformFeeValue.visible()
+                mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+
+                if (platformFeeModel.slashedFeeTitle.isNotEmpty()) {
+                    mTvDiscountPlatformFeeLabel.visible()
+                    mTvDiscountPlatformFeeLabel.text = platformFeeModel.slashedFeeTitle
+                    mTvDiscountPlatformFeeValue.visible()
+                    mTvDiscountPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+                } else {
                     mTvDiscountPlatformFeeLabel.gone()
                     mTvDiscountPlatformFeeValue.gone()
-                } else {
-                    mLoaderPlatformFeeLabel.gone()
-                    mLoaderPlatformFeeValue.gone()
-                    mTickerPlatformFeeInfo.gone()
-                    mTvPlatformFeeLabel.visible()
-                    mTvPlatformFeeLabel.text = platformFeeModel.title
-                    mIvPlatformFeeIconInfo.visible()
-                    mTvPlatformFeeValue.visible()
-                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+                }
 
-                    if (platformFeeModel.slashedFeeTitle.isNotEmpty()) {
-                        mTvDiscountPlatformFeeLabel.visible()
-                        mTvDiscountPlatformFeeLabel.text = platformFeeModel.slashedFeeTitle
-                        mTvDiscountPlatformFeeValue.visible()
-                        mTvDiscountPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
-                    } else {
-                        mTvDiscountPlatformFeeLabel.gone()
-                        mTvDiscountPlatformFeeValue.gone()
+                if (platformFeeModel.isShowTooltip) {
+                    mIvPlatformFeeIconInfo.visible()
+                    mIvPlatformFeeIconInfo.setOnClickListener{
+                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
                     }
+                } else {
+                    mIvPlatformFeeIconInfo.gone()
                 }
             }
         }
