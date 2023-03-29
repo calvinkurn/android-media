@@ -109,13 +109,12 @@ object DtUniversalShareUtil {
                 linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString =
-                            String.format(
-                                Locale.getDefault(),
-                                "%s %s",
-                                SHARE_LINK_DESCRIPTION,
-                                linkerShareData?.shareUri.orEmpty()
-                            )
+                        val shareString = String.format(
+                            Locale.getDefault(),
+                            "%s %s",
+                            SHARE_LINK_DESCRIPTION,
+                            linkerShareData?.shareUri.orEmpty()
+                        )
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                         onSuccess.invoke()
                     }
