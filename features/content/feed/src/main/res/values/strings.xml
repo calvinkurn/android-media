@@ -80,7 +80,7 @@ dari Feed.</string>
     <!-- Upload -->
     <string name="cp_common_progress_bar_text">Memproses...</string>
     <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
-    <string name="feed_upload_shorts_success">Yay, video kamu berhasil di-upload!</string>
+    <string name="feed_upload_content_success">Yay, konten kamu berhasil di-upload!</string>
     <string name="feed_upload_shorts_see_video">Lihat</string>
 
     <string name="feed_for_you_label">Untuk Kamu</string>
@@ -123,4 +123,9 @@ dari Feed.</string>
     <!-- Transcoding Livestream to VOD -->
     <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
     <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>
+
+    <!--Uploading-->
+    <string name="feed_uploading_title">Diproses</string>
+    <string name="feed_upload_failed_title">Gagal Upload</string>
+
 </resources>

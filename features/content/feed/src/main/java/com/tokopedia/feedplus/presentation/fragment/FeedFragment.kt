@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -87,7 +86,6 @@ class FeedFragment :
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
     private var isInClearViewMode: Boolean = false
@@ -111,13 +109,6 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                feedMenuSheet.showToasterOnLoginSuccessFollow(
-                    getString(
-                        feedR.string.feed_report_login_success_toaster_text,
-                        userSession.name
-                    ),
-                    Toaster.TYPE_NORMAL
-                )
             }
         }
 
@@ -517,24 +508,12 @@ class FeedFragment :
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
             if (adapter!!.itemCount == 0) {
                 adapter?.showLoading()
             }
 
-            LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
-            it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
-            it.rvFeedPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                        layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
-                    ) {
-                        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
-                    }
-                }
-            })
         }
     }
 

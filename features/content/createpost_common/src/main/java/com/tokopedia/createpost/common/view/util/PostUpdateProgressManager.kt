@@ -19,6 +19,8 @@ abstract class PostUpdateProgressManager(
     companion object {
         private val TAG = PostUpdateProgressManager::class.java.simpleName
         private var isEditPostValue: Boolean = false
+
+        private const val PERCENTAGE = 100
     }
 
     private var currentProgress = 0
@@ -59,6 +61,7 @@ abstract class PostUpdateProgressManager(
         val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
         intent.putExtra(SUBMIT_POST_SUCCESS_NEW, false)
         intent.putExtra(UPLOAD_ERROR_MESSAGE, errorMessage)
+        intent.putExtra(UPLOAD_FIRST_IMAGE, imgUrl)
         val cacheManager = SaveInstanceCacheManager(this.context, true)
         cacheManager.put(
             CreatePostViewModel.TAG,
@@ -70,9 +73,16 @@ abstract class PostUpdateProgressManager(
     }
 
     private fun sendBroadcast(currentProgress: Int, imageUrl: String) {
+
+        val progressPercentage = if(maxCount == 0) {
+            0
+        } else {
+            (currentProgress / maxCount.toDouble() * PERCENTAGE).toInt()
+        }
+
         val intent = Intent(UPLOAD_POST_NEW)
         intent.putExtra(UPLOAD_POST_SUCCESS_NEW, true)
-        intent.putExtra(UPLOAD_POST_PROGRESS, currentProgress)
+        intent.putExtra(UPLOAD_POST_PROGRESS, progressPercentage)
         intent.putExtra(MAX_FILE_UPLOAD, maxCount)
         intent.putExtra(UPLOAD_FIRST_IMAGE, imageUrl)
         intent.putExtra(IS_EDIT_POST, isEditPostValue)
