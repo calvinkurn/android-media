@@ -514,15 +514,6 @@ class FeedFragment :
             }
 
             it.rvFeedPost.adapter = adapter
-//            (it.rvFeedPost.getChildAt(0) as RecyclerView).addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-//                        layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
-//                    ) {
-//                        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
-//                    }
-//                }
-//            })
         }
     }
 
