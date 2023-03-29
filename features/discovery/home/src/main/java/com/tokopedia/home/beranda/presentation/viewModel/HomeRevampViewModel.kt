@@ -783,7 +783,7 @@ open class HomeRevampViewModel @Inject constructor(
                         homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
                     }
                 }
-            } catch (e: Exception) { }
+            } catch (_: Exception) { }
         }
     }
 }
