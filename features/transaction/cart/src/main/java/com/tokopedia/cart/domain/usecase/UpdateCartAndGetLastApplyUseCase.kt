@@ -28,12 +28,16 @@ class UpdateCartAndGetLastApplyUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): UpdateAndValidateUseData {
         val updateAndValidateUseData = UpdateAndValidateUseData()
-        val updateCartData = updateCartUseCase.setParams(params).executeOnBackground()
+        val updateCartData = updateCartUseCase
+            .setParams(params)
+            .executeOnBackground()
         updateAndValidateUseData.updateCartData = updateCartData
         if (!updateCartData.isSuccess) {
             throw CartResponseErrorException(updateCartData.message)
         }
-        val getLastApplyData = getLastApplyPromoUseCase.setParam(params.getLastApplyPromoRequest).executeOnBackground()
+        val getLastApplyData = getLastApplyPromoUseCase
+            .setParam(params.getLastApplyPromoRequest)
+            .executeOnBackground()
         updateAndValidateUseData.promoUiModel = getLastApplyData.promoUiModel
         return updateAndValidateUseData
     }
