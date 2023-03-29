@@ -68,13 +68,15 @@ fun NestTextField(
             counter?.let {
                 val currentCount = value.length
                 NestTypography(
-                    textAlign = TextAlign.End,
                     text = "$currentCount/$it",
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1F)
                         .padding(horizontal = 16.dp),
-                    textStyle = NestTheme.typography.small.copy(color = if (currentCount >= it) NestTheme.colors.RN._500 else NestTheme.colors.NN._600)
+                    textStyle = NestTheme.typography.small.copy(
+                        color = if (currentCount >= it) NestTheme.colors.RN._500 else NestTheme.colors.NN._600,
+                        textAlign = TextAlign.End
+                    )
                 )
             }
         }

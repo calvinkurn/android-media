@@ -12,7 +12,6 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,8 +25,7 @@ fun NestTypography(
     textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    textAlign: TextAlign? = null
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     Text(
         text = text,
@@ -35,8 +33,7 @@ fun NestTypography(
         style = textStyle,
         maxLines = maxLines,
         overflow = overflow,
-        onTextLayout = onTextLayout,
-        textAlign = textAlign
+        onTextLayout = onTextLayout
     )
 }
 
@@ -47,8 +44,7 @@ fun NestTypography(
     textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    textAlign: TextAlign? = null
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     Text(
         text = text,
@@ -56,8 +52,7 @@ fun NestTypography(
         style = textStyle,
         maxLines = maxLines,
         overflow = overflow,
-        onTextLayout = onTextLayout,
-        textAlign = textAlign
+        onTextLayout = onTextLayout
     )
 }
 
@@ -68,8 +63,7 @@ fun NestTypography(
     textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    textAlign: TextAlign? = null
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     if (text is AnnotatedString) {
         Text(
@@ -78,8 +72,7 @@ fun NestTypography(
             style = textStyle,
             maxLines = maxLines,
             overflow = overflow,
-            onTextLayout = onTextLayout,
-            textAlign = textAlign
+            onTextLayout = onTextLayout
         )
     } else {
         Text(
@@ -88,8 +81,7 @@ fun NestTypography(
             style = textStyle,
             maxLines = maxLines,
             overflow = overflow,
-            onTextLayout = onTextLayout,
-            textAlign = textAlign
+            onTextLayout = onTextLayout
         )
     }
 }
