@@ -589,15 +589,15 @@ class ShipmentMapper @Inject constructor() {
                 shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
                 else -> SHOP_TYPE_REGULER
             }
-        return ShopTypeInfoData().apply {
-            shopTier = shopTypeInfo.shopTier
-            shopGrade = shopTypeInfo.shopGrade
-            shopBadge = shopTypeInfo.shopBadge
-            badgeSvg = shopTypeInfo.badgeSvg
-            title = shopTypeInfo.title
-            titleFmt = shopTypeInfo.titleFmt
+        return ShopTypeInfoData(
+            shopTier = shopTypeInfo.shopTier,
+            shopGrade = shopTypeInfo.shopGrade,
+            shopBadge = shopTypeInfo.shopBadge,
+            badgeSvg = shopTypeInfo.badgeSvg,
+            title = shopTypeInfo.title,
+            titleFmt = shopTypeInfo.titleFmt,
             shopType = tmpShopType
-        }
+        )
     }
 
     private fun mapShipmentInformationData(shipmentInformation: ShipmentInformation): ShipmentInformationData {

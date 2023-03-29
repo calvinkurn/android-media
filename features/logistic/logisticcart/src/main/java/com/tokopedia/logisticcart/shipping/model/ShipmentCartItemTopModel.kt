@@ -7,7 +7,6 @@ data class ShipmentCartItemTopModel(
     val isHasUnblockingError: Boolean = false,
     val unblockingErrorMessage: String = "",
     val firstProductErrorIndex: Int = -1,
-    val isTriggerScrollToErrorProduct: Boolean = false,
     val isCustomEpharmacyError: Boolean = false,
 
     // Shop data
@@ -17,20 +16,17 @@ data class ShipmentCartItemTopModel(
     val preOrderInfo: String = "",
     val freeShippingBadgeUrl: String = "",
     val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-    val hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
+    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     val shopLocation: String = "",
     val shopAlertMessage: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
-    val isTokoNow: Boolean = false,
     val shopTickerTitle: String = "",
-    val shopTicker: String = "",
+    var shopTicker: String = "",
     val enablerLabel: String = "",
     val hasTradeInItem: Boolean = false,
 
     val isFulfillment: Boolean = false,
     val fulfillmentBadgeUrl: String = "",
-
-    val isStateAllItemViewExpanded: Boolean = true,
 
     override val cartString: String
 ) : ShipmentCartItem

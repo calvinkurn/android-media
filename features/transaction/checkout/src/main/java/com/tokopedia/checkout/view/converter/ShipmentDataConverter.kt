@@ -260,7 +260,6 @@ class ShipmentDataConverter @Inject constructor() {
                     isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
                     unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage ?: "",
                     firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
-                    isTriggerScrollToErrorProduct = shipmentCartItemModel.isTriggerScrollToErrorProduct,
                     isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
                     shopId = shipmentCartItemModel.shopId,
                     shopName = shipmentCartItemModel.shopName ?: "",
@@ -272,14 +271,12 @@ class ShipmentDataConverter @Inject constructor() {
                     shopLocation = shipmentCartItemModel.shopLocation ?: "",
                     shopAlertMessage = shipmentCartItemModel.shopAlertMessage ?: "",
                     shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData,
-                    isTokoNow = shipmentCartItemModel.isTokoNow,
                     shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
                     shopTicker = shipmentCartItemModel.shopTicker,
                     enablerLabel = shipmentCartItemModel.enablerLabel,
                     hasTradeInItem = shipmentCartItemModel.cartItemModels.firstOrNull { it.isValidTradeIn } != null,
                     isFulfillment = shipmentCartItemModel.isFulfillment,
-                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: "",
-                    isStateAllItemViewExpanded = shipmentCartItemModel.isStateAllItemViewExpanded
+                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: ""
                 )
 
             shipmentCartItemModels.add(shipmentCartItemTopModel)

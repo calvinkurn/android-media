@@ -92,7 +92,7 @@ class ShipmentAdapter @Inject constructor(
         const val SECOND_HEADER_POSITION = 1
     }
 
-    private val shipmentDataList: ArrayList<Any> = ArrayList()
+    val shipmentDataList: ArrayList<Any> = ArrayList()
     private var tickerAnnouncementHolderData: TickerAnnouncementHolderData? = null
     private var uploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
     var shipmentCartItemModelList: List<ShipmentCartItemModel>? = null
@@ -1179,6 +1179,23 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
+    fun getShipmentCartItemGroupByCartString(cartString: String): Pair<Int, List<ShipmentCartItem>> {
+        val cartGroupList = arrayListOf<ShipmentCartItem>()
+        var startingIndex = RecyclerView.NO_POSITION
+        for ((index, data) in shipmentDataList.withIndex()) {
+            if (data is ShipmentCartItemTopModel && data.cartString == cartString) {
+                startingIndex = index
+                cartGroupList.add(data)
+            } else if (data is ShipmentCartItemModel && data.cartString == cartString) {
+                cartGroupList.add(data)
+                break
+            } else if (data is ShipmentCartItem && data.cartString == cartString) {
+                cartGroupList.add(data)
+            }
+        }
+        return Pair(startingIndex, cartGroupList)
+    }
+
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
         return if (shipmentDataList.isNotEmpty() && index >= 0 && index < shipmentDataList.size) {
             if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
@@ -1286,20 +1303,8 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onViewFreeShippingPlusBadge()
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String) {
-        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
-    }
-
-    override fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, data) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
-        if (data != null) {
-            onClickExpandGroupProduct(position, data)
-        }
-    }
-
-    override fun onErrorShouldScrollToProduct(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, _) = getFirstErrorCartItemByCartString(shipmentCartItemModel.cartString)
-        shipmentAdapterActionListener.scrollToPositionWithOffset(position)
+    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String, shipmentCartItemTopModel: ShipmentCartItemTopModel) {
+        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage, shipmentCartItemTopModel)
     }
 
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
@@ -1376,6 +1381,11 @@ class ShipmentAdapter @Inject constructor(
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
         shipmentDataList[position] = shipmentCartItemModel
+        notifyItemChanged(position)
+    }
+
+    fun updateItem(item: Any, position: Int) {
+        shipmentDataList[position] = item
         notifyItemChanged(position)
     }
 }

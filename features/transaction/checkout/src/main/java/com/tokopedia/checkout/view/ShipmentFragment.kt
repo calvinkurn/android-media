@@ -111,6 +111,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.CourierItemData.Companion.clone
@@ -120,6 +121,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -3454,11 +3456,48 @@ class ShipmentFragment :
         }
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String) {
-        checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
-            shopId,
-            errorMessage
+    override fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        shipmentCartItemTopModel: ShipmentCartItemTopModel
+    ) {
+        val (index, shipmentCartItems) = shipmentAdapter.getShipmentCartItemGroupByCartString(
+            shipmentCartItemTopModel.cartString
         )
+        if (index > -1) {
+            val cartItemExpandModelIndex = shipmentCartItems.indexOfLast { it is CartItemExpandModel }
+            val shipmentCartItemModel = shipmentCartItems.last() as ShipmentCartItemModel
+            if (cartItemExpandModelIndex > -1) {
+                var cartItemExpandModel =
+                    shipmentCartItems[cartItemExpandModelIndex] as CartItemExpandModel
+                if (!cartItemExpandModel.isExpanded) {
+                    cartItemExpandModel = cartItemExpandModel.copy(isExpanded = true)
+                    shipmentAdapter.updateItem(cartItemExpandModel, index + cartItemExpandModelIndex)
+                    val newCartItems = shipmentCartItemModel.cartItemModels.drop(1)
+                    shipmentAdapter.shipmentDataList.addAll(index + 2, newCartItems)
+                    if (binding?.rvShipment?.isComputingLayout == true) {
+                        binding?.rvShipment?.post {
+                            shipmentAdapter.notifyItemRangeInserted(index + 2, newCartItems.size)
+                            binding?.rvShipment?.scrollToPosition(index + 1 + shipmentCartItemModel.firstProductErrorIndex)
+                        }
+                    } else {
+                        shipmentAdapter.notifyItemRangeInserted(index + 2, newCartItems.size)
+                        binding?.rvShipment?.scrollToPosition(index + 1 + shipmentCartItemModel.firstProductErrorIndex)
+                    }
+                    checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
+                        shopId,
+                        errorMessage
+                    )
+                    return
+                }
+            }
+            val firstErrorPosition = index + 1 + shipmentCartItemModel.firstProductErrorIndex
+            binding?.rvShipment?.scrollToPosition(firstErrorPosition)
+            checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
+                shopId,
+                errorMessage
+            )
+        }
     }
 
     override fun onClickRefreshErrorLoadCourier() {
