@@ -1,13 +1,9 @@
 {
-  "count": 7,
+  "count": 5,
   "users" : [
     {
       "email" : "vesiXn1xTyqsw8NSv7n124UCCDyIrwpENmHO7ojElHhijn08AGRTOSZrPlA1C4wo",
       "password" : "qiqbLTvjg+7QuOoazoKHpA=="
-    },
-    {
-      "email" : "w8li7xwERhGYpvjKkJNd9sxRDCDEodjNs9RIAY9Gt/Yx8YKfMHld5OW7qXpt7OJKPV5kMA6U2SwyPHKwZ/3ptw==",
-      "password" : "vHbL0kAdHQk7/Q8Rx0CoPQ=="
     },
     {
       "email" : "dVgd5Z87z8KIWa9vFmOviwSe6HxZyYmnvGP1FJpS4FWZoQ8oyeEuhaCHSDSB1VQus6vjQ7PkNZhGazOHk33Kmw==",
@@ -22,11 +18,7 @@
       "password" : "G5qJb0va57imuNVmWgTYBg=="
     },
     {
-      "email" : "ITwDC1Rf1rG/tLOuU9iKHp+LX/ISOw+88q2RTgFCFGo=",
-      "password" : "vzt3j+gBNHX/eQL1Xd8tsw=="
-    },
-    {
-      "email" : "8fKox0quO+jnD9XlE3q3tpRsD57ZGJftv9ysuL8C16Y=",
+      "email" : "w8li7xwERhGYpvjKkJNd9vO9nJHyIhSWewnkBwA5IZEem2YsXy8BZx8cmuP/VlO2pxyO59edLlE+xgYXA8QTcw==",
       "password" : "vHbL0kAdHQk7/Q8Rx0CoPQ=="
     }
   ]
