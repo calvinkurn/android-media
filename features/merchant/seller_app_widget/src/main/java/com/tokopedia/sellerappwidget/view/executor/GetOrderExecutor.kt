@@ -1,9 +1,12 @@
 package com.tokopedia.sellerappwidget.view.executor
 
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.widget.RemoteViews
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
@@ -11,13 +14,10 @@ import com.tokopedia.sellerappwidget.domain.usecase.GetOrderUseCase
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetLoadingState
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetNoShopState
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetOrderWorker
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.TimeHelper
 import timber.log.Timber
 import java.util.*
@@ -44,27 +44,15 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         val mapper = OrderMapper()
         val getNewOrderUseCase = GetOrderUseCase(gqlRepository, mapper)
         val getReadyToShipOrderUseCase = GetOrderUseCase(gqlRepository, mapper)
-        return@lazy OrderAppWidgetViewModel(
-            getNewOrderUseCase,
-            getReadyToShipOrderUseCase,
-            CoroutineDispatchersProvider
-        )
+        return@lazy OrderAppWidgetViewModel(getNewOrderUseCase, getReadyToShipOrderUseCase, CoroutineDispatchersProvider)
     }
     private val cacheHandler by lazy {
         AppWidgetHelper.getCacheHandler(context)
-    }
-    private val userSession: UserSessionInterface by lazy {
-        UserSession(context)
     }
     private var orderStatusId = OrderAppWidget.DEFAULT_ORDER_STATUS_ID
 
     fun run(orderStatusId: Int, showLoadingState: Boolean) {
         this.orderStatusId = orderStatusId
-
-        if (!userSession.hasShop()) {
-            showNoShopState()
-            return
-        }
 
         val dateFormat = "dd/MM/yyyy"
         val endDateFmt = TimeHelper.formatDate(Date(TimeHelper.getNowTimeStamp()), dateFormat)
@@ -92,20 +80,10 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         viewModel.unbind()
     }
 
-    private fun showNoShopState() {
-        val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
-        val awm = AppWidgetManager.getInstance(context)
-        val ids = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
-        ids.forEach { widgetId ->
-            OrderWidgetNoShopState.setupEmptyState(context, remoteViews, widgetId)
-            awm.updateAppWidget(widgetId, remoteViews)
-        }
-    }
-
     private fun showLoadingState() {
-        val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
+        val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order)
         val awm = AppWidgetManager.getInstance(context)
-        val ids = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+        val ids = awm.getAppWidgetIds(ComponentName(context, OrderAppWidget::class.java))
         ids.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
             OrderWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)

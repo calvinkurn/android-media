@@ -6,11 +6,9 @@ import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
-import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
-import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -29,7 +27,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,14 +42,12 @@ class AffiliatePromoViewModelTest {
     private val affiliateSearchUseCase: AffiliateSearchUseCase = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
-    private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
             userSessionInterface,
             affiliateSearchUseCase,
             affiliateValidateUserStatus,
-            affiliateAffiliateAnnouncementUseCase,
-            affiliateDiscoveryCampaignUseCase
+            affiliateAffiliateAnnouncementUseCase
         )
     )
 
@@ -167,31 +162,5 @@ class AffiliatePromoViewModelTest {
         } returns AFFILIATE_SSA_SHOP
 
         assertEquals(affiliatePromoViewModel.isAffiliateSSAShopEnabled(), true)
-    }
-
-    @Test
-    fun getDiscoBanners() {
-        val discoveryCampaignResponse = mockk<AffiliateDiscoveryCampaignResponse>()
-        coEvery {
-            affiliateDiscoveryCampaignUseCase.getAffiliateDiscoveryCampaign(
-                any(),
-                any()
-            )
-        } returns discoveryCampaignResponse
-        affiliatePromoViewModel.getDiscoBanners(0, 7)
-        assertNotNull(affiliatePromoViewModel.getDiscoCampaignBanners().value)
-    }
-
-    @Test
-    fun getDiscoBannersException() {
-        val throwable = Throwable("Validate Data Exception")
-        coEvery {
-            affiliateDiscoveryCampaignUseCase.getAffiliateDiscoveryCampaign(
-                any(),
-                any()
-            )
-        } throws throwable
-
-        affiliatePromoViewModel.getDiscoBanners(0, 7)
     }
 }

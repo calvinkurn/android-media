@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
@@ -60,6 +59,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -84,6 +84,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPageHomeTrackingMapper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -212,11 +213,6 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
-        private const val DEVICE_WIDTH_540 = 540
-        private const val DEVICE_WIDTH_1080 = 1080
-        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE = 0.5f
-        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE = 0.75f
-        private const val BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE = 1f
 
         fun createInstance(
             shopId: String,
@@ -603,48 +599,15 @@ open class ShopPageHomeFragment :
                         resource: Bitmap,
                         transition: Transition<in Bitmap?>?
                     ) {
-                        val sizeMultiplier = getBgPatternSizeMultiplier()
-                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
-                        setBgPatternImage(resizeBgPattern)
+                        val bitmapDrawable = BitmapDrawable(
+                            it.resources,
+                            resource
+                        )
+                        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+                        imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
                     }
                 })
         }
-    }
-
-    private fun setBgPatternImage(resizeBgPattern: Bitmap?) {
-        context?.let {
-            val bitmapDrawable = BitmapDrawable(
-                it.resources,
-                resizeBgPattern
-            )
-            bitmapDrawable.setTileModeXY(
-                Shader.TileMode.REPEAT,
-                Shader.TileMode.REPEAT
-            )
-            imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
-        }
-    }
-
-    private fun getBgPatternSizeMultiplier(): Float {
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-        return if (screenWidth <= DEVICE_WIDTH_540) {
-            BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE
-        } else if (screenWidth < DEVICE_WIDTH_1080) {
-            BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE
-        } else {
-            BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE
-        }
-    }
-
-    private fun getResizeBgPattern(sizeMultiplier: Float, resource: Bitmap): Bitmap? {
-        val resourceWidth = resource.width
-        val resourceHeight = resource.height
-        return Bitmap.createScaledBitmap(
-            resource,
-            (resourceWidth * sizeMultiplier).toInt(),
-            (resourceHeight * sizeMultiplier).toInt(),
-            true
-        )
     }
 
     open fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {

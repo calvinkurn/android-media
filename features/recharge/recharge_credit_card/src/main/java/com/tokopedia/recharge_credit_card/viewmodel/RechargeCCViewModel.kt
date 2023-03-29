@@ -21,9 +21,9 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
-import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
+import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,6 +43,7 @@ class RechargeCCViewModel @Inject constructor(
 
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
     val errorCCBankList = MutableLiveData<Throwable>()
+    val tickers = MutableLiveData<List<TickerCreditCard>>()
 
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
     private val _prefixSelect = MutableLiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>>()
@@ -50,7 +51,6 @@ class RechargeCCViewModel @Inject constructor(
     private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
     private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     private val _prefillData = MutableLiveData<RechargeNetworkResult<PrefillModel>>()
-    private val _menuDetail = MutableLiveData<RechargeNetworkResult<RechargeCCMenuDetail>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
@@ -58,7 +58,6 @@ class RechargeCCViewModel @Inject constructor(
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>> = _favoriteChipsData
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>> = _autoCompleteData
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
-    val menuDetail: LiveData<RechargeNetworkResult<RechargeCCMenuDetail>> = _menuDetail
 
     var categoryName: String = ""
     var loyaltyStatus: String = ""
@@ -72,19 +71,21 @@ class RechargeCCViewModel @Inject constructor(
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build()
-                )
+                graphqlRepository.response(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build())
             }.getSuccessData<RechargeCCMenuDetailResponse>()
 
             categoryName = data.menuDetail.menuName
             loyaltyStatus = data.menuDetail.userPerso.loyaltyStatus
 
-            _menuDetail.postValue(RechargeNetworkResult.Success(data.menuDetail))
+            if (data.menuDetail.tickers.isNotEmpty()) {
+                tickers.postValue(data.menuDetail.tickers)
+            } else {
+                tickers.postValue(listOf())
+            }
         }) {
-            _menuDetail.postValue(RechargeNetworkResult.Fail(it))
+
         }
     }
 
@@ -95,11 +96,9 @@ class RechargeCCViewModel @Inject constructor(
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build()
-                )
+                graphqlRepository.response(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build())
             }.getSuccessData<RechargeCCBankListReponse>()
 
             if (data.rechargeCCBankList.messageError.isEmpty()) {
@@ -107,6 +106,7 @@ class RechargeCCViewModel @Inject constructor(
             } else {
                 errorCCBankList.postValue(MessageErrorException(data.rechargeCCBankList.messageError))
             }
+
         }) {
             errorCCBankList.postValue(it)
         }
@@ -119,11 +119,9 @@ class RechargeCCViewModel @Inject constructor(
 
             prefixData = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build()
-                )
+                graphqlRepository.response(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build())
             }.getSuccessData()
 
             _prefixSelect.postValue(RechargeNetworkResult.Success(prefixData))
@@ -132,7 +130,7 @@ class RechargeCCViewModel @Inject constructor(
         }
     }
 
-    fun setFavoriteNumberLoading() {
+    fun setFavoriteNumberLoading(){
         _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 

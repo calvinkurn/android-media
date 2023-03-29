@@ -257,27 +257,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     override fun isEligibleForPin(): Boolean = true
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        return if (::parentViewModel.isInitialized) {
-                            parentViewModel.uiState.value.selectedContentAccount
-                        } else {
-                            ContentAccountUiModel.Empty
-                        }
+                        return parentViewModel.uiState.value.selectedContentAccount
                     }
 
                     override fun creationId(): String {
-                        return if (::parentViewModel.isInitialized) {
-                            parentViewModel.channelId
-                        } else {
-                            ""
-                        }
+                        return parentViewModel.channelId
                     }
 
                     override fun maxProduct(): Int {
-                        return if (::parentViewModel.isInitialized) {
-                            parentViewModel.maxProduct
-                        } else {
-                            0
-                        }
+                        return parentViewModel.maxProduct
                     }
                 })
 

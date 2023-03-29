@@ -19,10 +19,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
     @Test

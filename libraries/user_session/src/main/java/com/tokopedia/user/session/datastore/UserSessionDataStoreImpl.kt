@@ -4,9 +4,11 @@ import android.content.Context
 import android.provider.Settings
 import androidx.datastore.core.DataStore
 import com.tokopedia.user.session.UserSessionProto
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import okhttp3.internal.toLongOrDefault
 import java.security.MessageDigest
 import kotlin.experimental.and
 
@@ -69,13 +71,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     }
 
     override fun getShopId(): Flow<String> {
-        return getUserSessionFlow().map {
-            if (DEFAULT_EMPTY_SHOP_ID_ON_PREF == it.shopId || it.shopId.isEmpty()) {
-                DEFAULT_EMPTY_SHOP_ID
-            } else {
-                it.shopId
-            }
-        }
+        return getUserSessionFlow().map { it.shopId }
     }
 
     override fun getName(): Flow<String> {
@@ -90,8 +86,24 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         return getUserSessionFlow().map { it.tempUserId }
     }
 
+    override fun getDeviceId(): Flow<String> {
+        return getUserSessionFlow().map { it.deviceId }
+    }
+
+    override fun getTempEmail(): Flow<String> {
+        return getUserSessionFlow().map { it.tempLoginEmail }
+    }
+
+    override fun getTempPhoneNumber(): Flow<String> {
+        return getUserSessionFlow().map { it.tempPhoneNumber }
+    }
+
     override fun isMsisdnVerified(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isMSISDNVerified }
+    }
+
+    override fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.saldoWithdrawalWaring }
     }
 
     override fun getPhoneNumber(): Flow<String> {
@@ -100,6 +112,10 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
     override fun getEmail(): Flow<String> {
         return getUserSessionFlow().map { it.email }
+    }
+
+    override fun isFirstTimeUser(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.firstTimeUser }
     }
 
     override fun isGoldMerchant(): Flow<Boolean> {
@@ -206,6 +222,13 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
+    override suspend fun setTempLoginName(fullName: String) {
+        DataStoreMigrationWorker
+        userSessionSetter {
+            tempLoginName = fullName
+        }
+    }
+
     override suspend fun setTempUserId(userId: String) {
         userSessionSetter {
             tempUserId = userId
@@ -215,6 +238,18 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     override suspend fun setIsAffiliateStatus(isAffiliate: Boolean) {
         userSessionSetter {
             isAffiliateStatus = isAffiliate
+        }
+    }
+
+    override suspend fun setTempPhoneNumber(userPhone: String) {
+        userSessionSetter {
+            tempPhoneNumber = userPhone
+        }
+    }
+
+    override suspend fun setTempLoginEmail(email: String) {
+        userSessionSetter {
+            tempLoginEmail = email
         }
     }
 
@@ -254,33 +289,19 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     }
 
     override suspend fun logoutSession() {
+        this.clearDataStore()
+    }
+
+    override suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean) {
         userSessionSetter {
-            clearUserId()
-            clearName()
-            clearShopId()
-            clearShopName()
-            clearIsLoggedIn()
-            clearIsMSISDNVerified()
-            clearSaldoWithdrawalWaring()
-            clearIsAffiliateStatus()
-            clearPhoneNumber()
-            clearRefreshToken()
-            clearTokenType()
-            clearAccessToken()
-            clearProfilePicture()
-            clearGcToken()
-            clearShopAvatar()
-            clearIsPowerMerchantIdle()
-            clearTwitterAccessToken()
-            clearTwitterAccessToken()
-            clearLoginMethod()
-            clearTwitterShouldPost()
-            clearIsShopOfficialStore()
+            firstTimeUserOnboarding = isFirstTime
         }
     }
 
-    override suspend fun clearAllData() {
-        this.clearDataStore()
+    override suspend fun setFirstTimeUser(isFirstTime: Boolean) {
+        userSessionSetter {
+            firstTimeUser = isFirstTime
+        }
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {
@@ -331,6 +352,18 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
+    override suspend fun setSaldoWithdrawalWaring(value: Boolean) {
+        userSessionSetter {
+            saldoWithdrawalWaring = value
+        }
+    }
+
+    override suspend fun setSaldoIntroPageStatus(value: Boolean) {
+        userSessionSetter {
+            saldoIntroPageStatus = value
+        }
+    }
+
     override suspend fun setGCToken(gcToken: String) {
         userSessionSetter {
             setGcToken(gcToken)
@@ -346,6 +379,32 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     override suspend fun setIsPowerMerchantIdle(powerMerchantIdle: Boolean) {
         userSessionSetter {
             isPowerMerchantIdle = powerMerchantIdle
+        }
+    }
+
+    override suspend fun setTwitterAccessTokenAndSecret(
+        accessToken: String,
+        accessTokenSecret: String
+    ) {
+        setTwitterAccessToken(accessToken)
+        setTwitterAccessToken(accessTokenSecret)
+    }
+
+    override suspend fun setTwitterAccessToken(accessToken: String) {
+        userSessionSetter {
+            twitterAccessToken = accessToken
+        }
+    }
+
+    override suspend fun setTwitterSecret(secret: String) {
+        userSessionSetter {
+            twitterAccessTokenSecret = secret
+        }
+    }
+
+    override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
+        userSessionSetter {
+            twitterShouldPost = shouldPost
         }
     }
 
@@ -371,12 +430,32 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         return getUserSessionFlow().map { it.isShopOfficialStore }
     }
 
+    override suspend fun setDeviceId(deviceId: String) {
+        userSessionSetter {
+            setDeviceId(deviceId)
+        }
+    }
+
+    override suspend fun setFcmTimestamp(timestamp: String) {
+        userSessionSetter {
+            fcmTimestamp = timestamp
+        }
+    }
+
+    override fun getFcmTimestamp(): Flow<Long> {
+        return getUserSessionFlow().map { it.fcmTimestamp.toLongOrDefault(0) }
+    }
+
     override fun getGTMLoginID(): Flow<String> {
         return getUserSessionFlow().map { it.userId }
     }
 
     override fun isAffiliate(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isAffiliateStatus }
+    }
+
+    override fun hasShownSaldoIntroScreen(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.saldoIntroPageStatus }
     }
 
     override fun isShopOwner(): Flow<Boolean> {
@@ -466,9 +545,5 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         const val HEX_BINARY = 0xff
         const val HEX_FORMAT = "%02x"
         const val MD5_ALGORITHM = "MD5"
-
-        private const val DEFAULT_EMPTY_SHOP_ID = "0"
-        private const val DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1"
-
     }
 }

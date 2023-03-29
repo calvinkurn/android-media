@@ -11,7 +11,8 @@ object BuyerPartialOrderFulfillmentTracker {
     }
 
     private fun sendGeneralEvent(event: Map<String, String>) {
-        tracker.sendGeneralEvent(event)
+        // pof release no need hit tracker, so we adjust in next release along to tracker revamp in bom detail
+        // tracker.sendGeneralEvent(event)
     }
 
     fun eventClickTotalAvailableItemPof() {

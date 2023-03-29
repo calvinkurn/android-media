@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Interpolator
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -36,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +65,7 @@ class BannerComponentViewHolder(
     private var layoutManager = LinearLayoutManager(itemView.context)
 
     private var isUsingDotsAndInfiniteScroll: Boolean = false
-    private var scrollTransitionDuration: Long = 6000L
+    private var scrollTransitionDuration: Long = 5000L
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -88,7 +87,7 @@ class BannerComponentViewHolder(
     }
 
     init {
-        itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(p0: View) {
                 pauseAutoScroll()
             }
@@ -148,7 +147,7 @@ class BannerComponentViewHolder(
             rvBanner.smoothScrollBy(width - paddings, 0, autoScrollInterpolator, FLING_DURATION)
         } else {
             pauseAutoScroll()
-            if (position == 0) {
+            if(position == 0) {
                 rvBanner.smoothScrollToPosition(position)
             } else {
                 rvBanner.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
@@ -268,10 +267,6 @@ class BannerComponentViewHolder(
         resumeAutoScroll()
     }
 
-    override fun isDrag(): Boolean {
-        return false
-    }
-
     private fun onPageDragStateChanged(isDrag: Boolean) {
         bannerListener?.onPageDragStateChanged(isDrag)
     }
@@ -353,15 +348,15 @@ class BannerComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
-        val autoScrollInterpolator: Interpolator = UnifyMotion.EASE_IN_OUT
-        val manualScrollInterpolator: Interpolator = UnifyMotion.EASE_OUT
-        const val FLING_DURATION = 600
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
         private const val MARGIN_ZERO = 0
         private const val DOTS_SIZE = 6f
         private const val DOTS_MARGIN = 2f
+        private val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        private val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
+        private const val FLING_DURATION = 600
         private const val FLING_DURATION_OLD = 300
     }
 

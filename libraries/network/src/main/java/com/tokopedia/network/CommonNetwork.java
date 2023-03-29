@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.interceptor.TopAdsInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
@@ -59,6 +60,7 @@ public class CommonNetwork {
         tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
         tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
         tkpdOkHttpBuilder.addAuthenticator(tkpdAuthenticator);
+        tkpdOkHttpBuilder.addInterceptor(new TopAdsInterceptor(context));
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)

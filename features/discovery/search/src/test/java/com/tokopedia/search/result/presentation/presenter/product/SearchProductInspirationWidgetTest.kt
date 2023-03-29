@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -32,7 +31,6 @@ private const val inspirationCardResponseOnlyPosition9 = "searchproduct/inspirat
 private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirationcard/without-topads.json"
 private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/same-position.json"
 private const val inspirationFilterResponseFirstPage = "searchproduct/inspirationfilter/in-first-page.json"
-private const val inspirationFilterResponseWithMultiFilters = "searchproduct/inspirationfilter/in-first-page-with-multi-filters.json"
 
 internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -492,24 +490,6 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
         )
     }
 
-    @Test
-    fun `Show inspiration filter with multi filters`() {
-        val searchProductModel = inspirationFilterResponseWithMultiFilters.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel with Inspiration Widget`(
-            searchProductModel
-        )
-
-        `When Load Data`()
-
-        `Then verify view set product list`()
-        `Then verify init filter controller from inspiration filter`(
-            searchProductModel.searchInspirationWidget
-        )
-        `Then verify visitable list has correct inspiration filter with multi filters and product sequence on first page`(
-            searchProductModel
-        )
-    }
-
     private fun `Then verify init filter controller from inspiration filter`(
         inspirationWidget: SearchProductModel.SearchInspirationWidget
     ) {
@@ -577,53 +557,6 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
         }
     }
 
-    private fun `Then verify visitable list has correct inspiration filter with multi filters and product sequence on first page`(
-        searchProductModel: SearchProductModel
-    ) {
-        val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
-
-        // 0 -> choose address data
-        // 1 -> inspiration size (position 0)
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-        // 8 -> product
-        // 9 -> product
-        // 10 -> product
-        // 11 -> product
-        // 12 -> product
-        // 13 -> product
-        // 14 -> product
-        // 15 -> product
-        // 16 -> product
-        // 17 -> product
-
-        visitableList.size shouldBe 18
-
-        visitableList.forEachIndexed { index, visitable ->
-            when (index) {
-                0 -> {
-                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
-                        "visitable list at index $index should be ChooseAddressDataViewModel"
-                    )
-                }
-                1 -> {
-                    visitable.shouldBeInstanceOf<InspirationFilterDataView>(
-                        "visitable list at index $index should be InspirationFilterDataView"
-                    )
-                    (visitable as InspirationFilterDataView).assertInspirationFilterDataView(inspirationWidget[0])
-                }
-                else -> visitable.shouldBeInstanceOf<ProductItemDataView>(
-                    "visitable list at index $index should be ProductItemViewModel"
-                )
-            }
-        }
-    }
-
     private fun InspirationFilterDataView.assertInspirationFilterDataView(
         inspirationWidget: SearchProductModel.InspirationWidgetData,
     ) {
@@ -648,20 +581,10 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
         applink shouldBe inspirationWidgetOption.applink
         hexColor shouldBe inspirationWidgetOption.color
         inspirationCardType shouldBe type
-
-        val multiFilters = inspirationWidgetOption.multiFilters ?: emptyList()
-        optionList.forEachIndexed { index, option ->
-            option.assertOption(multiFilters[index])
-        }
-    }
-
-    private fun Option.assertOption(
-        inspirationWidgetFilter: SearchProductModel.InspirationWidgetFilter,
-    ) {
-        key shouldBe inspirationWidgetFilter.key
-        name shouldBe inspirationWidgetFilter.name
-        value shouldBe inspirationWidgetFilter.value
-        valMin shouldBe inspirationWidgetFilter.valMin
-        valMax shouldBe inspirationWidgetFilter.valMax
+        option.key shouldBe inspirationWidgetOption.filters.key
+        option.name shouldBe inspirationWidgetOption.filters.name
+        option.value shouldBe inspirationWidgetOption.filters.value
+        option.valMin shouldBe inspirationWidgetOption.filters.valMin
+        option.valMax shouldBe inspirationWidgetOption.filters.valMax
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -59,8 +58,6 @@ class AffiliatePerformaSharedProductCardsItemVH(
         const val PRODUCT_INACTIVE = 0
         const val SPAN_COUNT = 3
         private const val PRODUCT_ITEM = 0
-        private const val SHOP_ITEM = 1
-        private const val CAMPAIGN_ITEM = 3
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -114,22 +111,22 @@ class AffiliatePerformaSharedProductCardsItemVH(
             }
 
             itemView.setOnClickListener {
-                sendSelectContentEvent(product)
-                val type = when (product.itemType) {
-                    PRODUCT_ITEM -> PAGE_TYPE_PDP
-                    SHOP_ITEM -> PAGE_TYPE_SHOP
-                    CAMPAIGN_ITEM -> PAGE_TYPE_CAMPAIGN
-                    else -> null
+                if (product.itemType == PRODUCT_ITEM) {
+                    sendSelectContentEvent(product)
+                } else {
+                    sendShopClickEvent(
+                        product
+                    )
                 }
                 productClickInterface?.onProductClick(
-                    product.itemID.orEmpty(),
+                    product.itemID!!,
                     product.itemTitle ?: "",
                     product.image?.androidURL
                         ?: "",
                     product.defaultLinkURL ?: "",
-                    product.itemID.orEmpty(),
+                    product.itemID!!,
                     product.status ?: PRODUCT_INACTIVE,
-                    type,
+                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP,
                     ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
                         ssaStatus = product.ssaStatus.orFalse(),
                         ssaMessage = product.ssaMessage.orEmpty(),
@@ -173,34 +170,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
         if (product.ssaStatus == true) {
             label += "komisi extra"
         }
-        val eventAction: String
-        val itemList: String
-        val event: String
-        when (product.itemType) {
-            PRODUCT_ITEM -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN
-                itemList = AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
-                event = AffiliateAnalytics.EventKeys.SELECT_CONTENT
-            }
-            SHOP_ITEM -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA
-                itemList = AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
-                event = AffiliateAnalytics.EventKeys.SELECT_CONTENT
-            }
-            CAMPAIGN_ITEM -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_EVENT_LINK_DENGAN_PERFORMA
-                event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
-                itemList = ""
-            }
-            else -> {
-                eventAction = ""
-                event = ""
-                itemList = ""
-            }
-        }
         AffiliateAnalytics.trackEventImpression(
-            event,
-            eventAction,
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             UserSession(itemView.context).userId,
             product.itemID,
@@ -211,7 +183,34 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
                 " - $label",
-            itemList
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
+        )
+    }
+
+    private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
+        var label =
+            if (shop.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
+        if (shop.ssaStatus == true) {
+            label += "komisi extra"
+        }
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            UserSession(itemView.context).userId,
+            shop.itemID,
+            bindingAdapterPosition - 1,
+            shop.itemTitle,
+            "${shop.itemID}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
+                " - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }
 }

@@ -11,7 +11,6 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
-import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
@@ -22,7 +21,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -41,7 +39,6 @@ import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -65,10 +62,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         return when (pojo.attachment?.type) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
-            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(
-                pojo,
-                jsonAttributes
-            )
+            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
@@ -77,24 +71,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo, jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(pojo, jsonAttributes)
-            DYNAMIC_ATTACHMENT -> convertToDynamicAttachment(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
-    }
-
-    private fun convertToDynamicAttachment(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val dynamicAttachment = GsonBuilder().create().fromJson(
-            pojo.attachment?.attributes,
-            DynamicAttachment::class.java
-        )
-        var fallbackMessage = ""
-        dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.message?.let {
-            fallbackMessage = it
-        }
-        return FallbackAttachmentUiModel.Builder()
-            .withResponseFromWs(pojo)
-            .withMsg(fallbackMessage)
-            .build()
     }
 
     private fun convertToSendInvoice(pojo: ChatSocketPojo, jsonAttributes: JsonObject): AttachInvoiceSentUiModel {
@@ -224,10 +202,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         val invoiceListKey = "invoice_list"
         val jsonObject = jsonAttribute.getAsJsonObject(invoiceListKey)
 
-        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(
-            jsonObject,
-            InvoicesSelectionPojo::class.java
-        )
+        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(jsonObject, InvoicesSelectionPojo::class.java)
         val invoiceList = invoicesSelectionPojo.invoices
 
         val list = ArrayList<AttachInvoiceSingleUiModel>()
@@ -266,14 +241,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         )
     }
 
-    private fun convertToChatActionSelectionBubbleModel(
-        pojo: ChatSocketPojo,
-        jsonAttribute: JsonObject
-    ): ChatActionSelectionBubbleUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(
-            jsonAttribute,
-            ChatActionBalloonSelectionAttachmentAttributes::class.java
-        )
+    private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
         val quickReplyPojo = GsonBuilder().create()
             .fromJson<QuickReplyAttachmentAttributes>(
                 jsonAttribute,
@@ -298,15 +267,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     ): List<ChatActionBubbleUiModel> {
         val result = ArrayList<ChatActionBubbleUiModel>()
         for (item in pojo.chatActions) {
-            result.add(
-                ChatActionBubbleUiModel(
-                    item.text,
-                    item.value,
-                    item.action,
-                    hexColor = item.hexColor,
-                    iconUrl = item.iconUrl
-                )
-            )
+            result.add(ChatActionBubbleUiModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
         }
         return result
     }

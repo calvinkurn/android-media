@@ -12,7 +12,6 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.databinding.BottomSheetBigReplyBoxBinding
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
@@ -21,7 +20,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
     private var hintText = ""
-    private var shouldShowAddAttachmentButton: Boolean = false
 
     private var _viewBinding: BottomSheetBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -47,7 +45,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         disableSendButton()
         bindClickListeners()
         setUpEditText()
-        getBindingView().ivChatMenu.showWithCondition(shouldShowAddAttachmentButton)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -126,14 +123,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         fun newInstance(
             context: FragmentActivity,
             replyBoxBottomSheetPlaceHolder: String,
-            replyBoxBottomSheetTitle: String,
-            shouldShowAddAttachmentButton: Boolean
+            replyBoxBottomSheetTitle: String
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.context = context
                 this.labelText = replyBoxBottomSheetTitle
                 this.hintText = replyBoxBottomSheetPlaceHolder
-                this.shouldShowAddAttachmentButton = shouldShowAddAttachmentButton
             }
         }
 

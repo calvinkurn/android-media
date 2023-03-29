@@ -154,8 +154,6 @@ class ShipmentMapper @Inject constructor() {
             newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
-            isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
-            dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
         }
     }
 

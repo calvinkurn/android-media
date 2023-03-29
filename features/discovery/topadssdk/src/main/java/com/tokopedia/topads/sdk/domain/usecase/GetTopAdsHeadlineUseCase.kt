@@ -62,11 +62,6 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
             id
             name
             applinks
-            stock_info {
-              sold_stock_percentage
-              stock_wording
-              stock_colour
-            }
             image {
               m_url
             }

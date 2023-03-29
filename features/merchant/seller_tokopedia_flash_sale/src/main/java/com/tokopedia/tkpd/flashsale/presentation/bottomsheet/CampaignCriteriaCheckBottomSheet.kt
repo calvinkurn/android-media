@@ -39,7 +39,6 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = StfsBottomsheetCampaignCriteriaCheckBinding.inflate(inflater, container, false)
         clearContentPadding = true
-        isFullpage = true
         setChild(binding?.root)
         setTitle(getString(R.string.commonbs_category_criteria_check_title))
         val isMultiLoc = criteriaCheckingResults.firstOrNull { it.isMultiloc } != null

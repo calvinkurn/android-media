@@ -24,7 +24,9 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletappGetBalance
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
@@ -39,17 +41,15 @@ class HomeBalanceWidgetUseCaseTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val mockValueErrorHomeBalanceWidget = GetHomeBalanceWidgetData(
-        getHomeBalanceList = GetHomeBalanceList(
-            error = "Data Error From Backend",
-            balancesList = listOf(GetHomeBalanceItem("Gopay", "gopay"))
-        )
+        getHomeBalanceList = GetHomeBalanceList(error = "Data Error From Backend",
+        balancesList = listOf(GetHomeBalanceItem("Gopay", "gopay")))
     )
     private val mockValueSuccessHomeBalanceWidget = GetHomeBalanceWidgetData(
         getHomeBalanceList = GetHomeBalanceList(
             balancesList = listOf(
                 GetHomeBalanceItem("Gopay", "gopay"),
-                GetHomeBalanceItem("Rewards", "rewards"),
-                GetHomeBalanceItem(
+                GetHomeBalanceItem("Rewards", "rewards"), GetHomeBalanceItem
+                    (
                     "Langganan",
                     "subscription",
                     "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":[{\"IconImageURL\":\"https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":true,\"IsSubscriber\": false}"
@@ -69,8 +69,8 @@ class HomeBalanceWidgetUseCaseTest {
         getHomeBalanceList = GetHomeBalanceList(
             balancesList = listOf(
                 GetHomeBalanceItem("Gopay", "gopay"),
-                GetHomeBalanceItem("Rewards", "rewards"),
-                GetHomeBalanceItem(
+                GetHomeBalanceItem("Rewards", "rewards"), GetHomeBalanceItem
+                    (
                     "Langganan",
                     "subscription",
                     "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":{\"IconImageURL\":\"https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":true,\"IsSubscriber\": false}"
@@ -82,8 +82,8 @@ class HomeBalanceWidgetUseCaseTest {
         getHomeBalanceList = GetHomeBalanceList(
             balancesList = listOf(
                 GetHomeBalanceItem("Gopay", "gopay"),
-                GetHomeBalanceItem("Rewards", "rewards"),
-                GetHomeBalanceItem(
+                GetHomeBalanceItem("Rewards", "rewards"), GetHomeBalanceItem
+                    (
                     "Langganan",
                     "subscription",
                     "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":[{\"IconImageURL\":\"https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"https://www.tokopedia.com/rewards\",\"RedirectAppLink\":\"tokopedia://rewards\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":false,\"IsSubscriber\": false}"
@@ -94,42 +94,40 @@ class HomeBalanceWidgetUseCaseTest {
     private val mockTitleGopay = "Rp10.000"
     private val mockSubtitleGopay = "10.000 Coins"
     private val mockWalletAppData = WalletAppData(
-        walletappGetBalance = WalletappGetBalance(
-            listOf(
-                Balances(
-                    isLinked = true,
-                    balance = listOf(
-                        Balance(
-                            amountFmt = mockTitleGopay,
-                            walletCode = "PEMUDA"
-                        ),
-                        Balance(
-                            amountFmt = mockSubtitleGopay,
-                            walletCode = "PEMUDAPOINTS"
+            walletappGetBalance = WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(
+                            Balance(
+                                amountFmt = mockTitleGopay,
+                                walletCode = "PEMUDA"
+                            ),
+                            Balance(
+                                amountFmt = mockSubtitleGopay,
+                                walletCode = "PEMUDAPOINTS"
+                            )
                         )
                     )
                 )
             )
         )
-    )
     private val mockTierRewards = "Platinum"
     private val mockNewCoupon = "10 Kupon Baru"
-    private val mockTokopointsDrawerData = TokopointsDrawerListHomeData(
-        TokopointsDrawerList(
-            drawerList = listOf(
-                TokopointsDrawer(
-                    sectionContent = listOf(
-                        SectionContentItem(
-                            TextAttributes(text = mockTierRewards)
-                        ),
-                        SectionContentItem(
-                            TextAttributes(text = mockNewCoupon)
-                        )
+    private val mockTokopointsDrawerData = TokopointsDrawerListHomeData(TokopointsDrawerList(
+        drawerList = listOf(
+            TokopointsDrawer(
+                sectionContent = listOf(
+                    SectionContentItem(
+                        TextAttributes(text = mockTierRewards)
+                    ),
+                    SectionContentItem(
+                        TextAttributes(text = mockNewCoupon)
                     )
                 )
             )
         )
-    )
+    ))
 
     @Test
     fun `given value error balance widget when get header data then show error`() {
@@ -328,57 +326,69 @@ class HomeBalanceWidgetUseCaseTest {
     }
 
     @Test
-    fun `given WalletAppRepository returns reserve balance and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should contain reserve balance`() {
+    fun `given WalletAppRepository returns reserve balance above 10000 and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() {
         val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
         val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
         val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
             homeWalletAppRepository = homeWalletAppRepository,
             getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
         )
-        val amount = 11000
-        val amountFmt = "11.000"
-        `given test WalletAppRepository returns reserve balance and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository, amount, amountFmt)
+        `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository)
         runBlocking {
             val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
-            `then balanceSubTitleTextAttribute in HomeHeaderDataModel should contain reserve balance`(result, amountFmt)
+            `then reserve_balance in homeHeaderDataModel should not be empty`(result)
         }
     }
 
     @Test
-    fun `given WalletAppRepository does not return reserve balance and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should contain placeholder`() {
+    fun `given WalletAppRepository returns reserve balance below 10000 and not linked when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() {
         val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
         val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
         val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
             homeWalletAppRepository = homeWalletAppRepository,
             getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
         )
-        val walletName = "GoPay & Coins"
-        `given test WalletAppRepository does not return reserve balance and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository, walletName)
+        `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository, getHomeBalanceWidgetRepository)
         runBlocking {
             val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
-            `then balanceSubTitleTextAttribute in HomeHeaderDataModel should contain wallet name`(result, walletName)
+            `then reserve_balance in homeHeaderDataModel should be empty`(result)
         }
     }
 
-    private fun `then balanceSubTitleTextAttribute in HomeHeaderDataModel should contain reserve balance`(
-        homeHeaderDataModelResult: HomeHeaderDataModel,
-        amountFmt: String
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given WalletAppRepository returns linked wallet when onGetBalanceWidgetData then reserve_balance in homeHeaderDataModel should not be empty`() = runBlocking {
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        every { userSessionInterface.isLoggedIn } returns true
+        `given test WalletAppRepository returns linked wallet`(homeWalletAppRepository, getHomeBalanceWidgetRepository)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            userSessionInterface = userSessionInterface,
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+
+        val result = `when onGetBalanceWidgetData`(homeBalanceWidgetUseCase)
+        `then reserve_balance in homeHeaderDataModel should be empty`(result)
+    }
+
+    private fun `then reserve_balance in homeHeaderDataModel should not be empty`(
+        homeHeaderDataModelResult: HomeHeaderDataModel
     ) {
         Assert.assertTrue(
-            checkHeaderContainsPemudaPointsReserveBalance(homeHeaderDataModelResult, amountFmt)
+            checkHeaderContainsPemudaPointsReserveBalance(homeHeaderDataModelResult)
         )
     }
 
-    private fun `then balanceSubTitleTextAttribute in HomeHeaderDataModel should contain wallet name`(
-        homeHeaderDataModelResult: HomeHeaderDataModel,
-        walletName: String
+    private fun `then reserve_balance in homeHeaderDataModel should be empty`(
+        homeHeaderDataModelResult: HomeHeaderDataModel
     ) {
         Assert.assertTrue(
-            checkHeaderNotContainsPemudaPointsReserveBalance(homeHeaderDataModelResult, walletName)
+            checkHeaderNotContainsPemudaPointsReserveBalance(homeHeaderDataModelResult)
         )
     }
 
-    fun `given test WalletAppRepository returns reserve balance and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository, amount: Int, amountFmt: String) {
+    fun `given test WalletAppRepository returns reserve balance above 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository) {
         val mockWalletAppData = WalletAppData(
             walletappGetBalance = WalletappGetBalance(
                 listOf(
@@ -388,8 +398,8 @@ class HomeBalanceWidgetUseCaseTest {
                             ReserveBalance(
                                 walletCode = "PEMUDAPOINTS",
                                 walletCodeFmt = "PEMUDAPOINTS",
-                                amount = amount,
-                                amountFmt = amountFmt
+                                amount = 11000,
+                                amountFmt = "Rp11.000"
                             )
                         )
                     )
@@ -405,19 +415,18 @@ class HomeBalanceWidgetUseCaseTest {
         coEvery { homeWalletAppRepository.getRemoteData() } returns mockWalletAppData
     }
 
-    fun `given test WalletAppRepository does not return reserve balance and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository, walletName: String) {
+    fun `given test WalletAppRepository returns reserve balance below 10000 and not linked`(homeWalletAppRepository: HomeWalletAppRepository, getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository) {
         val mockWalletAppData = WalletAppData(
             walletappGetBalance = WalletappGetBalance(
                 listOf(
                     Balances(
                         isLinked = false,
-                        walletName = walletName,
                         reserveBalance = listOf(
                             ReserveBalance(
                                 walletCode = "PEMUDAPOINTS",
                                 walletCodeFmt = "PEMUDAPOINTS",
-                                amount = 0,
-                                amountFmt = ""
+                                amount = 9000,
+                                amountFmt = "Rp9.000"
                             )
                         )
                     )
@@ -464,21 +473,19 @@ class HomeBalanceWidgetUseCaseTest {
         return homeBalanceWidgetUseCase.onGetBalanceWidgetData()
     }
 
-    private fun checkHeaderContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel, amountFmt: String): Boolean {
-        val subtitleReserveFormat = "%s Coins"
-        val subtitle = subtitleReserveFormat.format(amountFmt)
+    private fun checkHeaderContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel): Boolean {
         if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
         return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
             it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
-                it.balanceSubTitleTextAttribute?.text == subtitle
+                    it.reserveBalance.isNotEmpty()
         } != null
     }
 
-    private fun checkHeaderNotContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel, walletName: String): Boolean {
+    private fun checkHeaderNotContainsPemudaPointsReserveBalance(data: HomeHeaderDataModel): Boolean {
         if (data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) return false
         return data.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.filter {
             it.drawerItemType == BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED &&
-                it.balanceSubTitleTextAttribute?.text == walletName
-        }?.isEmpty() ?: false
+                    it.reserveBalance.isNotEmpty()
+        }?.isEmpty()?:false
     }
 }

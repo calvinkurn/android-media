@@ -7,13 +7,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -34,7 +33,7 @@ open class BaseTokoNowViewModel(
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+): BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 500L
@@ -51,68 +50,79 @@ open class BaseTokoNowViewModel(
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
 
-    protected var miniCartData: MiniCartSimplifiedData? = null
+    var miniCartData: MiniCartSimplifiedData? = null
         private set
 
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
 
-    protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
 
-    var miniCartSource: MiniCartSource? = null
-
-    open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        setMiniCartData(miniCartData)
+    open fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        this.miniCartData = miniCartData
     }
 
-    fun onCartQuantityChanged(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        onSuccessAddToCart: (AddToCartDataModel) -> Unit = {},
-        onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit = { _, _ -> },
-        onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit = { _, _ -> },
-        onError: (Throwable) -> Unit = {}
-    ) {
+    fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
         changeQuantityJob?.cancel()
-
-        val miniCartItem = getMiniCartItem(productId)
-        val cartQuantity = miniCartItem.quantity
-        if (cartQuantity == quantity) return
-
         launchWithDelay(block = {
-            miniCartItem.quantity = quantity
+            val miniCartItem = getMiniCartItem(productId)
+            val cartId = miniCartItem?.cartId.orEmpty()
+            val notes = miniCartItem?.notes.orEmpty()
+
             when {
-                cartQuantity.isZero() -> addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
-                quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                else -> updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
+                miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+                quantity.isZero() -> deleteCartItem(productId, cartId)
+                else -> updateCartItem(productId, cartId, notes, quantity)
             }
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
         }
     }
 
-    fun getMiniCart() {
-        getMiniCartJob?.cancel()
+    fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            _addItemToCart.postValue(Success(it))
+        }, {
+            _addItemToCart.postValue(Fail(it))
+        })
+    }
 
-        val source = miniCartSource ?: return
+    fun deleteCartItem(productId: String, cartId: String) {
+        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
+        deleteCartUseCase.execute({
+            val message = it.data.message.joinToString(separator = ", ")
+            val data = Pair(productId, message)
+            _removeCartItem.postValue(Success(data))
+        }, {
+            _removeCartItem.postValue(Fail(it))
+        })
+    }
+
+    fun getMiniCart() {
         val shopId = getShopId()
 
-        if (shouldGetMiniCart(shopId)) {
+        if(shouldGetMiniCart(shopId)) {
+            getMiniCartJob?.cancel()
             launchCatchError(block = {
                 val shopIds = listOf(shopId.toString())
-                getMiniCartUseCase.setParams(shopIds, source)
+                getMiniCartUseCase.setParams(shopIds, MiniCartSource.TokonowRecipe)
 
                 val miniCartData = getMiniCartUseCase.executeOnBackground()
                 val showMiniCart = miniCartData.isShowMiniCartWidget
                 val outOfCoverage = addressData.isOutOfCoverage()
                 val data = miniCartData.copy(isShowMiniCartWidget = showMiniCart && !outOfCoverage)
 
-                onSuccessGetMiniCartData(miniCartData)
+                setMiniCartData(miniCartData)
                 _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
@@ -122,50 +132,14 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    fun getMiniCartItem(productId: String): MiniCartItemProduct {
+    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId) ?: MiniCartItemProduct()
-    }
-
-    fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        this.miniCartData = miniCartData
+        return items.getMiniCartItemProduct(productId)
     }
 
     fun getShopId(): Long = addressData.getShopId()
 
-    fun updateAddressData() = addressData.updateLocalData()
-
-    private fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        onSuccessAddToCart: (AddToCartDataModel) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            onSuccessAddToCart.invoke(it)
-            _addItemToCart.postValue(Success(it))
-        }, {
-            onError.invoke(it)
-            _addItemToCart.postValue(Fail(it))
-        })
-    }
-
-    private fun updateCartItem(
-        miniCartItem: MiniCartItemProduct,
-        quantity: Int,
-        onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val productId = miniCartItem.productId
-        val cartId = miniCartItem.cartId
-        val notes = miniCartItem.notes
+    private fun updateCartItem(productId: String, cartId: String, notes: String, quantity: Int) {
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
             quantity = quantity,
@@ -173,33 +147,12 @@ open class BaseTokoNowViewModel(
         )
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            onSuccessUpdateCart.invoke(miniCartItem, it)
             _updateCartItem.postValue(Success(Triple(productId, it, quantity)))
         }, {
-            onError.invoke(it)
             _updateCartItem.postValue(Fail(it))
-        })
-    }
-
-    private fun deleteCartItem(
-        miniCartItem: MiniCartItemProduct,
-        onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val cartId = miniCartItem.cartId
-        val productId = miniCartItem.productId
-        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
-        deleteCartUseCase.execute({
-            val message = it.data.message.joinToString(separator = ", ")
-            val data = Pair(productId, message)
-            onSuccessDeleteCart.invoke(miniCartItem, it)
-            _removeCartItem.postValue(Success(data))
-        }, {
-            onError.invoke(it)
-            _removeCartItem.postValue(Fail(it))
         })
     }
 

@@ -30,32 +30,6 @@ object RechargeCCGqlQuery {
                 label
               }
             }
-            recommendations {
-              iconUrl
-              title
-              clientNumber
-              appLink
-              webLink
-              productPrice
-              type
-              categoryId
-              productId
-              isATC
-              description
-              operatorID
-              token
-              label
-            }
-            promos {
-              id
-              filename
-              filename_webp
-              img_url
-              status
-              title
-              subtitle
-              promo_code
-            }
             tickers {
               ID
               Name

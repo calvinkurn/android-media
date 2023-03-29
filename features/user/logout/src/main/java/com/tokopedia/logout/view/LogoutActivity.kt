@@ -226,7 +226,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (dataStorePreference.isDataStoreEnabled()) {
             GlobalScope.launch {
                 try {
-                    userSessionDataStore.logoutSession()
+                    userSessionDataStore.clearDataStore()
                 } catch (e: Exception) {
                     val data = mapOf(
                         "method" to "logout_activity",

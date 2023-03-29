@@ -539,7 +539,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.addItemToCart) {
+        observe(viewModel.miniCartAdd) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -561,7 +561,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.updateCartItem) {
+        observe(viewModel.miniCartUpdate) {
             when(it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -576,7 +576,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.removeCartItem) {
+        observe(viewModel.miniCartRemove) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -623,7 +623,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.addItemToCart) { result ->
+        observe(productRecommendationViewModel.miniCartAdd) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -645,7 +645,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.updateCartItem) { result ->
+        observe(productRecommendationViewModel.miniCartUpdate) { result ->
             when (result) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -660,7 +660,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.removeCartItem) { result ->
+        observe(productRecommendationViewModel.miniCartRemove) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()

@@ -92,7 +92,7 @@ android {
         jvmTarget = JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion rootProject.ext.composeVersion
+        kotlinCompilerExtensionVersion "1.0.4"
     }
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"

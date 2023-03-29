@@ -344,7 +344,8 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41154)
-            .sendGeneralEvent()
+        // pof release no need hit tracker, so we adjust in next release along to tracker revamp in bom detail
+//            .sendGeneralEvent()
     }
 
     fun eventClickSeeLessProduct() {
@@ -356,7 +357,8 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41155)
-            .sendGeneralEvent()
+        // pof release no need hit tracker, so we adjust in next release along to tracker revamp in bom detail
+//            .sendGeneralEvent()
     }
 
     fun eventClickEstimateIconInBom() {
@@ -368,7 +370,8 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41156)
-            .sendGeneralEvent()
+        // pof release no need hit tracker, so we adjust in next release along to tracker revamp in bom detail
+//            .sendGeneralEvent()
     }
 
     fun sendClickOnResolutionWidgetEvent(orderStatusCode: String, orderId: String) {

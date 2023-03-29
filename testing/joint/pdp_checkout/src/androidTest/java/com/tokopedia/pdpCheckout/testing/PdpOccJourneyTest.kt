@@ -71,6 +71,7 @@ class PdpOccJourneyTest {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
         ProductDetailRobot().apply {
+            Thread.sleep(5_000)
             clickBeliLangsungOcc()
         }
 

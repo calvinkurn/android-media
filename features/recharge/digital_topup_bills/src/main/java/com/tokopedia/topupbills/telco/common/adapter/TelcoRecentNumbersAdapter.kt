@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.topupbills.R
 
 class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
-    RecyclerView.Adapter<TelcoRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
+        RecyclerView.Adapter<TelcoRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
 
@@ -21,7 +21,7 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentNumbersItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.common.topupbills.R.layout.item_vertical_recent_numbers, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_telco_recent_numbers, parent, false)
         return RecentNumbersItemViewHolder(view)
     }
 
@@ -35,9 +35,9 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
     inner class RecentNumbersItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val iconOperator: ImageView = itemView.findViewById(R.id.common_topup_bills_recent_icon_operator)
-        private val textClientNumber: TextView = itemView.findViewById(R.id.common_topup_bills_recent_label)
-        private val textProductName: TextView = itemView.findViewById(R.id.common_topup_bills_recent_product_name)
+        private val iconOperator: ImageView = itemView.findViewById(R.id.telco_recent_icon_operator)
+        private val textClientNumber: TextView = itemView.findViewById(R.id.telco_recent_client_number)
+        private val textProductName: TextView = itemView.findViewById(R.id.telco_recent_product_name)
 
         private lateinit var topupBillsRecommendation: TopupBillsRecommendation
 
@@ -49,10 +49,8 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
         fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
             this.topupBillsRecommendation = topupBillsRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(
-                iconOperator,
-                topupBillsRecommendation.iconUrl,
-                ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
+            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
+                    ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
             if (topupBillsRecommendation.description.isEmpty()) {
                 textClientNumber.text = topupBillsRecommendation.clientNumber
@@ -62,9 +60,11 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
             textProductName.text = topupBillsRecommendation.title
         }
+
     }
 
     interface ActionListener {
         fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int)
     }
+
 }

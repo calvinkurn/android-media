@@ -12,5 +12,4 @@ object UserConsentConst {
     const val URL_CONSENT_DETAIL = "https://www.tokopedia.com/consent?id=%s&type=%s&tab=%s"
 
     const val CONSENT_OPT_IN = "OPT_IN"
-    const val CONSENT_OPT_OUT = "OPT_OUT"
 }

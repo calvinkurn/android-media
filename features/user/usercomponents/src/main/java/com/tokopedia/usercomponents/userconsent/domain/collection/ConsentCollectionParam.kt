@@ -2,7 +2,6 @@ package com.tokopedia.usercomponents.userconsent.domain.collection
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
-import com.tokopedia.usercomponents.userconsent.domain.submission.DataElements
 
 data class ConsentCollectionParam(
     @SerializedName("collectionID")
@@ -10,7 +9,7 @@ data class ConsentCollectionParam(
     @SerializedName("version")
     var version: String = "",
     @SerializedName("dataElements")
-    val dataElements: MutableList<DataElements> = mutableListOf(),
+    val dataElements: Map<String, String>? = null,
     @SerializedName("identifier")
     var identifier: String = ""
 ): GqlParam

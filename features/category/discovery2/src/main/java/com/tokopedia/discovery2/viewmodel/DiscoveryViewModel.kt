@@ -579,14 +579,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
-        val pageData = discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)
-        if (pageData != null) {
-            pageData.queryParamMap?.let {
-                if (queryParameterMapFromBundle[QUERY_PARENT] != it[QUERY_PARENT] || !queryParameterMapFromBundle[ACTIVE_TAB].isNullOrEmpty()) {
+        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
+            discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
+                if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
                     discoveryDataUseCase.clearPage(pageIdentifier)
                 }
             }
-        }
     }
 
     private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {

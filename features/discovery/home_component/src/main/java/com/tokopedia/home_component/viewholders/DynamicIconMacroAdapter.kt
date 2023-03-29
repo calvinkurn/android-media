@@ -10,7 +10,7 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by dhaba
  */
-class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
+class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var type: Int = 1
@@ -19,23 +19,18 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
         return DynamicIconMacroItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                if (isRevamp) DynamicIconMacroItemViewHolder.LAYOUT_REVAMP else DynamicIconMacroItemViewHolder.LAYOUT,
+                DynamicIconMacroItemViewHolder.LAYOUT,
                 parent,
                 false
             ),
-            listener,
-            isRevamp
+            listener
         )
     }
 
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
-        val isScrollable =
-            if (isRevamp && iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) true
-            else if (isRevamp && iconList.size <= DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) false
-            else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO
         iconList.getOrNull(position)?.let {
             holder
-                .bind(it, isScrollable, this.position, type, isCache)
+                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO, this.position, type, isCache)
         }
     }
 

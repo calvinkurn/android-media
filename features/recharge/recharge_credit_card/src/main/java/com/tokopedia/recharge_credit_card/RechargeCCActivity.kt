@@ -1,7 +1,10 @@
 package com.tokopedia.recharge_credit_card
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -10,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
@@ -32,6 +36,7 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
     lateinit var userSession: UserSessionInterface
 
     private var toolbarCreditCard: HeaderUnify? = null
+    private var ccLogoVerified: ImageView? = null
 
     override fun getNewFragment(): Fragment? {
         val bundle = intent.extras
@@ -62,6 +67,7 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbarCreditCard = findViewById(R.id.toolbar_credit_card)
+        ccLogoVerified = findViewById(R.id.cc_logo_verified)
 
         setSecureWindowFlag()
         component.inject(this)
@@ -71,6 +77,10 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
             it[0].setOnClickListener {
                 RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
             }
+        }
+
+        ccLogoVerified?.let { imageView ->
+            imageView.loadImage(CC_IMG_VERIFIED)
         }
     }
 
@@ -107,5 +117,7 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
         private const val CATEGORY_ID_DEFAULT = "26"
         private const val MENU_ID_DEFAULT = "169"
+
+        private const val CC_IMG_VERIFIED = TokopediaImageUrl.CC_IMG_VERIFIED
     }
 }

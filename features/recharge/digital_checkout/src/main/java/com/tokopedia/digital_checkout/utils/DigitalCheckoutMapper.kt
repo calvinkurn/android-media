@@ -1,7 +1,6 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common_digital.atc.data.request.CheckoutFintechProduct
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
@@ -267,29 +266,5 @@ object DigitalCheckoutMapper {
             )
         )
         return requestBodyCheckout
-    }
-
-    fun mapFintechProductToCheckoutFintechProduct(fintechProduct: FintechProduct): CheckoutFintechProduct {
-        return CheckoutFintechProduct(
-            id = fintechProduct.id.toIntSafely(),
-            transactionType = fintechProduct.transactionType,
-            tierId = fintechProduct.tierId.toIntSafely(),
-            optIn = fintechProduct.optIn,
-            checkBoxDisabled = fintechProduct.checkBoxDisabled,
-            allowOVOPoints = fintechProduct.allowOVOPoints,
-            fintechAmount = fintechProduct.fintechAmount.toInt(),
-            fintechPartnerAmount = fintechProduct.fintechPartnerAmount.toInt(),
-            info = CheckoutFintechProduct.FintechProductInfo(
-                title = fintechProduct.info.title,
-                subtitle = fintechProduct.info.subtitle,
-                checkedSubtitle = fintechProduct.info.checkedSubtitle,
-                textLink = fintechProduct.info.textLink,
-                urlLink = fintechProduct.info.urlLink,
-                tooltipText = fintechProduct.info.tooltipText,
-                iconUrl = fintechProduct.info.iconUrl
-            ),
-            operatorName = fintechProduct.operatorName,
-            crossSellMetadata = fintechProduct.crossSellMetadata
-        )
     }
 }

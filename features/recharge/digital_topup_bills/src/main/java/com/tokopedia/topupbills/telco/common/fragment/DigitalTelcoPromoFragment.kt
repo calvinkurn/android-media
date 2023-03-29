@@ -60,56 +60,41 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.promos.observe(
-            viewLifecycleOwner,
-            Observer {
-                promoListWidget.setPromoList(it)
-            }
-        )
+        viewModel.promos.observe(viewLifecycleOwner, Observer {
+            promoListWidget.setPromoList(it)
+        })
 
-        viewModel.titleMenu.observe(
-            viewLifecycleOwner,
-            Observer {
-                promoListWidget.toggleTitle(it)
-            }
-        )
+        viewModel.titleMenu.observe(viewLifecycleOwner, Observer {
+            promoListWidget.toggleTitle(it)
+        })
 
-        viewModel.promoImpression.observe(
-            viewLifecycleOwner,
-            Observer {
-                viewModel.promos.value?.let {
-                    promoListWidget.getVisibleRecentItemsToUsersTracking(it)
-                }
+        viewModel.promoImpression.observe(viewLifecycleOwner, Observer {
+            viewModel.promos.value?.let {
+                promoListWidget.getVisibleRecentItemsToUsersTracking(it)
             }
-        )
+        })
 
         promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {
-            override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
+            override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
                 clickCopyOnPromoCode(promoId)
                 viewModel.promos.value?.run {
-                    topupAnalytics.eventClickCopyPromoCode(
-                        voucherCode,
-                        this.indexOfFirst {
-                            it.promoCode == voucherCode
-                        }
-                    )
+                    topupAnalytics.eventClickCopyPromoCode(voucherCode, this.indexOfFirst {
+                        it.promoCode == voucherCode
+                    })
                 }
 
                 activity?.let {
                     try {
                         val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText(
-                            CLIP_DATA_VOUCHER_CODE_DIGITAL,
-                            voucherCode
+                            CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
                         )
 
                         clipboard.setPrimaryClip(clip)
                         view?.run {
-                            Toaster.build(
-                                this,
+                            Toaster.build(this,
                                 getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                                Snackbar.LENGTH_LONG).show()
                         }
                     } catch (e: SecurityException) {
                         e.printStackTrace()

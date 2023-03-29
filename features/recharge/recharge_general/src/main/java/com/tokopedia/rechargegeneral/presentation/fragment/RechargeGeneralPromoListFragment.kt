@@ -70,7 +70,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
         }
     }
 
-    override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
         rechargeGeneralAnalytics.eventClickCopyPromo(voucherCode, promoList.indexOfFirst { it.promoCode == voucherCode })
 
         binding?.promoListWidget?.notifyPromoItemChanges(promoId)

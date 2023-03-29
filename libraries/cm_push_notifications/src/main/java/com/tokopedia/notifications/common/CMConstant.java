@@ -292,7 +292,6 @@ public interface CMConstant {
         String VALUE_ACTION_CLICK_CLOSE = "click close";
         String VALUE_ACTION_CLICK_CTA = "click cta";
         String KEY_EVENT_NAME = "event_name";
-        String KEY_EVENT_GA = "event_ga";
         String KEY_MAIN_APP_PUSH_PERMISSION_STATUS = "android_push_permission_mainapp_device_status";
         String KEY_SELLER_APP_PUSH_PERMISSION_STATUS = "android_push_permission_sellerapp_device_status";
         String KEY_TRAFFIC_SOURCE_NAME = "traffic_source_name";

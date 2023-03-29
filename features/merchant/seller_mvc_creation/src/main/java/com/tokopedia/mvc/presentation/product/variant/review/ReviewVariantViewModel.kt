@@ -53,7 +53,7 @@ class ReviewVariantViewModel @Inject constructor(
                 _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(updatedVariantIds))
             }
             is ReviewVariantEvent.TapBulkDeleteVariant -> {
-                val variantToDeleteCount = currentState.variants.filter { it.isSelected }.size
+                val variantToDeleteCount = currentState.variants.count { it.isSelected }
                 _uiEffect.tryEmit(ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog(variantToDeleteCount))
             }
             ReviewVariantEvent.ApplyBulkDeleteVariant -> handleBulkDeleteVariant()
@@ -211,10 +211,13 @@ class ReviewVariantViewModel @Inject constructor(
             val modifiedVariants = currentState.variants.toMutableList()
             modifiedVariants.removeFirst { it.variantId == variantIdToDelete }
 
+            val modifiedVariantIds =
+                modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
+
             _uiState.update {
                 it.copy(
                     variants = modifiedVariants,
-                    selectedVariantIds = modifiedVariants.selectedVariantsOnly()
+                    selectedVariantIds = modifiedVariantIds
                 )
             }
         }
@@ -222,7 +225,7 @@ class ReviewVariantViewModel @Inject constructor(
 
     private fun handleBulkDeleteVariant() {
         launch(dispatchers.computation) {
-            val toBeRemovedVariantIds = currentState.variants.selectedVariantsOnly()
+            val toBeRemovedVariantIds = currentState.variants.filter { it.isSelected }.map { it.variantId }
 
             val modifiedVariants = currentState.variants.toMutableList()
             modifiedVariants.removeAll { it.variantId in toBeRemovedVariantIds }
@@ -242,16 +245,14 @@ class ReviewVariantViewModel @Inject constructor(
         selectedVariantIds: List<Long>,
         originalVariantIds: List<Long>
     ): Boolean {
-        if (!isParentProductSelected) {
-            return false
-        }
-
+        val isVariantUnchanged = selectedVariantIds.count() == originalVariantIds.count()
         val isVariantChanged = selectedVariantIds.count() != originalVariantIds.count()
 
-        return if (isVariantChanged) {
-            variant.variantId in selectedVariantIds
-        } else {
-            true
+        return when {
+            !isParentProductSelected -> false //Disable all variant if parent product is unselected
+            isParentProductSelected && isVariantUnchanged -> true //Select all variant if parent product is selected
+            isParentProductSelected && isVariantChanged -> variant.variantId in selectedVariantIds
+            else -> false
         }
     }
 

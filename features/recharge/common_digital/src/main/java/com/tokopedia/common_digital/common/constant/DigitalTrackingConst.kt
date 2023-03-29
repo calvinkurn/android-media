@@ -58,8 +58,4 @@ object DigitalTrackingConst {
         const val KEY = "currencyCode"
         const val IDR = "IDR"
     }
-
-    object Other {
-        const val KEY_TRACKER_ID = "trackerId"
-    }
 }

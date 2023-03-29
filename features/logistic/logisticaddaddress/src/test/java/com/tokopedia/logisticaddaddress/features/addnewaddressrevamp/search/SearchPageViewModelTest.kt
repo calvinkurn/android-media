@@ -12,7 +12,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,30 +47,24 @@ class SearchPageViewModelTest {
     @Test
     fun `Get Auto Complete List Success`() {
         coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
-        searchPageViewModel.loadAutoComplete("Jakarta")
+        searchPageViewModel.getAutoCompleteList("Jakarta", "")
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
-    fun `verify set latlong and get auto complete list is fail`() {
-        // Inject
-        val latitude = 1.0
-        val longitude = 1.0
-
-        // Given
+    fun `Get Auto Complete List Fail`() {
         coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
-
-        // When
-        searchPageViewModel.setLatLong(
-            latitude = latitude,
-            longitude = longitude
-        )
-        searchPageViewModel.loadAutoComplete("Jakarta")
-
-        // Then
-        Assert.assertEquals(searchPageViewModel.currentLat.toString(), latitude.toString())
-        Assert.assertEquals(searchPageViewModel.currentLong.toString(), longitude.toString())
+        searchPageViewModel.getAutoCompleteList("Jakarta", "")
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Get Address Data`() {
+        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+
+        searchPageViewModel.setAddress(address)
+
+        Assert.assertEquals(searchPageViewModel.getAddress(), address)
     }
 
     @Test
@@ -80,72 +73,5 @@ class SearchPageViewModelTest {
         searchPageViewModel.isGmsAvailable = gmsAvailable
 
         Assert.assertEquals(searchPageViewModel.isGmsAvailable, gmsAvailable)
-    }
-
-    @Test
-    fun `verify set all data from arguments is correctly`() {
-        // Inject
-        val isPositiveFlow = true
-        val isFromPinpoint = true
-        val isPolygon = true
-        val isEdit = true
-        val source = "source"
-        val addressData = spyk<SaveAddressDataModel>()
-        val isGetPinPointOnly = false
-
-        // When
-        searchPageViewModel.setDataFromArguments(
-            isPositiveFlow,
-            isFromPinpoint,
-            isPolygon,
-            isEdit,
-            source,
-            addressData,
-            isGetPinPointOnly
-        )
-
-        // Then
-        with(searchPageViewModel) {
-            Assert.assertTrue(this.isPositiveFlow)
-            Assert.assertTrue(this.isFromPinpoint)
-            Assert.assertTrue(this.isPolygon)
-            Assert.assertTrue(this.isEdit)
-            Assert.assertEquals(this.source, source)
-            Assert.assertEquals(this.saveAddressDataModel, addressData)
-            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
-        }
-    }
-
-    @Test
-    fun `verify set data from arguments when address data null is correctly`() {
-        // Inject
-        val isPositiveFlow = false
-        val isFromPinpoint = false
-        val isPolygon = false
-        val isEdit = false
-        val source = ""
-        val isGetPinPointOnly = true
-
-        // When
-        searchPageViewModel.setDataFromArguments(
-            isPositiveFlow,
-            isFromPinpoint,
-            isPolygon,
-            isEdit,
-            source,
-            null,
-            isGetPinPointOnly
-        )
-
-        // Then
-        with(searchPageViewModel) {
-            Assert.assertFalse(this.isPositiveFlow)
-            Assert.assertFalse(this.isFromPinpoint)
-            Assert.assertFalse(this.isPolygon)
-            Assert.assertFalse(this.isEdit)
-            Assert.assertEquals(this.source, source)
-            Assert.assertNotNull(this.saveAddressDataModel)
-            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
-        }
     }
 }

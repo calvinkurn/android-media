@@ -226,6 +226,12 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check link url of donasi then should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=12&menu_id=83&template=voucher"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.DONASI, expectedDeepLink)
+    }
+
+    @Test
     fun `check link url of tagihan pdam then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConsInternalDigital.GENERAL_TEMPLATE}?category_id=5&menu_id=120&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TAGIHAN_PDAM, expectedDeepLink)

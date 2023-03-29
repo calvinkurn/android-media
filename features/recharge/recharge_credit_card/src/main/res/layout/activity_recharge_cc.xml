@@ -48,4 +48,27 @@
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cc_space_1"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:background="@color/Unify_N100"
+        app:layout_constraintBottom_toTopOf="@+id/cc_logo_verified"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/cc_logo_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl7"
+        android:layout_marginRight="@dimen/layout_lvl7"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

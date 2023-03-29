@@ -2,7 +2,6 @@ package com.tokopedia.picker.common.uimodel
 
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import kotlinx.parcelize.Parcelize
 
@@ -10,14 +9,14 @@ import kotlinx.parcelize.Parcelize
 open class MediaUiModel(
     val id: Long = 0L,
     val file: PickerFile? = null,
-    var duration: Int = 0,
+    var videoLength: Int = 0,
     val uri: Uri? = null,
 
     /*
     * this data come from camera tab,
-    * the media file is removable.
+    * the media file is deletable.
     * */
-    var isCacheFile: Boolean = false,
+    var isFromPickerCamera: Boolean = false,
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -26,14 +25,14 @@ open class MediaUiModel(
                 id == other.id &&
                 file == other.file &&
                 uri == other.uri &&
-                isCacheFile == other.isCacheFile
+                isFromPickerCamera == other.isFromPickerCamera
     }
 
     override fun hashCode(): Int {
         var hashCode = id.hashCode()
         hashCode = 5 * hashCode + file.hashCode()
         hashCode = 5 * hashCode + uri.hashCode()
-        hashCode = 5 * hashCode + isCacheFile.hashCode()
+        hashCode = 5 * hashCode + isFromPickerCamera.hashCode()
         return hashCode
     }
 
@@ -52,12 +51,8 @@ open class MediaUiModel(
             file = this,
         )
 
-        fun PickerFile.toRemovableUiModel() = toUiModel().also {
-            it.isCacheFile = true
-        }
-
-        fun List<PickerFile?>.toRemovableUiModel() = map {
-            it?.toRemovableUiModel()
+        fun PickerFile.cameraToUiModel() = toUiModel().also {
+            it.isFromPickerCamera = true
         }
     }
 

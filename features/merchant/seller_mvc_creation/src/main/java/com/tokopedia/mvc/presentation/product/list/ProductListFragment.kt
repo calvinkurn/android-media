@@ -47,7 +47,6 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.tracker.ProductListPageTracker
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class ProductListFragment : BaseDaggerFragment() {

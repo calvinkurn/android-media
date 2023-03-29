@@ -21,7 +21,6 @@ private const val HEADER_CASE_ID_KEY = "X-TKPD-CaseId"
 private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 private const val CONTACT_US = "contact-us"
-private const val CONTACT_US_EXTERNAL = "cex-external"
 private const val HTTP_LENGTH = 4
 
 class AttachmentAdapter constructor(
@@ -90,7 +89,7 @@ class AttachmentAdapter constructor(
         }
 
         private fun getUrl(url: String?): GlideUrl {
-            return if (url?.contains(CONTACT_US) == true  || url?.contains(CONTACT_US_EXTERNAL) == true) {
+            return if (url?.contains(CONTACT_US) == true) {
                 GlideUrl(
                     url,
                     LazyHeaders.Builder()

@@ -48,7 +48,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="4sp"
-        android:text="@string/feed_shop_string_btn_whitelist"
+        android:text="@string/string_btn_whitelist"
         android:textAllCaps="false"
         android:textColor="@color/Unify_N700_32"
         android:textSize="12sp"

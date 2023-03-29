@@ -20,7 +20,6 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,10 +85,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         initListener()
     }
 
-    open fun formatClientNumberInput(clientNumber: String): String {
-        return CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
-    }
-
     private fun initListener() {
         inputNumberField.icon1.run {
             setOnClickListener { listener.onNavigateToContact(false) }
@@ -111,15 +106,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    removeTextChangedListener(this)
-                    s?.let {
-                        it.replace(
-                            Int.ZERO,
-                            it.length,
-                            formatClientNumberInput(it.toString())
-                        )
-                    }
-                    addTextChangedListener(this)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -264,7 +250,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(inputNumber)
+        inputNumberField.editText.setText(
+            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+        )
     }
 
     fun getInputNumber(): String {

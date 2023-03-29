@@ -79,7 +79,7 @@ public class TopAdsUrlHitter {
         new ImpresionTask(className, new TopAdsHeaderResponseListener() {
             @Override
             public void onSuccess(@NonNull String header) {
-                if (sharedPref != null) {
+                if (sharedPref != null && !isLoggedIn) {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(RESPONSE_HEADER_KEY, header);
                     editor.apply();

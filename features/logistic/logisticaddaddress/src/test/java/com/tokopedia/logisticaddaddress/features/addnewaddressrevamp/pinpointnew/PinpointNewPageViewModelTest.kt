@@ -19,7 +19,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,22 +41,17 @@ class PinpointNewPageViewModelTest {
 
     private lateinit var pinpointNewPageViewModel: PinpointNewPageViewModel
 
-    private val autofillDistrictDataObserver: Observer<Result<KeroMapsAutofill>> =
-        mockk(relaxed = true)
-    private val districtLocationObserver: Observer<Result<GetDistrictDataUiModel>> =
-        mockk(relaxed = true)
-    private val districtBoundaryObserver: Observer<Result<DistrictBoundaryResponseUiModel>> =
-        mockk(relaxed = true)
-    private val districtCenterObserver: Observer<Result<DistrictCenterUiModel>> =
-        mockk(relaxed = true)
+    private val autofillDistrictDataObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
+    private val districtLocationObserver: Observer<Result<GetDistrictDataUiModel>> = mockk(relaxed = true)
+    private val districtBoundaryObserver: Observer<Result<DistrictBoundaryResponseUiModel>> = mockk(relaxed = true)
+    private val districtCenterObserver: Observer<Result<DistrictCenterUiModel>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        pinpointNewPageViewModel =
-            PinpointNewPageViewModel(repo, getDistrictMapper, districtBoundaryMapper)
+        pinpointNewPageViewModel = PinpointNewPageViewModel(repo, getDistrictMapper, districtBoundaryMapper)
         pinpointNewPageViewModel.autofillDistrictData.observeForever(autofillDistrictDataObserver)
         pinpointNewPageViewModel.districtLocation.observeForever(districtLocationObserver)
         pinpointNewPageViewModel.districtBoundary.observeForever(districtBoundaryObserver)
@@ -74,7 +68,7 @@ class PinpointNewPageViewModelTest {
     @Test
     fun `Get District Data Fail`() {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getLocationFromLatLong()
+        pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
     }
 
@@ -95,37 +89,34 @@ class PinpointNewPageViewModelTest {
     @Test
     fun `Get District Boundaries Success`() {
         coEvery { repo.getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
-        pinpointNewPageViewModel.getDistrictBoundaries()
+        pinpointNewPageViewModel.getDistrictBoundaries(11986)
         verify { districtBoundaryObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Boundaries Fail`() {
         coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getDistrictBoundaries()
+        pinpointNewPageViewModel.getDistrictBoundaries(11986)
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get District Center by District ID Success`() {
         coEvery { repo.getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
-        pinpointNewPageViewModel.getDistrictCenter()
+        pinpointNewPageViewModel.getDistrictCenter(11986)
         verify { districtCenterObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Center by District ID Fail`() {
         coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getDistrictCenter()
+        pinpointNewPageViewModel.getDistrictCenter(11986)
         verify { districtCenterObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `get save address`() {
-        val address = SaveAddressDataModel(
-            formattedAddress = "Unnamed Road, Jl Testimoni",
-            selectedDistrict = "Testimoni"
-        )
+        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
         pinpointNewPageViewModel.setAddress(address)
         Assert.assertEquals(pinpointNewPageViewModel.getAddress(), address)
     }
@@ -136,90 +127,5 @@ class PinpointNewPageViewModelTest {
         pinpointNewPageViewModel.isGmsAvailable = gmsAvailable
 
         Assert.assertEquals(pinpointNewPageViewModel.isGmsAvailable, gmsAvailable)
-    }
-
-    @Test
-    fun `verify set data from arguments is correctly`() {
-        // Inject
-        val currentPlaceId = "123"
-        val latitude = 1.0
-        val longitude = 1.0
-        val addressData = spyk(SaveAddressDataModel())
-        val isPositiveFlow = true
-        val isPolygon = false
-        val isFromAddressForm = false
-        val isEdit = false
-        val source = "source"
-        val isGetPinPointOnly = false
-
-        // When
-        pinpointNewPageViewModel.setDataFromArguments(
-            currentPlaceId,
-            latitude,
-            longitude,
-            addressData,
-            isPositiveFlow,
-            isPolygon,
-            isFromAddressForm,
-            isEdit,
-            source,
-            isGetPinPointOnly
-        )
-
-        // Then
-        with(pinpointNewPageViewModel) {
-            Assert.assertEquals(this.currentPlaceId, currentPlaceId)
-            Assert.assertNotEquals(this.getAddress().latitude, latitude.toString())
-            Assert.assertNotEquals(this.getAddress().longitude, longitude.toString())
-            Assert.assertEquals(this.isPositiveFlow, isPositiveFlow)
-            Assert.assertEquals(this.isPolygon, isPolygon)
-            Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
-            Assert.assertEquals(this.isEdit, isEdit)
-            Assert.assertEquals(this.source, source)
-            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
-            Assert.assertFalse(this.isEditOrGetPinPointOnly)
-        }
-    }
-
-    @Test
-    fun `verify set data from arguments when address data null is correctly`() {
-        // Inject
-        val currentPlaceId = "123"
-        val latitude = 1.0
-        val longitude = 1.0
-        val isPositiveFlow = true
-        val isPolygon = false
-        val isFromAddressForm = false
-        val isEdit = false
-        val source = "source"
-        val isGetPinPointOnly = true
-
-        // When
-        pinpointNewPageViewModel.setDataFromArguments(
-            currentPlaceId,
-            latitude,
-            longitude,
-            null,
-            isPositiveFlow,
-            isPolygon,
-            isFromAddressForm,
-            isEdit,
-            source,
-            isGetPinPointOnly
-        )
-
-        // Then
-        with(pinpointNewPageViewModel) {
-            Assert.assertEquals(this.currentPlaceId, currentPlaceId)
-            Assert.assertEquals(this.getAddress().latitude, latitude.toString())
-            Assert.assertEquals(this.getAddress().longitude, longitude.toString())
-            Assert.assertEquals(this.isPositiveFlow, isPositiveFlow)
-            Assert.assertEquals(this.isPolygon, isPolygon)
-            Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
-            Assert.assertEquals(this.isEdit, isEdit)
-            Assert.assertEquals(this.source, source)
-            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
-            Assert.assertTrue(this.isEditOrGetPinPointOnly)
-        }
     }
 }

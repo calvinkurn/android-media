@@ -23,7 +23,6 @@ class ImageGeneratorConstants {
         const val HAS_CAMPAIGN = "has_campaign"
         const val CAMPAIGN_DISCOUNT = "campaign_discount"
         const val CAMPAIGN_NAME_PDP = "campaign_name"
-        const val PERSONALIZED_CAMPAIGN_INFO = "campaign_info"
         const val SHOP_LOGO = "shop-logo"
         const val SHOP_NAME = "shop-name"
         const val SHOP_NAME_UNDERSCORE = "shop_name"

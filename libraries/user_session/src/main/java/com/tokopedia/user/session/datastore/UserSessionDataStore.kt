@@ -25,9 +25,15 @@ interface UserSessionDataStore {
 
     suspend fun setIsGoldMerchant(isGoldMerchant: Boolean)
 
+    suspend fun setTempLoginName(fullName: String)
+
     suspend fun setTempUserId(userId: String)
 
     suspend fun setIsAffiliateStatus(isAffiliate: Boolean)
+
+    suspend fun setTempPhoneNumber(userPhone: String)
+
+    suspend fun setTempLoginEmail(email: String)
 
     suspend fun setToken(accessToken: String, tokenType: String)
 
@@ -39,9 +45,11 @@ interface UserSessionDataStore {
 
     suspend fun logoutSession()
 
-    suspend fun clearAllData()
-
     suspend fun clearDataStore()
+
+    suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean)
+
+    suspend fun setFirstTimeUser(isFirstTime: Boolean)
 
     suspend fun setToken(accessToken: String, tokenType: String, refreshToken: String)
 
@@ -65,17 +73,34 @@ interface UserSessionDataStore {
 
     suspend fun setProfilePicture(profilePicture: String)
 
+    suspend fun setSaldoWithdrawalWaring(value: Boolean)
+
+    suspend fun setSaldoIntroPageStatus(value: Boolean)
+
     suspend fun setGCToken(gcToken: String)
 
     suspend fun setShopAvatar(shopAvatar: String)
 
     suspend fun setIsPowerMerchantIdle(powerMerchantIdle: Boolean)
 
+    suspend fun setTwitterAccessTokenAndSecret(accessToken: String, accessTokenSecret: String)
+
+    suspend fun setTwitterAccessToken(accessToken: String)
+
+    suspend fun setTwitterSecret(secret: String)
+
+    suspend fun setTwitterShouldPost(shouldPost: Boolean)
+
     suspend fun setAutofillUserData(autofillUserData: String)
 
     suspend fun setLoginMethod(loginMethod: String)
 
     suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean)
+
+    suspend fun setDeviceId(deviceId: String)
+
+    suspend fun setFcmTimestamp(timestamp: String)
+
 
     // Getter
     fun getUserSession(): Flow<UserData>
@@ -98,11 +123,19 @@ interface UserSessionDataStore {
 
     fun getTemporaryUserId(): Flow<String>
 
+    fun getDeviceId(): Flow<String>
+
+    fun getTempEmail(): Flow<String>
+
+    fun getTempPhoneNumber(): Flow<String>
+
     fun isMsisdnVerified(): Flow<Boolean>
 
     fun getPhoneNumber(): Flow<String>
 
     fun getEmail(): Flow<String>
+
+    fun isFirstTimeUser(): Flow<Boolean>
 
     fun isGoldMerchant(): Flow<Boolean>
 
@@ -130,9 +163,15 @@ interface UserSessionDataStore {
 
     fun isShopOfficialStore(): Flow<Boolean>
 
+    fun hasShownSaldoWithdrawalWarning(): Flow<Boolean>
+
+    fun getFcmTimestamp(): Flow<Long>
+
     fun getGTMLoginID(): Flow<String>
 
     fun isAffiliate(): Flow<Boolean>
+
+    fun hasShownSaldoIntroScreen(): Flow<Boolean>
 
     fun isShopOwner(): Flow<Boolean>
 

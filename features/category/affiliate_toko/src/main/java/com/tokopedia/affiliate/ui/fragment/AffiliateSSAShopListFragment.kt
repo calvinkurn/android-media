@@ -112,19 +112,17 @@ class AffiliateSSAShopListFragment :
 
     private fun setObservers() {
         affiliateSSAShopViewModel?.getSSAShopList()?.observe(this) {
-            view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.isRefreshing = false
             if (it.isNullOrEmpty() && page == PAGE_ZERO) {
                 view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.hide()
                 view?.findViewById<Group>(R.id.empty_ssa_state_group)?.show()
             } else {
                 view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.show()
                 view?.findViewById<Group>(R.id.empty_ssa_state_group)?.hide()
-                ssaAdapter.addMoreData(it)
+                ssaAdapter.setVisitables(it)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             }
         }
         affiliateSSAShopViewModel?.getErrorMessage()?.observe(this) {
-            view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.isRefreshing = false
             onGetError(it)
         }
         affiliateSSAShopViewModel?.progressBar()?.observe(this) {

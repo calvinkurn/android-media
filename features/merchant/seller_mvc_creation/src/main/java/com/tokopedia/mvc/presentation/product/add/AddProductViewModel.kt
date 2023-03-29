@@ -297,6 +297,9 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
+        val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
+        val currentlyDisplayedProductIds = currentState.products.map { it.id }
+
         var selectionCount = 0
         val modifiedProducts = currentState.products.map { product ->
 
@@ -307,11 +310,20 @@ class AddProductViewModel @Inject constructor(
                 hasRemainingSelection -> {
                     selectionCount++
 
+                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                    val isSelected = if (isOnSearchMode) {
+                        //If is on search product mode. Only product from search result should be selected
+                        isProductDisplayedOnSearchResult
+                    } else {
+                        //If we're not in search product mode. Select all loaded products
+                        true
+                    }
+
                     //To make sure only eligible variant will be selected
                     val eligibleVariantIdsOnly = product.originalVariants.eligibleVariantIdsOnly()
 
                     product.copy(
-                        isSelected = true,
+                        isSelected = isSelected,
                         enableCheckbox = true,
                         selectedVariantsIds = eligibleVariantIdsOnly
                     )
@@ -694,22 +706,12 @@ class AddProductViewModel @Inject constructor(
         currentPageParentProductsIds: List<Long>,
         selectedParentProductIds: Set<Long>
     ): Int {
-        var selectedParentProductCounter = 0
-
         val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
         val selectedProductCount = if (isOnSearchMode) {
-
-            currentPageParentProductsIds.forEach { productId ->
-                if (productId in selectedParentProductIds) {
-                    selectedParentProductCounter++
-                }
-            }
-
-            selectedParentProductCounter
+            currentPageParentProductsIds.count { it in selectedParentProductIds }
         } else {
             selectedParentProductIds.count()
         }
-
         return selectedProductCount
     }
 
@@ -717,23 +719,13 @@ class AddProductViewModel @Inject constructor(
         selectedProductCount: Int,
         totalProductCount: Int
     ): AddProductUiState.CheckboxState {
-        if (selectedProductCount == totalProductCount) {
-            return AddProductUiState.CheckboxState.CHECKED
+        val checkboxState = when {
+            currentState.checkboxState.isChecked() -> AddProductUiState.CheckboxState.CHECKED
+            selectedProductCount.isZero() -> AddProductUiState.CheckboxState.UNCHECKED
+            selectedProductCount < totalProductCount -> AddProductUiState.CheckboxState.INDETERMINATE
+            selectedProductCount == totalProductCount -> AddProductUiState.CheckboxState.CHECKED
+            else -> AddProductUiState.CheckboxState.UNCHECKED
         }
-
-        if (currentState.checkboxState.isChecked()) {
-            return AddProductUiState.CheckboxState.CHECKED
-        }
-
-        if (selectedProductCount.isZero()) {
-            return AddProductUiState.CheckboxState.UNCHECKED
-        }
-
-        if (selectedProductCount < totalProductCount) {
-            return AddProductUiState.CheckboxState.INDETERMINATE
-        }
-
-
-        return AddProductUiState.CheckboxState.UNCHECKED
+        return checkboxState
     }
 }

@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by nabillasabbaha on 23/04/19.
  */
 class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
-    RecyclerView.Adapter<TopupBillsPromoListAdapter.PromoItemViewHolder>() {
+        RecyclerView.Adapter<TopupBillsPromoListAdapter.PromoItemViewHolder>() {
 
     private var listener: ActionListener? = null
 
@@ -74,7 +74,7 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
 
                 topupBillsPromo.voucherCodeCopied = true
                 notifyItemChanged(adapterPosition)
-                listener?.onClickPromoCode(topupBillsPromo.id, topupBillsPromo.promoCode, adapterPosition)
+                listener?.onClickPromoCode(topupBillsPromo.id, topupBillsPromo.promoCode)
             }
         }
 
@@ -102,11 +102,13 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
                 promoCodeLayout.visibility = View.VISIBLE
             }
         }
+
     }
 
     interface ActionListener {
-        fun onClickPromoCode(promoId: String, voucherCode: String, position: Int)
+        fun onClickPromoCode(promoId: String, voucherCode: String)
 
         fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int)
     }
+
 }

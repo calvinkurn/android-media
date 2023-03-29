@@ -32,26 +32,6 @@ class DealsPDPSelectQuantityViewModelTest: DealsPDPSelectQuantityViewModelTestFi
     }
 
     @Test
-    fun `when getting verify data error should run and give the error result`() {
-        onGetVerify_thenReturn(createVerifyError())
-        val expectedResponseMessage = "Produk sedang tidak tersedia"
-        var actualResponse: Result<DealsVerifyResponse>? = null
-
-        runBlockingTest {
-            val collectorJob = launch {
-                viewModel.flowVerify.collectLatest {
-                    actualResponse = it
-                }
-            }
-            viewModel.setVerifyRequest(createPDPData().eventProductDetail.productDetailData)
-            collectorJob.cancel()
-        }
-
-        Assert.assertTrue(actualResponse is Fail)
-        Assert.assertEquals((actualResponse as Fail).throwable.message, expectedResponseMessage)
-    }
-
-    @Test
     fun `when getting verify data should run and give the error result`() {
         onGetVerify_thenReturn(Throwable(errorMessageGeneral))
 

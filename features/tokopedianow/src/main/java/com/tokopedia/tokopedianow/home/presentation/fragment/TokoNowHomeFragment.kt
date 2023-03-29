@@ -449,9 +449,9 @@ class TokoNowHomeFragment : Fragment(),
         return carouselScrollState[adapterPosition]
     }
 
-    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModelTokoNow.onCartQuantityChanged(
+            viewModelTokoNow.addProductToCart(
                 data.channelId,
                 data.productId,
                 quantity,
@@ -987,7 +987,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.addItemToCart) {
+        observe(viewModelTokoNow.miniCartAdd) {
             when (it) {
                 is Success -> {
                     getMiniCart()
@@ -1009,7 +1009,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.updateCartItem) {
+        observe(viewModelTokoNow.miniCartUpdate) {
             when (it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -1024,7 +1024,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.removeCartItem) {
+        observe(viewModelTokoNow.miniCartRemove) {
             when (it) {
                 is Success -> {
                     getMiniCart()

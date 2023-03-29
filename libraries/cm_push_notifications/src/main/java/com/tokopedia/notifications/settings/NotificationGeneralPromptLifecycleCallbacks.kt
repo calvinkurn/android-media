@@ -3,7 +3,6 @@ package com.tokopedia.notifications.settings
 import android.Manifest
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Build
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,7 +19,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
         val userSession = createUserSession(activity)
-        sendDevicePushPermissionStatusEvent(userSession, activity, activityName)
+
         if (activity !is FragmentActivity
             || isActivityExcludedFromGeneralPrompt(activityName)
             || isFirstTimeUserToOnBoarding(activityName, userSession)) return
@@ -38,17 +36,6 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         prompt.showNotification()
 
         activity.application.unregisterActivityLifecycleCallbacks(this)
-    }
-
-    private fun sendDevicePushPermissionStatusEvent(userSession:UserSessionInterface, context: Context?, activityName: String){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activityName == CUSTOMER_APP_FIRST_ACTIVITY) {
-            context?.let {
-                NotificationSettingsGtmEvents(
-                    userSession,
-                    context.applicationContext
-                ).sendAppPushPermissionStatusEvent(it)
-            }
-        }
     }
 
     private fun createUserSession(activity: Activity): UserSessionInterface =

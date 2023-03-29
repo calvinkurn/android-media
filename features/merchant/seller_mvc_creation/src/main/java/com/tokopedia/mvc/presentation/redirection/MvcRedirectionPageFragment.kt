@@ -18,7 +18,6 @@ import com.tokopedia.mvc.presentation.redirection.uimodel.MvcRedirectionPageActi
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class MvcRedirectionPageFragment : BaseDaggerFragment() {

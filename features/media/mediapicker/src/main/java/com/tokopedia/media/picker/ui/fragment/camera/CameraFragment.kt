@@ -36,7 +36,7 @@ import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
@@ -236,9 +236,9 @@ open class CameraFragment @Inject constructor(
     override fun onVideoTaken(result: VideoResult) {
         val videoFile = result.file
             .asPickerFile()
-            .toRemovableUiModel()
+            .cameraToUiModel()
             .apply {
-                duration = requireContext()
+                videoLength = requireContext()
                     .getVideoDuration(file)
             }
 
@@ -280,7 +280,7 @@ open class CameraFragment @Inject constructor(
 
                 val file = it
                     .asPickerFile()
-                    .toRemovableUiModel()
+                    .cameraToUiModel()
 
                 onShowMediaThumbnail(file)
             }

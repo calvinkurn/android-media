@@ -88,9 +88,23 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
     }
 
-    override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun deleteCartItem(productId: String) {
+        val miniCartItem = viewModel.getMiniCartItem(productId)
+        val cartId = miniCartItem?.cartId.orEmpty()
+        viewModel.deleteCartItem(productId, cartId)
+    }
+
+    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
         if(viewModel.isLoggedIn) {
-            viewModel.onCartQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity)
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        if(viewModel.isLoggedIn) {
+            viewModel.addItemToCart(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }

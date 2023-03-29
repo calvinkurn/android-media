@@ -107,6 +107,8 @@ object DeeplinkConstDigital {
             "pln" to "tokopedia://digital/form?category_id=3&menu_id=113&template=general",
             "token-listrik" to "tokopedia://digital/form?category_id=3&menu_id=113&operator_id=6&template=general",
             "tagihan-listrik" to "tokopedia://digital/form?category_id=3&menu_id=113&operator_id=18&template=general",
+            "donasi" to "tokopedia://digital/form?category_id=12&menu_id=83&template=voucher",
+            "donasi-online" to "tokopedia://digital/form?category_id=12&menu_id=83&template=voucher",
             "dompet-dhuafa" to "tokopedia://digital/form?category_id=12&menu_id=83&operator_id=97&template=voucher",
 
             "tagihan" to "tokopedia://digital/form?category_id=3&menu_id=113&operator_id=18&template=general",

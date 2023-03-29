@@ -22,11 +22,10 @@ import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 /**
  * Created by Yehezkiel on 02/06/21
  */
-class ProductSingleVariantViewHolder(
-    val view: View,
-    val variantListener: AtcVariantListener,
-    val pdpListener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductSingleVariantDataModel>(view), AtcVariantListener by variantListener {
+class ProductSingleVariantViewHolder(val view: View,
+                                     val variantListener: AtcVariantListener,
+                                     val pdpListener: DynamicProductDetailListener) : AbstractViewHolder<ProductSingleVariantDataModel>(view), AtcVariantListener by variantListener {
+
 
     private var containerAdapter: AtcVariantOptionAdapter? = null
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
@@ -61,10 +60,11 @@ class ProductSingleVariantViewHolder(
                 binding.rvSingleVariant.adapter = containerAdapter
                 binding.rvSingleVariant.itemAnimator = null
                 binding.rvSingleVariant.layoutManager = layoutManager
+                binding.rvSingleVariant.setRecycledViewPool(pdpListener.getParentRecyclerViewPool())
                 containerAdapter?.setData(it.variantOptions)
 
                 itemView.setOnClickListener {
-                    // pass dummy object since we need to redirect to variant bottomsheet
+                    //pass dummy object since we need to redirect to variant bottomsheet
                     variantListener.onVariantClicked(emptyVariantData)
                 }
                 hideError()

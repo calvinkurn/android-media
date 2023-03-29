@@ -25,8 +25,8 @@ class RetakeActionButtonWidget @JvmOverloads constructor(
     }
 
     fun setModeUi(media: MediaUiModel) {
-        val isVideoFromCamera = media.file?.isVideo() == true && media.isCacheFile
-        val isImageFromCamera = media.file?.isImage() == true && media.isCacheFile
+        val isVideoFromCamera = media.file?.isVideo() == true && media.isFromPickerCamera
+        val isImageFromCamera = media.file?.isImage() == true && media.isFromPickerCamera
 
         when {
             isVideoFromCamera -> videoMode()

@@ -69,7 +69,7 @@ class PdpCartCheckoutJourneyTest {
             clickBuyNormal()
             Thread.sleep(5_000)
             Espresso.pressBack()
-            clickLihatKeranjangToaster(productDetailInterceptor)
+            clickLihatKeranjangBottomSheetAtc(productDetailInterceptor)
         }
 
         cartPage {

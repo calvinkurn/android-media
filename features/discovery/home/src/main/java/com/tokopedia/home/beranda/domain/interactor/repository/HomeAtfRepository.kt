@@ -5,17 +5,17 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class HomeAtfRepository @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<HomeAtfData>,
-    private val homeRoomDataSource: HomeRoomDataSource
+        private val graphqlUseCase: GraphqlUseCase<HomeAtfData>,
+        private val homeRoomDataSource: HomeRoomDataSource
 ) : UseCase<HomeAtfData>(), HomeRepository<HomeAtfData> {
     private val params = RequestParams.create()
 
@@ -26,8 +26,6 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
-        params.putString(VARIANT, HomeRollenceController.rollenceAtfValue)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
@@ -38,10 +36,5 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun getCachedData(bundle: Bundle): HomeAtfData {
         return HomeAtfData()
-    }
-
-    companion object {
-        private const val EXPERIMENT = "experiment"
-        private const val VARIANT = "variant"
     }
 }

@@ -309,8 +309,8 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         binding?.btnRetake?.show()
         binding?.btnRetake?.setModeUi(media)
 
-        val isVideoFromCamera = media.file?.isVideo() == true && media.isCacheFile
-        val isImageFromCamera = media.file?.isImage() == true && media.isCacheFile
+        val isVideoFromCamera = media.file?.isVideo() == true && media.isFromPickerCamera
+        val isImageFromCamera = media.file?.isImage() == true && media.isFromPickerCamera
 
         val retakeState = when {
             isVideoFromCamera -> PREVIEW_RETAKE_RECORDER
@@ -325,7 +325,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isCacheFile) {
+        if (media.isFromPickerCamera) {
             media.file?.safeDelete()
         }
 

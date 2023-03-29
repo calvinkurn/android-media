@@ -8,11 +8,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.ticker.*
+import java.util.*
 
 /**
  * @author by DevAra on 02/04/20.
@@ -24,8 +21,8 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val tickerId = ""
 
     override fun bind(element: TickerDataModel?) {
-        element?.let { element ->
-            element.tickers.let { tickers ->
+        element?.let {element->
+            element.tickers.let {tickers->
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
@@ -33,19 +30,21 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 }
                 val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
                 tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
-                tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                tickerPagerAdapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                         HomePageTracking.eventClickTickerHomePage(tickerId)
                         listener.onSectionItemClicked(linkUrl.toString())
                     }
+
                 })
                 tickerComponent.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
+
                     }
 
                     override fun onDismiss() {
-                        HomePageTracking.eventClickOnCloseTickerHomePage(tickerId)
-                        listener.onCloseTicker()
+                        HomePageTracking.eventClickOnCloseTickerHomePage(tickerId);
+                        listener.onCloseTicker();
                     }
                 })
 
@@ -66,4 +65,5 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
         @LayoutRes
         val LAYOUT = R.layout.layout_ticker_home
     }
+
 }

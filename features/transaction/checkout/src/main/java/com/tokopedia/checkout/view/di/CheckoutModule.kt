@@ -35,7 +35,6 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
@@ -116,8 +115,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
         executorSchedulers: ExecutorSchedulers,
-        eligibleForAddressUseCase: EligibleForAddressUseCase,
-        updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+        eligibleForAddressUseCase: EligibleForAddressUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(
             compositeSubscription,
@@ -130,7 +128,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase, updateDynamicDataPassingUseCase
+            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase
         )
     }
 

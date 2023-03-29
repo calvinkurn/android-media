@@ -61,7 +61,6 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 

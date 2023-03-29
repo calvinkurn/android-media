@@ -14,67 +14,7 @@
           "icon": "attachment/2020/7/3/47197032/47197032_8a27103e-6809-4961-8ad2-61531b87af57.png",
           "sub_menu": []
         },
-        "recommendations": [
-          {
-            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2021/12/21/37b4cbb0-ea5e-41a2-90e0-120cc3fbb2f8.png",
-            "title": "CITIBANK",
-            "clientNumber": "552042******7590",
-            "appLink": "tokopedia://digital/form?category_id\u003d26\u0026menu_id\u003d169\u0026operator_id\u003d297\u0026product_id\u003d1484\u0026template\u003dtagihancc",
-            "webLink": "https://pulsa-staging.tokopedia.com/tagihan/kartu-kredit/?category_id\u003d26\u0026operator_id\u003d297\u0026product_id\u003d1484\u0026client_number\u003d552042******7590",
-            "productPrice": 10000,
-            "type": "",
-            "categoryId": 26,
-            "productId": 1484,
-            "isATC": false,
-            "description": "",
-            "operatorID": 297,
-            "token": "6cf13074-ccd5-47e3-ac22-c2b9fb44ed8e",
-            "label": "kesatu1"
-          },
-          {
-            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2021/12/21/37b4cbb0-ea5e-41a2-90e0-120cc3fbb2f8.png",
-            "title": "Tokopedia Card",
-            "clientNumber": "435972******1602",
-            "appLink": "tokopedia://digital/form?category_id\u003d26\u0026menu_id\u003d169\u0026operator_id\u003d6709\u0026product_id\u003d18409\u0026template\u003dtagihancc",
-            "webLink": "https://pulsa-staging.tokopedia.com/tagihan/kartu-kredit/?category_id\u003d26\u0026operator_id\u003d6709\u0026product_id\u003d18409\u0026client_number\u003d435972******1602",
-            "productPrice": 10000,
-            "type": "",
-            "categoryId": 26,
-            "productId": 18409,
-            "isATC": false,
-            "description": "",
-            "operatorID": 6709,
-            "token": "350f4f3b-8cd1-421b-abaa-c306aea3b906",
-            "label": "kedua2"
-          }
-        ],
-        "promos": [
-          {
-            "id": 2312,
-            "filename": "https://images.tokopedia.net/img/banner/2020/8/24/41966928/41966928_92c36a38-a9f6-4a87-9cc0-56aa1aae767a.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-payday",
-            "status": 1,
-            "title": "Promo 1",
-            "subtitle": "Kode Promo: {PROMO1}",
-            "promo_code": "PROMO1"
-          },
-          {
-            "id": 2430,
-            "filename": "https://images.tokopedia.net/img/banner/2020/8/24/41966928/41966928_46cc6908-5736-458b-a50c-789069244ee7.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-cashback-3/",
-            "status": 1,
-            "title": "Promo 2",
-            "subtitle": "Kode Promo: {PROMO2}",
-            "promo_code": "PROMO2"
-          }
-        ],
         "tickers": [],
-        "user_perso": {
-          "user_type": "new user",
-          "loyalty_status": "new user"
-        },
         "onboarding_descriptions": []
       }
     }

@@ -11,8 +11,8 @@ interface HomeVisitableFactory {
     fun addBannerVisitable(): HomeVisitableFactory
     fun addHomeHeaderOvo(): HomeVisitableFactory
     fun addTickerVisitable(): HomeVisitableFactory
-    fun addDynamicIconVisitable(isCache: Boolean): HomeVisitableFactory
-    fun addAtfComponentVisitable(isProcessingAtf: Boolean, isCache: Boolean): HomeVisitableFactory
+    fun addDynamicIconVisitable(): HomeVisitableFactory
+    fun addAtfComponentVisitable(isProcessingAtf: Boolean): HomeVisitableFactory
     fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory
     fun build(): List<Visitable<*>>
 }

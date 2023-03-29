@@ -37,10 +37,9 @@ class HomeViewModelCMHomeWidgetTest {
         val mockChannel = DynamicHomeChannel.Channels()
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
-                list = listOf(
-                    CMHomeWidgetDataModel(null, mockChannel)
-                )
-            )
+            list = listOf(
+                CMHomeWidgetDataModel( null, mockChannel)
+            ))
         )
         coEvery { getUserSession.isLoggedIn } returns false
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, userSessionInterface = getUserSession)
@@ -53,8 +52,7 @@ class HomeViewModelCMHomeWidgetTest {
     fun `CMHomeWidget must not be visible if there is no dynamic channel with home_todo layout`() {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
-                list = listOf()
-            )
+                list = listOf())
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         // CMHomeWidget must not be visible
@@ -67,9 +65,8 @@ class HomeViewModelCMHomeWidgetTest {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    CMHomeWidgetDataModel(null, mockChannel)
-                )
-            )
+                    CMHomeWidgetDataModel( null, mockChannel)
+                ))
         )
 
         val result = mockk<CMHomeWidgetDataResponse>(relaxed = true)
@@ -83,7 +80,7 @@ class HomeViewModelCMHomeWidgetTest {
             getCMHomeWidgetDataUseCase = getCMHomeWidgetDataUseCase
         )
 
-        // initial cmHomeWidgetData should be null -> Widget is showing without data
+        //initial cmHomeWidgetData should be null -> Widget is showing without data
         homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
             assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
         }
@@ -102,9 +99,8 @@ class HomeViewModelCMHomeWidgetTest {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    CMHomeWidgetDataModel(null, mockChannel)
-                )
-            )
+                    CMHomeWidgetDataModel( null, mockChannel)
+                ))
         )
 
         coEvery { getCMHomeWidgetDataUseCase.getCMHomeWidgetData(any(), any(), any()) }
@@ -128,16 +124,16 @@ class HomeViewModelCMHomeWidgetTest {
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } == null)
     }
 
+
     @ExperimentalCoroutinesApi
     @Test
-    fun `CMHomeWidget must be deleted when getCMHomeWidgetData throw exception`() {
+    fun `CMHomeWidget must be deleted when getCMHomeWidgetData throw exception`(){
         val mockChannel = DynamicHomeChannel.Channels()
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    CMHomeWidgetDataModel(null, mockChannel)
-                )
-            )
+                    CMHomeWidgetDataModel( null, mockChannel)
+                ))
         )
         homeViewModel = createHomeViewModel(
             getHomeUseCase = getHomeUseCase,
@@ -160,8 +156,7 @@ class HomeViewModelCMHomeWidgetTest {
             HomeDynamicChannelModel(
                 list = listOf(
                     cmHomeWidgetDataModel
-                )
-            )
+                ))
         )
 
         val result = mockk<DeleteCMHomeWidgetDataResponse>(relaxed = true)
@@ -188,8 +183,7 @@ class HomeViewModelCMHomeWidgetTest {
             HomeDynamicChannelModel(
                 list = listOf(
                     cmHomeWidgetDataModel
-                )
-            )
+                ))
         )
 
         coEvery { deleteCMHomeWidgetUseCase.deleteCMHomeWidgetData(any(), any(), any(), any()) }
@@ -206,17 +200,17 @@ class HomeViewModelCMHomeWidgetTest {
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
 
+
     @ExperimentalCoroutinesApi
     @Test
-    fun `CMHomeWidget must be deleted when deleteCMHomeWidgetData throw exception`() {
+    fun `CMHomeWidget must be deleted when deleteCMHomeWidgetData throw exception`(){
         val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
                     cmHomeWidgetDataModel
-                )
-            )
+                ))
         )
 
         homeViewModel = createHomeViewModel(
@@ -231,6 +225,7 @@ class HomeViewModelCMHomeWidgetTest {
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
 
+
     @Test
     fun `CMHomeWidget must not be deleted locally`() {
         val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
@@ -238,8 +233,7 @@ class HomeViewModelCMHomeWidgetTest {
             HomeDynamicChannelModel(
                 list = listOf(
                     cmHomeWidgetDataModel
-                )
-            )
+                ))
         )
         homeViewModel = createHomeViewModel(
             getHomeUseCase = getHomeUseCase
@@ -247,4 +241,6 @@ class HomeViewModelCMHomeWidgetTest {
         homeViewModel.deleteCMHomeWidgetLocally()
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } == null)
     }
+
+
 }

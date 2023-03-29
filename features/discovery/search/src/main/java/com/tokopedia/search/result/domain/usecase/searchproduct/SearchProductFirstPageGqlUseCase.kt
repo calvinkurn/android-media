@@ -414,7 +414,7 @@ class SearchProductFirstPageGqlUseCase(
                             color
                             applink
                             component_id
-                            multi_filters {
+                            filters {
                               title
                               key
                               name

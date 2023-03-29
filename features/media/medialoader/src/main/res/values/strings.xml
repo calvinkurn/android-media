@@ -4,7 +4,4 @@
 
     <string name="hint_medialoader_url">Image URL</string>
     <string name="btn_render_image">Show Image</string>
-
-    <string name="media_toaster_title">Kualitas gambarmu diturunkan karena jaringan HP-mu lebih rendah dari 4G.</string>
-    <string name="media_toaster_cta">Ubah</string>
 </resources>

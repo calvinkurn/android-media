@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -15,8 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
@@ -37,6 +36,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -100,16 +100,6 @@ class DiscomBottomSheetRevamp :
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
-    private val gpsResultResolutionContract = registerForActivityResult(
-        ActivityResultContracts.StartIntentSenderForResult()
-    ) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            if (allPermissionsGranted()) {
-                getLocation()
-            }
-        }
-    }
-
     interface DiscomRevampListener {
         fun onGetDistrict(districtAddress: Address)
         fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean)
@@ -138,7 +128,6 @@ class DiscomBottomSheetRevamp :
         setCurrentLocationProvider()
         setViewListener()
     }
-
     fun setData(isPinpoint: Boolean = false, gmsAvailable: Boolean, isEdit: Boolean) {
         this.isPinpoint = isPinpoint
         this.isGmsAvailable = gmsAvailable
@@ -158,6 +147,16 @@ class DiscomBottomSheetRevamp :
         super.onDetach()
         if (::presenter.isInitialized) {
             presenter.detach()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == AddressConstants.GPS_REQUEST) {
+                if (allPermissionsGranted()) {
+                    getLocation()
+                }
+            }
         }
     }
 
@@ -643,8 +642,15 @@ class DiscomBottomSheetRevamp :
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(rae.resolution.intentSender).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
+                                    startIntentSenderForResult(
+                                        rae.resolution.intentSender,
+                                        AddressConstants.GPS_REQUEST,
+                                        null,
+                                        0,
+                                        0,
+                                        0,
+                                        null
+                                    )
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
                                 }

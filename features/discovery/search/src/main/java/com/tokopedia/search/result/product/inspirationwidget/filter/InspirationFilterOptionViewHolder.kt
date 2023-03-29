@@ -10,7 +10,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationFilterOptionViewHolder(
     itemView: View,
     private val inspirationFilterListener: InspirationFilterListener,
-    private val inspirationFilterOptionListener: InspirationFilterOptionListener,
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -26,12 +25,12 @@ class InspirationFilterOptionViewHolder(
         chipsUnify.chipText = optionData.text
         chipsUnify.chipType = getChipType(optionData)
         chipsUnify.setOnClickListener {
-            inspirationFilterOptionListener.onInspirationFilterOptionClicked(optionData)
+            inspirationFilterListener.onInspirationFilterOptionClicked(optionData)
         }
     }
 
     private fun getChipType(optionData: InspirationFilterOptionDataView) =
-        if (inspirationFilterListener.isFilterSelected(optionData.optionList))
+        if (inspirationFilterListener.isFilterSelected(optionData.option))
             ChipsUnify.TYPE_SELECTED
         else
             ChipsUnify.TYPE_NORMAL

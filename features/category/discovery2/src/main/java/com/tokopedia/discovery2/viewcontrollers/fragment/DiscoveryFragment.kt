@@ -2119,8 +2119,4 @@ class DiscoveryFragment :
         return discoveryViewModel.createAffiliateLink(applink)
     }
 
-    fun getItemCount(): Int{
-        return discoveryAdapter.itemCount
-    }
-
 }

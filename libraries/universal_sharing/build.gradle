@@ -53,7 +53,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.json
-    implementation rootProject.ext.firebase.crashlytics
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.logger)

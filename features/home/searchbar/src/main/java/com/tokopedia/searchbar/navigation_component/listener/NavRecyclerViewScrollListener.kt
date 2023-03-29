@@ -14,8 +14,7 @@ class NavRecyclerViewScrollListener(
         var toolbarTransitionRangePixel: Int = 0,
         val navScrollCallback: NavScrollCallback? = null,
         val switchThemeOnScroll: Boolean = true,
-        val fixedIconColor: Int? = null,
-        val isBackgroundColorDefaultColor: Boolean = false
+        val fixedIconColor: Int? = null
 ): RecyclerView.OnScrollListener() {
 
     companion object {
@@ -69,11 +68,7 @@ class NavRecyclerViewScrollListener(
                 navScrollCallback?.onSwitchToLightToolbar()
             } else {
                 if (switchThemeOnScroll) {
-                    if (isBackgroundColorDefaultColor) {
-                        navToolbar.switchToLightToolbar()
-                    } else {
-                        navToolbar.switchToDarkToolbar()
-                    }
+                    navToolbar.switchToDarkToolbar()
                     darkModeCondition(
                             lightCondition = { statusBarUtil?.requestStatusBarDark() },
                             nightCondition = { statusBarUtil?.requestStatusBarLight() }

@@ -15,14 +15,12 @@
           "color": "",
           "applink": "",
           "component_id": "03.20.01.00",
-          "multi_filters": [
-            {
-              "title": "",
-              "key": "variants",
-              "name": "S",
-              "value": "24"
-            }
-          ]
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "S",
+            "value": "24"
+          }
         },
         {
           "text": "M",
@@ -31,14 +29,12 @@
           "color": "",
           "applink": "",
           "component_id": "03.20.02.00",
-          "multi_filters": [
-            {
-              "title": "",
-              "key": "variants",
-              "name": "M",
-              "value": "25"
-            }
-          ]
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "M",
+            "value": "25"
+          }
         },
         {
           "text": "L",
@@ -47,14 +43,12 @@
           "color": "",
           "applink": "",
           "component_id": "03.20.03.00",
-          "multi_filters": [
-            {
-              "title": "",
-              "key": "variants",
-              "name": "L",
-              "value": "26"
-            }
-          ]
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "L",
+            "value": "26"
+          }
         },
         {
           "text": "XL",
@@ -63,14 +57,12 @@
           "color": "",
           "applink": "",
           "component_id": "03.20.04.00",
-          "multi_filters": [
-            {
-              "title": "",
-              "key": "variants",
-              "name": "XL",
-              "value": "27"
-            }
-          ]
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "XL",
+            "value": "27"
+          }
         },
         {
           "text": "XXL",
@@ -79,14 +71,12 @@
           "color": "",
           "applink": "",
           "component_id": "03.20.05.00",
-          "multi_filters": [
-            {
-              "title": "",
-              "key": "variants",
-              "name": "XXL",
-              "value": "28"
-            }
-          ]
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "XXL",
+            "value": "28"
+          }
         }
       ],
       "tracking_option": "3"

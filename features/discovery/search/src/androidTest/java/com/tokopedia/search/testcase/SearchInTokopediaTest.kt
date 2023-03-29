@@ -20,14 +20,12 @@ import com.tokopedia.search.SearchMockModelConfig
 import com.tokopedia.search.createIntent
 import com.tokopedia.search.disableOnBoarding
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UiTest
 class SearchInTokopediaTest {
 
     @get:Rule

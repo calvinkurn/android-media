@@ -1,7 +1,7 @@
 package com.tokopedia.media.loader
 
 import android.widget.ImageView
-import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.common.Properties
 
 object JvmMediaLoader {
     @JvmStatic fun loadImage(imageView: ImageView, url: String) {

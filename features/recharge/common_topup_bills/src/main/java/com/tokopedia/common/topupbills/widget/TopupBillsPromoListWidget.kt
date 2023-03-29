@@ -18,12 +18,9 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 07/05/19.
  */
-class TopupBillsPromoListWidget @JvmOverloads constructor(
-    @NotNull context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) :
-    LinearLayout(context, attrs, defStyleAttr) {
+class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                          defStyleAttr: Int = 0)
+    : LinearLayout(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
@@ -48,8 +45,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         topupBillsPromoListAdapter.setListener(object : TopupBillsPromoListAdapter.ActionListener {
-            override fun onClickPromoCode(promoId: String, voucherCode: String, position: Int) {
-                listener?.onCopiedPromoCode(promoId, voucherCode, position)
+            override fun onClickPromoCode(promoId: String, voucherCode: String) {
+                listener?.onCopiedPromoCode(promoId, voucherCode)
             }
 
             override fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int) {
@@ -72,6 +69,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(
     fun getVisibleRecentItemsToUsersTracking(promoList: List<TopupBillsPromo>) {
         val firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+
 
         val digitalTrackPromoList = mutableListOf<TopupBillsTrackPromo>()
         for (i in firstPos..lastPos) {
@@ -97,10 +95,11 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(
     fun getRecyclerView(): RecyclerView = recyclerView
 
     interface ActionListener {
-        fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int)
+        fun onCopiedPromoCode(promoId: String, voucherCode: String)
 
         fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>)
 
         fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int)
     }
+
 }

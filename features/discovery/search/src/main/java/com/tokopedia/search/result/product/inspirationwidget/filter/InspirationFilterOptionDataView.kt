@@ -11,7 +11,7 @@ class InspirationFilterOptionDataView(
     val url: String = "",
     val hexColor: String = "",
     val applink: String = "",
-    val optionList: List<Option> = listOf(),
+    val option: Option = Option(),
     val inspirationCardType: String = "",
     val componentId: String = "",
     val keyword: String = "",

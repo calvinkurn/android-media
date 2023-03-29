@@ -36,7 +36,7 @@ class TokoNowProductCardViewHolder(
             }
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
-                    listener?.onCartQuantityChanged(data, quantity)
+                    listener?.onProductQuantityChanged(data, quantity)
                 }
             })
             setImageProductViewHintListener(data, object : ViewHintListener {
@@ -56,7 +56,7 @@ class TokoNowProductCardViewHolder(
     }
 
     interface TokoNowProductCardListener {
-        fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int)
+        fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int)
         fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel)
         fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel)
         fun onAddVariantClicked(data: TokoNowProductCardUiModel)

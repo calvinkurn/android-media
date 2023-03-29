@@ -7,7 +7,9 @@ import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeProductAnalytics
 interface RecipeDetailView {
 
     fun showChooseAddressBottomSheet()
-    fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int)
+    fun deleteCartItem(productId: String)
+    fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
+    fun addItemToCart(productId: String, shopId: String, quantity: Int)
     fun getFragmentActivity(): FragmentActivity?
     fun getProductTracker(): RecipeProductAnalytics
     fun getTracker(): RecipeDetailAnalytics

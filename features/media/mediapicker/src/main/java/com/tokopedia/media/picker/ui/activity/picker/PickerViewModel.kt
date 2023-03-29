@@ -18,10 +18,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.isUrl
-import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,8 +47,8 @@ class PickerViewModel @Inject constructor(
     private var _isMediaEmpty = MutableLiveData<Boolean>()
     val isMediaEmpty: LiveData<Boolean> get() = _isMediaEmpty
 
-    private var _includeMedias = MutableLiveData<List<MediaUiModel?>>()
-    val includeMedias: LiveData<List<MediaUiModel?>> get() = _includeMedias
+    private var _includeMedias = MutableLiveData<List<String?>>()
+    val includeMedias: LiveData<List<String?>> get() = _includeMedias
 
     private var _isFetchMediaLoading = MutableLiveData<Boolean>()
     val isFetchMediaLoading: LiveData<Boolean> get() = _isFetchMediaLoading
@@ -107,26 +104,14 @@ class PickerViewModel @Inject constructor(
             return
         }
 
-        /*
-        * Determine the includeMedia where the source is URL or URI.
-        * If the URL, put at the first pair, otherwise put as second pair.
-        *
-        * the URLs will convert to local file using bitmapConverter.convert()
-        * */
-        val (urls, uris) = mIncludeMedias.flattenFilter { it.isUrl() }
+        val result = mIncludeMedias.flattenFilter { it.isUrl() }
 
-        val localFiles = uris
-            .map { it.asPickerFile() }
-            .map { it.toUiModel() }
-
-        bitmapConverter.convert(urls)
+        bitmapConverter.convert(result.first)
             .flowOn(dispatchers.io)
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                val pickerFile = it.asPickerFile()
-                val uiModels = pickerFile.toRemovableUiModel()
-                _includeMedias.value = uiModels + localFiles
+                _includeMedias.value = it + result.second
             }
             .launchIn(viewModelScope)
     }

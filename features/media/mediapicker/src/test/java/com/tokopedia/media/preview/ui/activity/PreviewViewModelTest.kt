@@ -204,8 +204,8 @@ class PreviewViewModelTest {
         )
 
         private val imageCameraOnlyUiModelList = listOf(
-            MediaUiModel(1, PickerFile("/path/img1.jpg"), isCacheFile = true),
-            MediaUiModel(2, PickerFile("/path/img2.jpg"), isCacheFile = true),
+            MediaUiModel(1, PickerFile("/path/img1.jpg"), isFromPickerCamera = true),
+            MediaUiModel(2, PickerFile("/path/img2.jpg"), isFromPickerCamera = true),
         )
 
         private val mediaUiModelList = imageCameraOnlyUiModelList

@@ -89,6 +89,7 @@ object DeepLinkUrlConstant {
         const val WIFI_ID = "https://www.tokopedia.com/streaming/wifi-id/"
         const val HOOQ = "https://www.tokopedia.com/streaming/hooq/"
         const val TAGIHAN_LISTRIK = "https://www.tokopedia.com/pln/tagihan-listrik/"
+        const val DONASI = "https://www.tokopedia.com/donasi"
         const val TAGIHAN_PDAM = "https://www.tokopedia.com/tagihan/pdam/"
         const val ANGSURAN_MOBIL = "https://www.tokopedia.com/angsuran/mobil/"
         const val ANGSURAN_MOTOR = "https://www.tokopedia.com/angsuran/motor/"

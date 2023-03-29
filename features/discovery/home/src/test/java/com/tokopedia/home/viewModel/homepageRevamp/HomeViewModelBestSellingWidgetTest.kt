@@ -38,7 +38,7 @@ class HomeViewModelBestSellingWidgetTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `when homeRecommendationUseCase success on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking {
+    fun `when homeRecommendationUseCase success on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
         )
@@ -62,7 +62,7 @@ class HomeViewModelBestSellingWidgetTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `when homeRecommendationUseCase failed on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking {
+    fun `when homeRecommendationUseCase failed on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
         )

@@ -6,8 +6,8 @@
       "promotions": [{
         "creative_name": ".*",
         "creative_slot": ".*",
-        "item_id": ".*_.*_.*_.*",
-        "item_name": "/ - p.* - slider banner - banner - .*",
+        "item_id": ".*",
+        "item_name": ".*",
         "creative_url": ".*"
       }],
       "businessUnit": "home & browse",
@@ -23,8 +23,8 @@
       "promotions": [{
         "creative_name": ".*",
         "creative_slot": ".*",
-        "item_id": ".*_.*_.*_.*",
-        "item_name": "/ - p.* - slider banner - banner - .*",
+        "item_id": ".*",
+        "item_name": ".*",
         "creative_url": ".*"
       }],
       "businessUnit": "home & browse",

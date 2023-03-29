@@ -12,5 +12,4 @@ interface DynamicIconComponentListener {
     fun onImpressIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, iconPosition: Int, parentPosition: Int, type: Int, view: View)
     fun onIconChannelImpressed(iconComponentModel: DynamicIconComponentDataModel, parentPosition: Int)
     fun onIconScroll(parentPosition: Int)
-    fun onSuccessLoadImage()
 }

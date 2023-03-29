@@ -40,6 +40,12 @@ object AppWidgetHelper {
         }
     }
 
+    fun getAppWidgetHeight(context: Context, widgetId: Int): Int {
+        val awm = AppWidgetManager.getInstance(context)
+        val option = awm.getAppWidgetOptions(widgetId)
+        return option.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+    }
+
     inline fun <reified T : AppWidgetProvider> getAppWidgetIds(context: Context, awm: AppWidgetManager): IntArray {
         return awm.getAppWidgetIds(ComponentName(context, T::class.java))
     }

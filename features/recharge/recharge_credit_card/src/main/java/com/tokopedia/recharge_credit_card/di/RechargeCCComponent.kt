@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recharge_credit_card.RechargeCCActivity
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.RechargeCCFragment
-import com.tokopedia.recharge_credit_card.RechargeCCPromoFragment
-import com.tokopedia.recharge_credit_card.RechargeCCRecommendationFragment
 import dagger.Component
 
 @RechargeCCScope
@@ -18,9 +16,5 @@ interface RechargeCCComponent {
     fun inject(rechargeCCFragment: RechargeCCFragment)
 
     fun inject(rechargeCCActivity: RechargeCCActivity)
-
-    fun inject(rechargeCCRecommendationFragment: RechargeCCRecommendationFragment)
-
-    fun inject(rechargeCCPromoFragment: RechargeCCPromoFragment)
 
 }

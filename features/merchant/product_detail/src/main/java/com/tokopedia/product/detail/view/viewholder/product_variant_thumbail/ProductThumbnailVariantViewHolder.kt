@@ -49,6 +49,7 @@ class ProductThumbnailVariantViewHolder(
             thumbVariantList.adapter = containerAdapter
             thumbVariantList.itemAnimator = null
             thumbVariantList.layoutManager = layoutManager
+            thumbVariantList.setRecycledViewPool(pdpListener.getParentRecyclerViewPool())
         }
     }
 

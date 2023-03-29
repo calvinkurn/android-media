@@ -55,12 +55,6 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
         setupTimelineList()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // refresh views to re-calculate height at viewpager
-        binding?.root?.requestLayout()
-    }
-
     private fun setupTimelineList() {
         binding?.rvTimelineProcess?.apply {
             val spacingAmount = resources.getDimensionPixelSize(

@@ -53,7 +53,7 @@ class InspirationFilterDataView(
                 url = optionModel.url,
                 hexColor = optionModel.color,
                 applink = optionModel.applink,
-                optionList = optionModel.asOptionList(),
+                option = optionModel.asOption(),
                 inspirationCardType = inspirationCardType,
                 componentId = optionModel.componentId,
                 keyword = keyword,

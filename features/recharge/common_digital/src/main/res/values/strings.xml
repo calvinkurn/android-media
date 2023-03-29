@@ -8,6 +8,4 @@
     <string name="digital_common_grpc_full_page_desc">Mungkin server kami sibuk atau internet kamu ada masalah. Coba lagi, yuk.</string>
     <string name="digital_common_grpc_toaster">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
     <string name="digital_common_button_toaster">OK</string>
-    <string name="digital_common_recom_empty_state_title">Belum ada transaksi, nih!</string>
-    <string name="digital_common_recom_empty_state_desc">Yuk, bayar tagihan kartu kreditmu hanya di Tokopedia.</string>
 </resources>

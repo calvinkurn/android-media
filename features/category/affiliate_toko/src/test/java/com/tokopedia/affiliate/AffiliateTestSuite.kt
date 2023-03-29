@@ -2,7 +2,6 @@ package com.tokopedia.affiliate
 
 import android.os.Build
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModelTest
-import com.tokopedia.affiliate.viewmodel.AffiliateDiscoPromoListViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModelTest
@@ -37,7 +36,6 @@ import org.robolectric.annotation.Config
     AffiliateIncomeViewModelTest::class,
     AffiliateDatePickerBottomSheetViewModelTest::class,
     AffiliateRecyclerViewModelTest::class,
-    AffiliateSSAShopViewModelTest::class,
-    AffiliateDiscoPromoListViewModelTest::class
+    AffiliateSSAShopViewModelTest::class
 )
 class AffiliateTestSuite

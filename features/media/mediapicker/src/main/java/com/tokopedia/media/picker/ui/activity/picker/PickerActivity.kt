@@ -318,10 +318,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.includeMedias.observe(this) { files ->
             if (files.isEmpty()) return@observe
 
-            files.filterNotNull()
-                .forEach {
-                    eventBus.addMediaEvent(it)
-                }
+            val fileAsUiModelList = files.mapNotNull {
+                val mPickerFile = it?.asPickerFile()
+                mPickerFile?.toUiModel()
+            }
+
+            fileAsUiModelList.forEach {
+                eventBus.addMediaEvent(it)
+            }
         }
 
         viewModel.connectionIssue.observe(this) { message ->
@@ -382,7 +386,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        return media.duration
+        return media.videoLength
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {

@@ -266,6 +266,16 @@ class EditorViewModelTest {
     }
 
     @Test
+    fun `clean cache`() {
+        // When
+        every { saveImageRepo.clearEditorCache() } just Runs
+        viewModel.cleanImageCache()
+
+        // Then
+        verify { saveImageRepo.clearEditorCache() }
+    }
+
+    @Test
     fun `save image to cache`() {
         // Given
         val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())

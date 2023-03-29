@@ -3,8 +3,8 @@ package com.tokopedia.hotel.common.util
 import android.content.Context
 import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.search_map.data.model.Property
-import com.tokopedia.media.loader.data.HIGH_QUALITY
-import com.tokopedia.media.loader.internal.NetworkManager
+import com.tokopedia.media.common.data.HIGH_QUALITY
+import com.tokopedia.media.common.util.NetworkManager
 import com.tokopedia.utils.date.*
 import java.util.*
 

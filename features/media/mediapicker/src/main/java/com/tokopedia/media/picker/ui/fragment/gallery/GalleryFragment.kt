@@ -177,14 +177,15 @@ open class GalleryFragment @Inject constructor(
 
     private fun initObservable() {
         viewModel.medias.observe(viewLifecycleOwner) {
-            if (uiModel.hasChangeAlbum) {
-                featureAdapter.setItemsAndAnimateChanges(it)
-                featureAdapter.notifyDataSetChanged()
+            if (binding?.lstMedia?.isComputingLayout == false) {
+                if (uiModel.hasChangeAlbum) {
+                    featureAdapter.setItemsAndAnimateChanges(it)
 
-                // force move to top every single bucketId has changed
-                binding?.lstMedia?.smoothScrollToPosition(0)
-            } else {
-                featureAdapter.addItemsAndAnimateChanges(it)
+                    // force move to top every single bucketId has changed
+                    binding?.lstMedia?.smoothScrollToPosition(0)
+                } else {
+                    featureAdapter.addItemsAndAnimateChanges(it)
+                }
             }
         }
 

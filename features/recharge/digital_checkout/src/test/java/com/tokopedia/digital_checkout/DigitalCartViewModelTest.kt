@@ -1265,7 +1265,6 @@ class DigitalCartViewModelTest {
         // given
         val fintechInfo = FintechProduct.FintechProductInfo(title = "fintech A")
         val fintechProduct = FintechProduct(
-            id = "3",
             tierId = "3",
             fintechAmount = 2000.0,
             info = fintechInfo,
@@ -1277,12 +1276,11 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.onFintechProductChecked(fintechProduct, true, null)
 
         // then
-        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts[uniqueKey]?.product?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         val fintechName =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts[uniqueKey]?.product?.transactionType
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.transactionType
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
             it.title == fintechName
         }
@@ -1331,7 +1329,7 @@ class DigitalCartViewModelTest {
     @Test
     fun updateTotalPriceWithFintechProduct_checked() {
         // given
-        val fintechProduct = FintechProduct(transactionType = "A", id = "3", tierId = "3", fintechAmount = 2000.0)
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
@@ -1339,11 +1337,10 @@ class DigitalCartViewModelTest {
 
         // then
         // if fintech product checked, update total price
-        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
             ?: 0.0
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts[uniqueKey]?.product?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
@@ -1351,7 +1348,7 @@ class DigitalCartViewModelTest {
     @Test
     fun updateTotalPriceWithFintechProduct_unChecked() {
         // given
-        val fintechProduct = FintechProduct(transactionType = "A", id = "3", tierId = "3", fintechAmount = 2000.0)
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
 
         // when
         updateTotalPriceWithFintechProduct_checked()
@@ -1367,7 +1364,7 @@ class DigitalCartViewModelTest {
     @Test
     fun updateTotalPriceWithSubscriptionProduct_checked_shouldNotUpdate() {
         // given
-        val fintechProduct = FintechProduct(transactionType = "B", id = "3", tierId = "3", fintechAmount = 2000.0)
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
@@ -1383,18 +1380,20 @@ class DigitalCartViewModelTest {
     @Test
     fun updateTotalPriceWithSubscriptionProduct_unChecked_shouldNotUpdate() {
         // given
-        val fintechProduct = FintechProduct(transactionType = "B", id = "3", tierId = "3", fintechAmount = 2000.0)
+        val fintechProduct = FintechProduct(tierId = "5", fintechAmount = 2000.0)
 
         // when
-        updateTotalPriceWithSubscriptionProduct_checked_shouldNotUpdate()
+        updateTotalPriceWithFintechProduct_checked()
         digitalCartViewModel.onSubscriptionChecked(fintechProduct, false)
 
         // then
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
             ?: 0.0
-
-        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isEmpty())
-        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + getDummyGetCartResponse().adminFee)
+        val fintechPrice =
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
+                ?: 0.0
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isNotEmpty())
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
 
     @Test
@@ -1421,7 +1420,7 @@ class DigitalCartViewModelTest {
     @Test
     fun updateTotalPriceWithFintechProductAndInputPrice_checked() {
         // given
-        val fintechProduct = FintechProduct(transactionType = "A", id = "3", tierId = "3", fintechAmount = 2000.0)
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
         val userInputPrice = 30000.0
 
         // when
@@ -1430,9 +1429,8 @@ class DigitalCartViewModelTest {
 
         // then
         // if fintech product checked, update total price
-        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts[uniqueKey]?.product?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
@@ -1631,44 +1629,6 @@ class DigitalCartViewModelTest {
         assert(promoDigitalModel.categoryName == "Angsuran Kredit")
         assert(promoDigitalModel.operatorName == "JTrust Olympindo Multi Finance")
         assert(promoDigitalModel.price == 12500L)
-    }
-
-    @Test
-    fun updateSubscriptionMetadata_shouldUpdateSubscriptionProductMetadata() {
-        // given
-        val fintechProduct = FintechProduct(tierId = "tokopedia")
-        val additionalMetadata = "{\"tokopedia\":\"langganan\"}"
-        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
-
-        // when
-        digitalCartViewModel.updateSubscriptionMetadata(additionalMetadata)
-
-        // then
-        val subscriptionProduct = digitalCartViewModel.requestCheckoutParam.crossSellProducts.values.firstOrNull {
-            it.isSubscription
-        }
-        assert(subscriptionProduct?.product?.tierId == "tokopedia")
-        assert(subscriptionProduct?.additionalMetadata == additionalMetadata)
-    }
-
-    @Test
-    fun updateSubscriptionMetadata_whenNoSubscriptionChecked_shouldNotUpdateAnyProductMetadata() {
-        // given
-        val fintechProduct = FintechProduct(transactionType = "A", id = "1", tierId = "1")
-        val fintechProduct2 = FintechProduct(transactionType = "B", id = "2", tierId = "2")
-        val additionalMetadata = "{\"tokopedia\":\"langganan\"}"
-
-        digitalCartViewModel.onFintechProductChecked(fintechProduct, true, 0.0)
-        digitalCartViewModel.onFintechProductChecked(fintechProduct2, true, 0.0)
-
-        // when
-        digitalCartViewModel.updateSubscriptionMetadata(additionalMetadata)
-
-        // then
-        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.size == 2)
-        digitalCartViewModel.requestCheckoutParam.crossSellProducts.values.forEach {
-            assert(it.additionalMetadata == "")
-        }
     }
 
     private fun generateCrossSellHashMap(): HashMap<String, DigitalCrossSellData> {

@@ -16,41 +16,13 @@
         app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/contact_us_inbox" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_error_global"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/contact_us_dms_detail_background"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
-
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/home_global_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="36dp"
-            android:gravity="center"
-            app:globalerrors_type="SERVER_ERROR"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/view_of_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

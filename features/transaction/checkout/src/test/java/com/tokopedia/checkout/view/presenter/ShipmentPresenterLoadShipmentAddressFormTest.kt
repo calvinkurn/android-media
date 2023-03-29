@@ -11,7 +11,11 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -36,7 +40,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
@@ -129,9 +132,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK(relaxed = true)
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -166,8 +166,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             gson,
             TestSchedulers,
             eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
     }

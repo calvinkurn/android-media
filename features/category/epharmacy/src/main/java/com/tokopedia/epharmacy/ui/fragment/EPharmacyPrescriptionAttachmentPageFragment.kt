@@ -203,7 +203,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             when (consultationDetails) {
                 is Success -> {
                     consultationDetails.data.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
-                        context?.openDocument(url)
+                        RouteManager.route(activity, "${WEB_LINK_PREFIX}$url")
                     }
                 }
                 is Fail -> {

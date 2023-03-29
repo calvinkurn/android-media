@@ -15,7 +15,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvResult"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginTop="8dp"
         tool:listitem="@layout/stfs_item_location_criteria_result"
         app:layout_constraintTop_toBottomOf="@+id/divProduct" />

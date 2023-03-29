@@ -2,6 +2,5 @@
     <string name="app_name">product_share</string>
     <string name="content_desc_sticker">Sticker Tokopedia</string>
     <string name="content_desc_image_source">Image Source</string>
-    <string name="product_share_text_description_discount">Coba cek ini di Tokopedia, deh. Diskon %1s lho, harganya jadi %2s</string>
-    <string name="product_share_text_description_no_discount">Coba cek ini di Tokopedia, deh. Harganya %1s</string>
+    <string name="product_share_text_description">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
 </resources>

@@ -130,6 +130,7 @@ class SummaryViewModel @Inject constructor(
     }
 
     fun previewImage(
+        isCreateMode: Boolean,
         voucherConfiguration: VoucherConfiguration,
         parentProductIds : List<Long>,
         imageRatio: ImageRatio
@@ -138,7 +139,7 @@ class SummaryViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getCouponImagePreviewUseCase.execute(
-                        checkIsAdding(voucherConfiguration),
+                        isCreateMode,
                         voucherConfiguration,
                         parentProductIds,
                         imageRatio

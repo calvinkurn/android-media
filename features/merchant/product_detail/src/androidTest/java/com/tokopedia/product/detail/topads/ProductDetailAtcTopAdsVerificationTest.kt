@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
@@ -63,7 +64,7 @@ class ProductDetailAtcTopAdsVerificationTest {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
         if(viewHolder is AddToCartDoneRecommendationViewHolder) {
             waitForData()
-            clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
+            clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
         }
     }
 

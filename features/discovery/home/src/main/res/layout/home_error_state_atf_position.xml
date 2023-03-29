@@ -7,9 +7,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/shimmer_dynamic_icon_1"
-            layout="@layout/home_error_state_icon_list"/>
+        <include layout="@layout/home_error_state_icon_list"/>
 
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/localload_error_state_atf"

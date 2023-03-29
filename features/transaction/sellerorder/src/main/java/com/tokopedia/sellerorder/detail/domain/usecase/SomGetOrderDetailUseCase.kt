@@ -11,6 +11,10 @@ import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceRequest
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 /**
@@ -372,12 +376,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   value
                   value_detail
                 }
-                pof_data {
-                  label
-                  value
-                  header
-                  footer
-               }
             }
         }
         """.trimIndent()

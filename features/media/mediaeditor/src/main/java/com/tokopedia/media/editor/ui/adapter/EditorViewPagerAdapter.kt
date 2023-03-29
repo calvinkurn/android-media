@@ -26,7 +26,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.data.MediaException
+import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.picker.common.utils.isVideoFormat
 
 fun viewPagerTag(value: Int): String {

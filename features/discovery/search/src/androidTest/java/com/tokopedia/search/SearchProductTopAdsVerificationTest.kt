@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
-import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import org.junit.After
@@ -27,7 +26,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@TopAdsTest
 internal class SearchProductTopAdsVerficationTest {
 
     @get:Rule

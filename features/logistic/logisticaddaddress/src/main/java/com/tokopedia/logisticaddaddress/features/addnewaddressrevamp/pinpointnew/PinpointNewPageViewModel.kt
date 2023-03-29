@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -29,19 +28,6 @@ class PinpointNewPageViewModel @Inject constructor(
     private var saveAddressDataModel = SaveAddressDataModel()
 
     var isGmsAvailable: Boolean = true
-    var currentPlaceId: String? = ""
-
-    /*to differentiate positive flow or negative flow*/
-    var isPositiveFlow: Boolean = true
-    var showIllustrationMap: Boolean = false
-    var isFromAddressForm: Boolean = false
-    var isEdit: Boolean = false
-    var isPolygon: Boolean = false
-    var source: String? = ""
-    var isGetPinPointOnly: Boolean = false
-
-    val isEditOrGetPinPointOnly: Boolean
-        get() = isEdit || isGetPinPointOnly
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -58,31 +44,6 @@ class PinpointNewPageViewModel @Inject constructor(
     private val _districtCenter = MutableLiveData<Result<DistrictCenterUiModel>>()
     val districtCenter: LiveData<Result<DistrictCenterUiModel>>
         get() = _districtCenter
-
-    fun setDataFromArguments(
-        currentPlaceId: String?,
-        latitude: Double,
-        longitude: Double,
-        addressData: SaveAddressDataModel?,
-        isPositiveFlow: Boolean,
-        isPolygon: Boolean,
-        isFromAddressForm: Boolean,
-        isEdit: Boolean,
-        source: String,
-        isGetPinPointOnly: Boolean,
-    ) {
-        this.currentPlaceId = currentPlaceId
-        setLatLong(latitude, longitude)
-        addressData?.apply {
-            setAddress(this)
-        }
-        this.isPositiveFlow = isPositiveFlow
-        this.isPolygon = isPolygon
-        this.isFromAddressForm = isFromAddressForm
-        this.isEdit = isEdit
-        this.source = source
-        this.isGetPinPointOnly = isGetPinPointOnly
-    }
 
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"
@@ -107,22 +68,21 @@ class PinpointNewPageViewModel @Inject constructor(
         }
     }
 
-    fun getDistrictBoundaries() {
+    fun getDistrictBoundaries(districtId: Long) {
         viewModelScope.launch {
             try {
-                val districtBoundary = repo.getDistrictBoundaries(saveAddressDataModel.districtId)
-                _districtBoundary.value =
-                    Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
+                val districtBoundary = repo.getDistrictBoundaries(districtId)
+                _districtBoundary.value = Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
             } catch (e: Throwable) {
                 _districtBoundary.value = Fail(e)
             }
         }
     }
 
-    fun getDistrictCenter() {
+    fun getDistrictCenter(districtId: Long) {
         viewModelScope.launch {
             try {
-                val data = repo.getDistrictCenter(saveAddressDataModel.districtId)
+                val data = repo.getDistrictCenter(districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)
@@ -145,17 +105,5 @@ class PinpointNewPageViewModel @Inject constructor(
 
     fun getAddress(): SaveAddressDataModel {
         return this.saveAddressDataModel
-    }
-
-    fun setLatLong(lat: Double, long: Double) {
-        this.saveAddressDataModel =
-            this.saveAddressDataModel.copy(latitude = lat.toString(), longitude = long.toString())
-    }
-
-    fun getLocationFromLatLong() {
-        getDistrictData(
-            saveAddressDataModel.latitude.toDoubleOrZero(),
-            saveAddressDataModel.longitude.toDoubleOrZero()
-        )
     }
 }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class InspirationFilterOptionAdapter(
     private val inspirationFilterListener: InspirationFilterListener,
-): RecyclerView.Adapter<RecyclerView.ViewHolder>(), InspirationFilterOptionListener  {
+): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
     private val itemList = mutableListOf<InspirationFilterOptionDataView>()
 
@@ -20,7 +20,7 @@ class InspirationFilterOptionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(InspirationFilterOptionViewHolder.LAYOUT, parent, false)
 
-        return InspirationFilterOptionViewHolder(view, inspirationFilterListener, this)
+        return InspirationFilterOptionViewHolder(view, inspirationFilterListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -29,11 +29,5 @@ class InspirationFilterOptionAdapter(
 
     override fun getItemCount(): Int {
         return itemList.size
-    }
-
-    override fun onInspirationFilterOptionClicked(
-        filterOptionDataView: InspirationFilterOptionDataView
-    ) {
-        inspirationFilterListener.onInspirationFilterOptionClicked(filterOptionDataView, itemList)
     }
 }

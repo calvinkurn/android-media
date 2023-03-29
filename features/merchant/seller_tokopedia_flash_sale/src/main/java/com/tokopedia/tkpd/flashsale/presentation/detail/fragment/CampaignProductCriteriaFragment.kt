@@ -54,12 +54,6 @@ class CampaignProductCriteriaFragment: BaseDaggerFragment() {
         setupCriteriaList()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // refresh views to re-calculate height at viewpager
-        binding?.root?.requestLayout()
-    }
-
     private fun setupCriteriaList() {
         binding?.rvProductCriteria?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

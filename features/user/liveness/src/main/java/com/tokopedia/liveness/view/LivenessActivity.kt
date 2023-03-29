@@ -62,7 +62,6 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setResultPictureSize(RESOLUTION_LIVENESS)
         livenessSdk.setActionSequence(
             isRandomDetection(),
             Detector.DetectionType.MOUTH,
@@ -184,8 +183,4 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION,
         false
     )
-
-    companion object {
-        private const val RESOLUTION_LIVENESS = 600
-    }
 }

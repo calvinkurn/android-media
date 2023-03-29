@@ -28,8 +28,6 @@ class RecipeProductViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_product
-
-        private const val DELETE_CART_QUANTITY = 0
     }
 
     private val context by lazy { itemView.context }
@@ -95,7 +93,7 @@ class RecipeProductViewHolder(
                 isEnabled = true
 
                 setOnClickListener {
-                    listener?.onCartQuantityChanged(
+                    listener?.addItemToCart(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = product.minOrder
@@ -159,11 +157,7 @@ class RecipeProductViewHolder(
 
     private fun renderDeleteBtn(product: RecipeProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            listener?.onCartQuantityChanged(
-                product.id,
-                product.shopId,
-                DELETE_CART_QUANTITY
-            )
+            listener?.deleteCartItem(product.id)
             analytics?.trackClickRemoveProduct()
         }
     }
@@ -216,7 +210,7 @@ class RecipeProductViewHolder(
 
     private fun onQuantityChanged(product: RecipeProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
-        listener?.onCartQuantityChanged(product.id, product.shopId, input)
+        listener?.onQuantityChanged(product.id, product.shopId, input)
     }
 
     private fun onEditorAction(product: RecipeProductUiModel) {
@@ -234,6 +228,8 @@ class RecipeProductViewHolder(
     }
 
     interface RecipeProductListener {
-        fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int)
+        fun deleteCartItem(productId: String)
+        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
+        fun addItemToCart(productId: String, shopId: String, quantity: Int)
     }
 }

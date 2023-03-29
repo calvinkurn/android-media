@@ -31,8 +31,8 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         binding?.ivDelete?.setOnClickListener {
-            if (media.isCacheFile) {
-                onShowDeletionDialog(media, onRemoved)
+            if (media.isFromPickerCamera) {
+                onShowDeletionDialog(media) { onRemoved() }
             } else {
                 onRemoved()
             }

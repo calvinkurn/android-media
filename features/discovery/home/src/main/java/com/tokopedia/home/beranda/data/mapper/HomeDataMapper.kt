@@ -8,13 +8,15 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
-    private val context: Context,
-    private val homeVisitableFactory: HomeVisitableFactory,
-    private val trackingQueue: TrackingQueue,
-    private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
+        private val context: Context,
+        private val homeVisitableFactory: HomeVisitableFactory,
+        private val trackingQueue: TrackingQueue,
+        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
     companion object {
         private const val ATF_ERROR_MESSAGE = "Showing cache data because atf is error"
@@ -23,17 +25,17 @@ class HomeDataMapper(
         private const val SHIMMERING_CHANNEL_ID_1 = "1"
     }
 
-    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDynamicChannelModel {
+    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDynamicChannelModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDynamicChannelModel(isCache = isCache, flowCompleted = true)
-        var processingAtf = homeData.atfData?.isProcessingAtf ?: false
+        var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
         } else {
-            if (homeData.atfData?.dataList?.isEmpty() == true && haveCachedData) {
+            if (homeData.atfData?.dataList?.isEmpty() == true && haveCachedData ) {
                 throw IllegalStateException(ATF_ERROR_MESSAGE)
             }
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
@@ -42,18 +44,13 @@ class HomeDataMapper(
         }
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
-            homeData,
-            isCache,
-            trackingQueue,
-            context,
-            homeDynamicChannelDataMapper
-        )
-            .addHomeHeaderOvo()
-            .addAtfComponentVisitable(processingAtf, isCache)
+                homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
+                .addHomeHeaderOvo()
+                .addAtfComponentVisitable(processingAtf)
 
         if (!processingDynamicChannel && !isLoadingAtf) {
             factory.addDynamicChannelVisitable(firstPage, true)
-                .build()
+                    .build()
         }
 
         BenchmarkHelper.endSystraceSection()
@@ -64,12 +61,12 @@ class HomeDataMapper(
         }
 
         return HomeDynamicChannelModel(
-            homeFlag = homeData.homeFlag,
-            list = mutableVisitableList,
-            isCache = isCache,
-            isFirstPage = firstPage,
-            homeChooseAddressData = HomeChooseAddressData(true),
-            flowCompleted = false
+                homeFlag = homeData.homeFlag,
+                list = mutableVisitableList,
+                isCache = isCache,
+                isFirstPage = firstPage,
+                homeChooseAddressData = HomeChooseAddressData(true),
+                flowCompleted = false
         )
     }
 }

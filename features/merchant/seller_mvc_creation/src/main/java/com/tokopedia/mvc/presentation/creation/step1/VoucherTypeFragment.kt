@@ -34,7 +34,6 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.tracker.VoucherTypeTracker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class VoucherTypeFragment : BaseDaggerFragment() {

@@ -147,6 +147,7 @@
 /features/recharge/digital_homepage                     @tokopedia/android-minionmark-dev
 /features/recharge/digital_recommendation               @tokopedia/android-minionmark-dev
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
+/features/recharge/digitalproduct                       @tokopedia/android-minionmark-dev
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionmark-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionmark-dev
@@ -157,11 +158,13 @@
 /features/recharge/digital_product_detail               @tokopedia/android-minionmark-dev
 
 /features/entertainment/deals               	        @tokopedia/android-minionmark-dev
+/features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/common_entertainment            @tokopedia/android-minionmark-dev
 
 /features/travel/common_travel                          @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev
+/features/travel/flight_orderlist                       @tokopedia/android-minionmark-dev
 /features/travel/hotel/                                 @tokopedia/android-minionmark-dev
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
@@ -198,9 +201,9 @@
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
-/features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
@@ -258,6 +261,7 @@
 
 /features/fintech/common_wallet         				@tokopedia/android-minionmark-dev
 /features/fintech/fintech_home_widget         			@tokopedia/android-minionmark-dev
+/features/fintech/instant_loan          				@tokopedia/android-minionmark-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionmark-dev
 /features/fintech/paylater                              @tokopedia/android-minionmark-dev
 /features/fintech/pdp_fintech_widget                    @tokopedia/android-minionmark-dev

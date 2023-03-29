@@ -49,46 +49,6 @@
       "eventLabel": ".* - .*",
       "userId": ".*",
       "sessionIris": ".*"
-    },
-    {
-      "event": "clickDigital",
-      "eventAction": "click last transaction tab",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".* - .*",
-      "trackerId": "42036",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickDigital",
-      "eventAction": "click last transaction list",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".* - .* - .*",
-      "trackerId": "42037",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickDigital",
-      "eventAction": "click promo tab",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".* - .*",
-      "trackerId": "42038",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickDigital",
-      "eventAction": "click salin promo digital",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".* - .* - .* - .*",
-      "trackerId": "42569",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*"
     }
   ]
 }

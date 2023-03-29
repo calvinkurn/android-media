@@ -33,6 +33,7 @@ import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 var idlingResource: TkpdIdlingResource? = null
@@ -113,10 +114,24 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
                     .commit()
-            showAppFeedbackBottomSheet(thanksPageData)
+            decideDialogs(it.fragment, thanksPageData)
         } ?: run { gotoHomePage() }
         postEventOnThankPageDataLoaded(thanksPageData)
         idlingResource?.decrement()
+    }
+
+    private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
+        if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID,
+                    object : GratificationPresenter.AbstractGratifPopupCallback() {
+                override fun onIgnored(reason: Int) {
+                    showAppFeedbackBottomSheet(thanksPageData)
+                }
+
+            }, selectedFragment::class.java.name)
+        } else {
+            showAppFeedbackBottomSheet(thanksPageData)
+        }
     }
 
     fun cancelGratifDialog() {

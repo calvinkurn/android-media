@@ -360,7 +360,6 @@ object CategoryTracking {
                 "price", productCardModel.price.getDigits(),
                 "variant", NONE_OTHER,
                 "position", position,
-                "dimension98",(!productCardModel.isOos()).toString(),
                 "list", String.format(TOKONOW_CATEGORY_ORGANIC, categoryIdTracking)
         )
     }

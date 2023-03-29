@@ -403,11 +403,6 @@ private const val HEADLINE_ADS_QUERY = """
                                 original_price
                                 discount_percentage
                             }
-                            stock_info {
-                                sold_stock_percentage
-                                stock_wording
-                                stock_colour
-                            }
                         }
                         image_shop {
                             cover

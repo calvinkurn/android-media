@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -83,13 +84,13 @@ class Option(@SerializedName("name")
     }
 
     val isAnnotation: Boolean
-        get() = KEY_ANNOTATION_ID == key
+        get() = KEY_ANNOTATION_ID.equals(key)
 
     val isCategoryOption: Boolean
-        get() = KEY_CATEGORY == key
+        get() = KEY_CATEGORY.equals(key)
 
     val isOfficialOption: Boolean
-        get() = KEY_OFFICIAL == key
+        get() = KEY_OFFICIAL.equals(key)
 
     val uniqueId: String
         get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
