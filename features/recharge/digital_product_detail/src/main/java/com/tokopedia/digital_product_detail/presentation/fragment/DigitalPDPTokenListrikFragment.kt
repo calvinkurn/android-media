@@ -796,7 +796,10 @@ class DigitalPDPTokenListrikFragment :
                         )
                         binding?.run {
                             val defaultPadding: Int = rechargePdpTokenListrikClientNumberWidget.height
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }

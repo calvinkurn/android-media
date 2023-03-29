@@ -658,6 +658,12 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetRecommendations(recommendations: RecommendationWidgetModel) {
+        val dummy = RecommendationWidgetModel("Dummy",
+            listOf(RecommendationCardWidgetModel(
+                title = "dummy ha",
+                price = "20000"
+            )    )
+        )
         renderRecommendation(recommendations)
     }
 
@@ -1231,7 +1237,10 @@ class DigitalPDPDataPlanFragment :
                         )
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }

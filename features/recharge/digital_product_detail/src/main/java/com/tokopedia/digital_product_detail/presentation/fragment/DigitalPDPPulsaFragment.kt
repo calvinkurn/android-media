@@ -67,6 +67,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategor
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -1036,7 +1037,10 @@ class DigitalPDPPulsaFragment :
                         )
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPulsaClientNumberWidget.height
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }
