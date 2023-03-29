@@ -3464,7 +3464,7 @@ class ShipmentFragment :
         val (index, shipmentCartItems) = shipmentAdapter.getShipmentCartItemGroupByCartString(
             shipmentCartItemTopModel.cartString
         )
-        if (index > -1) {
+        if (index != RecyclerView.NO_POSITION) {
             val cartItemExpandModelIndex = shipmentCartItems.indexOfLast { it is CartItemExpandModel }
             val shipmentCartItemModel = shipmentCartItems.last() as ShipmentCartItemModel
             if (cartItemExpandModelIndex > -1) {

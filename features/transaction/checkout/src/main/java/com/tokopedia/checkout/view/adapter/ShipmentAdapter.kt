@@ -1250,13 +1250,6 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, CartItemModel> {
-        val index = shipmentDataList.indexOfFirst { data ->
-            data is CartItemModel && data.cartString == cartString && data.isError
-        }
-        return Pair(index, shipmentDataList[index] as CartItemModel)
-    }
-
     private fun getCartItemExpandByCartString(cartString: String): Pair<Int, CartItemExpandModel?> {
         val index = shipmentDataList.indexOfFirst { data ->
             data is CartItemExpandModel && data.cartString == cartString
@@ -1365,14 +1358,16 @@ class ShipmentAdapter @Inject constructor(
         cartItemExpandModel: CartItemExpandModel
     ) {
         if (position != RecyclerView.NO_POSITION) {
-            shipmentDataList[position] = cartItemExpandModel
-            notifyItemChanged(position)
+            val (topPosition, shipmentCartItems) = getShipmentCartItemGroupByCartString(cartItemExpandModel.cartString)
+            if (topPosition != RecyclerView.NO_POSITION) {
+                shipmentDataList[position] = cartItemExpandModel
+                notifyItemChanged(position)
 
-            val (_, shipmentCartItem) = getShipmentCartItemByCartString(cartItemExpandModel.cartString)
-            val (firstCartItemPosition, _) = getFirstCartItemByCartString(cartItemExpandModel.cartString)
-            val newCartItems = shipmentCartItem.cartItemModels.drop(1)
-            shipmentDataList.addAll(firstCartItemPosition + 1, newCartItems)
-            notifyItemRangeInserted(firstCartItemPosition + 1, newCartItems.size)
+                val shipmentCartItemModel = shipmentCartItems.last() as ShipmentCartItemModel
+                val newCartItems = shipmentCartItemModel.cartItemModels.drop(1)
+                shipmentDataList.addAll(topPosition + 2, newCartItems)
+                notifyItemRangeInserted(topPosition + 2, newCartItems.size)
+            }
         }
     }
 
