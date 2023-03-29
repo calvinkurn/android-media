@@ -28,7 +28,6 @@ class AddToCartExternalUseCase @Inject constructor(
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
-        const val PARAM_USER_ID = "userID"
         
         const val QUERY_ADD_TO_CART_EXTERNAL = "AddToCartExternalQuery"
     }

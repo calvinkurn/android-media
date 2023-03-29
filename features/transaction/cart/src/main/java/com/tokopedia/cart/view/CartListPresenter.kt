@@ -2082,8 +2082,9 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>) {
-        val requestParams = setCartlistCheckboxStateUseCase.buildRequestParams(cartItemDataList)
-        setCartlistCheckboxStateUseCase.setParams(cartItemDataList).execute()
+        setCartlistCheckboxStateUseCase
+            .setParams(cartItemDataList)
+            .execute(onSuccess = {}, onError = {})
     }
 
     override fun followShop(shopId: String) {
