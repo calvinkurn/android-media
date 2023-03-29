@@ -69,6 +69,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.getRealTimeRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLatestRealTimeRecommendation
@@ -100,6 +101,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
@@ -726,6 +728,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
+            is HomeProductCarouselChipsUiModel -> getCarouselChipsProductListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -788,6 +791,40 @@ class TokoNowHomeViewModel @Inject constructor(
                 widgetId = item.id,
                 state = TokoNowLayoutState.HIDE
             )
+        }
+    }
+
+    private suspend fun getCarouselChipsProductListAsync(
+        item: HomeProductCarouselChipsUiModel
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val selectedChip = item.selectedChip
+            val pageName = selectedChip.param
+
+            val recommendationWidgets = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                    xDevice = X_DEVICE_RECOMMENDATION_PARAM
+                )
+            )
+            val recommendationWidget = recommendationWidgets.first()
+
+            homeLayoutItemList.mapProductCarouselChipsWidget(
+                item,
+                recommendationWidget,
+                miniCartData,
+                selectedChip
+            )
+
+            val data = HomeLayoutListUiModel(
+                getHomeVisitableList(),
+                TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {
+
         }
     }
 

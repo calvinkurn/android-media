@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CHIP_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.COUPON_CLAIM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
@@ -48,15 +49,16 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
-import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
+import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapResponseToProductCarouselChips
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
@@ -68,6 +70,8 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
+import com.tokopedia.tokopedianow.home.domain.model.Grid
+import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -111,7 +115,8 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL_ATC,
         MEDIUM_PLAY_WIDGET,
         SMALL_PLAY_WIDGET,
-        COUPON_CLAIM
+        COUPON_CLAIM,
+        CHIP_CAROUSEL
     )
 
     fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
@@ -763,6 +768,7 @@ object HomeLayoutMapper {
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
             COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState, warehouseId)
+            CHIP_CAROUSEL -> mapResponseToProductCarouselChips(response, notLoadedState)
             // endregion
             else -> null
         }
