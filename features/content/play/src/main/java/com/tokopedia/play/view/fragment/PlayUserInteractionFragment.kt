@@ -565,6 +565,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     // TODO("Find better logic to improve this code")
     fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        if (view == null) return
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
