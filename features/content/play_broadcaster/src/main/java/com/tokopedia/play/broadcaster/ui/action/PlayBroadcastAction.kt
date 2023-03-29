@@ -25,7 +25,6 @@ sealed interface PlayBroadcastAction {
     object DeleteSchedule : PlayBroadcastAction
     object SuccessOnBoardingUGC: PlayBroadcastAction
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
-    data class GetAccountList(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
     data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
     /** Game */
