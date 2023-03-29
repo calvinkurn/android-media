@@ -38,6 +38,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.toPx
+
 
 class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibraryListener {
 
@@ -200,6 +202,9 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = catalogLibraryAdapter
             setHasFixedSize(true)
+            if(!isOriginBrand){
+                this.setPadding(0,0,0,90.toPx())
+            }
         }
     }
 
