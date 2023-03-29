@@ -16,6 +16,8 @@ data class ParamTableWidgetModel(
     val pageSource: String = "",
     @SerializedName("limit")
     val limit: Int = 0,
+    @SerializedName("page")
+    val page: Int = 0,
     @SerializedName("table_filter")
     val tableFilter: String = "",
     @SerializedName("sub_page_source")
