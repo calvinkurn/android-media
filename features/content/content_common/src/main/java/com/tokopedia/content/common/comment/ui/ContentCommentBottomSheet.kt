@@ -206,7 +206,6 @@ class ContentCommentBottomSheet @Inject constructor(
             if (isKeyboardOnScreen) {
                 binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
             } else {
-                val paddingBottom = binding.root.paddingBottom
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
             windowInsets
@@ -287,7 +286,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
-                    CommentEvent.ReportSuccess -> {
+                    CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(0)
                     }
@@ -301,7 +300,6 @@ class ContentCommentBottomSheet @Inject constructor(
                         binding.newComment.requestFocus()
                         showKeyboard(true)
                     }
-                    CommentEvent.ReplySuccess -> binding.rvComment.scrollToPosition(0)
                 }
             }
         }
