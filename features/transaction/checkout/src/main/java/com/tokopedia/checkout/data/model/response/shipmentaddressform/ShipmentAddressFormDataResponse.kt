@@ -3,6 +3,7 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.response.dynamicdata.ShipmentDynamicDataPassing
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
+import com.tokopedia.checkout.data.model.response.platformfee.ShipmentDynamicPlatformFee
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
@@ -75,5 +76,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("coachmark")
     val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
     @SerializedName("dynamic_data_passing")
-    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing()
+    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
+    @SerializedName("dynamic_platform_fee")
+    val dynamicPlatformFee: ShipmentDynamicPlatformFee = ShipmentDynamicPlatformFee()
 )

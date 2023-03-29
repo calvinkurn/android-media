@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.domain.mapper
 
+import com.tokopedia.checkout.data.model.response.platformfee.ShipmentDynamicPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
@@ -16,25 +17,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
-import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
-import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
-import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
-import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
-import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product
-import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
-import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
-import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
+import com.tokopedia.checkout.domain.model.cartshipmentform.*
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -156,6 +139,7 @@ class ShipmentMapper @Inject constructor() {
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
+            dynamicPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.dynamicPlatformFee)
         }
     }
 
@@ -1099,6 +1083,15 @@ class ShipmentMapper @Inject constructor() {
             isShown = coachmarkPlus.plus.isShown,
             title = coachmarkPlus.plus.title,
             content = coachmarkPlus.plus.content
+        )
+    }
+
+    private fun mapPlatformFee(platformFee: ShipmentDynamicPlatformFee): CheckoutPlatformFeeData {
+        return CheckoutPlatformFeeData(
+                isPlatformFee = platformFee.isUsingPlatformFee,
+                ticker = platformFee.ticker,
+                gatewayCode = platformFee.gatewayCode,
+                profileCode = platformFee.profileCode
         )
     }
 

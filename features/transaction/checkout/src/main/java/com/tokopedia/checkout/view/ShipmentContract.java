@@ -11,6 +11,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutPlatformFeeData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
@@ -39,7 +40,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
@@ -215,11 +215,7 @@ public interface ShipmentContract {
 
         void showPlatformFeeSkeletonLoading();
 
-        void hidePlatformFeeSkeletonLoading();
-
-        void showPlatformFeeTickerFailedToLoad();
-
-        void hidePlatformFeeTickerFailedToLoad();
+        void showPlatformFeeTickerFailedToLoad(String ticker);
 
         void showPlatformFeeData(PaymentFeeGqlResponse platformFeeData);
     }
@@ -480,6 +476,8 @@ public interface ShipmentContract {
         void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
 
         void getDynamicPlatformFee(PlatformFeeRequest platformFeeRequest);
+
+        CheckoutPlatformFeeData getShipmentPlatformFeeData();
     }
 
 }

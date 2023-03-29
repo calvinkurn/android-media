@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
@@ -189,6 +190,26 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvDiscountPlatformFeeValue.gone()
             mLoaderPlatformFeeLabel.visible()
             mLoaderPlatformFeeValue.visible()
+
+        } else if (platformFeeModel.isShowTicker) {
+            mTvPlatformFeeLabel.gone()
+            mIvPlatformFeeIconInfo.gone()
+            mTvPlatformFeeValue.gone()
+            mTvDiscountPlatformFeeLabel.gone()
+            mTvDiscountPlatformFeeValue.gone()
+            mLoaderPlatformFeeLabel.gone()
+            mLoaderPlatformFeeValue.gone()
+            mTickerPlatformFeeInfo.visible()
+            mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
+            mTickerPlatformFeeInfo.setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    shipmentAdapterActionListener.refetchPlatformFee();
+                }
+
+                override fun onDismiss() { }
+
+            })
+
         } else {
             mTickerPlatformFeeInfo.gone()
 

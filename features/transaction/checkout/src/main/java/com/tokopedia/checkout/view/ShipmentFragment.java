@@ -45,6 +45,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -330,6 +331,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private Subscription delayScrollToFirstShopSubscription;
     private Subscription delayScrollToCoachmarkEpharmacySubscription;
 
+    private Subscription delayPlatformFeeLoader;
+
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
 
@@ -417,6 +420,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         if (toasterThrottleSubscription != null) {
             toasterThrottleSubscription.unsubscribe();
+        }
+        if (delayPlatformFeeLoader != null) {
+            delayPlatformFeeLoader.unsubscribe();
         }
         shippingCourierBottomsheet = null;
         CountDownTimer countDownTimer = cdView.getTimer();
@@ -4284,16 +4290,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
         && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
             shipmentAdapter.setPlatformFeeData(platformFeeModel);
+            updateCost();
         } else {
             getPlatformFeeData();
         }
     }
 
+    private void updateCost() {
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex());
+            });
+        } else {
+            shipmentAdapter.updateShipmentCostModel();
+            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex());
+        }
+    }
+
     @Override
     public void refetchPlatformFee() {
-        shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee().setLoading(true);
-        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostItemIndex());
-        getPlatformFeeData();
+        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+        platformFeeModel.setLoading(true);
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        updateCost();
+
+        new Handler().postDelayed(() -> getPlatformFeeData(), 500);
     }
 
     @Override
@@ -4311,9 +4333,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void getPlatformFeeData() {
         PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
-        platformFeeRequest.setGatewayCode("CREDITCARD");
-        platformFeeRequest.setProfileCode("TKPD_APPS");
-        platformFeeRequest.setTransactionAmount(111400.0);
+        platformFeeRequest.setGatewayCode(shipmentPresenter.getShipmentPlatformFeeData().getGatewayCode());
+        platformFeeRequest.setProfileCode(shipmentPresenter.getShipmentPlatformFeeData().getProfileCode());
+        platformFeeRequest.setTransactionAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
         shipmentPresenter.getDynamicPlatformFee(platformFeeRequest);
     }
 
@@ -4333,26 +4355,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        updateCost();
     }
 
     @Override
     public void showPlatformFeeSkeletonLoading() {
-        shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee().setLoading(true);
-        shipmentAdapter.updateShipmentCostModel();
+        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+        platformFeeModel.setLoading(true);
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        updateCost();
     }
 
     @Override
-    public void showPlatformFeeTickerFailedToLoad() {
-
-    }
-
-    @Override
-    public void hidePlatformFeeSkeletonLoading() {
-
-    }
-
-    @Override
-    public void hidePlatformFeeTickerFailedToLoad() {
-
+    public void showPlatformFeeTickerFailedToLoad(String ticker) {
+        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+        platformFeeModel.setShowTicker(true);
+        platformFeeModel.setTicker(ticker);
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        updateCost();
     }
 }

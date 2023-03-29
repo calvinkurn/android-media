@@ -48,6 +48,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutPlatformFeeData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
@@ -269,6 +270,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public boolean isUsingDdp = false;
     public DynamicDataPassingParamRequest dynamicDataParam = new DynamicDataPassingParamRequest();
     public String dynamicData = "";
+
+    public CheckoutPlatformFeeData checkoutPlatformFeeData = new CheckoutPlatformFeeData();
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -741,6 +744,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
         dynamicData = cartShipmentAddressFormData.getDynamicData();
+        checkoutPlatformFeeData = cartShipmentAddressFormData.getDynamicPlatformFee();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -3394,6 +3398,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public CheckoutPlatformFeeData getShipmentPlatformFeeData() {
+        return checkoutPlatformFeeData;
+    }
+
+    @Override
     public PublishSubject<Boolean> getLogisticDonePublisher() {
         return logisticDonePublisher;
     }
@@ -3440,14 +3449,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         dynamicPlatformFeeUseCase.execute(
                 platformFeeData -> {
                     if (getView() != null) {
-                        getView().showPlatformFeeData(platformFeeData);
+                        if (platformFeeData.getResponse().getSuccess()) {
+                            getView().showPlatformFeeData(platformFeeData);
+                        } else {
+                            getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getTicker());
+                        }
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
-                        // TODO: wording to show if failed to load on client side?
-                        getView().showPlatformFeeTickerFailedToLoad();
+                        getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getTicker());
                     }
                     return Unit.INSTANCE;
                 }

@@ -41,7 +41,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
         val jsonRaw = """
             {
               "getPaymentFee": {
-                "success": true,
+                "success": false,
                 "errors": [],
                 "data": [
                   {

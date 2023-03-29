@@ -526,7 +526,7 @@
         android:id="@+id/loader_platform_fee_label"
         android:layout_width="140dp"
         android:layout_height="20dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="15dp"
         android:layout_below="@+id/tv_summary_add_on_label"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="rect"/>

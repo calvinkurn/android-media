@@ -920,7 +920,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateShipmentCostModel() {
-        System.out.println("++ masuk updateShipmentCostModel");
         if (shipmentCostModel == null) return;
         double totalWeight = 0;
         double totalPrice = 0;
@@ -1343,7 +1342,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCostModel != null) {
             shipmentCostModel.setDynamicPlatformFee(platformFeeModel);
         }
-        notifyItemChanged(getShipmentCostPosition());
     }
 
     public void resetPromoCheckoutData() {
