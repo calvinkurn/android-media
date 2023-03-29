@@ -570,7 +570,7 @@ class CartListPresenter @Inject constructor(
                     .setParams(updateCartWrapperRequest)
                     .execute(
                         onSuccess = { updateAndReloadCartListData ->
-                            cartListView.hideProgressLoading()
+                            view?.hideProgressLoading()
                             processInitialGetCartData(
                                 updateAndReloadCartListData.cartId,
                                 initialLoad = false,
@@ -579,8 +579,8 @@ class CartListPresenter @Inject constructor(
                             )
                         },
                         onError = { throwable ->
-                            cartListView.hideProgressLoading()
-                            cartListView.showToastMessageRed(throwable)
+                            view?.hideProgressLoading()
+                            view?.showToastMessageRed(throwable)
                         }
                     )
             } else {
@@ -1943,37 +1943,36 @@ class CartListPresenter @Inject constructor(
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
                 lastValidateUseRequest = promoRequest
-                
-                launch {
-                   try {
-                       val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                           updateCartRequestList = updateCartRequestList,
-                           source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                           getLastApplyPromoRequest = promoRequest
-                       )
-                       val updateCartDataResponse = updateCartAndGetLastApplyUseCase
-                           .setParams(updateCartWrapperRequest)
-                           .executeOnBackground()
-                       updateCartDataResponse.updateCartData?.let { updateCartData ->
-                           if (updateCartData.isSuccess) {
-                               updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                   setLastApplyNotValid()
-                                   setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                   setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
-                                   cartListView.updatePromoCheckoutStickyButton(promoUiModel)
+                val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                   updateCartRequestList = updateCartRequestList,
+                   source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                   getLastApplyPromoRequest = promoRequest
+                )
+                updateCartAndGetLastApplyUseCase
+                   .setParams(updateCartWrapperRequest)
+                   .execute(
+                       onSuccess = { updateCartDataResponse ->
+                           updateCartDataResponse.updateCartData?.let { updateCartData ->
+                               if (updateCartData.isSuccess) {
+                                   updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                       setLastApplyNotValid()
+                                       setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
+                                       setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
+                                       view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                   }
                                }
                            }
-                       }
-                   } catch (e: Throwable) {
-                       if (e is AkamaiErrorException) {
-                           doClearAllPromo()
-                           if (!promoTicker.enable) {
-                               cartListView.showToastMessageRed(e)
+                       },
+                       onError = { throwable ->
+                           if (throwable is AkamaiErrorException) {
+                               doClearAllPromo()
+                               if (!promoTicker.enable) {
+                                   view?.showToastMessageRed(throwable)
+                               }
                            }
+                           view?.renderPromoCheckoutButtonActiveDefault(emptyList())
                        }
-                       cartListView.renderPromoCheckoutButtonActiveDefault(emptyList())
-                   }
-                }
+                   )
             } else {
                 cartListView.hideProgressLoading()
             }
