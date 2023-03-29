@@ -25,6 +25,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,11 +35,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
+import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -205,6 +209,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -319,6 +325,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
+        private const val PERFORMANCE_TRACE_HOME = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -427,6 +434,8 @@ open class HomeRevampFragment :
     private var fragmentCurrentScrollPosition: Int = -1
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
+
+    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -1178,22 +1187,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
+                        performanceTrace.cancelPerformancetrace(PerformanceTrace.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1295,15 +1308,19 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        performanceTrace.init(
+            v = view.rootView,
+            scope = this.lifecycleScope,
+            touchListenerActivity = activity as? TouchListenerActivity
+        ) { summaryModel, type, view ->
+        }
         observeSearchHint()
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-                setOnRecyclerViewLayoutReady(isCache)
+                finishPageLoadTime(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
@@ -1315,8 +1332,15 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
+            performanceTrace.setLoadableComponentList(data)
             adapter?.submitList(data)
         }
+    }
+
+    private fun finishPageLoadTime(isCache: Boolean) {
+        getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+        getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        setOnRecyclerViewLayoutReady(isCache)
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {

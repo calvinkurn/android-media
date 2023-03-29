@@ -11,10 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -79,6 +84,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val COACHMARK_SAFE_DELAY = 200L
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
+        private const val PERFORMANCE_TRACE_HOME_NAV = "home_nav"
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -105,6 +111,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
+    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME_NAV)
+
     override fun getScreenName(): String {
         return ""
     }
@@ -123,7 +131,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.setInitialState()
 
         pageSource = args.StringMainNavArgsSourceKey
@@ -145,6 +152,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        performanceTrace.init(
+            v = view.rootView,
+            scope = this.lifecycleScope,
+            touchListenerActivity = activity as? BaseActivity
+        ) { summaryModel, type, view ->
+
+        }
+
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))
