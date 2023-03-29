@@ -82,7 +82,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_create_card_container.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 const val DP_COLOR_ITEM_DECORATOR = 12
 const val COLOR_DEFAULT_POSITION = 0
@@ -336,7 +339,14 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
 
     private fun proceedIntroLogic(mTmCardModifyInput: TmCardModifyInput) {
         if (TmInternetCheck.isConnectedToInternet(context)) {
-            tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
+            activity?.let {
+                val loader = LoaderDialog(it)
+                loader.setLoadingText(it.getString(R.string.tm_loader_create_card))
+                loader.show()
+            }
+            Timer().schedule(3000){
+                tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
+            }
         }
         else{
             noInternetUi { proceedIntroLogic(mTmCardModifyInput) }
