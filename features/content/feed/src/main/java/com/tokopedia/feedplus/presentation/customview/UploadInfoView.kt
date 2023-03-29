@@ -21,13 +21,6 @@ class UploadInfoView : FrameLayout {
         defStyleAttr
     )
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
-
     private val binding = ViewUploadInfoBinding.inflate(
         LayoutInflater.from(context),
         this,

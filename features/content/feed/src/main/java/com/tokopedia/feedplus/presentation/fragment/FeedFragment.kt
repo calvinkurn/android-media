@@ -109,13 +109,6 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-//                feedMenuSheet.showToasterOnLoginSuccessFollow(
-//                    getString(
-//                        feedR.string.feed_report_login_success_toaster_text,
-//                        userSession.name
-//                    ),
-//                    Toaster.TYPE_NORMAL
-//                )
             }
         }
 
@@ -521,15 +514,6 @@ class FeedFragment :
             }
 
             it.rvFeedPost.adapter = adapter
-//            (it.rvFeedPost.getChildAt(0) as RecyclerView).addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-//                        layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
-//                    ) {
-//                        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
-//                    }
-//                }
-//            })
         }
     }
 

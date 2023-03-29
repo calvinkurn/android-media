@@ -17,7 +17,11 @@ data class UploadInfo(
 
 sealed interface UploadStatus {
     data class Progress(val progress: Int, val thumbnailUrl: String) : UploadStatus
-    data class Finished(val contentId: String) : UploadStatus
+    data class Finished(
+        val contentId: String,
+        val authorType: String,
+        val authorId: String,
+    ) : UploadStatus
     data class Failed(val thumbnailUrl: String, val onRetry:() -> Unit) : UploadStatus
 }
 

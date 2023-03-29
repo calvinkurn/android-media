@@ -1,13 +1,11 @@
 package com.tokopedia.feedplus.presentation.receiver
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -47,7 +45,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
                     if (info.status !is UploadStatus.Finished) {
                         setCurrentReceiver(receiver)
 
-                        Log.d("Upload Info", "From Receiver: $receiver, Info: $info")
                         send(receiver, info)
                     } else {
                         send(receiver, info)
@@ -59,14 +56,12 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
     }
 
     suspend fun releaseCurrent() {
-        Log.d("Upload Info", "Release Current, Receiver: $mReceiver")
         mReceiver?.let { clearReceiver(it) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun ProducerScope<UploadInfo>.send(receiver: UploadReceiver, info: UploadInfo) = mutex.withLock {
         if (mReceiver != receiver) return@withLock
-        Log.d("Upload Info", "Sending from Receiver: $receiver, Info: $info")
         send(info)
     }
 
@@ -77,7 +72,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
 
     private suspend fun clearReceiver(receiver: UploadReceiver) = mutex.withLock {
         if (mReceiver != receiver) return@withLock
-        Log.d("Upload Info", "Clearing Receiver: $receiver")
         mReceiver = null
     }
 }

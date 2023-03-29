@@ -20,9 +20,7 @@ import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
-import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -76,7 +74,7 @@ class FeedMainViewModel @Inject constructor(
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
-    val userName: String
+    val displayName: String
         get() = userSession.name
 
     private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
