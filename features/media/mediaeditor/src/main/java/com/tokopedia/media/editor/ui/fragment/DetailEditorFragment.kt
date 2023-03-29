@@ -411,10 +411,7 @@ class DetailEditorFragment @Inject constructor(
 
     // === Listener add text
     override fun onAddFreeText() {
-        val intent = Intent(activity, AddTextActivity::class.java)
-        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
-        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.TEXT_MODE)
-        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
+        openAddTextActivity()
     }
 
     override fun onAddSingleBackgroundText() {
@@ -646,6 +643,10 @@ class DetailEditorFragment @Inject constructor(
             // ==========
             EditorToolType.ADD_TEXT -> {
                 addTextComponent.setupView()
+                setImageView(data.resultUrl ?: url, false)
+                viewBinding?.imgPreviewOverlay?.setOnClickListener {
+                    openAddTextActivity()
+                }
             }
         }
     }
@@ -1343,6 +1344,13 @@ class DetailEditorFragment @Inject constructor(
             textData
         )
         viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmap)
+    }
+
+    private fun openAddTextActivity() {
+        val intent = Intent(activity, AddTextActivity::class.java)
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
+        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.TEXT_MODE)
+        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
     override fun getScreenName() = SCREEN_NAME

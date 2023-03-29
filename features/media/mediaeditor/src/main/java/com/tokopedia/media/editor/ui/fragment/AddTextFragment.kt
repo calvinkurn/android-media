@@ -126,6 +126,8 @@ class AddTextFragment @Inject constructor(
                     it.positionOverlayContainer.show()
                     it.actionBtnContainer.show()
                 }
+
+                implementAddTextData()
             }
         }
 
@@ -138,7 +140,6 @@ class AddTextFragment @Inject constructor(
         initPositionButton()
 
         setColorGradient()
-        implementAddTextData()
     }
 
     override fun initObserver() {
