@@ -440,6 +440,7 @@ class DetailEditorFragment @Inject constructor(
             addLogoCacheManager.set(elements.originalPaths.first())
         } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val element = data?.getParcelableExtra(AddTextActivity.ADD_TEXT_RESULT) ?: EditorAddTextUiModel(textValue = "")
+            this.data.addTextValue = element
             implementAddTextData(element)
         }
     }

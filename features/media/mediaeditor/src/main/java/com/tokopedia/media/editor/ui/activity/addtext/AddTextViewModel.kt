@@ -18,7 +18,7 @@ class AddTextViewModel @Inject constructor(
     private var _textInput = MutableLiveData<String>()
     val textInput: LiveData<String> get() = _textInput
 
-    var textData = EditorAddTextUiModel("asd \nKamera Cannon K30")
+    var textData = EditorAddTextUiModel("")
     set(value) {
         _textInput.value = value.textValue
         field = value

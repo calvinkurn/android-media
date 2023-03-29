@@ -57,10 +57,10 @@ class AddTextFragment @Inject constructor(
      */
     private val textStyleItemRef: Array<AddTextStyleItem?> = Array(3) { null }
     private var activeStyleIndex = TEXT_STYLE_REGULAR
-    set(value) {
-        field = value
-        viewModel.textData.textStyle = value
-    }
+        set(value) {
+            field = value
+            viewModel.textData.textStyle = value
+        }
 
     /**
      * 0 -> center
@@ -68,25 +68,29 @@ class AddTextFragment @Inject constructor(
      * 2 -> right
      */
     private var alignmentIndex = TEXT_ALIGNMENT_CENTER
-    set(value) {
-        field = value
-        viewModel.textData.textAlignment = value
-    }
+        set(value) {
+            field = value
+            viewModel.textData.textAlignment = value
+        }
 
     private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
     private var activeColorIndex = 0
-    set(value) {
-        field = value
-        viewModel.textData.textColor = colorList[value]
-    }
+        set(value) {
+            field = if (value in colorList.indices) {
+                value
+            } else {
+                colorList.indexOf(value)
+            }
+            viewModel.textData.textColor = colorList[field]
+        }
 
     private var isColorState = false
 
     private var positionIndex = TEXT_POSITION_BOTTOM
-    set(value) {
-        field = value
-        viewModel.textData.textPosition = value
-    }
+        set(value) {
+            field = value
+            viewModel.textData.textPosition = value
+        }
 
     fun getInputResult(): EditorAddTextUiModel {
         return EditorAddTextUiModel(
@@ -113,7 +117,7 @@ class AddTextFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when(viewModel.pageMode.value) {
+        when (viewModel.pageMode.value) {
             AddTextActivity.TEXT_MODE -> {
                 viewBinding?.textOverlayContainer?.show()
             }
@@ -134,6 +138,7 @@ class AddTextFragment @Inject constructor(
         initPositionButton()
 
         setColorGradient()
+        implementAddTextData()
     }
 
     override fun initObserver() {
@@ -156,27 +161,49 @@ class AddTextFragment @Inject constructor(
                 changeTextAndColor(it.textColor)
             }
 
-            // left -> right -> top -> bottom
-            val positionViewContainer = it.positionOverlayContainer
-            for (i in 0 until positionViewContainer.childCount) {
-                positionViewContainer.getChildAt(i).setOnClickListener {
-                    try {
-                        positionIndex = i
-                        implementAddTextData()
-                    } catch (_: Exception) {}
-                }
-            }
-
             it.btnCancel.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finish()
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
+            }
+
+            renderPositionButton { view, index ->
+                view.setOnClickListener {
+                    try {
+                        positionIndex = index
+                        implementAddTextData()
+                        renderPositionButton()
+                    } catch (_: Exception) {
+                    }
+                }
             }
 
             it.btnSave.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finishPage()
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
+            }
+        }
+    }
+
+    private fun renderPositionButton(
+        viewAction: (view: View, index: Int) -> Unit = { _, _ -> }
+    ) {
+        viewBinding?.let {
+            // left -> right -> top -> bottom
+            val positionViewContainer = it.positionOverlayContainer
+            for (i in 0 until positionViewContainer.childCount) {
+                positionViewContainer.getChildAt(i).apply {
+                    if (i == positionIndex) {
+                        this.hide()
+                    } else {
+                        this.show()
+                    }
+
+                    viewAction(this, i)
+                }
             }
         }
     }
