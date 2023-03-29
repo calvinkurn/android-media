@@ -34,7 +34,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -176,7 +175,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
-                UserSession(context).userId
+                userSessionInterface?.userId ?: ""
             )
         }
         sortDesc?.setOnClickListener {
@@ -186,7 +185,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
-                UserSession(context).userId
+                userSessionInterface?.userId ?: ""
             )
         }
         if (isOriginBrand) {

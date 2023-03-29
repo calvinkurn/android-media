@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -192,7 +191,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
             )
         } else {
             CatalogAnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
-                UserSession(context).userId  ?: ""
+                userSessionInterface?.userId ?: ""
             )
         }
         RouteManager.route(context, applink)
