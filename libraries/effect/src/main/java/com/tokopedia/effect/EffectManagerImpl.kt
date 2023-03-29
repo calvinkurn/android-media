@@ -164,7 +164,7 @@ class EffectManagerImpl @Inject constructor(
 
             if (isSuccessAppendNodes) {
                 mSavedComposeNode.update {
-                    copy(faceFilterComposeNode = assetHelper.customFaceDir)
+                    copy(faceFilterComposeNodeApplied = true)
                 }
             }
         }
@@ -175,10 +175,9 @@ class EffectManagerImpl @Inject constructor(
             value
         )
 
-        val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
-
-        if (isFound) {
-            mSavedComposeNode.update {
+        mSavedComposeNode.update {
+            val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
+            if (isFound) {
                 copy(
                     faceFilters = faceFilters.map {
                         if(it.type == faceFilterType) it.copy(value = value)
@@ -186,9 +185,7 @@ class EffectManagerImpl @Inject constructor(
                     }.toMutableList()
                 )
             }
-        }
-        else {
-            mSavedComposeNode.update {
+            else {
                 copy(
                     faceFilters = faceFilters + FaceFilter(type = faceFilterType, value = value)
                 )
@@ -197,7 +194,7 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun removeFaceFilter() {
-        mRenderManager?.removeComposerNodes(arrayOf(mSavedComposeNode.faceFilterComposeNode))
+        mRenderManager?.removeComposerNodes(arrayOf(assetHelper.customFaceDir))
         mSavedComposeNode.update { clearFaceFilter() }
     }
 
@@ -208,7 +205,7 @@ class EffectManagerImpl @Inject constructor(
             val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(key)) == BEF_RESULT_SUC
             if (isSuccessAppendNodes) {
                 mSavedComposeNode.update {
-                    copy(preset = preset.copy(key = key))
+                    copy(presetComposeNodeApplied = true)
                 }
             }
         }
@@ -216,7 +213,7 @@ class EffectManagerImpl @Inject constructor(
         mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value)
         mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value)
         mSavedComposeNode.update {
-            copy(preset = preset.copy(value = value))
+            copy(preset = preset.copy(key = presetId, value = value))
         }
     }
 

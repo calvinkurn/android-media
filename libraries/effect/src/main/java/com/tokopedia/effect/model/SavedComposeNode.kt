@@ -4,25 +4,21 @@ package com.tokopedia.effect.model
  * Created By : Jonathan Darwin on March 29, 2023
  */
 data class SavedComposeNode(
-    val faceFilterComposeNode: String,
+    val faceFilterComposeNodeApplied: Boolean,
     val faceFilters: List<FaceFilter>,
+    val presetComposeNodeApplied: Boolean,
     val preset: Preset
 ) {
-    val faceFilterComposeNodeApplied: Boolean
-        get() = faceFilterComposeNode.isNotEmpty()
+    fun clearFaceFilter(): SavedComposeNode = copy(faceFilterComposeNodeApplied = false, faceFilters = emptyList())
 
-    val presetComposeNodeApplied: Boolean
-        get() = preset.key.isNotEmpty()
-
-    fun clearFaceFilter(): SavedComposeNode = copy(faceFilterComposeNode = "", faceFilters = emptyList())
-
-    fun clearPreset(): SavedComposeNode = copy(preset = Preset.Unknown)
+    fun clearPreset(): SavedComposeNode = copy(presetComposeNodeApplied = false, preset = Preset.Unknown)
 
     companion object {
         val Empty: SavedComposeNode
             get() = SavedComposeNode(
-                faceFilterComposeNode = "",
+                faceFilterComposeNodeApplied = false,
                 faceFilters = emptyList(),
+                presetComposeNodeApplied = false,
                 preset = Preset.Unknown
             )
     }
