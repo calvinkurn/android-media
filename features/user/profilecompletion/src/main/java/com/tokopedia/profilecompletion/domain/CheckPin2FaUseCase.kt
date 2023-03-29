@@ -13,25 +13,23 @@ class CheckPin2FaUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<CheckPin2FAParam, CheckPinPojo>(dispatchers.io) {
+
     override fun graphqlQuery(): String =
         """
-          query resetUserPin(
-              ${'$'}user_id: Int!,
+          query checkPin(
+              ${'$'}pin: String!,
               ${'$'}validate_token: String!,
-              ${'$'}grant_type: String!
+              ${'$'}action: String!,
+              ${'$'}user_id: Int,
           ){
-              resetUserPin(
-                  user_id: ${'$'}user_id,
+              check_pin(
+                  pin: ${'$'}pin,
                   validate_token: ${'$'}validate_token,
-                  grant_type: ${'$'}grant_type
+                  action: ${'$'}action,
+                  user_id: ${'$'}user_id
               ) {
-                  is_success
-                  user_id 
-                  access_token
-                  sid
-                  refresh_token
-                  expires_in
-                  error
+                  valid
+                  error_message              
               }
           }
         """.trimIndent()
