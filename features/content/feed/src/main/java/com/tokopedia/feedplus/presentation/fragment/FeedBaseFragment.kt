@@ -562,7 +562,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         showNormalToaster(
             getString(
                 R.string.feed_report_login_success_toaster_text,
-                feedMainViewModel.userName,
+                feedMainViewModel.displayName,
             )
         )
     }
