@@ -39,7 +39,7 @@ class PreviewViewModel @Inject constructor(
     private val videoCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isVideo() == true && it.isFromPickerCamera }
+                .filter { it.file?.isVideo() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
         }
@@ -48,7 +48,7 @@ class PreviewViewModel @Inject constructor(
     private val imageCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isImage() == true && it.isFromPickerCamera }
+                .filter { it.file?.isImage() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
     }

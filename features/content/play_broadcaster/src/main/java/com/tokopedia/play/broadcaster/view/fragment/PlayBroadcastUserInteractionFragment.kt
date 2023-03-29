@@ -159,7 +159,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             it,
             object : ProductTagViewComponent.Listener {
                 override fun impressProductTag(view: ProductTagViewComponent) {
-                    analytic.impressProductTag(parentViewModel.channelId)
+                    analytic.onImpressedProductCarousel()
                 }
 
                 override fun scrollProductTag(
@@ -257,15 +257,27 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     override fun isEligibleForPin(): Boolean = true
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.uiState.value.selectedContentAccount
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.uiState.value.selectedContentAccount
+                        } else {
+                            ContentAccountUiModel.Empty
+                        }
                     }
 
                     override fun creationId(): String {
-                        return parentViewModel.channelId
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.channelId
+                        } else {
+                            ""
+                        }
                     }
 
                     override fun maxProduct(): Int {
-                        return parentViewModel.maxProduct
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.maxProduct
+                        } else {
+                            0
+                        }
                     }
                 })
 

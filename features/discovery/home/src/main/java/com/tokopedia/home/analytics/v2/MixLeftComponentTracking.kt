@@ -72,7 +72,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                         grid.price
                     ).toString(),
                     brand = Value.NONE_OTHER,
-                    category = Value.NONE_OTHER,
+                    category = grid.categoryBreadcrumbs,
                     variant = Value.NONE_OTHER,
                     productPosition = (position + 1).toString(),
                     channelId = channel.id,
@@ -118,7 +118,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                         grid.price
                     ).toString(),
                     brand = Value.NONE_OTHER,
-                    category = Value.NONE_OTHER,
+                    category = grid.categoryBreadcrumbs,
                     variant = Value.NONE_OTHER,
                     productPosition = (position + 1).toString(),
                     channelId = channel.id,
@@ -149,7 +149,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .build()
     }
 
-    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int): Map<String, Any> {
+    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
@@ -164,7 +164,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                         grid.price
                     ).toString(),
                     brand = Value.NONE_OTHER,
-                    category = Value.NONE_OTHER,
+                    category = grid.categoryBreadcrumbs,
                     variant = Value.NONE_OTHER,
                     productPosition = (position + 1).toString(),
                     channelId = channel.id,
@@ -193,6 +193,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
+            .appendUserId(userId)
             .build()
     }
 
@@ -258,8 +259,8 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .build()
     }
 
-    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome))
+    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int, userId: String) {
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome, userId))
     }
 
     fun sendMixLeftSeeAllCardClick(channel: ChannelModel, userId: String) {

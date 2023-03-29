@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
@@ -20,6 +21,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchArticleFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateDiscoPromoListFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
@@ -106,4 +108,8 @@ interface AffiliateComponent {
     fun injectSSAShopListActivity(ssaShopListActivity: AffiliateSSAShopListActivity)
 
     fun injectSSAShopListFragment(ssaShopListFragment: AffiliateSSAShopListFragment)
+
+    fun injectCommissionEventActivity(commissionEventActivity: AffiliateDiscoPromoListActivity)
+
+    fun injectCommissionEventFragment(commissionEventFragment: AffiliateDiscoPromoListFragment)
 }

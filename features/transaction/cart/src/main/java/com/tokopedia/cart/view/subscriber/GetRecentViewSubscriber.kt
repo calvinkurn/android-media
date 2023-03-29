@@ -11,7 +11,6 @@ import rx.Subscriber
 class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<List<RecommendationWidget>>() {
 
     override fun onCompleted() {
-
     }
 
     override fun onError(e: Throwable) {
@@ -30,5 +29,4 @@ class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<Lis
             it.stopAllCartPerformanceTrace()
         }
     }
-
 }

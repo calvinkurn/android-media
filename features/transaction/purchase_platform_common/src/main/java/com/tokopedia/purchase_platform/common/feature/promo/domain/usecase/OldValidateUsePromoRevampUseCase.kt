@@ -19,9 +19,11 @@ import javax.inject.Inject
  * Created by fwidjaja on 2020-03-05.
  */
 @Deprecated("Please use Coroutine version instead", ReplaceWith("ValidateUsePromoRevampUseCase"))
-class OldValidateUsePromoRevampUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                           private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
-    : UseCase<ValidateUsePromoRevampUiModel>() {
+class OldValidateUsePromoRevampUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) :
+    UseCase<ValidateUsePromoRevampUiModel>() {
 
     companion object {
         const val PARAM_VALIDATE_USE = "PARAM_VALIDATE_USE"
@@ -31,10 +33,10 @@ class OldValidateUsePromoRevampUseCase @Inject constructor(private val graphqlUs
 
     private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
         return mapOf(
-                PARAM_PARAMS to mapOf(
-                        PARAM_PROMO to validateUsePromoRequest
-                ),
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            PARAM_PARAMS to mapOf(
+                PARAM_PROMO to validateUsePromoRequest
+            ),
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
 
@@ -45,15 +47,15 @@ class OldValidateUsePromoRevampUseCase @Inject constructor(private val graphqlUs
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map { it ->
-                    var validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
-                    val validateUseGqlResponse = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
-                    validateUseGqlResponse?.validateUsePromoRevamp?.let {
-                        validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(it)
-                    }
-                    validateUsePromoRevampUiModel
+            .map { it ->
+                var validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
+                val validateUseGqlResponse = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
+                validateUseGqlResponse?.validateUsePromoRevamp?.let {
+                    validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(it)
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                validateUsePromoRevampUiModel
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

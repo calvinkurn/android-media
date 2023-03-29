@@ -3,7 +3,9 @@ package com.tokopedia.media.editor.ui.activity.main
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -15,11 +17,11 @@ import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.isGranted
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.picker.common.*
-import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -55,6 +57,11 @@ class EditorActivity : BaseEditorActivity() {
         setHeader(
             getString(editorR.string.editor_main_header_title_text),
             getString(editorR.string.editor_main_header_action_text)
+        )
+
+        InternalStorageCleaner.cleanUpInternalStorageIfNeeded(
+            this,
+            getEditorSaveFolderPath()
         )
     }
 
@@ -110,13 +117,10 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    override fun onDestroy() {
-        viewModel.cleanImageCache()
-        super.onDestroy()
-    }
-
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
@@ -136,8 +140,13 @@ class EditorActivity : BaseEditorActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            saveImageToGallery()
+        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
+            if (
+                requestCode == PERMISSION_REQUEST_CODE &&
+                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
+                grantResults.first() != -1) {
+                saveImageToGallery()
+            }
         }
     }
 
@@ -145,17 +154,33 @@ class EditorActivity : BaseEditorActivity() {
         val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.saveToGallery(
             listImageEditState
-        ) { imageResultList ->
-            val result = EditorResult(
-                originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                editedImages = imageResultList
-            )
+        ) { imageResultList, exception ->
+            imageResultList?.let {
+                val result = EditorResult(
+                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                    editedImages = imageResultList
+                )
 
-            editorHomeAnalytics.clickUpload()
+                editorHomeAnalytics.clickUpload()
 
-            val intent = Intent()
-            intent.putExtra(RESULT_INTENT_EDITOR, result)
-            setResult(Activity.RESULT_OK, intent)
+                val intent = Intent()
+                intent.putExtra(RESULT_INTENT_EDITOR, result)
+                setResult(Activity.RESULT_OK, intent)
+            }
+
+            exception?.let {
+                Toast.makeText(
+                    this,
+                    resources.getString(editorR.string.editor_activity_general_error),
+                    Toast.LENGTH_LONG
+                ).show()
+                newRelicLog(
+                    mapOf(
+                        FAILED_SAVE_FIELD to "${it.message}"
+                    )
+                )
+            }
+
             finish()
         }
     }
