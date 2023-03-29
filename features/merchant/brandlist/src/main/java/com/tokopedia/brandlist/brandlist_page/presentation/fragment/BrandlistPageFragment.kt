@@ -184,6 +184,11 @@ class BrandlistPageFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        brandlistTracking?.sendAll()
+    }
+
     override fun getScreenName(): String {
         return ""
     }

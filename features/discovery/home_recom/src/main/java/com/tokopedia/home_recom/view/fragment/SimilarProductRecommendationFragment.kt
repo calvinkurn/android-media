@@ -66,17 +66,18 @@ import javax.inject.Inject
 /**
  * Created by Lukas on 26/08/19
  */
-open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(),
-        RecommendationListener,
-        RecommendationErrorListener,
-        RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
-        SortFilterBottomSheet.Callback {
+open class SimilarProductRecommendationFragment :
+    BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(),
+    RecommendationListener,
+    RecommendationErrorListener,
+    RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
+    SortFilterBottomSheet.Callback {
     private var binding: FragmentSimillarRecommendationBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this, this) }
-    private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
     private var sortFilterView: SortFilter? = null
@@ -90,7 +91,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var hasNextPage: Boolean = true
     private var navToolbar: NavToolbar? = null
 
-    companion object{
+    companion object {
         private const val SPAN_COUNT = 2
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -109,7 +110,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let{
+        savedInstanceState?.let {
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
             source = it.getString(SAVED_SOURCE) ?: ""
@@ -137,21 +138,27 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
-                        false)
+                val wishlistStatusFromPdp = data.getBooleanExtra(
+                    WIHSLIST_STATUS_IS_WISHLIST,
+                    false
+                )
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                if(position >= 0 && adapter.data.size > position) {
+                if (position >= 0 && adapter.data.size > position) {
                     (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
             }
         }
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data,
-                object : ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                        handleWishlistAction(productCardOptionsModel)
-                    }
-                })
+        handleProductCardOptionsActivityResult(
+            requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            }
+        )
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable) {
@@ -164,7 +171,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun showLoading() {
-        if(hasNextPage){
+        if (hasNextPage) {
             super.showLoading()
         }
     }
@@ -176,10 +183,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
-    private fun setupRecyclerView(view: View){
+    private fun setupRecyclerView(view: View) {
         binding?.filterSortRecommendation?.hide()
         getRecyclerView(view)?.apply {
-            if(this is VerticalRecyclerView) clearItemDecoration()
+            if (this is VerticalRecyclerView) clearItemDecoration()
             layoutManager = recyclerViewLayoutManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -187,7 +194,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
                     if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
                         val shown = binding?.recomBackToTop?.isShown == true
-                        if(!shown) {
+                        if (!shown) {
                             binding?.recomBackToTop?.show()
                             binding?.recomBackToTop?.visible()
                         }
@@ -218,56 +225,62 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
-    private fun setupBackToTop(view: View){
+    private fun setupBackToTop(view: View) {
         binding?.recomBackToTop?.circleMainMenu?.setOnClickListener {
             binding?.recyclerView?.smoothScrollToPosition(0)
         }
     }
 
-    private fun observeLiveData(){
-        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when {
-                    it.status.isLoading() -> {
-                        adapter.clearAllElements()
-                        showLoading()
-                    }
-                    it.status.isLoadMore() -> showLoading()
-                    it.status.isEmpty() -> showEmpty()
-                    it.status.isError() -> showGetListError(it.exception)
-                    it.status.isSuccess() -> {
-                        it.data?.let { pair ->
-                            val recommendationItems = pair.first
-                            if (recommendationItems.isNotEmpty()) {
-                                recommendationItems.getOrNull(0)?.let {
-                                    navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
+    private fun observeLiveData() {
+        recommendationViewModel.recommendationItem.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    when {
+                        it.status.isLoading() -> {
+                            adapter.clearAllElements()
+                            showLoading()
+                        }
+                        it.status.isLoadMore() -> showLoading()
+                        it.status.isEmpty() -> showEmpty()
+                        it.status.isError() -> showGetListError(it.exception)
+                        it.status.isSuccess() -> {
+                            it.data?.let { pair ->
+                                val recommendationItems = pair.first
+                                if (recommendationItems.isNotEmpty()) {
+                                    recommendationItems.getOrNull(0)?.let {
+                                        navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
+                                    }
+                                    hasNextPage = pair.second
+                                    renderList(mapDataModel(recommendationItems), pair.second)
+                                    if (!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
+                                } else {
+                                    hideLoading()
+                                    hasNextPage = false
+                                    updateScrollListenerState(false)
+                                    showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                                 }
-                                hasNextPage = pair.second
-                                renderList(mapDataModel(recommendationItems), pair.second)
-                                if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
-                            }else{
-                                hideLoading()
-                                hasNextPage = false
-                                updateScrollListenerState(false)
-                                showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }
                         }
+                        else -> {}
                     }
-                    else -> {}
                 }
             }
-        })
+        )
 
-        recommendationViewModel.filterSortChip.observe(viewLifecycleOwner, Observer {
-            if (it.status.isSuccess()) {
-                it.data?.let { data ->
-                    sortFilterView?.show()
-                    setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
+        recommendationViewModel.filterSortChip.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it.status.isSuccess()) {
+                    it.data?.let { data ->
+                        sortFilterView?.show()
+                        setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
+                    }
+                } else if (it.status.isLoading()) {
+                    sortFilterView?.hide()
                 }
-            } else if(it.status.isLoading()){
-                sortFilterView?.hide()
             }
-        })
+        )
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
@@ -276,16 +289,16 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         if (wishlistResult.isUserLoggedIn) {
             if (wishlistResult.isSuccess) {
                 if (wishlistResult.isAddWishlist) {
-                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                    if (productId.isNotBlank() || productId.isNotEmpty()) {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
-                    }else {
+                    } else {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, productCardOptionsModel.screenName, ref)
                     }
                     showMessageSuccessAddWishlistV2(wishlistResult)
                 } else {
-                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                    if (productId.isNotBlank() || productId.isNotEmpty()) {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
-                    }else {
+                    } else {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, productCardOptionsModel.screenName, ref)
                     }
                     showMessageSuccessRemoveWishlistV2(wishlistResult)
@@ -300,8 +313,9 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
-        if(position > -1 && adapter.itemCount > 0 &&
-                adapter.itemCount > position) {
+        if (position > -1 && adapter.itemCount > 0 &&
+            adapter.itemCount > position
+        ) {
             (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
             adapter.notifyItemChanged(position, isWishlist)
         }
@@ -349,6 +363,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onPause() {
         super.onPause()
+        trackingQueue?.sendAll()
     }
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
@@ -408,19 +423,19 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                 sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
             }
             val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
-            val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
+            val selectedSort = if (sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
             sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
             sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.getOptions().getCountSelected() + selectedSort
         }
     }
 
-    private fun openBottomSheetFilterRevamp(dynamicFilterModel: DynamicFilterModel){
+    private fun openBottomSheetFilterRevamp(dynamicFilterModel: DynamicFilterModel) {
         filterSortBottomSheet = SortFilterBottomSheet()
         filterSortBottomSheet?.show(
-                requireFragmentManager(),
-                recommendationViewModel.getSelectedSortFilter(),
-                dynamicFilterModel,
-                this
+            requireFragmentManager(),
+            recommendationViewModel.getSelectedSortFilter(),
+            dynamicFilterModel,
+            this
         )
 
         filterSortBottomSheet?.setOnDismissListener {
@@ -428,7 +443,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
-    private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
+    private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip) {
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
@@ -458,14 +473,16 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         try {
-            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
-            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            if (recommendationViewModel.isLoggedIn()) {
+                SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
+            } else {
+                SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            }
             RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
                 putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
                 startActivityForResult(this, REQUEST_FROM_PDP)
             }
-        }catch (ex: Exception){
-
+        } catch (ex: Exception) {
         }
     }
 
@@ -476,8 +493,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onProductImpression(item: RecommendationItem) {
         trackingQueue?.let { trackingQueue ->
-            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref, internalRef)
-            else SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref, internalRef)
+            if (recommendationViewModel.isLoggedIn()) {
+                SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref, internalRef)
+            } else {
+                SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref, internalRef)
+            }
         }
     }
 
@@ -489,60 +509,66 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param callback the callback for notify when success or not, there are have 2 params [Boolean] and [Throwable]
      */
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
-        if(recommendationViewModel.isLoggedIn()){
+        if (recommendationViewModel.isLoggedIn()) {
             SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
-            if(isAddWishlist){
-                recommendationViewModel.addWishlistV2(item.productId.toString(), object : WishlistV2ActionListener{
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                        view?.let { v ->
-                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                        }
-                    }
-
-                    override fun onSuccessAddWishlist(
-                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-                        productId: String
-                    ) {
-                        context?.let { context ->
+            if (isAddWishlist) {
+                recommendationViewModel.addWishlistV2(
+                    item.productId.toString(),
+                    object : WishlistV2ActionListener {
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
                             view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
                             }
                         }
 
-                        if (item.isTopAds) {
-                            hitWishlistClickUrl(item)
-                        }
-                    }
+                        override fun onSuccessAddWishlist(
+                            result: AddToWishlistV2Response.Data.WishlistAddV2,
+                            productId: String
+                        ) {
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                }
+                            }
 
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
-                })
+                            if (item.isTopAds) {
+                                hitWishlistClickUrl(item)
+                            }
+                        }
+
+                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                        override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+                    }
+                )
             } else {
-                recommendationViewModel.removeWishlistV2(item, object : WishlistV2ActionListener{
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-                    override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
+                recommendationViewModel.removeWishlistV2(
+                    item,
+                    object : WishlistV2ActionListener {
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+                        override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
 
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                        view?.let { v ->
-                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                        }
-                    }
-
-                    override fun onSuccessRemoveWishlist(
-                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                        productId: String
-                    ) {
-                        context?.let { context ->
+                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
                             view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                            }
+                        }
+
+                        override fun onSuccessRemoveWishlist(
+                            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                            productId: String
+                        ) {
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                }
                             }
                         }
                     }
-                })
+                )
             }
-        }else{
+        } else {
             SimilarProductRecommendationTracking.eventClickWishlistNonLogin()
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
@@ -556,8 +582,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
         showProductCardOptions(
-                this,
-                createProductCardOptionsModel(item, position[0])
+            this,
+            createProductCardOptionsModel(item, position[0])
         )
     }
 
@@ -572,8 +598,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         filterSortBottomSheet = null
         val mapFilter = mutableMapOf<String, String>()
         applySortFilterModel.selectedFilterMapParameter.forEach {
-            if(mapFilter.containsKey(it.key)) mapFilter[it.key] = mapFilter[it.key] + "&" + it.value
-            else mapFilter[it.key] = it.value
+            if (mapFilter.containsKey(it.key)) {
+                mapFilter[it.key] = mapFilter[it.key] + "&" + it.value
+            } else {
+                mapFilter[it.key] = it.value
+            }
         }
         val selectedFilterString = mapFilter.map { it.key + "=" + it.value }.joinToString("&")
 
@@ -582,8 +611,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")
         }
         var trackerParam = selectedSortString
-        if(selectedFilterString.isNotEmpty()){
-            trackerParam += if(trackerParam.isNotEmpty()) "&" else "" + selectedFilterString
+        if (selectedFilterString.isNotEmpty()) {
+            trackerParam += if (trackerParam.isNotEmpty()) "&" else "" + selectedFilterString
         }
         SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), trackerParam)
     }
@@ -604,7 +633,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param listRecommendationModel list pojo recommendationWidget from API
      * @return list of dataModel
      */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel>{
+    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel> {
         return listRecommendationModel.map { RecommendationItemDataModel(it) }
     }
 
@@ -624,7 +653,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
-                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.clickUrl + CLICK_TYPE_WISHLIST,
                 item.productId.toString(),
                 item.name,
                 item.imageUrl

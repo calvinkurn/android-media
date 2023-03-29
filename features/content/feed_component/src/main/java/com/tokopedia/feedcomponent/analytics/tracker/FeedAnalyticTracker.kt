@@ -3196,7 +3196,7 @@ class FeedAnalyticTracker
      * Send all pending analytics in trackingQueue
      */
     fun sendPendingAnalytics() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
     /**

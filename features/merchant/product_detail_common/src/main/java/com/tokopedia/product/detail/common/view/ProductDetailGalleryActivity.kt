@@ -43,6 +43,7 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        trackingQueue?.sendAll()
     }
 
     private fun processData(data: ProductDetailGallery) {
@@ -88,7 +89,6 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         if (selectedPosition == -1) {
             showToaster(imageGallery)
         }
-
     }
 
     private fun showToaster(view: View) {

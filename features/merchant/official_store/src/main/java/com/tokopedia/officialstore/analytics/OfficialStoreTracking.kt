@@ -1016,4 +1016,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 )
         )
     }
+
+    fun sendAll() {
+        trackingQueue.sendAll()
+    }
 }

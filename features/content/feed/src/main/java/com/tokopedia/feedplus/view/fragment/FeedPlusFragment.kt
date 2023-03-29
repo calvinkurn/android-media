@@ -1202,6 +1202,8 @@ class FeedPlusFragment :
         super.onPause()
         unRegisterNewFeedReceiver()
         unRegisterDynamicPostReceiver()
+        analytics.sendPendingAnalytics()
+        feedAnalytics.sendPendingAnalytics()
         shopRecomImpression.sendTracker { feedShopRecomWidgetAnalytics.sendPendingAnalytics() }
     }
 

@@ -21,7 +21,7 @@ class ShopShowcaseTabTracking(private val trackingQueue: TrackingQueue) {
     }
 
     fun sendAllTrackingQueue() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
     fun clickFeaturedShowcaseItem(
@@ -87,14 +87,15 @@ class ShopShowcaseTabTracking(private val trackingQueue: TrackingQueue) {
     }
 
     fun clickAllShowcaseItem(
-            allShowcaseItem: ShopEtalaseUiModel,
-            maxShowcaseList: Int,
-            position: Int,
-            shopId: String,
-            userId: String
+        allShowcaseItem: ShopEtalaseUiModel,
+        maxShowcaseList: Int,
+        position: Int,
+        shopId: String,
+        userId: String
     ) {
         // send tracker for all showcase item clicked
-        sendDataLayerEvent(createNewEventMap(
+        sendDataLayerEvent(
+            createNewEventMap(
                 eventName = PROMO_CLICK,
                 eventCategory = CATEGORY_SHOP_PAGE_BUYER,
                 eventAction = CLICK_SHOP_SHOWCASE_LIST,
@@ -102,16 +103,16 @@ class ShopShowcaseTabTracking(private val trackingQueue: TrackingQueue) {
                 userId = userId,
                 shopId = shopId,
                 ecommerceMap = mapOf(
-                        PROMO_CLICK to mapOf(
-                                PROMOTIONS to listOf(
-                                        mapOf(
-                                                CREATIVE to allShowcaseItem.name,
-                                                ID to allShowcaseItem.id,
-                                                NAME to ALL_SHOP_ETALASE,
-                                                POSITION to position
-                                        )
-                                )
+                    PROMO_CLICK to mapOf(
+                        PROMOTIONS to listOf(
+                            mapOf(
+                                CREATIVE to allShowcaseItem.name,
+                                ID to allShowcaseItem.id,
+                                NAME to ALL_SHOP_ETALASE,
+                                POSITION to position
+                            )
                         )
+                    )
                 )
             )
         )
@@ -174,28 +175,27 @@ class ShopShowcaseTabTracking(private val trackingQueue: TrackingQueue) {
     }
 
     private fun createNewEventMap(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String,
-            userId: String,
-            shopId: String,
-            ecommerceMap: Map<String, Any>? = null
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        userId: String,
+        shopId: String,
+        ecommerceMap: Map<String, Any>? = null
     ): Map<String, Any> {
         val eventMap = mutableMapOf<String, Any>(
-                EVENT to eventName,
-                EVENT_CATEGORY to eventCategory,
-                EVENT_ACTION to eventAction,
-                EVENT_LABEL to eventLabel,
-                BUSINESS_UNIT to PHYSICAL_GOODS,
-                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-                SHOP_ID to shopId,
-                USER_ID to userId
+            EVENT to eventName,
+            EVENT_CATEGORY to eventCategory,
+            EVENT_ACTION to eventAction,
+            EVENT_LABEL to eventLabel,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
         )
         ecommerceMap?.let {
             eventMap[ECOMMERCE] = ecommerceMap
         }
         return eventMap
     }
-
 }

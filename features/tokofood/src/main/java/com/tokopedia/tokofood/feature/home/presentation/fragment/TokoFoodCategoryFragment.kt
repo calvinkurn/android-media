@@ -40,7 +40,9 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -54,8 +56,6 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayo
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
-import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
@@ -69,7 +69,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoFoodCategoryFragment: BaseMultiFragment(),
+class TokoFoodCategoryFragment :
+    BaseMultiFragment(),
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     TokofoodScrollChangedListener {
@@ -178,6 +179,7 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
     }
 
     override fun onStop() {
@@ -258,8 +260,14 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
         trackingQueue.putEETracking(
-            TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
-            localCacheModel?.district_id, merchant, horizontalPosition, isHome = false) as HashMap<String, Any>)
+            TokoFoodHomeCategoryCommonAnalytics.impressMerchant(
+                userSession.userId,
+                localCacheModel?.district_id,
+                merchant,
+                horizontalPosition,
+                isHome = false
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
@@ -274,17 +282,17 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
     private fun collectValue() {
         collectJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
-                when(uiEvent.state) {
+                when (uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE){
+                            if (uiEvent.source == MINI_CART_SOURCE) {
                                 goToPurchasePage()
                             }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if (viewModel.isShownEmptyState()){
+                        if (viewModel.isShownEmptyState()) {
                             hideMiniCartCategory()
                             isShowMiniCart = false
                         } else {
@@ -308,7 +316,7 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
                 removeScrollListeners()
                 when (it.first) {
                     is Success -> onSuccessGetCategoryLayout((it.first as Success).data)
-                    is Fail ->  errorHandling((it.first as Fail).throwable, it.second)
+                    is Fail -> errorHandling((it.first as Fail).throwable, it.second)
                 }
 
                 addScrollListeners()
@@ -409,7 +417,6 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
         adapter.submitList(data.items)
     }
 
-
     private fun loadLayout() {
         getCategoryLayout()
     }
@@ -487,7 +494,9 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
 
     private fun initializeMiniCartCategory() {
         activityViewModel?.let {
-            miniCartCategory?.initialize(it, viewLifecycleOwner.lifecycleScope,
+            miniCartCategory?.initialize(
+                it,
+                viewLifecycleOwner.lifecycleScope,
                 MINI_CART_SOURCE
             )
         }
@@ -510,8 +519,8 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
     private fun logExceptionTokoFoodCategory(
         throwable: Throwable,
         errorType: String,
-        description: String,
-    ){
+        description: String
+    ) {
         TokofoodErrorLogger.logExceptionToServerLogger(
             TokofoodErrorLogger.PAGE.CATEGORY,
             throwable,
@@ -523,11 +532,14 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
 
     private fun setRvPadding(isShowMiniCart: Boolean) {
         rvCategory?.let {
-            if (isShowMiniCart){
-                it.setPadding(0,0, 0, context?.resources?.
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            if (isShowMiniCart) {
+                it.setPadding(
+                    0, 0, 0,
+                    context?.resources
+                        ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7) ?: 0
+                )
             } else {
-                it.setPadding(0,0, 0,0)
+                it.setPadding(0, 0, 0, 0)
             }
         }
     }

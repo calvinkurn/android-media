@@ -108,6 +108,9 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     override fun onPause() {
         super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
     }
 
     private fun observeData() {
@@ -173,7 +176,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         setTitle("")
 
         val errorView: View? = if (errorViewStub?.parent != null) {
-            errorViewStub?.inflate();
+            errorViewStub?.inflate()
         } else {
             viewContent
         }

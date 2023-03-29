@@ -21,7 +21,6 @@ import javax.inject.Inject
  * Created by shruti agarwal on 29/07/22
  */
 
-
 class ContentDetailNewPageAnalytics @Inject constructor(
     private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface
@@ -42,7 +41,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         private const val TYPE_LONG_VIDEO = "long-video"
         const val ACTION_FIELD = "actionField"
 
-
         const val FORMAT_THREE_PARAM = "%s - %s - %s"
 
         private const val SGC_IMAGE = "sgc image"
@@ -61,20 +59,18 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         private const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
 
         private const val UGC_AUTHOR_TYPE = "3"
-
     }
-
 
     fun sendClickShopSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - shop - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -85,12 +81,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - follow - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -101,12 +97,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - more product - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -117,12 +113,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - three dots - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -133,12 +129,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lihat produk - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -149,12 +145,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - image - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -202,7 +198,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                         contentDetailPageAnalyticsDataModel.authorType
                     )
                 )
-
             }
         }
         trackEnhancedEcommerceEventWithMap(
@@ -216,7 +211,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     listOf(
                         getImpressionPost(
                             contentDetailPageAnalyticsDataModel,
-                            if (contentDetailPageAnalyticsDataModel.isFollowed) Promotions.ITEM_NAME_IMAGE_SGC else Promotions.ITEM_NAME_POST_SGC,
+                            if (contentDetailPageAnalyticsDataModel.isFollowed) Promotions.ITEM_NAME_IMAGE_SGC else Promotions.ITEM_NAME_POST_SGC
                         )
                     )
                 )
@@ -229,12 +224,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - like - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -247,21 +242,25 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     ) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = if (isLiked) "click - double tap like - ${
+            eventAction = if (isLiked) {
+                "click - double tap like - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
                     contentDetailPageAnalyticsDataModel.mediaType,
                     contentDetailPageAnalyticsDataModel.authorType
                 )
-            }" else "click - double tap unlike - ${
+                }"
+            } else {
+                "click - double tap unlike - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
                     contentDetailPageAnalyticsDataModel.mediaType,
                     contentDetailPageAnalyticsDataModel.authorType
                 )
-            }",
+                }"
+            },
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
@@ -271,15 +270,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - comment - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33262
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33262
         )
     }
 
@@ -287,15 +286,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lihat semua - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33262
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33262
         )
     }
 
@@ -303,15 +302,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - share - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33263
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33263
         )
     }
 
@@ -319,15 +318,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - shop name below - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33264
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33264
         )
     }
 
@@ -335,15 +334,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lihat selengkapnya - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33265
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33265
         )
     }
 
@@ -351,16 +350,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - x - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33266
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33266
         )
     }
 
@@ -368,16 +367,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - grey area - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33266
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33266
         )
     }
 
@@ -388,20 +387,22 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         trackEnhancedEcommerceEventWithMap(
             eventName = EventName.PRODUCT_VIEW,
             eventAction = "impression - product - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getProductLabel(
                 contentDetailPageAnalyticsDataModel
             ),
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eCommerceData = DataLayer.mapOf(
-                Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                "impressions", getProductItems(feedXProducts)
+                Product.CURRENCY_CODE,
+                Product.CURRENCY_CODE_IDR,
+                "impressions",
+                getProductItems(feedXProducts)
             ),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
@@ -411,19 +412,20 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         trackEnhancedEcommerceEventWithMap(
             eventName = EventName.PRODUCT_CLICK,
             eventAction = "click - product - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getProductLabel(
                 contentDetailPageAnalyticsDataModel
             ),
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eCommerceData = DataLayer.mapOf(
-                EventName.CLICK, mapOf(
+                EventName.CLICK,
+                mapOf(
                     "actionField" to mapOf(
                         "list" to ITEM_PRODUCT_SGC
                     ),
@@ -432,23 +434,22 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             ),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
-
     }
 
     fun sendClickThreeDotsSgcImageEventForBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - three dots - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33269
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33269
         )
     }
 
@@ -456,12 +457,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - three dots product - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -473,18 +474,17 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - wishlist - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
-
     }
 
     fun sendClickWishlistProductSgcRecommEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
@@ -495,19 +495,18 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
             trackerID = "34280"
         )
-
     }
 
     fun sendClickLihatWishlistSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lihat wishlist - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -515,25 +514,27 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickShareSgcImageBottomSheet(
         contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel
     ) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - share - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
-            eventLabel = if (contentDetailPageAnalyticsDataModel.isTypeASGC || contentDetailPageAnalyticsDataModel.isTypeVOD)
+            eventLabel = if (contentDetailPageAnalyticsDataModel.isTypeASGC || contentDetailPageAnalyticsDataModel.isTypeVOD) {
                 EventLabel.getPostLabel(
                     contentDetailPageAnalyticsDataModel
-                ) else EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
+                )
+            } else {
+                EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel)
+            },
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
     }
@@ -552,19 +553,20 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         trackEnhancedEcommerceEventWithMap(
             eventName = PROMO_VIEW,
             eventAction = "impression - post - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             eCommerceData = getPromoViewData(
                 getPromotionsData(
                     listOf(
                         getImpressionPost(
-                            contentDetailPageAnalyticsDataModel, Promotions.ITEM_NAME_POST_SGC
+                            contentDetailPageAnalyticsDataModel,
+                            Promotions.ITEM_NAME_POST_SGC
                         )
                     )
                 )
@@ -577,19 +579,20 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         trackEnhancedEcommerceEventWithMap(
             eventName = PROMO_VIEW,
             eventAction = "impression - video - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             eCommerceData = getPromoViewData(
                 getPromotionsData(
                     listOf(
                         getImpressionPost(
-                            contentDetailPageAnalyticsDataModel, Promotions.ITEM_NAME_POST_SGC
+                            contentDetailPageAnalyticsDataModel,
+                            Promotions.ITEM_NAME_POST_SGC
                         )
                     )
                 )
@@ -605,19 +608,19 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - report reason - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostReportLabel(
                 contentDetailPageAnalyticsDataModel,
                 reportReason
             ),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33288
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33288
         )
     }
 
@@ -625,16 +628,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - grey area - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33289
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33289
         )
     }
 
@@ -642,12 +645,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - x - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -659,16 +662,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - x - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33290
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33290
         )
     }
 
@@ -679,19 +682,19 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - three dots menu - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getThreeDotsSheetLabel(
                 contentDetailPageAnalyticsDataModel,
                 selectedOption
             ),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33291
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33291
         )
     }
 
@@ -699,16 +702,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - grey area - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33292
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33292
         )
     }
 
@@ -716,16 +719,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - report - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33293
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33293
         )
     }
 
@@ -733,31 +736,30 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - cancel report - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33294
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // 33294
         )
     }
 
     fun sendClickAddToCartAsgcEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
-
         val product = contentDetailPageAnalyticsDataModel.feedXProduct
         trackEnhancedEcommerceEventWithMap(
             eventName = ADD_TO_CART,
             eventAction = "click - add to cart - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
@@ -766,12 +768,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     getActionFieldData(
                         getListData(
                             "/cdp - ${
-                                getPostType(
-                                    contentDetailPageAnalyticsDataModel.type,
-                                    contentDetailPageAnalyticsDataModel.isFollowed,
-                                    contentDetailPageAnalyticsDataModel.mediaType,
-                                    contentDetailPageAnalyticsDataModel.authorType
-                                )
+                            getPostType(
+                                contentDetailPageAnalyticsDataModel.type,
+                                contentDetailPageAnalyticsDataModel.isFollowed,
+                                contentDetailPageAnalyticsDataModel.mediaType,
+                                contentDetailPageAnalyticsDataModel.authorType
+                            )
                             }"
                         )
                     ) +
@@ -801,20 +803,19 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickSoundSgcPlayLongVideoEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - sound - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //"34159"
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId // "34159"
         )
     }
 
@@ -822,12 +823,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lanjut menonton - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34160" else "34178"
@@ -838,12 +839,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - lanjut menonton - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34511" else "34529"
@@ -854,12 +855,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = VIEW_PG_IRIS,
             eventAction = "watch - video - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getWatchVideoLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
@@ -879,12 +880,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - full screen - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34186" else "34188"
@@ -896,12 +897,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - full screen - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34537" else "34539"
@@ -909,18 +910,17 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickXShareDetailPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
             eventAction = "click - x - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33285" else "34296"
@@ -933,12 +933,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
             eventAction = "click - share - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33286" else "34297"
@@ -954,7 +954,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = "34281"
         )
-
     }
 
     fun sendClickGreyAreaShareBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
@@ -962,12 +961,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
             eventAction = "click - grey area - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33287" else "34298"
@@ -992,7 +991,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
             eCommerceData =
             DataLayer.mapOf(
-                EventName.CLICK, mapOf(
+                EventName.CLICK,
+                mapOf(
                     "actionField" to mapOf(
                         "list" to "/cdp - product bottomsheet"
                     ),
@@ -1018,7 +1018,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
     /**
-    Comment Page Analytics when opened from Content Detail Page
+     Comment Page Analytics when opened from Content Detail Page
      ***/
 
     fun openCommentPageAnalytics() {
@@ -1030,17 +1030,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickHashtagEventCommentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - hashtag - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostHashtagLabel(contentDetailPageAnalyticsDataModel),
@@ -1048,17 +1047,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickBackOnCommentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - back - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1066,17 +1064,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickShopOnConmmentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - shop name - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1084,17 +1081,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickCommentCreator(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - comment creator - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1102,17 +1098,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-
     fun sendClickReportOnComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - report - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1124,12 +1119,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - delete - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1138,18 +1133,18 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
     /**
-    can be used when like button developed on comment
+     can be used when like button developed on comment
      ***/
     fun sendClickLikeComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - like - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1161,12 +1156,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - send - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1178,12 +1173,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - kembalikan to undo delete - ${
-                getPostType(
-                    contentDetailPageAnalyticsDataModel.type,
-                    contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType,
-                    contentDetailPageAnalyticsDataModel.authorType
-                )
+            getPostType(
+                contentDetailPageAnalyticsDataModel.type,
+                contentDetailPageAnalyticsDataModel.isFollowed,
+                contentDetailPageAnalyticsDataModel.mediaType,
+                contentDetailPageAnalyticsDataModel.authorType
+            )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -1191,7 +1186,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //end of comment trackers here
+    // end of comment trackers here
 
     private fun getSingleProductList(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
@@ -1215,7 +1210,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
     private fun getProductsData(
-        productDataList: List<Any>,
+        productDataList: List<Any>
     ): Map<String, Any> = DataLayer.mapOf(PRODUCTS, productDataList)
 
     private fun getProductData(
@@ -1236,7 +1231,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         Product.SHOP_TYPE, "",
         Product.VARIANT, "",
         Product.BRAND, "",
-        Product.CATEGORY, "",
+        Product.CATEGORY, ""
     )
 
     private fun createItemMap(
@@ -1253,14 +1248,14 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             Product.VARIANT, "",
             Product.LIST, list,
             Product.PRICE,
-            if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString()
         )
 
     private fun getPromoViewData(data: Any): Map<String, Any> =
         DataLayer.mapOf(PROMO_VIEW, data)
 
     private fun getPromotionsData(
-        promotionDataList: List<Any>,
+        promotionDataList: List<Any>
     ): Map<String, Any> = DataLayer.mapOf(PROMOTIONS, promotionDataList)
 
     private fun getEcommerceData(data: Any): Map<String, Any> =
@@ -1277,11 +1272,14 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
         itemName: String = ""
     ): Map<String, Any> = DataLayer.mapOf(
-        Promotions.CREATIVE, contentDetailPageAnalyticsDataModel.mediaUrl,
-        Promotions.ID, contentDetailPageAnalyticsDataModel.activityId,
+        Promotions.CREATIVE,
+        contentDetailPageAnalyticsDataModel.mediaUrl,
+        Promotions.ID,
+        contentDetailPageAnalyticsDataModel.activityId,
         Promotions.NAME,
         if (itemName.isBlank()) contentDetailPageAnalyticsDataModel.itemName else itemName,
-        Promotions.POSITION, contentDetailPageAnalyticsDataModel.rowNumber + 1,
+        Promotions.POSITION,
+        contentDetailPageAnalyticsDataModel.rowNumber + 1
     )
 
     private fun createAnalyticsData(
@@ -1300,12 +1298,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             BUSINESS_UNIT, CONTENT,
             CURRENT_SITE, TOKOPEDIA_MARKET_PLACE,
             USER_ID, userSession.userId,
-            TRACKER_ID, trackerID,
+            TRACKER_ID, trackerID
         )
 
-        if (trackerID.isNotEmpty())
+        if (trackerID.isNotEmpty()) {
             TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
-
+        }
     }
 
     private fun getGeneralDataNew(
@@ -1340,9 +1338,9 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             SCREEN_NAME to screenName,
             TRACKER_ID to trackerID
         )
-        if (trackerID.isNotEmpty())
+        if (trackerID.isNotEmpty()) {
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
-
+        }
     }
 
     private fun trackEnhancedEcommerceEventWithMap(
@@ -1365,9 +1363,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
      * Send all pending analytics in trackingQueue
      */
     fun sendPendingAnalytics() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
-
 
     private fun getPostType(
         type: String,
@@ -1375,30 +1372,30 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         mediaType: String = "image",
         authorType: String
     ): String {
-        return if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+        return if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed) {
             ASGC_RECOM
-        else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
+        } else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed) {
             ASGC
-        else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed && authorType == UGC_AUTHOR_TYPE)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed && authorType == UGC_AUTHOR_TYPE) {
             UGC_VOD_PLAY_RECOM
-        else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed && authorType == UGC_AUTHOR_TYPE)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed && authorType == UGC_AUTHOR_TYPE) {
             UGC_VOD_PLAY
-        else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed) {
             SGC_VOD_PLAY_RECOM
-        else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed) {
             SGC_VOD_PLAY
-        else if (type == TYPE_FEED_X_CARD_POST && isFollowed && mediaType == TYPE_LONG_VIDEO)
+        } else if (type == TYPE_FEED_X_CARD_POST && isFollowed && mediaType == TYPE_LONG_VIDEO) {
             LONG_VIDEO_SGC
-        else if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_LONG_VIDEO)
+        } else if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_LONG_VIDEO) {
             LONG_VIDEO_SGC_RECOM
-        else if (type == TYPE_FEED_X_CARD_POST && mediaType == TYPE_VIDEO)
+        } else if (type == TYPE_FEED_X_CARD_POST && mediaType == TYPE_VIDEO) {
             VIDEO
-        else if (type != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+        } else if (type != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed) {
             SGC_IMAGE_RECOM
-        else
+        } else {
             SGC_IMAGE
+        }
     }
-
 
     private object EventName {
         const val ADD = "add"
@@ -1442,7 +1439,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
             reportReason: String
         ) =
-            "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - ${reportReason} - ${contentDetailPageAnalyticsDataModel.source}"
+            "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - $reportReason - ${contentDetailPageAnalyticsDataModel.source}"
 
         fun getPostHashtagLabel(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) =
             "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - ${contentDetailPageAnalyticsDataModel.hashtag} - ${contentDetailPageAnalyticsDataModel.source}"
@@ -1451,7 +1448,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
             selectedOption: String
         ) =
-            "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - ${selectedOption} - ${contentDetailPageAnalyticsDataModel.source}"
+            "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - $selectedOption - ${contentDetailPageAnalyticsDataModel.source}"
 
         fun getWatchVideoLabel(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) =
             "${contentDetailPageAnalyticsDataModel.activityId} - ${contentDetailPageAnalyticsDataModel.shopId} - ${contentDetailPageAnalyticsDataModel.duration} - ${contentDetailPageAnalyticsDataModel.source}"
@@ -1484,5 +1481,4 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         const val VARIANT = "variant"
         const val INDEX = "index"
     }
-
 }

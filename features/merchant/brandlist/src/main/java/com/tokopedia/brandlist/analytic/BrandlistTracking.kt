@@ -358,4 +358,8 @@ class BrandlistTracking(context: Context) {
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
+
+    fun sendAll() {
+        trackingQueue.sendAll()
+    }
 }

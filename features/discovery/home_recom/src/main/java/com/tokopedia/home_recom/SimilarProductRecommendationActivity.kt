@@ -10,6 +10,7 @@ import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by Lukas on 26/08/19
@@ -66,6 +67,15 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      */
     private fun isNumber(text: String): Boolean {
         return text.all { it in '0'..'9' }
+    }
+
+    /**
+     * [onPause] is override from [BaseSimpleActivity]
+     * this void override with added extra sendAllTracking
+     */
+    override fun onPause() {
+        super.onPause()
+        TrackingQueue(this).sendAll()
     }
 
     /**

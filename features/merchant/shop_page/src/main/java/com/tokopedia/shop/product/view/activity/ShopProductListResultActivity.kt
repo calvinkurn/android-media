@@ -130,6 +130,11 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        shopPageTracking?.sendAllTrackingQueue()
+    }
+
     private fun initSearchInputView() {
         editTextSearch = viewBinding?.editTextSearchProduct
         actionUpBtn = viewBinding?.actionUpBtn

@@ -12,8 +12,9 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class ECServiceViewModel @Inject constructor(
-        private val useCase: ECDynamicHomeIconUseCase,
-        private val trackingQueue: TrackingQueue) : BaseECViewModel() {
+    private val useCase: ECDynamicHomeIconUseCase,
+    private val trackingQueue: TrackingQueue
+) : BaseECViewModel() {
 
     val categories = MutableLiveData<ArrayList<Visitable<*>>>()
     val notifyAdapter = MutableLiveData<Int>()
@@ -31,10 +32,10 @@ class ECServiceViewModel @Inject constructor(
             val response = useCase.getHomeIconData()
             setHomeIconLiveData(response.dynamicHomeIcon?.categoryGroup)
         }, onError = {
-            shimmerVisibility.value = false
-            it.printStackTrace()
-            errorMessage.value = it.localizedMessage
-        })
+                shimmerVisibility.value = false
+                it.printStackTrace()
+                errorMessage.value = it.localizedMessage
+            })
     }
 
     private fun setHomeIconLiveData(categoryGroup: List<CategoryGroup?>?) {
@@ -68,16 +69,16 @@ class ECServiceViewModel @Inject constructor(
             (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup?.isOpen = true
             currentActiveCategory = categoryIndex
         } else {
-            (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup?.isOpen = !(newCurrentCG?.isOpen
-                    ?: false)
+            (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup?.isOpen = !(
+                newCurrentCG?.isOpen
+                    ?: false
+                )
         }
         notifyAdapter.value = categoryIndex
-
     }
-
 
     override fun doOnPause() {
         super.doOnPause()
+        trackingQueue.sendAll()
     }
-
 }

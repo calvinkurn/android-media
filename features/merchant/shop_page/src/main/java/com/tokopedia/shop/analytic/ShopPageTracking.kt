@@ -83,7 +83,7 @@ open class ShopPageTracking(
     }
 
     fun sendAllTrackingQueue() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
     private fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: String, startIndex: Int): List<Any> {
@@ -106,7 +106,9 @@ open class ShopPageTracking(
         }
         return if (list.size == 0) {
             ArrayList()
-        } else DataLayer.listOf(*list.toTypedArray())
+        } else {
+            DataLayer.listOf(*list.toTypedArray())
+        }
     }
 
     protected fun createMap(

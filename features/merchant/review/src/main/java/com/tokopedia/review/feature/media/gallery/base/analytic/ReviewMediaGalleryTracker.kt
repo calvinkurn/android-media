@@ -142,7 +142,8 @@ class ReviewMediaGalleryTracker @Inject constructor(
                 position,
                 attachmentId,
                 String.format(
-                    ReviewMediaGalleryTrackerConstant.EVENT_ITEM_NAME_VIEW_VIDEO, videoID
+                    ReviewMediaGalleryTrackerConstant.EVENT_ITEM_NAME_VIEW_VIDEO,
+                    videoID
                 )
             ).queueEnhancedEcommerce(trackingQueue)
     }
@@ -161,7 +162,10 @@ class ReviewMediaGalleryTracker @Inject constructor(
             ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_PLAY_VIDEO,
             String.format(
                 ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_PLAY_VIDEO,
-                feedbackID, attachmentID, videoDurationSecond, videoID
+                feedbackID,
+                attachmentID,
+                videoDurationSecond,
+                videoID
             )
         ).appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
@@ -184,7 +188,11 @@ class ReviewMediaGalleryTracker @Inject constructor(
             ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_STOP_VIDEO,
             String.format(
                 ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_STOP_VIDEO,
-                feedbackID, attachmentID, videoDurationSecond, watchingDurationSecond, videoID
+                feedbackID,
+                attachmentID,
+                videoDurationSecond,
+                watchingDurationSecond,
+                videoID
             )
         ).appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
@@ -205,6 +213,6 @@ class ReviewMediaGalleryTracker @Inject constructor(
     }
 
     fun sendQueuedTrackers() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 }

@@ -10,8 +10,13 @@ import java.util.HashMap
 
 open class ShopWidgetTracker(val trackingQueue: TrackingQueue) {
 
-    protected fun sendEvent(event: String?, category: String?, action: String?, label: String?,
-                          customDimensionShopWidget: CustomDimensionShopWidget?) {
+    protected fun sendEvent(
+        event: String?,
+        category: String?,
+        action: String?,
+        label: String?,
+        customDimensionShopWidget: CustomDimensionShopWidget?
+    ) {
         val eventMap = createMap(event, category, action, label, customDimensionShopWidget)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
@@ -21,11 +26,16 @@ open class ShopWidgetTracker(val trackingQueue: TrackingQueue) {
     }
 
     fun sendAllTrackingQueue() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
-    private fun createMap(event: String?, category: String?, action: String?, label: String?,
-                          customDimensionShopWidget: CustomDimensionShopWidget?): HashMap<String?, Any?> {
+    private fun createMap(
+        event: String?,
+        category: String?,
+        action: String?,
+        label: String?,
+        customDimensionShopWidget: CustomDimensionShopWidget?
+    ): HashMap<String?, Any?> {
         val eventMap = HashMap<String?, Any?>()
         eventMap[ShopWidgetTrackingConstant.EVENT] = event
         eventMap[ShopWidgetTrackingConstant.EVENT_CATEGORY] = category
@@ -43,8 +53,10 @@ open class ShopWidgetTracker(val trackingQueue: TrackingQueue) {
         return eventMap
     }
 
-    private fun addCustomDimension(eventMap: HashMap<String?, Any?>,
-                                   customDimensionShopWidget: CustomDimensionShopWidget) {
+    private fun addCustomDimension(
+        eventMap: HashMap<String?, Any?>,
+        customDimensionShopWidget: CustomDimensionShopWidget
+    ) {
         eventMap[ShopWidgetTrackingConstant.SHOP_ID] = customDimensionShopWidget.shopId
         eventMap[ShopWidgetTrackingConstant.SHOP_TYPE] = customDimensionShopWidget.shopType
         eventMap[ShopWidgetTrackingConstant.PAGE_TYPE] = ShopWidgetTrackingConstant.SHOPPAGE

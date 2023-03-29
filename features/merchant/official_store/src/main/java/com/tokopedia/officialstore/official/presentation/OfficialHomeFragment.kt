@@ -237,6 +237,7 @@ class OfficialHomeFragment :
 
     override fun onPause() {
         super.onPause()
+        tracking?.sendAll()
     }
 
     override fun getScreenName(): String {

@@ -2,7 +2,6 @@ package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -55,9 +54,14 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                CATEGORY_PLT_PREPARE_METRICS,
-                CATEGORY_PLT_NETWORK_METRICS,
-                CATEGORY_PLT_RENDER_METRICS,0,0,0,0,null
+            CATEGORY_PLT_PREPARE_METRICS,
+            CATEGORY_PLT_NETWORK_METRICS,
+            CATEGORY_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -65,6 +69,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onPause() {
         super.onPause()
+        getActivityTrackingQueue().sendAll()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -89,14 +94,13 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun inflateFragment() {
         slaveFragment = CategoryLevelTwoFragment.newInstance()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.slave_view, slaveFragment, tagFragment)
-                .commit()
-
+            .replace(R.id.slave_view, slaveFragment, tagFragment)
+            .commit()
 
         masterFragment = CategoryLevelOneFragment.newInstance(deepLinkCategoryName)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.master_view, masterFragment, tagFragment)
-                .commit()
+            .replace(R.id.master_view, masterFragment, tagFragment)
+            .commit()
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -120,8 +124,9 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         slave_view.hide()
         master_view.hide()
 
-        if (e is UnknownHostException
-                || e is SocketTimeoutException) {
+        if (e is UnknownHostException ||
+            e is SocketTimeoutException
+        ) {
             globalError.setType(GlobalError.NO_CONNECTION)
         } else {
             globalError.setType(GlobalError.SERVER_ERROR)

@@ -97,6 +97,11 @@ class ReviewGalleryFragment :
         reviewGalleryTracker.trackOpenScreen(viewModel.getProductId())
     }
 
+    override fun onPause() {
+        super.onPause()
+        reviewGalleryTracker.sendQueuedTrackers()
+    }
+
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
     }
