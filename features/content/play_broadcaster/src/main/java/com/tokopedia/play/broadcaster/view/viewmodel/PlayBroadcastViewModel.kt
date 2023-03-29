@@ -1673,7 +1673,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(
                 faceFilters = it.faceFilters.map { faceFilter ->
                     faceFilter.copy(
-                        value = faceFilter.defaultValue
+                        value = faceFilter.defaultValue,
+                        isSelected = false,
                     )
                 },
                 presets = it.presets.map { preset ->
@@ -1682,6 +1683,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 }
             )
+        }
+
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.BeautificationRebindEffect)
         }
     }
 

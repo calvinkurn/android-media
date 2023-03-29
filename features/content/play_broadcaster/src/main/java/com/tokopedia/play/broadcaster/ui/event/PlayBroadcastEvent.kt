@@ -54,4 +54,5 @@ sealed interface PlayBroadcastEvent {
 
     /** Beautification */
     data class BeautificationDownloadAssetFail(val throwable: Throwable, val preset: PresetFilterUiModel) : PlayBroadcastEvent
+    object BeautificationRebindEffect : PlayBroadcastEvent
 }

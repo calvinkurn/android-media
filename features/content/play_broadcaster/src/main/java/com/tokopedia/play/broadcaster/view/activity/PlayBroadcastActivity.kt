@@ -337,8 +337,10 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster(event.withByteplus)
 
-                        applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
-                        viewModel.selectedPreset?.let { applyPreset(it) }
+                        rebindEffect()
+                    }
+                    is PlayBroadcastEvent.BeautificationRebindEffect -> {
+                        rebindEffect()
                     }
                     is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
                         analytic.viewFailDownloadPreset(
@@ -408,6 +410,11 @@ class PlayBroadcastActivity : BaseActivity(),
         } else {
             broadcaster.setPreset(preset.id, preset.value.toFloat())
         }
+    }
+
+    private fun rebindEffect() {
+        applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+        viewModel.selectedPreset?.let { applyPreset(it) }
     }
 
     private fun initBroadcaster(config: BroadcastingConfigUiModel, ) {
