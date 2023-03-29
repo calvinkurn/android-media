@@ -24,7 +24,6 @@ import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
-import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
@@ -164,8 +163,8 @@ class TokoChatViewModel @Inject constructor(
         val cacheImageAttachmentMap = cacheManager.loadCache(
             TOKOCHAT_IMAGE_ATTACHMENT_MAP,
             Map::class.java
-        )
-        imageAttachmentMap.putAll(cacheImageAttachmentMap as Map<String, String>)
+        ) as? Map<String, String>
+        imageAttachmentMap.putAll(cacheImageAttachmentMap ?: mapOf())
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -456,34 +455,8 @@ class TokoChatViewModel @Inject constructor(
                     )
                     // Save the combination of imageId (localUUID for transient) and localUUID
                     imageAttachmentMap[localUUID] = localUUID
-                    // Upload image to BE
-                    uploadImageToServer(localImage).apply {
-                        this.error = listOf("Error 123")
-                        if (!this.error.isNullOrEmpty()) {
-                            // Set transient to failed
-                            handleImageUploadError(
-                                localUUID = localUUID,
-                                throwable = Throwable(this.error?.joinToString())
-                            )
-                        } else {
-                            val newImageId = this.data?.imageId!! // Expected error when null
-                            // Rename Image to imageId
-                            renameImage(
-                                originalFileUri = Uri.parse(localImage),
-                                newFileName = newImageId
-                            )
-                            // Replace local image element with newImageId
-                            imageAttachmentMap.remove(localUUID)
-                            imageAttachmentMap[newImageId] = localUUID
-                            // Send transient message and change the payload from UUID to image Id
-                            sendTransientExtensionMessage(
-                                createExtensionMessage(
-                                    localUUID = localUUID,
-                                    extensionId = newImageId
-                                )
-                            )
-                        }
-                    }
+                    // Image id is still local UUID
+                    uploadImageToServer(filePath = localImage, localUUID = localUUID)
                 } catch (throwable: Throwable) {
                     handleImageUploadError(localUUID = localUUID, throwable = throwable)
                 }
@@ -501,33 +474,10 @@ class TokoChatViewModel @Inject constructor(
             withContext(dispatcher.io) {
                 try {
                     val cachedImage = getTokoChatPhotoPath(imageId)
-                    uploadImageToServer(cachedImage.absolutePath).apply {
-                        if (!this.error.isNullOrEmpty()) {
-                            // Set transient to failed
-                            handleImageUploadError(
-                                localUUID = imageAttachmentMap[imageId] ?: "",
-                                throwable = Throwable(this.error?.joinToString())
-                            )
-                        } else {
-                            val newImageId = this.data?.imageId!! // Expected error when null
-                            // Rename Image to imageId
-                            renameImage(
-                                originalFileUri = Uri.parse(cachedImage.absolutePath),
-                                newFileName = newImageId
-                            )
-                            val localUUID = imageAttachmentMap[imageId]!! // Expected error when null
-                            // Replace local image element with newImageId
-                            imageAttachmentMap.remove(localUUID)
-                            imageAttachmentMap[newImageId] = localUUID
-                            // Send transient message and change the payload from UUID to image Id
-                            sendTransientExtensionMessage(
-                                createExtensionMessage(
-                                    localUUID = localUUID,
-                                    extensionId = newImageId
-                                )
-                            )
-                        }
-                    }
+                    uploadImageToServer(
+                        filePath = cachedImage.absolutePath,
+                        localUUID = imageAttachmentMap[imageId]!! // Expected error when null
+                    )
                 } catch (throwable: Throwable) {
                     handleImageUploadError(
                         localUUID = imageAttachmentMap[imageId] ?: "",
@@ -536,6 +486,12 @@ class TokoChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun replaceCacheImageData(newImageId: String, localUUID: String) {
+        // Replace local image element with newImageId
+        imageAttachmentMap.remove(localUUID)
+        imageAttachmentMap[newImageId] = localUUID
     }
 
     private fun preprocessingImage(filePath: String, newFileName: String): String {
@@ -554,12 +510,34 @@ class TokoChatViewModel @Inject constructor(
         ) ?: throw MessageErrorException(ERROR_RENAMED_IMAGE_NULL)
     }
 
-    private suspend fun uploadImageToServer(filePath: String): TokoChatUploadImageResult {
+    private suspend fun uploadImageToServer(filePath: String, localUUID: String) {
         val params = TokoChatUploadImageUseCase.Param(
             filePath = filePath,
             channelId = channelId
         )
-        return uploadImageUseCase(params)
+        val uploadResult = uploadImageUseCase(params)
+        if (!uploadResult.error.isNullOrEmpty()) {
+            // Set transient to failed
+            handleImageUploadError(
+                localUUID = localUUID,
+                throwable = Throwable(uploadResult.error?.joinToString())
+            )
+        } else {
+            val newImageId = uploadResult.data?.imageId!! // Expected error when null
+            // Rename Image to imageId
+            renameImage(
+                originalFileUri = Uri.parse(filePath),
+                newFileName = newImageId
+            )
+            replaceCacheImageData(newImageId, localUUID)
+            // Send transient message and change the payload from UUID to image Id
+            sendTransientExtensionMessage(
+                createExtensionMessage(
+                    localUUID = localUUID,
+                    extensionId = newImageId
+                )
+            )
+        }
     }
 
     private fun addTransientExtensionMessage(extensionMessage: ExtensionMessage) {
