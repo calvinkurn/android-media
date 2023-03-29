@@ -421,6 +421,7 @@ class DigitalCartFragment :
                     cartInfo.collectionPointVersion
                 )
                 renderConsentWidget(productCollectionPointMetadata)
+                it.checkoutBottomViewWidget.showConsent()
                 it.checkoutBottomViewWidget.isCheckoutButtonEnabled = false
             }
         }
@@ -723,6 +724,7 @@ class DigitalCartFragment :
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
                 if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
                     checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+                    checkoutBottomViewWidget.showConsent()
                     renderConsentWidget(collectionPointMetadata)
                 }
             } else {
@@ -766,7 +768,6 @@ class DigitalCartFragment :
                         this@DigitalCartFragment,
                         consentParam
                     )
-                    checkoutBottomViewWidget.showConsent()
                 }
             }
         }
