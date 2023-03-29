@@ -2,6 +2,7 @@ package com.tokopedia.shop.analytic
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -13,6 +14,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_CL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT
@@ -42,14 +44,12 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_TOASTER_NOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_RECOMMENDATION
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REMINDER_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC_BUTTON_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
@@ -62,6 +62,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_118
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_38
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_45
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_61
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81
@@ -80,6 +81,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_CLICKED
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
@@ -88,6 +97,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.GENERAL
@@ -126,6 +136,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NOT_SEARCH_RESULT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PACKAGE_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -137,6 +149,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
@@ -147,6 +160,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ENTRY_POINT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECTED_ETALASE_CHIP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
@@ -165,17 +179,36 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_DELETE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_CLICK_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_CLICK_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -206,9 +239,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_REMINDER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITHOUT_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITH_CART
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
@@ -468,29 +499,32 @@ class ShopPageHomeTracking(
     }
 
     fun impressionProduct(
-        isOwner: Boolean,
         isLogin: Boolean,
-        layoutId: String,
         productName: String,
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetName: String,
-        widgetOption: Int,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+        sortAndFilterValue: String,
+        userId: String,
+        selectedTabName: String
     ) {
-        val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
-        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)
+        val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventAction = joinDash(ALL_PRODUCT_IMPRESSION, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_VIEW,
-            getShopPageCategory(isOwner),
+            SHOP_PAGE_BUYER,
             eventAction,
             "",
             customDimensionShopPage
         )
+        eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_IMPRESSION
+        eventMap[BUSINESS_UNIT] = PHYSICAL_GOODS
+        eventMap[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        eventMap[ITEM_LIST] = listEventValue
         eventMap[ECOMMERCE] = mutableMapOf(
             CURRENCY_CODE to IDR,
             IMPRESSIONS to mutableListOf(
@@ -499,51 +533,108 @@ class ShopPageHomeTracking(
                     productId,
                     productDisplayedPrice,
                     shopName,
-                    verticalPosition,
                     horizontalPosition,
-                    widgetId,
-                    widgetNameEventValue,
-                    widgetOption,
-                    isLogin,
-                    customDimensionShopPage
+                    customDimensionShopPage,
+                    sortAndFilterValue,
+                    listEventValue,
+                    selectedTabName
                 )
             )
         )
+        eventMap[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        eventMap[USER_ID] = userId
         sendDataLayerEvent(eventMap)
     }
 
+    fun impressionProductShopDecoration(trackerModel: ProductShopDecorationTrackerDataModel) {
+        with(trackerModel) {
+            val cartTrackerValue = if (widgetOption == Int.ONE) WITH_CART else WITHOUT_CART
+            var eventLabel = joinDash(
+                HOME_TAB,
+                verticalPosition.toString(),
+                shopId,
+                widgetName,
+                widgetMasterId,
+                cartTrackerValue
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val itemList = joinDash(SHOPPAGE, eventLabel)
+            val eventBundle = Bundle().apply {
+                putString(EVENT, VIEW_ITEM_LIST)
+                putString(EVENT_ACTION, PRODUCT_LIST_IMPRESSION_SHOP_DECOR)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    ITEMS,
+                    arrayListOf(
+                        createProductShopDecorItems(
+                            horizontalPosition,
+                            productId,
+                            productName,
+                            productDisplayedPrice,
+                            widgetName
+                        )
+                    )
+                )
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+        }
+    }
+
+    private fun createProductShopDecorItems(
+        position: Int,
+        productId: String,
+        productName: String,
+        productDisplayedPrice: String,
+        itemListValue: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, itemListValue)
+            putInt(INDEX, position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, productId)
+            putString(ITEM_NAME, productName)
+            putString(ITEM_VARIANT, "")
+            putString(PRICE, formatPrice(productDisplayedPrice))
+        }
+    }
+
     fun clickProduct(
-        isOwner: Boolean,
         isLogin: Boolean,
-        layoutId: String,
         productName: String,
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetName: String,
-        widgetOption: Int,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+        sortAndFilterValue: String,
+        userId: String,
+        selectedTabName: String
     ) {
-        val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
-        val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, layoutId, widgetNameEventValue)
-        val listEventValue = createProductListValue(
-            isLogin,
-            verticalPosition,
-            widgetId,
-            widgetNameEventValue,
-            widgetOption,
-            customDimensionShopPage
-        )
+        val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventAction = joinDash(ALL_PRODUCT_CLICKED, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_CLICK,
-            getShopPageCategory(isOwner),
+            SHOP_PAGE_BUYER,
             eventAction,
-            productId,
+            "",
             customDimensionShopPage
         )
+        eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_CLICKED
+        eventMap[BUSINESS_UNIT] = PHYSICAL_GOODS
+        eventMap[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         eventMap[ECOMMERCE] = mutableMapOf(
             CLICK to mutableMapOf(
                 ACTION_FIELD to mutableMapOf(LIST to listEventValue),
@@ -553,18 +644,62 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
-                        verticalPosition,
                         horizontalPosition,
-                        widgetId,
-                        widgetNameEventValue,
-                        widgetOption,
-                        isLogin,
-                        customDimensionShopPage
+                        customDimensionShopPage,
+                        sortAndFilterValue,
+                        listEventValue,
+                        selectedTabName
                     )
                 )
             )
         )
+        eventMap[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        eventMap[USER_ID] = userId
         sendDataLayerEvent(eventMap)
+    }
+
+    fun clickProductShopDecoration(trackerModel: ProductShopDecorationTrackerDataModel) {
+        with(trackerModel){
+            val cartTrackerValue = if (widgetOption == Int.ONE) WITH_CART else WITHOUT_CART
+            var eventLabel = joinDash(
+                HOME_TAB,
+                verticalPosition.toString(),
+                shopId,
+                widgetName,
+                widgetMasterId,
+                cartTrackerValue
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val itemList = joinDash(SHOPPAGE, eventLabel)
+            val eventBundle = Bundle().apply {
+                putString(EVENT, SELECT_CONTENT)
+                putString(EVENT_ACTION, CLICK_PRODUCT_SHOP_DECOR)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    ITEMS,
+                    arrayListOf(
+                        createProductShopDecorItems(
+                            horizontalPosition,
+                            productId,
+                            productName,
+                            productDisplayedPrice,
+                            widgetName
+                        )
+                    )
+                )
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+        }
     }
 
     fun clickProductPersonalization(
@@ -926,25 +1061,25 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCta(
-        layoutId: String,
-        widgetName: String,
-        widgetId: String,
-        appLink: String,
-        shopId: String,
-        shopType: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = mapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_CATEGORY to getShopPageCategory(isOwner),
-            EVENT_ACTION to String.format(CLICK_VIEW_ALL_PRODUCT, layoutId, widgetName),
-            EVENT_LABEL to "$widgetId - $appLink",
-            SHOP_ID to shopId,
-            SHOP_TYPE to shopType,
-            PAGE_TYPE to SHOPPAGE
-        )
-        sendDataLayerEvent(eventMap)
+    fun clickCta(trackerModel: ShopHomeCarouselProductWidgetClickCtaTrackerModel) {
+        with(trackerModel) {
+            var eventLabel = widgetMasterId
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_PG,
+                EVENT_ACTION to CLICK_CTA_SEE_ALL,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to eventLabel,
+                TRACKER_ID to TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
     }
 
     private fun createDisplayWidgetPromotionsItemMap(
@@ -1019,22 +1154,12 @@ class ShopPageHomeTracking(
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetNameEventValue: String,
-        widgetOption: Int,
-        isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): Map<String, Any> {
-        val listEventValue = createProductListValue(
-            isLogin,
-            verticalPosition,
-            widgetId,
-            widgetNameEventValue,
-            widgetOption,
-            customDimensionShopPage
-        )
         val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
         } else if (customDimensionShopPage.isFulfillmentExist != true && customDimensionShopPage.isFreeOngkirActive == true) {
@@ -1048,14 +1173,18 @@ class ShopPageHomeTracking(
             PRICE to formatPrice(productDisplayedPrice),
             BRAND to shopName,
             CATEGORY to NONE,
-            VARIANT to NONE,
+            VARIANT to selectedTabName,
             LIST to listEventValue,
             POSITION to horizontalPosition,
             DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
             DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
             DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
             DIMENSION_83 to boe
-        )
+        ).apply {
+            if (sortAndFilterValue.isNotEmpty()) {
+                put(DIMENSION_61, sortAndFilterValue)
+            }
+        }
     }
 
     private fun createProductListValue(
@@ -1246,70 +1375,52 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    fun impressionCampaignFlashSaleWidget(
-        campaignId: String,
-        statusCampaign: String,
-        shopId: String,
-        userId: String,
-        position: Int,
-        isOwner: Boolean
+    fun impressionShopHomeCampaignWidget(
+        trackerModel: ShopHomeCampaignWidgetImpressionTrackerModel
     ) {
-        val ecommerce = mutableMapOf(
-            PROMO_VIEW to mutableMapOf(
-                PROMOTIONS to listOf(
-                    createEcommerceFlashSaleItemMap(
-                        creative = statusCampaign,
-                        id = campaignId,
-                        name = FLASH_SALE.replace(" ", "_"),
-                        position = position
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, VIEW_ITEM)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_IMPRESSION)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putParcelableArrayList(
+                    PROMOTIONS,
+                    arrayListOf(
+                        createCampaignWidgetPromotionItem(
+                            position,
+                            campaignId,
+                            campaignName
+                        )
                     )
                 )
-            )
-        )
-        val eventMap = createFlashSaleTrackerMap(
-            eventName = PROMO_VIEW,
-            eventAction = joinSpace(FLASH_SALE, IMPRESSION),
-            eventCategory = getShopPageCategory(isOwner),
-            eventLabel = "",
-            shopId = shopId,
-            userId = userId,
-            ecommerceMap = ecommerce
-        )
-        sendDataLayerEvent(eventMap)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
+        }
     }
 
-    fun onClickReminderButtonFlashSaleWidget(
-        campaignId: String,
-        shopId: String,
-        userId: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = createFlashSaleTrackerMap(
-            eventName = CLICK_SHOP_PAGE,
-            eventAction = joinSpace(CLICK, FLASH_SALE),
-            eventCategory = getShopPageCategory(isOwner),
-            eventLabel = joinDash(CLICK_REMINDER_FLASH_SALE_WIDGET, campaignId),
-            shopId = shopId,
-            userId = userId
-        )
-        sendDataLayerEvent(eventMap)
-    }
-
-    fun onClickSeeAllButtonFlashSaleWidget(
-        statusCampaign: String,
-        shopId: String,
-        userId: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = createFlashSaleTrackerMap(
-            eventName = CLICK_SHOP_PAGE,
-            eventAction = joinSpace(CLICK, FLASH_SALE),
-            eventCategory = getShopPageCategory(isOwner),
-            eventLabel = joinDash(CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET, statusCampaign),
-            shopId = shopId,
-            userId = userId
-        )
-        sendDataLayerEvent(eventMap)
+    private fun createCampaignWidgetPromotionItem(position: Int, campaignId: String, campaignName: String): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, "")
+            putString(CREATIVE_SLOT, position.toString())
+            putString(ITEM_ID, campaignId)
+            putString(ITEM_NAME, campaignName)
+        }
     }
 
     fun onClickTnCButtonFlashSaleWidget(
@@ -1500,63 +1611,153 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCtaCampaignNplWidget(
-        isOwner: Boolean,
-        statusCampaign: String,
-        customDimensionShopPage: CustomDimensionShopPage
+    fun clickCtaSeeAllCampaignWidget(
+        trackerModel: ShopHomeCampaignWidgetClickCtaSeeAllTrackerModel
     ) {
-        val trackerCampaignType = getCampaignNplTrackerCampaignType(statusCampaign)
-        sendGeneralEvent(
-            CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            String.format(CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET, trackerCampaignType),
-            "",
-            customDimensionShopPage
-        )
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_PG,
+                EVENT_ACTION to CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to eventLabel,
+                TRACKER_ID to TRACKER_ID_CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
     }
 
-    fun impressionCampaignNplProduct(
-        isOwner: Boolean,
-        statusCampaign: String,
-        productName: String,
-        productId: String,
-        productPrice: String,
-        shopName: String,
-        verticalPosition: Int,
-        horizontalPosition: Int,
-        isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage,
-        tabSource: String
+    fun clickReminderCampaignWidget(
+        trackerModel: ShopHomeCampaignWidgetClickReminderTrackerModel
     ) {
-        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
-        val eventMap = createMap(
-            PRODUCT_VIEW,
-            getShopPageCategory(isOwner),
-            eventAction,
-            "",
-            customDimensionShopPage
-        )
-        val listEventValue = createCampaignNplProductListValue(
-            verticalPosition,
-            statusCampaign,
-            customDimensionShopPage.shopId.orEmpty(),
-            isLogin
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-            CURRENCY_CODE to IDR,
-            IMPRESSIONS to mutableListOf(
-                createCampaignNplProductItemMap(
-                    productName,
-                    productId,
-                    productPrice,
-                    shopName,
-                    listEventValue,
-                    horizontalPosition,
-                    customDimensionShopPage
-                )
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
             )
-        )
-        sendDataLayerEvent(eventMap)
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_PG,
+                EVENT_ACTION to CAMPAIGN_WIDGET_CLICK_REMINDER,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to eventLabel,
+                TRACKER_ID to TRACKER_ID_CAMPAIGN_WIDGET_CLICK_REMINDER,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
+    }
+
+    fun clickBannerWidgetCampaign(
+        trackerModel: ShopHomeCampaignWidgetClickBannerTrackerModel
+    ) {
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, SELECT_CONTENT)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_CLICK_BANNER)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_CLICK_BANNER)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putParcelableArrayList(
+                    PROMOTIONS,
+                    arrayListOf(
+                        createBannerPromotionsItem(
+                            position,
+                        )
+                    )
+                )
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+        }
+    }
+
+    private fun createBannerPromotionsItem(position: Int): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, "")
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, "")
+            putString(ITEM_NAME, "")
+        }
+    }
+
+    fun onImpressionCampaignWidgetProduct(
+        trackerModel: ShopHomeCampaignWidgetProductTrackerModel
+    ) {
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            var itemList = joinDash("$SHOPPAGE $widgetPosition", campaignId, campaignName, statusCampaign, widgetMasterId)
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+                itemList = joinDash(itemList, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, VIEW_ITEM_LIST)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    ITEMS,
+                    arrayListOf(
+                        createCampaignProductItems(
+                            position,
+                            productId,
+                            productName,
+                            productPrice,
+                            itemList
+                        )
+                    )
+                )
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+        }
     }
 
     private fun createCampaignNplProductListValue(verticalPosition: Int, statusCampaign: String, shopId: String, isLogin: Boolean): String {
@@ -1594,50 +1795,68 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCampaignNplProduct(
-        isOwner: Boolean,
-        statusCampaign: String,
-        productName: String,
-        productId: String,
-        productPrice: String,
-        shopName: String,
-        verticalPosition: Int,
-        horizontalPosition: Int,
-        isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage,
-        tabSource: String
+    fun clickCampaignWidgetProduct(
+        trackerModel: ShopHomeCampaignWidgetProductTrackerModel
     ) {
-        val eventAction = joinDash(CLICK_PRODUCT, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
-        val eventMap = createMap(
-            PRODUCT_CLICK,
-            getShopPageCategory(isOwner),
-            eventAction,
-            productId,
-            customDimensionShopPage
-        )
-        val listEventValue = createCampaignNplProductListValue(
-            verticalPosition,
-            statusCampaign,
-            customDimensionShopPage.shopId.orEmpty(),
-            isLogin
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-            CLICK to mutableMapOf(
-                ACTION_FIELD to mutableMapOf(LIST to listEventValue),
-                PRODUCTS to mutableListOf(
-                    createCampaignNplProductItemMap(
-                        productName,
-                        productId,
-                        productPrice,
-                        shopName,
-                        listEventValue,
-                        horizontalPosition,
-                        customDimensionShopPage
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            var itemList = joinDash("$SHOPPAGE $widgetPosition", campaignId, campaignName, statusCampaign, widgetMasterId)
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+                itemList = joinDash(itemList, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, SELECT_CONTENT)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    ITEMS,
+                    arrayListOf(
+                        createCampaignProductItems(
+                            position,
+                            productId,
+                            productName,
+                            productPrice,
+                            itemList
+                        )
                     )
                 )
-            )
-        )
-        sendDataLayerEvent(eventMap)
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+        }
+    }
+
+    private fun createCampaignProductItems(
+        position: Int,
+        productId: String,
+        productName: String,
+        productDisplayedPrice: String,
+        itemListValue: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, itemListValue)
+            putInt(INDEX, position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, productId)
+            putString(ITEM_NAME, productName)
+            putString(ITEM_VARIANT, "")
+            putString(PRICE, formatPrice(productDisplayedPrice))
+        }
     }
 
     fun clickProductListToggle(
@@ -1983,59 +2202,50 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCtaCarouselProductShowcase(
-        etalaseId: String,
-        appLink: String,
-        shopId: String,
-        shopType: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = mapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_CATEGORY to getShopPageCategory(isOwner),
-            EVENT_ACTION to String.format(CLICK_VIEW_ALL_PRODUCT, etalaseId, ETALASE_WIDGET),
-            EVENT_LABEL to "$etalaseId - $appLink",
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            SHOP_TYPE to shopType,
-            PAGE_TYPE to SHOPPAGE
-        )
-        sendDataLayerEvent(eventMap)
-    }
-
     fun onImpressionShopHomeWidget(
         segmentName: String,
         decorWidgetName: String,
         widgetId: String,
         widgetPosition: Int,
         shopId: String,
-        userId: String
+        userId: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
-        val eventLabel = String.format(LABEL_SHOP_DECOR_IMPRESSION, segmentName, decorWidgetName)
-        val eventMap: MutableMap<String, Any> = mutableMapOf(
-            EVENT to PROMO_VIEW,
-            EVENT_ACTION to ACTION_SHOP_DECOR_IMPRESSION,
-            EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to eventLabel,
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            ECOMMERCE to mutableMapOf(
-                PROMO_VIEW to mutableMapOf(
-                    PROMOTIONS to mutableListOf(
-                        mutableMapOf(
-                            CREATIVE to decorWidgetName,
-                            ID to widgetId,
-                            NAME to VALUE_SHOP_DECOR,
-                            POSITION to widgetPosition
-                        )
-                    )
-                )
-            ),
-            SHOP_ID to shopId,
-            USER_ID to userId
+        var eventLabel = joinDash(
+            LABEL_SHOP_DECOR_IMPRESSION,
+            segmentName,
+            decorWidgetName,
+            widgetMasterId
         )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+        eventLabel = if (isFestivity) {
+            joinDash(eventLabel, FESTIVITY)
+        } else {
+            eventLabel
+        }
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, ACTION_SHOP_DECOR_IMPRESSION)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_SHOP_DECOR)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(CREATIVE_NAME, decorWidgetName)
+                        putInt(CREATIVE_SLOT, widgetPosition)
+                        putString(ITEM_ID, widgetId)
+                        putString(ITEM_NAME, VALUE_SHOP_DECOR)
+                    }
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
 
     fun onClickedShopHomeWidget(
@@ -2044,32 +2254,44 @@ class ShopPageHomeTracking(
         widgetId: String,
         widgetPosition: Int,
         shopId: String,
-        userId: String
+        userId: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
-        val eventLabel = String.format(LABEL_SHOP_DECOR_CLICK, segmentName, decorWidgetName)
-        val eventMap: MutableMap<String, Any> = mutableMapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_ACTION to ACTION_SHOP_DECOR_CLICK,
-            EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to eventLabel,
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            ECOMMERCE to mutableMapOf(
-                PROMO_CLICK to mutableMapOf(
-                    PROMOTIONS to mutableListOf(
-                        mutableMapOf(
-                            CREATIVE to decorWidgetName,
-                            ID to widgetId,
-                            NAME to VALUE_SHOP_DECOR,
-                            POSITION to widgetPosition
-                        )
-                    )
-                )
-            ),
-            SHOP_ID to shopId,
-            USER_ID to userId
+        var eventLabel = joinDash(
+            LABEL_SHOP_DECOR_CLICK,
+            segmentName,
+            decorWidgetName,
+            widgetMasterId
         )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+        eventLabel = if (isFestivity) {
+            joinDash(eventLabel, FESTIVITY)
+        } else {
+            eventLabel
+        }
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, ACTION_SHOP_DECOR_CLICK)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_SHOP_DECOR)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(CREATIVE_NAME, decorWidgetName)
+                        putInt(CREATIVE_SLOT, widgetPosition)
+                        putString(ITEM_ID, widgetId)
+                        putString(ITEM_NAME, VALUE_SHOP_DECOR)
+                    }
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
 
     fun sendUserViewHomeTabWidgetTracker(
@@ -2140,23 +2362,29 @@ class ShopPageHomeTracking(
         atcBundleModel: AddToCartBundleModel,
         bundleName: String,
         bundleId: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopType: String,
         bundlePriceCut: String,
         shopId: String,
-        userId: String
+        userId: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
             itemBundle.add(
                 getItemsBundlingAtc(
                     bundleId = bundleId,
                     cartId = productDataModel.cartId,
                     bundleName = bundleName,
-                    bundlePrice = bundlePrice,
+                    bundlePrice = formatPrice(bundlePrice),
                     quantity = quantity,
                     shopName = shopName,
                     shopId = productDataModel.shopId,
@@ -2168,7 +2396,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2183,18 +2411,24 @@ class ShopPageHomeTracking(
         atcBundleModel: AddToCartBundleModel,
         bundleName: String,
         bundleId: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopType: String,
         bundlePriceCut: String,
         shopId: String,
         userId: String,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
         var productId = ""
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
         atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
             itemBundle.add(
                 getItemsBundlingAtc(
@@ -2215,7 +2449,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2233,37 +2467,45 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
-        clickedProduct: ShopHomeBundleProductUiModel
+        clickedProduct: ShopHomeBundleProductUiModel,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
+        val itemList = joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE)
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_40, itemList)
+            putString(DIMENSION_87, ShopPageTrackingConstant.SHOP_PAGE)
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
         }
 
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
-        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE)
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-        bundle.putString(SHOP_ID, userId)
-        bundle.putString(USER_ID, shopId)
-        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
+        bundle.putString(SHOP_ID, shopId)
+        bundle.putString(USER_ID, userId)
+        bundle.putString(ITEM_LIST, itemList)
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
-        sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)
+        sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
 
     fun clickOnSingleBundleProduct(
@@ -2272,39 +2514,47 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
         clickedProduct: ShopHomeBundleProductUiModel,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
+        val itemList = joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE)
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE))
+            putString(DIMENSION_40, itemList)
+            putString(DIMENSION_87, ShopPageTrackingConstant.SHOP_PAGE)
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
         }
 
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
-        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE)
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(PRODUCT_ID, clickedProduct.productId)
-        bundle.putString(SHOP_ID, userId)
-        bundle.putString(USER_ID, shopId)
-        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
+        bundle.putString(SHOP_ID, shopId)
+        bundle.putString(USER_ID, userId)
+        bundle.putString(ITEM_LIST, itemList)
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
-        sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)
+        sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
 
     fun onTrackSingleVariantChange(
@@ -2314,18 +2564,25 @@ class ShopPageHomeTracking(
         bundleName: String,
         bundleId: String,
         bundlePriceCut: String,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to CLICK_PG,
-            EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, selectedPackage),
+            EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PACKAGE_VARIANT),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            TRACKER_ID to TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT
         )
         sendDataLayerEvent(eventMap)
     }
@@ -2336,18 +2593,26 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
-        bundlePosition: Int
+        bundlePrice: String,
+        bundlePosition: Int,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if (isFestivity) {
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
+        val itemListValue = joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE)
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to joinDash(IMPRESSION, MULTIPLE_BUNDLE_WIDGET),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            TRACKER_ID to TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET,
         )
         eventMap[ECOMMERCE] = mutableMapOf(
             PROMO_VIEW to mutableMapOf(
@@ -2355,9 +2620,12 @@ class ShopPageHomeTracking(
                     mutableMapOf(
                         DIMENSION_117 to MULTIPLE_BUNDLE_WIDGET,
                         DIMENSION_118 to bundleId,
+                        DIMENSION_40 to itemListValue,
+                        DIMENSION_87 to ShopPageTrackingConstant.SHOP_PAGE,
+                        CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
-                        PRICE to bundlePrice,
+                        PRICE to formatPrice(bundlePrice),
                         POSITION to bundlePosition
                     )
                 )
@@ -2373,29 +2641,40 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
-        bundlePosition: Int
+        bundlePrice: String,
+        bundlePosition: Int,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if (isFestivity) {
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to joinDash(IMPRESSION, SINGLE_BUNDLE_WIDGET),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,
+            TRACKER_ID to TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET,
             SHOP_ID to shopId,
             USER_ID to userId
         )
+        val itemListValue = joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE)
         eventMap[ECOMMERCE] = mutableMapOf(
             PROMO_VIEW to mutableMapOf(
                 PROMOTIONS to listOf(
                     mutableMapOf(
                         DIMENSION_117 to SINGLE_BUNDLE_WIDGET,
                         DIMENSION_118 to bundleId,
+                        DIMENSION_40 to itemListValue,
+                        DIMENSION_87 to ShopPageTrackingConstant.SHOP_PAGE,
+                        CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
-                        PRICE to bundlePrice,
+                        PRICE to formatPrice(bundlePrice),
                         POSITION to bundlePosition
                     )
                 )
@@ -2409,13 +2688,18 @@ class ShopPageHomeTracking(
         campaignId: String,
         shopId: String,
         userId: String,
-        position: Int
+        position: Int,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = VIEW_ITEM,
             action = THEMATIC_WIDGET_IMPRESSION,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {
@@ -2429,6 +2713,7 @@ class ShopPageHomeTracking(
                     )
                 )
             )
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_IMPRESSION)
         }
         sendEnhanceEcommerceDataLayerEvent(VIEW_ITEM, bundle)
     }
@@ -2438,16 +2723,23 @@ class ShopPageHomeTracking(
         campaignName: String,
         shopId: String,
         userId: String,
-        products: List<ProductCardUiModel>
+        products: List<ProductCardUiModel>,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = VIEW_ITEM_LIST,
             action = THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {
+            val itemListValue = joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId)
+            putString(ITEM_LIST, itemListValue)
             val items = arrayListOf<Bundle>()
             products.forEachIndexed { position, productCardUiModel ->
                 items.add(
@@ -2455,11 +2747,14 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
-                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong()
+                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong(),
+                        itemListValue = itemListValue
                     )
                 )
             }
             putParcelableArrayList(ITEMS, items)
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION)
+            putString(PRODUCT_ID, products.firstOrNull()?.id.orEmpty())
         }
         sendEnhanceEcommerceDataLayerEvent(VIEW_ITEM_LIST, bundle)
     }
@@ -2470,17 +2765,23 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         product: ProductCardUiModel,
-        position: Int
+        position: Int,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = SELECT_CONTENT,
             action = THEMATIC_WIDGET_PRODUCT_CARD_CLICK,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {
-            putString(ITEM_LIST, joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId))
+            val itemListValue = joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId)
+            putString(ITEM_LIST, itemListValue)
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
@@ -2488,10 +2789,13 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
-                        productPrice = product.displayedPrice?.getDigits().orZero().toLong()
+                        productPrice = product.displayedPrice?.getDigits().orZero().toLong(),
+                        itemListValue = itemListValue
                     )
                 )
             )
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK)
+            putString(PRODUCT_ID, product.id.orEmpty())
         }
         sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
@@ -2534,7 +2838,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         cartId: String,
         bundleName: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopId: String,
@@ -2559,7 +2863,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
             putString(QUANTITY, quantity)
             putString(SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)
@@ -2575,8 +2879,8 @@ class ShopPageHomeTracking(
             putString(TrackAppUtils.EVENT_LABEL, label)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(SHOP_ID, userId)
-            putString(USER_ID, shopId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
         }
     }
 
@@ -2589,7 +2893,16 @@ class ShopPageHomeTracking(
         }
     }
 
-    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String, productPrice: Long, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
+    private fun getItemsCampaignBundle(
+        position: Int,
+        productId: String,
+        productName: String,
+        productPrice: Long,
+        productBrand: String = "",
+        productCategory: String = "",
+        productVariant: String = "",
+        itemListValue: String
+    ): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
             putString(ITEM_BRAND, productBrand)
@@ -2597,6 +2910,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, productId)
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, productVariant)
+            putString(DIMENSION_40, itemListValue)
             putLong(PRICE, productPrice)
         }
     }

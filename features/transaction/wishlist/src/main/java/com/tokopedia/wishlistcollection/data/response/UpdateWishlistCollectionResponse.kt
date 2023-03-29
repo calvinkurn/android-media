@@ -3,8 +3,8 @@ package com.tokopedia.wishlistcollection.data.response
 import com.google.gson.annotations.SerializedName
 
 data class UpdateWishlistCollectionResponse(
-	@SerializedName("update_wishlist_collection")
-	val updateWishlistCollection: UpdateWishlistCollection
+    @SerializedName("update_wishlist_collection")
+    val updateWishlistCollection: UpdateWishlistCollection
 ) {
     data class UpdateWishlistCollection(
 

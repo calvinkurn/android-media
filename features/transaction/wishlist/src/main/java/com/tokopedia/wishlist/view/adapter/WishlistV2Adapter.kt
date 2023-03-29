@@ -472,6 +472,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         listTypeData.forEach {
             it.isChecked = false
         }
+        notifyDataSetChanged()
     }
 
     fun checkAllCheckbox() {
@@ -527,7 +528,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         isAutoSelected = false
         isAddBulkModeFromOthers = false
         clearCheckbox()
-        notifyDataSetChanged()
     }
 
     fun getCountData(): Int {

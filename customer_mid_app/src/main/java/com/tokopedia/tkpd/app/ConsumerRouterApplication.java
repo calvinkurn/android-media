@@ -16,8 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokochat.tokochat_config_common.util.TokoChatConnection;
@@ -25,7 +24,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -128,7 +126,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     protected CacheManager cacheManager;
 
     private OmsComponent omsComponent;
-    private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
@@ -192,7 +189,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
         initRefreshProfileWorker();
@@ -266,20 +262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         mIris.initialize();
         return true;
     }
-
-    private void initTetraDebugger() {
-        if (com.tokopedia.config.GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
-    }
-
 
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
@@ -504,13 +486,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful() || task.getResult() == null) {
-                    gcmUpdateLegacy(sessionRefresh);
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    if (!TextUtils.isEmpty(token)) {
+                        fcmManager.onNewToken(token);
+                    } else {
+                        gcmUpdateLegacy(sessionRefresh);
+                    }
                 } else {
-                    fcmManager.onNewToken(task.getResult().getToken());
+                    gcmUpdateLegacy(sessionRefresh);
                 }
             }
         });
@@ -620,7 +607,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private SendTokenToCMHandler provideCMHandler() {
         return new SendTokenToCMHandler(
                 new SendTokenToCMUseCase(
-                GraphqlInteractor.getInstance().getGraphqlRepository()
+                        GraphqlInteractor.getInstance().getGraphqlRepository()
                 ),
                 getApplicationContext(),
                 userSession,

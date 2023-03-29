@@ -29,6 +29,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: [runnerset=code-scanning-runners]
+    permissions: write-all
     env: 
       CODEQL_RAM: 8192
       CODEQL_THREADS: 2
@@ -44,14 +45,38 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
+    - name: Google Auth
+      id: auth
+      uses: google-github-actions/auth@v0
+      with:
+        token_format: 'access_token'
+        workload_identity_provider: 'projects/208021311280/locations/global/workloadIdentityPools/github-identity-pool/providers/code-scanning-pool-provider'
+        service_account: wif-code-scanning@secrets-management-staging.iam.gserviceaccount.com
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+    - id: 'secrets'
+      uses: 'google-github-actions/get-secretmanager-secrets@v1'
+      with:
+        min_mask_length: '20'
+        secrets: |-
+            codescanner-credential:${{ secrets.CODESCANNER_GSM }}/appsec-codescanner-key
+    - id: 'output-files'
+      name: Generate Secret Files
+      run: |
+          mkdir ~/.ssh
+          cd ~/.ssh
+          echo '${{ steps.secrets.outputs.codescanner-credential }}' &> id_rsa
+          chmod 400 ~/.ssh/*
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
     - name: Checkout repository
       uses: actions/checkout@v2
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
     - name: Set Up Go
       if: matrix.language == 'go'
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v2
       with:
-        go-version: 'stable'
+        go-version: 1.19
     - name: Set Up Node
       if: matrix.language == 'javascript'
       uses: actions/setup-node@v3

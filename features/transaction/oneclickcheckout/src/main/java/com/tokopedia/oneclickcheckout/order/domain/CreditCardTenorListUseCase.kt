@@ -8,7 +8,8 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorList
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListResponse
 import com.tokopedia.oneclickcheckout.order.data.creditcard.TenorListItem
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import javax.inject.Inject
 
 /**
@@ -33,7 +34,6 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
             errorMsg = ccTenorListGqlResponse.errorMsg,
             tenorList = mapTenorList(ccTenorListGqlResponse.tenorList)
         )
-
     }
 
     private fun mapTenorList(listTenorGql: List<TenorListItem>): List<TenorListData> {

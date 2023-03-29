@@ -2,8 +2,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.CapabilityClient
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase

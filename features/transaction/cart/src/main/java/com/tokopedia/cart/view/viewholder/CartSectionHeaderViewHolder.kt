@@ -37,5 +37,4 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
             }
         }
     }
-
 }

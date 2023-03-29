@@ -27,8 +27,39 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicke
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostInstallmentData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -1356,7 +1387,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2)
@@ -1417,7 +1450,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))
@@ -1478,7 +1513,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))
@@ -1541,7 +1578,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
@@ -1605,7 +1644,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
@@ -1669,7 +1710,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
@@ -1733,7 +1776,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1782,7 +1827,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, minimumAmount = 1000000,
+            isEnable = true,
+            minimumAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1806,7 +1852,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1830,7 +1878,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1854,7 +1904,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1881,7 +1932,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1915,7 +1968,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -1952,7 +2007,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     )
                 )
             ),
-            shop = OrderShop(isFulfillment = false), cartString = "123"
+            shop = OrderShop(isFulfillment = false),
+            cartString = "123"
         )
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
@@ -2013,7 +2069,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     )
                 )
             ),
-            shop = OrderShop(isFulfillment = false), cartString = "456"
+            shop = OrderShop(isFulfillment = false),
+            cartString = "456"
         )
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
@@ -2074,7 +2131,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     )
                 )
             ),
-            shop = OrderShop(isFulfillment = false), cartString = "456"
+            shop = OrderShop(isFulfillment = false),
+            cartString = "456"
         )
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
