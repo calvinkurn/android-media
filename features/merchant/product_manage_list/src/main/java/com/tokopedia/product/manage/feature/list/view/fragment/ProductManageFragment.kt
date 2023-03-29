@@ -45,13 +45,13 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.centralizedpromo.CentralizedPromoApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
-import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -933,11 +933,11 @@ open class ProductManageFragment :
                 Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME)
                     .buildUpon()
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.PROMO_TYPE,
-                        SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT
+                        CentralizedPromoApplinkConst.PROMO_TYPE,
+                        CentralizedPromoApplinkConst.TYPE_VOUCHER_PRODUCT
                     )
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.PRODUCT_ID,
+                        CentralizedPromoApplinkConst.PRODUCT_ID,
                         product?.id.orEmpty()
                     )
                     .build().toString()
