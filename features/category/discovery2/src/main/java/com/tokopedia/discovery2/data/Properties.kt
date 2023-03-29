@@ -95,6 +95,9 @@ data class Properties(
         val categorySlug: String? = "",
 
         @SerializedName("chip_size")
-        val chipSize: String? = ""
+        val chipSize: String? = "",
+
+        @SerializedName("full_filter_type")
+        var fullFilterType: String? = "",
 
 )

@@ -101,18 +101,35 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 sortFilterItems.add(createDropDownSortFilterItem(filter))
             }
         }
-        quickSortFilter.let {
-            it.filterType = quickFilterViewModel.components.properties?.let { prop->
+        quickSortFilter.let { it ->
+            val prop = quickFilterViewModel.components.properties
+            it.filterType = prop?.let { prop->
                 if(prop.filter || prop.sort)  SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
             }?: SortFilter.TYPE_ADVANCED
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
-            it.textView?.text = fragment.getString(R.string.filter)
-            if (quickFilterViewModel.components.properties?.chipSize == "large")
+            it.prefixText =
+                if (prop?.fullFilterType == "category")
+                    "Semua Kategori"
+                else
+                    fragment.getString(R.string.filter)
+            if (prop?.chipSize == "large")
                 it.filterSize = SortFilter.SIZE_LARGE
             else
                 it.filterSize = SortFilter.SIZE_DEFAULT
-            it.parentListener = { openBottomSheetFilterRevamp() }
+            it.parentListener = {
+                if (prop?.fullFilterType == "category") {
+                    dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
+                        filterGeneralBottomSheet.show(
+                            fragment.childFragmentManager,
+                            filter,
+                            this,
+                        )
+                    }
+                } else {
+                    openBottomSheetFilterRevamp()
+                }
+            }
         }
         refreshQuickFilter(filters)
     }
