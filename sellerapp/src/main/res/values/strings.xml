@@ -61,4 +61,7 @@
     <string name="reputation_history_set_date">Atur Tanggal</string>
 
     <string name="sp_seller_persona">Seller Persona</string>
+
+    <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
+    <string name="centralized_promo_first_voucher_label">First Voucher</string>
 </resources>

@@ -12,7 +12,7 @@
             android:label="@string/centralized_promo_toolbar_title"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/CentralizedPromoTheme">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

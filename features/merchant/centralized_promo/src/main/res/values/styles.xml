@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CentralizedPromoTheme" parent="Theme.WhiteUnify">
-        <item name="toolbarTheme">@style/Toolbar.CentralizedPromo</item>
-        <item name="android:windowBackground">@color/Unify_N0</item>
-        <item name="titleTextAppearance">@style/TitleTextAppearance.CentralizedPromo</item>
-    </style>
-
-    <style name="Toolbar.CentralizedPromo" parent="Base.Toolbar.Theme">
-        <item name="android:background">@color/Unify_N0</item>
-        <item name="actionModeBackground">@color/Unify_N0</item>
-        <item name="android:actionModeBackground">@color/Unify_N0</item>
-        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
-        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
-        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
-    </style>
-
-    <style name="TitleTextAppearance.CentralizedPromo">
-        <item name="android:textColor">@color/Unify_N700_96</item>
-    </style>
-
     <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
