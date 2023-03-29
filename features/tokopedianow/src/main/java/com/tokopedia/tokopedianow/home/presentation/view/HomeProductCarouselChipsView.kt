@@ -15,89 +15,158 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouseBasicListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCarouselChipsViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ChipsUnify
 
 class HomeProductCarouselChipsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : BaseCustomView(context, attrs) {
+) : BaseCustomView(context, attrs),
+    TokoNowProductCardCarouseBasicListener, ChipListener {
 
-    private var listener: HomeProductCarouselChipsListener? = null
-    private var chipListener: ChipListener? = null
+    private var channelId = ""
+    private var chipList = emptyList<TokoNowChipUiModel>()
+
+    private var listener: HomeProductCarouselChipsViewListener? = null
 
     private val chipAdapter by lazy {
-        TokoNowChipListAdapter(TokoNowChipListAdapterTypeFactory(chipListener))
+        TokoNowChipListAdapter(TokoNowChipListAdapterTypeFactory(
+            this@HomeProductCarouselChipsView
+        ))
     }
 
     private val binding = LayoutTokopedianowProductCarouselChipsViewBinding.inflate(
         LayoutInflater.from(context), this, true
     )
 
+    init {
+        binding.chipsTab.apply {
+            adapter = chipAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            addItemDecoration(ChipListHorizontalDecoration(context))
+        }
+    }
+
     fun bind(
+        channelId: String,
         chipList: List<TokoNowChipUiModel> = emptyList(),
         carouselItems: List<Visitable<*>> = listOf(),
         seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
         header: TokoNowDynamicHeaderUiModel? = null,
         state: TokoNowProductRecommendationState = TokoNowProductRecommendationState.LOADING
     ) {
+        initData(channelId, chipList)
+
         val loaded = TokoNowProductRecommendationState.LOADED
         val loading = TokoNowProductRecommendationState.LOADING
 
-        binding.productCardShimmering.root.showWithCondition(state == loading)
-        binding.productCardCarousel.showIfWithBlock(state == loaded) {
-            bindItems(items = carouselItems, seeMoreModel = seeMoreModel)
-        }
         binding.header.showIfWithBlock(header != null) {
             header?.let { setModel(it) }
         }
 
-        renderChipList(chipList)
-    }
-
-    fun setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
-        headerCarouselListener: TokoNowDynamicHeaderListener? = null,
-        chipListener: ChipListener? = null
-    ) {
-        binding.productCardCarousel.setListener(productCardCarouselListener,)
-        binding.header.setListener(headerCarouselListener)
-        this.chipListener = chipListener
-    }
-
-    private fun renderChipList(chipList: List<TokoNowChipUiModel>) {
-        binding.chipsTab.apply {
-            adapter = chipAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(ChipListHorizontalDecoration(context))
+        binding.productCardCarousel.showIfWithBlock(state == loaded) {
+            bindItems(items = carouselItems, seeMoreModel = seeMoreModel)
         }
+        binding.productCardCarousel.setListener(this@HomeProductCarouselChipsView)
 
+        binding.productCardShimmering.root.showWithCondition(state == loading)
+
+        submitChipList(chipList)
+    }
+
+    fun bindCarouselItemList(
+        carouselItemList: List<Visitable<*>>,
+        state: TokoNowProductRecommendationState
+    ) {
+        val loading = TokoNowProductRecommendationState.LOADING
+        binding.productCardCarousel.bindItems(items = carouselItemList)
+        binding.productCardShimmering.root.showWithCondition(state == loading)
+    }
+
+    fun setListener(listener: HomeProductCarouselChipsViewListener?) {
+        this.listener = listener
+    }
+
+    private fun initData(
+        channelId: String,
+        chipList: List<TokoNowChipUiModel>,
+    ) {
+        this.channelId = channelId
+        this.chipList = chipList
+    }
+
+    private fun submitChipList(chipList: List<TokoNowChipUiModel>) {
         chipAdapter.submitList(chipList)
     }
 
-    interface HomeProductCarouselChipsListener {
+    override fun onProductCardClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener?.onClickProductCard(position, product)
+    }
+
+    override fun onProductCardImpressed(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener?.onProductCardImpressed(position, product)
+    }
+
+    override fun onProductCardQuantityChanged(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int
+    ) {
+        listener?.onProductCardQuantityChanged(position, product, quantity)
+    }
+
+    override fun onProductCardAddVariantClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener?.onClickVariantAddToCart(product.getProductId(), product.shopId)
+    }
+
+    override fun onClickChipItem(chip: TokoNowChipUiModel) {
+        val selectedChipIndex = chipList.indexOf(chip)
+
+        chipList.forEachIndexed { index, _ ->
+            val type = if (index == selectedChipIndex) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+
+            val viewHolder = binding.chipsTab.findViewHolderForAdapterPosition(index)
+            (viewHolder as? TokoNowChipViewHolder)?.setChipType(type)
+        }
+
+        listener?.onClickChipItem(channelId, chip)
+    }
+
+    interface HomeProductCarouselChipsViewListener {
+        fun onProductCardQuantityChanged(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel,
+            quantity: Int
+        )
         fun onClickVariantAddToCart(
             productId: String,
             shopId: String
         )
         fun onClickProductCard(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            isLogin: Boolean,
-            userId: String
+            product: TokoNowProductCardCarouselItemUiModel
         )
         fun onProductCardImpressed(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            isLogin: Boolean,
-            userId: String
+            product: TokoNowProductCardCarouselItemUiModel
         )
-        fun onSeeMoreClicked(
-            seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
-        )
-        fun onSeeAllClicked(appLink: String)
+        fun onClickChipItem(channelId: String, chip: TokoNowChipUiModel)
     }
 }

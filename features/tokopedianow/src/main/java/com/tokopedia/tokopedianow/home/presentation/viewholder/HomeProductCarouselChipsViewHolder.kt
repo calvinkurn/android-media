@@ -6,10 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductCarouselChipsBinding
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductCarouselChipsViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeProductCarouselChipsViewListener?
 ): AbstractViewHolder<HomeProductCarouselChipsUiModel>(itemView) {
 
     private var binding: ItemTokopedianowProductCarouselChipsBinding? by viewBinding()
@@ -20,11 +22,22 @@ class HomeProductCarouselChipsViewHolder(
     }
 
     override fun bind(uiModel: HomeProductCarouselChipsUiModel) {
+        binding?.productCarouselChipView?.setListener(listener)
         binding?.productCarouselChipView?.bind(
+            channelId = uiModel.id,
             header = uiModel.header,
             chipList = uiModel.chipList,
             carouselItems = uiModel.carouselItemList,
             state = uiModel.state
         )
+    }
+
+    override fun bind(uiModel: HomeProductCarouselChipsUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && uiModel != null) {
+            binding?.productCarouselChipView?.bindCarouselItemList(
+                carouselItemList = uiModel.carouselItemList,
+                state = uiModel.state
+            )
+        }
     }
 }

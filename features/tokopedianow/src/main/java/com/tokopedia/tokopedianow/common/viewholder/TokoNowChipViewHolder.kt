@@ -29,6 +29,10 @@ class TokoNowChipViewHolder(
         setOnClickListener(chip)
     }
 
+    fun setChipType(type: String) {
+        binding?.root?.chipType = type
+    }
+
     private fun renderTitle(chip: TokoNowChipUiModel) {
         binding?.chip?.chipText = chip.text
     }

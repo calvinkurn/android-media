@@ -156,9 +156,11 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCarouselChipListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unifycomponents.Toaster
@@ -267,7 +269,8 @@ class TokoNowHomeFragment : Fragment(),
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
-                claimCouponWidgetListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetListener = createClaimCouponWidgetCallback(),
+                productCarouselChipListener = createProductCarouselChipListener()
             ),
             differ = HomeListDiffer()
         )
@@ -1930,6 +1933,14 @@ class TokoNowHomeFragment : Fragment(),
 
     private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
         return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
+    private fun createProductCarouselChipListener(): HomeProductCarouselChipsViewListener {
+        return HomeProductCarouselChipListener(
+            requireContext(),
+            viewModelTokoNow,
+            ::startActivityForResult
+        )
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {

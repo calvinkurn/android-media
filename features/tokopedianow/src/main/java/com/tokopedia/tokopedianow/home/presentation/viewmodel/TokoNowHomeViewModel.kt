@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -69,7 +70,9 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getProductCarouselChipsItem
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.setProductCarouselChipsLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.getRealTimeRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLatestRealTimeRecommendation
@@ -118,6 +121,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -157,6 +161,7 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val DEFAULT_INDEX = 1
         private const val SUCCESS_CODE = "200"
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
+        private const val SWITCH_PRODUCT_CAROUSEL_TAB_DELAY = 500L
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -209,6 +214,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
+    private var switchProductCarouselChipJob: Job? = null
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -713,6 +719,34 @@ class TokoNowHomeViewModel @Inject constructor(
             })
     }
 
+    fun switchProductCarouselChipTab(channelId: String, chipId: String) {
+        switchProductCarouselChipJob?.cancel()
+
+        launchCatchError(block = {
+            val carouselModel = homeLayoutItemList.getProductCarouselChipsItem(channelId)
+            setProductCarouselChipsLoading(carouselModel)
+            delay(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
+
+            val selectedChip = carouselModel.chipList.first { it.id == chipId }
+            getCarouselChipsProductList(carouselModel, selectedChip)
+        }) {
+
+        }.let {
+            switchProductCarouselChipJob = it
+        }
+    }
+
+    private fun setProductCarouselChipsLoading(carouselModel: HomeProductCarouselChipsUiModel) {
+        homeLayoutItemList.setProductCarouselChipsLoading(carouselModel)
+
+        val data = HomeLayoutListUiModel(
+            getHomeVisitableList(),
+            TokoNowLayoutState.UPDATE
+        )
+
+        _homeLayoutList.postValue(Success(data))
+    }
+
     /**
      * Get data from additional query for TokopediaNOW Home Component.
      * Add use case and data mapping for TokopediaNOW Home Component here.
@@ -795,34 +829,12 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private suspend fun getCarouselChipsProductListAsync(
-        item: HomeProductCarouselChipsUiModel
+        carouselModel: HomeProductCarouselChipsUiModel
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val selectedChip = item.selectedChip
-            val pageName = selectedChip.param
-
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = pageName,
-                    xSource = X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = X_DEVICE_RECOMMENDATION_PARAM
-                )
-            )
-            val recommendationWidget = recommendationWidgets.first()
-
-            homeLayoutItemList.mapProductCarouselChipsWidget(
-                item,
-                recommendationWidget,
-                miniCartData,
-                selectedChip
-            )
-
-            val data = HomeLayoutListUiModel(
-                getHomeVisitableList(),
-                TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            val chipList = carouselModel.chipList
+            val selectedChip = chipList.first { it.selected }
+            getCarouselChipsProductList(carouselModel, selectedChip)
         }) {
 
         }
@@ -1046,6 +1058,35 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.mapRefreshRealTimeRecommendation(
             channelId = channelId,
             productId = productId
+        )
+
+        val data = HomeLayoutListUiModel(
+            getHomeVisitableList(),
+            TokoNowLayoutState.UPDATE
+        )
+
+        _homeLayoutList.postValue(Success(data))
+    }
+
+    private suspend fun getCarouselChipsProductList(
+        carouselModel: HomeProductCarouselChipsUiModel,
+        selectedChip: TokoNowChipUiModel
+    ) {
+        val pageName = selectedChip.param
+        val recommendationWidgets = getRecommendationUseCase.getData(
+            GetRecommendationRequestParam(
+                pageName = pageName,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM
+            )
+        )
+        val recommendationWidget = recommendationWidgets.first()
+
+        homeLayoutItemList.mapProductCarouselChipsWidget(
+            carouselModel,
+            recommendationWidget,
+            miniCartData,
+            selectedChip
         )
 
         val data = HomeLayoutListUiModel(

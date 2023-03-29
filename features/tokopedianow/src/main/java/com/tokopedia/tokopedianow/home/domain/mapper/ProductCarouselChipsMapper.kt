@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCardMapper.mapRecomWidgetToProductList
+import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -41,7 +42,6 @@ object ProductCarouselChipsMapper {
             id = response.id,
             header = header,
             chipList = chipList,
-            selectedChip = chipList.first(),
             carouselItemList = emptyList(),
             state = TokoNowProductRecommendationState.LOADING
         )
@@ -56,6 +56,14 @@ object ProductCarouselChipsMapper {
         selectedChip: TokoNowChipUiModel
     ) {
         updateItemById(item.id) {
+            val chipList = item.chipList.toMutableList()
+            val selectedChipIndex = chipList.indexOf(selectedChip)
+
+            chipList.forEachIndexed { index, chipItem ->
+                val selected = index == selectedChipIndex
+                chipList[selectedChipIndex] = chipItem.copy(selected = selected)
+            }
+
             val productList = mapRecomWidgetToProductList(
                 headerName = item.header?.title.orEmpty(),
                 recomWidget = recomWidget,
@@ -64,12 +72,28 @@ object ProductCarouselChipsMapper {
             )
 
             val newItem = item.copy(
-                selectedChip = selectedChip,
+                chipList = chipList,
                 carouselItemList = productList,
                 state = TokoNowProductRecommendationState.LOADED
             )
 
             HomeLayoutItemUiModel(newItem, HomeLayoutItemState.LOADED)
         }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.setProductCarouselChipsLoading(
+        item: HomeProductCarouselChipsUiModel
+    ) {
+        updateItemById(item.id) {
+            val newItem = item.copy(state = TokoNowProductRecommendationState.LOADING)
+            HomeLayoutItemUiModel(newItem, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.getProductCarouselChipsItem(
+        id: String
+    ): HomeProductCarouselChipsUiModel {
+        val visitableItem = first { it?.layout?.getVisitableId() == id }
+        return visitableItem?.layout as HomeProductCarouselChipsUiModel
     }
 }
