@@ -16,7 +16,7 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(
 ) : UseCase<Boolean>() {
 
     companion object {
-        const val PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST = "PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST"
+        private const val PARAM = "params"
         
         const val QUERY_SET_CARTLIST_CHECKBOX_STATE = "SetCartlistCheckboxStateQuery"
     }
@@ -34,7 +34,7 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(
             )
         }
 
-        params = mapOf(PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST to cartlistCheckboxStateRequestList)
+        params = mapOf(PARAM to cartlistCheckboxStateRequestList)
         return this
     }
     
