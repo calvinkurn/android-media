@@ -564,6 +564,7 @@ class BroadcastManager @Inject constructor(
         mStreamer?.release()
         mStreamerSurface?.release()
         mDisplaySurface?.release()
+        effectManager.release()
 
         // sanitize Streamer object holder
         mStreamer = null

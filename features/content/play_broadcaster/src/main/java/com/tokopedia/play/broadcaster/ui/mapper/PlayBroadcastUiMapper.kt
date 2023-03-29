@@ -160,7 +160,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 /** TODO: mocking purpose */
                 licenseLink = "https://assets.tokopedia.net/asts/android/content/play/tokopedia_20221231_20231231_com.tokopedia.tkpd_4.2.3.licbag",
                 modelLink = "https://assets.tokopedia.net/asts/android/content/play/ModelResource.bundle.zip",
-                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_standard.zip",
+                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_lite.zip",
                 faceFilters = listOf(
                     FaceFilterUiModel(
                         id = FaceFilterUiModel.Type.None.id,
@@ -227,7 +227,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                     PresetFilterUiModel(
                         id = if(it == 0) "none" else id,
                         name = if(it == 0) "Tidak Ada" else name,
-                        active = false,
+                        active = it == 1,
                         minValue = 0.0,
                         maxValue = 1.0,
                         defaultValue = it * 0.1,

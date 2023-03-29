@@ -336,6 +336,9 @@ class PlayBroadcastActivity : BaseActivity(),
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data)
                         createBroadcaster(event.withByteplus)
+
+                        applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+                        viewModel.selectedPreset?.let { applyPreset(it) }
                     }
                     is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
                         analytic.viewFailDownloadPreset(

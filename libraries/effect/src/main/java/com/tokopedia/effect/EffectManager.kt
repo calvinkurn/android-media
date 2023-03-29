@@ -37,4 +37,6 @@ interface EffectManager {
     fun setPreset(presetId: String, value: Float)
 
     fun removePreset()
+
+    fun release()
 }

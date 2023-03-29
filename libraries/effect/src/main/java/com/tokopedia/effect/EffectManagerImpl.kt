@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.effect.model.FaceFilter
 import com.tokopedia.effect.model.FaceFilterType
 import com.tokopedia.effect.model.Preset
+import com.tokopedia.effect.model.SavedComposeNode
 import com.tokopedia.effect.util.ImageUtil
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.effect.util.asset.AssetHelper
@@ -29,8 +30,7 @@ class EffectManagerImpl @Inject constructor(
     private val assetHelper: AssetHelper,
 ) : EffectManager {
 
-    private var mFaceFilterTypeApplied = mutableListOf<FaceFilter>()
-    private var mPresetApplied = Preset.Unknown
+    private var mSavedComposeNode = SavedComposeNode.Empty
 
     private var mRenderManager: RenderManager? = null
 
@@ -83,18 +83,7 @@ class EffectManagerImpl @Inject constructor(
             Log.d(this::class.java.name,"Effect SDK version =" + renderManager.sdkVersion)
         }
 
-        /**
-         * Set Face Filter & Preset
-         * that are set before mRenderManager initialization
-         */
-//        mFaceFilterTypeApplied.forEach {
-//            if (!it.type.isUnknown)
-//                setFaceFilter(it.type.id, it.value)
-//        }
-//
-//        if (!mPresetApplied.isUnknown) {
-//            setPreset(mPresetApplied.key, mPresetApplied.value)
-//        }
+        bindAppliedEffect()
     }
 
     override fun process(
@@ -170,77 +159,90 @@ class EffectManagerImpl @Inject constructor(
         val faceFilterType = FaceFilterType.getById(faceFilterId)
         if(faceFilterType.isUnknown) return
 
-        if (mFaceFilterTypeApplied.isEmpty()) {
-            mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir))
+        if (!mSavedComposeNode.faceFilterComposeNodeApplied) {
+            val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir)) == BEF_RESULT_SUC
+
+            if (isSuccessAppendNodes) {
+                mSavedComposeNode.update {
+                    copy(faceFilterComposeNode = assetHelper.customFaceDir)
+                }
+            }
         }
 
-        val isSuccess = mRenderManager?.updateComposerNodes(
+        mRenderManager?.updateComposerNodes(
             assetHelper.customFaceDir,
             faceFilterType.key,
             value
-        ) == BEF_RESULT_SUC
+        )
 
-        val isFound = mFaceFilterTypeApplied.any { it.type == faceFilterType }
+        val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
 
         if (isFound) {
-            mFaceFilterTypeApplied = mFaceFilterTypeApplied.map {
-                if(it.type == faceFilterType) it.copy(value = value)
-                else it
-            }.toMutableList()
+            mSavedComposeNode.update {
+                copy(
+                    faceFilters = faceFilters.map {
+                        if(it.type == faceFilterType) it.copy(value = value)
+                        else it
+                    }.toMutableList()
+                )
+            }
         }
         else {
-            mFaceFilterTypeApplied.add(
-                FaceFilter(
-                    type = faceFilterType,
-                    value = value,
+            mSavedComposeNode.update {
+                copy(
+                    faceFilters = faceFilters + FaceFilter(type = faceFilterType, value = value)
                 )
-            )
+            }
         }
-
-//        if (isSuccess) {
-//            val isFound = mFaceFilterTypeApplied.any { it.type == faceFilterType }
-//
-//            if (isFound) {
-//                mFaceFilterTypeApplied = mFaceFilterTypeApplied.map {
-//                    if(it.type == faceFilterType) it.copy(value = value)
-//                    else it
-//                }.toMutableList()
-//            }
-//            else {
-//                mFaceFilterTypeApplied.add(
-//                    FaceFilter(
-//                        type = faceFilterType,
-//                        value = value,
-//                    )
-//                )
-//            }
-//        }
     }
 
     override fun removeFaceFilter() {
-        mRenderManager?.removeComposerNodes(arrayOf(assetHelper.customFaceDir))
-        mFaceFilterTypeApplied.clear()
+        mRenderManager?.removeComposerNodes(arrayOf(mSavedComposeNode.faceFilterComposeNode))
+        mSavedComposeNode.update { clearFaceFilter() }
     }
 
     override fun setPreset(presetId: String, value: Float) {
-        val key = "${assetHelper.presetDir}/$presetId"
+        val key = assetHelper.getPresetFilePath(presetId)
 
-        if(mPresetApplied.isUnknown) {
-            mRenderManager?.appendComposerNodes(arrayOf(key))
+        if(!mSavedComposeNode.presetComposeNodeApplied) {
+            val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(key)) == BEF_RESULT_SUC
+            if (isSuccessAppendNodes) {
+                mSavedComposeNode.update {
+                    copy(preset = preset.copy(key = key))
+                }
+            }
         }
 
-        val isSuccess = mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value) == BEF_RESULT_SUC &&
-            mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value) == BEF_RESULT_SUC
-
-        mPresetApplied = Preset(key = key, value = value)
-
-//        if(isSuccess) {
-//            mPresetApplied = Preset(key = key, value = value)
-//        }
+        mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value)
+        mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value)
+        mSavedComposeNode.update {
+            copy(preset = preset.copy(value = value))
+        }
     }
 
     override fun removePreset() {
-        mRenderManager?.removeComposerNodes(arrayOf(mPresetApplied.key))
+        mRenderManager?.removeComposerNodes(arrayOf(mSavedComposeNode.preset.key))
+        mSavedComposeNode.update { clearPreset() }
+    }
+
+    override fun release() {
+        mRenderManager?.release()
+        mRenderManager = null
+    }
+
+    private fun bindAppliedEffect() {
+        mSavedComposeNode.faceFilters.forEach {
+            if (!it.type.isUnknown)
+                setFaceFilter(it.type.id, it.value)
+        }
+
+        if (!mSavedComposeNode.preset.isUnknown) {
+            setPreset(mSavedComposeNode.preset.key, mSavedComposeNode.preset.value)
+        }
+    }
+
+    private fun SavedComposeNode.update(block: SavedComposeNode.() -> SavedComposeNode) {
+        mSavedComposeNode = mSavedComposeNode.block()
     }
 
     companion object {
