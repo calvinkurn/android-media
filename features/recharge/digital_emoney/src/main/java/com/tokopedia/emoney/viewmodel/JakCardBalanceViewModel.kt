@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
+import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
@@ -46,14 +48,19 @@ class JakCardBalanceViewModel @Inject constructor(val dispatcher: CoroutineDispa
                         if (NFCUtils.isCommandFailed(checkBalanceResponse)) {
                             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
-                            val balance = convertHexBalanceToIntBalance(separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse)))
+                            val separatedHexResult = separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
+                            val balance = convertHexBalanceToIntBalance(separatedHexResult)
+
                             jakCardInquiryMutable.postValue(
                                 EmoneyInquiry(
-                                attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                                    lastBalance = balance,
-                                    buttonText = "Halo"
+                                    attributesEmoneyInquiry = AttributesEmoneyInquiry(
+                                        lastBalance = balance,
+                                        buttonText = "Halo"
+                                    ),
+                                    error = EmoneyInquiryError(
+                                        status = 0,
+                                    )
                                 )
-                            )
                             )
                         }
                     }
