@@ -122,9 +122,6 @@ class ProductSummaryBottomSheet @Inject constructor(
             analytic.clickAddMoreProductOnProductSetup()
             handleAddMoreProduct()
         }
-        setOnDismissListener {
-            mListener?.onFinish(this)
-        }
         setCloseClickListener {
             analytic.clickCloseOnProductSummary()
             mListener?.onFinish(this)
