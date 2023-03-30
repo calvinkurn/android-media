@@ -14,6 +14,13 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TR
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CART_RESULT_CODE;
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LATITUDE;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LONGITUDE;
@@ -93,6 +100,7 @@ import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
@@ -159,6 +167,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder;
@@ -166,6 +175,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBo
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
@@ -265,7 +275,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isShipmentTraceStopped;
     private String cornerId;
     private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
-
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
@@ -1991,7 +2000,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
                     hasClearPromoBeforeCheckout = false;
-                    doCheckout();
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData();
+                    } else {
+                        doCheckout();
+                    }
                 }
             } else {
                 boolean hasRedStatePromo = false;
@@ -2022,7 +2035,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     sendAnalyticsPromoRedState();
                 } else {
                     sendAnalyticsEpharmacyClickPembayaran();
-                    doCheckout();
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData();
+                    } else {
+                        doCheckout();
+                    }
                 }
             }
         } else if (shipmentData != null && !result) {
@@ -2051,9 +2068,46 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void doCheckout() {
+    public void doCheckout() {
         shipmentPresenter.processSaveShipmentState();
         shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId(), isPlusSelected());
+    }
+
+    private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam newParam, boolean isChecked) {
+        DynamicDataPassingParamRequest existingDdpParam = shipmentPresenter.getDynamicDataParam();
+        boolean isAdded = false;
+        if (newParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_DONATION)) {
+            for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
+                if (existingParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_DONATION)) {
+                    isAdded = true;
+                    existingParam.setDonation(isChecked);
+                }
+            }
+        } else if (newParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_ADDON_DETAILS)) {
+            if (isChecked) {
+                for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
+                    if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
+                        isAdded = true;
+                        existingParam.setAddOn(newParam.getAddOn());
+                    }
+                }
+            } else {
+                for (int i=0; i<existingDdpParam.getData().size(); i++) {
+                    DynamicDataPassingParamRequest.DynamicDataParam existingParam = shipmentPresenter.getDynamicDataParam().getData().get(i);
+                    if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
+                        existingDdpParam.getData().remove(i);
+                    }
+                }
+            }
+        }
+        if (!isAdded && isChecked) {
+            existingDdpParam.getData().add(newParam);
+        }
+        String source = SOURCE_NORMAL;
+        if (isOneClickShipment()) source = SOURCE_OCS;
+        existingDdpParam.setSource(source);
+        shipmentPresenter.setDynamicDataParam(existingDdpParam);
+        shipmentPresenter.updateDynamicData(existingDdpParam, true);
     }
 
     @Override
@@ -2148,6 +2202,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff(), checked);
+        }
+
+        if (shipmentPresenter.isUsingDynamicDataPassing()) {
+            DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            dynamicDataParam.setLevel(PAYMENT_LEVEL);
+            dynamicDataParam.setUniqueId("");
+            dynamicDataParam.setAttribute(ATTRIBUTE_DONATION);
+            dynamicDataParam.setDonation(checked);
+            updateCheckboxDynamicData(dynamicDataParam, checked);
         }
     }
 
@@ -3135,7 +3198,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
 
-        doCheckout();
+        if (shipmentPresenter.isUsingDynamicDataPassing()) {
+            shipmentPresenter.validateDynamicData();
+        } else {
+            doCheckout();
+        }
     }
 
     @Override
@@ -4059,6 +4126,40 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void updateAddOnsDynamicDataPassing(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, Long cartId) {
+        // identifier : 0 = product level, 1  = order level
+        if (addOnResult.getAddOnData().isEmpty()) {
+            // unchecked
+            DynamicDataPassingParamRequest.DynamicDataParam uncheckedDynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            uncheckedDynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
+            if (identifier == 1) {
+                uncheckedDynamicDataParam.setLevel(ORDER_LEVEL);
+                uncheckedDynamicDataParam.setUniqueId(cartString);
+            } else if (identifier == 0) {
+                uncheckedDynamicDataParam.setLevel(PRODUCT_LEVEL);
+                uncheckedDynamicDataParam.setParentUniqueId(cartString);
+                uncheckedDynamicDataParam.setUniqueId(String.valueOf(cartId));
+            }
+            updateCheckboxDynamicData(uncheckedDynamicDataParam, false);
+        } else {
+            DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
+            dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
+            if (identifier == 1) {
+                // order level
+                dynamicDataParam.setLevel(ORDER_LEVEL);
+                dynamicDataParam.setUniqueId(cartString);
+            } else if (identifier == 0) {
+                // product level
+                dynamicDataParam.setLevel(PRODUCT_LEVEL);
+                dynamicDataParam.setParentUniqueId(cartString);
+                dynamicDataParam.setUniqueId(String.valueOf(cartId));
+            }
+            updateCheckboxDynamicData(dynamicDataParam, true);
+        }
     }
 
     @Override

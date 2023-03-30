@@ -67,6 +67,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardSprintSaleCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
 
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
+    ContentCardEmptyState(R.layout.disco_content_card_empty_state, ComponentNames.ContentCardEmptyState.componentName),
     SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
     MixLeftEmptyItem(R.layout.disco_mix_left_empty_item,ComponentNames.MixLeftEmptyItem.componentName),
