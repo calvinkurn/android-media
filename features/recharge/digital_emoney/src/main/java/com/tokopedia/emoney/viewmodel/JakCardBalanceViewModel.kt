@@ -129,8 +129,7 @@ class JakCardBalanceViewModel @Inject constructor(
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
             if (result.data.status == JakCardStatus.WRITE.status) {
                 processLoad(topUpCardData, result.data.attributes.cryptogram, result.data.attributes.stan,
-                    result.data.attributes.refNo, amount, cardNumber
-                )
+                    result.data.attributes.refNo, amount, cardNumber, lastBalance)
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
             }
@@ -139,7 +138,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processLoad(topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String) {
+    private fun processLoad(topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String, lastBalance: Int) {
         if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val loadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
@@ -151,19 +150,20 @@ class JakCardBalanceViewModel @Inject constructor(
                 } else {
                     val checkBalanceAfterLoadRequest = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
                     val checkBalanceAfterLoadResponse = isoDep.transceive(checkBalanceAfterLoadRequest)
-                    val checkBalanceAfterLoadResponseString = NFCUtils.toHex(checkBalanceAfterLoadResponse)
 
-                    if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD+checkBalanceAfterLoadResponseString))
+                    val topUpConfirmationCardData = getCardDataTopUpRequest(
+                        separateWithSuccessCode(loadResponseString),
+                        topUpCardData
+                    )
+                    val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterLoadResponse))
+
+                    val lastBalanceAfterUpdate = if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
+                        lastBalance
                     } else {
-                        val topUpConfirmationCardData = getCardDataTopUpRequest(
-                            separateWithSuccessCode(loadResponseString),
-                            topUpCardData
-                        )
-                        val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterLoadResponse))
-                        val lastBalanceAfterUpdate = convertHexBalanceToIntBalance(separatedCheckBalanceString)
-                        getTopUpConfirmationProcess(topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
+                         convertHexBalanceToIntBalance(separatedCheckBalanceString)
                     }
+
+                    getTopUpConfirmationProcess(topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                 }
             } catch (e: IOException) {
                 errorCardMessageMutable.postValue(e)
