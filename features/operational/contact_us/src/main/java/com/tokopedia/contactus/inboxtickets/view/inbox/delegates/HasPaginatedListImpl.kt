@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox.delegates
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.contactus.inboxtickets.view.utils.EndlessRecyclerViewScrollListener
 
 class HasPaginatedListImpl : HasPaginatedList {
 
