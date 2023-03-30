@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODU
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOLLOWING
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOR_YOU
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
@@ -145,6 +146,26 @@ object DeeplinkMapperContent {
                 EXTRA_FEED_TAB_POSITION to TAB_POSITION_VIDEO,
                 ARGS_FEED_VIDEO_TAB_SELECT_CHIP to selectedChip
             )
+        )
+    }
+
+    /**
+     * Unified Feed
+     */
+    @OptIn(ExperimentalStdlibApi::class)
+    fun getRegisteredNavigationHomeFeedFollowing(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        return UriUtil.buildUriAppendParams(
+            ApplinkConsInternalHome.HOME_NAVIGATION,
+            buildMap {
+                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+                put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOLLOWING)
+
+                uri.queryParameterNames.forEach {
+                    val queryValue = uri.getQueryParameter(it) ?: return@forEach
+                    put(it, queryValue)
+                }
+            }
         )
     }
 }

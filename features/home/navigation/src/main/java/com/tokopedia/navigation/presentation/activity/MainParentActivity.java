@@ -58,6 +58,7 @@ import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -393,7 +394,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage(HOME_MENU);
+            reloadPage(HOME_MENU, false);
         }
     }
 
@@ -717,7 +718,7 @@ public class MainParentActivity extends BaseActivity implements
                     }
                 }
             }
-            reloadPage(position);
+            reloadPage(position, true);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -771,17 +772,38 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage(int position) {
-        finish();
+    private void reloadPage(int position, boolean isJustLoggedIn) {
         getIntent().putExtra(ARGS_TAB_POSITION, position);
-        startActivity(getIntent());
+
+        boolean isPositionFeed = position == FEED_MENU;
+        getIntent().putExtra(
+                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                isPositionFeed && isJustLoggedIn
+        );
+        recreate();
     }
 
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
+
+        if (getSupportFragmentManager().findFragmentByTag(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT) == null) {
+            fragmentList.add(
+                    RouteManager.instantiateFragment(
+                            this,
+                            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT,
+                            getIntent().getExtras()
+                    )
+            );
+        } else {
+            fragmentList.add(
+                    getSupportFragmentManager().findFragmentByTag(
+                            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT
+                    )
+            );
+        }
+
         if (!isOsExperiment) {
             Bundle bundleOS = new Bundle();
             bundleOS.putString(OfficialHomeContainerFragment.PARAM_ACTIVITY_OFFICIAL_STORE, OfficialHomeContainerFragment.PARAM_HOME);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Upload Progress-->
+    <color name="feed_dms_upload_progress_background">#B32E3137</color>
+    <color name="feed_dms_upload_failed_img_foreground">#B32E3137</color>
+
+    <!--Video Seekbar-->
+    <color name="feed_dms_seekbar_unplayed_color">#66FFFFFF</color>
+</resources>

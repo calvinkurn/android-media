@@ -107,13 +107,6 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                feedMenuSheet.showToasterOnLoginSuccessFollow(
-                    getString(
-                        feedR.string.feed_report_login_success_toaster_text,
-                        userSession.name
-                    ),
-                    Toaster.TYPE_NORMAL
-                )
             }
         }
 

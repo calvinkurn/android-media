@@ -1,6 +1,8 @@
 package com.tokopedia.play_common.shortsuploader
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 
 /**
@@ -10,5 +12,10 @@ interface PlayShortsUploader {
 
     fun upload(uploadData: PlayShortsUploadModel)
 
-    fun observe(owner: LifecycleOwner, observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit)
+    fun observe(
+        owner: LifecycleOwner,
+        observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit
+    ): Observer<List<WorkInfo>>
+
+    fun cancelObserve(observer: Observer<List<WorkInfo>>)
 }

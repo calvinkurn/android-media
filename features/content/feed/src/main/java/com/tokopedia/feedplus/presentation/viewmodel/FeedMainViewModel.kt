@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
@@ -17,6 +19,7 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -24,7 +27,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -33,9 +39,11 @@ import javax.inject.Inject
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
+    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val uiEventManager: UiEventManager<FeedMainEvent>,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _feedTabs = MutableLiveData<Result<List<FeedDataModel>>>()
@@ -59,6 +67,16 @@ class FeedMainViewModel @Inject constructor(
     val currentTabIndex: LiveData<Int>
         get() = _currentTabIndex
 
+    val uiEvent: Flow<FeedMainEvent?>
+        get() = uiEventManager.event
+
+    val displayName: String
+        get() = userSession.name
+
+    private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
+    val isLoggedIn: Boolean
+        get() = _isLoggedIn.get()
+
     fun changeCurrentTabByIndex(index: Int) {
         _currentTabIndex.value = index
     }
@@ -72,6 +90,25 @@ class FeedMainViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun consumeEvent(event: FeedMainEvent) {
+        viewModelScope.launch {
+            uiEventManager.clearEvent(event.id)
+        }
+    }
+
+    fun deletePostCache() {
+        viewModelScope.launch {
+            deletePostCacheUseCase(Unit)
+        }
+    }
+
+    fun updateUserInfo() {
+        val isPrevLoggedIn = _isLoggedIn.getAndSet(userSession.isLoggedIn)
+        if (!isPrevLoggedIn && isLoggedIn) {
+            emitEvent(FeedMainEvent.HasJustLoggedIn)
         }
     }
 
@@ -196,5 +233,11 @@ class FeedMainViewModel @Inject constructor(
         }
 
         _feedCreateContentBottomSheetData.value = Success(creatorList)
+    }
+
+    private fun emitEvent(event: FeedMainEvent) {
+        viewModelScope.launch {
+            uiEventManager.emitEvent(event)
+        }
     }
 }

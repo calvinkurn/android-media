@@ -192,4 +192,16 @@
         app:unify_image_type="circle"
         tools:visibility="gone" />
 
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/player_control"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginBottom="2dp"
+        app:controller_layout_id="@layout/feed_video_player_control"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:show_timeout="-1"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
