@@ -419,10 +419,11 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         val loadMoreProductList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType(),
+            productListType,
             searchProductModel.isShowButtonAtc,
         )
         productList.addAll(loadMoreProductList)
@@ -889,10 +890,12 @@ class ProductListPresenter @Inject constructor(
             productDataView: ProductDataView,
     ) {
         adsInjector.resetTopAdsPosition()
+
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         productList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType(),
+            productListType,
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
 
