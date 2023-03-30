@@ -17,15 +17,11 @@ class ImageGeneratorMapper(
 
     private fun getProductImageUrl(): List<String> {
         if (productSectionList.isNullOrEmpty()) return emptyList()
-        if (productSectionList[0].products.isNullOrEmpty()) return emptyList()
 
         val productUrl = mutableListOf<String>()
-        if (productSectionList[0].products.size > 1) {
-            productUrl.add(productSectionList[0].products[0].imageUrl)
-            productUrl.add(productSectionList[0].products[1].imageUrl)
-        } else {
-            productUrl.add(productSectionList[0].products[0].imageUrl)
-        }
+        productSectionList.flatMap {
+            it.products
+        }.take(2)
         return productUrl
     }
 
