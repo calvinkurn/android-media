@@ -24,8 +24,13 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
+import com.tokopedia.play.broadcaster.di.setup.PlayBroadcastSetupScope
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
@@ -36,6 +41,8 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManagerImpl
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
+import com.tokopedia.play_common.util.device.PlayDeviceSpecImpl
 import dagger.Binds
 import dagger.Module
 
@@ -129,4 +136,22 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     @Binds
     abstract fun bindBroadcasterFrameScalingManager(broadcasterFrameScalingManager: BroadcasterFrameScalingManagerImpl): BroadcasterFrameScalingManager
+
+    /**
+     * Device Spec
+     */
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
+
+    /**
+     * Beautification
+     */
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

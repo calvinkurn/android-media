@@ -35,10 +35,16 @@ import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountMan
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManagerImpl
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsUiMapper
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
+import com.tokopedia.play_common.util.device.PlayDeviceSpecImpl
 import dagger.Binds
 import dagger.Module
 
@@ -100,6 +106,12 @@ abstract class PlayShortsBindModule {
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
     ): PlayBroProductRepository
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindBeautificationRepository(
+        repo: PlayBroadcastBeautificationRepositoryImpl
+    ): PlayBroadcastBeautificationRepository
 
     @Binds
     @PlayShortsScope
@@ -181,4 +193,22 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+
+    /**
+     * Device SPec
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
+
+    /**
+     * Beautification
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

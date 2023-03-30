@@ -34,6 +34,7 @@ import dagger.Component
         PlayBroadcastConfigStoreModule::class,
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
+        PlayBroadcastNetworkModule::class,
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
         ContentCreationProductTagBindModule::class,

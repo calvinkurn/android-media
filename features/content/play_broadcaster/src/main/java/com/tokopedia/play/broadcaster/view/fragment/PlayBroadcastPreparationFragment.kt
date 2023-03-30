@@ -43,6 +43,7 @@ import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -59,7 +60,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
@@ -98,6 +99,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val beautificationUiBridge: BeautificationUiBridge,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     TitleFormView.Listener,
@@ -198,7 +200,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+        val beautificationSetupFragment = BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
 
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
@@ -209,8 +211,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 showCoverForm(false)
                 true
             }
-            faceFilterSetupFragment.isBottomSheetShown -> {
-                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+            beautificationSetupFragment.isBottomSheetShown -> {
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
             else -> {
@@ -404,8 +406,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.commit {
             replace(
                 binding.faceFilterSetupContainer.id,
-                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                FaceFilterSetupFragment.TAG,
+                BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                BeautificationSetupFragment.TAG,
             )
         }
     }
@@ -462,7 +464,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        FaceFilterSetupFragment.getFragment(
+                        BeautificationSetupFragment.getFragment(
                             childFragmentManager,
                             requireActivity().classLoader
                         ).showFaceSetupBottomSheet()
@@ -500,6 +502,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                 val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        showMainComponent(false)
+                        showOverlayBackground(false)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        showMainComponent(true)
+                        showOverlayBackground(true)
+                    }
+                }
             }
         }
     }
@@ -706,14 +723,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowBroadcastError -> {
                         showLoading(false)
                         handleBroadcastError(event.error)
-                    }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        showMainComponent(false)
-                        showOverlayBackground(false)
-                    }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
-                        showMainComponent(true)
-                        showOverlayBackground(true)
                     }
                     else -> {}
                 }

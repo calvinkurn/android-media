@@ -10,10 +10,12 @@ import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.config.GetBroadcastingConfigurationUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -57,13 +59,19 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): ConfigurationUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
+        val response = getConfigurationUseCase(
+            GetConfigurationUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+            )
+        )
 
         return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
             .copy(
                 streamAllowed = response.authorConfig.streamAllowed,
                 shortVideoAllowed = response.authorConfig.shortVideoAllowed,
-                tnc = response.authorConfig.tnc
+                tnc = response.authorConfig.tnc,
+                beautificationConfig = mapBeautificationConfig(response.authorConfig.beautificationConfig),
             )
         )
     }
@@ -73,6 +81,14 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
             Config()
+        }
+    }
+
+    private fun mapBeautificationConfig(beautificationConfig: String): Config.BeautificationConfig {
+        return try {
+            gson.fromJson(beautificationConfig, Config.BeautificationConfig::class.java)
+        } catch (e: Exception) {
+            Config.BeautificationConfig()
         }
     }
 

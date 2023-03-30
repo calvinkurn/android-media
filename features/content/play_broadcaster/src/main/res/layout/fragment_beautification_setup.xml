@@ -7,12 +7,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.RangeSliderUnify
-        android:id="@+id/slider_face_filter"
+        android:id="@+id/slider_beautification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
+        app:isShowTooltip="true"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

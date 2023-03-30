@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 /**
  * Created By : Jonathan Darwin on February 28, 2023
  */
-class FaceFilterOptionItemDecoration(context: Context): RecyclerView.ItemDecoration() {
+class BeautificationOptionItemDecoration(context: Context): RecyclerView.ItemDecoration() {
 
     private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
@@ -25,7 +25,7 @@ class FaceFilterOptionItemDecoration(context: Context): RecyclerView.ItemDecorat
 
         outRect.apply {
             when(position) {
-                0 -> left = offset16
+                INITIAL_POSITION_INDEX -> left = offset16
                 itemCount - 1 -> {
                     left = offset8
                     right = offset16
@@ -33,5 +33,9 @@ class FaceFilterOptionItemDecoration(context: Context): RecyclerView.ItemDecorat
                 else -> left = offset8
             }
         }
+    }
+
+    companion object {
+        private const val INITIAL_POSITION_INDEX = 0
     }
 }

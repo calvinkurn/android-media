@@ -1,16 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
-import com.tokopedia.play.broadcaster.data.repository.PlayBroProductRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastChannelRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastInteractiveRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastPinnedMessageRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.domain.repository.*
 import dagger.Binds
 import dagger.Module
 
@@ -44,6 +36,12 @@ abstract class PlayBroadcastRepositoryModule {
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
     ): PlayBroProductRepository
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindBeautificationRepository(
+        repo: PlayBroadcastBeautificationRepositoryImpl
+    ): PlayBroadcastBeautificationRepository
 
     @Binds
     @ActivityRetainedScope

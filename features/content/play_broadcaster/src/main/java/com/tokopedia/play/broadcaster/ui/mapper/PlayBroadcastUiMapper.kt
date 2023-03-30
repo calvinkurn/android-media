@@ -18,6 +18,10 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
@@ -29,6 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -48,6 +53,7 @@ import javax.inject.Inject
 class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer,
     private val uriParser: UriParser,
+    private val assetChecker: AssetChecker,
 ) : PlayBroadcastMapper {
 
     override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
@@ -107,7 +113,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapConfiguration(config: Config): ConfigurationUiModel {
+    override suspend fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelStatus.getChannelType(
             config.activeLiveChannel,
             config.pausedChannel,
@@ -150,6 +156,116 @@ class PlayBroadcastUiMapper @Inject constructor(
             tnc = config.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
+            beautificationConfig = BeautificationConfigUiModel(
+                /** TODO: mocking purpose */
+                licenseLink = "https://assets.tokopedia.net/asts/android/content/play/tokopedia_20221231_20231231_com.tokopedia.tkpd_4.2.3.licbag",
+                modelLink = "https://assets.tokopedia.net/asts/android/content/play/ModelResource.bundle.zip",
+                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_standard.zip",
+                faceFilters = listOf(
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.None.id,
+                        name = "Tidak Ada",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.0,
+                        value = 0.0,
+                        isSelected = false,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Blur.id,
+                        name = "Halus",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.7,
+                        value = 0.7,
+                        isSelected = false,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Sharpen.id,
+                        name = "Tajam",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.5,
+                        value = 0.5,
+                        isSelected = false,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Clarity.id,
+                        name = "Cerah",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.4,
+                        value = 0.4,
+                        isSelected = false,
+                    )
+                ),
+                presets = List(3) {
+                    val iconUrl = when(it) {
+                        1 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/idol.jpg"
+                        2 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/energetic.jpg"
+                        else -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/sweety.jpg"
+                    }
+
+                    val id = when(it) {
+                        1 -> "aidou"
+                        2 -> "palette"
+                        else -> ""
+                    }
+
+                    val name = when(it) {
+                        1 -> "Aidou"
+                        2 -> "Palette"
+                        else -> ""
+                    }
+
+                    val assetLink = when(it) {
+                        1 -> "https://assets.tokopedia.net/asts/android/content/play/aidou.zip"
+                        2 -> "https://assets.tokopedia.net/asts/android/content/play/palette.zip"
+                        else -> ""
+                    }
+
+                    PresetFilterUiModel(
+                        id = if(it == 0) "none" else id,
+                        name = if(it == 0) "Tidak Ada" else name,
+                        active = false,
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = it * 0.1,
+                        value = it * 0.1,
+                        iconUrl = iconUrl,
+                        assetLink = assetLink,
+                        assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                    )
+                },
+//                licenseLink = config.beautificationConfig.license,
+//                modelLink = config.beautificationConfig.model,
+//                customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
+//                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+//                    FaceFilterUiModel(
+//                        id = menu.id,
+//                        name = menu.name,
+//                        minValue = menu.minValue,
+//                        maxValue = menu.maxValue,
+//                        defaultValue = menu.defaultValue,
+//                        value = menu.value,
+//                        isSelected = false,
+//                    )
+//                },
+//                presets = config.beautificationConfig.presets.map { preset ->
+//                    PresetFilterUiModel(
+//                        id = preset.id,
+//                        name = preset.name,
+//                        active = preset.active,
+//                        minValue = preset.minValue,
+//                        maxValue = preset.maxValue,
+//                        defaultValue = preset.defaultValue,
+//                        value = preset.value,
+//                        iconUrl = preset.urlIcon,
+//                        assetLink = preset.assetLink,
+//                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+//                    )
+//                }
+            )
         )
     }
 

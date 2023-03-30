@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -49,10 +50,10 @@ import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -68,7 +69,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
@@ -76,15 +77,10 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
-import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -125,6 +121,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
+
+    @Inject
+    lateinit var beautificationUiBridge: BeautificationUiBridge
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -204,6 +203,7 @@ class PlayBroadcastActivity : BaseActivity(),
     override fun onPause() {
         super.onPause()
         releaseBroadcaster()
+        viewModel.submitAction(PlayBroadcastAction.SaveBeautificationConfig)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.sendLogs()
     }
@@ -328,15 +328,8 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
-                        val bottomSheetHeight = event.bottomSheetHeight
-
-                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
-                    }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
-                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
-                        supportFragmentManager.popBackStack()
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
+                        showToaster(err = event.throwable)
                     }
                     else -> {}
                 }
@@ -378,13 +371,29 @@ class PlayBroadcastActivity : BaseActivity(),
 
         aspectFrameLayout.setOnClickListener {
             getCurrentFragment()?.let {
-                val isFaceFilterBottomSheetShown = FaceFilterSetupFragment.getFragment(
+                val isFaceFilterBottomSheetShown = BeautificationSetupFragment.getFragment(
                     it.childFragmentManager,
                     classLoader
                 ).isBottomSheetShown
 
                 if(isFaceFilterBottomSheetShown) {
-                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                    beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val bottomSheetHeight = event.bottomSheetHeight
+
+                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
+                    }
                 }
             }
         }
@@ -569,8 +578,10 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !isLoadingDialogVisible()) {
-            getLoadingFragment().show(supportFragmentManager)
+        if (isLoading) {
+            if(!isLoadingDialogVisible()) {
+                getLoadingFragment().show(supportFragmentManager)
+            }
         } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }

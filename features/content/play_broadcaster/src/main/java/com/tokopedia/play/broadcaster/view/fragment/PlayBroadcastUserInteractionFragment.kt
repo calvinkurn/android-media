@@ -17,7 +17,6 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -27,6 +26,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
@@ -54,8 +54,8 @@ import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
@@ -91,7 +91,8 @@ import javax.inject.Inject
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val analytic: PlayBroadcastAnalytic
+    private val analytic: PlayBroadcastAnalytic,
+    private val beautificationUiBridge: BeautificationUiBridge,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -236,6 +237,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initAnalytic()
         setupView()
         setupInsets()
+        setupListener()
         setupObserve()
     }
 
@@ -338,7 +340,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            FaceFilterSetupFragment.getFragment(
+            BeautificationSetupFragment.getFragment(
                 childFragmentManager,
                 requireActivity().classLoader
             ).showFaceSetupBottomSheet()
@@ -347,8 +349,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         childFragmentManager.commit {
             replace(
                 faceFilterSetupContainer.id,
-                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                FaceFilterSetupFragment.TAG,
+                BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                BeautificationSetupFragment.TAG,
             )
         }
 
@@ -413,6 +415,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun setupListener() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        clInteraction.hide()
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        clInteraction.show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupObserve() {
         observeTotalViews()
         observeTotalLikes()
@@ -454,7 +471,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+        val beautificationSetupFragment = BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
 
         return when {
             isPinnedFormVisible() -> {
@@ -465,8 +482,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
                 true
             }
-            faceFilterSetupFragment.isBottomSheetShown -> {
-                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+            beautificationSetupFragment.isBottomSheetShown -> {
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
             /** TODO: gonna delete this */
@@ -852,12 +869,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        clInteraction.hide()
-                    }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
-                        clInteraction.show()
-                    }
                     else -> {}
                 }
             }

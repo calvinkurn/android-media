@@ -13,9 +13,9 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSh
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationTabFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.PlayBroMakeupTabFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
@@ -114,15 +114,15 @@ abstract class PlayBroadcastFragmentModule {
     abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet) : Fragment
 
     /**
-     * Face Filter
+     * Beautification
      */
     @Binds
     @IntoMap
-    @FragmentKey(FaceFilterSetupFragment::class)
-    abstract fun getFaceFilterSetupFragment(fragment: FaceFilterSetupFragment) : Fragment
+    @FragmentKey(BeautificationSetupFragment::class)
+    abstract fun getBeautificationSetupFragment(fragment: BeautificationSetupFragment) : Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroMakeupTabFragment::class)
-    abstract fun getPlayBroMakeupTabFragment(fragment: PlayBroMakeupTabFragment) : Fragment
+    @FragmentKey(BeautificationTabFragment::class)
+    abstract fun getBeautificationTabFragment(fragment: BeautificationTabFragment) : Fragment
 }
