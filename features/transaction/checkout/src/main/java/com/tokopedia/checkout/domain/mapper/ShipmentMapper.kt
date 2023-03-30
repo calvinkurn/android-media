@@ -9,6 +9,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellO
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2.Companion.UI_GROUP_TYPE_OWOC
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
@@ -258,9 +259,14 @@ class ShipmentMapper @Inject constructor() {
     ): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = -1
+        // todo: fix first error index
         groupShop.cartDetails.forEachIndexed { index, cartDetail ->
-            cartDetail.products.forEach { product ->
-                val productResult = Product().apply {
+            cartDetail.products.forEachIndexed { productIndex, product ->
+                val productResult = Product(
+                    shouldShowShopInfo = groupShop2.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
+                    shopName = groupShop.shop.shopName,
+                    shopTypeInfoData = shopTypeInfoData
+                ).apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         groupShop2,
                         product,

@@ -374,18 +374,32 @@ class ShipmentDataConverter @Inject constructor() {
             receiverName = userAddress.receiverName
         }
         shipmentCartItemModel.addOnDefaultTo = receiverName
-        val products = groupShop.groupShopData.first().products
-        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
+        val cartItemModels = arrayListOf<CartItemModel>()
+        var cartItemIndex = 0
+        groupShop.groupShopData.forEach {
+            val productList = convertFromProductList(
+                cartItemIndex,
+                it.products,
+                groupShop,
+                username,
+                receiverName,
+                shipmentCartItemModel.addOnWordingModel
+            )
+            cartItemModels.addAll(productList)
+            cartItemIndex += productList.size
+        }
+//        val products = groupShop.groupShopData
+//        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
 
         // This is something that not well planned
         val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
         shipmentCartItemModel.isProductFcancelPartial = fobject.isFcancelPartial == 1
         shipmentCartItemModel.cartItemModels = cartItemModels
         shipmentCartItemModel.isProductIsPreorder = fobject.isPreOrder == 1
-        for (product in products) {
-            if (product.ethicalDrugs.needPrescription && !product.isError) {
+        for (cartItemModel in cartItemModels) {
+            if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
                 shipmentCartItemModel.hasEthicalProducts = true
-            } else if (!product.isError) {
+            } else if (!cartItemModel.isError) {
                 shipmentCartItemModel.hasNonEthicalProducts = true
             }
         }
@@ -400,17 +414,26 @@ class ShipmentDataConverter @Inject constructor() {
     }
 
     private fun convertFromProductList(
+        index: Int,
         products: List<Product>,
         groupShop: GroupShop,
         username: String,
         receiverName: String,
         addOnOrderLevelModel: AddOnWordingModel
-    ): ArrayList<CartItemModel> {
-        return ArrayList(
-            products.mapIndexed { index, product ->
-                convertFromProduct(index, product, groupShop, username, receiverName, addOnOrderLevelModel)
-            }
-        )
+    ): List<CartItemModel> {
+        var counterIndex = index
+        return products.map { product ->
+            val cartItem = convertFromProduct(
+                counterIndex,
+                product,
+                groupShop,
+                username,
+                receiverName,
+                addOnOrderLevelModel
+            )
+            counterIndex += 1
+            cartItem
+        }
     }
 
     private fun convertFromProduct(
@@ -421,12 +444,12 @@ class ShipmentDataConverter @Inject constructor() {
         receiverName: String,
         addOnWordingModel: AddOnWordingModel
     ): CartItemModel {
-        val cartItemModel = CartItemModel(cartString = groupShop.cartString)
+        val cartItemModel = CartItemModel(cartString = groupShop.cartString, shouldShowShopInfo = product.shouldShowShopInfo, shopTypeInfoData = product.shopTypeInfoData)
         cartItemModel.cartId = product.cartId
         cartItemModel.productId = product.productId
         cartItemModel.productCatId = product.productCatId.toLong()
         cartItemModel.name = product.productName
-        cartItemModel.shopName = groupShop.groupShopData.first().shop.shopName
+        cartItemModel.shopName = product.shopName
         cartItemModel.imageUrl = product.productImageSrc200Square
         cartItemModel.currency = product.productPriceCurrency
         if (product.productWholesalePrice != 0.0) {

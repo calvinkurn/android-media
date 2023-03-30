@@ -80,5 +80,9 @@ data class CartItemModel(
     var warehouseId: String = "",
     var ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     var cartItemPosition: Int = 0,
-    var addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel()
+    var addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel(),
+
+    //new
+    val shouldShowShopInfo: Boolean = false,
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData()
 ) : Parcelable, ShipmentCartItem

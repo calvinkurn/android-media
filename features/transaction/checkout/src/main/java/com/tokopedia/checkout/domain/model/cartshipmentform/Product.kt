@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -57,5 +58,10 @@ data class Product(
     var bundleQuantity: Int = 0,
     var bundleIconUrl: String = "",
     var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
-    var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel()
+    var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
+
+    //new
+    val shouldShowShopInfo: Boolean = false,
+    val shopName: String = "",
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData()
 ) : Parcelable

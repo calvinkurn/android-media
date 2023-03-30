@@ -11,12 +11,46 @@
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN50"
         android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/product_shop_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_shop_badge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="4dp"
+            app:unify_image_type="rect"
+            tools:src="@drawable/ic_badge_shop_official"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Toko Adidas"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/checkout_ticker_product_error"
@@ -138,11 +172,11 @@
                 android:layout_toEndOf="@id/iv_product_image"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_image"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
+                app:typographyType="paragraph_3"
                 app:typographyWeight="bold"
                 tools:text="Kaos Adidas Camo Tongue Tee... White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XS" />
 
@@ -153,11 +187,11 @@
                 android:layout_below="@+id/tv_product_name"
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@id/iv_product_image"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="@+id/tv_product_name"
                 app:layout_constraintStart_toStartOf="@+id/tv_product_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-                app:typographyType="body_3"
+                app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="Biru, XXL" />
 
@@ -168,7 +202,7 @@
                 android:layout_below="@+id/text_variant"
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@id/iv_product_image"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="@+id/tv_product_name"
                 app:layout_constraintStart_toStartOf="@+id/tv_product_name"
                 app:layout_constraintTop_toBottomOf="@+id/text_variant"
@@ -184,10 +218,10 @@
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/tv_product_original_price"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="@+id/tv_product_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_item_count_and_weight"
-                app:typographyType="body_2"
+                app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:ignore="RtlSymmetry"
                 tools:text="Rp200.000" />
@@ -204,7 +238,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_product_price"
                 app:layout_constraintStart_toEndOf="@+id/tv_product_price"
                 app:layout_constraintTop_toTopOf="@+id/tv_product_price"
-                app:typographyType="body_3"
+                app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="Rp500.000" />
 
