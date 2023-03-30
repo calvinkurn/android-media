@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
@@ -82,7 +82,7 @@ class TokoFoodOrderLiveTrackingFragment(
             if (etaLiveTrackingIndex != RecyclerView.NO_POSITION) {
                 if (driverSectionIndex == RecyclerView.NO_POSITION) {
                     newList.add(
-                        etaLiveTrackingIndex + Int.ZERO,
+                        etaLiveTrackingIndex + Int.ONE,
                         driverSectionModel
                     )
                 } else {
