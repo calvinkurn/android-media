@@ -83,12 +83,8 @@ class JakCardBalanceViewModel @Inject constructor(
             val result = jakCardUseCase.execute(paramGetPendingBalanceQuery)
 
             if (result.data.status == JakCardStatus.WRITE.status) {
-                processInitLoad(
-                    selectResponseString,
-                    cardNumber,
-                    lastBalance,
-                    result.data.attributes.cryptogram
-                )
+                processInitLoad(selectResponseString, cardNumber,
+                    lastBalance, result.data.attributes.cryptogram)
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
             }
@@ -127,22 +123,13 @@ class JakCardBalanceViewModel @Inject constructor(
 
     private fun getTopUpProcess(topUpCardData: String, cardNumber: String, lastBalance: Int, amount: Int) {
         launchCatchError(block = {
-            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(
-                topUpCardData,
-                cardNumber,
-                lastBalance,
-                amount
-            )
+            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(topUpCardData, cardNumber,
+                lastBalance, amount)
 
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
             if (result.data.status == JakCardStatus.WRITE.status) {
-                processLoad(
-                    topUpCardData,
-                    result.data.attributes.cryptogram,
-                    result.data.attributes.stan,
-                    result.data.attributes.refNo,
-                    amount,
-                    cardNumber
+                processLoad(topUpCardData, result.data.attributes.cryptogram, result.data.attributes.stan,
+                    result.data.attributes.refNo, amount, cardNumber
                 )
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
@@ -188,14 +175,8 @@ class JakCardBalanceViewModel @Inject constructor(
 
     private fun getTopUpConfirmationProcess(topUpConfirmationCardData: String, cardNumber: String, lastBalanceAfterUpdate: Int, amount: Int, stan: String, refNo: String) {
         launchCatchError(block = {
-            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
-                topUpConfirmationCardData,
-                cardNumber,
-                lastBalanceAfterUpdate,
-                amount,
-                stan,
-                refNo
-            )
+            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
+                cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
 
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
             jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
@@ -225,15 +206,15 @@ class JakCardBalanceViewModel @Inject constructor(
     }
 
     private fun getCardNumberFromSelectResponse(selectResponseString: String): String {
-        return selectResponseString.substring(16, 32)
+        return selectResponseString.substring(CARD_NUMBER_START, CARD_NUMBER_END)
     }
 
     private fun getDepositFromSelectResponse(selectResponseString: String): String {
-        return selectResponseString.substring(74, 82)
+        return selectResponseString.substring(CARD_DEPOSIT_START, CARD_DEPOSIT_END)
     }
 
     private fun getCardExpiryFromSelectResponse(selectResponseString: String): String {
-        return selectResponseString.substring(50, 58)
+        return selectResponseString.substring(CARD_EXPIRY_START, CARD_EXPIRY_END)
     }
 
     private fun getCardDataTopUp(initLoadResponse: String, deposit: String, cardExpiry: String): String {
@@ -245,7 +226,7 @@ class JakCardBalanceViewModel @Inject constructor(
     }
 
     private fun getAmountFromCryptogram(cryptogram: String): String {
-        return cryptogram.substring(10, 18)
+        return cryptogram.substring(CARD_AMOUNT_START, CARD_AMOUNT_END)
     }
 
     companion object {
@@ -258,5 +239,14 @@ class JakCardBalanceViewModel @Inject constructor(
         private const val COMMAND_CHECK_BALANCE = "904C000004"
         private const val CODE_RESPONSE_SIZE = 4
         private const val RADIX_BALANCE = 16
+
+        private const val CARD_NUMBER_START = 16
+        private const val CARD_NUMBER_END = 32
+        private const val CARD_DEPOSIT_START = 74
+        private const val CARD_DEPOSIT_END = 82
+        private const val CARD_EXPIRY_START = 50
+        private const val CARD_EXPIRY_END = 58
+        private const val CARD_AMOUNT_START = 10
+        private const val CARD_AMOUNT_END = 18
     }
 }
