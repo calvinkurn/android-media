@@ -133,7 +133,7 @@ class TrackingMapper {
                             put(KEY_CARRIER, item.carrier)
                             put(KEY_BRAND, DeviceInfo.getManufacturerName())
                             put(KEY_MODEL, DeviceInfo.getModelName())
-                            put(KEY_OS_VERSION, Build.VERSION.SDK_INT)
+                            put(KEY_OS_VERSION, Build.VERSION.SDK_INT.toString())
                             put(KEY_LOW_POWER, item.lowPower)
                         }
                     )
