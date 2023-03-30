@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
@@ -211,6 +212,11 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
+        private const val DEVICE_WIDTH_540 = 540
+        private const val DEVICE_WIDTH_1080 = 1080
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE = 0.5f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE = 0.75f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE = 1f
 
         fun createInstance(
             shopId: String,
@@ -600,15 +606,48 @@ open class ShopPageHomeFragment :
                         resource: Bitmap,
                         transition: Transition<in Bitmap?>?
                     ) {
-                        val bitmapDrawable = BitmapDrawable(
-                            it.resources,
-                            resource
-                        )
-                        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
-                        imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+                        val sizeMultiplier = getBgPatternSizeMultiplier()
+                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
+                        setBgPatternImage(resizeBgPattern)
                     }
                 })
         }
+    }
+
+    private fun setBgPatternImage(resizeBgPattern: Bitmap?) {
+        context?.let {
+            val bitmapDrawable = BitmapDrawable(
+                it.resources,
+                resizeBgPattern
+            )
+            bitmapDrawable.setTileModeXY(
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.REPEAT
+            )
+            imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+        }
+    }
+
+    private fun getBgPatternSizeMultiplier(): Float {
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        return if (screenWidth <= DEVICE_WIDTH_540) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE
+        } else if (screenWidth < DEVICE_WIDTH_1080) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE
+        } else {
+            BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE
+        }
+    }
+
+    private fun getResizeBgPattern(sizeMultiplier: Float, resource: Bitmap): Bitmap? {
+        val resourceWidth = resource.width
+        val resourceHeight = resource.height
+        return Bitmap.createScaledBitmap(
+            resource,
+            (resourceWidth * sizeMultiplier).toInt(),
+            (resourceHeight * sizeMultiplier).toInt(),
+            true
+        )
     }
 
     open fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {

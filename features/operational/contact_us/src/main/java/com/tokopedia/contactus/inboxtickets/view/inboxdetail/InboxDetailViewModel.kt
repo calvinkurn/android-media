@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -7,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import com.tokopedia.contactus.inboxtickets.data.model.ChipUploadHostConfig
 import com.tokopedia.contactus.inboxtickets.data.model.SecureImageParameter
-import com.tokopedia.contactus.inboxtickets.data.model.TicketReplyResponse
 import com.tokopedia.contactus.inboxtickets.data.model.Tickets
 import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
@@ -27,11 +27,12 @@ import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.CloseTicketByUserUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ContactUsUploadImageUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxOptionUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxDetailUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SecureUploadUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SubmitRatingUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Param
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
@@ -40,7 +41,6 @@ import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ONE
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -55,7 +55,7 @@ import javax.inject.Inject
 class InboxDetailViewModel @Inject constructor(
     private val postMessageUseCase: PostMessageUseCase,
     private val postMessageUseCase2: PostMessageUseCase2,
-    private val inboxOptionUseCase: InboxOptionUseCase,
+    private val inboxDetailUseCase: InboxDetailUseCase,
     private val submitRatingUseCase: SubmitRatingUseCase,
     private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
     private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
@@ -153,7 +153,7 @@ class InboxDetailViewModel @Inject constructor(
                     getFirstCommentId(),
                     rating, reason
                 )
-                val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
+                val chipGetInboxDetail = submitRatingUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
                     _uiEffect.emit(InboxDetailUiEffect.SendCSATRatingFailed(messageError = chipGetInboxDetail.getErrorMessage()))
                 } else {
@@ -198,8 +198,8 @@ class InboxDetailViewModel @Inject constructor(
     private fun getTicketDetails(ticketId: String) {
         launchCatchError(
             block = {
-                val requestParams = inboxOptionUseCase.createRequestParams(ticketId)
-                val chipGetInboxDetail = inboxOptionUseCase.getChipInboxDetail(requestParams)
+                val requestParams = inboxDetailUseCase.createRequestParams(ticketId)
+                val chipGetInboxDetail = inboxDetailUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.isSuccess() == SUCCESS_HIT_API) {
                     val commentsItems = chipGetInboxDetail.getDataTicket().getTicketComment()
                     val isCommentsItemsNull = chipGetInboxDetail.getDataTicket().isCommentsNull()
@@ -396,7 +396,7 @@ class InboxDetailViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val requestParams = closeTicketByUserUseCase.createRequestParams(ticketId, "mobile")
-                val chipGetInboxDetail = closeTicketByUserUseCase.getChipInboxDetail(requestParams)
+                val chipGetInboxDetail = closeTicketByUserUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
                     _uiEffect.emit(
                         InboxDetailUiEffect.OnCloseInboxDetailFailed(
@@ -430,29 +430,19 @@ class InboxDetailViewModel @Inject constructor(
                     ticketId, message, SIZE_ZERO, "", getLastReplyFromAgent(), userSession.userId
                 )
 
-                val replyTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
+                val replyTicketResponse = postMessageUseCase(requestParam)
 
-                val successResponse =
-                    replyTicketResponse.getData<TicketReplyResponse>(TicketReplyResponse::class.java)
-                val errorResponse =
-                    replyTicketResponse.getError(TicketReplyResponse::class.java)
-
-
-                if (successResponse.getTicketReplay()
+                if (replyTicketResponse.getTicketReplay()
                         .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                 ) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
 
-                } else if (!errorResponse.isNullOrEmpty()) {
-                    val errorMessage = errorResponse[INDEX_ZERO].message
-                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(messageError = errorMessage))
                 } else {
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
             },
             onError = {
-                it.printStackTrace()
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
             }
         )
@@ -464,7 +454,7 @@ class InboxDetailViewModel @Inject constructor(
                 val files = contactUsUploadImageUseCase.getFile(imageList)
                 val list = arrayListOf<ImageUpload>()
 
-                val chipUploadHostConfig = chipUploadHostConfigUseCase.getChipUploadHostConfig()
+                val chipUploadHostConfig = chipUploadHostConfigUseCase(Unit)
 
                 if (chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
                         .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
@@ -494,16 +484,13 @@ class InboxDetailViewModel @Inject constructor(
                     )
 
                     val createTicketResponse =
-                        postMessageUseCase.getCreateTicketResult(requestParam)
+                        postMessageUseCase(requestParam)
 
-                    val successResponse =
-                        createTicketResponse.getData<TicketReplyResponse>(TicketReplyResponse::class.java)
-
-                    if (successResponse.getTicketReplay()
+                    if (createTicketResponse.getTicketReplay()
                             .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                     ) {
                         val ticketReplyData =
-                            successResponse.getTicketReplay().getTicketReplayData()
+                            createTicketResponse.getTicketReplay().getTicketReplayData()
                         val das = utils.getFileUploaded(list)
                         if (ticketReplyData.postKey.isNotEmpty()) {
                             val requestParams = postMessageUseCase2.createRequestParams(
@@ -539,7 +526,9 @@ class InboxDetailViewModel @Inject constructor(
         chipUploadHostConfig: ChipUploadHostConfig
     ): ArrayList<ImageUpload> {
         val listOfSecureImageParmeter = getListOfSecureImageParameter(files, chipUploadHostConfig)
-        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) return arrayListOf()
+        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) {
+            return arrayListOf()
+        }
 
         val uploadedImageList = getUploadedImageList(imageList, files, listOfSecureImageParmeter)
         return if (uploadedImageList.isEmpty()) {
@@ -606,13 +595,13 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     private fun sendImages(
-        requestParams: RequestParams,
+        requestParams: PostMessage2Param,
         imageList: List<ImageUpload>,
         message: String
     ) {
         launchCatchError(
             block = {
-                val stepTwoResponse = postMessageUseCase2.getInboxDataResponse(requestParams)
+                val stepTwoResponse = postMessageUseCase2(requestParams)
                 if (stepTwoResponse.getTicketAttach().getAttachment().isSuccess > SIZE_ZERO) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
@@ -622,7 +611,6 @@ class InboxDetailViewModel @Inject constructor(
             },
             onError = {
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
-                it.printStackTrace()
             })
     }
 
@@ -672,7 +660,7 @@ class InboxDetailViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val requestParams = submitRatingUseCase.createRequestParams(commentId, rating, "-")
-                val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
+                val chipGetInboxDetail = submitRatingUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
                     val errorMessage = chipGetInboxDetail.getErrorMessage()
                     _uiEffect.emit(InboxDetailUiEffect.OnSendRatingFailed(errorMessage))
@@ -691,6 +679,4 @@ class InboxDetailViewModel @Inject constructor(
             }
         )
     }
-
-
 }
