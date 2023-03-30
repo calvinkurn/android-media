@@ -31,7 +31,6 @@ import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemote
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -915,9 +914,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
 
         if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
-            showToast(R.string.play_setup_cover_upload_image_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
         } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
-            showToast(R.string.play_setup_cover_auto_generated_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
