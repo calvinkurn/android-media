@@ -49,22 +49,15 @@ class JakCardBalanceViewModel @Inject constructor(
                     if (NFCUtils.isCommandFailed(selectResponse)) {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
-                        val checkBalanceRequest =
-                            NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
+                        val checkBalanceRequest = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
                         val checkBalanceResponse = isoDep.transceive(checkBalanceRequest)
 
                         if (NFCUtils.isCommandFailed(checkBalanceResponse)) {
-                            errorCardMessageMutable.postValue(
-                                MessageErrorException(
-                                    NfcCardErrorTypeDef.FAILED_READ_CARD
-                                )
-                            )
+                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val cardNumber = getCardNumberFromSelectResponse(selectResponseString)
-                            val separatedCheckBalanceString =
-                                separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
-                            val lastBalance =
-                                convertHexBalanceToIntBalance(separatedCheckBalanceString)
+                            val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
+                            val lastBalance = convertHexBalanceToIntBalance(separatedCheckBalanceString)
                             getPendingBalanceProcess(selectResponseString, cardNumber, lastBalance)
                         }
                     }
@@ -79,12 +72,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-
-    private fun getPendingBalanceProcess(
-        selectResponseString: String,
-        cardNumber: String,
-        lastBalance: Int
-    ) {
+    private fun getPendingBalanceProcess(selectResponseString: String, cardNumber: String, lastBalance: Int) {
         launchCatchError(block = {
             val paramGetPendingBalanceQuery = JakCardRequestMapper.createGetPendingBalanceParam(
                 selectResponseString,
@@ -109,12 +97,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processInitLoad(
-        selectResponseString: String,
-        cardNumber: String,
-        lastBalance: Int,
-        cryptogram: String
-    ) {
+    private fun processInitLoad(selectResponseString: String, cardNumber: String, lastBalance: Int, cryptogram: String) {
         if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val initLoadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
@@ -142,12 +125,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getTopUpProcess(
-        topUpCardData: String,
-        cardNumber: String,
-        lastBalance: Int,
-        amount: Int
-    ) {
+    private fun getTopUpProcess(topUpCardData: String, cardNumber: String, lastBalance: Int, amount: Int) {
         launchCatchError(block = {
             val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(
                 topUpCardData,
@@ -174,14 +152,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processLoad(
-        topUpCardData: String,
-        cryptogram: String,
-        stan: String,
-        refNo: String,
-        amount: Int,
-        cardNumber: String
-    ) {
+    private fun processLoad(topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String) {
         if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val loadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
@@ -191,22 +162,18 @@ class JakCardBalanceViewModel @Inject constructor(
                 if (NFCUtils.isCommandFailed(loadResponse)) {
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
-                    val checkBalanceAfterUpdateRequest =
-                        NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
-                    val checkBalanceAfterUpdateResponse =
-                        isoDep.transceive(checkBalanceAfterUpdateRequest)
+                    val checkBalanceAfterLoadRequest = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
+                    val checkBalanceAfterLoadResponse = isoDep.transceive(checkBalanceAfterLoadRequest)
 
-                    if (NFCUtils.isCommandFailed(checkBalanceAfterUpdateResponse)) {
+                    if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val topUpConfirmationCardData = getCardDataTopUpRequest(
                             separateWithSuccessCode(loadResponseString),
                             topUpCardData
                         )
-                        val separatedCheckBalanceString =
-                            separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterUpdateResponse))
-                        val lastBalanceAfterUpdate =
-                            convertHexBalanceToIntBalance(separatedCheckBalanceString)
+                        val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterLoadResponse))
+                        val lastBalanceAfterUpdate = convertHexBalanceToIntBalance(separatedCheckBalanceString)
                         getTopUpConfirmationProcess(topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                     }
                 }
@@ -252,6 +219,7 @@ class JakCardBalanceViewModel @Inject constructor(
         val size = response.length
         val maxResponseLength = size - CODE_RESPONSE_SIZE
         val separatedResponse = response.substring(Int.ZERO, maxResponseLength)
+        Log.d("SEPARATED", response+" "+separatedResponse)
         return separatedResponse
     }
 
@@ -267,18 +235,11 @@ class JakCardBalanceViewModel @Inject constructor(
         return selectResponseString.substring(50, 58)
     }
 
-    private fun getCardDataTopUp(
-        initLoadResponse: String,
-        deposit: String,
-        cardExpiry: String
-    ): String {
+    private fun getCardDataTopUp(initLoadResponse: String, deposit: String, cardExpiry: String): String {
         return initLoadResponse + deposit + cardExpiry
     }
 
-    private fun getCardDataTopUpRequest(
-        separatedLoadResponse: String,
-        topUpCardData: String
-    ): String {
+    private fun getCardDataTopUpRequest(separatedLoadResponse: String, topUpCardData: String): String {
         return topUpCardData + separatedLoadResponse
     }
 

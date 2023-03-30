@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 
 object JakCardRequestMapper {
 
-    const val EMPTY_REQ = ""
+    private const val EMPTY_REQ = ""
 
     fun createGetPendingBalanceParam(cardData: String, cardNumber: String, lastBalance: Int): JakCardRequest {
        return createJakCardParam(
