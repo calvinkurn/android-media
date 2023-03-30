@@ -11,9 +11,11 @@ class ImageGeneratorMapper(
     private val productAmount: Int
         get() = getProductImageUrl().size
     private val productUrl1: String
-        get() = getProductImageUrl()[0]
+        get() = if (getProductImageUrl().isNotEmpty()) getProductImageUrl().first()
+        else ""
     private val productUrl2: String
-        get() = getProductImageUrl()[1]
+        get() = if (getProductImageUrl().size == MAX_SHOWING_PRODUCT) getProductImageUrl().last()
+        else ""
 
     private fun getProductImageUrl(): List<String> {
         if (productSectionList.isNullOrEmpty()) return emptyList()
@@ -21,7 +23,7 @@ class ImageGeneratorMapper(
         val productUrl = mutableListOf<String>()
         productSectionList.flatMap {
             it.products
-        }.take(2)
+        }.take(MAX_SHOWING_PRODUCT)
         return productUrl
     }
 
@@ -52,7 +54,8 @@ class ImageGeneratorMapper(
         private const val KEY_PRODUCT_IMAGE_2 = "product_image_2"
         private const val SOURCE_ID = "LScDrk"
         private const val HOST_PROD = "https://imagenerator.tokopedia.com/v2/preview/$SOURCE_ID"
-        private const val HOST_STAGING = "https://imagenerator-staging.tokopedia.com/v2/preview/$SOURCE_ID"
+        private const val HOST_STAGING =
+            "https://imagenerator-staging.tokopedia.com/v2/preview/$SOURCE_ID"
     }
 
     enum class CoverColor(val colorValue: String) {
