@@ -182,6 +182,6 @@ data class Product(
     var isTopAds: Boolean = false,
     var recommendationType: String = "",
     var isLoaded: Boolean = false,
-    var isHasAddToCartButton: Boolean = false,
+    var isHasAddToCartButton: Boolean = false
 
 ) : Parcelable
