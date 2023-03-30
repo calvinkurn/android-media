@@ -63,6 +63,7 @@ class FeedPostViewModel @Inject constructor(
         get() = _likeKolResp
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
+    private var cursor = ""
 
     fun fetchFeedPosts(
         source: String,
@@ -72,35 +73,39 @@ class FeedPostViewModel @Inject constructor(
         if (isNewData) _feedHome.value = null
 
         viewModelScope.launch {
-            val relevantPostsDeferred = async {
-                try {
-                    requireNotNull(postId)
-                    require(isNewData)
+            if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
+                cursor = _feedHome.value?.cursor.orEmpty()
 
-                    getRelevantPosts(postId)
-                } catch (e: Throwable) {
-                    FeedModel.Empty
-                }.items
-            }
+                val relevantPostsDeferred = async {
+                    try {
+                        requireNotNull(postId)
+                        require(isNewData)
 
-            val feedPostsDeferred = async {
-                getFeedPosts(
-                    source = source,
-                    cursor = _feedHome.value?.cursor.orEmpty()
-                )
-            }
+                        getRelevantPosts(postId)
+                    } catch (e: Throwable) {
+                        FeedModel.Empty
+                    }.items
+                }
 
-            _feedHome.value = try {
-                val feedPosts = feedPostsDeferred.await()
-                Success(
-                    feedPosts.copy(
-                        items = relevantPostsDeferred.await() +
-                            _feedHome.value?.items.orEmpty() +
-                            feedPosts.items
+                val feedPostsDeferred = async {
+                    getFeedPosts(
+                        source = source,
+                        cursor = _feedHome.value?.cursor.orEmpty()
                     )
-                )
-            } catch (e: Throwable) {
-                Fail(e)
+                }
+
+                _feedHome.value = try {
+                    val feedPosts = feedPostsDeferred.await()
+                    Success(
+                        feedPosts.copy(
+                            items = relevantPostsDeferred.await() +
+                                _feedHome.value?.items.orEmpty() +
+                                feedPosts.items
+                        )
+                    )
+                } catch (e: Throwable) {
+                    Fail(e)
+                }
             }
         }
     }
