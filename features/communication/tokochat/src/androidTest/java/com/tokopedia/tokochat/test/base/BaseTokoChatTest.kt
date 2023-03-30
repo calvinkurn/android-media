@@ -36,8 +36,8 @@ import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.usercomponents.userconsent.common.UserConsentComponentProvider
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -200,7 +200,7 @@ abstract class BaseTokoChatTest {
             DaggerTokoChatUserConsentComponentStub.builder()
                 .fakeBaseAppComponent(baseComponent)
                 .build()
-        UserConsentWidget.setUserConsentComponent(userConsentComponent)
+        UserConsentComponentProvider.setUserConsentComponent(userConsentComponent)
     }
 
     protected fun getTokoChatAdapter(): TokoChatBaseAdapter {

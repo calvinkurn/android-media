@@ -52,7 +52,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:hide_when_already_have_consent="true"
+        app:hide_when_already_submitted_consent="true"
         app:defaultTemplate="TNC_PRIVACY_OPTIONAL" />
 
     <com.tokopedia.unifycomponents.UnifyButton

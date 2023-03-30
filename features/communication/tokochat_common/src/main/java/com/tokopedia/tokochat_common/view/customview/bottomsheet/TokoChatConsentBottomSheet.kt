@@ -76,7 +76,7 @@ class TokoChatConsentBottomSheet(
         binding?.tokochatBtnConsent?.setOnClickListener {
             binding?.tokochatWidgetConsent?.submitConsent()
         }
-        binding?.tokochatWidgetConsent?.setOnNeedConsentListener { needConsent ->
+        binding?.tokochatWidgetConsent?.setOnDetailConsentListener { needConsent, consentType ->
             this.needConsent = needConsent
             if (!this.needConsent) { // if no need for consent, load tokochat
                 dismissAndLoadTokoChatData()
