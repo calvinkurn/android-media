@@ -222,6 +222,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             item.keywordIntention = keywordIntention
             item.showButtonAtc = showButtonAtc
             item.parentId = topAds.product.parentId
+            item.isPortrait = topAds.product.isPortrait
             return item
         }
 
