@@ -454,7 +454,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
-        if (item.isReportAllowed && !item.isOwner) {
+        if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(
