@@ -5,8 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.kotlin.extensions.view.orZero
 
-abstract class EndlessRecyclerViewScrollListener(private var layoutManager: RecyclerView.LayoutManager?) :
+abstract class EndlessRecyclerViewScrollListener(private var layoutManager: RecyclerView.LayoutManager) :
     RecyclerView.OnScrollListener() {
     private var visibleThreshold = 2
     var currentPage = 0
@@ -18,10 +19,10 @@ abstract class EndlessRecyclerViewScrollListener(private var layoutManager: Recy
 
     protected fun init() {}
 
-    private fun getLayoutManager(): RecyclerView.LayoutManager {
+    private fun getLayoutManager(): RecyclerView.LayoutManager? {
         return if (endlessLayoutManagerListener != null
-            && endlessLayoutManagerListener!!.currentLayoutManager != null
-        ) endlessLayoutManagerListener!!.currentLayoutManager else layoutManager!!
+            && endlessLayoutManagerListener?.currentLayoutManager != null
+        ) endlessLayoutManagerListener?.currentLayoutManager else layoutManager
     }
 
     private fun getLastVisibleItem(lastVisibleItemPositions: IntArray): Int {
@@ -55,7 +56,7 @@ abstract class EndlessRecyclerViewScrollListener(private var layoutManager: Recy
         if (isDataEmpty) {
             return
         }
-        val totalItemCount = getLayoutManager().itemCount
+        val totalItemCount = getLayoutManager()?.itemCount
         var lastVisibleItemPosition = 0
         if (getLayoutManager() is StaggeredGridLayoutManager) {
             val lastVisibleItemPositions = (getLayoutManager() as StaggeredGridLayoutManager)
@@ -68,7 +69,7 @@ abstract class EndlessRecyclerViewScrollListener(private var layoutManager: Recy
             lastVisibleItemPosition =
                 (getLayoutManager() as LinearLayoutManager).findLastVisibleItemPosition()
         }
-        if (lastVisibleItemPosition + visibleThreshold > totalItemCount &&
+        if (lastVisibleItemPosition + visibleThreshold > totalItemCount.orZero() &&
             hasNextPage
         ) {
             loadMoreNextPage()
@@ -77,14 +78,14 @@ abstract class EndlessRecyclerViewScrollListener(private var layoutManager: Recy
 
     private val isDataEmpty: Boolean
         get() {
-            val totalItemCount = getLayoutManager().itemCount
+            val totalItemCount = getLayoutManager()?.itemCount
             return totalItemCount == 0
         }
 
     private fun loadMoreNextPage() {
-        val totalItemCount = getLayoutManager().itemCount
+        val totalItemCount = getLayoutManager()?.itemCount
         loading = true
-        onLoadMore(currentPage + 1, totalItemCount)
+        onLoadMore(currentPage + 1, totalItemCount.orZero())
     }
 
     fun setHasNextPage(hasNextPage: Boolean) {
@@ -100,7 +101,7 @@ abstract class EndlessRecyclerViewScrollListener(private var layoutManager: Recy
 
     fun updateStateAfterGetData() {
         loading = false
-        val totalItemCount = getLayoutManager().itemCount
+        val totalItemCount = getLayoutManager()?.itemCount.orZero()
         if (totalItemCount > currentItemCount) {
             currentItemCount = totalItemCount
             currentPage++
