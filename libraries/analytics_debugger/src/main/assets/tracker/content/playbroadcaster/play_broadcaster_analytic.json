@@ -11,7 +11,7 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*",
-      "trackerId": "26705"
+      "trackerId": "30206|26705"
     },
     {
       "event": "clickSellerBroadcast",

@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
 import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.play.broadcaster.analytic.currentSite
+import com.tokopedia.play.broadcaster.analytic.getTrackerId
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class PlayBroSetupTitleAnalyticImpl @Inject constructor(
                 KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_TRACKER_ID to "26705",
+                KEY_TRACKER_ID to getTrackerId("30206", "26705"),
             )
         )
     }
