@@ -60,9 +60,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var selectedDateTo: Date? = null
     private var productId: String = ""
     private var currentSite: String = ""
-    private var dateFilterType: Int = 1
-    private var startDate: String = ""
-    private var endDate: String = ""
+    private var dateFilterType: Int = 3
+    private var startDate: String = getDaysAgo(3, REQUEST_DATE_FORMAT)
+    private var endDate: String = getDaysAgo(0, REQUEST_DATE_FORMAT)
 
     private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
 
@@ -97,6 +97,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
         attachObservers()
         attachClickListeners()
+        mainBottomSheetBinding.dateFilter.chipText = String.format(getString(R.string.topads_common_date_x_last_days), 3) // default date filter is 3 Hari terakhir
 
         seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
             setChild(mainBottomSheetBinding.root)
@@ -602,6 +603,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
     private fun setAutoAdsUser() {
         seePerformanceTopAdsViewModel?.getAutoAdsInfo()
+        mainBottomSheetBinding.adPlacementFilter.visibility = View.GONE
         mainBottomSheetBinding.includeStatusIklan.root.visibility = View.GONE
         mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.VISIBLE
         mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.GONE
@@ -609,6 +611,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     }
 
     private fun setManualAdsUser() {
+        mainBottomSheetBinding.adPlacementFilter.visibility = View.VISIBLE
         mainBottomSheetBinding.includeStatusIklan.root.visibility = View.VISIBLE
         mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.GONE
         mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
