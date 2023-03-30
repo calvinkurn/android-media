@@ -40,7 +40,7 @@ abstract class SubViewModel {
     @Suppress("UNCHECKED_CAST")
     protected fun <T : SubViewModelMediator> getMediator(): T {
         if (mMediator == null) {
-            throw IllegalArgumentException("Mediator cannot be null, please register before use")
+            throw IllegalArgumentException("Mediator cannot be null")
         }
 
         return mMediator as T

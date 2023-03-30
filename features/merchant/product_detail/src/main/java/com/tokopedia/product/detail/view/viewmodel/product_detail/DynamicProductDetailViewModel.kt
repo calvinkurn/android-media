@@ -79,9 +79,9 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.PlayWidgetSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataModelMediator
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo

@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
