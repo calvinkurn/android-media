@@ -226,7 +226,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (isRequiredPermissionGranted()) createBroadcaster(false)
+            if (isRequiredPermissionGranted()) createBroadcaster(viewModel.isBeautificationEnabled)
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -284,7 +284,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         surfaceHolder = holder
         if (!::broadcaster.isInitialized) return
-        createBroadcaster(false)
+        createBroadcaster(viewModel.isBeautificationEnabled)
     }
 
     override fun surfaceChanged(
