@@ -56,7 +56,6 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -120,12 +119,12 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.util.logNewRelicMessageIdError
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -1054,12 +1053,9 @@ class ChatbotFragment :
             }
         } catch (e: NumberFormatException) {
             setErrorLayoutForServer()
-            ChatbotNewRelicLogger.logNewRelic(
-                false,
+            logNewRelicMessageIdError(
                 messageId,
-                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
-                e,
-                pageSource = pageSource
+                pageSource
             )
         }
     }

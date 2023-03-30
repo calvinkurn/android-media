@@ -15,8 +15,7 @@ class GetTickerDataUseCase @Inject constructor(
 
     fun getTickerData(
         onSuccess: (TickerDataResponse) -> Unit,
-        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
-        messageId: String
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(TickerDataResponse::class.java)
@@ -25,13 +24,13 @@ class GetTickerDataUseCase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
-                    onError(error, messageId)
+                },
+                { error ->
+                    onError(error)
                 }
             )
         } catch (throwable: Throwable) {
-            onError(throwable, messageId)
+            onError(throwable)
         }
     }
-
 }
