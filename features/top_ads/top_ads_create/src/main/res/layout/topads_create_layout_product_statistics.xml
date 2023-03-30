@@ -6,19 +6,20 @@
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/Unify_NN50"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_NN50"
-        android:padding="8dp">
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tampil"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/topads_common_tampil"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@id/klik"
@@ -92,7 +93,6 @@
             android:id="@+id/klik"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/topads_common_klik"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@id/total_terjual"
@@ -168,7 +168,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/topads_common_total_sold"
-            android:layout_marginTop="8dp"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

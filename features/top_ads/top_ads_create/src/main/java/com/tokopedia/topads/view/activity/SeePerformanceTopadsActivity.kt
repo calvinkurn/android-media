@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CURRENT_SITE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
@@ -39,6 +40,7 @@ import com.tokopedia.topads.view.model.SeePerformanceTopAdsViewModel
 import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.htmltags.HtmlUtil
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -112,10 +114,16 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             finish()
         }
 
-        mainBottomSheetBinding.includeTips.tipsDescription.text = HtmlCompat.fromHtml(
-            getString(R.string.topads_ads_performance_tips_description),
-            HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
+        mainBottomSheetBinding.dateFilter.apply {
+            chip_right_icon.setImageDrawable(ContextCompat.getDrawable(context,
+            com.tokopedia.iconunify.R.drawable.iconunify_chevron_down))
+            //called the listener just to show the right icon of chip
+            setChevronClickListener {}
+        }
+
+        mainBottomSheetBinding.includeTips.tipsDescription.text = HtmlUtil.fromHtml(
+            getString(R.string.topads_ads_performance_tips_description)
+        ).trim()
     }
 
     private fun attachObservers() {
@@ -139,7 +147,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
                         View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.creditAmount.text = HtmlCompat.fromHtml(
-                        it.data.topadsDashboardDeposits.data.amountHtml,
+                        it.data.topadsDashboardDeposits.data.amountHtml.replace(" ",""),
                         HtmlCompat.FROM_HTML_MODE_LEGACY
                     ).trim()
                 }
@@ -162,29 +170,44 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         seePerformanceTopAdsViewModel?.topAdsPromoInfo?.observe(this) {
-            if (it.topAdsGetPromo.data.get(0).status == "3") {
-                ImageViewCompat.setImageTintList(
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                    ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_YN300))
-                )
-                mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
-                    getString(R.string.topads_non_active)
-                mainBottomSheetBinding.includeStatusIklan.adStatusDesc.text =
-                    getString(R.string.topads_inactive)
-                mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility = View.VISIBLE
-                mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility = View.VISIBLE
-            } else {
-                ImageViewCompat.setImageTintList(
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                    ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_GN500))
-                )
-                mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
-                    getString(R.string.ads_active)
-                mainBottomSheetBinding.includeStatusIklan.adStatusDesc.text =
-                    getString(R.string.topads_dash_tidak_tampil)
-                mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility = View.INVISIBLE
-                mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
-                    View.INVISIBLE
+            when (it.topAdsGetPromo.data.get(0).status) {
+                "1" -> {
+                    ImageViewCompat.setImageTintList(
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                        ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_GN500))
+                    )
+                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                        getString(R.string.ads_active)
+                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
+                        View.INVISIBLE
+                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                        View.INVISIBLE
+                }
+                "2" -> {
+                    ImageViewCompat.setImageTintList(
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                        ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_YN300))
+                    )
+                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                        getString(R.string.ads_active)
+                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.text =
+                        getString(R.string.topads_dash_tidak_tampil)
+                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility = View.VISIBLE
+                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                        View.VISIBLE
+                }
+                "3" -> {
+                    ImageViewCompat.setImageTintList(
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                        ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_NN500))
+                    )
+                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                        getString(R.string.topads_non_active)
+                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
+                        View.INVISIBLE
+                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                        View.INVISIBLE
+                }
             }
             mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.VISIBLE
@@ -207,14 +230,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 } else {
                     mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
                     mainBottomSheetBinding.statisticsSep.visibility = View.VISIBLE
-                    seePerformanceTopAdsViewModel?.getGroupInfo()
                 }
             }
         }
 
         seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.observe(this) {
             if (it != null && it.response?.errors.isNullOrEmpty()) {
-                mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
 
                 val adPerformance =
                     if (it.response?.data?.get(0)?.statTotalImpression == "0") 0 else {
@@ -293,7 +314,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
                     getString(R.string.topads_ads_performance_top_frequently)
                 setGreyCondition()
-                mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.GONE
             }
         }
 
@@ -593,6 +613,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.GONE
         mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
         mainBottomSheetBinding.includeTips.root.visibility = View.VISIBLE
+        seePerformanceTopAdsViewModel?.getGroupInfo()
     }
 
     fun getProductStatistics(goalId: Int) {
@@ -675,8 +696,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeCardStatistics.klikCount.text = dataItem.statTotalClick
         mainBottomSheetBinding.includeCardStatistics.totalTerjualCount.text = dataItem.statTotalSold
         mainBottomSheetBinding.includeCardStatistics.pendapatanCount.text =
-            dataItem.statTotalGrossProfit
-        mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem.statTotalSpent
+            dataItem.statTotalGrossProfit.replace(" ","")
+        mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem.statTotalSpent.replace(" ","")
         mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text =
             dataItem.statTotalRoas
     }

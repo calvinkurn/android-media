@@ -229,6 +229,7 @@
     <string name="topads_ads_performance_in_search_filter_desc">Iklan produk yang tampil di halaman pencarian</string>
     <string name="topads_ads_performance_in_recommendation_filter_title">Di Rekomendasi</string>
     <string name="topads_ads_performance_in_recommendation_filter_desc">Iklan produk yang tampil di bagian rekomendasi</string>
+    <string name="topads_ads_performance_view_more">Lihat Selengkapnya</string>
     <string name="topads_ads_performance_status_info_description"><![CDATA[
         <ul>
             <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>
@@ -242,19 +243,19 @@
     Buat produk lebih dikenal pembeli:
     <p>
         <ul>
-            <li>&nbsp;&nbsp;Tulis nama produk sesuai rumus Tokopedia:  Nama Produk + Merek + Keterangan</li>
-            <li>&nbsp;&nbsp;Gunakan foto produk yang jernih</li>
-            <li>&nbsp;&nbsp;Tambahkan video produk yang menarik</li>
-            <li>&nbsp;&nbsp;Atur biaya iklan sesuai rekomendasi</li>
-            <li>&nbsp;Gunakan rekomendasi kata kunci</li>
+            <li>Tulis nama produk sesuai rumus Tokopedia:  Nama Produk + Merek + Keterangan</li>
+            <li>Gunakan foto produk yang jernih</li>
+            <li>Tambahkan video produk yang menarik</li>
+            <li>Atur biaya iklan sesuai rekomendasi</li>
+            <li>Gunakan rekomendasi kata kunci</li>
         </ul>
     </p>
     Tingkatkan penjualan produkmu
     <p>
         <ul>
-            <li>&nbsp;Tulis deskripsi produk yang informatif</li>
-            <li>&nbsp;Buat Diskon Toko untuk tarik minat pembeli</li>
-            <li>&nbsp;Upgrade toko ke Power Merchant untuk tingkatkan kepercayaan pembeli</li>
+            <li>Tulis deskripsi produk yang informatif</li>
+            <li>Buat Diskon Toko untuk tarik minat pembeli</li>
+            <li>Upgrade toko ke Power Merchant untuk tingkatkan kepercayaan pembeli</li>
         </ul>
     </p>
 ]]></string>

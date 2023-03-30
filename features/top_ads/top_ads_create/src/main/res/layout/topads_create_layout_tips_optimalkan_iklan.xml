@@ -8,7 +8,8 @@
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/Unify_NN50"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -46,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tips_logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tips_logo"
-            android:rotation="180"/>
+            android:layout_marginEnd="8dp"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tips_description"
@@ -62,19 +63,20 @@
             android:id="@+id/tips_view_more_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lihat Selengkapnya"
+            android:text="@string/topads_ads_performance_view_more"
             android:textColor="@color/Unify_GN500"
             app:typographyType="display_2"
             app:typographyWeight="bold"
+            android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/tips_description"
             app:layout_constraintStart_toStartOf="@id/tips_description"/>
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/tips_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tips_description,tips_view_more_button"
-                android:visibility="gone"/>
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/tips_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tips_description,tips_view_more_button"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
