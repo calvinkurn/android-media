@@ -5,12 +5,10 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -29,8 +27,6 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATOR
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
-import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
-import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
@@ -71,9 +67,10 @@ class UserConsentWidget :
 
     private var onCheckedChangeListener: (Boolean) -> Unit = {}
     private var onAllCheckBoxCheckedListener: (Boolean) -> Unit = {}
-    private var onDetailConsentListener: (Boolean, ConsentType) -> Unit = {_,_ ->}
+    private var onDetailConsentListener: (Boolean, ConsentType) -> Unit = { _, _ -> }
     private var onSubmitSuccessListener: (ConsentSubmissionResponse?) -> Unit = {}
     private var onSubmitErrorListener: (Throwable) -> Unit = {}
+    private var onSubmitLoadingListener: () -> Unit = {}
     private var onFailedGetCollectionListener: (Throwable) -> Unit = {}
 
     /** set Default State if user got error when trying to get data collection from BE **/
@@ -140,10 +137,11 @@ class UserConsentWidget :
                         * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
                         */
                         transactionType =
-                            if (isConsentTypeInfo)
-                                CONSENT_OPT_IN
-                            else
-                                it.transactionType,
+                        if (isConsentTypeInfo) {
+                            CONSENT_OPT_IN
+                        } else {
+                            it.transactionType
+                        },
                         version = it.version,
                         dataElementType = it.attribute.dataElementType
                     )
@@ -155,15 +153,7 @@ class UserConsentWidget :
 
     private fun initInjector() {
         context?.let {
-            if (userConsentComponent == null) {
-                DaggerUserConsentComponent.builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
-            } else {
-                // Only for instrument test
-                userConsentComponent?.inject(this)
-            }
+            UserConsentComponentProvider.getUserConsentComponent(it)?.inject(this)
         }
     }
 
@@ -235,8 +225,8 @@ class UserConsentWidget :
                     is UserComponentsStateResult.Fail -> {
                         onSubmitErrorListener(result.error)
                     }
-                    else -> {
-                        // do nothing
+                    is UserComponentsStateResult.Loading -> {
+                        onSubmitLoadingListener()
                     }
                 }
             }
@@ -255,9 +245,12 @@ class UserConsentWidget :
                 else -> null
             }
         } else if (collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
-            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
+            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST
+        ) {
             ConsentType.MultipleChecklist()
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun onSuccessGetConsentCollection(consentType: ConsentType?) {
@@ -279,20 +272,23 @@ class UserConsentWidget :
         } else {
             val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
             collection?.purposes?.forEach {
-                purposes.add(UserConsentPayload.PurposeDataModel(
-                    purposeId = it.id,
-                    version = it.version,
+                purposes.add(
+                    UserConsentPayload.PurposeDataModel(
+                        purposeId = it.id,
+                        version = it.version,
                     /*
                     * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
                     * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
                     */
-                    transactionType =
-                        if (isConsentTypeInfo)
+                        transactionType =
+                        if (isConsentTypeInfo) {
                             CONSENT_OPT_IN
-                        else
-                            it.transactionType,
-                    dataElementType = it.attribute.dataElementType
-                ))
+                        } else {
+                            it.transactionType
+                        },
+                        dataElementType = it.attribute.dataElementType
+                    )
+                )
             }
             val dataElements = mutableMapOf<String, String>()
             consentCollectionParam?.dataElements?.forEach { it ->
@@ -310,7 +306,7 @@ class UserConsentWidget :
 
     private fun renderView(consentType: ConsentType?) {
         isConsentTypeInfo = consentType is ConsentType.SingleInfo
-        when(consentType) {
+        when (consentType) {
             is ConsentType.SingleInfo -> {
                 renderSinglePurposeInfo()
             }
@@ -556,12 +552,5 @@ class UserConsentWidget :
     companion object {
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
-
-        private var userConsentComponent: UserConsentComponent? = null
-
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        fun setUserConsentComponent(component: UserConsentComponent) {
-            userConsentComponent = component
-        }
     }
 }
