@@ -112,7 +112,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     fun processBrizzi(intent: Intent) {
-        if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent)) {
+        if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent) || CardUtils.isJakCard(intent)) {
             processEmoney(intent)
         } else if (CardUtils.isBrizziCard(intent)) {
             executeBrizzi(false, intent)
