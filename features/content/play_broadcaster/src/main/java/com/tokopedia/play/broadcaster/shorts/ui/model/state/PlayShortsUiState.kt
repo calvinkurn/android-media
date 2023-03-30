@@ -63,8 +63,7 @@ data class PlayShortsCoverFormUiState(
                     ""
                 }
             } else if (cover is CoverSetupState.GeneratedCover) {
-                return if (cover.coverImage.isNotEmpty()) cover.coverImage
-                else ""
+                return cover.coverImage
             }
 
             return ""
