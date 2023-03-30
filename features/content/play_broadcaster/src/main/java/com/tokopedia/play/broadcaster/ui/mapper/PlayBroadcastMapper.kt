@@ -46,7 +46,7 @@ interface PlayBroadcastMapper {
 
     fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel>
 
-    suspend fun mapConfiguration(config: Config): ConfigurationUiModel
+    suspend fun mapConfiguration(config: Config, authorType: String): ConfigurationUiModel
 
     fun mapChannelInfo(channel: GetChannelResponse.Channel): ChannelInfoUiModel
 
