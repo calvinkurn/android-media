@@ -8,6 +8,8 @@ import kotlin.coroutines.CoroutineContext
  * Created by yovi.putra on 24/03/23"
  * Project name: android-tokopedia-core
  **/
+
+@Suppress("LateinitUsage")
 abstract class SubViewModel {
 
     protected lateinit var coroutineScope: CoroutineScope

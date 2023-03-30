@@ -3,7 +3,6 @@ package com.tokopedia.product.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
@@ -67,7 +66,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase = { getRecommendationUseCase },
             getProductRecommendationUseCase = { getProductRecommendationUseCase }
         ).apply {
-            invoke(CoroutineScope(CoroutineTestDispatchersProvider.main))
+            register(CoroutineScope(CoroutineTestDispatchersProvider.main))
         }
     }
 
@@ -342,8 +341,7 @@ class ProductRecommSubViewModelTest {
         assertEquals(requestParams.getString("productID", ""), "123")
         assertEquals(requestParams.getString("pageName", ""), "pdp_10")
         assertEquals(requestParams.getBoolean("tokonow", false), true)
-        val miniCart =
-            requestParams.getObject("minicart") as MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        val miniCart = requestParams.getObject("minicart") as? MutableMap<*, *>
         assertEquals(miniCart!!.isNotEmpty(), true)
     }
 
@@ -369,8 +367,7 @@ class ProductRecommSubViewModelTest {
         assertEquals(requestParams.getString("productID", ""), "123")
         assertEquals(requestParams.getString("pageName", ""), "pdp_10")
         assertEquals(requestParams.getBoolean("tokonow", false), false)
-        val miniCart =
-            requestParams.getObject("minicart") as MutableMap<MiniCartItemKey, MiniCartItem>?
+        val miniCart = requestParams.getObject("minicart") as? MutableMap<*, *>
         assertNull(miniCart)
     }
 
