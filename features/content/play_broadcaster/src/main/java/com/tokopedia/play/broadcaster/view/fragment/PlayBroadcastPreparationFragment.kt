@@ -315,8 +315,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroadcastSetupTitleBottomSheet -> {
                 childFragment.setupListener(this)
-                childFragment.setupTitle(parentViewModel.channelTitle)
-                childFragment.setMaxCharacter(viewModel.maxTitleChars)
+                childFragment.setupData(parentViewModel.channelTitle, viewModel.maxTitleChars)
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(listener = this)

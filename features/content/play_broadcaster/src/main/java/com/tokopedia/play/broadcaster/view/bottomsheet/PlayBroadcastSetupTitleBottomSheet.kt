@@ -112,8 +112,9 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
         mListener = listener
     }
 
-    fun setupTitle(title: String) {
+    fun setupData(title: String, maxCharacter: Int) {
         mTitle = title
+        mMaxCharacter = maxCharacter
     }
 
     fun successSubmit() {
@@ -126,10 +127,6 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
         setLoading(false)
         binding.tvSetupTitleField.isInputError = mErrorState
         binding.tvSetupTitleField.setMessage(errorMessage ?: getString(R.string.play_bro_default_error_message))
-    }
-
-    fun setMaxCharacter(maxCharacter: Int) {
-        mMaxCharacter = maxCharacter
     }
 
     private fun setLoading(isLoading: Boolean) {
