@@ -29,6 +29,9 @@ public interface SearchConstant {
         String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
         String KEY_PAGE_SOURCE = "page_source";
         String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+
+        String PAGE_SOURCE_MPS = "mps";
+
         String SOURCE_QUICK_FILTER = "quick_filter";
     }
 

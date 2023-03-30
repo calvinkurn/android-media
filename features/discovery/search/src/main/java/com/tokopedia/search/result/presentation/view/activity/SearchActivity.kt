@@ -27,6 +27,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.SearchParameterModule
 import com.tokopedia.search.result.SearchState
 import com.tokopedia.search.result.SearchViewModel
@@ -148,6 +149,7 @@ class SearchActivity : BaseActivity(),
         searchComponent = DaggerSearchComponent
             .builder()
             .baseAppComponent(component)
+            .searchContextModule(SearchContextModule(this))
             .searchParameterModule(SearchParameterModule(searchParameter))
             .build()
 

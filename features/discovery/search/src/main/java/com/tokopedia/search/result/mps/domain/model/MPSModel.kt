@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
 
 data class MPSModel(
     @SerializedName("ace_search_shop_mps")
     @Expose
     val searchShopMPS: SearchShopMPS = SearchShopMPS(),
 
-    @SerializedName("quick_filter")
+    @SerializedName("filter_sort_product")
     @Expose
-    val quickFilterModel: DataValue = DataValue(),
+    val quickFilterModel: DynamicFilterModel = DynamicFilterModel(),
 ) {
 
     val totalData
@@ -20,6 +21,9 @@ data class MPSModel(
 
     val shopList
         get() = searchShopMPS.shopList
+
+    val quickFilterList
+        get() = quickFilterModel.data.filter
 
     data class SearchShopMPS(
         @SerializedName("header")

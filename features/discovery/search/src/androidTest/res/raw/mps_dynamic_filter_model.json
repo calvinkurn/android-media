@@ -1,0 +1,37 @@
+{
+  "data": {
+    "filter": [
+      {
+        "title": "Jenis toko",
+        "subTitle": "",
+        "template_name": "",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "shop_tier",
+            "value": "2",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          },
+          {
+            "name": "Power Merchant",
+            "key": "shop_tier",
+            "value": "1",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          },
+          {
+            "name": "Power Merchant Pro",
+            "key": "shop_tier",
+            "value": "3",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          }
+        ]
+      }
+    ]
+  }
+}

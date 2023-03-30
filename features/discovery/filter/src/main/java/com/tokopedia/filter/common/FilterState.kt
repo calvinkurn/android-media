@@ -29,8 +29,8 @@ data class FilterState(
         get() = nonFilterParameter + activeFilterMap
 
     fun from(
-        parameter: Map<String, String> = mapOf(),
-        filterList: List<Filter> = listOf(),
+        parameter: Map<String, String> = this.parameter,
+        filterList: List<Filter> = this.filterList,
     ): FilterState {
         val optionList = filterList.optionList()
         val nonFilterParameter = parameter.filter { (key, _) -> !optionList.hasKey(key) }
@@ -87,6 +87,10 @@ data class FilterState(
 
         return false
     }
+
+    fun appendFilterList(filterList: List<Filter>): FilterState = from(
+        filterList = this.filterList + filterList
+    )
 
     fun setFilter(
         optionToApply: Option,

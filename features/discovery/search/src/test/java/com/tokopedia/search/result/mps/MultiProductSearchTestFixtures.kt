@@ -2,6 +2,7 @@ package com.tokopedia.search.result.mps
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.utils.ChooseAddressWrapper
@@ -20,6 +21,7 @@ abstract class MultiProductSearchTestFixtures {
     protected val mpsLoadMoreUseCase = mockk<UseCase<MPSModel>>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
 
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
@@ -32,6 +34,7 @@ abstract class MultiProductSearchTestFixtures {
         mpsLoadMoreUseCase = mpsLoadMoreUseCase,
         addToCartUseCase = addToCartUseCase,
         chooseAddressWrapper = chooseAddressWrapper,
+        getDynamicFilterUseCase = getDynamicFilterUseCase,
     )
 
     val MPSViewModel.stateValue: MPSState

@@ -75,6 +75,6 @@ class QuickFilterView(
     }
 
     private fun openBottomSheetFilter() {
-
+        mpsViewModel()?.openBottomSheetFilter()
     }
 }

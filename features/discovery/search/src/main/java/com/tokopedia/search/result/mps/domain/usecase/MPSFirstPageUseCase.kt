@@ -3,14 +3,14 @@ package com.tokopedia.search.result.mps.domain.usecase
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PAGE_SOURCE
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL.PAGE_SOURCE_SEARCH_SHOP
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.PAGE_SOURCE_MPS
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.SOURCE_QUICK_FILTER
 import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.search.result.mps.domain.model.MPSQuickFilterModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.domain.model.MPSQuickFilterModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -39,7 +39,7 @@ class MPSFirstPageUseCase(
 
     private fun quickFilterRequest(): GraphqlRequest {
         val quickFilterParams = useCaseRequestParams.parameters.toMutableMap()
-        quickFilterParams[KEY_PAGE_SOURCE] = PAGE_SOURCE_SEARCH_SHOP
+        quickFilterParams[KEY_PAGE_SOURCE] = PAGE_SOURCE_MPS
         quickFilterParams[KEY_SOURCE] = SOURCE_QUICK_FILTER
 
         return GraphqlRequest(

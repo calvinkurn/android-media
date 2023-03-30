@@ -8,6 +8,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.OPTION_SEPARATO
 import com.tokopedia.filter.testutils.jsonToObject
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -273,5 +274,21 @@ class FilterStateTest {
             filterState.parameter,
             `is`(currentParameter + mapOf(optionToApply.key to optionToApply.value))
         )
+    }
+
+    @Test
+    fun `appendFilterList will update filterViewState based on new filters`() {
+        val filterList = dynamicFilterModel.data.filter
+        val nonFilterPair = SearchApiConst.Q to "samsung"
+        val filterOption = filterList.optionList().find { it.key == SearchApiConst.OFFICIAL }!!
+        val filterPair = filterOption.key to filterOption.value
+        val parameter = mapOf(nonFilterPair, filterPair)
+
+        val currentState = FilterState().from(parameter)
+
+        val filterState = currentState.appendFilterList(filterList)
+
+        assertEquals(setOf(filterOption.uniqueId), filterState.filterViewState)
+        assertTrue(filterState.isFilterActive)
     }
 }

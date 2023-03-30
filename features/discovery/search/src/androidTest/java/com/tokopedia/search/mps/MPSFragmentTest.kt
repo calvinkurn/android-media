@@ -9,7 +9,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.R
+import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
 import com.tokopedia.search.result.mps.domain.model.MPSModel
@@ -37,11 +39,12 @@ class MPSFragmentTest {
     private fun searchComponent(mpsState: MPSState): SearchComponent =
         DaggerMPSFragmentTestComponent.builder()
             .baseAppComponent(createFakeBaseAppComponent(context))
+            .searchContextModule(SearchContextModule(context))
             .fakeMPSViewModelModule(FakeMPSViewModelModule(mpsState))
             .build()
 
     @Test
-    fun mps_loading() {
+    fun loading() {
         launchFragmentInContainer {
             MPSFragment.newInstance(searchComponent(MPSState()))
         }
@@ -51,7 +54,7 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_success() {
+    fun success() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateSuccess = MPSState().success(mpsModel)
 
@@ -64,7 +67,7 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_failed() {
+    fun failed() {
         val mpsStateError = MPSState().error(Error("test exception"))
 
         launchFragmentInContainer {
@@ -77,7 +80,7 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_load_more_failed() {
+    fun load_more_failed() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateError = MPSState().success(mpsModel).errorLoadMore(Error("test exception"))
 
@@ -89,7 +92,7 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_empty_state_keyword() {
+    fun empty_state_keyword() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
         val mpsStateSuccess = MPSState().success(mpsModel)
 
@@ -101,9 +104,9 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_empty_state_filter() {
+    fun empty_state_filter() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
-        val appliedFilter = mpsModel.quickFilterModel.filter.first().options.first()
+        val appliedFilter = mpsModel.quickFilterList.first().options.first()
         val mpsStateSuccess = MPSState(mapOf(
             appliedFilter.key to appliedFilter.value
         )).success(mpsModel)
@@ -113,5 +116,30 @@ class MPSFragmentTest {
         }
 
         onView(withId(R.id.mpsEmptyStateFilterImage)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun open_loading_bottomsheet_filter() {
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
+        val mpsStateSuccess = MPSState().success(mpsModel).openBottomSheetFilter()
+
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+        }
+
+        onView(withId(R.id.progressBarSortFilterBottomSheet)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun open_bottomsheet_filter() {
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
+        val dynamicFilterModel = rawToObject<DynamicFilterModel>(RTest.raw.mps_dynamic_filter_model)
+        val mpsStateSuccess = MPSState().success(mpsModel).setBottomSheetFilterModel(dynamicFilterModel)
+
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+        }
+
+        onView(withId(R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
     }
 }

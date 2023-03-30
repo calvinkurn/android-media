@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
@@ -54,6 +56,7 @@ class MPSFragment:
     private var mpsListAdapter: MPSListAdapter? = null
     private val quickFilterView = QuickFilterView(::viewModel)
     private val addToCartView = AddToCartView({ context }, ::viewModel)
+    private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var endlessScrollListener: EndlessScrollListener? = null
 
     override fun getScreenName(): String = ""
@@ -79,6 +82,11 @@ class MPSFragment:
     private fun initViews() {
         val context = context ?: return
 
+        initRecyclerView(context)
+        initBottomSheetFilter()
+    }
+
+    private fun initRecyclerView(context: Context) {
         initAdapter()
 
         binding?.mpsRecyclerView?.apply {
@@ -110,18 +118,28 @@ class MPSFragment:
             }
         }
 
-    override fun refresh() = withState(viewModel) {
-        binding?.mpsLoadingView?.showWithCondition(it.result is State.Loading)
-        binding?.mpsSwipeRefreshLayout?.showWithCondition(it.result is Success)
-        if (it.result is Error) showNetworkError(it.result)
+    private fun initBottomSheetFilter() {
+        bottomSheetFilterView = BottomSheetFilterView(
+            context,
+            viewModel,
+            parentFragmentManager
+        )
+    }
 
-        if (it.loadMoreThrowable != null) showNetworkErrorLoadMore(it.loadMoreThrowable)
+    override fun refresh() = withState(viewModel) { state ->
+        binding?.mpsLoadingView?.showWithCondition(state.result is State.Loading)
+        binding?.mpsSwipeRefreshLayout?.showWithCondition(state.result is Success)
+        if (state.result is Error) showNetworkError(state.result)
 
-        mpsListAdapter?.submitList(it.result.data)
+        if (state.loadMoreThrowable != null) showNetworkErrorLoadMore(state.loadMoreThrowable)
 
-        quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, it)
+        mpsListAdapter?.submitList(state.result.data)
 
-        addToCartView.refreshAddToCartToaster(view, it.addToCartState)
+        quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, state)
+
+        addToCartView.refreshAddToCartToaster(view, state.addToCartState)
+
+        bottomSheetFilterView?.refreshBottomSheetFilter(state)
     }
 
     private fun showNetworkError(result: Error<List<Visitable<*>>>) {

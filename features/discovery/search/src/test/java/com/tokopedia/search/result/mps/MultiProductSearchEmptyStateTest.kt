@@ -43,7 +43,7 @@ class MultiProductSearchEmptyStateTest: MultiProductSearchTestFixtures() {
     @Test
     fun `shop list empty with filter active will show empty state by filter`() {
         val mpsModel = "mps/mps-emptystate.json".jsonToObject<MPSModel>()
-        val activeFilterOption = mpsModel.quickFilterModel.filter.first().options.first()
+        val activeFilterOption = mpsModel.quickFilterList.first().options.first()
         val activeFilterPair = activeFilterOption.run { key to value }
         val parameterWithFilter = parameter + activeFilterPair
         val mpsState = MPSState(parameterWithFilter)

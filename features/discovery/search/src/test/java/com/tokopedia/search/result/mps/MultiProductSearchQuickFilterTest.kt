@@ -3,6 +3,7 @@ package com.tokopedia.search.result.mps
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
@@ -30,7 +31,7 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
         `Then assert quick filter data view list`(
             mpsViewModel.stateValue.quickFilterDataViewList,
-            mpsModel.quickFilterModel,
+            mpsModel.quickFilterList,
         )
     }
 
@@ -40,10 +41,8 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
     private fun `Then assert quick filter data view list`(
         quickFilterDataViewList: List<QuickFilterDataView>,
-        quickFilterModel: DataValue,
+        expectedQuickFilterList: List<Filter>,
     ) {
-        val expectedQuickFilterList = quickFilterModel.filter
-
         assertEquals(expectedQuickFilterList.size, quickFilterDataViewList.size)
 
         quickFilterDataViewList.forEachIndexed { index, quickFilterDataView ->
@@ -135,7 +134,7 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
     @Test
     fun `empty state with filter active will still show quick filter`() {
         val mpsModel = "mps/mps-emptystate.json".jsonToObject<MPSModel>()
-        val activeFilterOption = mpsModel.quickFilterModel.filter.first().options.first()
+        val activeFilterOption = mpsModel.quickFilterList.first().options.first()
         val activeFilterPair = activeFilterOption.run { key to value }
         val parameterWithFilter = parameter + activeFilterPair
         val mpsState = MPSState(parameterWithFilter)
@@ -147,7 +146,7 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
         `Then assert quick filter data view list`(
             mpsViewModel.stateValue.quickFilterDataViewList,
-            mpsModel.quickFilterModel,
+            mpsModel.quickFilterList,
         )
     }
 }

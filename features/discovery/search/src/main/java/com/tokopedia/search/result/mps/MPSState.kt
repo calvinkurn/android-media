@@ -5,10 +5,13 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.filter.common.FilterState
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
+import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterState
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.utils.PaginationState
@@ -23,20 +26,36 @@ data class MPSState(
     val filterState: FilterState = FilterState(),
     val loadMoreThrowable: Throwable? = null,
     val paginationState: PaginationState = PaginationState(),
-    val addToCartState: State<AddToCartDataModel>? = null
+    val addToCartState: State<AddToCartDataModel>? = null,
+    val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
 ): SearchUiState {
 
-    val visitableList = result.data ?: listOf()
-    val startFrom = paginationState.startFrom
-    val hasNextPage = paginationState.hasNextPage
+    val visitableList
+        get() = result.data ?: listOf()
+    val startFrom
+        get() = paginationState.startFrom
+    val hasNextPage
+        get() = paginationState.hasNextPage
+    val isBottomSheetFilterOpen
+        get() = bottomSheetFilterState.isBottomSheetFilterOpen
+    val bottomSheetFilterModel
+        get() = bottomSheetFilterState.bottomSheetFilterModel
+
+    private val bottomSheetFilterList: List<Filter>
+        get() = bottomSheetFilterModel?.data?.filter ?: listOf()
 
     fun success(mpsModel: MPSModel): MPSState =
         this.updateFilterState(mpsModel)
             .updateResult(mpsModel)
 
-    private fun updateFilterState(mpsModel: MPSModel) = copy(
-        filterState = filterState.from(parameter, mpsModel.quickFilterModel.filter)
-    )
+    private fun updateFilterState(mpsModel: MPSModel): MPSState {
+        return copy(
+            filterState = filterState.from(
+                parameter,
+                mpsModel.quickFilterList + bottomSheetFilterList
+            )
+        )
+    }
 
     private fun updateResult(mpsModel: MPSModel) = copy(
         result = State.Success(data = successData(mpsModel)),
@@ -62,7 +81,7 @@ data class MPSState(
 
     private fun quickFilterData(mpsModel: MPSModel): List<QuickFilterDataView> {
         return if (mpsModel.shopList.isEmpty() && !filterState.isFilterActive) listOf()
-        else mpsModel.quickFilterModel.filter.map { QuickFilterDataView(it) }
+        else mpsModel.quickFilterList.map { QuickFilterDataView(it) }
     }
 
     fun error(throwable: Throwable) = copy(
@@ -80,6 +99,9 @@ data class MPSState(
     fun reload() = MPSState(
         parameter = parameter,
         chooseAddressModel = chooseAddressModel,
+        bottomSheetFilterState = BottomSheetFilterState(
+            bottomSheetFilterModel = bottomSheetFilterModel
+        ),
     )
 
     fun applyQuickFilter(quickFilterDataView: QuickFilterDataView): MPSState {
@@ -101,9 +123,7 @@ data class MPSState(
         paginationState = paginationState.incrementStart(),
     )
 
-    fun errorLoadMore(throwable: Throwable) = copy(
-        loadMoreThrowable = throwable
-    )
+    fun errorLoadMore(throwable: Throwable) = copy(loadMoreThrowable = throwable)
 
     fun successAddToCart(addToCartDataModel: AddToCartDataModel) = copy(
         addToCartState = State.Success(addToCartDataModel)
@@ -116,7 +136,20 @@ data class MPSState(
         )
     )
 
-    fun addToCartMessageDismissed() = copy(
-        addToCartState = null,
+    fun addToCartMessageDismissed() = copy(addToCartState = null)
+
+    fun openBottomSheetFilter() = copy(
+        bottomSheetFilterState = bottomSheetFilterState.openBottomSheetFilter()
     )
+
+    fun setBottomSheetFilterModel(dynamicFilterModel: DynamicFilterModel) = copy(
+        bottomSheetFilterState = bottomSheetFilterState.setBottomSheetFilterModel(dynamicFilterModel),
+        filterState = filterState.appendFilterList(dynamicFilterModel.data.filter)
+    )
+
+    fun closeBottomSheetFilter() = copy(
+        bottomSheetFilterState = bottomSheetFilterState.closeBottomSheetFilter()
+    )
+
+    fun applyFilter(parameter: Map<String, String>) = copy(parameter = parameter)
 }

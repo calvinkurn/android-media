@@ -2,11 +2,14 @@ package com.tokopedia.search.result.mps
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_ROWS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ROWS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
+import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
@@ -30,6 +33,8 @@ class MPSViewModel @Inject constructor(
     @param:Named(MPS_LOAD_MORE_USE_CASE)
     private val mpsLoadMoreUseCase: UseCase<MPSModel>,
     private val addToCartUseCase: AddToCartUseCase,
+    @param:Named(GET_DYNAMIC_FILTER_SHOP_USE_CASE)
+    private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
 ): ViewModel(), SearchViewModel<MPSState> {
 
@@ -72,11 +77,13 @@ class MPSViewModel @Inject constructor(
     }
 
     private fun mpsUseCaseRequestParams(): RequestParams = RequestParams.create().apply {
-        putAll(chooseAddressParams())
-        putAll(mpsState.parameter)
+        putAll(mandatoryParams())
         putString(START, mpsState.startFrom.toString())
         putString(ROWS, DEFAULT_VALUE_OF_PARAMETER_ROWS)
     }
+
+    private fun mandatoryParams(): Map<String, String> =
+        mpsState.parameter + chooseAddressParams()
 
     private fun chooseAddressParams() =
         chooseAddressModel?.toSearchParams() ?: mapOf()
@@ -139,5 +146,34 @@ class MPSViewModel @Inject constructor(
 
     fun onAddToCartMessageDismissed() {
         updateState { it.addToCartMessageDismissed() }
+    }
+
+    fun openBottomSheetFilter() {
+        updateState { it.openBottomSheetFilter() }
+
+        if (mpsState.bottomSheetFilterModel != null) return
+
+        getDynamicFilterUseCase.execute(
+            onSuccess = { dynamicFilterModel ->
+                updateState { it.setBottomSheetFilterModel(dynamicFilterModel) }
+            },
+            onError = { },
+            useCaseRequestParams = mpsDynamicFilterRequestParams()
+        )
+    }
+
+    private fun mpsDynamicFilterRequestParams() = RequestParams.create().apply {
+        putAll(mandatoryParams())
+        putString(SearchApiConst.SOURCE, SearchApiConst.MPS)
+    }
+
+    fun closeBottomSheetFilter() {
+        updateState { it.closeBottomSheetFilter() }
+    }
+
+    fun applyFilter(parameter: Map<String, String>) {
+        updateState { it.applyFilter(parameter).reload() }
+
+        multiProductSearch()
     }
 }
