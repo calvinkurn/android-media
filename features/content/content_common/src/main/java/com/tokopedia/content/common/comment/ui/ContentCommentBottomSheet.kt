@@ -24,6 +24,7 @@ import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -295,7 +296,8 @@ class ContentCommentBottomSheet @Inject constructor(
                         val mention = TagMentionBuilder.createNewMentionTag(
                             event.parentItem
                         )
-                        binding.newComment.tag = event.parentItem.id
+                        binding.newComment.tag = if (event.parentItem.commentType.isParent)
+                            event.parentItem.id else event.parentItem.commentType.parentId
                         binding.newComment.setText(mention)
                         binding.newComment.requestFocus()
                         showKeyboard(true)
