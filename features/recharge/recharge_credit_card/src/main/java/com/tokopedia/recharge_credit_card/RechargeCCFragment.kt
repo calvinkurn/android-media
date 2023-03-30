@@ -554,9 +554,11 @@ class RechargeCCFragment :
     private fun dialogConfirmation() {
         if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
             binding?.run {
+                val formattedClientNumber = binding?.ccWidgetClientNumber?.getFormattedInputNumber() ?: ""
+                val dialogDesc = String.format(getString(R.string.cc_desc_dialog), formattedClientNumber)
                 val dialog = DialogUnify(root.context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.cc_title_dialog))
-                dialog.setDescription(getString(R.string.cc_desc_dialog))
+                dialog.setDescription(dialogDesc)
                 dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
                 dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
                 dialog.setPrimaryCTAClickListener {

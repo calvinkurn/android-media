@@ -2,7 +2,7 @@
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
 
     <string name="cc_title_dialog">Pastikan Nomor Kartu Sudah Benar</string>
-    <string name="cc_desc_dialog">Sebelum lanjut, pastikan nomor kartu kreditmu sudah benar.</string>
+    <string name="cc_desc_dialog">Sebelum lanjut, pastikan nomor kartu kreditmu (%s) sudah benar.</string>
     <string name="cc_cta_btn_primary">Lanjut</string>
     <string name="cc_cta_btn_secondary">Kembali</string>
     <string name="cc_label_input_number">Masukkan Nomor Kartu Kredit</string>
