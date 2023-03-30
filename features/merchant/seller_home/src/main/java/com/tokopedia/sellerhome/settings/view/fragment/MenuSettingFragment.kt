@@ -444,8 +444,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.run {
-                dialogTitle.text = it.getString(R.string.seller_home_logout_title)
-                dialogDesc.text = it.getString(R.string.seller_home_logout_confirm)
+                setTitle(it.getString(R.string.seller_home_logout_title))
+                setDescription(it.getString(R.string.seller_home_logout_confirm))
                 setPrimaryCTAText(it.getString(R.string.seller_home_logout_button))
                 setPrimaryCTAClickListener {
                     doLogout(dialog)
