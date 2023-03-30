@@ -141,7 +141,7 @@ class PlayWebSocketImpl(
         return Request.Builder().get().url(url)
                 .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization", "Bearer $accessToken")
-                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("x_app_name", GlobalConfig.getPackageApplicationName())
                 .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
