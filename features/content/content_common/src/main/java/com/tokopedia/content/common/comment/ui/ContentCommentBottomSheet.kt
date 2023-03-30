@@ -498,11 +498,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun requireInternet(action: (isAvailable: Boolean) -> Unit) {
-        val isInetAvailable = ConnectionHelper.isInternetAvailable(requireContext(),
-            checkWifi = true,
-            checkCellular = true,
-            checkEthernet = true
-        )
+        val isInetAvailable = ConnectionHelper.isConnectWifi(requireContext()) || ConnectionHelper.isConnectCellular(requireContext())
         if (isInetAvailable) {
             action(true)
         } else {
@@ -512,7 +508,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 Toaster.LENGTH_LONG,
                 getString(R.string.feed_content_coba_lagi_text)
             ) {
-                action(isInetAvailable)
+                action(false)
             }
         }
     }
