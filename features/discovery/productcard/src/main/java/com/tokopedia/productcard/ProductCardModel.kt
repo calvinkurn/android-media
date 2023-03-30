@@ -81,6 +81,7 @@ data class ProductCardModel (
         val customVideoURL : String = "",
         val cardInteraction: Boolean = false,
         val productListType: ProductListType = ProductListType.CONTROL,
+        val isPortrait: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -300,6 +301,11 @@ data class ProductCardModel (
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
+
+    fun willShowBigImage() : Boolean {
+        return productListType == ProductListType.LONG_IMAGE
+            || (productListType == ProductListType.PORTRAIT && isPortrait)
+    }
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

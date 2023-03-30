@@ -16,7 +16,10 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
         val productCardHeightList = mutableListOf<Int>()
 
         forEach { productCardModel ->
-            val imageHeight = productCardModel.layoutStrategy.getImageHeight(productImageWidth)
+            val imageHeight = productCardModel.layoutStrategy.getImageHeight(
+                productImageWidth,
+                productCardModel,
+            )
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
 
             val bestSellerLabelHeight =

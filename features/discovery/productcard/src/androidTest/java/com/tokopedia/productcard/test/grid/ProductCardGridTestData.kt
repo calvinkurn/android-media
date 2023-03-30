@@ -28,6 +28,7 @@ import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
 import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.LIGHT_ORANGE
 import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
+import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
@@ -50,6 +51,7 @@ internal val productCardGridTestData =
             testContentReposition(),
             testLongImage(),
             testPortraitImage(),
+            testPortraitImageWithIsPortraitFalse(),
             testEta(),
             testInlineEta(),
             testCampaignOverlay(),
@@ -74,6 +76,7 @@ internal val productCardGridViewStubTestData =
             testContentReposition(),
             testLongImage(),
             testPortraitImage(),
+            testPortraitImageWithIsPortraitFalse(),
             testEta(),
             testInlineEta(),
             testCampaignOverlay(),
@@ -526,11 +529,30 @@ private fun testPortraitImage(): ProductCardModelMatcher {
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         productListType = ProductCardModel.ProductListType.PORTRAIT,
+        isPortrait = true
     )
 
     val productCardMatcher = mapOf(
         R.id.productCardImage to isDisplayed(),
         R.id.productCardImage to withDimensionRatio(LONG_IMAGE_RATIO),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testPortraitImageWithIsPortraitFalse(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Long Image",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        productListType = ProductCardModel.ProductListType.PORTRAIT,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardImage to withDimensionRatio(SQUARE_IMAGE_RATIO),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )

@@ -75,24 +75,26 @@ class SmallGridProductItemViewHolder(
     }
 
     private fun ProductItemDataView.getProductImage(): String {
-        return if (getProductListTypeEnum().needBiggerImage())
+        return if (getProductListTypeEnum().needBiggerImage(this))
             imageUrl700
         else
             imageUrl300
     }
 
-    private fun ProductCardModel.ProductListType.needBiggerImage() : Boolean {
+    private fun ProductCardModel.ProductListType.needBiggerImage(
+        productItemDataView: ProductItemDataView
+    ): Boolean {
         return this == ProductCardModel.ProductListType.LONG_IMAGE
-            || this == ProductCardModel.ProductListType.PORTRAIT
+            || (this == ProductCardModel.ProductListType.PORTRAIT && productItemDataView.isPortrait)
     }
 
     private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
-        return when {
-            productListType == SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
-            productListType == SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
-            productListType == SearchConstant.NewCardType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
-            productListType == SearchConstant.NewCardType.PORTRAIT && isPortrait -> ProductCardModel.ProductListType.PORTRAIT
-            productListType == SearchConstant.NewCardType.ETA -> ProductCardModel.ProductListType.ETA
+        return when (productListType) {
+            SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
+            SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            SearchConstant.NewCardType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
+            SearchConstant.NewCardType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
+            SearchConstant.NewCardType.ETA -> ProductCardModel.ProductListType.ETA
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

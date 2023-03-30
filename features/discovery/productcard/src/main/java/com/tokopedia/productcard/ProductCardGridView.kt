@@ -192,6 +192,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             imageProduct,
             mediaAnchorProduct,
             videoProduct,
+            productCardModel,
         )
 
         productCardModel.layoutStrategy.renderOverlayLabel(
