@@ -20,7 +20,11 @@ data class WebSocketResponse(
 
         @SerializedName("data")
         @Expose
-        val jsonElement: JsonElement? = null
+        val jsonElement: JsonElement? = null,
+
+        @SerializedName("tracking")
+        @Expose
+        val tracking: TrackingField = TrackingField(),
 ) {
         val jsonObject: JsonObject?
                 get() = if (jsonElement?.isJsonObject == true) {
@@ -31,4 +35,10 @@ data class WebSocketResponse(
                 get() = if (jsonElement?.isJsonArray == true) {
                         jsonElement as JsonArray
                 } else null
+
+    data class TrackingField(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+    )
 }
