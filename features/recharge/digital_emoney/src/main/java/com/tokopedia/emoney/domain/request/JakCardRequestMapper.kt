@@ -30,7 +30,17 @@ object JakCardRequestMapper {
         )
     }
 
-
+    fun createGetTopUpConfirmationParam(cardData: String, cardNumber: String, lastBalance: Int, amount: Int, stan: String, refNo: String): JakCardRequest {
+        return createJakCardParam(
+            cardNumber = cardNumber,
+            cardData = cardData,
+            amount = amount,
+            lastBalance = lastBalance,
+            stan = stan,
+            refNo = refNo,
+            action = JakCardAction.TOP_UP_CONFIRMATION.action
+        )
+    }
 
     private fun createJakCardParam(cardNumber: String, cardData: String, amount: Int,
                                    lastBalance: Int, stan: String, refNo: String,

@@ -133,7 +133,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(CardUtils.isJakCard(intent)) {
             issuerActive = ISSUER_ID_JAKCARD
             showLoading(getOperatorName(issuerActive))
-            jakcardBalanceViewModel.procesJakCardTagIntent(IsoDep.get(tag))
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag))
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
