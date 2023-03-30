@@ -148,6 +148,8 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    private var isFromChild: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -287,9 +289,10 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
-                    CommentEvent.ReplySuccess -> {
+                    is CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
-                        binding.rvComment.scrollToPosition(0)
+                        binding.rvComment.scrollToPosition(event.position)
+                        isFromChild = false
                     }
                     is CommentEvent.AutoType -> {
                         binding.newComment.setText("")
@@ -342,6 +345,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
+        isFromChild = true
         viewModel.submitAction(CommentAction.EditTextClicked(item))
     }
 

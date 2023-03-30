@@ -18,7 +18,7 @@ sealed interface CommentEvent {
     object ShowKeyboard: CommentEvent
     object HideKeyboard: CommentEvent
 
-    object ReplySuccess: CommentEvent
+    data class ReplySuccess(val position: Int): CommentEvent
     data class OpenAppLink(val appLink: String) : CommentEvent
     object OpenReportEvent : CommentEvent
 

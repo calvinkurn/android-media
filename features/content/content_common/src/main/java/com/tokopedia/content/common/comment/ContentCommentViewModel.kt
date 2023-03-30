@@ -293,8 +293,9 @@ class ContentCommentViewModel @AssistedInject constructor(
                 ) throw MessageErrorException(CommentException.LinkNotAllowed.message)
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)
+                var index = 0
                 _comments.getAndUpdate {
-                    val index = if (result.commentType.isChild) {
+                    index = if (result.commentType.isChild) {
                         val selected = it.list
                             .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
                         selected
@@ -304,7 +305,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     }
                     it.copy(list = newList)
                 }
-                _event.emit(CommentEvent.ReplySuccess)
+                _event.emit(CommentEvent.ReplySuccess(index))
 
             }) {
                 _event.emit(
