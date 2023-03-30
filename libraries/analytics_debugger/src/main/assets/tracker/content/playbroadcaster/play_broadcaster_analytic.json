@@ -92,7 +92,7 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*",
-      "trackerId": "26713"
+      "trackerId": "30214|26713"
     },
     {
       "event": "clickSellerBroadcast",
@@ -114,7 +114,7 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*",
-      "trackerId": "26716"
+      "trackerId": "30216|26716"
     },
     {
       "event": "(clickSellerBroadcast|clickPG)",
