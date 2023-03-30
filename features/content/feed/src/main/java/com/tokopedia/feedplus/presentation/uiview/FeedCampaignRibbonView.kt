@@ -41,6 +41,10 @@ class FeedCampaignRibbonView(
     private val scope = CoroutineScope(Dispatchers.Main)
 
     var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
+    var product: FeedCardProductModel? = null
+    var mCampaign: FeedCardCampaignModel? = null
+    var mCta: FeedCardCtaModel? = null
+    var mHasVoucher: Boolean = false
 
     fun bindData(
         modelType: String,
@@ -58,7 +62,65 @@ class FeedCampaignRibbonView(
             }
 
             type = getRibbonType(modelType, campaign.isOngoing)
-            buildRibbonBasedOnType(product, campaign, ctaModel)
+            mCampaign = campaign
+            mCta = ctaModel
+            mHasVoucher = hasVoucher
+
+            buildRibbonBasedOnType()
+        }
+    }
+
+    fun resetView() {
+        with(binding) {
+            root.background = MethodChecker.getDrawable(
+                root.context,
+                R.drawable.feed_tag_product_background
+            )
+            resetAnimationBasedOnType()
+        }
+    }
+
+    fun startAnimation() {
+        with(binding) {
+            when (type) {
+                FeedCampaignRibbonType.ASGC_GENERAL -> {
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient()
+                    }
+                }
+                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    startDelayProcess(TWO_SECOND) {
+                    }
+                }
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> {
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient()
+
+                        startDelayProcess(THREE_SECOND) {
+                            root.setTransition(root.currentState, R.id.availability_state)
+                            root.transitionToEnd()
+                        }
+                    }
+                }
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient()
+
+                        startDelayProcess(THREE_SECOND) {
+                            root.setTransition(root.currentState, R.id.start_in_state)
+                            root.transitionToEnd()
+                        }
+                    }
+                }
+                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
+                    tyFeedCampaignRibbonTitle.text =
+                        "${mCta?.text} ${mCta?.subtitle?.joinToString(" ")}"
+
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient()
+                    }
+                }
+            }
         }
     }
 
@@ -71,120 +133,137 @@ class FeedCampaignRibbonView(
         else -> FeedCampaignRibbonType.ASGC_GENERAL
     }
 
-    private fun setBackgroundGradient(cta: FeedCardCtaModel) {
+    private fun setBackgroundGradient() {
         with(binding) {
             when {
-                type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isEmpty() -> {
+                type == FeedCampaignRibbonType.ASGC_GENERAL && mCta?.colorGradient.isNullOrEmpty() -> {
                     root.background = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_general_gradient
                     )
                 }
-                type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
-                    root.background = GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        cta.colorGradient.map {
-                            it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
-                        }.toIntArray()
-                    ).apply {
-                        cornerRadius = CORNER_RADIUS
+                type == FeedCampaignRibbonType.ASGC_GENERAL && !mCta?.colorGradient.isNullOrEmpty() -> {
+                    mCta?.let { cta ->
+                        root.background = GradientDrawable(
+                            GradientDrawable.Orientation.LEFT_RIGHT,
+                            cta.colorGradient.map {
+                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                            }.toIntArray()
+                        ).apply {
+                            cornerRadius = CORNER_RADIUS
+                        }
                     }
                 }
-                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && cta.colorGradient.isNotEmpty() -> {
-                    root.background = GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        cta.colorGradient.map {
-                            it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
-                        }.toIntArray()
-                    ).apply {
-                        cornerRadius = CORNER_RADIUS
+                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && !mCta?.colorGradient.isNullOrEmpty() -> {
+                    mCta?.let { cta ->
+                        root.background = GradientDrawable(
+                            GradientDrawable.Orientation.LEFT_RIGHT,
+                            cta.colorGradient.map {
+                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                            }.toIntArray()
+                        ).apply {
+                            cornerRadius = CORNER_RADIUS
+                        }
                     }
                 }
-                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && cta.colorGradient.isEmpty() -> {
+                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && mCta?.colorGradient.isNullOrEmpty() -> {
                     root.background = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
                     )
                 }
-                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && cta.colorGradient.isEmpty() -> {
+                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && mCta?.colorGradient.isNullOrEmpty() -> {
                     root.background = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_special_release_gradient
                     )
                 }
-                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && cta.colorGradient.isNotEmpty() -> {
-                    root.background = GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        cta.colorGradient.map {
-                            it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
-                        }.toIntArray()
-                    ).apply {
-                        cornerRadius = CORNER_RADIUS
+                type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE && !mCta?.colorGradient.isNullOrEmpty() -> {
+                    mCta?.let { cta ->
+                        root.background = GradientDrawable(
+                            GradientDrawable.Orientation.LEFT_RIGHT,
+                            cta.colorGradient.map {
+                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                            }.toIntArray()
+                        ).apply {
+                            cornerRadius = CORNER_RADIUS
+                        }
                     }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun buildRibbonBasedOnType() {
+        with(binding) {
+            when (type) {
+                FeedCampaignRibbonType.ASGC_GENERAL -> {
+                    tyFeedCampaignRibbonTitle.text =
+                        "${mCta?.text} ${mCta?.subtitle?.joinToString(" ")}"
+                }
+                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    tyFeedCampaignRibbonTitle.text = mCta?.text
+                }
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> {
+                    tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
+                    tyFeedCampaignRibbonSubtitle.text = product?.stockWording
+                    val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
+                    pbFeedCampaignRibbon.setValue(value, true)
+                }
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
+                }
+                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
+                    tyFeedCampaignRibbonTitle.text =
+                        "${mCta?.text} ${mCta?.subtitle?.joinToString(" ")}"
                 }
             }
         }
     }
 
-    private fun buildRibbonBasedOnType(
-        product: FeedCardProductModel?,
-        campaign: FeedCardCampaignModel,
-        ctaModel: FeedCardCtaModel
-    ) {
+    private fun resetAnimationBasedOnType() {
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
-                    tyFeedCampaignRibbonTitle.text =
-                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
-
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-                    }
+                    root.setTransition(
+                        root.currentState,
+                        R.id.initial_title_with_icon
+                    )
+                    root.transitionToEnd()
+                    root.progress = 1f
                 }
                 FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-                    tyFeedCampaignRibbonTitle.text = ctaModel.text
+                    root.setTransition(
+                        root.currentState,
+                        R.id.initial_title_with_icon
+                    )
+                    root.transitionToEnd()
+                    root.progress = 1f
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> {
-                    tyFeedCampaignRibbonTitle.text = campaign.shortName
-                    tyFeedCampaignRibbonSubtitle.text = product?.stockWording
-                    val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
-                    pbFeedCampaignRibbon.setValue(value, true)
-
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-
-                        startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.availability_state)
-                            root.transitionToEnd()
-                        }
-                    }
-                }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
                     root.setTransition(
-                        R.id.initial_title_with_timer_and_icon,
+                        root.currentState,
                         R.id.initial_title_with_timer_and_icon
                     )
                     root.transitionToEnd()
                     root.progress = 1f
-
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-
-                        startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.start_in_state)
-                            root.transitionToEnd()
-                        }
-                    }
+                }
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
+                    root.setTransition(
+                        root.currentState,
+                        R.id.initial_title_with_icon
+                    )
+                    root.transitionToEnd()
+                    root.progress = 1f
                 }
                 FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
-                    tyFeedCampaignRibbonTitle.text =
-                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
-
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-                    }
+                    root.setTransition(
+                        root.currentState,
+                        R.id.initial_title_with_icon
+                    )
+                    root.transitionToEnd()
+                    root.progress = 1f
                 }
-                else -> {}
             }
         }
     }

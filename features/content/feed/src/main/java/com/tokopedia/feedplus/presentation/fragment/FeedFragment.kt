@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -33,6 +34,8 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -169,6 +172,7 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+        videoPlayer?.destroy()
         super.onDestroyView()
     }
 
@@ -498,11 +502,23 @@ class FeedFragment :
             }
 
             it.rvFeedPost.adapter = adapter
+            it.rvFeedPost.orientation = ViewPager2.ORIENTATION_VERTICAL
             it.rvFeedPost.registerOnPageChangeCallback(object : OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     if (state == SCROLL_STATE_IDLE && it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)) {
                         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
                     }
+                }
+
+                override fun onPageSelected(position: Int) {
+                    if (position > ZERO) {
+                        adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
+                    }
+                    if (position < (adapter?.itemCount ?: 0)) {
+                        adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                    }
+
+                    adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
                 }
             })
         }
@@ -737,6 +753,9 @@ class FeedFragment :
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
         private const val MINIMUM_ENDLESS_CALL = 1
+
+        private const val ZERO = 0
+        private const val ONE = 1
 
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"

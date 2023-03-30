@@ -2,8 +2,11 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
@@ -33,7 +36,6 @@ class FeedPostVideoViewHolder(
     override fun bind(element: FeedCardVideoContentModel?) {
         element?.let { data ->
             with(binding) {
-                bindVideoPlayer(element)
                 bindAuthor(element)
                 bindCaption(element)
                 bindProductTag(element)
@@ -51,6 +53,16 @@ class FeedPostVideoViewHolder(
                         imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
                     )
                 }
+            }
+        }
+    }
+
+    override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
+        element?.let {
+            if (payloads.contains(FEED_POST_SELECTED)) {
+                bindVideoPlayer(element)
+            }
+            if (payloads.contains(FEED_POST_NOT_SELECTED)) {
             }
         }
     }
@@ -95,7 +107,7 @@ class FeedPostVideoViewHolder(
         asgcTagsView.bindData(model.type, model.campaign)
     }
 
-    private fun bindVideoPlayer(element: FeedCardVideoContentModel?) {
+    private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
         feedVideoJob?.cancel()
         with(binding) {
             feedVideoJob = scope.launch {
@@ -107,23 +119,21 @@ class FeedPostVideoViewHolder(
                         videoPlayer.resume()
                     }
                 }
-                // TODO : Refactor with on page selected view pager
-//                element?.media?.get(0)?.let {
-//                    videoPlayer.start(it.mediaUrl, false)
-//                }
-//                videoPlayer?.setVideoStateListener(object : VideoStateListener {
-//                    override fun onInitialStateLoading() {
-//                        showLoading()
-//                    }
-//
-//                    override fun onVideoReadyToPlay() {
-//                        hideLoading()
-//                    }
-//
-//                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-//                    TODO("Not yet implemented")
-//                    }
-//                })
+                element.media[0].let {
+                    videoPlayer.start(it.mediaUrl, false)
+                }
+                videoPlayer.setVideoStateListener(object : VideoStateListener {
+                    override fun onInitialStateLoading() {
+                        showLoading()
+                    }
+
+                    override fun onVideoReadyToPlay() {
+                        hideLoading()
+                    }
+
+                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                    }
+                })
             }
         }
     }
