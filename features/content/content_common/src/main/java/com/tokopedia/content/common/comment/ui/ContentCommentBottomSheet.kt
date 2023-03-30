@@ -120,7 +120,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length >= MAX_CHAR.minus(1)) {
+                if (p0.length > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
                         CommentException.SendCommentFailed.message,
@@ -477,7 +477,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun handleSendComment() {
-        if (binding.newComment.length() >= MAX_CHAR) {
+        if (binding.newComment.length() > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
                 CommentException.SendCommentFailed.message,
