@@ -28,7 +28,7 @@ class ImageGeneratorMapper(
     }
 
     private fun generateImage(backgroundColor: String): String {
-        val previewImage = "$HOST_PROD?" +
+        val previewImage = "$HOST?" +
             "$KEY_BACKGROUND_COLOR=$backgroundColor&" +
             "$KEY_SHOP_LOGO=$authorLogo&" +
             "$KEY_PRODUCT_AMOUNT=$productAmount&" +
@@ -53,9 +53,7 @@ class ImageGeneratorMapper(
         private const val KEY_PRODUCT_IMAGE_1 = "product_image_1"
         private const val KEY_PRODUCT_IMAGE_2 = "product_image_2"
         private const val SOURCE_ID = "LScDrk"
-        private const val HOST_PROD = "https://imagenerator.tokopedia.com/v2/preview/$SOURCE_ID"
-        private const val HOST_STAGING =
-            "https://imagenerator-staging.tokopedia.com/v2/preview/$SOURCE_ID"
+        private const val HOST = "https://imagenerator.tokopedia.com/v2/preview/$SOURCE_ID"
     }
 
     enum class CoverColor(val colorValue: String) {
