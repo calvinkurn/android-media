@@ -124,7 +124,7 @@ class TrackingMapper {
                                     ANDROID_DASH + item.appVersion
                                 }
                             )
-                            put(KEY_BUILD_NUMBER, GlobalConfig.VERSION_CODE)
+                            put(KEY_BUILD_NUMBER, GlobalConfig.VERSION_CODE.toString())
                         }
                     )
                     row.put(
