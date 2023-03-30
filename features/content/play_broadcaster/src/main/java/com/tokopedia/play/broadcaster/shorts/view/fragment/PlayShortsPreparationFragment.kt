@@ -19,7 +19,6 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -622,9 +621,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
 
         if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED && source != PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED) {
-            showToast(R.string.play_setup_cover_upload_image_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
         } else if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE && source != PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE) {
-            showToast(R.string.play_setup_cover_auto_generated_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
         }
         viewModel.submitAction(PlayShortsAction.SetCoverUploadedSource(source))
     }

@@ -23,9 +23,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
 import com.tokopedia.content.common.navigation.people.UserProfileNavigation
 import com.tokopedia.content.common.navigation.people.UserProfileParam
-import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -390,9 +389,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
 
         if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
-            showToast(R.string.play_setup_cover_upload_image_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
         } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
-            showToast(R.string.play_setup_cover_auto_generated_toaster)
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
