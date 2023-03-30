@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -190,13 +191,15 @@ abstract class BasePdpViewModelTest {
             { updateCartUseCase },
             { deleteCartUseCase },
             { getTopadsIsAdsUseCase },
-            playWidgetTools,
             remoteConfigInstance,
             userSessionInterface,
             { affiliateCookieHelper },
             productRecommSubViewModel = ProductRecommSubViewModel(
                 getRecommendationUseCase = { getRecommendationUseCase },
                 getProductRecommendationUseCase = { getProductRecommendationUseCase }
+            ),
+            playWidgetSubViewModel = PlayWidgetSubViewModel(
+                playWidgetTools = playWidgetTools
             )
         )
     }

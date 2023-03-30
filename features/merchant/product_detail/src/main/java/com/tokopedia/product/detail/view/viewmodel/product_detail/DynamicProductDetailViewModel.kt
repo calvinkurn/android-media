@@ -30,11 +30,6 @@ import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.switch
-import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -84,7 +79,9 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.impl.ProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataModelMediator
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -125,7 +122,7 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-open class DynamicProductDetailViewModel @Inject constructor(
+class DynamicProductDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
     private val getProductInfoP2LoginUseCase: Lazy<GetProductInfoP2LoginUseCase>,
@@ -146,12 +143,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
-    private val playWidgetTools: PlayWidgetTools,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: ProductRecommSubViewModel
-) : BaseViewModel(dispatcher.main), IProductRecommSubViewModel by productRecommSubViewModel {
+    productRecommSubViewModel: ProductRecommSubViewModel,
+    playWidgetSubViewModel: PlayWidgetSubViewModel
+) : BaseViewModel(dispatcher.main),
+    IProductRecommSubViewModel by productRecommSubViewModel,
+    IPlayWidgetSubViewModel by playWidgetSubViewModel,
+    GetProductDetailDataModelMediator {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -246,13 +246,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _atcRecomTokonowNonLogin = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowNonLogin: LiveData<RecommendationItem> get() = _atcRecomTokonowNonLogin
 
-    private val _playWidgetModel = MutableLiveData<Result<PlayWidgetState>>()
-    val playWidgetModel: LiveData<Result<PlayWidgetState>> = _playWidgetModel
-
-    private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
-    val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> =
-        _playWidgetReminderSwitch
-
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
@@ -290,8 +283,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
     init {
         productRecommSubViewModel.register(scope = viewModelScope)
+        playWidgetSubViewModel.register(scope = viewModelScope, mediator = this)
         iniQuantityFlow()
     }
+
+    override fun getPdpLayout(): DynamicProductInfoP1? = getDynamicProductInfoP1
+
+    override fun getPdpData(): ProductInfoP2UiData? = p2Data.value
+
+    override fun getVariant(): ProductVariant? = variantData
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         _quantityUpdated.value = quantity to miniCartItem
@@ -1107,66 +1107,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
         val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
         p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe =
             selectedUpcoming?.notifyMe != true
-    }
-
-    fun getPlayWidgetData() {
-        launchCatchError(
-            block = {
-                val productIds = variantData?.let { variant ->
-                    listOf(variant.parentId) + variant.children.map { it.productId }
-                } ?: emptyList()
-                val categoryIds = getDynamicProductInfoP1?.basic?.category?.detail?.map {
-                    it.id
-                } ?: emptyList()
-
-                val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                    productIds,
-                    categoryIds
-                )
-                val response = playWidgetTools.getWidgetFromNetwork(widgetType)
-                val uiModel = playWidgetTools.mapWidgetToModel(response)
-                _playWidgetModel.value = Success(uiModel)
-            },
-            onError = {
-                _playWidgetModel.value = Fail(it)
-            }
-        )
-    }
-
-    fun updatePlayWidgetToggleReminder(
-        playWidgetState: PlayWidgetState,
-        channelId: String,
-        reminderType: PlayWidgetReminderType
-    ) {
-        launchCatchError(block = {
-            val updatedUi = playWidgetTools.updateActionReminder(
-                playWidgetState,
-                channelId,
-                reminderType
-            )
-            _playWidgetModel.value = Success(updatedUi)
-
-            val response = playWidgetTools.updateToggleReminder(channelId, reminderType)
-            if (playWidgetTools.mapWidgetToggleReminder(response)) {
-                _playWidgetReminderSwitch.value = Success(reminderType)
-            } else {
-                val reversedToggleUi = playWidgetTools.updateActionReminder(
-                    playWidgetState,
-                    channelId,
-                    reminderType.switch()
-                )
-                _playWidgetModel.value = Success(reversedToggleUi)
-                _playWidgetReminderSwitch.value = Fail(Throwable())
-            }
-        }, onError = {
-                val reversedToggleUi = playWidgetTools.updateActionReminder(
-                    playWidgetState,
-                    channelId,
-                    reminderType.switch()
-                )
-                _playWidgetModel.value = Success(reversedToggleUi)
-                _playWidgetReminderSwitch.value = Fail(it)
-            })
     }
 
     fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
