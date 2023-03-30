@@ -388,7 +388,8 @@ class ContentCommentBottomSheet @Inject constructor(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
-        binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
+        val avatar = if(viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.ivUserPhoto.loadImage(avatar)
         viewModel.submitAction(CommentAction.RefreshComment)
     }
 
