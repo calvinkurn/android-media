@@ -12,18 +12,38 @@ object TargetedTickerMapper {
     const val TICKER_WARNING_TYPE = "warning"
     const val TICKER_ERROR_TYPE = "danger"
 
-    fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
-        return TickerModel(
-            item = this.list.sortedBy { it.priority }.map {
+    fun convertTargetedTickerToUiModel(
+        firstTickerContent: String? = null,
+        targetedTickerData: GetTargetedTickerResponse.GetTargetedTickerData? = null
+    ): TickerModel {
+        val tickerItems = arrayListOf<TickerModel.TickerItem>()
+
+        if (firstTickerContent?.isNotBlank() == true) {
+            tickerItems.add(
                 TickerModel.TickerItem(
-                    id = it.id,
-                    type = it.toTickerType(),
-                    title = it.title,
-                    content = it.generateContent(),
-                    linkUrl = it.action.getUrl(),
-                    priority = it.priority
+                    type = Ticker.TYPE_ANNOUNCEMENT,
+                    content = firstTickerContent
                 )
-            }
+            )
+        }
+
+        targetedTickerData?.list?.sortedBy { it.priority }?.apply {
+            tickerItems.addAll(
+                map {
+                    TickerModel.TickerItem(
+                        id = it.id,
+                        type = it.toTickerType(),
+                        title = it.title,
+                        content = it.generateContent(),
+                        linkUrl = it.action.getUrl(),
+                        priority = it.priority
+                    )
+                }
+            )
+        }
+
+        return TickerModel(
+            item = tickerItems
         )
     }
 

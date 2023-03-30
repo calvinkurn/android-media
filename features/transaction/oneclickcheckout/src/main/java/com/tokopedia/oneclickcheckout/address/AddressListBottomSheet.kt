@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.toUiModel
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.model.TickerModel
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
@@ -142,9 +142,14 @@ class AddressListBottomSheet(
     private fun initAddressTicker(context: Context) {
         launch {
             try {
-                val param = GetTargetedTickerParam(page = GetTargetedTickerParam.ADDRESS_LIST_OCC, target = listOf())
+                val param = GetTargetedTickerParam(
+                    page = GetTargetedTickerParam.ADDRESS_LIST_OCC,
+                    target = listOf()
+                )
                 val response = getTargetedTicker(param)
-                val model = response.getTargetedTickerData.toUiModel()
+                val model = convertTargetedTickerToUiModel(
+                    targetedTickerData = response.getTargetedTickerData
+                )
                 renderTicker(context, model)
             } catch (@Suppress("SwallowedException") e: Throwable) {
                 hideTicker()

@@ -593,7 +593,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val tickerState = manageAddressViewModel.tickerState.value
@@ -608,10 +608,36 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         assert(manageAddressViewModel.tickerState.value is Fail)
+    }
+
+    @Test
+    fun `WHEN setupTicker failed and empty first ticker content THEN return fail`() {
+        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
+
+        // when
+        manageAddressViewModel.getTargetedTicker("")
+
+        // then
+        assert(manageAddressViewModel.tickerState.value is Fail)
+    }
+
+    @Test
+    fun `WHEN setupTicker failed but has first ticker content THEN return success`() {
+        // inject
+        val firstTickerContent = "tokopedia"
+
+        // given
+        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
+
+        // when
+        manageAddressViewModel.getTargetedTicker(firstTickerContent)
+
+        // then
+        assert(manageAddressViewModel.tickerState.value is Success)
     }
 
     @Test
@@ -622,7 +648,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -638,7 +664,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -654,7 +680,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -670,7 +696,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -686,7 +712,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -702,7 +728,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -718,7 +744,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -734,7 +760,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success
@@ -750,7 +776,7 @@ class ManageAddressViewModelTest {
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
-        manageAddressViewModel.setupTicker()
+        manageAddressViewModel.getTargetedTicker()
 
         // then
         val result = manageAddressViewModel.tickerState.value as Success

@@ -342,8 +342,16 @@ class MainAddressFragment :
                         globalError.gone()
                     }
                     if (viewModel.isClearData) clearData()
+
+                    mainAddressListener?.setupTicker(
+                        firstTicker = if (it.data.listAddress.isNotEmpty() && viewModel.page == 1) {
+                            it.data.pageInfo?.ticker
+                        } else {
+                            null
+                        }
+                    )
+
                     if (it.data.listAddress.isNotEmpty()) {
-                        updateTicker(it.data.pageInfo?.ticker)
                         updateStateForCheckoutSnippet(it.data.listAddress)
                         if (viewModel.isNeedToShareAddress.not()) {
                             updateButton(it.data.pageInfo?.buttonLabel)
@@ -355,6 +363,7 @@ class MainAddressFragment :
                 }
 
                 is ManageAddressState.Fail -> {
+                    mainAddressListener?.setupTicker()
                     binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
@@ -586,19 +595,6 @@ class MainAddressFragment :
 
     private fun updateData(data: List<RecipientAddressModel>) {
         adapter.addList(data)
-    }
-
-    private fun updateTicker(ticker: String?) {
-        ticker?.let {
-            binding?.tickerInfo?.run {
-                if (it.isEmpty()) {
-                    gone()
-                } else {
-                    visible()
-                    setHtmlDescription(ticker)
-                }
-            }
-        }
     }
 
     private fun updateButton(btnLabel: String?) {
@@ -1022,5 +1018,7 @@ class MainAddressFragment :
 
     interface MainAddressListener {
         fun setAddButtonOnClickListener(onClick: () -> Unit)
+
+        fun setupTicker(firstTicker: String? = null)
     }
 }

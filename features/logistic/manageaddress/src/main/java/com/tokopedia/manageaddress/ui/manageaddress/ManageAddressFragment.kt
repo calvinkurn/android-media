@@ -107,7 +107,6 @@ class ManageAddressFragment :
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupDataFromArgument(arguments)
         observeTickerState()
-        viewModel.setupTicker()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
             viewModel.doValidateShareAddress()
@@ -377,5 +376,9 @@ class ManageAddressFragment :
         manageAddressListener?.setAddButtonOnClickListener {
             onClick()
         }
+    }
+
+    override fun setupTicker(firstTicker: String?) {
+        viewModel.getTargetedTicker(firstTicker)
     }
 }

@@ -14,7 +14,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.toUiModel
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.model.TickerModel
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
@@ -207,7 +207,13 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val resultDelete =
-                    deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow, consentJson))
+                    deletePeopleAddressUseCase(
+                        DeleteAddressParam(
+                            id.toLong(),
+                            isTokonow,
+                            consentJson
+                        )
+                    )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                     resultDelete.response.data.success == STATUS_SUCCESS
                 ) {
@@ -388,17 +394,32 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
-    fun setupTicker() {
-        viewModelScope.launchCatchError(block = {
-            val param = GetTargetedTickerParam(
-                page = GetTargetedTickerParam.ADDRESS_LIST_NON_OCC,
-                target = listOf()
-            )
-            val response = getTargetedTicker(param)
-            _tickerState.value = Success(response.getTargetedTickerData.toUiModel())
-        }, onError = {
-                _tickerState.value = Fail(it)
-            })
+    fun getTargetedTicker(firstTickerContent: String? = null) {
+        viewModelScope.launchCatchError(
+            block = {
+                val param = GetTargetedTickerParam(
+                    page = GetTargetedTickerParam.ADDRESS_LIST_NON_OCC,
+                    target = listOf()
+                )
+                val response = getTargetedTicker(param)
+                _tickerState.value = Success(
+                    convertTargetedTickerToUiModel(
+                        targetedTickerData = response.getTargetedTickerData,
+                        firstTickerContent = firstTickerContent
+                    )
+                )
+            }, onError = {
+                if (firstTickerContent?.isNotBlank() == true) {
+                    _tickerState.value = Success(
+                        convertTargetedTickerToUiModel(
+                            firstTickerContent = firstTickerContent
+                        )
+                    )
+                } else {
+                    _tickerState.value = Fail(it)
+                }
+            }
+        )
     }
 
     override fun onCleared() {
