@@ -6,7 +6,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -162,8 +164,16 @@ class FindingNewDriverBottomSheet : BottomSheetUnify() {
                 viewModel.getNewDriverAvailability(orderId)
             }
             binding.tusCountdown.show()
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
+            logToCrashlytics(e)
             binding.tusCountdown.gone()
+        }
+    }
+    private fun logToCrashlytics(exception: Exception) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } else {
+            exception.printStackTrace()
         }
     }
 
