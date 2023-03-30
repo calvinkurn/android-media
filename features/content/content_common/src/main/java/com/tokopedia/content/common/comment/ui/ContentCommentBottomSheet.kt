@@ -264,7 +264,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if(event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if(!event.message.message?.equals(CommentException.FailedDelete.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
