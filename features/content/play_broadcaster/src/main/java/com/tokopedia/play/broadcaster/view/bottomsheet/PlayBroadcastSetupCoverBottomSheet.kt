@@ -10,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -34,6 +35,7 @@ import javax.inject.Inject
 class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     private val playBroSetupCoverViewModelFactory: PlayBroSetupCoverViewModel.Factory,
     private val analytic: PlayBroadcastAnalytic,
+    private val dispatchers: CoroutineDispatchers,
 ) : BottomSheetUnify(), ViewModelFactoryProvider {
 
     private lateinit var coverSetupViewModelProviderFactory: ViewModelProvider.Factory
@@ -45,8 +47,6 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
     private var coachMark: CoachMark2? = null
-
-    private val scope = viewLifecycleOwner.lifecycleScope
 
     private var isShowCoachMark = false
 
@@ -167,7 +167,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
 
     private fun showCoachMark() {
         if (coachMark != null && coachMark?.isShowing == true) return
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             delay(COACH_MARK_DELAY)
             coachMark?.showCoachMark(
                 arrayListOf(
