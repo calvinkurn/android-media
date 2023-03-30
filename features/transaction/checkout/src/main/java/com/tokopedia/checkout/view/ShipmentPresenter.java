@@ -606,6 +606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                @Nullable String leasingId,
                                                boolean isPlusSelected) {
         if (isReloadData) {
+            getView().setShipmentNewUpsellLoading(true);
             getView().setHasRunningApiCall(true);
             getView().showLoading();
         } else {
@@ -621,6 +622,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (getView() != null) {
                         getView().stopEmbraceTrace();
                         if (isReloadData) {
+                            getView().setShipmentNewUpsellLoading(false);
                             getView().setHasRunningApiCall(false);
                             getView().resetPromoBenefit();
                             getView().clearTotalBenefitPromoStacking();
@@ -638,6 +640,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (getView() != null) {
                         getView().stopEmbraceTrace();
                         if (isReloadData) {
+                            getView().setShipmentNewUpsellLoading(false);
                             getView().setHasRunningApiCall(false);
                             getView().hideLoading();
                         } else {

@@ -763,6 +763,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void setShipmentNewUpsellLoading(boolean isLoading) {
+        for (int i = 0; i < shipmentAdapter.getShipmentDataList().size(); i++) {
+            if (shipmentAdapter.getShipmentDataList().get(i) instanceof ShipmentNewUpsellModel) {
+                ((ShipmentNewUpsellModel) shipmentAdapter.getShipmentDataList().get(i)).setLoading(isLoading);
+                shipmentAdapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
         ArrayList<Long> childCategoryIds = new ArrayList<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {

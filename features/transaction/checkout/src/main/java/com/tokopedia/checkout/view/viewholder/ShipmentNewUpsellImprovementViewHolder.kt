@@ -79,6 +79,9 @@ class ShipmentNewUpsellImprovementViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
+        checkoutUpsellCard.setOnClickListener {
+            // no-op
+        }
         checkoutUpsellContentGroup.gone()
         checkoutUpsellBackgroundImage.setImageDrawable(
             VectorDrawableCompat.create(
