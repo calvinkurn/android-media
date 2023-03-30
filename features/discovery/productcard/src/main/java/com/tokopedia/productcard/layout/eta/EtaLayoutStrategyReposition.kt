@@ -14,21 +14,5 @@ class EtaLayoutStrategyReposition : EtaLayoutStrategy {
         val textViewETA = view.findViewById<Typography?>(R.id.textViewInlineETA)
         val labelGroupETA = productCardModel.getLabelETA()
         textViewETA?.initLabelGroup(labelGroupETA)
-
-        val productCardConstraintLayout =
-            view.findViewById<ConstraintLayout?>(R.id.constraintLayoutProductCard)
-        productCardConstraintLayout.applyConstraintSet {
-            if (labelGroupETA == null) {
-                it.clear(R.id.imageThreeDots, ConstraintSet.TOP)
-            } else {
-                it.connect(
-                    R.id.imageThreeDots,
-                    ConstraintSet.TOP,
-                    R.id.productCardContentLayout,
-                    ConstraintSet.BOTTOM,
-                    0,
-                )
-            }
-        }
     }
 }

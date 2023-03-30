@@ -14,14 +14,10 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
-import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
-import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
-import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.productcard.utils.renderStockBar
-import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -187,6 +183,8 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
+        productCardModel.layoutStrategy.renderProductCardShadow(cardViewProductCard)
+
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
         productCardModel.layoutStrategy.setupImageRatio(
@@ -235,16 +233,11 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
-            constraintLayoutProductCard?.post {
-                imageThreeDots?.expandTouchArea(
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-                )
-            }
-        }
+        productCardModel.layoutStrategy.renderThreeDots(
+            imageThreeDots,
+            constraintLayoutProductCard,
+            productCardModel,
+        )
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
