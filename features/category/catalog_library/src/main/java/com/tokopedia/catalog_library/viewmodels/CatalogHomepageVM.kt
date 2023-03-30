@@ -100,7 +100,7 @@ class CatalogHomepageVM @Inject constructor(
                 getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
                 RecyclerView.HORIZONTAL,
                 marginForTitle = Margin(48, 16, 0, 16),
-                marginForRV = Margin(12, 0, 0, 16)
+                marginForRV = Margin(16, 0, 0, 16)
             )
         listOfComponents.add(relevantDataModel)
 
