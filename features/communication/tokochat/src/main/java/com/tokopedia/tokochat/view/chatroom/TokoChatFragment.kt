@@ -167,6 +167,10 @@ open class TokoChatFragment :
                                 loadChatRoomData()
                             },
                             dismissAction = {
+                                tokoChatAnalytics.clickDismissConsent(
+                                    role = TokoChatAnalyticsConstants.BUYER,
+                                    source = viewModel.source
+                                )
                                 activity?.finish()
                             }
                         )
