@@ -2,14 +2,15 @@ package com.tokopedia.play_common.websocket
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
-import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -21,11 +22,11 @@ import java.util.concurrent.TimeUnit
  * Created by jegul on 09/03/21
  */
 class PlayWebSocketImpl(
-        clientBuilder: OkHttpClient.Builder,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
-        @ApplicationContext private val context: Context,
-        private val localCacheHandler: LocalCacheHandler,
+    clientBuilder: OkHttpClient.Builder,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
+    @ApplicationContext private val context: Context,
+    private val localCacheHandler: LocalCacheHandler
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
@@ -58,7 +59,7 @@ class PlayWebSocketImpl(
     private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
-            extraBufferCapacity = 100
+        extraBufferCapacity = 100
     )
 
     private var mWebSocket: WebSocket? = null
@@ -73,6 +74,12 @@ class PlayWebSocketImpl(
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
             webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
+
+            /**
+             * Send tracking Id
+             */
+            if (!newMessage.message.isTrackingIdAvailable) return
+            webSocket.send(sendTracking(newMessage.message.tracking.id))
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -133,7 +140,7 @@ class PlayWebSocketImpl(
             "source" to source.ifEmpty { "\"\"" },
             "channelId" to channelId.ifEmpty { "\"\"" },
             "warehouseId" to warehouseId.ifEmpty { "\"\"" },
-            "gcToken" to gcToken.ifEmpty { "\"\"" },
+            "gcToken" to gcToken.ifEmpty { "\"\"" }
         )
     }
 
@@ -141,9 +148,21 @@ class PlayWebSocketImpl(
         return Request.Builder().get().url(url)
                 .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization", "Bearer $accessToken")
-                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
+                .header("x_app_name", GlobalConfig.getPackageApplicationName())
                 .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
+    }
+
+    private fun sendTracking(trackingId: String): String {
+        val param = JsonObject()
+        param.addProperty(PARAM_SEND_TYPE_TRACKING_ID, trackingId)
+
+        val bundle = JsonObject()
+        bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_TRACKING)
+        bundle.add(PARAM_SEND_DATA, param)
+
+        return bundle.toString()
     }
 
     companion object {
@@ -156,5 +175,10 @@ class PlayWebSocketImpl(
         private const val HEADER_ACCEPT = "Accept"
 
         private const val HEADER_VALUE_CONTENT_TYPE_JSON = "application/json"
+
+        private const val PARAM_SEND_TYPE = "type"
+        private const val PARAM_SEND_DATA = "data"
+        private const val PARAM_SEND_TYPE_TRACKING = "TRACKING"
+        private const val PARAM_SEND_TYPE_TRACKING_ID = "id"
     }
 }
