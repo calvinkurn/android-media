@@ -100,7 +100,7 @@ class CatalogProductsBaseVM @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
                 null,
-                marginForTitle = Margin(32, 16, 0, 16)
+                marginForTitle = Margin(32, 16, 12, 16)
             )
             visitableList.add(productHeaderModel)
         }

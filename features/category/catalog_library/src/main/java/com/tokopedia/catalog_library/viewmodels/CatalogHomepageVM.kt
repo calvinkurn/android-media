@@ -55,7 +55,7 @@ class CatalogHomepageVM @Inject constructor(
                 true,
                 isGrid = true,
                 columnCount = 4,
-                marginForTitle = Margin(24, 52, 0, 16),
+                marginForTitle = Margin(24, 52, 0, 16)
             )
         listOfComponents.add(specialDataModel)
 
@@ -121,21 +121,21 @@ class CatalogHomepageVM @Inject constructor(
         return visitableList
     }
 
-    fun getPopularBrands(){
+    fun getPopularBrands() {
         catalogBrandsPopularUseCase.cancelJobs()
         catalogBrandsPopularUseCase.getBrandPopular(::onAvailablePopularBrands, ::onFailHomeData)
     }
 
-    private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse){
-        if(brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()){
+    private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse) {
+        if (brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Brands Response Data"))
-        } else{
+        } else {
             brandsPopularResponse.let {
                 _catalogHomeLiveData.postValue(Success(mapPopularBrands(it)))
             }
         }
     }
-    private fun mapPopularBrands(data: CatalogBrandsPopularResponse): CatalogLibraryDataModel{
+    private fun mapPopularBrands(data: CatalogBrandsPopularResponse): CatalogLibraryDataModel {
         val popularBrandsDataModel = CatalogContainerDM(
             CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
             CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
@@ -143,7 +143,7 @@ class CatalogHomepageVM @Inject constructor(
             getPopularBrandsVisitableList(data.catalogGetBrandPopular.brands),
             RecyclerView.HORIZONTAL,
             marginForTitle = Margin(36, 16, 0, 16),
-            marginForRV = Margin(20, 0, 0, 16),
+            marginForRV = Margin(16, 0, 0, 16),
             hasMoreButtonEnabled = true,
             hasMoreButtonAppLink = APP_LINK_POPULAR_BRANDS
         )
@@ -165,7 +165,6 @@ class CatalogHomepageVM @Inject constructor(
             )
         }
         return visitableList
-
     }
     private fun onFailHomeData(throwable: Throwable) {
         _catalogHomeLiveData.postValue(Fail(throwable))

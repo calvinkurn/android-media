@@ -32,14 +32,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.unifycomponents.toPx
-
 
 class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibraryListener {
 
@@ -202,8 +201,8 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = catalogLibraryAdapter
             setHasFixedSize(true)
-            if(!isOriginBrand){
-                this.setPadding(0,0,0,90.toPx())
+            if (!isOriginBrand) {
+                this.setPadding(0, 0, 0, 110.toPx())
             }
         }
     }
