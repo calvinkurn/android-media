@@ -34,7 +34,6 @@ class TicketListAdapter(
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val footerItem = InboxTicketListResponse.Ticket.Data.TicketItem()
     private var isFooterAdded = false
-    fun isLoading() = isFooterAdded
     private var listener: TicketAdapterListener? = null
     fun setListener(listener: TicketAdapterListener) {
         this.listener = listener
