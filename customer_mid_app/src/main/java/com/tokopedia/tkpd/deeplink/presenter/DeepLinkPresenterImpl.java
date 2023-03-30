@@ -285,8 +285,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openTokoFood(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.NOW_HOME:
                 case DeepLinkChecker.NOW_RECIPE:
-                    openNowRecipe(uriData);
+                    openNowPage(uriData);
                     screenName = "";
                     break;
                 case DeepLinkChecker.TOP_ADS_CLICK_LINK:
@@ -535,7 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.goToPage(intent);
     }
 
-    private void openNowRecipe(Uri uriData) {
+    private void openNowPage(Uri uriData) {
         String appLink = DeeplinkMapperTokopediaNow.INSTANCE.getRegisteredNavigationFromHttp(uriData);
         Intent intent = RouteManager.getIntent(context, appLink);
         viewListener.goToPage(intent);
