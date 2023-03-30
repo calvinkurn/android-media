@@ -70,4 +70,5 @@ sealed interface PlayBroadcastAction {
     ) : PlayBroadcastAction
 
     object SetShowSetupCoverCoachMark: PlayBroadcastAction
+    object ResetUploadState: PlayBroadcastAction
 }

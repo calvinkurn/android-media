@@ -23,7 +23,9 @@ class ImageGeneratorMapper(
         val productUrl = mutableListOf<String>()
         productSectionList.flatMap {
             it.products
-        }.take(MAX_SHOWING_PRODUCT)
+        }.take(MAX_SHOWING_PRODUCT).forEach {
+            productUrl.add(it.imageUrl)
+        }
         return productUrl
     }
 

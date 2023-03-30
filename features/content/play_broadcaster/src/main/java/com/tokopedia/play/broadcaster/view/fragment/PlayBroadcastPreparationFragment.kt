@@ -233,6 +233,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                     override fun onProductSetupDismissed() {
                         if (productSetupPendingToaster == null) return
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.ResetUploadState
+                        )
                         toaster.showToaster(productSetupPendingToaster.orEmpty())
                         productSetupPendingToaster = null
                     }
