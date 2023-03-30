@@ -1,6 +1,7 @@
 package com.tokopedia.usercomponents.userconsent.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -29,7 +30,7 @@ class UserConsentViewModel @Inject constructor(
     val consentCollection: LiveData<UserComponentsStateResult<UserConsentCollectionDataModel>>
         get() = _consentCollection
 
-    private val _submitResult = SingleLiveEvent<UserComponentsStateResult<ConsentSubmissionResponse>>()
+    private val _submitResult = MutableLiveData<UserComponentsStateResult<ConsentSubmissionResponse>>()
     val submitResult: LiveData<UserComponentsStateResult<ConsentSubmissionResponse>>
         get() = _submitResult
 

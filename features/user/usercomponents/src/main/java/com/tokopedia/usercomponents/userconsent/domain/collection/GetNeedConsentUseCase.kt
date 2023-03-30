@@ -29,7 +29,6 @@ class GetNeedConsentUseCase @Inject constructor(
             params
         )
         return if (result.data.success) {
-            // If error, should not show the consent widget
             Success(result.data.collectionPoints.firstOrNull()?.needConsent ?: false)
         } else {
             Fail(MessageErrorException(result.data.errorMessages.joinToString()))

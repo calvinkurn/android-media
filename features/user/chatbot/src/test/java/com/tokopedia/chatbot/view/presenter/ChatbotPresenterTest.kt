@@ -24,7 +24,6 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -32,16 +31,15 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
-import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -114,7 +112,6 @@ class ChatbotPresenterTest {
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
-    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -151,7 +148,6 @@ class ChatbotPresenterTest {
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
-        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
 
         presenter = spyk(
@@ -173,7 +169,6 @@ class ChatbotPresenterTest {
                 chatBotSecureImageUploadUseCase,
                 getExistingChatMapper,
                 uploaderUseCase,
-                chatbotVideoUploadVideoEligibilityUseCase,
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 dispatcher
@@ -200,7 +195,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -217,7 +212,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -234,7 +229,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -284,7 +279,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicAttachmentAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -303,7 +298,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContent =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -320,7 +315,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -337,7 +332,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -354,7 +349,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -371,7 +366,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContent =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         presenter.handleDynamicAttachment34(chatResponse)
 
@@ -388,7 +383,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         val dynamicContentCode = replyBoxAttribute?.contentCode
 
@@ -407,7 +402,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.validateHistoryForAttachment34(replyBoxAttribute)
 
@@ -424,7 +419,7 @@ class ChatbotPresenterTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.validateHistoryForAttachment34(replyBoxAttribute)
 
@@ -432,35 +427,86 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `validateHistoryForAttachment34 if content_code=102, does not process`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
+    fun `validateHistoryForAttachment34 if content_code=200, does not process`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_200)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         presenter.validateHistoryForAttachment34(replyBoxAttribute)
 
-        assertEquals(replyBoxAttribute?.contentCode, 102)
+        assertEquals(replyBoxAttribute?.contentCode, 200)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
+    fun `handleReplyBoxWSToggle if content_code=200 , goes to mapToVisitable`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_200)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         presenter.handleDynamicAttachment34(chatResponse)
 
-        assertEquals(dynamicContentCode, 102)
+        assertEquals(dynamicContentCode, 200)
+    }
+
+    @Test
+    fun `handleReplyBoxWSToggle if content_code=104, render= all, media button hidden=true`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_104_MEDIA_BUTTON_TRUE)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val dynamicContentCode =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+
+        presenter.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(dynamicContentCode, 104)
+    }
+
+    @Test
+    fun `handleReplyBoxWSToggle if content_code=104, render= all, media button hidden=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_104_MEDIA_BUTTON_FALSE)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val dynamicContentCode =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+
+        presenter.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(dynamicContentCode, 104)
+    }
+
+    @Test
+    fun `handleReplyBoxWSToggle if content_code=104, dynamic content is null `() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_104_DYNAMIC_CONTENT_NULL)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val dynamicContent =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
+
+        presenter.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(dynamicContent, null)
     }
 
     @Test
@@ -2423,27 +2469,6 @@ class ChatbotPresenterTest {
             amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: "",
             color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
         )
-    }
-
-    @Test
-    fun `checkUploadVideoEligibility success`() {
-        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
-
-        coEvery {
-            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-                captureLambda(),
-                any(),
-                any()
-            )
-        } coAnswers {
-            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
-        }
-
-        presenter.checkUploadVideoEligibility("1234")
-
-        verify {
-            view.videoUploadEligibilityHandler(any())
-        }
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {
