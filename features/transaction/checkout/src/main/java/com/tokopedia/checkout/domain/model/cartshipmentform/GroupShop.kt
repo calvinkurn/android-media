@@ -38,5 +38,17 @@ data class GroupShop(
     var boMetadata: BoMetadata = BoMetadata(),
     var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData(),
     var scheduleDelivery: ScheduleDeliveryData = ScheduleDeliveryData(),
-    var ratesValidationFlow: Boolean = false
-) : Parcelable
+    var ratesValidationFlow: Boolean = false,
+
+    // new
+    val groupType: Int = 0,
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = ""
+) : Parcelable {
+
+    companion object {
+        const val UI_GROUP_TYPE_NORMAL = 0
+        const val UI_GROUP_TYPE_OWOC = 1
+    }
+}

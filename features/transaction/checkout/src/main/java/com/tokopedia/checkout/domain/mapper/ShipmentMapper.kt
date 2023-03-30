@@ -9,7 +9,6 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellO
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2.Companion.UI_GROUP_TYPE_OWOC
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
@@ -31,6 +30,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
@@ -204,7 +204,12 @@ class ShipmentMapper @Inject constructor() {
         val groupShopListResult = arrayListOf<GroupShop>()
         groupAddress.groupShop2.forEach {
             groupShopListResult.add(
-                GroupShop().apply {
+                GroupShop(
+                    groupType = it.groupType,
+                    uiGroupType = it.uiGroupType,
+                    groupInfoName = it.groupInformation.name,
+                    groupInfoBadgeUrl = it.groupInformation.badgeUrl
+                ).apply {
                     isError = it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                     hasUnblockingError = it.unblockingErrors.isNotEmpty()

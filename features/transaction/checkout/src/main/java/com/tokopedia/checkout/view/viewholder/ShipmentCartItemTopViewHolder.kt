@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentGroupHeaderBinding
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_NORMAL
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
@@ -87,7 +88,18 @@ class ShipmentCartItemTopViewHolder(
             } else {
                 tvTradeInLabel.gone()
             }
-            if (shipmentCartItemTopModel.shopTypeInfoData.shopBadge.isNotEmpty()) {
+            if (shipmentCartItemTopModel.groupInfoBadgeUrl.isNotEmpty()) {
+                imgShopBadge.setImageUrl(shipmentCartItemTopModel.groupInfoBadgeUrl)
+                imgShopBadge.visible()
+                if (shipmentCartItemTopModel.uiGroupType == UI_GROUP_TYPE_NORMAL) {
+                    imgShopBadge.contentDescription = itemView.context.getString(
+                        com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                        shipmentCartItemTopModel.shopTypeInfoData.title.lowercase(
+                            Locale.getDefault()
+                        )
+                    )
+                }
+            } else if (shipmentCartItemTopModel.shopTypeInfoData.shopBadge.isNotEmpty()) {
                 imgShopBadge.setImageUrl(shipmentCartItemTopModel.shopTypeInfoData.shopBadge)
                 imgShopBadge.visible()
                 imgShopBadge.contentDescription = itemView.context.getString(
@@ -99,8 +111,7 @@ class ShipmentCartItemTopViewHolder(
             } else {
                 imgShopBadge.gone()
             }
-            val shopName = shipmentCartItemTopModel.shopName
-            tvShopName.text = shopName
+            tvShopName.text = shipmentCartItemTopModel.shopName
             if (shipmentCartItemTopModel.enablerLabel.isBlank()) {
                 labelEpharmacy.gone()
             } else {

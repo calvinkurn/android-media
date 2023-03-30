@@ -28,5 +28,8 @@ data class ShipmentCartItemTopModel(
     val isFulfillment: Boolean = false,
     val fulfillmentBadgeUrl: String = "",
 
+    val uiGroupType: Int = 0,
+    val groupInfoBadgeUrl: String = "",
+
     override val cartString: String
 ) : ShipmentCartItem

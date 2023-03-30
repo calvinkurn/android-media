@@ -135,7 +135,13 @@ data class ShipmentCartItemModel(
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
-    var shouldResetCourier: Boolean = false
+    var shouldResetCourier: Boolean = false,
+
+    // new owoc
+    val groupType: Int = 0,
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = ""
 ) : Parcelable, ShipmentCartItem {
 
     val isCustomPinpointError: Boolean

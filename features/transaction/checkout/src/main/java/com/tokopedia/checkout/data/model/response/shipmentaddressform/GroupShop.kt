@@ -121,9 +121,4 @@ data class GroupShop2(
     val scheduledDelivery: ScheduleDelivery = ScheduleDelivery(),
     @SerializedName("rates_validation_flow")
     val ratesValidationFlow: Boolean = false
-) {
-    companion object {
-        const val UI_GROUP_TYPE_NORMAL = 0
-        const val UI_GROUP_TYPE_OWOC = 1
-    }
-}
+)

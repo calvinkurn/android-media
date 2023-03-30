@@ -191,8 +191,14 @@ class ShipmentDataConverter @Inject constructor() {
         val userAddress = cartShipmentAddressFormData.groupAddress[0].userAddress
         val groupShopList = cartShipmentAddressFormData.groupAddress[0].groupShop
         var isFirstPlusProductHasPassed = false
-        for (groupShop in groupShopList) {
-            val shipmentCartItemModel = ShipmentCartItemModel(cartString = groupShop.cartString)
+        for ((groupShopIndex, groupShop) in groupShopList.withIndex()) {
+            val shipmentCartItemModel = ShipmentCartItemModel(
+                cartString = groupShop.cartString,
+                groupType = groupShop.groupType,
+                uiGroupType = groupShop.uiGroupType,
+                groupInfoName = groupShop.groupInfoName,
+                groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl
+            )
             shipmentCartItemModel.isDropshipperDisable =
                 cartShipmentAddressFormData.isDropshipperDisable
             shipmentCartItemModel.isOrderPrioritasDisable =
@@ -203,7 +209,7 @@ class ShipmentDataConverter @Inject constructor() {
                 cartShipmentAddressFormData.groupAddress[0].userAddress.addressId
             var orderIndex = 0
             if (groupShopList.size > 1) {
-                orderIndex = groupShopList.indexOf(groupShop) + 1
+                orderIndex = groupShopIndex + 1
             }
             shipmentCartItemModel.isFulfillment = groupShop.isFulfillment
             shipmentCartItemModel.fulfillmentId = groupShop.fulfillmentId
@@ -262,7 +268,7 @@ class ShipmentDataConverter @Inject constructor() {
                     firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
                     isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
                     shopId = shipmentCartItemModel.shopId,
-                    shopName = shipmentCartItemModel.shopName ?: "",
+                    shopName = shipmentCartItemModel.groupInfoName,
                     orderNumber = shipmentCartItemModel.orderNumber,
                     preOrderInfo = shipmentCartItemModel.preOrderInfo ?: "",
                     freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl ?: "",
@@ -276,7 +282,9 @@ class ShipmentDataConverter @Inject constructor() {
                     enablerLabel = shipmentCartItemModel.enablerLabel,
                     hasTradeInItem = shipmentCartItemModel.cartItemModels.firstOrNull { it.isValidTradeIn } != null,
                     isFulfillment = shipmentCartItemModel.isFulfillment,
-                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: ""
+                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: "",
+                    uiGroupType = shipmentCartItemModel.uiGroupType,
+                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl
                 )
 
             shipmentCartItemModels.add(shipmentCartItemTopModel)
