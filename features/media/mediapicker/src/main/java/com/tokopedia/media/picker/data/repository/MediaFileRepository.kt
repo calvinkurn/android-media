@@ -30,23 +30,10 @@ class MediaFileRepositoryImpl @Inject constructor(
         }
 
         return flow {
-            if (bucketId == MediaQueryDataSourceImpl.BUCKET_ALL_MEDIA_ID && start == 0) {
-                if (cursor?.moveToFirst() == true) {
-                    do {
-                        val media = createMedia(cursor) ?: continue
-                        if (media.file.exists().not()) continue
+            val ableToLoad = if (start == 0) cursor?.moveToFirst() else cursor?.moveToPosition(index)
 
-                        if (media.file.isVideo()) {
-                            media.duration = getVideoDuration(media.file)
-                        }
-
-                        result.add(media)
-
-                        if (result.size == offset) break
-                    } while (cursor.moveToNext())
-                }
-            } else {
-                while (cursor?.moveToPosition(index) == true) {
+            if (ableToLoad == true && cursor != null) {
+                do {
                     val media = createMedia(cursor) ?: continue
                     if (media.file.exists().not()) continue
 
@@ -58,7 +45,7 @@ class MediaFileRepositoryImpl @Inject constructor(
                     index++
 
                     if (result.size == offset) break
-                }
+                } while (cursor.moveToNext())
             }
 
             cursor?.close()
