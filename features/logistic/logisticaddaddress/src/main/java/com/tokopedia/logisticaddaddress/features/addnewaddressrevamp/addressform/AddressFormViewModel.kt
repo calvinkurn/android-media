@@ -15,6 +15,8 @@ import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.KEY_ADDRESS_IMPROVEMENTS
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -68,6 +70,12 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         } else {
             validateNegativeFlow
         }
+
+    val isDisableAddressImprovement: Boolean
+        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            KEY_ADDRESS_IMPROVEMENTS,
+            ""
+        ) == KEY_ADDRESS_IMPROVEMENTS
 
     private val validatePositiveFlow = arrayListOf(
         FieldType.PHONE_NUMBER,

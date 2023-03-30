@@ -74,6 +74,7 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"

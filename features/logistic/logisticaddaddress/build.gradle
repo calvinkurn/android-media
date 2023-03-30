@@ -47,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
