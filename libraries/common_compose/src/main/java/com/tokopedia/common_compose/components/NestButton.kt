@@ -60,7 +60,7 @@ private fun buttonTextColor(enabled: Boolean): Color {
             NestTheme.colors.NN._0
         }
     } else {
-        NestTheme.colors.NN._300
+        NestTheme.colors.NN._400
     }
 }
 
@@ -71,5 +71,16 @@ fun NestButtonPreview() {
         Modifier,
         text = "Bagikan",
         onClick = {}
+    )
+}
+
+@Preview(name = "Button disabled")
+@Composable
+fun NestButtonDisabledPreview() {
+    NestButton(
+        Modifier,
+        text = "Bagikan",
+        onClick = {},
+        enabled = false
     )
 }
