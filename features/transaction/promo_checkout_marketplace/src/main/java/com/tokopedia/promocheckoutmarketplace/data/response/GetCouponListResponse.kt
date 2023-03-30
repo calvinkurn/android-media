@@ -211,7 +211,7 @@ data class AdditionalBoData(
     @SerializedName("cart_string_group")
     val cartStringGroup: String = "",
     @SerializedName("shipping_metadata")
-    val shippingMetadata: ShippingMetadata = ShippingMetadata(),
+    val shippingMetadata: List<ShippingMetadata> = emptyList(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     val shippingId: Int = 0,

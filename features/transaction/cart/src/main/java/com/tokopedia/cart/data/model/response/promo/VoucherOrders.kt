@@ -46,5 +46,8 @@ data class VoucherOrders(
     val etaText: String = "",
     
     @SerializedName("cart_string_group")
-    val cartStringGroup: String = ""
+    val cartStringGroup: String = "",
+    
+    @SerializedName("shipping_metadata")
+    val shippingMetadata: String = ""
 )

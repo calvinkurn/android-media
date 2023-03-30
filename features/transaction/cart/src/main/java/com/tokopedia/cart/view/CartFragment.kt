@@ -3007,7 +3007,8 @@ class CartFragment :
                     dPresenter.getCartListData()?.promo?.lastApplyPromo ?: LastApplyPromo()
                 PromoRequestMapper.generateCouponListRequestParams(
                     lastApplyPromo,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    null
                 )
             }
 
@@ -3016,14 +3017,16 @@ class CartFragment :
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
                 PromoRequestMapper.generateCouponListRequestParams(
                     promoUiModel,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    dPresenter.getLastValidateUseRequest()
                 )
             }
 
             else -> {
                 PromoRequestMapper.generateCouponListRequestParams(
                     null,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    null
                 )
             }
         }

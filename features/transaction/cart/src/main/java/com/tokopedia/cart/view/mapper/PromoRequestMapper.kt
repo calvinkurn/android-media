@@ -61,6 +61,7 @@ object PromoRequestMapper {
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
                             etaText = boShipmentData.etaText
+                            shippingMetadata = boShipmentData.shippingMetadata
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
@@ -77,6 +78,7 @@ object PromoRequestMapper {
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
                             etaText = boShipmentData.etaText
+                            shippingMetadata = boShipmentData.shippingMetadata
                         }
                     }
                     shopId = cartPromoHolderData.shopId.toLongOrZero()
@@ -86,8 +88,6 @@ object PromoRequestMapper {
                     isPo = cartPromoHolderData.isPo
                     poDuration = cartPromoHolderData.poDuration.toIntOrZero()
                     cartStringGroup = cartPromoHolderData.cartStringGroup
-                    // TODO: Get From Cart Revamp V4 
-                    shippingMetadata = ""
                 }
                 tmpOrders.add(ordersItem)
             }
@@ -188,7 +188,8 @@ object PromoRequestMapper {
                     voucherOrder.shippingSubsidy,
                     voucherOrder.benefitClass,
                     voucherOrder.shippingPrice,
-                    voucherOrder.etaText
+                    voucherOrder.etaText,
+                    voucherOrder.shippingMetadata
                 )
             }
         }
@@ -215,7 +216,8 @@ object PromoRequestMapper {
                         validateOrderRequest.shippingSubsidy,
                         validateOrderRequest.benefitClass,
                         validateOrderRequest.shippingPrice,
-                        validateOrderRequest.etaText
+                        validateOrderRequest.etaText,
+                        validateOrderRequest.shippingMetadata
                     )
                 }
             }
@@ -237,7 +239,8 @@ object PromoRequestMapper {
 
     fun generateCouponListRequestParams(
         promoData: Any?,
-        availableCartGroupHolderDataList: List<CartGroupHolderData>
+        availableCartGroupHolderDataList: List<CartGroupHolderData>,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest?
     ): PromoRequest {
         val orders = mutableListOf<Order>()
         val selectedPromoHolderDataList = mapSelectedCartGroupToPromoData(
@@ -265,8 +268,6 @@ object PromoRequestMapper {
                 codes = cartPromoHolderData.promoCodes.toMutableList(),
                 isChecked = hasCheckedItem,
                 cartStringGroup = cartPromoHolderData.cartStringGroup,
-                // TODO: Get From Cart Revamp v4 
-                shippingMetadata = ""
             )
             orders.add(order)
         }
@@ -291,6 +292,14 @@ object PromoRequestMapper {
                     }
                 }
             }
+            orders.forEach { order ->
+                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull {
+                    it.uniqueId == order.uniqueId
+                }
+                validateOrderRequest?.let {
+                    order.shippingMetadata = it.shippingMetadata
+                }
+            }
         } else if (promoData is LastApplyPromo) {
             globalPromo.addAll(promoData.lastApplyPromoData.codes)
             promoData.lastApplyPromoData.listVoucherOrders.forEach { voucherOrders ->
@@ -305,6 +314,7 @@ object PromoRequestMapper {
                         if (order.spId <= 0) {
                             order.spId = voucherOrders.spId
                         }
+                        order.shippingMetadata = voucherOrders.shippingMetadata
                     }
                 }
             }
@@ -384,5 +394,6 @@ private class PromoRequestBoShipmentData(
     val shippingSubsidy: Long = 0,
     val benefitClass: String = "",
     val shippingPrice: Double = 0.0,
-    val etaText: String = ""
+    val etaText: String = "",
+    val shippingMetadata: String = ""
 )
