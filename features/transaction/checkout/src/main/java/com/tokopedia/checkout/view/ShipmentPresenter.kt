@@ -42,6 +42,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
@@ -96,6 +97,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.GroupProduct
+import com.tokopedia.logisticcart.shipping.model.GroupProductItem
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
@@ -2559,14 +2562,18 @@ class ShipmentPresenter @Inject constructor(
         isTradeInDropOff: Boolean,
         recipientAddressModel: RecipientAddressModel?,
         isForceReload: Boolean,
-        skipMvc: Boolean
+        skipMvc: Boolean,
+        cartStringGroup: String,
+        groupProducts: List<GroupProduct>
     ) {
         val shippingParam = getShippingParam(
             shipmentDetailData,
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel
+            recipientAddressModel,
+            cartStringGroup,
+            groupProducts
         )
         val counter = if (codData == null) -1 else codData!!.counterCod
         val cornerId = this.recipientAddressModel.isCornerAddress
@@ -2708,7 +2715,9 @@ class ShipmentPresenter @Inject constructor(
         products: List<Product>?,
         cartString: String?,
         isTradeInDropOff: Boolean,
-        recipientAddressModel: RecipientAddressModel?
+        recipientAddressModel: RecipientAddressModel?,
+        cartStringGroup: String,
+        groupProducts: List<GroupProduct>
     ): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = shipmentDetailData!!.shipmentCartData!!.originDistrictId
@@ -2751,6 +2760,8 @@ class ShipmentPresenter @Inject constructor(
             shippingParam.destinationLongitude =
                 shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
+        shippingParam.cartStringGroup = cartStringGroup
+        shippingParam.groupProducts = groupProducts
         return shippingParam
     }
 
@@ -3433,7 +3444,9 @@ class ShipmentPresenter @Inject constructor(
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel
+            recipientAddressModel,
+            if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+            if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
         )
         val counter = if (codData == null) -1 else codData!!.counterCod
         val cornerId = recipientAddressModel.isCornerAddress
@@ -3543,6 +3556,40 @@ class ShipmentPresenter @Inject constructor(
                     product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
                     products.add(product)
                 }
+            }
+        }
+        return products
+    }
+
+    fun getGroupProductsForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<GroupProduct> {
+        val products = ArrayList<GroupProduct>()
+        if (shipmentCartItemModel?.cartItemModels != null) {
+            val cartItemByOrder = shipmentCartItemModel.cartItemModels.filter { !it.isError }
+                .groupBy { it.cartStringOrder }
+            for ((key, value) in cartItemByOrder) {
+                var totalOrderValue = 0L
+                var totalWeight = 0L
+                val items = value.map {
+                    val weight = (it.quantity * it.weight).toLong()
+                    val orderValue = (it.quantity * it.price).toLong()
+                    totalOrderValue += orderValue
+                    totalWeight += weight
+                    GroupProductItem(
+                        productId = it.productId,
+                        orderValue = orderValue,
+                        weight = weight.toString()
+                    )
+                }
+                products.add(
+                    GroupProduct(
+                        shopId = value.first().shopId.toLongOrZero(),
+                        warehouseId = value.first().warehouseId.toLongOrZero(),
+                        uniqueId = key,
+                        totalOrderValue = totalOrderValue,
+                        totalWeight = totalWeight.toString(),
+                        products = items
+                    )
+                )
             }
         }
         return products

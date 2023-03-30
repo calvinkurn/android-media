@@ -50,6 +50,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBo
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBottomSheetProductLevelData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
@@ -2693,7 +2694,9 @@ class ShipmentFragment :
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
                     cartPosition > -1,
-                    skipMvc
+                    skipMvc,
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
                 )
             }
         }
@@ -2739,7 +2742,9 @@ class ShipmentFragment :
                 shipmentCartItemModel, shopShipmentList, true,
                 getProductForRatesRequest(shipmentCartItemModel),
                 shipmentCartItemModel.cartString, isTradeInDropOff,
-                shipmentAdapter.addressShipmentData, false, false
+                shipmentAdapter.addressShipmentData, false, false,
+                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
             )
         }
     }

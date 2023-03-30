@@ -82,7 +82,8 @@ data class CartItemModel(
     var cartItemPosition: Int = 0,
     var addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel(),
 
-    //new
+    // new
     val shouldShowShopInfo: Boolean = false,
-    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData()
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val cartStringOrder: String = ""
 ) : Parcelable, ShipmentCartItem

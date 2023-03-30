@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
@@ -387,7 +388,7 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop.groupShopData.forEach {
             val productList = convertFromProductList(
                 cartItemIndex,
-                it.products,
+                it,
                 groupShop,
                 username,
                 receiverName,
@@ -423,21 +424,22 @@ class ShipmentDataConverter @Inject constructor() {
 
     private fun convertFromProductList(
         index: Int,
-        products: List<Product>,
+        groupShopV2: GroupShopV2,
         groupShop: GroupShop,
         username: String,
         receiverName: String,
         addOnOrderLevelModel: AddOnWordingModel
     ): List<CartItemModel> {
         var counterIndex = index
-        return products.map { product ->
+        return groupShopV2.products.map { product ->
             val cartItem = convertFromProduct(
                 counterIndex,
                 product,
                 groupShop,
                 username,
                 receiverName,
-                addOnOrderLevelModel
+                addOnOrderLevelModel,
+                groupShopV2
             )
             counterIndex += 1
             cartItem
@@ -450,13 +452,20 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnWordingModel: AddOnWordingModel
+        addOnWordingModel: AddOnWordingModel,
+        groupShopV2: GroupShopV2
     ): CartItemModel {
-        val cartItemModel = CartItemModel(cartString = groupShop.cartString, shouldShowShopInfo = product.shouldShowShopInfo, shopTypeInfoData = product.shopTypeInfoData)
+        val cartItemModel = CartItemModel(
+            cartString = groupShop.cartString,
+            shouldShowShopInfo = product.shouldShowShopInfo,
+            shopTypeInfoData = product.shopTypeInfoData,
+            cartStringOrder = groupShopV2.cartStringOrder
+        )
         cartItemModel.cartId = product.cartId
         cartItemModel.productId = product.productId
         cartItemModel.productCatId = product.productCatId.toLong()
         cartItemModel.name = product.productName
+        cartItemModel.shopId = groupShopV2.shop.shopId.toString()
         cartItemModel.shopName = product.shopName
         cartItemModel.imageUrl = product.productImageSrc200Square
         cartItemModel.currency = product.productPriceCurrency

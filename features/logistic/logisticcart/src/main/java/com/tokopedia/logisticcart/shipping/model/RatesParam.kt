@@ -46,7 +46,10 @@ data class RatesParam(
     var mvc: String = "",
     var bo_metadata: String = "",
     var cart_data: String = "",
-    var warehouse_id: String = ""
+    var warehouse_id: String = "",
+    // new owoc
+    val cartStringGroup: String = "",
+    val groupProducts: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -79,7 +82,9 @@ data class RatesParam(
         bo_metadata = builder.boMetadata,
         cart_data = builder.cartData,
         occ = builder.occ,
-        warehouse_id = builder.warehouseId
+        warehouse_id = builder.warehouseId,
+        cartStringGroup = builder.cartStringGroup,
+        groupProducts = builder.groupProducts
     )
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -114,7 +119,9 @@ data class RatesParam(
         "po_time" to po_time,
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
-        "warehouse_id" to warehouse_id
+        "warehouse_id" to warehouse_id,
+        "cart_string_group" to cartStringGroup,
+        "group_products" to groupProducts
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -142,20 +149,20 @@ data class RatesParam(
     )
 
     fun toCartShopGroupTickerAggregatorMap(): Map<String, Any?> = mapOf(
-            "origin" to origin,
-            "destination" to destination,
-            "weight" to weight,
-            "actual_weight" to actualWeight,
-            "order_value" to order_value,
-            "sp_ids" to spids,
-            "shop_id" to shop_id,
-            "shop_tier" to shop_tier,
-            "user_history" to user_history,
-            "is_fulfillment" to is_fulfillment,
-            "bo_metadata" to bo_metadata,
-            "products" to products,
-            "psl_code" to psl_code,
-            "unique_id" to unique_id,
+        "origin" to origin,
+        "destination" to destination,
+        "weight" to weight,
+        "actual_weight" to actualWeight,
+        "order_value" to order_value,
+        "sp_ids" to spids,
+        "shop_id" to shop_id,
+        "shop_tier" to shop_tier,
+        "user_history" to user_history,
+        "is_fulfillment" to is_fulfillment,
+        "bo_metadata" to bo_metadata,
+        "products" to products,
+        "psl_code" to psl_code,
+        "unique_id" to unique_id
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -217,6 +224,10 @@ data class RatesParam(
         var cartData: String = ""
             private set
         var warehouseId: String = ""
+            private set
+        var cartStringGroup: String = shipping.cartStringGroup
+            private set
+        var groupProducts: String = RatesParamHelper.generateGroupProducts(shipping)
             private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }

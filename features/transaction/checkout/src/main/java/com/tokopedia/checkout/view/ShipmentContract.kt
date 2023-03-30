@@ -25,6 +25,7 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.GroupProduct
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
@@ -309,7 +310,9 @@ interface ShipmentContract {
             isTradeInDropOff: Boolean,
             recipientAddressModel: RecipientAddressModel?,
             isForceReload: Boolean,
-            skipMvc: Boolean
+            skipMvc: Boolean,
+            cartStringGroup: String,
+            groupProducts: List<GroupProduct>
         )
 
         var recipientAddressModel: RecipientAddressModel
