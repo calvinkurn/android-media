@@ -179,7 +179,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
-            is PlayShortsAction.CloseTitleForm -> handlecloseTitleForm()
+            is PlayShortsAction.CloseTitleForm -> handleCloseTitleForm()
             is PlayShortsAction.UploadTitle -> handleUploadTitle(action.title)
 
             /** Cover Form */
@@ -260,7 +260,7 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Editing) }
     }
 
-    private fun handlecloseTitleForm() {
+    private fun handleCloseTitleForm() {
         _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Unknown) }
     }
 
