@@ -251,7 +251,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        loaderDialog?.setLoadingText(Html.fromHtml(activity?.getString(R.string.tm_loader_create_card)))
         loaderDialog?.show()
     }
 
