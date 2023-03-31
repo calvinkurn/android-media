@@ -60,6 +60,9 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
         }
 
         tvSetupTitleField.apply {
+            addOnFocusChangeListener = { _, hasFocus ->
+                if (hasFocus) mListener?.onTextFieldTitleFormClicked()
+            }
             setCounter(mMaxCharacter)
             editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
             editText.setText(mTitle)
@@ -86,9 +89,6 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
             editText.setOnEditorActionListener { _, _, _ ->
                 hideSetupTitleKeyboard()
                 return@setOnEditorActionListener false
-            }
-            editText.setOnClickListener {
-                mListener?.onTextFieldTitleFormClicked()
             }
             clearIconView.setOnClickListener {
                 mListener?.onTextFieldTitleFormCleared()
