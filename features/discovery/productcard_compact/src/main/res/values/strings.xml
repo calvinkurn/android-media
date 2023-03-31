@@ -19,4 +19,6 @@
 
     <string name="product_card_compact_content_description_quantity_editor_view_add">tombol tambah</string>
     <string name="product_card_compact_content_description_quantity_editor_view_sub">tombol kurang</string>
+
+    <string name="product_card_compact_see_more_products">Lihat Produk Lainnya</string>
 </resources>
