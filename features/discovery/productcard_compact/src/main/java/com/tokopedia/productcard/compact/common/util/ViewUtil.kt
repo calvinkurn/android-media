@@ -41,7 +41,6 @@ internal object ViewUtil {
         return try {
             String.format(FORMAT_HEX_COLOR, ContextCompat.getColor(context, idColor) and COLOR_WHITE).uppercase()
         } catch (e: Exception) {
-            e.printStackTrace()
             ""
         }
     }
@@ -50,8 +49,7 @@ internal object ViewUtil {
         return try {
             Color.parseColor(color)
         }
-        catch (throwable: Throwable) {
-            throwable.printStackTrace()
+        catch (exception: Exception) {
             defaultColor
         }
     }

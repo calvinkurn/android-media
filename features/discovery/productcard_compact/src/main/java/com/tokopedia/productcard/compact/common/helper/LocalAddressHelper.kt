@@ -17,14 +17,8 @@ class LocalAddressHelper @Inject constructor(@ApplicationContext private val con
 
     fun getChooseAddressData() = try {
         ChooseAddressUtils.getLocalizingAddressData(context)
-    } catch (throwable: Throwable) {
+    } catch (exception: Exception) {
         ChooseAddressConstant.emptyAddress
-    }
-
-    fun updateLocalData() {
-        if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)) {
-            localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
-        }
     }
 
     fun isOutOfCoverage() = getWarehouseId() == OOC_WAREHOUSE_ID
