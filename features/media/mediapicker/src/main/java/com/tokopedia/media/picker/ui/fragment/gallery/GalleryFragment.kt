@@ -179,7 +179,6 @@ open class GalleryFragment @Inject constructor(
         viewModel.medias.observe(viewLifecycleOwner) {
             if (uiModel.hasChangeAlbum) {
                 featureAdapter.setItemsAndAnimateChanges(it)
-                featureAdapter.notifyDataSetChanged()
 
                 // force move to top every single bucketId has changed
                 binding?.lstMedia?.smoothScrollToPosition(0)
