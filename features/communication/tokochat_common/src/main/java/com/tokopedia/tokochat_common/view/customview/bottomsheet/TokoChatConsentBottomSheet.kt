@@ -105,7 +105,8 @@ class TokoChatConsentBottomSheet(
             onError = {
                 dismissAndLoadTokoChatData()
                 Timber.d(it)
-            }
+            },
+            onLoading = {}
         )
         binding?.tokochatWidgetConsent?.setOnCheckedChangeListener {
             setMainButton(it) // Change button enable based on checkbox

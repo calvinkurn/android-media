@@ -539,10 +539,12 @@ class UserConsentWidget :
 
     fun setSubmitResultListener(
         onSuccess: ((ConsentSubmissionResponse?) -> Unit),
-        onError: ((Throwable) -> Unit)
+        onError: ((Throwable) -> Unit),
+        onLoading: (() -> Unit)
     ) {
         onSubmitSuccessListener = onSuccess
         onSubmitErrorListener = onError
+        onSubmitLoadingListener = onLoading
     }
 
     fun isNeedConsent(): Boolean {
