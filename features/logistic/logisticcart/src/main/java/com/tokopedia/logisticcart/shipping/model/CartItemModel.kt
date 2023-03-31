@@ -85,5 +85,6 @@ data class CartItemModel(
     // new
     val shouldShowShopInfo: Boolean = false,
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
-    val cartStringOrder: String = ""
+    val cartStringOrder: String = "",
+    val originWarehouseIds: List<Long> = emptyList()
 ) : Parcelable, ShipmentCartItem

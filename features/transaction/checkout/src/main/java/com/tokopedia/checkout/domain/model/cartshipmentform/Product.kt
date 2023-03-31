@@ -60,8 +60,9 @@ data class Product(
     var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
     var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
 
-    //new
+    // new
     val shouldShowShopInfo: Boolean = false,
     val shopName: String = "",
-    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData()
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val originWarehouseIds: List<Long> = emptyList()
 ) : Parcelable

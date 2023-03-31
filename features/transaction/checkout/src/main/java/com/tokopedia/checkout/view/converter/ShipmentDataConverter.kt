@@ -459,7 +459,8 @@ class ShipmentDataConverter @Inject constructor() {
             cartString = groupShop.cartString,
             shouldShowShopInfo = product.shouldShowShopInfo,
             shopTypeInfoData = product.shopTypeInfoData,
-            cartStringOrder = groupShopV2.cartStringOrder
+            cartStringOrder = groupShopV2.cartStringOrder,
+            originWarehouseIds = product.originWarehouseIds
         )
         cartItemModel.cartId = product.cartId
         cartItemModel.productId = product.productId

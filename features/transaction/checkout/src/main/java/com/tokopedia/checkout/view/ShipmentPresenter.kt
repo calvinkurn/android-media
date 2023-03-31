@@ -3577,7 +3577,8 @@ class ShipmentPresenter @Inject constructor(
                     GroupProductItem(
                         productId = it.productId,
                         orderValue = orderValue,
-                        weight = weight.toString()
+                        weight = weight.toString(),
+                        warehouseIds = it.originWarehouseIds
                     )
                 }
                 products.add(

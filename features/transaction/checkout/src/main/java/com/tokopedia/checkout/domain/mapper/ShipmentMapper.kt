@@ -270,7 +270,8 @@ class ShipmentMapper @Inject constructor() {
                 val productResult = Product(
                     shouldShowShopInfo = groupShop2.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
                     shopName = groupShop.shop.shopName,
-                    shopTypeInfoData = shopTypeInfoData
+                    shopTypeInfoData = shopTypeInfoData,
+                    originWarehouseIds = cartDetail.originWarehouseIds
                 ).apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         groupShop2,
