@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewMo
  * Project name: android-tokopedia-core
  **/
 
-interface GetProductDetailDataModelMediator : SubViewModelMediator {
+interface GetProductDetailDataMediator : SubViewModelMediator {
 
     fun getPdpLayout(): DynamicProductInfoP1?
 

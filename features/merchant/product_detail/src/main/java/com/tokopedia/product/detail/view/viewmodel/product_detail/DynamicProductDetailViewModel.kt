@@ -79,7 +79,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataModelMediator
+import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -151,7 +151,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
-    GetProductDetailDataModelMediator {
+    GetProductDetailDataMediator {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"

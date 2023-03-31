@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataModelMediator
+import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
@@ -49,7 +49,7 @@ class PlayWidgetSubViewModelTest {
     lateinit var playWidgetTools: PlayWidgetTools
 
     @RelaxedMockK
-    lateinit var mediator: GetProductDetailDataModelMediator
+    lateinit var mediator: GetProductDetailDataMediator
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
