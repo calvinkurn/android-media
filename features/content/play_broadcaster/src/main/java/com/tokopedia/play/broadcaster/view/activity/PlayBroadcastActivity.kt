@@ -415,11 +415,18 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun rebindEffect() {
-        applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
-        viewModel.selectedPreset?.let { applyPreset(it) }
+        if (viewModel.isBeautificationEnabled) {
+            applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+            viewModel.selectedPreset?.let { applyPreset(it) }
+        } else {
+            broadcaster.removeFaceFilter()
+            broadcaster.removePreset()
+        }
     }
 
     private fun initBroadcaster(config: BroadcastingConfigUiModel, ) {
+        if(::broadcaster.isInitialized) return
+
         val handler = Handler(Looper.getMainLooper())
         broadcaster = broadcasterFactory.create(
             activityContext = this,
