@@ -18,6 +18,9 @@ class MediaFileRepositoryImpl @Inject constructor(
         val cursor = setupMediaQuery(bucketId, start, LIMIT_MEDIA_OFFSET)
         val result = mutableListOf<Media>()
 
+        val cursorSize = cursor?.count ?: 0
+        var count = 0
+
         return flow {
             if (cursor?.moveToFirst() == true) {
                 do {
@@ -29,6 +32,9 @@ class MediaFileRepositoryImpl @Inject constructor(
                     }
 
                     result.add(media)
+                    count++
+
+                    if (count == cursorSize) break
                 } while (cursor.moveToNext())
             }
 
