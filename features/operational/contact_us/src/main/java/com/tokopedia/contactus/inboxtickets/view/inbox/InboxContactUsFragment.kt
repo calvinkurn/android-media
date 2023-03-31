@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -285,6 +284,7 @@ class InboxContactUsFragment :
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             mAdapter.setListener(object : TicketListAdapter.TicketAdapterListener {
                 override fun scrollList() {
+                    rvEmailList?.scrollBy(0, 0)
                 }
 
                 override fun showSerVicePriorityBottomSheet() {
