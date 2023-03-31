@@ -129,4 +129,7 @@
     <string name="cta_widget_notifcenter_close_previous">Tutup</string>
     <string name="title_notifcenter_see_cart">Lihat Keranjang</string>
     <string name="desc_notifcenter_empty_state_illustration">Empty State Illustration</string>
+    <string name="article_widget_detail">%s • %s • %s</string>
+    <string name="info_affiliate">Info Affiliate</string>
+    <string name="affiliate_lihat_semua">Lihat Semua</string>
 </resources>
