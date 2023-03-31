@@ -784,7 +784,6 @@ class PlayBroadcastActivity : BaseActivity(),
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
             initBroadcasterWithDelay(holder, surfaceSize, withByteplus)
-            rebindEffect()
         } else showPermissionPage()
     }
 
@@ -796,6 +795,7 @@ class PlayBroadcastActivity : BaseActivity(),
         lifecycleScope.launch(dispatcher.main) {
             delay(INIT_BROADCASTER_DELAY)
             broadcaster.create(holder, surfaceSize, withByteplus)
+            rebindEffect()
         }
     }
 

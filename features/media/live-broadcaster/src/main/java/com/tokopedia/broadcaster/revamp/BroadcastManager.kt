@@ -103,6 +103,7 @@ class BroadcastManager @Inject constructor(
 
     private var mContext: Context? = null
     private var mHandler: Handler? = null
+    private var mWithByteplus: Boolean? = null
     private val mListeners: ConcurrentLinkedQueue<Broadcaster.Listener> = ConcurrentLinkedQueue()
 
     private var mInitState: BroadcastInitState = BroadcastInitState.Uninitialized
@@ -156,7 +157,10 @@ class BroadcastManager @Inject constructor(
         surfaceSize: Broadcaster.Size,
         withByteplus: Boolean,
     ) {
-        if(mStreamer != null) return
+        if(mWithByteplus == withByteplus) return
+        if(mStreamer != null) {
+            release()
+        }
 
         val context = mContext
         if (context == null) {
@@ -470,6 +474,8 @@ class BroadcastManager @Inject constructor(
     }
 
     private fun initHandler() {
+        stopThread()
+
         mRenderThread = Thread(
             object : Runnable {
                 override fun run() {
@@ -569,11 +575,13 @@ class BroadcastManager @Inject constructor(
         // if a Streamer is in released state, all methods will throw an IllegalStateException
         mStreamer?.release()
         mStreamerSurface?.release()
+        mSurfaceTexture?.release()
         mDisplaySurface?.release()
         effectManager.release()
 
         // sanitize Streamer object holder
         mStreamer = null
+        mStreamerSurface = null
         mStreamerGL = null
         mStreamerSurface = null
         mDisplaySurface = null
@@ -589,8 +597,7 @@ class BroadcastManager @Inject constructor(
         mHandler = null
         mSelectedCamera = null
 
-        mRenderThread?.interrupt()
-        mRenderThread = null
+        stopThread()
     }
 
     override fun flip() {
@@ -850,6 +857,11 @@ class BroadcastManager @Inject constructor(
                 broadcastStatisticUpdate()
             }
         }, STATISTIC_TIMER_DELAY, mStatisticTimerInterval)
+    }
+
+    private fun stopThread() {
+        mRenderThread?.interrupt()
+        mRenderThread = null
     }
 
     private fun stopTracking() {
