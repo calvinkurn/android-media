@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import androidx.lifecycle.LiveData
@@ -14,6 +15,7 @@ import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.ResourceProvider
+import com.tokopedia.media.editor.utils.validateCreatedBitmapMemory
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -54,8 +56,8 @@ class DetailEditorViewModel @Inject constructor(
     private var _contrastFilter = MutableLiveData<Bitmap>()
     val contrastFilter: LiveData<Bitmap> get() = _contrastFilter
 
-    private var _watermarkFilter = MutableLiveData<Bitmap>()
-    val watermarkFilter: LiveData<Bitmap> get() = _watermarkFilter
+    private var _watermarkFilter = MutableLiveData<Bitmap?>()
+    val watermarkFilter: LiveData<Bitmap?> get() = _watermarkFilter
 
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
@@ -109,6 +111,7 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setWatermark(
+        context: Context?,
         bitmapSource: Bitmap,
         type: WatermarkType,
         isThumbnail: Boolean = false,
@@ -117,27 +120,36 @@ class DetailEditorViewModel @Inject constructor(
     ) {
         initializeWatermarkAsset()
 
-        _watermarkFilter.value = getWatermarkUseCase(
-            WatermarkUseCaseParam(
-                source = bitmapSource,
-                type = type,
-                shopNameParam = userSession.shopName,
-                isThumbnail = isThumbnail,
-                element = detailUiModel,
-                useStorageColor = useStorageColor
+        _watermarkFilter.value = if (context.validateCreatedBitmapMemory(bitmapSource.width, bitmapSource.height)) {
+            getWatermarkUseCase(
+                WatermarkUseCaseParam(
+                    source = bitmapSource,
+                    type = type,
+                    shopNameParam = userSession.shopName,
+                    isThumbnail = isThumbnail,
+                    element = detailUiModel,
+                    useStorageColor = useStorageColor
+                )
             )
-        )
+        } else {
+            null
+        }
     }
 
     fun setWatermarkFilterThumbnail(
+        context: Context?,
         implementedBaseBitmap: Bitmap
-    ): Pair<Bitmap, Bitmap> {
+    ): Pair<Bitmap?, Bitmap?> {
         initializeWatermarkAsset()
 
-        return watermarkFilterRepository.watermarkDrawerItem(
-            implementedBaseBitmap,
-            userSession.shopName
-        )
+        return if (context.validateCreatedBitmapMemory(implementedBaseBitmap.width, implementedBaseBitmap.height)) {
+            watermarkFilterRepository.watermarkDrawerItem(
+                implementedBaseBitmap,
+                userSession.shopName
+            )
+        } else {
+            Pair(null, null)
+        }
     }
 
     fun setRotate(

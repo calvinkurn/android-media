@@ -12,6 +12,7 @@ import com.tokopedia.media.editor.data.entity.EditorDetailEntity
 import javax.inject.Inject
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
+import com.tokopedia.media.editor.utils.mediaCreateBitmap
 import kotlin.math.min
 import com.tokopedia.unifyprinciples.R as principleR
 
@@ -23,12 +24,12 @@ interface WatermarkFilterRepository {
         isThumbnail: Boolean,
         element: EditorDetailEntity? = null,
         useStorageColor: Boolean
-    ): Bitmap
+    ): Bitmap?
 
     fun watermarkDrawerItem(
         implementedBaseBitmap: Bitmap,
         shopName: String
-    ): Pair<Bitmap, Bitmap>
+    ): Pair<Bitmap?, Bitmap?>
 
     fun isAssetInitialize(): Boolean
     fun setAsset(logoDrawable: Drawable, textLightColor: Int, textDarkColor: Int)
@@ -85,8 +86,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         isThumbnail: Boolean,
         element: EditorDetailEntity?,
         useStorageColor: Boolean
-    ): Bitmap {
-        shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
+    ): Bitmap? {
+        shopText = shopNameParam.ifEmpty { DEFAULT_SHOP_NAME }
 
         var isDark = source.isDark()
         if (useStorageColor) {
@@ -103,54 +104,58 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
 
         val sourceWidth: Int = source.width
         val sourceHeight: Int = source.height
-        val result = Bitmap.createBitmap(sourceWidth, sourceHeight, source.config)
 
-        logoDrawableWidth = if (!isThumbnail)
-            (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
-        else
-            min(sourceWidth, sourceHeight) / 3f
+        return mediaCreateBitmap(sourceWidth, sourceHeight, source.config)?.let { result ->
+            logoDrawableWidth = if (!isThumbnail)
+                (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
+            else
+                min(sourceWidth, sourceHeight) / 3f
 
-        val canvas = Canvas(result)
-        canvas.drawBitmap(source, 0f, 0f, null)
+            val canvas = Canvas(result)
+            canvas.drawBitmap(source, 0f, 0f, null)
 
-        val paint = Paint()
+            val paint = Paint()
 
-        // font size will refer to logo height to achieve same visual size
-        paint.textSize = logoDrawableHeight
-        paint.isAntiAlias = true
-        paint.color = watermarkColor
+            // font size will refer to logo height to achieve same visual size
+            paint.textSize = logoDrawableHeight
+            paint.isAntiAlias = true
+            paint.color = watermarkColor
 
-        logoDrawable?.setTint(watermarkColor)
+            logoDrawable?.setTint(watermarkColor)
 
-        val shopTextBound = Rect()
-        paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
+            val shopTextBound = Rect()
+            paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
 
-        textWidth = shopTextBound.width()
-        textHeight = shopTextBound.height()
+            textWidth = shopTextBound.width()
+            textHeight = shopTextBound.height()
 
-        when (type) {
-            WatermarkType.Diagonal -> {
-                setWatermarkDiagonal(sourceWidth, sourceHeight, canvas, paint)
+            when (type) {
+                WatermarkType.Diagonal -> {
+                    setWatermarkDiagonal(sourceWidth, sourceHeight, canvas, paint)
+                }
+                WatermarkType.Center -> {
+                    setWatermarkCenter(sourceWidth, sourceHeight, canvas, paint)
+                }
             }
-            WatermarkType.Center -> {
-                setWatermarkCenter(sourceWidth, sourceHeight, canvas, paint)
+
+            element?.watermarkModeEntityData?.let {
+                it.textColorDark = isDark
+                it.watermarkType = type.value
+            } ?: run {
+                element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
             }
-        }
 
-        element?.watermarkModeEntityData?.let {
-            it.textColorDark = isDark
-            it.watermarkType = type.value
-        } ?: run {
-            element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
+            // return
+            result
+        } ?: kotlin.run {
+            null
         }
-
-        return result
     }
 
     override fun watermarkDrawerItem(
         implementedBaseBitmap: Bitmap,
         shopName: String
-    ): Pair<Bitmap, Bitmap> {
+    ): Pair<Bitmap?, Bitmap?> {
         val resultBitmap1 = watermark(
             implementedBaseBitmap,
             WatermarkType.Diagonal,
