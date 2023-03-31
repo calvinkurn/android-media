@@ -5,11 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -928,11 +925,11 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(
                     "is_ddp": false,
                     "dynamic_data": "{\"payment_level\":{\"donation\":{\"validation\":false,\"predefined\":null,\"data\":{\"is_donation\":false,\"id\":146,\"description\":\"Donasi akan disalurkan dalam bentuk paket hidangan buka puasa untuk masyarakat prasejahtera di wilayah Jawa bersama BenihBaik.com \",\"title\":\"Donasi Rp5.000 untuk paket buka puasa masyarakat prasejahtera\",\"amount\":5000}},\"cross_sell\":{\"validation\":false,\"predefined\":null,\"data\":{\"main_vertical_id\":0,\"items\":null}}},\"order_level\":[]}"
                   },
-                  "dynamic_platform_fee": {
-                    "is_using_platform_fee": true,
-                    "profile_code": "TKPD_APPS",
-                    "gateway_code": "CREDITCARD",
-                    "ticker":"Biaya jasa aplikasi gagal ditampilkan. Kamu bisa lanjut ke Pembayaran buat lihat Total Tagihan atau <b><font color=\"green\"><a href=\"refresh\">muat ulang</a></font></b>."
+                  "platform_fee": {
+                    "enable": true,
+                    "profile_code": "TKPD_DEFAULT",
+                    "additional_data": "{\"is_plus\":true}",
+                    "error_wording":"Biaya jasa aplikasi gagal dimuat. Cek Total Tagihan di Pembayaran atau <a href=refresh>Muat Ulang</a>."
                   }
                 }
               }

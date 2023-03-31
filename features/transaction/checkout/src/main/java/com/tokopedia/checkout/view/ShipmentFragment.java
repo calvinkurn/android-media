@@ -4333,9 +4333,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void getPlatformFeeData() {
         PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
-        platformFeeRequest.setGatewayCode(shipmentPresenter.getShipmentPlatformFeeData().getGatewayCode());
+        platformFeeRequest.setGatewayCode("BCAVA");
         platformFeeRequest.setProfileCode(shipmentPresenter.getShipmentPlatformFeeData().getProfileCode());
-        platformFeeRequest.setTransactionAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
+        platformFeeRequest.setPaymentAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
+        platformFeeRequest.setAdditionalData(shipmentPresenter.getShipmentPlatformFeeData().getAdditionalData());
         shipmentPresenter.getDynamicPlatformFee(platformFeeRequest);
     }
 

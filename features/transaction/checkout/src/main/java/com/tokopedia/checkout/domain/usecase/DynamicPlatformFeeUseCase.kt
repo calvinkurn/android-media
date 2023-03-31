@@ -20,7 +20,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
         params = mapOf(
             PROFILE_CODE_PARAM to request.profileCode,
             GATEWAY_CODE_PARAM to request.gatewayCode,
-            PAYMENT_AMOUNT_PARAM to request.transactionAmount
+            PAYMENT_AMOUNT_PARAM to request.paymentAmount
         )
     }
 

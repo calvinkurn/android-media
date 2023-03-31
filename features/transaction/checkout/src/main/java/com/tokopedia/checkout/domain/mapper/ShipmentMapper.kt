@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.tokopedia.checkout.data.model.response.platformfee.ShipmentDynamicPlatformFee
+import com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
@@ -139,7 +139,7 @@ class ShipmentMapper @Inject constructor() {
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
-            dynamicPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.dynamicPlatformFee)
+            dynamicPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
         }
     }
 
@@ -1086,12 +1086,12 @@ class ShipmentMapper @Inject constructor() {
         )
     }
 
-    private fun mapPlatformFee(platformFee: ShipmentDynamicPlatformFee): CheckoutPlatformFeeData {
+    private fun mapPlatformFee(platformFee: ShipmentPlatformFee): CheckoutPlatformFeeData {
         return CheckoutPlatformFeeData(
-                isPlatformFee = platformFee.isUsingPlatformFee,
-                ticker = platformFee.ticker,
-                gatewayCode = platformFee.gatewayCode,
-                profileCode = platformFee.profileCode
+            isEnable = platformFee.isEnable,
+            errorWording = platformFee.errorWording,
+            additionalData = platformFee.additionalData,
+            profileCode = platformFee.profileCode
         )
     }
 

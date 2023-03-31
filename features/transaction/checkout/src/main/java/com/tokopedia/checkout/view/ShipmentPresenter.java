@@ -3452,14 +3452,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         if (platformFeeData.getResponse().getSuccess()) {
                             getView().showPlatformFeeData(platformFeeData);
                         } else {
-                            getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getTicker());
+                            getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
                         }
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
-                        getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getTicker());
+                        getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
                     }
                     return Unit.INSTANCE;
                 }
