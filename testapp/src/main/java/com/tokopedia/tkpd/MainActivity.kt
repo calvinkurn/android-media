@@ -51,8 +51,7 @@ class MainActivity : AppCompatActivity() {
                             HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
                             HomeDestination.APPLINK -> goTo()
                         }
-                    }
-                )
+                    })
             }
         }
     }
@@ -127,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         if (userSession.isLoggedIn) {
             val identity =
                 if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            model.value = model.value.copy(loginText = "Logged in as:\n$identity")
+            model.value = model.value.copy(loginText = "Logged in as:\n${identity}")
         } else {
             model.value = model.value.copy(loginText = "Login")
         }
@@ -145,18 +144,15 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        if (model.value.applink.isNotBlank()) {
-            RouteManager.route(this, model.value.applink)
-        } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-        }
+        if (model.value.applink.isNotBlank()) RouteManager.route(this, model.value.applink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return "tokopedia://product/2492173494"
+        return ""
     }
 
     data class Model(
