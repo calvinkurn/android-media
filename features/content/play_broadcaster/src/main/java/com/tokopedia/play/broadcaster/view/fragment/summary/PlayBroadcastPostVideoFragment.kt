@@ -328,9 +328,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         val existingFragment = childFragmentManager.findFragmentByTag(
             PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        try {
-            getSetupCoverBottomSheet()?.show(childFragmentManager)
-        } catch (e: Exception) {}
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
