@@ -63,7 +63,6 @@ import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSub
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber
-import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
@@ -1970,46 +1969,33 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel) {
-        val shipmentCartItemModels: MutableList<ShipmentCartItemModel> = ArrayList()
-        shipmentCartItemModels.add(shipmentCartItemModel)
-        val param: MutableMap<String, Any> = HashMap()
-        val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels)
-        val tmpSaveShipmentDataArray: MutableList<ShipmentStateRequestData> = ArrayList()
-        for (requestData in saveShipmentDataArray) {
-            if (requestData.shopProductDataList != null && requestData.shopProductDataList!!.isNotEmpty()) {
-                tmpSaveShipmentDataArray.add(requestData)
+        viewModelScope.launch(dispatchers.immediate) {
+            try {
+                val params = generateSaveShipmentStateRequestSingleAddress(listOf(shipmentCartItemModel))
+                if (params.requestDataList.isNotEmpty()) {
+                    saveShipmentStateGqlUseCase(params)
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
             }
         }
-        if (tmpSaveShipmentDataArray.isEmpty()) return
-        param[SaveShipmentStateGqlUseCase.PARAM_CARTS] = tmpSaveShipmentDataArray
-        val requestParams = RequestParams.create()
-        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param)
-        compositeSubscription.add(
-            saveShipmentStateGqlUseCase.createObservable(requestParams)
-                .subscribe(SaveShipmentStateSubscriber())
-        )
     }
 
     override fun processSaveShipmentState() {
-        val param: MutableMap<String, Any> = HashMap()
-        val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
-        param[SaveShipmentStateGqlUseCase.PARAM_CARTS] = saveShipmentDataArray
-        val requestParams = RequestParams.create()
-        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param)
-        compositeSubscription.add(
-            saveShipmentStateGqlUseCase.createObservable(requestParams)
-                .subscribe(SaveShipmentStateSubscriber())
-        )
-    }
-
-    private fun getShipmentItemSaveStateData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<ShipmentStateRequestData> {
-        val request = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels)
-        return request.requestDataList
+        viewModelScope.launch(dispatchers.immediate) {
+            try {
+                val params = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
+                if (params.requestDataList.isNotEmpty()) {
+                    saveShipmentStateGqlUseCase(params)
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
+            }
+        }
     }
 
     private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<ShipmentCartItemModel>): SaveShipmentStateRequest {
-        val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
-            ArrayList()
+        val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> = ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> = ArrayList()
         for (shipmentCartItemModel in shipmentCartItemModels) {
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
@@ -2038,6 +2024,7 @@ class ShipmentPresenter @Inject constructor(
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> = ArrayList()
             for (cartItemModel in shipmentCartItemModel.cartItemModels) {
                 val shipmentStateProductData = ShipmentStateProductData()
+                shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()
                 shipmentStateProductData.productId = cartItemModel.productId
                 if (cartItemModel.isPreOrder) {
                     val shipmentStateProductPreorder = ShipmentStateProductPreorder()
@@ -2048,9 +2035,9 @@ class ShipmentPresenter @Inject constructor(
             }
             val shipmentStateDropshipData = ShipmentStateDropshipData()
             shipmentStateDropshipData.name =
-                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperName
+                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperName ?: ""
             shipmentStateDropshipData.telpNo =
-                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperPhone
+                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperPhone ?: ""
             val ratesFeature = generateRatesFeature(courierData)
             val shipmentStateShippingInfoData = ShipmentStateShippingInfoData()
             shipmentStateShippingInfoData.shippingId =
@@ -2059,7 +2046,7 @@ class ShipmentPresenter @Inject constructor(
                 courierData.selectedShipper.shipperProductId.toLong()
             shipmentStateShippingInfoData.ratesFeature = ratesFeature
             val shipmentStateShopProductData = ShipmentStateShopProductData()
-            shipmentStateShopProductData.shopId = shipmentCartItemModel.shopId
+            shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartString
             shipmentStateShopProductData.finsurance =
                 if (shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance != null &&
                     shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance!!
