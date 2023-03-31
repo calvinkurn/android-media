@@ -147,6 +147,10 @@ data class ShipmentCartItemModel(
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
 
+    val cartItemModelsGroupByOrder: Map<String, List<CartItemModel>>
+        get() = cartItemModels.filter { !it.isError }
+            .groupBy { it.cartStringOrder }
+
     companion object {
         @JvmStatic
         fun clone(

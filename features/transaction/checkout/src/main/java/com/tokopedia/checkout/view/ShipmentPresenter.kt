@@ -3564,8 +3564,7 @@ class ShipmentPresenter @Inject constructor(
     fun getGroupProductsForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<GroupProduct> {
         val products = ArrayList<GroupProduct>()
         if (shipmentCartItemModel?.cartItemModels != null) {
-            val cartItemByOrder = shipmentCartItemModel.cartItemModels.filter { !it.isError }
-                .groupBy { it.cartStringOrder }
+            val cartItemByOrder = shipmentCartItemModel.cartItemModelsGroupByOrder
             for ((key, value) in cartItemByOrder) {
                 var totalOrderValue = 0L
                 var totalWeight = 0.0
