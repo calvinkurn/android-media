@@ -2,12 +2,12 @@ package com.tokopedia.productcard.layout
 
 import com.tokopedia.productcard.layout.eta.EtaLayoutStrategy
 import com.tokopedia.productcard.layout.eta.EtaLayoutStrategyControl
-import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
-import com.tokopedia.productcard.layout.label.LabelLayoutStrategyControl
 import com.tokopedia.productcard.layout.image.ImageLayoutStrategy
 import com.tokopedia.productcard.layout.image.ImageLayoutStrategyLong
+import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
+import com.tokopedia.productcard.layout.label.LabelLayoutStrategyControl
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
-import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyNone
+import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyControl
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategy
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyNone
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
@@ -18,5 +18,5 @@ internal class LayoutStrategyPortrait: LayoutStrategy,
     LabelLayoutStrategy by LabelLayoutStrategyControl(),
     VariantLayoutStrategy by VariantLayoutStrategyControl(),
     EtaLayoutStrategy by EtaLayoutStrategyControl(),
-    ShadowLayoutStrategy by ShadowLayoutStrategyNone(),
+    ShadowLayoutStrategy by ShadowLayoutStrategyControl(),
     ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyNone()
