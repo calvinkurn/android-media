@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -555,10 +556,18 @@ class RechargeCCFragment :
         if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
             binding?.run {
                 val formattedClientNumber = binding?.ccWidgetClientNumber?.getFormattedInputNumber() ?: ""
-                val dialogDesc = String.format(getString(R.string.cc_desc_dialog), formattedClientNumber)
+                val dialogDesc = if (formattedClientNumber.isMasked()) {
+                    getString(R.string.cc_desc_dialog)
+                } else {
+                    String.format(
+                        CC_DIALOG_BOX_DESC_FORMAT,
+                        getString(R.string.cc_desc_dialog),
+                        formattedClientNumber
+                    )
+                }
                 val dialog = DialogUnify(root.context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.cc_title_dialog))
-                dialog.setDescription(dialogDesc)
+                dialog.setDescription(MethodChecker.fromHtml(dialogDesc).trim())
                 dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
                 dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
                 dialog.setPrimaryCTAClickListener {
@@ -958,6 +967,8 @@ class RechargeCCFragment :
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
+
+        const val CC_DIALOG_BOX_DESC_FORMAT = "%s<h3><b>%s</b></h3>"
 
         fun newInstance(
             categoryId: String,
