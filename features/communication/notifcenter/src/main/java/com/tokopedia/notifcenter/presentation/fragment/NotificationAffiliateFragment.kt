@@ -169,10 +169,7 @@ open class NotificationAffiliateFragment :
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        if (viewModel.hasFilter()) {
-            return EmptyNotificationUiModel(viewModel.hasFilter())
-        }
-        return super.getEmptyDataViewModel()
+        return EmptyNotificationUiModel(viewModel.hasFilter())
     }
 
     override fun isListEmpty(): Boolean {
