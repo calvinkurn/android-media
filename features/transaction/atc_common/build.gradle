@@ -40,6 +40,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
 
     testImplementation rootProject.ext.testDependencies.mockk
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 project.ext {

@@ -9,7 +9,7 @@ import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -57,7 +57,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartCounter()
 
-    fun reCalculateSubTotal(dataList: List<CartShopHolderData>)
+    fun reCalculateSubTotal(dataList: List<CartGroupHolderData>)
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemHolderData>): Map<String, Any>
 
@@ -113,9 +113,9 @@ interface ICartListPresenter {
 
     fun doUpdateCartForPromo()
 
-    fun doValidateUse(promoRequest: ValidateUsePromoRequest)
+    fun doGetLastApply(promoRequest: ValidateUsePromoRequest)
 
-    fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
+    fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest)
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
 
@@ -147,7 +147,7 @@ interface ICartListPresenter {
 
     fun setLocalizingAddressData(lca: LocalCacheModel?)
 
-    fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
     fun getPromoFlag(): Boolean
 
@@ -159,7 +159,7 @@ interface ICartListPresenter {
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
 
-    fun checkEnableBundleCrossSell(cartShopHolderData: CartShopHolderData): Boolean
+    fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

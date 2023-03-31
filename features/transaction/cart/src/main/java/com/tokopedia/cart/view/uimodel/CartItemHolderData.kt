@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
     var cartString: String = "",
+    var cartStringOrder: String = "",
     var actionsData: List<Action> = emptyList(),
     var isError: Boolean = false,
     var errorType: String = "",
@@ -63,6 +64,10 @@ data class CartItemHolderData(
     var butuhResepText: String = "",
     var butuhResepIconUrl: String = "",
     var isFinalItem: Boolean = false,
+    
+    // OWOC
+    var shopHolderData: CartShopHolderData = CartShopHolderData(),
+    var isShopShown: Boolean = false,
 
     // Analytics data
     var shopId: String = "",

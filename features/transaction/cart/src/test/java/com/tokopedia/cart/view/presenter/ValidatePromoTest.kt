@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -19,8 +19,8 @@ class ValidatePromoTest : BaseCartTest() {
     @Test
     fun `WHEN validate promo with detached view THEN should not clear BO`() {
         // GIVEN
-        val shopList = listOf(CartShopHolderData(boCode = "asdf"), CartShopHolderData())
-        every { view.getAllShopDataList() } returns shopList
+        val shopList = listOf(CartGroupHolderData(boCode = "asdf"), CartGroupHolderData())
+        every { view.getAllGroupDataList() } returns shopList
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
@@ -38,8 +38,8 @@ class ValidatePromoTest : BaseCartTest() {
     @Test
     fun `WHEN validate promo with no BO and preapplied BO THEN should clear BO`() {
         // GIVEN
-        val shopList = listOf(CartShopHolderData(boCode = "asdf"), CartShopHolderData())
-        every { view.getAllShopDataList() } returns shopList
+        val shopList = listOf(CartGroupHolderData(boCode = "asdf"), CartGroupHolderData())
+        every { view.getAllGroupDataList() } returns shopList
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
@@ -57,8 +57,8 @@ class ValidatePromoTest : BaseCartTest() {
     @Test
     fun `WHEN validate promo with BO green and preapplied BO THEN should not clear BO`() {
         // GIVEN
-        val shopList = listOf(CartShopHolderData(boCode = "asdf", cartString = "123"), CartShopHolderData(cartString = "234"))
-        every { view.getAllShopDataList() } returns shopList
+        val shopList = listOf(CartGroupHolderData(boCode = "asdf", cartString = "123"), CartGroupHolderData(cartString = "234"))
+        every { view.getAllGroupDataList() } returns shopList
 
         // WHEN
         cartListPresenter.validateBoPromo(
@@ -90,8 +90,8 @@ class ValidatePromoTest : BaseCartTest() {
     @Test
     fun `WHEN validate promo with invalid BO and preapplied BO THEN should clear BO`() {
         // GIVEN
-        val shopList = listOf(CartShopHolderData(boCode = "asdf", cartString = "123"), CartShopHolderData(cartString = "234"))
-        every { view.getAllShopDataList() } returns shopList
+        val shopList = listOf(CartGroupHolderData(boCode = "asdf", cartString = "123"), CartGroupHolderData(cartString = "234"))
+        every { view.getAllGroupDataList() } returns shopList
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
