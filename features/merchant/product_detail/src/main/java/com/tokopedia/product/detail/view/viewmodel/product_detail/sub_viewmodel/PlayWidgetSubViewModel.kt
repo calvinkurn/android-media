@@ -40,7 +40,7 @@ class PlayWidgetSubViewModel @Inject constructor(
                 val productIds = mediator.getVariant()?.let { variant ->
                     listOf(variant.parentId) + variant.children.map { it.productId }
                 } ?: emptyList()
-                val categoryIds = mediator.getPdpLayout()?.basic?.category?.detail?.map {
+                val categoryIds = mediator.getP1Data()?.basic?.category?.detail?.map {
                     it.id
                 } ?: emptyList()
 

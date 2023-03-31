@@ -287,9 +287,9 @@ class DynamicProductDetailViewModel @Inject constructor(
         iniQuantityFlow()
     }
 
-    override fun getPdpLayout(): DynamicProductInfoP1? = getDynamicProductInfoP1
+    override fun getP1Data(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
-    override fun getPdpData(): ProductInfoP2UiData? = p2Data.value
+    override fun getP2Data(): ProductInfoP2UiData? = p2Data.value
 
     override fun getVariant(): ProductVariant? = variantData
 

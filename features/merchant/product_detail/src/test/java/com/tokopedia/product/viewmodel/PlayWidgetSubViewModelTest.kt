@@ -98,7 +98,7 @@ class PlayWidgetSubViewModelTest {
 
         val expectedResponse = PlayWidget()
 
-        coEvery { mediator.getPdpLayout() } returns null
+        coEvery { mediator.getP1Data() } returns null
         coEvery { mediator.getVariant() } returns null
         coEvery {
             playWidgetTools.getWidgetFromNetwork(widgetType = widgetType)
@@ -145,7 +145,7 @@ class PlayWidgetSubViewModelTest {
         val expectedResponse = PlayWidget()
 
         coEvery {
-            viewModel.mediator.getPdpLayout()
+            viewModel.mediator.getP1Data()
         } returns DynamicProductInfoP1(
             basic = BasicInfo(category = Category(detail = listOf(Category.Detail())))
         )
@@ -168,9 +168,9 @@ class PlayWidgetSubViewModelTest {
 
         viewModel.getPlayWidgetData()
 
-        coVerify { viewModel.mediator.getPdpLayout() }
+        coVerify { viewModel.mediator.getP1Data() }
         coVerify { viewModel.mediator.getVariant() }
-        assert(viewModel.mediator.getPdpLayout()?.basic?.category != null)
+        assert(viewModel.mediator.getP1Data()?.basic?.category != null)
     }
 
     @Test
