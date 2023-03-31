@@ -539,8 +539,11 @@ class PlayBroadcastActivity : BaseActivity(),
                     else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
 
-                    if(!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
+                    if (!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
                         PlayBroadcasterIdlingResource.decrement()
+
+                    if (GlobalConfig.DEBUG)
+                        debugView?.logChannelId(result.data.channelId)
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()

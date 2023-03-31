@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fadeScrollbars="false"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,6 +38,29 @@
             tools:text="STARTED" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_channel_id_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/channel_id"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/tv_status_label"
+            app:layout_constraintTop_toBottomOf="@id/tv_status_label"
+            app:typographyType="body_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_channel_id"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/tv_channel_id_label"
+            app:layout_constraintTop_toTopOf="@id/tv_channel_id_label"
+            app:layout_constraintBottom_toBottomOf="@id/tv_channel_id_label"
+            tools:text="STARTED" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_debug_view_push_updated_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +68,7 @@
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvt_status"
+            app:layout_constraintTop_toBottomOf="@id/tv_channel_id_label"
             app:typographyType="body_1"
             tools:text="init live stream config" />
 
