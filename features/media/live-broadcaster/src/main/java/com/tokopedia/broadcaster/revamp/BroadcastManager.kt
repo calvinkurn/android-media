@@ -459,6 +459,7 @@ class BroadcastManager @Inject constructor(
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
         mStreamerGL?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
+        /** TODO: need to know how to update mStreamerSurface.setSurfaceSize() */
     }
 
     override fun start(rtmpUrl: String) {
@@ -522,10 +523,8 @@ class BroadcastManager @Inject constructor(
         }
 
         val connectionId = if (mWithByteplus == true) {
-            Log.d("<LOG>", "using mStreamerSurface")
             mStreamerSurface?.createConnection(connectionConfig)
         } else {
-            Log.d("<LOG>", "using mStreamer")
             mStreamer?.createConnection(connectionConfig)
         } ?: -1
 
@@ -552,6 +551,7 @@ class BroadcastManager @Inject constructor(
 
         mConnectionId?.let {
             mStreamer?.releaseConnection(it.first)
+            mStreamerSurface?.releaseConnection(it.first)
         }
 
         mAdaptiveBitrate?.stop()
@@ -617,6 +617,7 @@ class BroadcastManager @Inject constructor(
         }
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
+        mStreamerSurface?.flip()
 
         // Re-select camera
         val cameraManager = mCameraManager ?: return
@@ -724,6 +725,8 @@ class BroadcastManager @Inject constructor(
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopVideoCapture()
+                mStreamerSurface?.stopVideoCapture()
+
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
                         BroadcasterException(BroadcasterErrorType.VideoFailed)
@@ -776,34 +779,42 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun fps(): Double? {
-        return mStreamer?.fps
+        return if (mWithByteplus == true) mStreamerSurface?.fps
+        else mStreamer?.fps
     }
 
     override fun bytesSent(connectionId: Int): Long? {
-        return mStreamer?.getBytesSent(connectionId)
+        return if (mWithByteplus == true) mStreamerSurface?.getBytesSent(connectionId)
+        else mStreamer?.getBytesSent(connectionId)
     }
 
     override fun audioPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getAudioPacketsLost(connectionId)
+        return if (mWithByteplus == true) mStreamerSurface?.getAudioPacketsLost(connectionId)
+        else mStreamer?.getAudioPacketsLost(connectionId)
     }
 
     override fun videoPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getVideoPacketsLost(connectionId)
+        return if (mWithByteplus == true) mStreamerSurface?.getVideoPacketsLost(connectionId)
+        else mStreamer?.getVideoPacketsLost(connectionId)
     }
 
     override fun udpPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getUdpPacketsLost(connectionId)
+        return if (mWithByteplus == true) mStreamerSurface?.getUdpPacketsLost(connectionId)
+        else mStreamer?.getUdpPacketsLost(connectionId)
     }
 
     override fun changeBitrate(bitrate: Int) {
-        mStreamer?.changeBitRate(bitrate)
+        if (mWithByteplus == true) mStreamerSurface?.changeBitRate(bitrate)
+        else mStreamer?.changeBitRate(bitrate)
+
         mMetric = mMetric.copy(
             videoBitrate = bitrate.toLong()
         )
     }
 
     override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
-        mStreamer?.changeFpsRange(fpsRange)
+        if (mWithByteplus == true) mStreamerSurface?.changeFpsRange(fpsRange)
+        else mStreamer?.changeFpsRange(fpsRange)
     }
 
     private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
