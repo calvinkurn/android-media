@@ -30,7 +30,7 @@ data class CsatAttributesPojo(
             @SerializedName("description")
             val description: String?,
             @SerializedName("score")
-            val score: Int = 0
+            val score: Long = 0
         )
         data class Reason(
             @SerializedName("code")

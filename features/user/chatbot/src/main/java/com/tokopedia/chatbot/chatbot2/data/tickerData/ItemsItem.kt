@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.data.TickerData
+package com.tokopedia.chatbot.chatbot2.data.tickerData
 
 import com.google.gson.annotations.SerializedName
 

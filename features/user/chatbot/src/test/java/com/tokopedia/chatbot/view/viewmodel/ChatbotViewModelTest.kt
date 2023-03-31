@@ -34,7 +34,6 @@ import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
-import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitChatCsatUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
@@ -69,7 +68,6 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveE
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsatState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
-import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
@@ -1133,12 +1131,12 @@ class ChatbotViewModelTest {
 
     @Test
     fun `showTickerData success`() {
-        val response = mockk<com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse>(relaxed = true)
+        val response = mockk<com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse>(relaxed = true)
 
         coEvery {
             getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
         } coAnswers {
-            firstArg<(com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse) -> Unit>().invoke(response)
+            firstArg<(com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse) -> Unit>().invoke(response)
         }
 
         viewModel.showTickerData("123")
@@ -1148,8 +1146,8 @@ class ChatbotViewModelTest {
 
     @Test
     fun `showTickerData success with null tickerdata`() {
-        val response = com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse(
-            com.tokopedia.chatbot.chatbot2.data.TickerData.ChipGetActiveTickerV4(
+        val response = com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse(
+            com.tokopedia.chatbot.chatbot2.data.tickerData.ChipGetActiveTickerV4(
                 "",
                 null
             )
@@ -1158,7 +1156,7 @@ class ChatbotViewModelTest {
         coEvery {
             getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
         } coAnswers {
-            firstArg<(com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse) -> Unit>().invoke(response)
+            firstArg<(com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse) -> Unit>().invoke(response)
         }
 
         viewModel.showTickerData("123")
@@ -1168,14 +1166,14 @@ class ChatbotViewModelTest {
 
     @Test
     fun `showTickerData success with null ChipGetActiveTickerV4`() {
-        val response = com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse(
+        val response = com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse(
             null
         )
 
         coEvery {
             getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
         } coAnswers {
-            firstArg<(com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse) -> Unit>().invoke(response)
+            firstArg<(com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse) -> Unit>().invoke(response)
         }
 
         viewModel.showTickerData("123")

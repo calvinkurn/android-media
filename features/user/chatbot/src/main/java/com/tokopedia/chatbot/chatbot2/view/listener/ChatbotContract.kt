@@ -40,7 +40,7 @@ interface ChatbotContract {
 
         fun sendInvoiceForArticle()
 
-        fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.TickerData.TickerData)
+        fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData)
 
         fun onError(throwable: Throwable)
 

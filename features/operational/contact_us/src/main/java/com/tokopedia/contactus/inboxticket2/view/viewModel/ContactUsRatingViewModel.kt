@@ -5,6 +5,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIFTH_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIRST_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIRST_INDEX
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FOURTH_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FOURTH_INDEX
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.SECOND_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.SECOND_INDEX
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.THIRD_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.THIRD_INDEX
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.ZEROTH_INDEX
 import com.tokopedia.csat_rating.presenter.screenState.FifthScreenState
 import com.tokopedia.csat_rating.presenter.screenState.FirstScreenState
 import com.tokopedia.csat_rating.presenter.screenState.FourthScreenState
@@ -18,39 +28,31 @@ class ContactUsRatingViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
-    companion object {
-        const val FIRST_EMOJI = 1
-        const val SECOND_EMOJI = 2
-        const val THIRD_EMOJI = 3
-        const val FOURTH_EMOJI = 4
-        const val FIFTH_EMOJI = 5
-    }
-    
     private var captionsList = ArrayList<String>()
     private var questionList = ArrayList<String>()
-    var emojiState : Int = 0
-    private set
-    var csatTitle : String = ""
+    var emojiState: Long = 0
+        private set
+    var csatTitle: String = ""
         private set
     var screenState = MutableLiveData<ScreenState>()
-    private set
-    var reasonList : ArrayList<BadCsatReasonListItem> = arrayListOf()
-    private set
+        private set
+    var reasonList: ArrayList<BadCsatReasonListItem> = arrayListOf()
+        private set
 
-    fun setCaption(caption : ArrayList<String>){
+    fun setCaption(caption: ArrayList<String>) {
         captionsList = caption
     }
 
-    fun setQuestion(question : ArrayList<String>){
+    fun setQuestion(question: ArrayList<String>) {
         questionList = question
     }
 
-    fun setSelectedEmoji(selectedEmoji : Int){
+    fun setSelectedEmoji(selectedEmoji: Long) {
         emojiState = selectedEmoji
         screenState.value = determineScreenSate(selectedEmoji)
     }
 
-    fun setReasonList(itemsReasonList : ArrayList<BadCsatReasonListItem>){
+    fun setReasonList(itemsReasonList: ArrayList<BadCsatReasonListItem>) {
         reasonList = itemsReasonList
     }
 
@@ -58,28 +60,27 @@ class ContactUsRatingViewModel @Inject constructor(
         csatTitle = title
     }
 
-    private fun determineScreenSate(emoji: Int): ScreenState {
+    private fun determineScreenSate(emoji: Long): ScreenState {
         when (emoji) {
             NO_EMOJI -> return ZeroScreenState()
             FIRST_EMOJI -> {
-                return FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
+                return FirstScreenState(captionsList[ZEROTH_INDEX], questionList[ZEROTH_INDEX])
             }
             SECOND_EMOJI -> {
-                return SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
+                return SecondScreenState(captionsList[FIRST_INDEX], questionList[FIRST_INDEX])
             }
             THIRD_EMOJI -> {
-                return ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])
+                return ThirdScreenState(captionsList[SECOND_INDEX], questionList[SECOND_INDEX])
             }
             FOURTH_EMOJI -> {
-                return FourthScreenState(captionsList[FOURTH_EMOJI - 1], questionList[FOURTH_EMOJI - 1])
+                return FourthScreenState(captionsList[THIRD_INDEX], questionList[THIRD_INDEX])
             }
             FIFTH_EMOJI -> {
-                return FifthScreenState(captionsList[FIFTH_EMOJI - 1], questionList[FIFTH_EMOJI - 1])
+                return FifthScreenState(captionsList[FOURTH_INDEX], questionList[FOURTH_INDEX])
             }
             else -> {
                 return ZeroScreenState()
             }
         }
     }
-
 }

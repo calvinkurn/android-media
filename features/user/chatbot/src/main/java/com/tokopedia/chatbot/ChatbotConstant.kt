@@ -21,11 +21,11 @@ object ChatbotConstant {
     const val QUERY_SOURCE_TYPE = "Apps"
 
     object CsatRating {
-        const val RATING_ONE = 1
-        const val RATING_TWO = 2
-        const val RATING_THREE = 3
-        const val RATING_FOUR = 4
-        const val RATING_FIVE = 5
+        const val RATING_ONE = 1L
+        const val RATING_TWO = 2L
+        const val RATING_THREE = 3L
+        const val RATING_FOUR = 4L
+        const val RATING_FIVE = 5L
     }
 
     object ImageUpload {

@@ -5,7 +5,7 @@ package com.tokopedia.chatbot.chatbot2.attachinvoice.domain.model
  */
 
 class Invoice private constructor(
-    var statusInt: Int,
+    var statusInt: Long,
     var number: String = "",
     var type: String = "",
     var url: String = "",
@@ -20,7 +20,7 @@ class Invoice private constructor(
 ) {
 
     class InvoiceBuilder {
-        private var statusInt: Int = 0
+        private var statusInt: Long = 0
         private var number: String = ""
         private var type: String = ""
         private var url: String = ""
@@ -33,7 +33,7 @@ class Invoice private constructor(
         private var invoiceTypeInt: Int = 0
         private var invoiceId: Long = 0
 
-        fun setStatusInt(statusInt: Int): InvoiceBuilder {
+        fun setStatusInt(statusInt: Long): InvoiceBuilder {
             this.statusInt = statusInt
             return this
         }

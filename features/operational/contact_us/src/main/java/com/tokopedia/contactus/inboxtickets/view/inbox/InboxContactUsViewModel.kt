@@ -5,17 +5,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
-import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
-import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -31,8 +30,8 @@ class InboxContactUsViewModel @Inject constructor(
         const val IN_PROGRESS = 1
         const val NEED_RATING = 2
         const val CLOSED = 3
-        const val TICKET_ON_GIVE_RATE = 1
-        const val TICKET_ON_CLOSE = 2
+        const val TICKET_ON_GIVE_RATE = 1L
+        const val TICKET_ON_CLOSE = 2L
         const val ALL_OPTION_POSITION = 0
         private const val FIRST_PAGE = 1
     }
@@ -80,7 +79,7 @@ class InboxContactUsViewModel @Inject constructor(
             block = {
                 val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
                 if (topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isActive
+                    .getTopBotStatusData().isActive
                 ) {
                     val messageId =
                         topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()

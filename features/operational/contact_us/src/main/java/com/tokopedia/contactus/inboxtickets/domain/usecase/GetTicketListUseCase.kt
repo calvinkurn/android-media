@@ -3,7 +3,6 @@ package com.tokopedia.contactus.inboxtickets.domain.usecase
 import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
 import com.tokopedia.contactus.inboxtickets.data.gqlqueries.TICKET_LIST_QUERY
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
-import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -17,6 +16,9 @@ class GetTicketListUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
     private val repository: ContactUsRepository
 ) {
+    companion object {
+        private const val INITIAL_VALUE = 0L
+    }
     suspend fun getTicketListResponse(requestParams: RequestParams): InboxTicketListResponse {
         return repository.getGQLData(
             TICKET_LIST_QUERY,
@@ -25,12 +27,12 @@ class GetTicketListUseCase @Inject constructor(
         )
     }
 
-    fun getRequestParams(page: Int, status: Int, rating: Int = 0): RequestParams {
+    fun getRequestParams(page: Int, status: Int, rating: Long = 0): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(USERID, userSession.userId)
         requestParams.putInt(PAGE, page)
         requestParams.putInt(STATUS, status)
-        if (rating != FIRST_INITIALIZE_ZERO) requestParams.putInt(RATING, rating)
+        if (rating != INITIAL_VALUE) requestParams.putLong(RATING, rating)
         return requestParams
     }
 }

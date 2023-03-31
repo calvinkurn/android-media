@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.url.TokopediaUrl
 import java.io.File
 
-fun generateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
+fun generateInput(selectedValue: Long, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
     val input = SubmitOptionInput()
     with(input) {
         caseChatID = model?.helpfulQuestion?.caseChatId ?: ""

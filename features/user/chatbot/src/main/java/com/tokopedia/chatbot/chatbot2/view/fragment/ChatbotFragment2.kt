@@ -95,10 +95,10 @@ import com.tokopedia.chatbot.chatbot2.attachinvoice.view.resultmodel.SelectedInv
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.data.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.di.ChatbotModule
 import com.tokopedia.chatbot.chatbot2.di.DaggerChatbotComponent
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.domain.video.VideoUploadData
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotCsatActivity
@@ -163,7 +163,6 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveE
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsatState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
-import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
@@ -314,7 +313,7 @@ class ChatbotFragment2 :
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
 
-    private var pageSource: String= ""
+    private var pageSource: String = ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -435,7 +434,7 @@ class ChatbotFragment2 :
         getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
     }
 
-    private fun onClickEmoji(number: Int) {
+    private fun onClickEmoji(number: Long) {
         startActivityForResult(
             context?.let {
                 mCsatResponse?.let { it1 ->
@@ -691,7 +690,6 @@ class ChatbotFragment2 :
         viewModel.setPageSourceValue(pageSource)
 
         viewModel.checkForSession(messageId)
-        viewModel.checkUploadVideoEligibility(messageId)
         viewModel.showTickerData(messageId)
 
         initRecyclerViewListener()
@@ -710,7 +708,8 @@ class ChatbotFragment2 :
                 errorAction.text = context.getString(R.string.chatbot_back_to_tokopedia_care)
                 errorSecondaryAction.hide()
                 setActionClickListener {
-                    val intent = RouteManager.getIntent(requireView().context,
+                    val intent = RouteManager.getIntent(
+                        requireView().context,
                         ApplinkConst.CONTACT_US_NATIVE
                     )
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -722,10 +721,10 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun handlingForMessageIdValidity(messageId : String){
-        try{
+    private fun handlingForMessageIdValidity(messageId: String) {
+        try {
             val id = messageId.toLong()
-            if(id == 0L){
+            if (id == 0L) {
                 throw NumberFormatException()
             }
         } catch (e: NumberFormatException) {
@@ -768,14 +767,6 @@ class ChatbotFragment2 :
                 is CheckUploadSecureState.HandleFailureCheckUploadSecure -> {
                     // Using same error method as we have same logic
                     handleTopBotNewSessionFailure()
-                }
-            }
-        }
-
-        viewModel.videoUploadEligibility.observe(viewLifecycleOwner) {
-            when (it) {
-                is ChatbotVideoUploadEligibilityState.SuccessVideoUploadEligibility -> {
-                    isEligibleForVideoUpload = it.isEligible
                 }
             }
         }
@@ -1098,7 +1089,7 @@ class ChatbotFragment2 :
         }
     }
 
-    override fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.TickerData.TickerData) {
+    override fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
         if (!tickerData.items.isNullOrEmpty()) {
             getBindingView().chatbotTicker.show()
             if (tickerData.items.size > 1) {
@@ -1109,7 +1100,7 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun showSingleTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.TickerData.TickerData) {
+    private fun showSingleTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
         getBindingView().chatbotTicker.let {
             it.tickerTitle = tickerData.items?.get(0)?.title
             it.setHtmlDescription(tickerData.items?.get(0)?.text ?: "")
@@ -1125,7 +1116,7 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun showMultiTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.TickerData.TickerData) {
+    private fun showMultiTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
         val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
 
         tickerData.items?.forEach {
@@ -1456,7 +1447,7 @@ class ChatbotFragment2 :
             messageID = messageId
             caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID) ?: ""
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID) ?: ""
-            rating = data.extras?.getInt(EMOJI_STATE) ?: 0
+            rating = data.extras?.getLong(EMOJI_STATE) ?: 0
             reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
         }
         viewModel.submitChatCsat(messageId, input)
@@ -1490,7 +1481,7 @@ class ChatbotFragment2 :
         input.livechatSessionId = csatAttributes?.livechatSessionId
         input.reason = getFilters(data, reasonList)
         input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
+        input.score = data?.extras?.getLong(EMOJI_STATE) ?: 0
         input.timestamp = data?.getStringExtra(TIME_STAMP)
         input.triggerRuleType = csatAttributes?.triggerRuleType
 

@@ -117,12 +117,12 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -160,22 +160,22 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
-import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
+import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.chatbot.view.util.showToaster
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -189,7 +189,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
-import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 
@@ -311,7 +310,7 @@ class ChatbotFragment :
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
 
-    private var pageSource: String= ""
+    private var pageSource: String = ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -411,7 +410,7 @@ class ChatbotFragment :
         getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
     }
 
-    private fun onClickEmoji(number: Int) {
+    private fun onClickEmoji(number: Long) {
         startActivityForResult(
             context?.let {
                 ChatBotProvideRatingActivity
@@ -579,12 +578,14 @@ class ChatbotFragment :
     }
 
     private fun setChatBackground() {
-        activity?.window?.setBackgroundDrawable(context?.let {
-            ContextCompat.getDrawable(
-                it,
-                R.drawable.layered_chatbot_background
-            )
-        })
+        activity?.window?.setBackgroundDrawable(
+            context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.layered_chatbot_background
+                )
+            }
+        )
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -681,16 +682,16 @@ class ChatbotFragment :
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnBoarding = replyBubbleOnBoarding.hasBeenShown()
 
-        if(hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding)  {
+        if (hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding) {
             return
         }
 
-        if(!hasBeenShownReplyBubbleOnBoarding) {
+        if (!hasBeenShownReplyBubbleOnBoarding) {
             val ratioY = calculateRatiosForGuideline()
             setUpPositionReplyBubbleGuideline(ratioY)
             isReplyCoachMarkShowing = true
             showReplayCoachMark()
-        } else if(!hasBeenShownReplyBubbleOnBoarding) {
+        } else if (!hasBeenShownReplyBubbleOnBoarding) {
             checkVideoUploadOnboardingStatus()
         }
     }
@@ -1039,10 +1040,10 @@ class ChatbotFragment :
         }
     }
 
-    private fun handlingForMessageIdValidity(messageId : String){
-        try{
+    private fun handlingForMessageIdValidity(messageId: String) {
+        try {
             val id = messageId.toLong()
-            if(id == 0L){
+            if (id == 0L) {
                 throw NumberFormatException()
             }
         } catch (e: NumberFormatException) {
@@ -1274,7 +1275,8 @@ class ChatbotFragment :
                 msg,
                 Snackbar.LENGTH_LONG,
                 SNACK_BAR_TEXT_OK,
-                View.OnClickListener { })
+                View.OnClickListener { }
+            )
         }
     }
 
@@ -1665,7 +1667,8 @@ class ChatbotFragment :
                 it.message.toString(),
                 Snackbar.LENGTH_LONG,
                 SNACK_BAR_TEXT_OK,
-                View.OnClickListener { })
+                View.OnClickListener { }
+            )
         }
     }
 
@@ -2416,7 +2419,7 @@ class ChatbotFragment :
         showCoachMarkOfVideoReplay()
     }
 
-    private fun setHandlingViewHelperVideoCoachMark(){
+    private fun setHandlingViewHelperVideoCoachMark() {
         getBindingView().coachMarkVideoHelper.apply {
             bringToFront()
             visible()
@@ -2455,8 +2458,9 @@ class ChatbotFragment :
     }
 
     private fun setUpPositionReplyBubbleGuideline(ratioY: Float) {
-        if (ratioY == ZERO_RATIO)
+        if (ratioY == ZERO_RATIO) {
             return
+        }
         val params =
             getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
@@ -2472,7 +2476,7 @@ class ChatbotFragment :
         )
     }
 
-    private fun setReplayBubbleCoachMarkListener(){
+    private fun setReplayBubbleCoachMarkListener() {
         replyBubbleOnBoarding.onboardingDismissListener = object : OnboardingReplayDismissListener {
             override fun dismissReplyBubbleOnBoarding() {
                 isReplyCoachMarkShowing = false
@@ -2500,10 +2504,10 @@ class ChatbotFragment :
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isReplyCoachMarkShowing){
+        return if (isReplyCoachMarkShowing) {
             replyBubbleOnBoarding.dismiss()
             true
-        } else if(isVideoCoachMarkShowing) {
+        } else if (isVideoCoachMarkShowing) {
             videoUploadOnBoarding.dismiss()
             true
         } else {

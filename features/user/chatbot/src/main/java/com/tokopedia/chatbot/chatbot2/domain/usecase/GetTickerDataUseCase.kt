@@ -11,15 +11,15 @@ import javax.inject.Inject
 )
 class GetTickerDataUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse>(graphqlRepository) {
+) : GraphqlUseCase<com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse>(graphqlRepository) {
 
     fun getTickerData(
-        onSuccess: (com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse) -> Unit,
+        onSuccess: (com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse) -> Unit,
         onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
         messageId: String
     ) {
         try {
-            this.setTypeClass(com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse::class.java)
+            this.setTypeClass(com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse::class.java)
             this.setGraphqlQuery(com.tokopedia.chatbot.chatbot2.domain.gqlqueries.GetTickerDataQuery())
 
             this.execute(

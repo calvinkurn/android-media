@@ -22,7 +22,7 @@ data class HelpFullQuestionPojo(
             @SerializedName("text")
             val text: String?,
             @SerializedName("value")
-            val value: Int?
+            val value: Long?
         )
     }
 }

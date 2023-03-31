@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.viewmodel
 
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,22 +36,20 @@ import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttrib
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.chatbot2.data.replyBox.BigReplyBoxAttribute
+import com.tokopedia.chatbot.chatbot2.data.replyBox.DynamicAttachment
+import com.tokopedia.chatbot.chatbot2.data.replyBox.ReplyBoxAttribute
+import com.tokopedia.chatbot.chatbot2.data.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
-import com.tokopedia.chatbot.chatbot2.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.BigReplyBoxAttribute
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.DynamicAttachment
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.ReplyBoxAttribute
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
-import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitChatCsatUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
@@ -90,7 +87,6 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveE
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsatState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
-import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
@@ -136,7 +132,6 @@ class ChatbotViewModel @Inject constructor(
     private val ticketListContactUsUseCase: TicketListContactUsUsecase,
     private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
     private val checkUploadSecureUseCase: ChatbotCheckUploadSecureUseCase,
-    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
     private val getTickerDataUseCase: GetTickerDataUseCase,
     private val getResoLinkUseCase: GetResoLinkUseCase,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
@@ -170,9 +165,6 @@ class ChatbotViewModel @Inject constructor(
     private val _checkUploadSecure = MutableLiveData<CheckUploadSecureState>()
     val checkUploadSecure: LiveData<CheckUploadSecureState>
         get() = _checkUploadSecure
-    private val _videoUploadEligibility = MutableLiveData<ChatbotVideoUploadEligibilityState>()
-    val videoUploadEligibility: LiveData<ChatbotVideoUploadEligibilityState>
-        get() = _videoUploadEligibility
     private val _tickerData = MutableLiveData<GetTickerDataState>()
     val tickerData: LiveData<GetTickerDataState>
         get() = _tickerData
@@ -292,7 +284,7 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    private fun onTicketListDataFail(throwable: Throwable) {
+    private fun onTicketListDataFail() {
         _ticketList.postValue(TicketListState.ShowContactUs)
     }
 
@@ -356,30 +348,6 @@ class ChatbotViewModel @Inject constructor(
         )
     }
 
-    // Check for Video Upload Eligibility
-    fun checkUploadVideoEligibility(msgId: String) {
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
-        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-            ::onSuccessVideoUploadEligibility,
-            ::onFailureVideoUploadEligibility,
-            msgId
-        )
-    }
-
-    private fun onSuccessVideoUploadEligibility(response: ChatbotUploadVideoEligibilityResponse) {
-        _videoUploadEligibility.postValue(
-            ChatbotVideoUploadEligibilityState.SuccessVideoUploadEligibility(
-                response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible
-            )
-        )
-    }
-
-    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-        _videoUploadEligibility.postValue(
-            ChatbotVideoUploadEligibilityState.FailureVideoUploadEligibility
-        )
-    }
-
     // Get Ticker Data
     fun showTickerData(messageId: String) {
         getTickerDataUseCase.cancelJobs()
@@ -403,7 +371,7 @@ class ChatbotViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.TickerData.TickerDataResponse) {
+    private fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerDataResponse) {
         tickerData.chipGetActiveTickerV4?.data?.let {
             _tickerData.postValue(
                 GetTickerDataState.SuccessTickerData(it)
@@ -448,7 +416,7 @@ class ChatbotViewModel @Inject constructor(
     }
 
     // No need to do any actions on UI
-    fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsUiModel?) {
+    fun hitGqlforOptionList(messageId: String, selectedValue: Long, model: HelpFullQuestionsUiModel?) {
         val input = generateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
@@ -975,7 +943,6 @@ class ChatbotViewModel @Inject constructor(
                     }
             },
             onError = {
-                Log.d("FATAL", "connectWebSocket: Exception occured here $it")
                 ChatbotNewRelicLogger.logNewRelicForSocket(
                     it,
                     pageSourceAccess
@@ -1539,7 +1506,6 @@ class ChatbotViewModel @Inject constructor(
         ticketListContactUsUseCase.cancelJobs()
         getTopBotNewSessionUseCase.cancelJobs()
         checkUploadSecureUseCase.cancelJobs()
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         getTickerDataUseCase.cancelJobs()
         getResoLinkUseCase.cancelJobs()
         submitCsatRatingUseCase.cancelJobs()

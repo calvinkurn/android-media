@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class InputItem(
 
     @SerializedName("score")
-    var score: Int? = null,
+    var score: Long? = null,
 
     @SerializedName("reason")
     var reason: String? = null,

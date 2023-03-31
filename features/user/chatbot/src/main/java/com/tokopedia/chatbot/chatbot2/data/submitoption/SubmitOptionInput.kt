@@ -12,5 +12,5 @@ data class SubmitOptionInput(
     @SerializedName("source")
     var source: String = "",
     @SerializedName("value")
-    var value: Int = 0
+    var value: Long = 0
 )

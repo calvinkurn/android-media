@@ -28,7 +28,7 @@ class InvoiceAttributesDataModel(
     var imageUrl: String = "",
     @field:SerializedName("status_id")
     @field:Expose
-    var statusId: Int,
+    var statusId: Long,
     @field:SerializedName("status")
     @field:Expose
     var status: String = "",

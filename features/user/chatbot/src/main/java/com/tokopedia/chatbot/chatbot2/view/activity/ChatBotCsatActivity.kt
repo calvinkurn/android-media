@@ -35,7 +35,7 @@ class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
         const val CLICKED_EMOJI = "clicked_emoji"
         const val PARAM_OPTIONS_CSAT = "options_csat"
 
-        fun getInstance(context: Context, clickEmoji: Int, model: CsatOptionsUiModel?): Intent {
+        fun getInstance(context: Context, clickEmoji: Long, model: CsatOptionsUiModel?): Intent {
             val intent = Intent(context, ChatBotCsatActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)
             intent.putExtra(CASE_CHAT_ID, model?.csat?.caseChatId)

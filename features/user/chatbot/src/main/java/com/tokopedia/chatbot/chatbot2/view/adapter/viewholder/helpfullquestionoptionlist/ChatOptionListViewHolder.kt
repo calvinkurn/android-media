@@ -26,14 +26,14 @@ class ChatOptionListViewHolder(itemView: ItemChatbotHelpfulBinding, private val 
         itemView.setOnClickListener { onOptionListSelected.invoke(element) }
     }
 
-    private fun setChatRating(value: Int) {
+    private fun setChatRating(value: Long) {
         chatRaing.show()
         when (value) {
-            1 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_1))
-            2 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_2))
-            3 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_3))
-            4 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_4))
-            5 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_5))
+            1L -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_1))
+            2L -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_2))
+            3L -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_3))
+            4L -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_4))
+            5L -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_5))
         }
     }
 }

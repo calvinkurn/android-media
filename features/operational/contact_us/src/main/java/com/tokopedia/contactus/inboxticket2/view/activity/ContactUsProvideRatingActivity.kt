@@ -21,13 +21,13 @@ import com.tokopedia.contactus.inboxticket2.di.DaggerInboxComponent
 import com.tokopedia.contactus.inboxticket2.di.InboxModule
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView
 import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel
-import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel.Companion.FIFTH_EMOJI
-import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel.Companion.FIRST_EMOJI
-import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel.Companion.FOURTH_EMOJI
-import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel.Companion.SECOND_EMOJI
-import com.tokopedia.contactus.inboxticket2.view.viewModel.ContactUsRatingViewModel.Companion.THIRD_EMOJI
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIFTH_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIRST_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FOURTH_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.SECOND_EMOJI
+import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.THIRD_EMOJI
 import com.tokopedia.csat_rating.presenter.screenState.ScreenState
 import com.tokopedia.csat_rating.presenter.screenState.ZeroScreenState
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
@@ -91,7 +91,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0) ?: BaseFragmentProvideRating.NO_EMOJI
+        val emojiState = intent?.getLongExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0) ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
     }

@@ -15,7 +15,7 @@ class TicketListContactUsUsecase @Inject constructor(
 
     fun getTicketList(
         onSuccess: (InboxTicketListResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: () -> Unit
     ) {
         try {
             this.setTypeClass(InboxTicketListResponse::class.java)
@@ -26,12 +26,12 @@ class TicketListContactUsUsecase @Inject constructor(
                 { result ->
                     onSuccess(result)
                 },
-                { error ->
-                    onError(error)
+                {
+                    onError()
                 }
             )
         } catch (throwable: Throwable) {
-            onError(throwable)
+            onError()
         }
     }
 

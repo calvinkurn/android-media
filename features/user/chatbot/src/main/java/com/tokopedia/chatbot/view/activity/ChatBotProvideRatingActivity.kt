@@ -8,7 +8,6 @@ import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment.Companion.TIME_STAMP
 import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import java.util.ArrayList
 
 class ChatBotProvideRatingActivity : BaseProvideRatingActivity() {
 
@@ -26,7 +25,7 @@ class ChatBotProvideRatingActivity : BaseProvideRatingActivity() {
         val QUESTION_LIST = "questionList"
         val IS_SHOW_OTHER_REASON = "is_show_other_reason"
 
-        fun getInstance(context: Context, clickEmoji: Int, mCsatResponse: WebSocketCsatResponse): Intent {
+        fun getInstance(context: Context, clickEmoji: Long, mCsatResponse: WebSocketCsatResponse): Intent {
             val webSocketCsatattribute = mCsatResponse.attachment?.attributes
             val intent = Intent(context, ChatBotProvideRatingActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)

@@ -10,7 +10,7 @@ data class ChipSubmitChatCsatInput(
     @SerializedName("messageID")
     var messageID: String = "",
     @SerializedName("rating")
-    var rating: Int = 0,
+    var rating: Long = 0,
     @SerializedName("reasonCode")
     var reasonCode: String = ""
 )

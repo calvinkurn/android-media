@@ -14,24 +14,6 @@ class AttachInvoiceMapper @Inject
 internal constructor() {
     companion object {
 
-        @Deprecated("")
-        fun selectedInvoiceViewModelToSelectedInvoice(viewModel: AttachInvoiceSingleUiModel): SelectedInvoice {
-            return SelectedInvoice(
-                viewModel.id,
-                viewModel.code,
-                viewModel.typeString,
-                viewModel.type,
-                viewModel.title,
-                viewModel.imageUrl,
-                viewModel.description,
-                viewModel.amount,
-                viewModel.createdTime,
-                viewModel.url,
-                viewModel.status,
-                viewModel.statusId
-            )
-        }
-
         fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleUiModel): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
             invoiceLinkAttributePojo.code = selectedInvoice.code
@@ -48,7 +30,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
-            invoiceLinkPojo.typeId = selectedInvoice.type.toLong()
+            invoiceLinkPojo.typeId = selectedInvoice.type
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }
@@ -69,7 +51,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr
-            invoiceLinkPojo.typeId = selectedInvoice.invoiceType?.toLong() ?: 0
+            invoiceLinkPojo.typeId = selectedInvoice.invoiceType ?: 0
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }
