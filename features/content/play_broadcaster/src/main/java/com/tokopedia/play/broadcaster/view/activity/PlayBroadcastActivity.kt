@@ -340,8 +340,6 @@ class PlayBroadcastActivity : BaseActivity(),
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data)
                         createBroadcaster(event.withByteplus)
-
-                        rebindEffect()
                     }
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
                         rebindEffect()
@@ -779,6 +777,7 @@ class PlayBroadcastActivity : BaseActivity(),
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
             initBroadcasterWithDelay(holder, surfaceSize, withByteplus)
+            rebindEffect()
         } else showPermissionPage()
     }
 

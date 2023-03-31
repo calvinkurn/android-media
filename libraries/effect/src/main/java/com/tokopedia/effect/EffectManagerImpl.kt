@@ -34,7 +34,7 @@ class EffectManagerImpl @Inject constructor(
 
     private var mRenderManager: RenderManager? = null
 
-    private val mImageUtil: ImageUtil by lazy { ImageUtil() }
+    private var mImageUtil: ImageUtil? = null
 
     private val renderApi: Int
         get() {
@@ -78,6 +78,7 @@ class EffectManagerImpl @Inject constructor(
         renderManager.useBuiltinSensor(true)
 
         mRenderManager = renderManager
+        mImageUtil = ImageUtil()
 
         if (GlobalConfig.DEBUG) {
             Log.d(this::class.java.name,"Effect SDK version =" + renderManager.sdkVersion)
@@ -100,21 +101,25 @@ class EffectManagerImpl @Inject constructor(
             1.0f
         )
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        var destinationTexture = mImageUtil.prepareTexture(textureWidth, textureHeight)
+        var destinationTexture = mImageUtil?.prepareTexture(textureWidth, textureHeight) ?: 0
         val transition = ImageUtil.Transition().rotate(Surface.ROTATION_0.toFloat()).flip(false, false).reverse()
-        val texture2D = mImageUtil.transferTextureToTexture(
+        val texture2D = mImageUtil?.transferTextureToTexture(
             textureId,
             BytedEffectConstants.TextureFormat.Texture_Oes,
             BytedEffectConstants.TextureFormat.Texure2D,
             width,
             height,
             transition
-        )
+        ) ?: 0
 
-        val timestamp = System.nanoTime()
-        val ret = mRenderManager?.processTexture(texture2D, destinationTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
-
-        if(ret == false) {
+        if(isEffectApplied()) {
+            val timestamp = System.nanoTime()
+            val ret = mRenderManager?.processTexture(texture2D, destinationTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
+            if(ret == false) {
+                destinationTexture = texture2D
+            }
+        }
+        else {
             destinationTexture = texture2D
         }
 
@@ -138,7 +143,7 @@ class EffectManagerImpl @Inject constructor(
                 surfaceHeight,
             )
 
-        mImageUtil.drawFrameOnScreen(
+        mImageUtil?.drawFrameOnScreen(
             dstTexture,
             BytedEffectConstants.TextureFormat.Texure2D,
             surfaceWidth,
@@ -223,8 +228,12 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun release() {
+        removeFaceFilter()
+        removePreset()
+
         mRenderManager?.release()
         mRenderManager = null
+        mImageUtil = null
     }
 
     private fun bindAppliedEffect() {
@@ -236,6 +245,10 @@ class EffectManagerImpl @Inject constructor(
         if (!mSavedComposeNode.preset.isUnknown) {
             setPreset(mSavedComposeNode.preset.key, mSavedComposeNode.preset.value)
         }
+    }
+
+    private fun isEffectApplied(): Boolean {
+        return mSavedComposeNode.faceFilters.isNotEmpty() || !mSavedComposeNode.preset.isUnknown
     }
 
     private fun SavedComposeNode.update(block: SavedComposeNode.() -> SavedComposeNode) {

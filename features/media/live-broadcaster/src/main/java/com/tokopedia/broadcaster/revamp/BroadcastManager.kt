@@ -324,38 +324,42 @@ class BroadcastManager @Inject constructor(
 
             mSurfaceTexture?.setOnFrameAvailableListener {
                 mGLHandler?.post {
-                    mSurfaceTexture?.updateTexImage()
-                    val destinationTexture = effectManager.process(
-                        textureId = mTextureId,
-                        textureWidth = mTextureWidth,
-                        textureHeight = mTextureHeight,
-                        width = surfaceSize.width,
-                        height = surfaceSize.height,
-                    )
+                    try {
+                        mSurfaceTexture?.updateTexImage()
+                        val destinationTexture = effectManager.process(
+                            textureId = mTextureId,
+                            textureWidth = mTextureWidth,
+                            textureHeight = mTextureHeight,
+                            width = surfaceSize.width,
+                            height = surfaceSize.height,
+                        )
 
-                    if (mDisplaySurface != null) {
-                        mDisplaySurface?.makeCurrent()
-                        effectManager.drawFrameBase(
-                            textureWidth = mTextureWidth,
-                            textureHeight = mTextureHeight,
-                            surfaceWidth = surfaceSize.width,
-                            surfaceHeight = surfaceSize.height,
-                            dstTexture = destinationTexture,
-                        )
-                        mDisplaySurface?.swapBuffers()
-                    }
-                    if (mCodecSurface != null) {
-                        mStreamerSurface?.drainEncoder()
-                        mCodecSurface?.makeCurrent()
-                        effectManager.drawFrameBase(
-                            textureWidth = mTextureWidth,
-                            textureHeight = mTextureHeight,
-                            surfaceWidth = surfaceSize.width,
-                            surfaceHeight = surfaceSize.height,
-                            dstTexture = destinationTexture,
-                        )
-                        mCodecSurface?.setPresentationTime(System.nanoTime())
-                        mCodecSurface?.swapBuffers()
+                        if (mDisplaySurface != null) {
+                            mDisplaySurface?.makeCurrent()
+                            effectManager.drawFrameBase(
+                                textureWidth = mTextureWidth,
+                                textureHeight = mTextureHeight,
+                                surfaceWidth = surfaceSize.width,
+                                surfaceHeight = surfaceSize.height,
+                                dstTexture = destinationTexture,
+                            )
+                            mDisplaySurface?.swapBuffers()
+                        }
+                        if (mCodecSurface != null) {
+                            mStreamerSurface?.drainEncoder()
+                            mCodecSurface?.makeCurrent()
+                            effectManager.drawFrameBase(
+                                textureWidth = mTextureWidth,
+                                textureHeight = mTextureHeight,
+                                surfaceWidth = surfaceSize.width,
+                                surfaceHeight = surfaceSize.height,
+                                dstTexture = destinationTexture,
+                            )
+                            mCodecSurface?.setPresentationTime(System.nanoTime())
+                            mCodecSurface?.swapBuffers()
+                        }
+                    } catch (e: Exception) {
+
                     }
                 }
             }
