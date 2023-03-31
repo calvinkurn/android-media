@@ -60,7 +60,8 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuVie
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.*
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -820,9 +821,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         val existingFragment =
             childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
-        try {
-            getSetupTitleBottomSheet().show(childFragmentManager)
-        } catch (e: Exception) {}
+        getSetupTitleBottomSheet().show(childFragmentManager)
     }
 
     private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
@@ -832,9 +831,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        try {
-            getSetupCoverBottomSheet()?.show(childFragmentManager)
-        } catch (e: Exception) {}
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
@@ -868,11 +865,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun openAccountBottomSheet() {
-        try {
-            ContentAccountTypeBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) {}
+        ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun openSetupProductBottomSheet() {
@@ -1097,29 +1092,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
-        try {
-            val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
+        val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
 
-            childFragmentManager.beginTransaction()
-                .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
-                .commit()
-        } catch (e: Exception) { }
+        childFragmentManager.beginTransaction()
+            .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
+            .commit()
     }
 
     private fun showWarningInfoBottomSheet() {
-        try {
-            WarningInfoBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) { }
+        WarningInfoBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showTermsAndConditionBottomSheet() {
-        try {
-            SellerTncBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) { }
+        SellerTncBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showLoading(isShow: Boolean) {

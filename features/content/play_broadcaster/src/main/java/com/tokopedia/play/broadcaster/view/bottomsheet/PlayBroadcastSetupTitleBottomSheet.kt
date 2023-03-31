@@ -24,7 +24,7 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
 
     private var mListener: Listener? = null
 
-    private lateinit var mTitle: String
+    private var mTitle: String = ""
     private var mErrorState = false
     private var mMaxCharacter: Int = 0
 

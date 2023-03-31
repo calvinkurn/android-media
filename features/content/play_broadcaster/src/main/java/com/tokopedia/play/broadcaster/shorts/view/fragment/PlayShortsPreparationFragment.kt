@@ -559,9 +559,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         val existingFragment =
             childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
-        try {
-            getSetupTitleBottomSheet().show(childFragmentManager)
-        } catch (e: Exception) {}
+        getSetupTitleBottomSheet().show(childFragmentManager)
     }
 
     private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
@@ -572,9 +570,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         val existingFragment = childFragmentManager.findFragmentByTag(
             PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        try {
-            getSetupCoverBottomSheet()?.show(childFragmentManager)
-        } catch (e: Exception) {}
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet

@@ -32,6 +32,7 @@ import javax.inject.Inject
 /**
  * Created by fachrizalmrsln on 11/01/23
  */
+@Suppress("LateinitUsage")
 class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     private val playBroSetupCoverViewModelFactory: PlayBroSetupCoverViewModel.Factory,
     private val analytic: PlayBroadcastAnalytic,
