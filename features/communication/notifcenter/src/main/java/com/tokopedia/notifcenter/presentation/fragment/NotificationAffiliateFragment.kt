@@ -253,6 +253,10 @@ open class NotificationAffiliateFragment :
                 isBumpReminder = false
             )
         }
+
+        viewModel.affiliateEducationArticle.observe(viewLifecycleOwner) {
+            rvAdapter?.addAffiliateEducationArticles(it)
+        }
     }
 
     private fun updateReminderState(
@@ -338,7 +342,6 @@ open class NotificationAffiliateFragment :
 
     override fun onSwipeRefresh() {
         viewModel.cancelAllUseCase()
-        rvAdapter?.shopAdsWidgetAdded = false
         super.onSwipeRefresh()
     }
 

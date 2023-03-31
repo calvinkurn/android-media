@@ -13,15 +13,40 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
-import com.tokopedia.notifcenter.data.uimodel.*
+import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
+import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
+import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationShopAdsViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.affiliate.NotificationAffiliateEducationVH
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BannerNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BigDividerViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.EmptyNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.EmptyNotificationWithRecomViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationErrorViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationLoadMoreViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationLoadingViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.WidgetNotificationViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class NotificationTypeFactoryImpl constructor(
-        viewListener: Any
+    viewListener: Any
 ) : BaseAdapterTypeFactory(), NotificationTypeFactory {
 
     var recommendationListener: RecommendationListener? = null
@@ -85,11 +110,15 @@ class NotificationTypeFactoryImpl constructor(
         return NotificationErrorViewHolder.LAYOUT
     }
 
+    override fun type(affiliateEducationUiModel: NotificationAffiliateEducationUiModel): Int {
+        return NotificationAffiliateEducationVH.LAYOUT
+    }
+
     @LayoutRes
     override fun getItemViewType(
-            visitables: List<Visitable<*>>,
-            position: Int,
-            default: Int
+        visitables: List<Visitable<*>>,
+        position: Int,
+        default: Int
     ): Int {
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
@@ -109,26 +138,32 @@ class NotificationTypeFactoryImpl constructor(
      * All ViewHolder that need [NotificationAdapterListener] interface need to created from this
      */
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int,
-            adapterListener: Any
+        parent: ViewGroup,
+        viewType: Int,
+        adapterListener: Any
     ): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         val notifAdapterListener = adapterListener as? NotificationAdapterListener
         return when (viewType) {
             CarouselProductNotificationViewHolder.LAYOUT -> CarouselProductNotificationViewHolder(
-                    view, notificationListener,
-                    adapterListener as? CarouselProductNotificationViewHolder.Listener,
-                    notifAdapterListener
+                view,
+                notificationListener,
+                adapterListener as? CarouselProductNotificationViewHolder.Listener,
+                notifAdapterListener
             )
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(
-                    view, notifAdapterListener
+                view,
+                notifAdapterListener
             )
             WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
-                    view, notificationListener, notifAdapterListener
+                view,
+                notificationListener,
+                notifAdapterListener
             )
             NotificationOrderListViewHolder.LAYOUT -> NotificationOrderListViewHolder(
-                view, notificationListener, notifAdapterListener,
+                view,
+                notificationListener,
+                notifAdapterListener,
                 adapterListener as? NotificationOrderListViewHolder.Listener
             )
             else -> createViewHolder(view, viewType)
@@ -139,7 +174,8 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             NotificationShopAdsViewHolder.LAYOUT -> NotificationShopAdsViewHolder(view)
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
-                    view, notificationListener
+                view,
+                notificationListener
             )
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
@@ -147,26 +183,26 @@ class NotificationTypeFactoryImpl constructor(
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             NotificationLoadingViewHolder.LAYOUT -> NotificationLoadingViewHolder(view)
             EmptyNotificationViewHolder.LAYOUT -> EmptyNotificationViewHolder(view)
-            EmptyNotificationWithRecomViewHolder.LAYOUT -> EmptyNotificationWithRecomViewHolder(
-                    view
-            )
+            EmptyNotificationWithRecomViewHolder.LAYOUT -> EmptyNotificationWithRecomViewHolder(view)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(
-                    view, recommendationListener
+                view,
+                recommendationListener
             )
-            LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
-                    view, loadMoreListener
-            )
+            LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view, loadMoreListener)
             BannerNotificationViewHolder.LAYOUT -> BannerNotificationViewHolder(
-                    view, notificationListener
+                view,
+                notificationListener
             )
             SingleProductNotificationViewHolder.LAYOUT -> SingleProductNotificationViewHolder(
-                    view, notificationListener
+                view,
+                notificationListener
             )
             NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(
-                    view, notificationListener
+                view,
+                notificationListener
             )
+            NotificationAffiliateEducationVH.LAYOUT -> NotificationAffiliateEducationVH(view)
             else -> super.createViewHolder(view, type)
         }
     }
-
 }
