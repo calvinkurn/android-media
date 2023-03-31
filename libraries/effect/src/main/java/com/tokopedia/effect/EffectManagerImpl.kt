@@ -43,10 +43,7 @@ class EffectManagerImpl @Inject constructor(
         }
 
 
-    override fun init(
-        surfaceWidth: Int,
-        surfaceHeight: Int,
-    ) {
+    override fun init() {
         if(mRenderManager != null) return
 
         try {

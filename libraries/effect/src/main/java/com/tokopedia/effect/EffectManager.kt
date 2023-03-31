@@ -5,10 +5,7 @@ package com.tokopedia.effect
  */
 interface EffectManager {
 
-    fun init(
-        surfaceWidth: Int,
-        surfaceHeight: Int,
-    )
+    fun init()
 
     fun process(
         textureId: Int,

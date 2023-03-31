@@ -321,10 +321,7 @@ class BroadcastManager @Inject constructor(
 
             builder.setSurface(glSurface)
 
-            effectManager.init(
-                surfaceSize.width,
-                surfaceSize.height,
-            )
+            effectManager.init()
 
             mSurfaceTexture?.setOnFrameAvailableListener {
                 mGLHandler?.post {
