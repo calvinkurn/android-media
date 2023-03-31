@@ -13,10 +13,5 @@ class EtaLayoutStrategyControl : EtaLayoutStrategy {
     override fun renderTextEta(view: View, productCardModel: ProductCardModel) {
         val textViewETA = view.findViewById<Typography?>(R.id.textViewETA)
         textViewETA?.initLabelGroup(productCardModel.getLabelETA())
-
-        val productCardConstraintLayout = view.findViewById<ConstraintLayout?>(R.id.constraintLayoutProductCard)
-        productCardConstraintLayout.applyConstraintSet {
-            it.clear(R.id.imageThreeDots, ConstraintSet.TOP)
-        }
     }
 }
