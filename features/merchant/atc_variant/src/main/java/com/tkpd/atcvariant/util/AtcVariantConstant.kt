@@ -15,4 +15,4 @@ const val DEFAULT_ATC_MAX_ORDER = 100
 
 const val BS_SHIPMENT_ERROR_ATC_VARIANT = "BS_SHIPMENT_ERROR_ATC_VARIANT"
 
-const val REMOTE_CONFIG_NEW_VARIANT_LOG = "atc_new_variant_logic"
+const val REMOTE_CONFIG_NEW_VARIANT_LOG = "android_vbs_logic_revamp"
