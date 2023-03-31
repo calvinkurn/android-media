@@ -21,7 +21,7 @@ abstract class SubViewModel {
     // the scope used is the scope of the main-viewmodel.
     private lateinit var mCoroutineScope: CoroutineScope
 
-    // an interface to communicate with outer class
+    // an interface to access data to outer class
     private var mMediator: SubViewModelMediator? = null
 
     /***
