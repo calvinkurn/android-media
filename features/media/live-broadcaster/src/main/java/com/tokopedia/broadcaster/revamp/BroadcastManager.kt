@@ -563,6 +563,8 @@ class BroadcastManager @Inject constructor(
         // cancel audio and video capture
         mStreamer?.stopAudioCapture()
         mStreamer?.stopVideoCapture()
+        mStreamerSurface?.stopAudioCapture()
+        mStreamerSurface?.stopVideoCapture()
         // finally release streamer, after release(), the object is no longer available
         // if a Streamer is in released state, all methods will throw an IllegalStateException
         mStreamer?.release()
