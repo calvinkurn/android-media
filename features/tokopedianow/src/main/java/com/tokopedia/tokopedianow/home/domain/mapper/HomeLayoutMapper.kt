@@ -38,6 +38,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToC
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
@@ -70,8 +71,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
-import com.tokopedia.tokopedianow.home.domain.model.Grid
-import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -83,6 +82,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcP
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -443,6 +443,7 @@ object HomeLayoutMapper {
             REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
             MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
+            CHIP_CAROUSEL -> updateProductCarouselChipsWidget(productId, quantity)
         }
     }
 
@@ -663,6 +664,34 @@ object HomeLayoutMapper {
                         realTimeRecom = newRealTimeRecom
                     )
                 )
+            }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.updateProductCarouselChipsWidget(
+        productId: String,
+        quantity: Int
+    ) {
+        filter { it?.layout is HomeProductCarouselChipsUiModel }.forEach { homeLayoutItemUiModel ->
+            val layout = homeLayoutItemUiModel?.layout
+            val carouselUiModel = layout as HomeProductCarouselChipsUiModel
+            val productList = carouselUiModel.carouselItemList.toMutableList()
+            val productVisitable = productList.firstOrNull {
+                if (it is TokoNowProductCardCarouselItemUiModel) {
+                    it.getProductId() == productId
+                } else {
+                    false
+                }
+            }
+            val productUiModel = productVisitable as TokoNowProductCardCarouselItemUiModel
+            val index = productList.indexOf(productVisitable)
+
+            updateItemById(layout.getVisitableId()) {
+                val newProductUiModel = productUiModel.productCardModel.copy(orderQuantity = quantity)
+                productList[index] = productUiModel.copy(productCardModel = newProductUiModel)
+
+                val newCarouselUiModel = carouselUiModel.copy(carouselItemList = productList)
+                homeLayoutItemUiModel.copy(layout = newCarouselUiModel)
             }
         }
     }
