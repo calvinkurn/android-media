@@ -14,6 +14,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
+import com.tokopedia.media.editor.utils.mediaCreateBitmap
+import com.tokopedia.media.editor.utils.validateCreatedBitmapMemory
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
@@ -58,7 +60,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         rotateNumber: Int,
         initialRotateNumber: Int,
         data: EditorDetailUiModel,
-        onCropFinish: (cropResult: Bitmap) -> Unit,
+        onCropFinish: (cropResult: Bitmap?) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
 
@@ -138,7 +140,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         scaleX: Float,
         scaleY: Float,
         isNormalizeY: Boolean = false
-    ): Bitmap {
+    ): Bitmap? {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
 
@@ -199,7 +201,11 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             cropRatio = imageRatio ?: EMPTY_RATIO
         )
 
-        return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+        return if (context.validateCreatedBitmapMemory(imageWidth, imageHeight)) {
+            mediaCreateBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+        } else {
+            null
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

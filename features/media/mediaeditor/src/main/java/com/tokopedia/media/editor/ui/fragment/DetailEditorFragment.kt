@@ -47,13 +47,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.editor.utils.getRunnable
-import com.tokopedia.media.editor.utils.checkMemoryOverflow
-import com.tokopedia.media.editor.utils.delay
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.showErrorLoadToaster
-import com.tokopedia.media.editor.utils.showMemoryLimitToast
-import com.tokopedia.media.editor.utils.validateImageSize
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -169,26 +163,31 @@ class DetailEditorFragment @Inject constructor(
                 rotateNumber = rotateNumber,
                 initialRotateNumber = initialRotateNumber,
                 data
-            ) {
-                data.resultUrl = viewModel.saveImageCache(
-                    it,
-                    sourcePath = data.originalUrl
-                )?.path
+            ) { resultBitmap ->
+                resultBitmap?.let {
+                    data.resultUrl = viewModel.saveImageCache(
+                        it,
+                        sourcePath = data.originalUrl
+                    )?.path
 
-                if (data.addLogoValue != EditorAddLogoUiModel()) {
-                    // crop current overlay
-                    val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
-                    val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
+                    if (data.addLogoValue != EditorAddLogoUiModel()) {
+                        // crop current overlay
+                        val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
+                        val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
 
-                    if (!isWidthSame || !isHeightSame) {
-                        updateAddLogoOverlay(Pair(it.width, it.height)) {
+                        if (!isWidthSame || !isHeightSame) {
+                            updateAddLogoOverlay(Pair(it.width, it.height)) {
+                                finishPage()
+                            }
+                        } else {
                             finishPage()
                         }
                     } else {
                         finishPage()
                     }
-                } else {
-                    finishPage()
+                } ?: kotlin.run {
+                    showErrorGeneralToaster(context)
+                    activity?.finish()
                 }
             }
         } else {
@@ -281,6 +280,7 @@ class DetailEditorFragment @Inject constructor(
     override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
             viewModel.setWatermark(
+                context,
                 it,
                 type,
                 detailUiModel = data,
@@ -541,13 +541,17 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
-            // if watermark tool just implement the result, on another tools need to neutralize rotate value
-            val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
-                watermarkBitmap
-            } else {
-                neutralizeWatermarkResult(watermarkBitmap)
+            watermarkBitmap?.let {
+                // if watermark tool just implement the result, on another tools need to neutralize rotate value
+                val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
+                    it
+                } else {
+                    neutralizeWatermarkResult(it)
+                }
+                getImageView()?.setImageBitmap(usedImage)
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
-            getImageView()?.setImageBitmap(usedImage)
         }
     }
 
@@ -680,6 +684,7 @@ class DetailEditorFragment @Inject constructor(
 
                 WatermarkType.map(it.watermarkType)?.let { type ->
                     viewModel.setWatermark(
+                        context,
                         finalBitmap,
                         type,
                         detailUiModel = detailUiModel,
@@ -832,13 +837,18 @@ class DetailEditorFragment @Inject constructor(
                 1f
             )
 
-
-            viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
+            if (bitmapResult == null) {
+                showErrorGeneralToaster(context)
+                activity?.finish()
+            } else {
+                viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
+            }
         }
     }
 
     private fun setWatermarkDrawerItem(bitmap: Bitmap) {
         val bitmapResult = viewModel.setWatermarkFilterThumbnail(
+            context,
             bitmap
         )
 
@@ -846,11 +856,20 @@ class DetailEditorFragment @Inject constructor(
             val roundedCorner =
                 requireContext().resources.getDimension(editorR.dimen.editor_watermark_rounded)
 
-            first.loadImageRounded(bitmapResult.first, roundedCorner) {
-                centerCrop()
+            bitmapResult.first?.let {
+                first.loadImageRounded(it, roundedCorner) {
+                    centerCrop()
+                }
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
-            second.loadImageRounded(bitmapResult.second, roundedCorner) {
-                centerCrop()
+
+            bitmapResult.second?.let {
+                second.loadImageRounded(it, roundedCorner) {
+                    centerCrop()
+                }
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
         }
     }

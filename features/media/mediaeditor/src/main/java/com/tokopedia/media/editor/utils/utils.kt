@@ -3,13 +3,13 @@ package com.tokopedia.media.editor.utils
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -22,6 +22,7 @@ import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
 import java.io.File
+
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
 
@@ -247,4 +248,73 @@ fun showErrorLoadToaster(view: View, msg: String) {
             Toaster.TYPE_ERROR
         ).show()
     }
+}
+
+fun showErrorGeneralToaster(context: Context?) {
+    if (context == null) return
+    Toast.makeText(
+        context,
+        context.resources.getString(R.string.editor_activity_general_error),
+        Toast.LENGTH_LONG
+    ).show()
+}
+
+fun mediaCreateBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int): Bitmap? {
+    try {
+        return Bitmap.createBitmap(source, x, y, width, height)
+    } catch (e: Exception) {
+        val sourceSize = Pair(source.width, source.height)
+        val targetSize = Pair(width, height)
+        val targetCor = Pair(x, y)
+        newRelicLog(
+            mapOf(
+                FAILED_CREATE_BITMAP to "{$sourceSize} | {$targetSize} | {$targetCor} /n ${e.message}"
+            )
+        )
+    }
+    return null
+}
+
+fun mediaCreateBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap? {
+    try {
+        return Bitmap.createBitmap(width, height, config)
+    } catch (e: Exception) {
+        val targetSize = Pair(width, height)
+        newRelicLog(
+            mapOf(
+                FAILED_CREATE_BITMAP to "{$targetSize} /n ${e.message}"
+            )
+        )
+    }
+    return null
+}
+
+private fun Context?.getActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context?.validateCreatedBitmapMemory(width: Int, height: Int): Boolean {
+    val bitmapPixelSize = 4
+    val memoryUsage = width * height * bitmapPixelSize
+    val sourceSize = Pair(width, height)
+
+    // check memory limit when create new bitmap
+    getActivity()?.let {
+        if (it.checkMemoryOverflow(memoryUsage)) {
+            it.showMemoryLimitToast(sourceSize)
+            return false
+        }
+    } ?: run {
+        showErrorGeneralToaster(this)
+        return false
+    }
+
+    return true
 }
