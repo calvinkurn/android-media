@@ -58,4 +58,22 @@ object OtpConstant {
         * */
         const val PHONE_REGISTER_MANDATORY = 168
     }
+
+    object StaticText {
+        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\nGunakan metode lain"
+        const val SMS_FOOTER_TEXT = "Berkendala dengan metode di atas?\nPakai metode SMS"
+    }
+
+    // Default OTP = off / using old otp flow
+    const val DEFAULT_OTP_BEHAVIOR_ZERO = 0
+
+    // Default OTP off and hide SMS OTP
+    const val DEFAULT_OTP_BEHAVIOR_ONE = 1
+
+    // Default OTP on and show SMS otp, including direct request
+    const val DEFAULT_OTP_BEHAVIOR_TWO = 2
+
+    // Default OTP on and hide SMS otp, including direct request
+    const val DEFAULT_OTP_BEHAVIOR_THREE = 3
+
 }

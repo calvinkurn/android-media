@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -46,6 +47,7 @@ import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.activity.VerificationActivity.Companion.REQUEST_SILENT_VERIF
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
+import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -270,24 +272,86 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     userIdEnc = otpData.userIdEnc)
         } else {
             val timeUnix = System.currentTimeMillis().toString()
-            viewmodel.getVerificationMethod(
+            viewmodel.getOtpModeList(
                     otpType = otpType,
                     userId = otpData.userId,
                     msisdn = otpData.msisdn,
                     email = otpData.email,
                     authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix),
-                    timeUnix = timeUnix
+                    timeUnix = timeUnix,
+                    cache = (activity as VerificationActivity).otpCache
             )
         }
     }
 
     private fun initObserver() {
         viewmodel.getVerificationMethodResult.observe(viewLifecycleOwner, Observer {
+            (activity as VerificationActivity).isDefaultOtp = false
             when (it) {
-                is Success -> onSuccessGetVerificationMethod().invoke(it.data)
+                is Success -> {
+                    onSuccessGetVerificationMethod().invoke(it.data)
+                }
                 is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
             }
         })
+
+        viewmodel.defaultOtpUiModel.observe(viewLifecycleOwner) {
+            renderDefaultOtpFlow(it)
+        }
+
+        viewmodel.gotoInputOtp.observe(viewLifecycleOwner) {
+            (activity as VerificationActivity).goToVerificationPageDefaultFlow(it, isMoreThanOneMethod)
+        }
+    }
+
+    fun renderDefaultOtpFlow(data: DefaultOtpUiModel) {
+        val currentStatus = (activity as VerificationActivity).otpCache
+        isMoreThanOneMethod = data.originalOtpModeList.size > 1
+        if(currentStatus != null) {
+            renderOtpModeListsDefaultOtp(data)
+        } else {
+            (activity as VerificationActivity).otpCache = data
+            (activity as VerificationActivity).isDefaultOtp = true
+            val directOtp = getDirectRequest(data)
+            if(directOtp != null) {
+                viewmodel.goToInputOtp(directOtp)
+            } else {
+                renderOtpModeListsDefaultOtp(data)
+            }
+        }
+    }
+
+    fun getDirectRequest(data: DefaultOtpUiModel): ModeListData? {
+        if(data.defaultBehaviorMode == 0 || data.defaultBehaviorMode == 1) {
+            return null
+        }
+        return data.displayedModeList.find { it.directRequest }
+    }
+
+    private fun renderOtpModeListsDefaultOtp(defaultOtpUiModel: DefaultOtpUiModel) {
+        if (defaultOtpUiModel.displayedModeList.isNotEmpty()) {
+            hideLoading()
+            renderOtpModeList(defaultOtpUiModel.displayedModeList)
+            if(defaultOtpUiModel.originalOtpModeList.size > 1) {
+                renderDefaultOtpFooter(defaultOtpUiModel.footerText, defaultOtpUiModel.footerClickableSpan, defaultOtpUiModel.footerAction)
+            } else {
+                hideDefaultOtpFooter()
+            }
+        }
+    }
+
+    private fun renderDefaultOtpFooter(footerText: String, clickableMessage: String, onClick: () -> Unit) {
+        if (footerText.isNotEmpty() && clickableMessage.isNotEmpty()) {
+            setFooterSpannable(footerText, clickableMessage) {
+                onClick()
+            }
+        } else {
+            hideDefaultOtpFooter()
+        }
+    }
+
+    private fun hideDefaultOtpFooter() {
+        viewBound.phoneInactive?.invisible()
     }
 
     private fun onSuccessGetVerificationMethod(): (OtpModeListData) -> Unit {
@@ -335,6 +399,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         setFooter(otpModeListData.linkType)
     }
 
+    private fun renderOtpModeList(otpModeListData: ArrayList<ModeListData>) {
+        adapter.setList(otpModeListData)
+    }
+
     private fun skipView(modeListData: ModeListData) {
         viewmodel.done = true
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
@@ -378,7 +446,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         })
     }
 
-    private fun inactivePhoneFooter(message: String, clickableMessage: String, onClick: () -> Unit) {
+    private fun setFooterSpannable(message: String, clickableMessage: String, onClick: () -> Unit) {
         context?.let {
             val spannable = SpannableString(message).apply {
                 setSpan(clickableSpan { onClick.invoke() },
@@ -387,7 +455,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     0
                 )
             }
-            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
             viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
             viewBound.phoneInactive?.visible()
@@ -417,7 +485,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     private fun onDefaultFooterType() {
         val message = getString(R.string.change_inactive_phone_number).orEmpty()
         val clickableMessage = getString(R.string.otp_change_phone_number).orEmpty()
-        inactivePhoneFooter(message, clickableMessage) {
+        setFooterSpannable(message, clickableMessage) {
             onGoToInactivePhoneNumber()
         }
     }
@@ -425,7 +493,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     private fun onProfileSettingFooterType() {
         val message = getString(R.string.my_phone_inactive_change_at_setting).orEmpty()
         val clickableMessage = getString(R.string.setting).orEmpty()
-        inactivePhoneFooter(message, clickableMessage) {
+        setFooterSpannable(message, clickableMessage) {
             gotoSettingProfile()
         }
     }

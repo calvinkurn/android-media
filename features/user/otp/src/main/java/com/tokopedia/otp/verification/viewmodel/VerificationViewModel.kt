@@ -11,13 +11,15 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
+import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_THREE
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_FOOTER_TEXT
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
-import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
-import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
-import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.*
 import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -29,6 +31,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -37,6 +41,7 @@ import javax.inject.Inject
 
 open class VerificationViewModel @Inject constructor(
     private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
+    private val getOtpModeListUseCase: GetOtpModeListUseCase,
     private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
     private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
     private val getVerificationMethodPhoneRegisterMandatoryUseCase: GetVerificationMethodPhoneRegisterMandatoryUseCase,
@@ -64,6 +69,13 @@ open class VerificationViewModel @Inject constructor(
     private val _otpValidateResult = MutableLiveData<Result<OtpValidateData>>()
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
+
+    private val _defaultOtpUiModel = MutableLiveData<DefaultOtpUiModel>()
+    val defaultOtpUiModel: LiveData<DefaultOtpUiModel>
+        get() = _defaultOtpUiModel
+
+    private val _gotoInputOtp = SingleLiveEvent<ModeListData>()
+    val gotoInputOtp: LiveData<ModeListData> = _gotoInputOtp
 
     var done = false
     var isLoginRegisterFlow = false
@@ -100,6 +112,62 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
+    fun isSmsHidden(defaultBehaviorMode: Int): Boolean {
+        return defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE || defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_THREE
+    }
+
+    fun renderInitialDefaultOtp(otpModeListData: OtpModeListData) {
+        val newItems = ArrayList(otpModeListData.modeList)
+
+        if(otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
+            newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
+        }
+        var footerSpan = ""
+        var footerText = ""
+        var action = { }
+
+        if(otpModeListData.modeList.size > 1) {
+            footerSpan = "Gunakan metode lain"
+            footerText = OTHER_METHOD_FOOTER_TEXT
+            action = { showAllMethod() }
+        }
+
+        _defaultOtpUiModel.value = DefaultOtpUiModel(
+            footerText,
+            footerSpan,
+            action,
+            displayedModeList = newItems,
+            originalOtpModeList = otpModeListData.modeList,
+            defaultMode = otpModeListData.defaultMode,
+            defaultBehaviorMode = otpModeListData.defaultBehaviorMode
+        )
+    }
+
+    fun renderInitialDefaultOtpOff(otpModeListData: OtpModeListData) {
+        val newItems = ArrayList(otpModeListData.modeList)
+        val smsOtp = otpModeListData.modeList.find { it.modeText == OtpConstant.OtpMode.SMS }
+        var footerSpan = ""
+        var footerText = ""
+        var action = {}
+        if (smsOtp != null && otpModeListData.modeList.size > 1) {
+            if (isSmsHidden(otpModeListData.defaultBehaviorMode)) {
+                newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
+                footerSpan = "Pakai metode SMS"
+                footerText = SMS_FOOTER_TEXT
+                action = { goToInputOtp(smsOtp) }
+            }
+        }
+        _defaultOtpUiModel.value = DefaultOtpUiModel(
+            footerText,
+            footerSpan,
+            action,
+            displayedModeList = newItems,
+            originalOtpModeList = otpModeListData.modeList,
+            defaultMode = otpModeListData.defaultMode,
+            defaultBehaviorMode = otpModeListData.defaultBehaviorMode
+        )
+    }
+
     fun getVerificationMethod2FA(
         otpType: String,
         validateToken: String,
@@ -128,6 +196,70 @@ open class VerificationViewModel @Inject constructor(
             _getVerificationMethodResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
         })
+    }
+
+    fun getOtpModeList(
+        otpType: String,
+        userId: String,
+        msisdn: String,
+        email: String,
+        timeUnix: String,
+        authenticity: String,
+        cache: DefaultOtpUiModel? = null
+    ) {
+        launch {
+            try {
+                if(cache != null) {
+                    showAllMethod(cache)
+                } else {
+                    val param = GetOtpModeListParam(otpType, userId, msisdn, email, timeUnix, authenticity)
+                    val result = getOtpModeListUseCase(param)
+                    if (result.defaultBehaviorMode > DEFAULT_OTP_BEHAVIOR_ONE && result.defaultMode > 0) {
+                        renderInitialDefaultOtp(result)
+                    } else if (result.defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE) {
+                        renderInitialDefaultOtpOff(result)
+                    } else {
+                        _getVerificationMethodResult.value = Success(result)
+                    }
+                }
+            } catch (e: Throwable) {
+                _getVerificationMethodResult.value = Fail(e)
+            }
+        }
+    }
+
+    fun showAllMethod(cache: DefaultOtpUiModel? = null) {
+        val previousData = cache ?: _defaultOtpUiModel.value
+        if(previousData != null) {
+            val newItems = ArrayList(previousData.originalOtpModeList)
+            val smsOtp = previousData.originalOtpModeList.find { it.modeText == OtpConstant.OtpMode.SMS }
+            var footerSpan = ""
+            var footerText = ""
+            var action = { }
+
+            if (smsOtp != null) {
+                if (isSmsHidden(previousData.defaultBehaviorMode)) {
+                    newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
+                    footerSpan = "Pakai metode SMS"
+                    footerText = SMS_FOOTER_TEXT
+                    action = { goToInputOtp(smsOtp) }
+                }
+            }
+
+            _defaultOtpUiModel.value = DefaultOtpUiModel(
+                footerText,
+                footerSpan,
+                action,
+                displayedModeList = newItems,
+                originalOtpModeList = previousData.originalOtpModeList,
+                defaultMode = previousData.defaultMode,
+                defaultBehaviorMode = previousData.defaultBehaviorMode
+            )
+        }
+    }
+
+    fun goToInputOtp(otpData: ModeListData) {
+        _gotoInputOtp.value = otpData
     }
 
     fun getVerificationMethod(
