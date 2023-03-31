@@ -76,6 +76,7 @@ fun inputUsername(username: String = "pokemon") {
 }
 
 fun clickAcceptTnc() {
+    Espresso.closeSoftKeyboard()
     click(contentCommonR.id.cbx_tnc)
 }
 

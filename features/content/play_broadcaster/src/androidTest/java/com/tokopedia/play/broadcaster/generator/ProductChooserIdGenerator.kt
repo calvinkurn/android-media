@@ -74,14 +74,6 @@ class ProductChooserIdGenerator {
         )
     )
 
-//    private val mockProductSections = listOf(
-//        ProductTagSectionUiModel(
-//            name = "Section Test",
-//            campaignStatus = CampaignStatus.Ongoing,
-//            products = mockSelectedProducts,
-//        )
-//    )
-
     private val campaignList = listOf(
         CampaignUiModel(
             id = "1",
@@ -109,7 +101,6 @@ class ProductChooserIdGenerator {
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
-    private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
@@ -136,7 +127,7 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockProductSetupViewModelFactory).apply {
+                ProductSetupFragment(mockProductSetupViewModelFactory, mockk(relaxed = true)).apply {
                     setDataSource(object : ProductSetupFragment.DataSource {
                         override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                             return emptyList()
@@ -161,6 +152,11 @@ class ProductChooserIdGenerator {
                         }
                     })
                 }
+            },
+            ProductSummaryBottomSheet::class.java to {
+              ProductSummaryBottomSheet(
+                  analytic = mockk(relaxed = true),
+              )
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
