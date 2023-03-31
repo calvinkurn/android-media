@@ -311,6 +311,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             )
                         )
                 }
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(60,true)
             } else {
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
                     getString(R.string.topads_ads_performance_top_frequently)

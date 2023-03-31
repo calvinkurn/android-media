@@ -184,20 +184,19 @@
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/daily_budget_progress_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="@id/daily_budget_desc"
+        android:layout_width="100dp"
+        android:layout_height="10dp"
+        app:unify_progress_bar_track_color="@color/Unify_N75"
+        app:unify_progress_bar_from_color="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="@id/daily_budget_desc"
-        app:layout_constraintTop_toBottomOf="@id/daily_budget_desc"
-        app:unify_progress_bar_height="6" />
+        app:layout_constraintTop_toBottomOf="@id/daily_budget_desc" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/lihat_pengaturan_grup_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="lihat_pengaturan_group_btn,daily_budget_desc,daily_budget_progress_bar"/>
+        app:constraint_referenced_ids="lihat_pengaturan_group_btn,daily_budget_desc,daily_budget_progress_bar,daily_budget_progress_bar"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/manual_btn_submit"
@@ -218,7 +217,7 @@
         android:id="@+id/lihat_pengaturan_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="products_count_heading,products_count,keywords,keywords_count,ad_cost_search_heading,ad_cost_search,ad_cost_recommend_heading,ad_cost_recommend,daily_budget_heading,daily_budget,daily_budget_desc"
+        app:constraint_referenced_ids="products_count_heading,products_count,keywords,keywords_count,ad_cost_search_heading,ad_cost_search,ad_cost_recommend_heading,ad_cost_recommend,daily_budget_heading,daily_budget,daily_budget_desc,daily_budget_progress_bar"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
