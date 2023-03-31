@@ -20,13 +20,11 @@ class ImageGeneratorMapper(
     private fun getProductImageUrl(): List<String> {
         if (productSectionList.isNullOrEmpty()) return emptyList()
 
-        val productUrl = mutableListOf<String>()
-        productSectionList.flatMap {
+        return productSectionList.flatMap {
             it.products
-        }.take(MAX_SHOWING_PRODUCT).forEach {
-            productUrl.add(it.imageUrl)
+        }.take(MAX_SHOWING_PRODUCT).map {
+            it.imageUrl
         }
-        return productUrl
     }
 
     private fun generateImage(backgroundColor: String): String {
