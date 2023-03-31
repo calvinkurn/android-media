@@ -42,6 +42,7 @@ class HomeProductCarouselChipListener(
     }
 
     override fun onClickProductCard(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
+        RouteManager.route(context, product.appLink)
     }
 
     override fun onProductCardImpressed(
