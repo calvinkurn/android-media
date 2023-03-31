@@ -60,7 +60,6 @@ class ProductBundlingViewModel(val application: Application, val components: Com
             if (!components.data.isNullOrEmpty()) {
                 mapListToBundleProductList()
                 _emptyBundleData.value = false
-                syncData.value = true
             } else {
                 _emptyBundleData.value = true
             }
@@ -75,12 +74,7 @@ class ProductBundlingViewModel(val application: Application, val components: Com
             if (productBundlingUseCase?.getProductBundlingPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE) == true) {
                 if (!components.data.isNullOrEmpty()) {
                     isLoading = false
-                    bundledProductData.value = components.data?.let {
-                        val dispatcher = coroutineDispatchers?.default ?: Dispatchers.Default
-                        withContext(dispatcher) {
-                            DiscoveryDataMapper().mapListToBundleProductList(it)
-                        }
-                    }
+                    mapListToBundleProductList()
                     setShopList()
                     _emptyBundleData.value = false
                 }
@@ -96,7 +90,6 @@ class ProductBundlingViewModel(val application: Application, val components: Com
         if (!components.data.isNullOrEmpty()) {
             _showErrorState.value = false
             paginationHandlingList.value = addLoadMore()
-            syncData.value = true
         } else {
             _showErrorState.value = true
         }
@@ -107,7 +100,6 @@ class ProductBundlingViewModel(val application: Application, val components: Com
         if (!components.data.isNullOrEmpty()) {
             isLoading = false
             paginationHandlingList.value = addErrorReLoadView()
-            syncData.value = true
         }
     }
 
@@ -158,7 +150,6 @@ class ProductBundlingViewModel(val application: Application, val components: Com
             isLoading = false
             mapBundleList()
             paginationHandlingList.value = arrayListOf()
-            syncData.value = true
         }
     }
 

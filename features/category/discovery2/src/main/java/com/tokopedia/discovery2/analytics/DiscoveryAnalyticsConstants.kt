@@ -275,3 +275,4 @@ const val ACTION_PRODUCT_BUNDLING_PRODUCT_CLICK = "click lihat paket - discovery
 const val ACTION_PB_PRODUCT_CLICK = "click on product icon - discovery bundling widget"
 const val INDEX = "index"
 const val ITEM_BRAND = "item_brand"
+const val ITEM_VARIANT = "item_variant"

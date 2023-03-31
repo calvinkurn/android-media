@@ -2372,8 +2372,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productBundlingMap[KEY_POSITION] = "${componentsItems.position + 1}"
             productBundlingMap[KEY_CREATIVE] = (it.creativeName ?: EMPTY_STRING)
             productBundlingMap[INDEX] = "$productItemPosition"
-            productBundlingMap[ITEM_BRAND] = selectedProduct.productName
-            productBundlingMap[KEY_ITEM_CATEGORY] = selectedProduct.productId
+            productBundlingMap[ITEM_BRAND] = EMPTY_STRING
+            productBundlingMap[KEY_ITEM_CATEGORY] = EMPTY_STRING
+            productBundlingMap[ITEM_VARIANT] = EMPTY_STRING
             productBundlingMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems) + 1} - $login - ${componentsItems.name} - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${componentsItems.sectionId} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productBundlingMap[DIMENSION117] = selectedMultipleBundle.bundleType
             productBundlingMap[DIMENSION118] = selectedMultipleBundle.bundleId
