@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
@@ -31,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -89,6 +91,7 @@ class CartItemViewHolder constructor(
         this.dataSize = dataSize
 
         renderAlpha(data)
+        renderShopInfo(data)
         renderProductInfo(data)
         renderLeftAnchor(data)
         renderQuantity(data, viewHolderListener)
@@ -324,6 +327,32 @@ class CartItemViewHolder constructor(
                     }
                 }
             }
+        }
+    }
+    
+    private fun renderShopInfo(data: CartItemHolderData) {
+        if (data.isShopShown) {
+            binding.llShopHeader.visible()
+            val shopHolderData = data.shopHolderData
+            binding.tvShopName.text = Utils.getHtmlFormat(shopHolderData.shopName)
+            binding.tvShopName.setOnClickListener {
+                actionListener?.onCartShopNameClicked(
+                    data.shopHolderData.shopId,
+                    data.shopHolderData.shopName,
+                    data.shopHolderData.isTokoNow
+                )
+            }
+            if (shopHolderData.shopTypeInfo.shopBadge.isNotBlank()) {
+                ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopHolderData.shopTypeInfo.shopBadge)
+                binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopHolderData.shopTypeInfo.title)
+                binding.imageShopBadge.show()
+            }
+            else {
+                binding.imageShopBadge.gone()
+            }
+        }
+        else {
+            binding.llShopHeader.gone()
         }
     }
 

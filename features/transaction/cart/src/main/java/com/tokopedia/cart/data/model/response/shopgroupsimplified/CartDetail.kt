@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class CartDetail(
+    @SerializedName("origin_warehouse_ids")
+    val originWarehouseIds: List<Int> = emptyList(),
     @SerializedName("bundle_detail")
     val bundleDetail: BundleDetail = BundleDetail(),
     @SerializedName("products")

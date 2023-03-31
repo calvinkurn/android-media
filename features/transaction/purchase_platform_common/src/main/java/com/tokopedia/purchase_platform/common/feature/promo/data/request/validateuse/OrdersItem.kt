@@ -37,6 +37,10 @@ data class OrdersItem(
     var etaText: String = "",
     @SerializedName("validation_metadata")
     var validationMetadata: String = "",
+    @SerializedName("cart_string_group")
+    var cartStringGroup: String = "",
+    @SerializedName("shipping_metadata")
+    var shippingMetadata: String = "",
     @Transient
     var boType: Int = 0,
     @Transient

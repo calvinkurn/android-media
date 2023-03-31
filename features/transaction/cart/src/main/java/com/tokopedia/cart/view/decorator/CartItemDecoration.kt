@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.viewholder.CartChooseAddressViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
-import com.tokopedia.cart.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
@@ -63,7 +63,7 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                     context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt()
                         ?: 0
 
-            is CartShopViewHolder -> {
+            is CartGroupViewHolder -> {
                 try {
                     if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledReasonViewHolder.LAYOUT) {
                         outRect.top = verticalSpaceHeight
