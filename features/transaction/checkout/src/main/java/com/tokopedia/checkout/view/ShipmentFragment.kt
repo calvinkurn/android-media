@@ -118,7 +118,6 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.CourierItemData.Companion.clone
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
-import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -2587,7 +2586,7 @@ class ShipmentFragment :
             val activity: Activity? = activity
             if (activity != null) {
                 val pslCode = getLogisticPromoCode(shipmentCartItemModel)
-                val products = getProductForRatesRequest(shipmentCartItemModel)
+                val products = shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel)
                 val shippingDurationBottomsheet = ShippingDurationBottomsheet()
                 shippingDurationBottomsheet.show(
                     activity,
@@ -2612,26 +2611,12 @@ class ShipmentFragment :
                     ),
                     shipmentPresenter.cartDataForRates,
                     false,
-                    shipmentCartItemModel.fulfillmentId.toString()
+                    shipmentCartItemModel.fulfillmentId.toString(),
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
                 )
             }
         }
-    }
-
-    private fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product> {
-        val products = ArrayList<Product>()
-        if (shipmentCartItemModel?.cartItemModels != null) {
-            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                if (!cartItemModel.isError) {
-                    val product = Product()
-                    product.productId = cartItemModel.productId
-                    product.isFreeShipping = cartItemModel.isFreeShipping
-                    product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
-                    products.add(product)
-                }
-            }
-        }
-        return products
     }
 
     override fun onChangeShippingCourier(
@@ -2689,7 +2674,7 @@ class ShipmentFragment :
                     shipmentCartItemModel,
                     shipmentCartItemModel.shopShipmentList!!,
                     false,
-                    getProductForRatesRequest(shipmentCartItemModel),
+                    shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                     shipmentCartItemModel.cartString,
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
@@ -2740,7 +2725,7 @@ class ShipmentFragment :
             shipmentPresenter.processGetCourierRecommendation(
                 shipperId, spId, itemPosition, shipmentDetailData,
                 shipmentCartItemModel, shopShipmentList, true,
-                getProductForRatesRequest(shipmentCartItemModel),
+                shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                 shipmentCartItemModel.cartString, isTradeInDropOff,
                 shipmentAdapter.addressShipmentData, false, false,
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",

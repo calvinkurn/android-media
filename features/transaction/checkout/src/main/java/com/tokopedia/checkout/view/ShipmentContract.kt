@@ -400,7 +400,7 @@ interface ShipmentContract {
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
         fun doUnapplyBo(uniqueId: String, promoCode: String)
-        fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): List<Product>
+        fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product>
         fun processBoPromoCourierRecommendation(
             itemPosition: Int,
             voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,

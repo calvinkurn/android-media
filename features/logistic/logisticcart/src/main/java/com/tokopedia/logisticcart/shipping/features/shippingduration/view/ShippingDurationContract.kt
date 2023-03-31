@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.model.GroupProduct
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
@@ -70,7 +71,9 @@ interface ShippingDurationContract {
             cartData: String,
             isOcc: Boolean,
             isDisableCourierPromo: Boolean,
-            warehouseId: String
+            warehouseId: String,
+            cartStringGroup: String,
+            groupProducts: List<GroupProduct>
         )
 
         fun getCourierItemDataById(

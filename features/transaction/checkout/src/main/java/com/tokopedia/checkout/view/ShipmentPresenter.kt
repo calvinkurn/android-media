@@ -3545,7 +3545,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): List<Product> {
+    override fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product> {
         val products = ArrayList<Product>()
         if (shipmentCartItemModel != null) {
             for (cartItemModel in shipmentCartItemModel.cartItemModels) {
@@ -3568,9 +3568,9 @@ class ShipmentPresenter @Inject constructor(
                 .groupBy { it.cartStringOrder }
             for ((key, value) in cartItemByOrder) {
                 var totalOrderValue = 0L
-                var totalWeight = 0L
+                var totalWeight = 0.0
                 val items = value.map {
-                    val weight = (it.quantity * it.weight).toLong()
+                    val weight = (it.quantity * it.weight) / WEIGHT_DIVIDER_TO_KG
                     val orderValue = (it.quantity * it.price).toLong()
                     totalOrderValue += orderValue
                     totalWeight += weight
@@ -4132,5 +4132,7 @@ class ShipmentPresenter @Inject constructor(
         private const val statusOK = "OK"
 
         private const val statusCode200 = "200"
+
+        private const val WEIGHT_DIVIDER_TO_KG = 1000
     }
 }
