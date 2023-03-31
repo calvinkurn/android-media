@@ -27,10 +27,8 @@ data class ShipmentCartItemModel(
     var shopName: String? = null,
     var orderNumber: Int = 0,
     var preOrderInfo: String? = null,
-    var isFreeShippingExtra: Boolean = false,
     var freeShippingBadgeUrl: String? = null,
     var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     var shopLocation: String? = null,
     var shopAlertMessage: String? = null,
     var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),

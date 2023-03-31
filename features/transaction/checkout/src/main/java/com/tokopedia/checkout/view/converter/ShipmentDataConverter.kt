@@ -38,7 +38,7 @@ class ShipmentDataConverter @Inject constructor() {
         var defaultAddress: UserAddress? = null
         var tradeInDropOffAddress: UserAddress? = null
         val addressesData = cartShipmentAddressFormData.addressesData
-        val data = addressesData?.data
+        val data = addressesData.data
         if (data != null) {
             if (data.defaultAddress?.addressId?.isNotBlankOrZero() == true) {
                 defaultAddress = data.defaultAddress
@@ -274,7 +274,6 @@ class ShipmentDataConverter @Inject constructor() {
                     preOrderInfo = shipmentCartItemModel.preOrderInfo ?: "",
                     freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl ?: "",
                     isFreeShippingPlus = shipmentCartItemModel.isFreeShippingPlus,
-                    hasSeenFreeShippingBadge = shipmentCartItemModel.hasSeenFreeShippingBadge,
                     shopLocation = shipmentCartItemModel.shopLocation ?: "",
                     shopAlertMessage = shipmentCartItemModel.shopAlertMessage ?: "",
                     shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData,
@@ -344,9 +343,6 @@ class ShipmentDataConverter @Inject constructor() {
         val shipmentInformationData = groupShop.shipmentInformationData
         if (shipmentInformationData.preorder.isPreorder) {
             shipmentCartItemModel.preOrderInfo = shipmentInformationData.preorder.duration
-        }
-        if (shipmentInformationData.freeShippingExtra.eligible) {
-            shipmentCartItemModel.isFreeShippingExtra = true
         }
         shipmentCartItemModel.freeShippingBadgeUrl =
             shipmentInformationData.freeShippingGeneral.badgeUrl

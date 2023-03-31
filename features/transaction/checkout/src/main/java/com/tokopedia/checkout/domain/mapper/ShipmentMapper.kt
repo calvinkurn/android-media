@@ -301,7 +301,7 @@ class ShipmentMapper @Inject constructor() {
                     errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
                     if (isError) {
                         if (firstErrorIndex == -1) {
-                            firstErrorIndex = index
+                            firstErrorIndex = productListResult.size
                         }
                     }
                     productId = product.productId
@@ -470,19 +470,31 @@ class ShipmentMapper @Inject constructor() {
         isDisablePPP: Boolean
     ): Pair<List<com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2>, Int> {
         var firstProductErrorIndex = -1
+        var hasErrorProduct = false
         return groupShopV2List.map {
             val shop = mapShopData(it.shop)
             val mapProducts = mapProducts(groupShop2, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
             val products = mapProducts.first
-            if (firstProductErrorIndex == -1) {
-                firstProductErrorIndex = mapProducts.second
+            if (mapProducts.second > -1) {
+                if (!hasErrorProduct) {
+                    hasErrorProduct = true
+                    if (firstProductErrorIndex == -1) {
+                        firstProductErrorIndex = mapProducts.second
+                    } else {
+                        firstProductErrorIndex += mapProducts.second
+                    }
+                }
+            } else if (firstProductErrorIndex == -1) {
+                firstProductErrorIndex = products.size
+            } else {
+                firstProductErrorIndex += products.size
             }
             com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2(
                 it.cartStringOrder,
                 shop,
                 products
             )
-        } to firstProductErrorIndex
+        } to if (hasErrorProduct) firstProductErrorIndex else -1
     }
 
     private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {

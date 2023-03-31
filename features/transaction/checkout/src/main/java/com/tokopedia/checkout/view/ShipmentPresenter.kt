@@ -30,10 +30,10 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData
-import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
@@ -974,6 +974,7 @@ class ShipmentPresenter @Inject constructor(
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
+        shippingCourierViewModelsState = hashMapOf()
     }
 
     fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -3697,7 +3698,7 @@ class ShipmentPresenter @Inject constructor(
         // donation
         if (cartShipmentAddressFormData.donation != null && cartShipmentAddressFormData.donation!!.isChecked) {
             val dynamicDataParam = DynamicDataParam()
-            dynamicDataParam.level = DynamicDataPassingMapper.PAYMENT_LEVEL
+            dynamicDataParam.level = PAYMENT_LEVEL
             dynamicDataParam.uniqueId = ""
             dynamicDataParam.attribute = ATTRIBUTE_DONATION
             dynamicDataParam.donation = cartShipmentAddressFormData.donation!!.isChecked
@@ -3854,50 +3855,50 @@ class ShipmentPresenter @Inject constructor(
             val lastApplyUiModel = lastApplyData.value
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
-                    val ordersItem = OrdersItem()
-                    val productDetailsItems = ArrayList<ProductDetailsItem>()
-                    for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                        if (!cartItemModel.isError) {
+                    for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
+                        val ordersItem = OrdersItem()
+                        val productDetailsItems = ArrayList<ProductDetailsItem>()
+                        for (cartItemModel in cartItemList) {
                             val productDetail = ProductDetailsItem()
                             productDetail.productId = cartItemModel.productId
                             productDetail.quantity = cartItemModel.quantity
                             productDetail.bundleId = cartItemModel.bundleId.toLongOrZero()
                             productDetailsItems.add(productDetail)
                         }
-                    }
-                    ordersItem.productDetails = productDetailsItems
-                    val listOrderCodes = ArrayList<String>()
-                    for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
-                        if (shipmentCartItemModel.cartString.equals(
-                                lastApplyVoucherOrdersItemUiModel.uniqueId,
-                                ignoreCase = true
-                            )
-                        ) {
-                            if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.code) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
-                                listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.code)
+                        ordersItem.productDetails = productDetailsItems
+                        val listOrderCodes = ArrayList<String>()
+                        for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
+                            if (cartStringOrder.equals(
+                                    lastApplyVoucherOrdersItemUiModel.uniqueId,
+                                    ignoreCase = true
+                                )
+                            ) {
+                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.code) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
+                                    listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.code)
+                                }
+                                break
                             }
-                            break
                         }
+                        // Add data BBO
+                        if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                            if (!listOrderCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                                listOrderCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            }
+                            if (!bboPromoCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                                bboPromoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            }
+                        }
+                        ordersItem.codes = listOrderCodes
+                        ordersItem.uniqueId = cartStringOrder
+                        ordersItem.shopId = shipmentCartItemModel.shopId
+                        ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                        ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
+                        ordersItem.poDuration =
+                            shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
+                        ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                        setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
+                        listOrderItem.add(ordersItem)
                     }
-                    // Add data BBO
-                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                        if (!listOrderCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
-                            listOrderCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
-                        }
-                        if (!bboPromoCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
-                            bboPromoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
-                        }
-                    }
-                    ordersItem.codes = listOrderCodes
-                    ordersItem.uniqueId = shipmentCartItemModel.cartString
-                    ordersItem.shopId = shipmentCartItemModel.shopId
-                    ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
-                    ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
-                    ordersItem.poDuration =
-                        shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
-                    ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
-                    setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
-                    listOrderItem.add(ordersItem)
                 }
             }
             validateUsePromoRequest.orders = listOrderItem

@@ -1875,51 +1875,21 @@ class ShipmentFragment :
                 if (validateUsePromoRevampUiModel != null) {
                     if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                         val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                        notEligiblePromoHolderdata.promoTitle =
-                            validateUsePromoRevampUiModel.promoUiModel.titleDescription
                         if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
-                            notEligiblePromoHolderdata.promoCode =
-                                validateUsePromoRevampUiModel.promoUiModel.codes[0]
+                            notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
                         }
-                        notEligiblePromoHolderdata.shopName = "Kode promo"
                         notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
-                        notEligiblePromoHolderdata.showShopSection = true
-                        notEligiblePromoHolderdata.errorMessage =
-                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
                         notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                     }
                     val voucherOrdersItemUiModels =
                         validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
-                    if (voucherOrdersItemUiModels.isNotEmpty()) {
-                        for (i in voucherOrdersItemUiModels.indices) {
-                            val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
-                            if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
-                                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                                notEligiblePromoHolderdata.promoTitle =
-                                    voucherOrdersItemUiModel.titleDescription
-                                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
-                                notEligiblePromoHolderdata.uniqueId =
-                                    voucherOrdersItemUiModel.uniqueId
-                                for (shipmentCartItemModel in shipmentAdapter.shipmentCartItemModelList!!) {
-                                    if (shipmentCartItemModel.cartString == voucherOrdersItemUiModel.uniqueId) {
-                                        notEligiblePromoHolderdata.shopName =
-                                            shipmentCartItemModel.shopName!!
-                                        notEligiblePromoHolderdata.shopBadge =
-                                            shipmentCartItemModel.shopTypeInfoData.shopBadge
-                                        break
-                                    }
-                                }
-                                if (i <= 0) {
-                                    notEligiblePromoHolderdata.showShopSection = true
-                                } else if (voucherOrdersItemUiModels[i - 1].uniqueId.isNotEmpty() && voucherOrdersItemUiModel.uniqueId.isNotEmpty() && voucherOrdersItemUiModels[i - 1].uniqueId == voucherOrdersItemUiModel.uniqueId) {
-                                    notEligiblePromoHolderdata.showShopSection = false
-                                } else {
-                                    notEligiblePromoHolderdata.showShopSection = true
-                                }
-                                notEligiblePromoHolderdata.errorMessage =
-                                    validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-                                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
-                            }
+                    for (i in voucherOrdersItemUiModels.indices) {
+                        val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+                        if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                            val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                            notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
+                            notEligiblePromoHolderdata.uniqueId = voucherOrdersItemUiModel.uniqueId
+                            notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                         }
                     }
                 }

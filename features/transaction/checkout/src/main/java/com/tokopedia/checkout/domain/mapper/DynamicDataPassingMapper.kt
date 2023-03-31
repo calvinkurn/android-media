@@ -1,23 +1,11 @@
 package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 
 object DynamicDataPassingMapper {
-    fun getCartString(addOnResult: AddOnResult, shipmentCartItemModel: ShipmentCartItemModel): String {
-        var cartString = ""
-        if (addOnResult.addOnData.isNotEmpty()) {
-            addOnResult.addOnData.forEach { addOnData ->
-                if ((shipmentCartItemModel.cartString + "-0").equals(addOnResult.addOnKey, ignoreCase = true)) {
-                    cartString = shipmentCartItemModel.cartString ?: ""
-                }
-            }
-        }
-        return cartString
-    }
 
     fun getAddOn(
         addOnResult: AddOnResult,
