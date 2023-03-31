@@ -6,7 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.video_widget.VideoPlayerView
 
-interface ImageLayoutStrategy {
+internal interface ImageLayoutStrategy {
     fun setupImageRatio(
         constraintLayoutProductCard: ConstraintLayout?,
         imageProduct: ImageView?,

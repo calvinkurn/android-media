@@ -92,9 +92,9 @@ class SmallGridProductItemViewHolder(
         return when (productListType) {
             SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
             SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
-            SearchConstant.NewCardType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
-            SearchConstant.NewCardType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
-            SearchConstant.NewCardType.ETA -> ProductCardModel.ProductListType.ETA
+            SearchConstant.ProductListType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
+            SearchConstant.ProductListType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
+            SearchConstant.ProductListType.ETA -> ProductCardModel.ProductListType.ETA
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

@@ -13,7 +13,7 @@ import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyControl
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyControl
 
-class LayoutStrategyControl: LayoutStrategy,
+internal class LayoutStrategyControl: LayoutStrategy,
     ImageLayoutStrategy by ImageLayoutStrategyControl(),
     LabelLayoutStrategy by LabelLayoutStrategyControl(),
     VariantLayoutStrategy by VariantLayoutStrategyControl(),

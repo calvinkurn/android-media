@@ -14,7 +14,7 @@ import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyNone
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyControl
 
-class LayoutStrategyReposition: LayoutStrategy,
+internal class LayoutStrategyReposition: LayoutStrategy,
     ImageLayoutStrategy by ImageLayoutStrategyControl(),
     LabelLayoutStrategy by LabelLayoutStrategyReposition(),
     VariantLayoutStrategy by VariantLayoutStrategyControl(),

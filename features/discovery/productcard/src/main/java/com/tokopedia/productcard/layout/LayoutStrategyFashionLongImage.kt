@@ -14,7 +14,7 @@ import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyControl
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyReposition
 
-class LayoutStrategyFashionLongImage: LayoutStrategy,
+internal class LayoutStrategyFashionLongImage: LayoutStrategy,
     ImageLayoutStrategy by ImageLayoutStrategyLong(),
     LabelLayoutStrategy by LabelLayoutStrategyFashionReposition(),
     VariantLayoutStrategy by VariantLayoutStrategyReposition(),

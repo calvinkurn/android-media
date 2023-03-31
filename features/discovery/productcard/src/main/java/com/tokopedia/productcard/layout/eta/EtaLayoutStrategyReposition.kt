@@ -9,7 +9,7 @@ import com.tokopedia.productcard.utils.applyConstraintSet
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.unifyprinciples.Typography
 
-class EtaLayoutStrategyReposition : EtaLayoutStrategy {
+internal class EtaLayoutStrategyReposition : EtaLayoutStrategy {
     override fun renderTextEta(view: View, productCardModel: ProductCardModel) {
         val textViewETA = view.findViewById<Typography?>(R.id.textViewInlineETA)
         val labelGroupETA = productCardModel.getLabelETA()

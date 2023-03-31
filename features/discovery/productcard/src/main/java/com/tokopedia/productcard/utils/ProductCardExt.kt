@@ -584,15 +584,14 @@ internal fun renderLabelOverlay(
     labelGroup: ProductCardModel.LabelGroup?,
 ) {
     if (isShow && labelGroup != null) {
-        labelOverlayBackground?.let {
-            it.show()
-            it.rotationX = 180f
-            it.loadImageTopRightCrop(labelGroup.imageUrl)
-        }
-
         labelOverlay?.let {
             it.show()
             it.text = MethodChecker.fromHtml(labelGroup.title)
+        }
+        labelOverlayBackground?.let { background ->
+            background.show()
+            background.rotationX = 180f
+            background.loadImageTopRightCrop(labelGroup.imageUrl)
         }
     } else {
         labelOverlayBackground?.hide()

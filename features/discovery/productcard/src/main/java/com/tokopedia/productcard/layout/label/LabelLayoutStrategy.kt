@@ -7,7 +7,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-interface LabelLayoutStrategy {
+internal interface LabelLayoutStrategy {
     fun renderLabelReposition(
         labelRepositionBackground: ImageView?,
         labelReposition: Typography?,

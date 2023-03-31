@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class VariantLayoutStrategyControl : VariantLayoutStrategy {
+internal class VariantLayoutStrategyControl : VariantLayoutStrategy {
 
     override fun renderVariant(
         willShowVariant: Boolean,

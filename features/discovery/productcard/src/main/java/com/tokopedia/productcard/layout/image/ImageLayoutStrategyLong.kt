@@ -9,7 +9,7 @@ import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.setupImageRatio
 import com.tokopedia.video_widget.VideoPlayerView
 
-class ImageLayoutStrategyLong : ImageLayoutStrategy {
+internal class ImageLayoutStrategyLong : ImageLayoutStrategy {
     override fun setupImageRatio(
         constraintLayoutProductCard: ConstraintLayout?,
         imageProduct: ImageView?,

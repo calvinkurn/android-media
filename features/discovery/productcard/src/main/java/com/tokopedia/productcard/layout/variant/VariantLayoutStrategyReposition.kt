@@ -17,7 +17,7 @@ import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class VariantLayoutStrategyReposition: VariantLayoutStrategy {
+internal class VariantLayoutStrategyReposition: VariantLayoutStrategy {
     override fun renderVariant(
         willShowVariant: Boolean,
         view: View,

@@ -2,7 +2,7 @@ package com.tokopedia.productcard.layout
 
 import com.tokopedia.productcard.ProductCardModel
 
-object LayoutStrategyFactory {
+internal object LayoutStrategyFactory {
     fun create(
         productListType: ProductCardModel.ProductListType
     ) : LayoutStrategy {

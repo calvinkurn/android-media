@@ -4,7 +4,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.productcard.ProductCardModel
 
-interface ThreeDotsLayoutStrategy {
+internal interface ThreeDotsLayoutStrategy {
     fun renderThreeDots(
         imageThreeDots: ImageView?,
         constraintLayoutProductCard: ConstraintLayout?,

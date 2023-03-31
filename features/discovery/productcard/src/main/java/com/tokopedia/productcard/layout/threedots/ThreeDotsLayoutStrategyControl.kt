@@ -7,7 +7,7 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.shouldShowWithAction
 
-class ThreeDotsLayoutStrategyControl: ThreeDotsLayoutStrategy {
+internal class ThreeDotsLayoutStrategyControl: ThreeDotsLayoutStrategy {
     override fun renderThreeDots(
         imageThreeDots: ImageView?,
         constraintLayoutProductCard: ConstraintLayout?,

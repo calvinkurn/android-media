@@ -3,7 +3,7 @@ package com.tokopedia.productcard.layout.variant
 import android.view.View
 import com.tokopedia.productcard.ProductCardModel
 
-interface VariantLayoutStrategy {
+internal interface VariantLayoutStrategy {
     fun renderVariant(
         willShowVariant: Boolean,
         view: View,

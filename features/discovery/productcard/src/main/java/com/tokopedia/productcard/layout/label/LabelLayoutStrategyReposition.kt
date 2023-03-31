@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class LabelLayoutStrategyReposition : LabelLayoutStrategy {
+internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
     override fun renderLabelReposition(
         labelRepositionBackground: ImageView?,
         labelReposition: Typography?,

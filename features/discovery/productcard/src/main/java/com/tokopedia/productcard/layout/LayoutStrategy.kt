@@ -7,7 +7,7 @@ import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 
-interface LayoutStrategy :
+internal interface LayoutStrategy :
     ImageLayoutStrategy,
     LabelLayoutStrategy,
     VariantLayoutStrategy,

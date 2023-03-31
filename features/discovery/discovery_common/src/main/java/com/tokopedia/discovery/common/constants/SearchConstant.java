@@ -199,9 +199,6 @@ public interface SearchConstant {
     interface ProductListType {
         String VAR_LONG_IMG = "var_long_img";
         String VAR_REPOSITION = "var_reposition";
-    }
-
-    interface NewCardType {
         String GIMMICK = "gimmick";
         String PORTRAIT = "portrait";
         String ETA = "eta";
