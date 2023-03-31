@@ -92,7 +92,14 @@ class WebsocketSendTest : BaseTopChatViewModelTest() {
             payloadGenerator.generateStickerPreview(any(), any(), any())
         } returns preview
         every {
-            payloadGenerator.generateStickerWsPayload(any(), any(), any(), any(), any())
+            payloadGenerator.generateStickerWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns payload
 
         // When
@@ -117,7 +124,14 @@ class WebsocketSendTest : BaseTopChatViewModelTest() {
             payloadGenerator.generateAttachmentPreviewMsg(any(), any(), any())
         } returns preview
         every {
-            payloadGenerator.generateAttachmentWsPayload(any(), any(), any(), any(), any())
+            payloadGenerator.generateAttachmentWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns payload
 
         // When
@@ -154,7 +168,14 @@ class WebsocketSendTest : BaseTopChatViewModelTest() {
             payloadGenerator.generateAttachmentPreviewMsg(any(), any(), any())
         } returns preview
         every {
-            payloadGenerator.generateAttachmentWsPayload(any(), any(), any(), any(), any())
+            payloadGenerator.generateAttachmentWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns payload
 
         // When
