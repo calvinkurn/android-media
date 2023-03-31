@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -33,13 +32,13 @@ import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
+import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -56,6 +55,7 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -255,8 +255,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
+        onResumeInternal()
+    }
+
+    private fun onResumeInternal() {
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
+    }
+
+    private fun onPauseInternal() {
+        mOnboarding?.dismiss()
+        mOnboarding = null
     }
 
     private fun observeFeedTabData() {
@@ -396,10 +405,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (!isVisibleToUser) onPauseInternal()
+        else onResumeInternal()
+    }
+
     override fun onPause() {
         super.onPause()
-        mOnboarding?.dismiss()
-        mOnboarding = null
+        onPauseInternal()
     }
 
     private fun initMetaView(meta: MetaModel) {
@@ -420,7 +434,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             )
             .setListener(object : ImmersiveFeedOnboarding.Listener {
                 override fun onStarted() {
-                    binding.vOnboardingPreventInteraction.show()
                 }
 
                 override fun onCompleteCreateContentOnboarding() {
@@ -431,9 +444,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     feedMainViewModel.setHasShownProfileEntryPoint()
                 }
 
-                override fun onFinished() {
-                    binding.vOnboardingPreventInteraction.hide()
-                    feedMainViewModel.setReadyToShowOnboarding()
+                override fun onFinished(isForcedDismiss: Boolean) {
+                    if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
                 }
             })
             .build()
