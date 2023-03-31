@@ -350,6 +350,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get multi origin but p1 data not null`() {
+        every { spykViewModel.p2Data.value } returns ProductInfoP2UiData()
         spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
         val data = spykViewModel.getMultiOriginByProductId()
         Assert.assertNotNull(data.id)
