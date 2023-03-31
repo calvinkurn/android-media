@@ -5,16 +5,16 @@ import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLI
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_EXPAND_GROUP_SETTINGS
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_EXPAND_TIPS
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_GROUP_IKLAN
-import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_STATUS_IKLAN_AKTIF
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_LIHAT_SELENGKAPNYA
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_OTOMATIS
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_PENCARIAN
-import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_SEMUA_PENEMPATAN
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_REKOMENDASI
-import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_STATUS_IKLAN_TIDAK_AKTIF
+import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_IKLAN_SEMUA_PENEMPATAN
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_MUAT_ULANG
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_PENEMPATAN_IKLAN
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_STATUS_IKLAN
+import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_STATUS_IKLAN_AKTIF
+import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_STATUS_IKLAN_TIDAK_AKTIF
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_TAMBAH_KREDIT
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.CLICK_TAMBAH_KREDIT_PAGE
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTrackerConst.Action.VIEW_ERROR_FETCHING
@@ -24,13 +24,14 @@ object SeePerformanceTopadsTrackerConst {
 
     const val EVENT_CLICK = "clickTopAds"
     const val EVENT_VIEW = "viewTopAdsIris"
-    const val EVENT_CATEGORY = "product list page"
+    const val EVENT_CATEGORY_MP = "product list page"
+    const val EVENT_CATEGORY_PDP = "product list page"
     const val EVENT_LABEL = ""
     const val BUSINESS_UNIT = "ads solution"
     const val CURRENT_SITE_MANAGE_PRODUCT_PAGE = "tokopediaseller"
     const val CURRENT_SITE_PRODUCT_DETAIL_PAGE = "pdp"
 
-    object Action{
+    object Action {
         const val CLICK_GROUP_IKLAN = "click - atur group iklan"
         const val CLICK_IKLAN_OTOMATIS = "click - atur iklan otomatis"
         const val CLICK_DATE_RANGE = "click - date range"
@@ -71,7 +72,7 @@ object SeePerformanceTopadsTrackerConst {
         CLICK_TAMBAH_KREDIT_PAGE to "41291",
         CLICK_TAMBAH_KREDIT to "41292",
         CLICK_EXPAND_TIPS to "41293",
-        CLICK_IKLAN_LIHAT_SELENGKAPNYA to "41294",
+        CLICK_IKLAN_LIHAT_SELENGKAPNYA to "41294"
     )
 
     private val trackerIdsProductDetailPage = mapOf(
@@ -83,7 +84,7 @@ object SeePerformanceTopadsTrackerConst {
         CLICK_CREDIT_TOPADS to "41262",
         CLICK_EXPAND_GROUP_SETTINGS to "41263",
         CLICK_PENEMPATAN_IKLAN to "41264",
-        CLICK_IKLAN_PENCARIAN to "4125765",
+        CLICK_IKLAN_PENCARIAN to "41265",
         CLICK_IKLAN_REKOMENDASI to "41266",
         CLICK_IKLAN_SEMUA_PENEMPATAN to "41267",
         CLICK_STATUS_IKLAN to "41268",
@@ -93,11 +94,11 @@ object SeePerformanceTopadsTrackerConst {
         CLICK_TAMBAH_KREDIT_PAGE to "41272",
         CLICK_TAMBAH_KREDIT to "41273",
         CLICK_EXPAND_TIPS to "41274",
-        CLICK_IKLAN_LIHAT_SELENGKAPNYA to "41275",
+        CLICK_IKLAN_LIHAT_SELENGKAPNYA to "41275"
     )
 
-    fun getTrackerId(action:String, site:String) : String{
-        return when(site){
+    fun getTrackerId(action: String, site: String): String {
+        return when (site) {
             CURRENT_SITE_MANAGE_PRODUCT_PAGE -> trackerIdsManageProductPage[action] ?: ""
             CURRENT_SITE_PRODUCT_DETAIL_PAGE -> trackerIdsProductDetailPage[action] ?: ""
             else -> ""

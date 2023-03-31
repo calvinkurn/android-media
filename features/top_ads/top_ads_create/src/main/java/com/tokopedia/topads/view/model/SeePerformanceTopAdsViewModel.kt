@@ -17,12 +17,12 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsU
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetShopInfo
+import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
-import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +41,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
     private val topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>,
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
 
     private val _topAdsDeposits: MutableLiveData<Result<Deposit>> = MutableLiveData()
@@ -140,7 +140,9 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         )
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode({
             _productStatistics.value = Success(it)
-            _goalId.value = goalId
+            if (_goalId.value != goalId) {
+                _goalId.value = goalId
+            }
         }, {
             _productStatistics.value = Fail(it)
             it.printStackTrace()
@@ -148,17 +150,18 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     }
 
     fun setProductAction(
-        action: String, adIds: List<String>, selectedFilter: String?
+        action: String,
+        adIds: List<String>,
+        selectedFilter: String?
     ) {
         launchCatchError(block = {
             val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
             topAdsProductActionUseCase.execute(params)
             getPromoInfo()
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
-
 
     fun getGroupInfo() {
         topAdsGetGroupInfoUseCase.setRequestParams(
@@ -172,9 +175,11 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         topAdsGetGroupInfoUseCase.setTypeClass(TopAdsGroupsResponse::class.java)
         topAdsGetGroupInfoUseCase.setGraphqlQuery(GetTopadsDashboardGroups())
         launchCatchError(block = {
-            _topAdsGetGroupInfo.postValue(withContext(dispatchers.io) {
-                topAdsGetGroupInfoUseCase.executeOnBackground()
-            })
+            _topAdsGetGroupInfo.postValue(
+                withContext(dispatchers.io) {
+                    topAdsGetGroupInfoUseCase.executeOnBackground()
+                }
+            )
         }) {
             _topAdsGetGroupInfo.postValue(null)
         }
@@ -184,12 +189,13 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         _isSingleAds.value = _adId.value != "0" && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == "0")
     }
 
-    fun getAutoAdsInfo(
-    ) {
+    fun getAutoAdsInfo() {
         launchCatchError(block = {
-            _topAdsGetAutoAds.postValue(withContext(dispatchers.io) {
-                topAdsGetAutoAdsUseCase.executeOnBackground()
-            })
+            _topAdsGetAutoAds.postValue(
+                withContext(dispatchers.io) {
+                    topAdsGetAutoAdsUseCase.executeOnBackground()
+                }
+            )
         }) {
             _topAdsGetAutoAds.postValue(null)
         }
