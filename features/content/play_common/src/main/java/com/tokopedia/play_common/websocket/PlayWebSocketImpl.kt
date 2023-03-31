@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
-import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -21,11 +21,11 @@ import java.util.concurrent.TimeUnit
  * Created by jegul on 09/03/21
  */
 class PlayWebSocketImpl(
-        clientBuilder: OkHttpClient.Builder,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
-        @ApplicationContext private val context: Context,
-        private val localCacheHandler: LocalCacheHandler,
+    clientBuilder: OkHttpClient.Builder,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
+    @ApplicationContext private val context: Context,
+    private val localCacheHandler: LocalCacheHandler
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
@@ -58,7 +58,7 @@ class PlayWebSocketImpl(
     private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
-            extraBufferCapacity = 100
+        extraBufferCapacity = 100
     )
 
     private var mWebSocket: WebSocket? = null
@@ -133,18 +133,19 @@ class PlayWebSocketImpl(
             "source" to source.ifEmpty { "\"\"" },
             "channelId" to channelId.ifEmpty { "\"\"" },
             "warehouseId" to warehouseId.ifEmpty { "\"\"" },
-            "gcToken" to gcToken.ifEmpty { "\"\"" },
+            "gcToken" to gcToken.ifEmpty { "\"\"" }
         )
     }
 
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
-                .header("Origin", TokopediaUrl.getInstance().WEB)
-                .header("Accounts-Authorization", "Bearer $accessToken")
-                .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
-                .header("x_app_name", GlobalConfig.getPackageApplicationName())
-                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
-                .build()
+            .header("Origin", TokopediaUrl.getInstance().WEB)
+            .header("Accounts-Authorization", "Bearer $accessToken")
+            .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+            .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
+            .header("x_app_name", GlobalConfig.getPackageApplicationName())
+            .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
+            .build()
     }
 
     companion object {
