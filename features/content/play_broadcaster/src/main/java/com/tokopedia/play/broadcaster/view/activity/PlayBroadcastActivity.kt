@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitinstall.SplitInstallHelper
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -169,6 +170,9 @@ class PlayBroadcastActivity : BaseActivity(),
         get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SplitInstallHelper.loadLibrary(this, "c++_shared")
+        SplitInstallHelper.loadLibrary(this, "effect")
+
         inject()
         setFragmentFactory()
         startPageMonitoring()
