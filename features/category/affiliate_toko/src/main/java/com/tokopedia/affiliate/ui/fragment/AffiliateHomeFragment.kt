@@ -63,6 +63,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
@@ -193,10 +194,14 @@ class AffiliateHomeFragment :
         productRV?.adapter = adapter
         loadMoreTriggerListener?.let { productRV?.addOnScrollListener(it) }
         view?.findViewById<NavToolbar>(R.id.home_navToolbar)?.run {
-            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                 IconBuilder()
-                    .addIcon(IconList.ID_NOTIFICATION) {}
+                    .addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                        RouteManager.route(
+                            context,
+                            ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                        )
+                    }
                     .addIcon(IconList.ID_BILL) {
                         openHistoryActivity()
                     }
