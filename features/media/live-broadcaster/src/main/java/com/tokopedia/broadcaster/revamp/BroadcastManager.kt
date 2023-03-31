@@ -518,7 +518,12 @@ class BroadcastManager @Inject constructor(
             return false
         }
 
-        val connectionId = mStreamer?.createConnection(connectionConfig) ?: -1
+        val connectionId = if (mWithByteplus == true) {
+            mStreamerSurface?.createConnection(connectionConfig)
+        } else {
+            mStreamer?.createConnection(connectionConfig)
+        } ?: -1
+
         if (connectionId == -1) {
             broadcastStateChanged(
                 BroadcastState.Error(
@@ -650,7 +655,7 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun getHandler(): Handler? {
-        return mGLHandler
+        return if(mWithByteplus == true) mGLHandler else mHandler
     }
 
     override fun onConnectionStateChanged(
