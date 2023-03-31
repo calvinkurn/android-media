@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 

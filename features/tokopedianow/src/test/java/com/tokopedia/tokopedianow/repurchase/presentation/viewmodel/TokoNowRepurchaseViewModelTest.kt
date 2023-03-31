@@ -6,7 +6,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse

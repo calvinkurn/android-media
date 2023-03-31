@@ -6,7 +6,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals

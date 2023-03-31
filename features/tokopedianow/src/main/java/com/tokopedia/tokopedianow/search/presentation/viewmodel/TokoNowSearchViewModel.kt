@@ -10,7 +10,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView

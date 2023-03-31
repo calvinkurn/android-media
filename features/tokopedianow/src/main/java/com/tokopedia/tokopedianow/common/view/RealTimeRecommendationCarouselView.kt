@@ -13,8 +13,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowRealTimeRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState

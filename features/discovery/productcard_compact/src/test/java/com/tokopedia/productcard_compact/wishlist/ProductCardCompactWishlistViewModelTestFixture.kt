@@ -1,7 +1,7 @@
 package com.tokopedia.productcard_compact.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
+import com.tokopedia.productcard.compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface

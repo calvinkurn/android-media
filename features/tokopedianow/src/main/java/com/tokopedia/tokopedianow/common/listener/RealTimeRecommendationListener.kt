@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.listener
 
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 
 interface RealTimeRecommendationListener {

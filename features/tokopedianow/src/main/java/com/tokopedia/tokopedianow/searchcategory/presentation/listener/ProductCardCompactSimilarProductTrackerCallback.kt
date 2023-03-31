@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 

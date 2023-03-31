@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel

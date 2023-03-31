@@ -20,7 +20,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
-import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -31,11 +31,11 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel

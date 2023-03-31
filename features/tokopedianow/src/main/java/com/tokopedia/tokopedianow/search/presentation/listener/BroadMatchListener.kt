@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.listener
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
 interface BroadMatchListener {
 

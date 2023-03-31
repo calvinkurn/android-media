@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.analytics.model
 
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
 data class AddToCartDataTrackerModel(
     val position: Int,

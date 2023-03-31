@@ -7,7 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel

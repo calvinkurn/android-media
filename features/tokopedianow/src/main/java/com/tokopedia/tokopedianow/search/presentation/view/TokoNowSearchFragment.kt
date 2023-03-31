@@ -20,7 +20,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT

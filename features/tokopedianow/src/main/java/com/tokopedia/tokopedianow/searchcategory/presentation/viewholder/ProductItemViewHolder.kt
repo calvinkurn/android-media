@@ -5,8 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView

@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.analytics
 
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
 interface RealTimeRecommendationAnalytics {
 

@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
