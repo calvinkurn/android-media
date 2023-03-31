@@ -309,4 +309,8 @@ object ApplinkConstInternalMarketplace {
      * If you want to use {shopId} to chatroom use external applink
      */
     const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
+
+    // Affiliate Notification
+    const val AFFILIATE_NOTIFICATION = "${DeeplinkConstant.SCHEME_INTERNAL}://notif-center/affiliate"
+
 }
