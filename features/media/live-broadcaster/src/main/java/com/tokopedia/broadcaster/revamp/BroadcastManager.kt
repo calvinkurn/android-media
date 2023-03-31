@@ -158,6 +158,9 @@ class BroadcastManager @Inject constructor(
         withByteplus: Boolean,
     ) {
         if(mWithByteplus == withByteplus) return
+
+        mWithByteplus = withByteplus
+
         if(mStreamer != null) {
             release()
         }
@@ -516,8 +519,10 @@ class BroadcastManager @Inject constructor(
         }
 
         val connectionId = if (mWithByteplus == true) {
+            Log.d("<LOG>", "using mStreamerSurface")
             mStreamerSurface?.createConnection(connectionConfig)
         } else {
+            Log.d("<LOG>", "using mStreamer")
             mStreamer?.createConnection(connectionConfig)
         } ?: -1
 
