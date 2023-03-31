@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.mps
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
@@ -45,39 +46,44 @@ data class MPSState(
         get() = bottomSheetFilterModel?.data?.filter ?: listOf()
 
     fun success(mpsModel: MPSModel): MPSState =
-        this.updateFilterState(mpsModel)
+        this.updatePageStates(mpsModel)
             .updateResult(mpsModel)
 
-    private fun updateFilterState(mpsModel: MPSModel): MPSState {
-        return copy(
-            filterState = filterState.from(
-                parameter,
-                mpsModel.quickFilterList + bottomSheetFilterList
-            )
-        )
-    }
+    private fun updatePageStates(mpsModel: MPSModel): MPSState = copy(
+        filterState = filterState.from(
+            parameter,
+            mpsModel.quickFilterList + bottomSheetFilterList
+        ),
+        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart(),
+    )
 
     private fun updateResult(mpsModel: MPSModel) = copy(
         result = State.Success(data = successData(mpsModel)),
         quickFilterDataViewList = quickFilterData(mpsModel),
-        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart()
     )
 
-    private fun successData(mpsModel: MPSModel): List<Visitable<MPSTypeFactory>> =
+    private fun successData(mpsModel: MPSModel): List<Visitable<*>> =
         if (mpsModel.shopList.isNotEmpty())
             listOf(ChooseAddressDataView) +
-                mpsShopWidgetList(mpsModel)
-        else {
-            if (filterState.isFilterActive)
-                listOf(MPSEmptyStateFilterDataView)
-            else
-                listOf(MPSEmptyStateKeywordDataView)
-        }
+                mpsShopWidgetList(mpsModel) +
+                loadMoreVisitableList()
+        else
+            emptyStateVisitableList()
 
-    private fun mpsShopWidgetList(mpsModel: MPSModel) =
+    private fun mpsShopWidgetList(mpsModel: MPSModel): List<Visitable<*>> =
         mpsModel.shopList.map {
             MPSShopWidgetDataView.create(it, parameter.keywords())
         }
+
+    private fun loadMoreVisitableList(): List<Visitable<*>> =
+        if (paginationState.hasNextPage) listOf(LoadingMoreModel())
+        else listOf()
+
+    private fun emptyStateVisitableList() =
+        if (filterState.isFilterActive)
+            listOf(MPSEmptyStateFilterDataView)
+        else
+            listOf(MPSEmptyStateKeywordDataView)
 
     private fun quickFilterData(mpsModel: MPSModel): List<QuickFilterDataView> {
         return if (mpsModel.shopList.isEmpty() && !filterState.isFilterActive) listOf()
@@ -118,10 +124,20 @@ data class MPSState(
 
     fun loadMore() = copy(loadMoreThrowable = null)
 
-    fun successLoadMore(mpsModel: MPSModel) = copy(
-        result = State.Success(data = visitableList + mpsShopWidgetList(mpsModel)),
-        paginationState = paginationState.incrementStart(),
+    fun successLoadMore(mpsModel: MPSModel) =
+        this.incrementStart()
+            .updateResultLoadMore(mpsModel)
+
+    private fun incrementStart() = copy(paginationState = paginationState.incrementStart())
+
+    private fun updateResultLoadMore(mpsModel: MPSModel) = copy(
+        result = State.Success(data = successLoadMoreData(mpsModel)),
     )
+
+    private fun successLoadMoreData(mpsModel: MPSModel): List<Visitable<*>> =
+        visitableList.filter { it !is LoadingMoreModel } +
+            mpsShopWidgetList(mpsModel) +
+            loadMoreVisitableList()
 
     fun errorLoadMore(throwable: Throwable) = copy(loadMoreThrowable = throwable)
 

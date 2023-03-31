@@ -49,7 +49,7 @@ private class MPSDiffUtil: DiffUtil.ItemCallback<Visitable<*>>() {
 
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return oldItem == newItem
+        return true
     }
 }
 

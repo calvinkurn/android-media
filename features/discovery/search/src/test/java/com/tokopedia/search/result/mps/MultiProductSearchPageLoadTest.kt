@@ -13,17 +13,13 @@ import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
-import io.mockk.justRun
-import io.mockk.runs
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class MPSPageLoadTest: MultiProductSearchTestFixtures() {
+class MultiProductSearchPageLoadTest: MultiProductSearchTestFixtures() {
 
     private val parameter = mapOf(
         SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
