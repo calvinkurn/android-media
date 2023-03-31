@@ -157,7 +157,10 @@ class BroadcastManager @Inject constructor(
         surfaceSize: Broadcaster.Size,
         withByteplus: Boolean,
     ) {
-        if(mWithByteplus == withByteplus) return
+        if(mWithByteplus == withByteplus) {
+            if(mWithByteplus == true && mStreamerSurface != null) return
+            if(mWithByteplus == false && mStreamer != null) return
+        }
 
         mWithByteplus = withByteplus
 
