@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
@@ -13,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
 import com.tokopedia.quest_widget.tracker.Tracker
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
@@ -2360,6 +2360,41 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             0
         else
             CurrencyFormatHelper.convertRupiahToInt(rupiah)
+    }
+
+    override fun trackEventBundleProductClicked(componentsItems: ComponentsItem, bundleType: BundleTypes, bundle: BundleUiModel, selectedMultipleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, productItemPosition: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        val login = if (userSession.isLoggedIn) LOGIN else NON_LOGIN
+        val productBundlingMap = mutableMapOf<String, Any>()
+        componentsItems.data?.firstOrNull()?.let {
+            productBundlingMap[KEY_NAME] = selectedProduct.productName
+            productBundlingMap[KEY_ID] = selectedProduct.productId
+            productBundlingMap[KEY_POSITION] = "${componentsItems.position + 1}"
+            productBundlingMap[KEY_CREATIVE] = (it.creativeName ?: EMPTY_STRING)
+            productBundlingMap[INDEX] = "$productItemPosition"
+            productBundlingMap[ITEM_BRAND] = selectedProduct.productName
+            productBundlingMap[KEY_ITEM_CATEGORY] = selectedProduct.productId
+            productBundlingMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems) + 1} - $login - ${componentsItems.name} - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${componentsItems.sectionId} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+            productBundlingMap[DIMENSION117] = selectedMultipleBundle.bundleType
+            productBundlingMap[DIMENSION118] = selectedMultipleBundle.bundleId
+        }
+        list.add(productBundlingMap)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+            eventAction = ACTION_PB_PRODUCT_CLICK, eventLabel = "${selectedMultipleBundle.bundleId} - ${selectedProduct.productId} -${selectedMultipleBundle.shopInfo?.shopId ?: EMPTY_STRING} - ${selectedMultipleBundle.bundleType} - ${selectedMultipleBundle.discountPercentage}")
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list))
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_SOURCE] = sourceIdentifier
+        map[BUSINESS_UNIT] = PHYSICAL_GOODS
+        map[TRACKER_ID] = "42740"
+        map[KEY_SHOP_ID] = selectedMultipleBundle.shopInfo?.shopId ?: EMPTY_STRING
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = userSession.userId
+
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     override fun trackEventClickProductBundlingChipSelection(componentsItems: ComponentsItem, selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel) {
