@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://play-shorts"
+        return ""
     }
 
     data class Model(
