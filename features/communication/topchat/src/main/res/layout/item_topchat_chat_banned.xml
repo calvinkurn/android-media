@@ -27,54 +27,47 @@
             android:gravity="right"
             tools:ignore="RtlHardcoded">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/iv_block_icon"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/dp_topchat_13"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:contentDescription="@string/topchat_content_desc_blocked_icon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_topchat_block_grey" />
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="14dp"
+                app:icon_color_light_enable="@color/Unify_NN500"
+                app:icon_color_light_disabled="@color/Unify_NN500"
+                app:icon_color_night_enable="@color/Unify_NN500"
+                app:icon_color_night_disabled="@color/Unify_NN500"
+                app:icon_name="WARNING" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/dp_topchat_6"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginStart="5.5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
                 android:includeFontPadding="false"
-                android:text="@string/title_topchat_sender_chat_banned"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_block_icon"
+                app:layout_constraintStart_toEndOf="@id/iv_block_icon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_1"
+                app:typographyType="display_1"
+                tools:text="@string/topchat_message_censored"
                 tools:ignore="RtlHardcoded" />
 
             <LinearLayout
                 android:id="@+id/llStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/dp_topchat_13"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="13dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage">
-
-                <ImageView
-                    android:id="@+id/ivCheckMark"
-                    android:layout_width="@dimen/dp_topchat_14"
-                    android:layout_height="@dimen/dp_topchat_14"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/spacing_lvl1"
-                    android:layout_marginRight="@dimen/spacing_lvl1"
-                    android:contentDescription="@string/topchat_desc_checkmark"
-                    tools:srcCompat="@drawable/ic_chat_read" />
+                app:layout_constraintTop_toBottomOf="@id/tvMessage">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvTime"
@@ -82,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN400"
                     app:typographyType="body_3"
                     tools:text="11:00" />
             </LinearLayout>
@@ -91,13 +84,14 @@
                 android:id="@+id/txt_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_topchat_6"
-                android:paddingBottom="@dimen/dp_topchat_10"
-                android:text="@string/title_topchat_check_tnc"
-                android:textColor="@color/Unify_G500"
-                app:layout_constraintStart_toStartOf="@+id/tvMessage"
+                android:layout_marginTop="6dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintStart_toStartOf="@id/tvMessage"
                 app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:text="@string/topchat_message_censored_guide"
                 tools:ignore="RtlHardcoded,RtlSymmetry"
                 tools:visibility="visible" />
 

@@ -2,90 +2,73 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
+import com.tokopedia.topchat.databinding.ItemTopchatChatBannedBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BannedChatMessageViewHolder(
-    private val itemView: View?,
-    private val listener: ChatLinkHandlerListener,
-    private val commonListener: CommonViewHolderListener,
+    itemView: View?,
+    private val listener: TopChatMessageCensorListener,
     private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    private var container: ConstraintLayout? = itemView?.findViewById(R.id.cl_ban_container)
-    private var checkMark: ImageView? = itemView?.findViewById(R.id.ivCheckMark)
-    private var hourTime: TextView? = itemView?.findViewById(R.id.tvTime)
-    private var info: TextView? = itemView?.findViewById(R.id.txt_info)
-    private val msgContainer: LinearLayout? = itemView?.findViewById(
-        R.id.cl_msg_container
-    )
+    private val binding: ItemTopchatChatBannedBinding? by viewBinding()
 
-    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(container)
-    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(container)
+    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(binding?.clBanContainer)
+    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(binding?.clBanContainer)
 
-    override fun bind(message: MessageUiModel) {
-        verifyReplyTime(message)
-        bindMargin(message)
+    override fun bind(uiModel: MessageUiModel) {
+        verifyReplyTime(uiModel)
+        bindMargin(uiModel)
+        bindCensorText()
         bindClickInfo()
-        bindBackground(message)
-        bindCheckMark(message)
-        bindGravity(message)
-        ChatMessageViewHolderBinder.bindHourTextView(message, hourTime)
+        bindBackground(uiModel)
+        bindGravity(uiModel)
+        ChatMessageViewHolderBinder.bindHourTextView(uiModel, binding?.tvTime)
     }
 
     private fun bindGravity(message: MessageUiModel) {
         if (message.isSender) {
-            msgContainer?.gravity = Gravity.END
+            binding?.clMsgContainer?.gravity = Gravity.END
         } else {
-            msgContainer?.gravity = Gravity.START
+            binding?.clMsgContainer?.gravity = Gravity.START
         }
     }
 
     private fun bindClickInfo() {
-        info?.setOnClickListener {
-            listener.onGoToWebView(tnc, tnc)
-        }
-    }
-
-    private fun bindCheckMark(message: MessageUiModel) {
-        checkMark?.let {
-            ChatMessageViewHolderBinder.bindChatReadStatus(message, it)
+        binding?.txtInfo?.setOnClickListener {
+            listener.onClickCheckGuide()
         }
     }
 
     private fun bindBackground(message: MessageUiModel) {
         if (message.isSender) {
-            container?.background = bgRight
+            binding?.clBanContainer?.background = bgRight
         } else {
-            container?.background = bgLeft
+            binding?.clBanContainer?.background = bgLeft
         }
     }
 
     private fun bindMargin(message: MessageUiModel) {
-        val lp = msgContainer?.layoutParams
+        val lp = binding?.clMsgContainer?.layoutParams
         if (lp is RecyclerView.LayoutParams) {
             if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
-                msgContainer?.setMargin(
+                binding?.clMsgContainer?.setMargin(
                     0,
                     getOppositeMargin(itemView.context).toInt(),
                     0,
                     0
                 )
             } else {
-                msgContainer?.setMargin(0, 0, 0, 0)
+                binding?.clMsgContainer?.setMargin(0, 0, 0, 0)
             }
         }
     }
@@ -100,8 +83,15 @@ class BannedChatMessageViewHolder(
         }
     }
 
+    private fun bindCensorText() {
+        binding?.tvMessage?.setText(R.string.topchat_message_censored)
+    }
+
+    interface TopChatMessageCensorListener {
+        fun onClickCheckGuide()
+    }
+
     companion object {
         val LAYOUT = R.layout.item_topchat_chat_banned
-        private const val tnc = "https://www.tokopedia.com/terms#konten"
     }
 }
