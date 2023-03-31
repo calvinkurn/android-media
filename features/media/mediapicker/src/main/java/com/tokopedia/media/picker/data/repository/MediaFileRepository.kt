@@ -1,8 +1,6 @@
 package com.tokopedia.media.picker.data.repository
 
-import android.database.Cursor
 import com.tokopedia.media.picker.data.MediaQueryDataSource
-import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.entity.Media
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,22 +15,11 @@ class MediaFileRepositoryImpl @Inject constructor(
 ) : MediaFileRepository, MediaQueryDataSource by source {
 
     override operator fun invoke(bucketId: Long, start: Int): Flow<List<Media>> {
-        val cursor = setupMediaQuery(bucketId, LIMIT_MEDIA_OFFSET)
+        val cursor = setupMediaQuery(bucketId, start, LIMIT_MEDIA_OFFSET)
         val result = mutableListOf<Media>()
-        var index = start
-
-        val cursorCount = cursor?.count ?: 0
-
-        val offset = if (cursorCount < LIMIT_MEDIA_OFFSET) {
-            cursorCount
-        } else {
-            LIMIT_MEDIA_OFFSET
-        }
 
         return flow {
-            val ableToLoad = if (start == 0) cursor?.moveToFirst() else cursor?.moveToPosition(index)
-
-            if (ableToLoad == true && cursor != null) {
+            if (cursor?.moveToFirst() == true) {
                 do {
                     val media = createMedia(cursor) ?: continue
                     if (media.file.exists().not()) continue
@@ -42,9 +29,6 @@ class MediaFileRepositoryImpl @Inject constructor(
                     }
 
                     result.add(media)
-                    index++
-
-                    if (result.size == offset) break
                 } while (cursor.moveToNext())
             }
 
