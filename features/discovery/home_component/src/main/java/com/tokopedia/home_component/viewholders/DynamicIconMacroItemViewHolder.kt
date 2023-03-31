@@ -27,7 +27,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class DynamicIconMacroItemViewHolder(
     itemView: View,
-    private val listener: DynamicIconComponentListener
+    private val listener: DynamicIconComponentListener,
+    isRevamp: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
     private val longPressHandler = Handler(Looper.getMainLooper())
     private var scaleAnimator = ValueAnimator.ofFloat()
@@ -37,6 +38,7 @@ class DynamicIconMacroItemViewHolder(
     private val pathOutputClick = UnifyMotion.EASE_IN_OUT
     private val durationInputClick = UnifyMotion.T2
     private val durationOutputClick = UnifyMotion.T1
+    private val scaleMinImage = if (isRevamp) SCALE_MIN_REVAMP else SCALE_MIN_DEFAULT
     private var onLongPress = Runnable {
         itemView.performLongClick()
     }
@@ -45,9 +47,11 @@ class DynamicIconMacroItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon_item_interaction
-        private const val SCALE_MIN_IMAGE = 0.8f
+        val LAYOUT_REVAMP = R.layout.home_component_dynamic_icon_revamp_item_interaction
         private const val SCALE_MAX_IMAGE = 1f
         private const val MAX_ALPHA_RIPPLE = 0.6f
+        private const val SCALE_MIN_REVAMP = 0.9375f
+        private const val SCALE_MIN_DEFAULT = 0.8f
     }
 
     private fun animateScaling(
@@ -86,7 +90,7 @@ class DynamicIconMacroItemViewHolder(
                 binding?.containerRippleDynamicIcons?.scaleY = value
             }
             val alpha =
-                ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
+                ((value - scaleMinImage) / (SCALE_MAX_IMAGE - scaleMinImage)) * MAX_ALPHA_RIPPLE
             binding?.containerRippleDynamicIcons?.alpha = alpha
             currentScaleRipple = value
         }
@@ -105,6 +109,7 @@ class DynamicIconMacroItemViewHolder(
     ) {
         binding?.dynamicIconTypography?.text = item.name
         binding?.dynamicIconImageView?.setImageUrl(item.imageUrl)
+        listener.onSuccessLoadImage()
         binding?.dynamicIconContainer?.layoutParams = ViewGroup.LayoutParams(
             if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -115,9 +120,9 @@ class DynamicIconMacroItemViewHolder(
                     longPressHandler.removeCallbacks(onLongPress)
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            if (binding?.dynamicIconImageView?.scaleX == SCALE_MIN_IMAGE) {
+                            if (binding?.dynamicIconImageView?.scaleX == scaleMinImage) {
                                 animateScaling(
-                                    SCALE_MIN_IMAGE,
+                                    scaleMinImage,
                                     SCALE_MAX_IMAGE,
                                     durationOutputClick,
                                     pathOutputClick
@@ -138,9 +143,9 @@ class DynamicIconMacroItemViewHolder(
                                 }
 
                                 override fun onAnimationEnd(p0: Animator) {
-                                    if (binding?.dynamicIconImageView?.scaleX == SCALE_MIN_IMAGE) {
+                                    if (binding?.dynamicIconImageView?.scaleX == scaleMinImage) {
                                         animateScaling(
-                                            SCALE_MIN_IMAGE,
+                                            scaleMinImage,
                                             SCALE_MAX_IMAGE,
                                             durationOutputClick,
                                             pathOutputClick
@@ -152,7 +157,7 @@ class DynamicIconMacroItemViewHolder(
                             if (currentScaleRipple == SCALE_MAX_IMAGE) {
                                 scalingRipple(
                                     SCALE_MAX_IMAGE,
-                                    SCALE_MIN_IMAGE,
+                                    scaleMinImage,
                                     durationOutputClick,
                                     pathOutputClick
                                 )
@@ -165,7 +170,7 @@ class DynamicIconMacroItemViewHolder(
                                 override fun onAnimationEnd(p0: Animator) {
                                     if (currentScaleRipple == SCALE_MAX_IMAGE) {
                                         scalingRipple(
-                                            end = SCALE_MIN_IMAGE,
+                                            end = scaleMinImage,
                                             duration = durationOutputClick,
                                             pathInterpolator = pathOutputClick
                                         )
@@ -192,14 +197,14 @@ class DynamicIconMacroItemViewHolder(
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
                             scalingRipple(
-                                SCALE_MIN_IMAGE,
+                                scaleMinImage,
                                 SCALE_MAX_IMAGE,
                                 durationInputClick,
                                 pathInputClick
                             )
                             animateScaling(
                                 SCALE_MAX_IMAGE,
-                                SCALE_MIN_IMAGE,
+                                scaleMinImage,
                                 durationInputClick,
                                 pathInputClick
                             )

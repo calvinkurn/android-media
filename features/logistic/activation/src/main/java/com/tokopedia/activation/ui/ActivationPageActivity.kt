@@ -9,14 +9,13 @@ import com.tokopedia.activation.di.DaggerActivationPageComponent
 
 class ActivationPageActivity : BaseSimpleActivity(), HasComponent<ActivationPageComponent> {
 
-
     override fun getNewFragment(): Fragment? {
         return ActivationPageFragment()
     }
 
     override fun getComponent(): ActivationPageComponent {
         return DaggerActivationPageComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 }
