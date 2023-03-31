@@ -12,7 +12,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.FloatRange
 import androidx.core.animation.addListener
@@ -20,6 +19,7 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import com.tokopedia.content.common.databinding.ViewVerticalSwipeOnboardingBinding
 import com.tokopedia.content.common.R
+import com.tokopedia.content.common.util.Alpha
 import com.tokopedia.content.common.util.DefaultAnimatorListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -73,7 +73,7 @@ class VerticalSwipeOnboardingView : LinearLayout {
         binding.root.doOnLayout {
             val animator = AnimatorSet()
             animator.play(
-                getRootAlphaAnimation(from = 0.0f, to = 1.0f)
+                getRootAlphaAnimation(from = Alpha.MIN, to = Alpha.MAX)
             ).with(
                 getContentTranslationAnimation()
             ).before(
@@ -98,7 +98,7 @@ class VerticalSwipeOnboardingView : LinearLayout {
 
         val animator = getRootAlphaAnimation(
             from = binding.root.alpha,
-            to = 0.0f,
+            to = Alpha.MIN,
         )
         animator.addListener(
             onEnd = { hide() }
@@ -114,8 +114,8 @@ class VerticalSwipeOnboardingView : LinearLayout {
     }
 
     private fun getRootAlphaAnimation(
-        @FloatRange(from = 0.0, to = 1.0) from: Float,
-        @FloatRange(from = 0.0, to = 1.0) to: Float
+        @FloatRange(from = Alpha.MIN.toDouble(), to = Alpha.MAX.toDouble()) from: Float,
+        @FloatRange(from = Alpha.MIN.toDouble(), to = Alpha.MAX.toDouble()) to: Float
     ): Animator {
         return ObjectAnimator.ofFloat(
             binding.root,
@@ -173,15 +173,15 @@ class VerticalSwipeOnboardingView : LinearLayout {
         val timeInterpolator = TimeInterpolator { animPoint ->
             val point = if (!mIsReversing) {
                 val delayPoint = delayEnd.toFloat() / duration
-                val endAnimationPoint = 1.0f - delayPoint
+                val endAnimationPoint = MAX_ANIMATION_POINT - delayPoint
 
-                if (animPoint >= endAnimationPoint) 1.0f
-                else (1.0f / endAnimationPoint) * animPoint
+                if (animPoint >= endAnimationPoint) MAX_ANIMATION_POINT
+                else (MAX_ANIMATION_POINT / endAnimationPoint) * animPoint
             } else {
                 val startAnimationPoint = delayEnd.toFloat() / duration
 
-                if (animPoint <= startAnimationPoint) 0.0f
-                else (animPoint - startAnimationPoint) / (1.0f - startAnimationPoint)
+                if (animPoint <= startAnimationPoint) MIN_ANIMATION_POINT
+                else (animPoint - startAnimationPoint) / (MAX_ANIMATION_POINT - startAnimationPoint)
             }
 
             point
@@ -202,5 +202,8 @@ class VerticalSwipeOnboardingView : LinearLayout {
         private const val HAND_SWIPE_REPEAT_COUNT = 4
 
         private const val ICON_TRANSLATION_HEIGHT_FROM_CENTER = 0.3f
+
+        private const val MAX_ANIMATION_POINT = 1.0f
+        private const val MIN_ANIMATION_POINT = 0.0f
     }
 }
