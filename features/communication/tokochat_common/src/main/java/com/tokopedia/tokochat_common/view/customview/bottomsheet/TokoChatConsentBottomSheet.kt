@@ -6,7 +6,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.databinding.TokochatConsentBottomsheetBinding
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IMAGE_TOKOCHAT_CONSENT
@@ -15,13 +14,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 
-class TokoChatConsentBottomSheet(
-    private val submitAction: (() -> Unit),
-    private val dismissAction: (() -> Unit)
-) : BottomSheetUnify() {
+class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatConsentBottomsheetBinding>()
     private var needConsent = true
+
+    private var submitAction: (() -> Unit) = {}
+    private var dismissAction: (() -> Unit) = {}
 
     init {
         setupBottomSheetVariant(VariantType.CLOSE)
@@ -119,16 +118,16 @@ class TokoChatConsentBottomSheet(
         submitAction()
     }
 
-    companion object {
-        private val TAG = TokoChatConsentBottomSheet::class.simpleName
-        private const val DELAY = 200L
+    fun setConsentListener(
+        submitAction: (() -> Unit),
+        dismissAction: (() -> Unit)
+    ) {
+        this.submitAction = submitAction
+        this.dismissAction = dismissAction
+    }
 
-        fun show(
-            fragmentManager: FragmentManager,
-            submitAction: () -> Unit = {},
-            dismissAction: () -> Unit = {}
-        ) {
-            TokoChatConsentBottomSheet(submitAction, dismissAction).show(fragmentManager, TAG)
-        }
+    companion object {
+        val TAG = TokoChatConsentBottomSheet::class.simpleName
+        private const val DELAY = 200L
     }
 }

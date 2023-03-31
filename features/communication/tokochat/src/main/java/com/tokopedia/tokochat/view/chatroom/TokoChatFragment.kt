@@ -113,6 +113,7 @@ open class TokoChatFragment :
     private var readModeStartsAt: Long = 0
 
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
+    private val consentBottomSheet = TokoChatConsentBottomSheet()
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
         reminderTickerListener = this,
@@ -160,20 +161,7 @@ open class TokoChatFragment :
             when (it) {
                 is Success -> {
                     if (it.data) {
-                        TokoChatConsentBottomSheet.show(
-                            fragmentManager = childFragmentManager,
-                            submitAction = {
-                                // Show chat room
-                                loadChatRoomData()
-                            },
-                            dismissAction = {
-                                tokoChatAnalytics.clickDismissConsent(
-                                    role = TokoChatAnalyticsConstants.BUYER,
-                                    source = viewModel.source
-                                )
-                                activity?.finish()
-                            }
-                        )
+                        showConsentBottomSheet()
                     } else {
                         // Show chat room
                         loadChatRoomData()
@@ -1102,12 +1090,30 @@ open class TokoChatFragment :
         )
     }
 
-    protected open fun showUnavailableBottomSheet() {
+    private fun showUnavailableBottomSheet() {
         if (unavailableBottomSheet.isVisible) return
         unavailableBottomSheet.setListener(buttonAction = {
             activity?.finish()
         })
         unavailableBottomSheet.show(childFragmentManager)
+    }
+
+    private fun showConsentBottomSheet() {
+        if (consentBottomSheet.isVisible) return
+        consentBottomSheet.setConsentListener(
+            submitAction = {
+                // Show chat room
+                loadChatRoomData()
+            },
+            dismissAction = {
+                tokoChatAnalytics.clickDismissConsent(
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+                activity?.finish()
+            }
+        )
+        consentBottomSheet.show(childFragmentManager, TokoChatConsentBottomSheet.TAG)
     }
 
     private fun showLongMessageBottomSheet(element: TokoChatMessageBubbleUiModel) {
