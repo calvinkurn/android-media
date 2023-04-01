@@ -95,6 +95,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return ConfigurationUiModel(
             streamAllowed = true,
             shortVideoAllowed = true,
+            hasContent = true,
             channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(

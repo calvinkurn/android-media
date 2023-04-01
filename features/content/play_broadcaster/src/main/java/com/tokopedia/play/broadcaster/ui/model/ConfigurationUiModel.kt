@@ -12,6 +12,7 @@ import java.util.*
 data class ConfigurationUiModel(
     val streamAllowed: Boolean,
     val shortVideoAllowed: Boolean,
+    val hasContent: Boolean,
     val channelId: String,
     val channelStatus: ChannelStatus,
     val durationConfig: DurationConfigUiModel,

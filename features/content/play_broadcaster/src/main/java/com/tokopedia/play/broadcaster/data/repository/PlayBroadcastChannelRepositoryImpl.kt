@@ -63,7 +63,8 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             .copy(
                 streamAllowed = response.authorConfig.streamAllowed,
                 shortVideoAllowed = response.authorConfig.shortVideoAllowed,
-                tnc = response.authorConfig.tnc
+                hasContent = response.authorConfig.hasContent,
+                tnc = response.authorConfig.tnc,
             )
         )
     }

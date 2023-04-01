@@ -204,9 +204,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private var isLiveStreamEnded = false
 
-    private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
-        PinnedMessageUiModel.Empty()
-    )
+    private val _pinnedMessage = MutableStateFlow(PinnedMessageUiModel.Empty())
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
@@ -257,7 +255,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayChannelUiState(
                 streamAllowed = it.streamAllowed,
                 shortVideoAllowed = it.shortVideoAllowed,
-                tnc = it.tnc
+                hasContent = it.hasContent,
+                tnc = it.tnc,
             )
         }
 

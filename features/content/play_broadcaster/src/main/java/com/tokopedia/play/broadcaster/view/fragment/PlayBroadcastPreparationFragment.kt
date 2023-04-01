@@ -239,7 +239,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return parentViewModel.productSectionList
                     }
 
@@ -578,8 +577,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
-                // TODO un-comment later
-//                viewModel.setNotFirstSwitchAccount()
+                viewModel.setNotFirstSwitchAccount()
             }
         }
 
@@ -678,6 +676,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderShortsEntryPoint(prevState?.channel, state.channel)
+                renderPerformanceDashboardEntryPoint(prevState?.channel, state.channel)
             }
         }
     }
@@ -788,8 +787,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             TYPE_DASHBOARD -> {
                 // TODO direct to performance dashboard page
-                //tokopedia://webview?url=https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil
-                val url = "https://tokopedia.com/play/live"
+                val url = "https://staging.tokopedia.com/play/live"
                 val applink = "tokopedia://webview?pull_to_refresh=true&url=$url"
                 RouteManager.route(requireContext(), applink)
             }
@@ -882,16 +880,31 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
                 )
             )
+        } else {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.RemoveBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                )
+            )
+        }
+    }
+
+    private fun renderPerformanceDashboardEntryPoint(
+        prev: PlayChannelUiState?,
+        curr: PlayChannelUiState,
+    ) {
+        if (prev?.hasContent == curr.hasContent) return
+
+        if (curr.hasContent) {
             parentViewModel.submitAction(
                 PlayBroadcastAction.AddBannerPreparation(
                     PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(requireContext())
                 )
             )
-            analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
         } else {
             parentViewModel.submitAction(
                 PlayBroadcastAction.RemoveBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                    PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(requireContext())
                 )
             )
         }

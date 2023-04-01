@@ -64,6 +64,7 @@ class GetConfigurationUseCase @Inject constructor(
                 streamAllowed
                 shortVideoAllowed
                 isBanned
+                hasContent
                 config
                 tnc {
                   description
