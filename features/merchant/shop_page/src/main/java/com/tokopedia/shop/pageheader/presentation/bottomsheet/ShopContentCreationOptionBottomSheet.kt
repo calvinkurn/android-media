@@ -59,6 +59,7 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
          */
         binding.icShorts.setImage(IconUnify.SHORT_VIDEO)
     }
+
     private fun setupListener() {
         binding.llShorts.setOnClickListener {
             mListener?.onShortsCreationClicked()
