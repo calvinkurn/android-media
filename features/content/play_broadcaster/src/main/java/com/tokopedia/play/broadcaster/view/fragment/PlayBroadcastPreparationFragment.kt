@@ -876,7 +876,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     ) {
         if (prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if (curr.shortVideoAllowed) {
+        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
             val coachMark = setupCoachMarkShortsEntryPoint()
             if (coachMark != null) setupCoachMark(coachMark)
 
