@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.shop.databinding.BottomSheetShopContentCreationOptionBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -30,6 +31,7 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         setupListener()
     }
 
@@ -50,6 +52,13 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
     }
 
+    private fun setupView() {
+        /**
+         * Need to set SHORT_VIDEO programatically for now
+         * because SHORT_VIDEO hasn't registered in IconUnify values.xml yet
+         */
+        binding.icShorts.setImage(IconUnify.SHORT_VIDEO)
+    }
     private fun setupListener() {
         binding.llShorts.setOnClickListener {
             mListener?.onShortsCreationClicked()

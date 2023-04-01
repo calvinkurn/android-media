@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -87,7 +88,7 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel))
+        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
     }
 
     private fun setupTextContentSgcWidget(dataModel: ShopPageHeaderDataModel) {
