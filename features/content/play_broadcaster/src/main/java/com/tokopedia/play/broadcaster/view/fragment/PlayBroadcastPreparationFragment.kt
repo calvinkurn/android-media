@@ -31,6 +31,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -139,6 +140,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private var earlyLiveStreamDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
+    private var isShortsEntryPointCoachMarkShown = false
+    private var isPerformanceDashboardEntryPointCoachMarkShown = false
+    private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
@@ -197,7 +201,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
-        setupCoachMark()
 
         binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
@@ -434,6 +437,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             })
         }
         snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
+
+        if(parentViewModel.isAllowChangeAccount && coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)) {
+            val coachMarkSwitchAccount = CoachMark2Item(
+                anchorView = binding.toolbarContentCommon,
+                title = getString(contentCommonR.string.sa_coach_mark_title),
+                description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
+                position = CoachMark2.POSITION_BOTTOM,
+            )
+
+            coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
+
+            setupCoachMark(coachMarkSwitchAccount)
+        }
     }
 
     private fun setupInsets() {
@@ -529,72 +545,58 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeBannerPreparation()
     }
 
-    private fun setupCoachMark() {
+    private fun setupCoachMarkShortsEntryPoint(): CoachMark2Item? {
+        isShortsEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        if (!isShortsEntryPointCoachMarkShown) return null
 
-        var isShortsEntryPointCoachMarkShown = false
+        val coachMarkShortsEntryPoint = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+            description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
 
+        coachMarkSharedPref.setHasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        return coachMarkShortsEntryPoint
+    }
+
+    private fun setupCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
+        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPoint, userSession.userId)
+        if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
+
+        val coachMarkPerformanceDashboard = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
+            description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+
+        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPoint, userSession.userId)
+        return coachMarkPerformanceDashboard
+    }
+
+    private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
         fun onDismissCoachMark() {
-            if(isShortsEntryPointCoachMarkShown)
-                analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
-
+            if (isShortsEntryPointCoachMarkShown) {
+                analytic.clickCloseShortsEntryPointCoachMark(
+                    parentViewModel.authorId,
+                    parentViewModel.authorType
+                )
+            }
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMarkItems.contains(coachMarkItem)) return
 
-        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        coachMarkItems.add(coachMarkItem)
 
-            if(isShortsEntryPointCoachMarkShown) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.rvBannerPreparation,
-                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
-                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                // TODO un-comment later
-//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-            }
+        if (coachMark == null) coachMark = CoachMark2(requireContext())
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
-            // TODO condition for coach mark entry point performance
-            add(
-                CoachMark2Item(
-                    anchorView = binding.rvBannerPreparation,
-                    title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
-                    description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
-                    position = CoachMark2.POSITION_BOTTOM,
-                )
-            )
-
-            if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.toolbarContentCommon,
-                        title = getString(contentCommonR.string.sa_coach_mark_title),
-                        description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                viewModel.setNotFirstSwitchAccount()
-            }
-        }
-
-        if(coachMarkItems.isNotEmpty()) {
-
-            if(coachMark == null) {
-                coachMark = CoachMark2(requireContext())
-            }
-
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-            if(coachMarkItems.size == 1) {
-                coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-            else {
-                coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
+        if (coachMarkItems.size == 1) {
+            coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+        } else {
+            coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
     }
 
@@ -781,12 +783,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when (data.type) {
             TYPE_SHORTS -> {
                 analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                coachMarkSharedPref.setHasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
                 val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
             }
             TYPE_DASHBOARD -> {
-                // TODO direct to performance dashboard page
+                coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPoint, userSession.userId)
                 val url = "https://staging.tokopedia.com/play/live"
                 val applink = "tokopedia://webview?pull_to_refresh=true&url=$url"
                 RouteManager.route(requireContext(), applink)
@@ -874,7 +876,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     ) {
         if (prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+        if (curr.shortVideoAllowed) {
+            val coachMark = setupCoachMarkShortsEntryPoint()
+            if (coachMark != null) setupCoachMark(coachMark)
+
             parentViewModel.submitAction(
                 PlayBroadcastAction.AddBannerPreparation(
                     PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
@@ -896,6 +901,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (prev?.hasContent == curr.hasContent) return
 
         if (curr.hasContent) {
+            val coachMark = setupCoachMarkPerformanceDashboardEntryPoint()
+            if (coachMark != null) setupCoachMark(coachMark)
+
             parentViewModel.submitAction(
                 PlayBroadcastAction.AddBannerPreparation(
                     PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(requireContext())

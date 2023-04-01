@@ -36,6 +36,8 @@ class ContentCoachMarkSharedPref @Inject constructor(
     }
 
     enum class Key(val sharedPrefKey: String) {
+        SwitchAccount("switch_account"),
+        PerformanceDashboardEntryPoint("performance_dashboard_entry_point"),
         PlayShortsEntryPoint("play_shorts_entry_point"),
         PlayShortsPreparation("play_shorts_preparation"),
         Unknown("")

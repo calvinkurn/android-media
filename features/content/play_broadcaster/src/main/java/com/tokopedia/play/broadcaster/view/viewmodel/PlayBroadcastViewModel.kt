@@ -246,9 +246,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val authorType: String
         get() = _selectedAccount.value.type
 
-    val isShortVideoAllowed: Boolean
-        get() = _configInfo.value?.shortVideoAllowed.orFalse()
-
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
