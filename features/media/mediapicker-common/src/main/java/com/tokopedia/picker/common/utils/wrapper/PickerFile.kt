@@ -64,6 +64,12 @@ class PickerFile constructor(
         fun String.asPickerFile(): PickerFile {
             return PickerFile(this)
         }
+
+        fun List<String?>.asPickerFile(): List<PickerFile?> {
+            return map {
+                it?.asPickerFile()
+            }
+        }
     }
 
 }

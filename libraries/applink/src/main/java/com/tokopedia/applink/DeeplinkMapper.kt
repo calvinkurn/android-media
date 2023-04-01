@@ -367,6 +367,8 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_EDU_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_SSA_SHOP_LIST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
         DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
@@ -491,6 +493,7 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
         DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
         DLP.matchPattern(ApplinkConst.SHARE_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink) },
+        DLP.matchPattern(ApplinkConst.DilayaniTokopedia.HOME) { _, _, _, _ -> ApplinkConstInternalDilayaniTokopedia.HOME },
 
         DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
         DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),
@@ -776,7 +779,7 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
                 DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
-                //For Tokomember applinks with params
+                // For Tokomember applinks with params
                 trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(trimmedDeeplink)
                 else -> ""
             }

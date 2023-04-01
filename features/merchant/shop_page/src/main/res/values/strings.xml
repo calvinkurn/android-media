@@ -122,9 +122,7 @@
     <string name="shop_page_play_widget_sgc_video_deleted">Video telah dihapus.</string>
     <string name="shop_page_play_widget_sgc_video_saved_success">Yay, video berhasil disimpan!</string>
     <string name="shop_page_play_widget_sgc_video_saved_fail">Ada sedikit kendala pada sistem.</string>
-    <string name="shop_page_play_widget_sgc_delete_video">Hapus video</string>
     <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
-    <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_page_play_widget_sgc_performance_dashboard">Pelajari Wawasan Video</string>
@@ -162,6 +160,7 @@
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
+    <string name="shop_page_share_text">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n</string>
     <string name="label_close">Tutup</string>
     <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
