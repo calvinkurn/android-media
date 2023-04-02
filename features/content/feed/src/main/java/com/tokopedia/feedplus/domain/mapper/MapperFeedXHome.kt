@@ -116,6 +116,18 @@ object MapperFeedHome {
             title = card.title,
             subtitle = card.subtitle,
             text = card.text,
+            cta = card.cta.let { cta ->
+                FeedCardCtaModel(
+                    text = cta.text,
+                    subtitle = cta.subtitle,
+                    color = cta.color,
+                    colorGradient = cta.colorGradient.map { color ->
+                        FeedCardCtaGradientModel(
+                            color = color.color, position = color.position
+                        )
+                    }
+                )
+            },
             applink = card.applink,
             weblink = card.weblink,
             actionButtonLabel = card.actionButtonLabel,

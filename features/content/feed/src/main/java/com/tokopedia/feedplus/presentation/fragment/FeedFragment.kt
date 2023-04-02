@@ -456,8 +456,7 @@ class FeedFragment :
                     }
                 }
                 is FeedResult.Failure -> {
-                    val errorMessage =
-                        it.error.message
+                    val errorMessage = it.error.message
                     if (errorMessage != null) {
                         productBottomSheet?.showToasterOnBottomSheetOnSuccessFollow(
                             errorMessage,
@@ -504,14 +503,16 @@ class FeedFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    if (position > ZERO) {
-                        adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
-                    }
-                    if (position < (adapter?.itemCount ?: 0)) {
-                        adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
-                    }
+                    view?.post {
+                        if (position > ZERO) {
+                            adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
+                        }
+                        if (position < (adapter?.itemCount ?: 0)) {
+                            adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                        }
 
-                    adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                    }
                 }
             })
         }
@@ -585,10 +586,10 @@ class FeedFragment :
         }
     }
 
-    override fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int) {
-        val feedLikeAction = FeedLikeAction.getLikeAction(model.like.isLiked)
+    override fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int) {
+        val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
         feedPostViewModel.likeContent(
-            contentId = model.id,
+            contentId = id,
             action = feedLikeAction,
             rowNumber = rowNumber
         )

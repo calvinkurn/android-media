@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 
 /**
@@ -14,6 +15,7 @@ data class FeedCardVideoContentModel(
     val title: String,
     val subtitle: String,
     val text: String,
+    val cta: FeedCardCtaModel,
     val applink: String,
     val weblink: String,
     val actionButtonLabel: String,
@@ -36,5 +38,9 @@ data class FeedCardVideoContentModel(
     val publishedAt: String,
     val playChannelId: String,
 ) : Visitable<FeedAdapterTypeFactory> {
+
+    val isTypeProductHighlight: Boolean
+        get() = typename == FeedXCard.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
+
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 }

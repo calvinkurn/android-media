@@ -51,9 +51,7 @@ class FeedPostImageViewHolder(
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
-    private val likeAnimationView = FeedLikeAnimationComponent(
-        binding.root
-    )
+    private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
 
     init {
@@ -89,7 +87,11 @@ class FeedPostImageViewHolder(
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
                             if (element.like.isLiked.not()) {
-                                listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                                listener.onLikePostCLicked(
+                                    element.id,
+                                    element.like.isLiked,
+                                    absoluteAdapterPosition
+                                )
                             }
                             return true
                         }
@@ -111,7 +113,6 @@ class FeedPostImageViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
-                hideClearView()
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -126,17 +127,21 @@ class FeedPostImageViewHolder(
                     )
                 }
                 postLikeButton.likeButton.setOnClickListener {
-                    listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                    listener.onLikePostCLicked(
+                        element.id,
+                        element.like.isLiked,
+                        absoluteAdapterPosition
+                    )
                 }
 
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
                 }
 
-                rvFeedPostImageContent.setOnTouchListener { _, event ->
-                    postGestureDetector.onTouchEvent(event)
-                    true
-                }
+//                rvFeedPostImageContent.setOnTouchListener { _, event ->
+//                    postGestureDetector.onTouchEvent(event)
+//                    true
+//                }
             }
         }
     }
