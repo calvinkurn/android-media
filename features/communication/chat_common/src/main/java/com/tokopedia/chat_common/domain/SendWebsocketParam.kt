@@ -16,8 +16,11 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 object SendWebsocketParam {
 
     fun generateParamSendMessage(
-        messageId: String, sendMessage: String, startTime: String, toUid
-        : String
+        messageId: String,
+        sendMessage: String,
+        startTime: String,
+        toUid:
+            String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -35,7 +38,8 @@ object SendWebsocketParam {
         invoice: InvoiceViewModel,
         startTime: String,
         toUid: String,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): JsonObject {
         val attributes = JsonObject()
         attributes.addProperty("id", invoice.id.toLongOrZero())
@@ -60,7 +64,7 @@ object SendWebsocketParam {
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_INVOICE_SEND))
-        data.addProperty("source", "inbox")
+        data.addProperty("source", sourceReply)
         data.add("payload", payload)
 
         val json = JsonObject()
@@ -70,9 +74,8 @@ object SendWebsocketParam {
         return json
     }
 
-
     fun generateParamSendImage(messageId: String, path: String, startTime: String, toUid: String):
-            JsonObject {
+        JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
@@ -114,6 +117,4 @@ object SendWebsocketParam {
         json.add("data", data)
         return json
     }
-
-
 }

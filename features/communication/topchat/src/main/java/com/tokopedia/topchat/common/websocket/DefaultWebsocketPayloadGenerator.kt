@@ -55,7 +55,8 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         previewMsg: SendableUiModel,
         attachments: List<SendablePreview>,
         userLocationInfo: LocalCacheModel?,
-        referredMsg: ParentReply?
+        referredMsg: ParentReply?,
+        sourceReply: String
     ): String {
         val startTime = SendableUiModel.generateStartTime()
         return TopChatWebSocketParam.generateParamSendMessage(
@@ -66,7 +67,8 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
             localId = previewMsg.localId,
             intention = intention,
             userLocationInfo = userLocationInfo,
-            referredMsg = referredMsg
+            referredMsg = referredMsg,
+            sourceReply = sourceReply
         )
     }
 
@@ -75,13 +77,15 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): String {
         return sendablePreview.generateMsgObj(
             roomMetaData,
             message,
             userLocationInfo,
-            localId
+            localId,
+            sourceReply
         ).toString()
     }
 
@@ -121,7 +125,8 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         roomMetaData: RoomMetaData,
         attachments: ArrayList<SendablePreview>,
         localId: String,
-        referredMsg: ParentReply?
+        referredMsg: ParentReply?,
+        sourceReply: String
     ): String {
         val startTime = SendableUiModel.generateStartTime()
         val contract = sticker.generateWebSocketPayload(
@@ -129,7 +134,8 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
             startTime = startTime,
             attachments = attachments,
             localId = localId,
-            referredMsg = referredMsg
+            referredMsg = referredMsg,
+            sourceReply = sourceReply
         )
         return CommonUtil.toJson(contract)
     }
@@ -138,13 +144,15 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         roomMetaData: RoomMetaData,
         filePath: String,
         imageUploadUiModel: ImageUploadUiModel,
-        isSecure: Boolean
+        isSecure: Boolean,
+        sourceReply: String
     ): String {
         return TopChatWebSocketParam.generateParamSendImage(
             roomMetaData.msgId,
             filePath,
             imageUploadUiModel,
-            isSecure
+            isSecure,
+            sourceReply
         )
     }
 }

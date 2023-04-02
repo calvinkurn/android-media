@@ -3170,7 +3170,8 @@ open class TopChatRoomFragment :
                     context = ctx,
                     image = image,
                     messageId = msgId,
-                    isSecure = isUploadImageSecure()
+                    isSecure = isUploadImageSecure(),
+                    sourceReply = webSocketViewModel.getSourceReply()
                 )
             }
         }

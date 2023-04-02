@@ -30,7 +30,8 @@ class InvoicePreviewUiModel(
     statusId,
     status,
     totalPriceAmount
-), SendablePreview {
+),
+    SendablePreview {
 
     fun enoughRequiredData(): Boolean {
         return !notEnoughRequiredData()
@@ -38,14 +39,14 @@ class InvoicePreviewUiModel(
 
     override fun notEnoughRequiredData(): Boolean {
         return id == INVALID_ID ||
-                invoiceCode.isEmpty() ||
-                productName.isEmpty() ||
-                date.isEmpty() ||
-                imageUrl.isEmpty() ||
-                invoiceUrl.isEmpty() ||
-                statusId == INVALID_STATUS_ID ||
-                status.isEmpty() ||
-                totalPriceAmount.isEmpty()
+            invoiceCode.isEmpty() ||
+            productName.isEmpty() ||
+            date.isEmpty() ||
+            imageUrl.isEmpty() ||
+            invoiceUrl.isEmpty() ||
+            statusId == INVALID_STATUS_ID ||
+            status.isEmpty() ||
+            totalPriceAmount.isEmpty()
     }
 
     override fun generatePreviewMessage(
@@ -76,14 +77,19 @@ class InvoicePreviewUiModel(
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): Any {
         val startTime = SendableUiModel.generateStartTime()
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
         return SendWebsocketParam.generateParamSendInvoiceAttachment(
-            msgId, this, startTime,
-            toUid, localId
+            msgId,
+            this,
+            startTime,
+            toUid,
+            localId,
+            sourceReply
         )
     }
 

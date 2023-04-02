@@ -46,7 +46,15 @@ class UploadImageViewModelTest : BaseTopChatViewModelTest() {
             val onSuccess = lambda<(String, ImageUploadUiModel, Boolean) -> Unit>()
             onSuccess.invoke("123", imageUpload, true)
         }
-        every { payloadGenerator.generateImageWsPayload(any(), any(), any(), any()) } returns wsPayload
+        every {
+            payloadGenerator.generateImageWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns wsPayload
 
         // When
         webSocketViewModel.startUploadImages(imageUpload, true)

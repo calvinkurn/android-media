@@ -201,6 +201,7 @@ abstract class BaseTopChatViewModelTest {
         )
 
         webSocketViewModel.isInTheMiddleOfThePage = false
+        webSocketViewModel.isFromBubble = false
     }
 
     protected fun onConnectWebsocket(listener: (WebSocketListener) -> Unit) {
