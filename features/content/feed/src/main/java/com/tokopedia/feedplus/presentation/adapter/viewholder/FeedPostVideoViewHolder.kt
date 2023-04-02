@@ -5,10 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
@@ -79,11 +81,48 @@ class FeedPostVideoViewHolder(
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
         element?.let {
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)) {
+                setLikeUnlike(element.like)
+            }
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE)) {
+                showClearView()
+            }
             if (payloads.contains(FEED_POST_SELECTED)) {
+                campaignView.startAnimation()
                 bindVideoPlayer(element)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
+                videoPlayer.stop()
+                campaignView.resetView()
+                hideClearView()
             }
+        }
+    }
+
+    private fun renderLikeView(
+        like: FeedLikeModel
+    ) {
+        val isLiked = like.isLiked
+        likeAnimationView.setEnabled(isEnabled = true)
+        smallLikeAnimationView.setEnabled(isEnabled = true)
+
+        likeAnimationView.setIsLiked(true)
+        binding.postLikeButton.likedText.text = like.countFmt
+        if (isLiked) {
+            likeAnimationView.show()
+        } else {
+            likeAnimationView.hide()
+        }
+    }
+
+    private fun setLikeUnlike(like: FeedLikeModel) {
+        val isLiked = like.isLiked
+        renderLikeView(like)
+        if (isLiked) {
+            likeAnimationView.playLikeAnimation()
+            smallLikeAnimationView.playLikeAnimation()
+        } else {
+            smallLikeAnimationView.playUnLikeAnimation()
         }
     }
 
@@ -146,11 +185,8 @@ class FeedPostVideoViewHolder(
                 playerFeedVideo.player = videoPlayer.getExoPlayer()
                 playerControl.player = videoPlayer.getExoPlayer()
                 playerFeedVideo.videoSurfaceView?.setOnClickListener {
-                    if (playerFeedVideo.player?.isPlaying == true) {
-                        videoPlayer.pause()
-                    } else {
-                        videoPlayer.resume()
-                    }
+                    videoPlayer.getExoPlayer().playWhenReady =
+                        !videoPlayer.getExoPlayer().playWhenReady
                 }
                 element.media[0].let {
                     videoPlayer.start(it.mediaUrl, false)

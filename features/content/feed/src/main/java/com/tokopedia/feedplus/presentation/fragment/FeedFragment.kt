@@ -505,16 +505,14 @@ class FeedFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    view?.post {
-                        if (position > ZERO) {
-                            adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
-                        }
-                        if (position < (adapter?.itemCount ?: 0)) {
-                            adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
-                        }
-
-                        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                    if (position > ZERO) {
+                        adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
                     }
+                    if (position < (adapter?.itemCount ?: 0)) {
+                        adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                    }
+
+                    adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
                 }
             })
         }

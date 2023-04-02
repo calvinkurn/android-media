@@ -83,7 +83,7 @@ class FeedPostImageViewHolder(
 
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let { data ->
-            binding.apply {
+            with(binding) {
                 val postGestureDetector = GestureDetector(
                     root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
@@ -153,12 +153,12 @@ class FeedPostImageViewHolder(
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
-        if (element == null) {
-            return
+        element?.let {
+            if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
+                setLikeUnlike(it.like)
+            }
         }
-        if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
-            setLikeUnlike(element.like)
-        }
+
         if (payloads.contains(FEED_POST_CLEAR_MODE)) {
             showClearView()
         }
