@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -26,7 +27,10 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedAdapterTypeFactory(private val context: FeedFragment) : BaseAdapterTypeFactory() {
+class FeedAdapterTypeFactory(
+    private val context: FeedFragment,
+    private val parentToBeDisabled: ViewParent?,
+) : BaseAdapterTypeFactory() {
 
     private val feedListener: FeedListener
 
@@ -48,6 +52,7 @@ class FeedAdapterTypeFactory(private val context: FeedFragment) : BaseAdapterTyp
                     parent as ViewGroup,
                     false
                 ),
+                parentToBeDisabled,
                 feedListener
             )
             FeedPostVideoViewHolder.LAYOUT -> FeedPostVideoViewHolder(

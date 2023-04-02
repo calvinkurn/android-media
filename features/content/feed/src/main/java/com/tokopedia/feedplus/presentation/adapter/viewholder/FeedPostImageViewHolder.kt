@@ -3,10 +3,11 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -39,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 @SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
+    private val parentToBeDisabled: ViewParent?,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
@@ -51,7 +53,9 @@ class FeedPostImageViewHolder(
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
-    private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
+    private val likeAnimationView = FeedLikeAnimationComponent(
+        binding.root
+    )
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
 
     init {
@@ -66,13 +70,15 @@ class FeedPostImageViewHolder(
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
-            LinearSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
+            PagerSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
             rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     indicatorFeedContent.setCurrentIndicator(layoutManager.findFirstVisibleItemPosition())
                 }
             })
         }
+
+        binding.scrollableHost.setTargetParent(parentToBeDisabled)
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
@@ -138,10 +144,9 @@ class FeedPostImageViewHolder(
                     hideClearView()
                 }
 
-//                rvFeedPostImageContent.setOnTouchListener { _, event ->
-//                    postGestureDetector.onTouchEvent(event)
-//                    true
-//                }
+                rvFeedPostImageContent.setOnTouchListener { _, event ->
+                    postGestureDetector.onTouchEvent(event)
+                }
             }
         }
     }

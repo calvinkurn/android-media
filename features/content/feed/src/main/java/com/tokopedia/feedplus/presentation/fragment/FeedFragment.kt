@@ -488,7 +488,9 @@ class FeedFragment :
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
-            adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
+            adapter = FeedPostAdapter(
+                FeedAdapterTypeFactory(this, binding.rvFeedPost)
+            )
             if (adapter!!.itemCount == 0) {
                 adapter?.showLoading()
             }
