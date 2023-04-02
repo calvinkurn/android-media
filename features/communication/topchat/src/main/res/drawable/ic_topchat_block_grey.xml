@@ -1,3 +1,0 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="16dp" android:height="16dp" android:viewportWidth="16" android:viewportHeight="16">
-    <path android:fillColor="@color/Unify_N200" android:pathData="M8 0C3.594 0 0 3.594 0 8c0 4.406 3.594 8 8 8 4.406 0 8-3.594 8-8 0-4.406-3.594-8-8-8zm0 2c1.289 0 2.493 0.408 3.469 1.094l-8.375 8.375C2.408 10.493 2 9.289 2 8c0-3.326 2.674-6 6-6zm4.906 2.531C13.592 5.507 14 6.711 14 8c0 3.326-2.674 6-6 6-1.289 0-2.493-0.408-3.469-1.094l8.375-8.375z"/>
-</vector>

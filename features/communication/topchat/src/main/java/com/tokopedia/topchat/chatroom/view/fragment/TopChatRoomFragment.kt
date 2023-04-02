@@ -134,6 +134,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
@@ -232,7 +234,9 @@ open class TopChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    ChatTextAreaTabLayoutListener {
+    ChatTextAreaTabLayoutListener,
+    BannedChatMessageViewHolder.TopChatMessageCensorListener
+{
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1153,7 +1157,7 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, session
+            this, this, this, session
         )
     }
 
@@ -3608,6 +3612,11 @@ open class TopChatRoomFragment :
             getUserSession().userId,
             shopId
         )
+    }
+
+    override fun onClickCheckGuide() {
+        view?.hideKeyboard()
+        TopChatGuideChatBottomSheet().show(childFragmentManager)
     }
 
     companion object {
