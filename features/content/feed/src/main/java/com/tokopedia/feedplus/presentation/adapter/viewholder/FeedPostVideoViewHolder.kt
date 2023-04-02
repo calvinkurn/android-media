@@ -50,11 +50,11 @@ class FeedPostVideoViewHolder(
     override fun bind(element: FeedCardVideoContentModel?) {
         element?.let { data ->
             with(binding) {
-                bindAuthor(element)
-                bindCaption(element)
-                bindProductTag(element)
+                bindAuthor(data)
+                bindCaption(data)
+                bindProductTag(data)
                 bindLike(data)
-                bindAsgcTags(element)
+                bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
                 menuButton.setOnClickListener {

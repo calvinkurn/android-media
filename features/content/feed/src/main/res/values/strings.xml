@@ -128,4 +128,6 @@ dari Feed.</string>
     <string name="feed_uploading_title">Diproses</string>
     <string name="feed_upload_failed_title">Gagal Upload</string>
 
+    <string name="feed_live_wave_label">Ketuk untuk nonton LIVE</string>
+
 </resources>
