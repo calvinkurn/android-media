@@ -21,16 +21,14 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Ke
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
-import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.animateGone
@@ -39,14 +37,10 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
@@ -55,6 +49,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -67,7 +62,9 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val idleManager: PlayShortsIdleManager,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
     private val analytic: PlayShortsAnalytic,
-) : PlayShortsBaseFragment() {
+) : PlayShortsBaseFragment(),
+    PlayBroadcastSetupTitleBottomSheet.Listener,
+    PlayBroadcastSetupCoverBottomSheet.Listener {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
 
@@ -172,18 +169,18 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
-                    override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        viewModel.submitAction(PlayShortsAction.SetCover(cover.croppedCover))
-                    }
-                })
-                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
-                        return viewModel.productSectionList.flatMap { it.products }
+            is PlayBroadcastSetupTitleBottomSheet -> {
+                childFragment.setupListener(this)
+                childFragment.setupData(viewModel.title, viewModel.maxTitleCharacter)
+            }
+            is PlayBroadcastSetupCoverBottomSheet -> {
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
                     }
 
-                    override fun getSelectedAccount(): ContentAccountUiModel {
+                    override fun getContentAccount(): ContentAccountUiModel {
                         return viewModel.selectedAccount
                     }
 
@@ -191,10 +188,19 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.shortsId
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Shorts
+                    override fun getChannelTitle(): String {
+                        return viewModel.title
                     }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return viewModel.mDataStore
+                    }
+
                 })
+
+                val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
+                childFragment.needToShowCoachMark(isShowCoachMark)
+                if (isShowCoachMark) viewModel.submitAction(PlayShortsAction.SetShowSetupCoverCoachMark)
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(viewModel.accountList)
@@ -224,21 +230,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return when {
-            binding.formTitle.visibility == View.VISIBLE -> {
-                hideKeyboard()
-                viewModel.submitAction(PlayShortsAction.CloseTitleForm)
-                true
-            }
-            binding.formCover.visibility == View.VISIBLE -> {
-                viewModel.submitAction(PlayShortsAction.CloseCoverForm)
-                true
-            }
-            else -> {
-                showExitConfirmationDialog()
-                true
-            }
-        }
+        showExitConfirmationDialog()
+        return true
     }
 
     private fun setupView() {
@@ -275,54 +268,21 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
-                        analytic.clickMenuTitle(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
+                        analytic.clickMenuTitle(viewModel.selectedAccount)
+                        openSetupTitleBottomSheet()
                     }
                     DynamicPreparationMenu.PRODUCT -> {
                         analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
                     DynamicPreparationMenu.COVER -> {
-                        analytic.clickMenuCover(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
+                        analytic.clickMenuCover(viewModel.selectedAccount)
+                        openSetupCoverBottomSheet()
                     }
                 }
             }
-
-            formTitle.setListener(object : TitleFormView.Listener {
-                override fun onClearTitle() {
-                    analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
-                }
-
-                override fun onClickTextField() {
-                    analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
-                }
-
-                override fun onCloseTitleForm(view: TitleFormView) {
-                    analytic.clickBackOnTitleForm(viewModel.selectedAccount)
-                    hideKeyboard()
-                    viewModel.submitAction(PlayShortsAction.CloseTitleForm)
-                }
-
-                override fun onTitleSaved(view: TitleFormView, title: String) {
-                    analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
-                    viewModel.submitAction(PlayShortsAction.UploadTitle(title))
-                }
-            })
-
-            formCover.setListener(object : CoverFormView.Listener {
-                override fun onCloseCoverForm() {
-                    analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
-
-                    viewModel.submitAction(PlayShortsAction.CloseCoverForm)
-                }
-
-                override fun onClickCoverPreview(isEditCover: Boolean) {
-                    analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
-
-                    openCoverSetupFragment()
-                }
-            })
 
             btnNext.setOnClickListener {
                 analytic.clickNextOnPreparationPage(viewModel.selectedAccount)
@@ -335,11 +295,10 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderTitleForm(it.prevValue, it.value)
                 renderMedia(it.prevValue, it.value)
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
-                renderTitleForm(it.prevValue, it.value)
-                renderCoverForm(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
             }
         }
@@ -348,14 +307,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayShortsUiEvent.ErrorUploadTitle -> {
-                        toaster.showError(
-                            event.throwable,
-                            duration = Toaster.LENGTH_LONG,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = {
-                                event.onRetry()
-                            }
-                        )
+                        getSetupTitleBottomSheet().failSubmit(event.throwable.message)
                     }
                     is PlayShortsUiEvent.ErrorSwitchAccount -> {
                         toaster.showError(
@@ -378,6 +330,18 @@ class PlayShortsPreparationFragment @Inject constructor(
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
                 }
             }
+        }
+    }
+
+    private fun renderTitleForm(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.titleForm == curr.titleForm) return
+
+        if (curr.titleForm.state == PlayShortsTitleFormUiState.State.Unknown
+            && getSetupTitleBottomSheet().isAdded && getSetupTitleBottomSheet().isVisible) {
+            getSetupTitleBottomSheet().dismiss()
         }
     }
 
@@ -483,61 +447,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.preparationMenu.submitMenu(curr.menuList)
     }
 
-    private fun renderTitleForm(
-        prev: PlayShortsUiState?,
-        curr: PlayShortsUiState
-    ) {
-        if (prev?.titleForm == curr.titleForm) return
-
-        when (curr.titleForm.state) {
-            PlayShortsTitleFormUiState.State.Unknown -> {
-                showTitleForm(false)
-
-                binding.formTitle.setLoading(false)
-            }
-            PlayShortsTitleFormUiState.State.Editing -> {
-                showTitleForm(true)
-
-                if (prev?.titleForm?.state == PlayShortsTitleFormUiState.State.Unknown) {
-                    binding.formTitle.setTitle(viewModel.title)
-                }
-                binding.formTitle.setLoading(false)
-                binding.formTitle.setMaxCharacter(viewModel.maxTitleCharacter)
-                binding.formTitle.setPlaceholder(getString(R.string.play_shorts_title_form_hint))
-            }
-            PlayShortsTitleFormUiState.State.Loading -> {
-                hideKeyboard()
-                binding.formTitle.setLoading(true)
-            }
-        }
-    }
-
-    private fun renderCoverForm(
-        prev: PlayShortsUiState?,
-        curr: PlayShortsUiState
-    ) {
-        if (prev?.coverForm == curr.coverForm) return
-
-        when (curr.coverForm.state) {
-            PlayShortsCoverFormUiState.State.Unknown -> {
-                showCoverForm(false)
-            }
-            PlayShortsCoverFormUiState.State.Editing -> {
-                showCoverForm(true)
-
-                binding.formCover.setTitle(viewModel.title)
-                binding.formCover.setAuthorName(viewModel.selectedAccount.name)
-
-                val coverUri = curr.coverForm.coverUri
-                if (coverUri.isNotEmpty()) {
-                    binding.formCover.setCover(coverUri)
-                } else {
-                    binding.formCover.setInitialCover()
-                }
-            }
-        }
-    }
-
     private fun renderNextButton(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
@@ -545,34 +454,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (prev?.menuList == curr.menuList) return
 
         binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
-    }
-
-    private fun showMainComponent(isShow: Boolean) {
-        binding.groupPreparationMain.showWithCondition(isShow)
-
-        if (isShow) {
-            idleManager.startIdleTimer(viewLifecycleOwner.lifecycleScope)
-        } else {
-            idleManager.forceStandByMode()
-        }
-    }
-
-    private fun showTitleForm(isShow: Boolean) {
-        showMainComponent(!isShow)
-        binding.formTitle.showWithCondition(isShow)
-
-        if(isShow) {
-            analytic.openScreenTitleForm(viewModel.selectedAccount)
-        }
-    }
-
-    private fun showCoverForm(isShow: Boolean) {
-        showMainComponent(!isShow)
-        binding.formCover.showWithCondition(isShow)
-
-        if(isShow) {
-            analytic.openScreenCoverForm(viewModel.selectedAccount)
-        }
     }
 
     private fun showExitConfirmationDialog() {
@@ -675,21 +556,85 @@ class PlayShortsPreparationFragment @Inject constructor(
             .commit()
     }
 
-    private fun openCoverSetupFragment() {
-        val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
-        setupFragment.show(childFragmentManager)
+    private fun openSetupTitleBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment =
+            childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
+        getSetupTitleBottomSheet().show(childFragmentManager)
+    }
+
+    private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    private fun openSetupCoverBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(
+            PlayBroadcastSetupCoverBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
+    }
+
+    private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    override fun submitTitle(title: String) {
+        analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
+        viewModel.submitAction(PlayShortsAction.UploadTitle(title))
+    }
+
+    override fun onTitleFormOpen() {
+        analytic.openScreenTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onBackPressedTitleForm() {
+        analytic.clickBackOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormClicked() {
+        analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormCleared() {
+        analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onUploadCoverSuccess() {
+        viewModel.submitAction(PlayShortsAction.UpdateCover)
+    }
+
+    override fun onOpenCoverForm() {
+        analytic.openScreenCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onCloseCoverForm() {
+        analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onClickSelectCoverOnCoverForm() {
+        analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun dismissSetupCover(source: Int) {
+        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+
+        if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED && source != PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED) {
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
+        } else if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE && source != PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE) {
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
+        }
+        viewModel.submitAction(PlayShortsAction.SetCoverUploadedSource(source))
     }
 
     companion object {
         private const val TAG = "PlayShortsPreparationFragment"
+        private const val PAGE_NAME = "shorts"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): PlayShortsPreparationFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(PlayShortsPreparationFragment.TAG) as? PlayShortsPreparationFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayShortsPreparationFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayShortsPreparationFragment::class.java.name

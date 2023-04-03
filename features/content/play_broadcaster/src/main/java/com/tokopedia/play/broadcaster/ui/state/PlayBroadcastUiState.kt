@@ -1,9 +1,10 @@
 package com.tokopedia.play.broadcaster.ui.state
 
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
-import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
@@ -11,7 +12,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences

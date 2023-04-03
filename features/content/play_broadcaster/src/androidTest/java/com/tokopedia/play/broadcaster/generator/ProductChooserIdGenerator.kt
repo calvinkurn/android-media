@@ -101,7 +101,6 @@ class ProductChooserIdGenerator {
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
-    private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {

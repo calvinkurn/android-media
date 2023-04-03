@@ -20,7 +20,6 @@ sealed interface PlayBroadcastAction {
     data class SetPinnedMessage(val message: String) : PlayBroadcastAction
     object CancelEditPinnedMessage : PlayBroadcastAction
 
-    data class SetCover(val cover: PlayCoverUiModel) : PlayBroadcastAction
     data class SetProduct(val productTagSectionList: List<ProductTagSectionUiModel>) :
         PlayBroadcastAction
 
@@ -28,9 +27,7 @@ sealed interface PlayBroadcastAction {
     object DeleteSchedule : PlayBroadcastAction
     object SuccessOnBoardingUGC: PlayBroadcastAction
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
-    data class SwitchAccount(val needLoading: Boolean = true): PlayBroadcastAction
-
-    object ExitLive : PlayBroadcastAction
+    data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
@@ -69,6 +66,13 @@ sealed interface PlayBroadcastAction {
     data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
+
+    data class SetCoverUploadedSource(
+        val source: Int
+    ) : PlayBroadcastAction
+
+    object SetShowSetupCoverCoachMark: PlayBroadcastAction
+    object ResetUploadState: PlayBroadcastAction
 
     data class AddBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
     data class RemoveBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
