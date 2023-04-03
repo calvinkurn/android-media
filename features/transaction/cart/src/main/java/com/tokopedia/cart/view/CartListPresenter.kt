@@ -1775,7 +1775,6 @@ class CartListPresenter @Inject constructor(
 //            AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
 //            addToCartRequestParams
 //        )
-        addToCartUseCase.setParams(addToCartRequestParams)
         launch {
             try {
                 addToCartUseCase.setParams(addToCartRequestParams)
