@@ -54,11 +54,11 @@ class InitializationTest : BaseCartTest() {
         )
 
         // When
-        cartListPresenter.setUpdateCartAndValidateUseLastResponse(lastUpdateAndValidateUseData)
+        cartListPresenter.setUpdateCartAndGetLastApplyLastResponse(lastUpdateAndValidateUseData)
 
         // Then
         Assert.assertEquals(
-            cartListPresenter.getUpdateCartAndValidateUseLastResponse(),
+            cartListPresenter.getUpdateCartAndGetLastApplyLastResponse(),
             lastUpdateAndValidateUseData
         )
     }
