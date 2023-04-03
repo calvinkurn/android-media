@@ -22,27 +22,27 @@ class CoverDataStoreImpl @Inject constructor(
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
 ) : CoverDataStore {
 
-    private val _selectedCoverLiveData = MutableStateFlow(PlayCoverUiModel.empty())
+    private val _selectedCover = MutableStateFlow(PlayCoverUiModel.empty())
 
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
-        return _selectedCoverLiveData.asLiveData()
+        return _selectedCover.asLiveData()
     }
 
     override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
-        return _selectedCoverLiveData
+        return _selectedCover
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {
-        return _selectedCoverLiveData.value
+        return _selectedCover.value
     }
 
     override fun setFullCover(cover: PlayCoverUiModel) {
-        _selectedCoverLiveData.value = cover
+        _selectedCover.value = cover
     }
 
     override fun updateCoverState(state: CoverSetupState) {
         val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
+        _selectedCover.value = currentCover.copy(
                 croppedCover = state,
                 state = SetupDataState.Draft
         )

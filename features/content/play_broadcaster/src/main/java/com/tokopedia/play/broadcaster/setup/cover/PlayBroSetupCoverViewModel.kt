@@ -164,12 +164,7 @@ class PlayBroSetupCoverViewModel @AssistedInject constructor(
             }
 
             setSelectedCover(
-                cover = PlayCoverUiModel(
-                    croppedCover = CoverSetupState.GeneratedCover(
-                        coverImage = "",
-                    ),
-                    state = SetupDataState.Draft,
-                )
+                cover = PlayCoverUiModel.empty()
             )
 
             uploadSelectedCover()

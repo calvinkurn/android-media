@@ -343,8 +343,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 DynamicPreparationMenu.Menu.Cover -> {
                     it.copy(
-                        isChecked = cover.croppedCover is CoverSetupState.Cropped.Uploaded &&
-                            (cover.croppedCover.coverImage.toString().isNotEmpty() || !cover.croppedCover.localImage?.toString().isNullOrEmpty()),
+                        isChecked = (
+                            (cover.croppedCover is CoverSetupState.Cropped.Uploaded && (cover.croppedCover.coverImage.toString().isNotEmpty() || !cover.croppedCover.localImage?.toString().isNullOrEmpty())) ||
+                            cover.croppedCover is CoverSetupState.GeneratedCover
+                        ),
                         isEnabled = isTitleMenuChecked,
                     )
                 }

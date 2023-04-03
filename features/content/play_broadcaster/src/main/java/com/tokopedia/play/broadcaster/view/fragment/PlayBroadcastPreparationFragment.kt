@@ -659,7 +659,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPreparationMenu(prevState?.menuList, state.menuList)
-                renderCover(prevState?.cover, state.cover)
                 renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
@@ -779,47 +778,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             )
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter)
         }
-    }
-
-    private fun renderCover(
-        prevState: PlayCoverUiModel?,
-        state: PlayCoverUiModel,
-    ) {
-        if(prevState == state) return
-
-        /** TODO: will revisit this */
-//        when (val croppedCover = state.croppedCover) {
-//            is CoverSetupState.Cropped.Uploaded -> {
-//                if (URLUtil.isValidUrl(croppedCover.coverImage.toString())) {
-//                    binding.formCover.setCover(croppedCover.coverImage.toString())
-//                } else if (URLUtil.isValidUrl(croppedCover.localImage?.toString())) {
-//                    binding.formCover.setCover(croppedCover.localImage.toString())
-//                } else {
-//                    binding.formCover.setInitialCover()
-//                }
-//            }
-//            is CoverSetupState.GeneratedCover -> {
-//                binding.viewPreparationMenu.isSetCoverChecked(croppedCover.coverImage.isNotEmpty())
-//            }
-//            else -> {
-//                binding.viewPreparationMenu.isSetCoverChecked(false)
-//            }
-//        }
-//
-//        when (val croppedCover = state.croppedCover) {
-//            is CoverSetupState.Cropped.Uploaded -> {
-//                if (URLUtil.isValidUrl(croppedCover.coverImage.toString())) {
-//                    binding.formCover.setCover(croppedCover.coverImage.toString())
-//                } else if (URLUtil.isValidUrl(croppedCover.localImage?.toString())) {
-//                    binding.formCover.setCover(croppedCover.localImage.toString())
-//                } else {
-//                    binding.formCover.setInitialCover()
-//                }
-//            }
-//            else -> {
-//                binding.formCover.setInitialCover()
-//            }
-//        }
     }
 
     private fun renderAccountInfo(
