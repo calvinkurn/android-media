@@ -1082,6 +1082,7 @@ class ShipmentFragment :
                         if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString) {
                             if (!ordersItem.codes.contains(courierItemData.selectedShipper.logPromoCode)) {
                                 ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
+                                ordersItem.boCode = courierItemData.selectedShipper.logPromoCode!!
                             }
                             ordersItem.shippingId = courierItemData.selectedShipper.shipperId
                             ordersItem.spId = courierItemData.selectedShipper.shipperProductId
@@ -1105,6 +1106,7 @@ class ShipmentFragment :
                                     !tmpShipmentCartItemModel.isFreeShippingPlus
                                 ) {
                                     order.codes.remove(tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode)
+                                    order.boCode = ""
                                 }
                             }
                         }
@@ -1392,6 +1394,7 @@ class ShipmentFragment :
                             for (order in validateUsePromoRequest.orders) {
                                 if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
                                     order.codes.remove(voucherOrdersItemUiModel.code)
+                                    order.boCode = ""
                                 }
                             }
                         }
@@ -2211,6 +2214,7 @@ class ShipmentFragment :
                             order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                         }
                         order.codes.add(promoCode)
+                        order.boCode = promoCode
                     }
                 }
             }
@@ -2222,6 +2226,7 @@ class ShipmentFragment :
                             !tmpShipmentCartItemModel.isFreeShippingPlus
                         ) {
                             order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            order.boCode = ""
                         }
                     }
                 }
@@ -2236,7 +2241,6 @@ class ShipmentFragment :
                     ordersItem.benefitClass = courierItemData.benefitClass
                     ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
                     ordersItem.etaText = courierItemData.etaText!!
-                    break
                 }
             }
             shipmentPresenter.doValidateUseLogisticPromo(
@@ -2364,12 +2368,14 @@ class ShipmentFragment :
                                 for (ordersItem in validateUsePromoRequest.orders) {
                                     if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString && ordersItem.codes.size > 0) {
                                         ordersItem.codes.remove(promoLogisticCode)
+                                        ordersItem.boCode = ""
                                     }
                                 }
                             } else {
                                 for (ordersItem in validateUsePromoRequest.orders) {
                                     if (ordersItem.codes.size > 0) {
                                         ordersItem.codes.remove(promoLogisticCode)
+                                        ordersItem.boCode = ""
                                     }
                                 }
                             }
@@ -3218,6 +3224,7 @@ class ShipmentFragment :
                         val redStateBBOCode =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
                         order.codes.remove(redStateBBOCode)
+                        order.boCode = ""
                     }
                 }
             }
@@ -3799,6 +3806,7 @@ class ShipmentFragment :
                         for (ordersItem in validateUsePromoRequest.orders) {
                             if (ordersItem.codes.size > 0) {
                                 ordersItem.codes.remove(promoLogisticCode)
+                                ordersItem.boCode = ""
                             }
                         }
                     }
@@ -3827,6 +3835,7 @@ class ShipmentFragment :
                                     order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                                 }
                                 order.codes.add(selectedShipper.logPromoCode!!)
+                                order.boCode = selectedShipper.logPromoCode!!
                             }
                         }
                     }
@@ -3838,6 +3847,7 @@ class ShipmentFragment :
                                     !tmpShipmentCartItemModel.isFreeShippingPlus
                                 ) {
                                     order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                    order.boCode = ""
                                 }
                             }
                         }
