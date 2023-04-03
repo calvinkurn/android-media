@@ -153,7 +153,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             (offsetY + (imageHeight / 2f))
         )
 
-        val rotatedBitmap = Bitmap.createBitmap(
+        val rotatedBitmap = mediaCreateBitmap(
             originalBitmap,
             0,
             0,
@@ -161,7 +161,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             originalHeight,
             matrix,
             true
-        )
+        ) ?: return null
 
         var normalizeX = offsetX
         var normalizeY = offsetY

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import android.view.View
@@ -258,9 +259,13 @@ fun showErrorGeneralToaster(context: Context?) {
     ).show()
 }
 
-fun mediaCreateBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int): Bitmap? {
+fun mediaCreateBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int, matrix: Matrix? = null, filter: Boolean? = null): Bitmap? {
     try {
-        return Bitmap.createBitmap(source, x, y, width, height)
+        return if (matrix != null && filter != null) {
+            Bitmap.createBitmap(source, x, y, width, height, matrix, filter)
+        } else {
+            Bitmap.createBitmap(source, x, y, width, height)
+        }
     } catch (e: Exception) {
         val sourceSize = Pair(source.width, source.height)
         val targetSize = Pair(width, height)
