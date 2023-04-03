@@ -17,6 +17,7 @@ import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -390,7 +391,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         if(coachMark != null) return
 
         val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
+            if(!coachMarkSharedPref.hasBeenShown(Key.PlayShortsPreparation, userSession.userId)) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.preparationMenu,
@@ -399,10 +400,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_TOP
                     )
                 )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+                coachMarkSharedPref.setHasBeenShown(Key.PlayShortsPreparation, userSession.userId)
             }
 
-            if(viewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
+            if(viewModel.isAllowChangeAccount && coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.toolbar,
@@ -411,7 +412,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM
                     )
                 )
-                viewModel.submitAction(PlayShortsAction.SetNotFirstSwitchAccount)
+                coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
             }
         }
 

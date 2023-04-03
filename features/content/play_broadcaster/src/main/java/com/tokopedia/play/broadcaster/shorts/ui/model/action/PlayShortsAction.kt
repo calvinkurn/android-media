@@ -53,7 +53,4 @@ sealed interface PlayShortsAction {
     ) : PlayShortsAction
 
     object ClickUploadVideo : PlayShortsAction
-
-    /** Others */
-    object SetNotFirstSwitchAccount : PlayShortsAction
 }
