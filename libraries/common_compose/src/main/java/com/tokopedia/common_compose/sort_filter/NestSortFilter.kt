@@ -65,18 +65,6 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     }
 }
 
-@Preview(name = "Sort Filter Item (Selected)")
-@Composable
-fun NestSortFilterItemSelectedPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", true, {}))
-}
-
-@Preview(name = "Sort Filter Item (Default)")
-@Composable
-fun NestSortFilterItemPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", false, {}))
-}
-
 @Composable
 private fun NestSortFilterItem(sortFilter: SortFilter) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
@@ -127,7 +115,10 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NestTypography(text = sortFilter.title, textStyle = NestTheme.typography.display2.copy(color = textColor))
+            NestTypography(
+                text = sortFilter.title,
+                textStyle = NestTheme.typography.display2.copy(color = textColor)
+            )
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
@@ -138,6 +129,18 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
     }
 }
 
+@Preview(name = "Sort Filter Item (Selected)")
+@Composable
+fun NestSortFilterItemSelectedPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", true, {}))
+}
+
+@Preview(name = "Sort Filter Item (Default)")
+@Composable
+fun NestSortFilterItemPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", false, {}))
+}
+
 @Preview(name = "Sort Filter")
 @Composable
 fun NestSortFilterPreview() {
@@ -145,5 +148,10 @@ fun NestSortFilterPreview() {
         SortFilter("Lokasi", true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
-    NestSortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
+    NestSortFilter(
+        modifier = Modifier,
+        items = items,
+        onClearFilter = {},
+        showClearFilterIcon = true
+    )
 }
