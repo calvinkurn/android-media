@@ -1,20 +1,47 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.show
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OnboardNonProgressiveBottomSheet(private val source: String = "", private val isAccountLinked: Boolean, private val isKtpTaken: Boolean) : BottomSheetUnify() {
+class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardNonProgressiveBinding>()
+
+    private var projectId = ""
+    private var source = ""
+    private var isAccountLinked = false
+    private var isKtpTaken = false
+    private var isSelfieTaken = false
+
+    private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        activity?.setResult(result.resultCode)
+        activity?.finish()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            projectId = it.getString(PROJECT_ID).orEmpty()
+            source = it.getString(SOURCE).orEmpty()
+            isAccountLinked = it.getBoolean(ACCOUNT_LINKED)
+            isKtpTaken = it.getBoolean(IS_KTP_TAKEN)
+            isSelfieTaken = it.getBoolean(IS_SELFIE_TAKEN)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +58,21 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
         setUpViewAccountLinking()
         setUpViewKtp()
         setUpViewSelfie()
+        initListener()
+    }
+
+    private fun initListener() {
+        binding?.btnSubmit?.setOnClickListener {
+            if (isAccountLinked) {
+                //TODO goto take picture or KTP
+            } else {
+                val parameter = GotoKycMainParam(
+                    projectId = projectId,
+                    sourcePage = source
+                )
+                gotoBridgingAccountLinking(parameter)
+            }
+        }
     }
 
     private fun setUpViewAccountLinking() {
@@ -63,7 +105,6 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
                     R.drawable.ic_checklist_circle_green,
                     0
                 )
-                tvShowFile.show()
             }
 
             tvItemSubtitle.text = if (isKtpTaken) {
@@ -71,9 +112,6 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
             } else {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
             }
-
-            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
-            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle)
         }
     }
 
@@ -82,6 +120,48 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_selfie)
             )
+
+            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
+            if (isSelfieTaken) {
+                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_checklist_circle_green,
+                    0
+                )
+            }
+
+            tvItemSubtitle.text = if (isSelfieTaken) {
+                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken)
+            } else {
+                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
+            }
         }
+    }
+
+    private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
+        val intent = Intent(activity, GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_BRIDGING_ACCOUNT_LINKING)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
+        startKycForResult.launch(intent)
+    }
+
+    companion object {
+        private const val PROJECT_ID = "project_id"
+        private const val SOURCE = "source"
+        private const val ACCOUNT_LINKED = "account_linked"
+        private const val IS_KTP_TAKEN = "is_ktp_taken"
+        private const val IS_SELFIE_TAKEN = "is_selfie_taken"
+
+        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean = false) =
+            OnboardNonProgressiveBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(PROJECT_ID, projectId)
+                    putString(SOURCE, source)
+                    putBoolean(ACCOUNT_LINKED, isAccountLinked)
+                    putBoolean(IS_KTP_TAKEN, isKtpTaken)
+                    putBoolean(IS_SELFIE_TAKEN, isSelfieTaken)
+                }
+            }
     }
 }

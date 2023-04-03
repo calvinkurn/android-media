@@ -35,14 +35,20 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class OnboardProgressiveBottomSheet(private val projectId: String, private val source: String, val encryptedName: String): BottomSheetUnify() {
+class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            activity?.setResult(Activity.RESULT_OK)
-            activity?.finish()
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
+            KYCConstant.RESULT_FINISH -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
         }
     }
 
@@ -52,9 +58,19 @@ class OnboardProgressiveBottomSheet(private val projectId: String, private val s
         ViewModelProvider(this, viewModelFactory)[OnboardProgressiveViewModel::class.java]
     }
 
+    private var projectId = ""
+    private var source = ""
+    private var encryptedName = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+
+        arguments?.let {
+            projectId = it.getString(PROJECT_ID).orEmpty()
+            source = it.getString(SOURCE).orEmpty()
+            encryptedName = it.getString(ENCRYPTED_NAME).orEmpty()
+        }
     }
 
     override fun onCreateView(
@@ -81,12 +97,6 @@ class OnboardProgressiveBottomSheet(private val projectId: String, private val s
             layoutDataKtp.imgItem.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_gopay)
             )
-
-            tvTitle.text = if (source.isEmpty()) {
-                getString(R.string.goto_kyc_onboard_progressive_title_account_page)
-            } else {
-                getString(R.string.goto_kyc_onboard_progressive_title_not_account_page, source)
-            }
         }
     }
 
@@ -196,6 +206,19 @@ class OnboardProgressiveBottomSheet(private val projectId: String, private val s
 
     companion object {
         private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
+
+        private const val PROJECT_ID = "project_id"
+        private const val SOURCE = "source"
+        private const val ENCRYPTED_NAME = "encrypted_name"
+
+        fun newInstance(projectId: String, source: String, encryptedName: String) =
+            OnboardProgressiveBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(PROJECT_ID, projectId)
+                    putString(SOURCE, source)
+                    putString(ENCRYPTED_NAME, encryptedName)
+                }
+            }
     }
 
 }

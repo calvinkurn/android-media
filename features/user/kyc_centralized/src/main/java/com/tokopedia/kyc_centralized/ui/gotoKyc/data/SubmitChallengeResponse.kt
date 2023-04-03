@@ -15,5 +15,5 @@ data class SubmitKYCChallenge(
 	val isSuccess: Int = 0,
 
     //TODO: this is fake field, please change it when BE ready
-    val submitStatus: String = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
+    var submitStatus: String = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
 )

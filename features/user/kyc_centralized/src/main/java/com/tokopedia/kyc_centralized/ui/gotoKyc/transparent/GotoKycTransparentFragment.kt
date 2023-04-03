@@ -93,15 +93,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    if (!it.isAccountLinked) {
-                        val parameter = GotoKycMainParam(
-                            projectId = viewModel.projectId,
-                            sourcePage = viewModel.source
-                        )
-                        gotoBridgingAccountLinking(parameter)
-                    } else {
-                        viewModel.checkEligibility()
-                    }
+                    viewModel.checkEligibility()
                 }
                 is ProjectInfoResult.Failed -> {
                     val message = it.throwable?.getMessage(requireContext())
@@ -158,18 +150,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             gotoOnboardBenefit(parameter)
         } else {
             showNonProgressiveBottomSheet(
+                projectId = viewModel.projectId,
                 source = viewModel.source,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true
+                isKtpTaken = true,
+                isSelfieTaken = true
             )
         }
-    }
-
-    private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
-        val intent = Intent(activity, GotoKycMainActivity::class.java)
-        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_BRIDGING_ACCOUNT_LINKING)
-        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
-        startKycForResult.launch(intent)
     }
 
     private fun gotoTokoKyc(projectId: String) {
@@ -196,7 +183,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
-        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
+        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = viewModel.projectId,
             source = source,
             encryptedName = encryptedName
@@ -213,11 +200,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNonProgressiveBottomSheet(source: String, isAccountLinked: Boolean, isKtpTaken: Boolean) {
-        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet(
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
+        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
+            projectId = projectId,
             source = source,
             isAccountLinked = isAccountLinked,
-            isKtpTaken = isKtpTaken
+            isKtpTaken = isKtpTaken,
+            isSelfieTaken = isSelfieTaken
         )
 
         onBoardNonProgressiveBottomSheet.show(

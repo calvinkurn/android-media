@@ -6,14 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycDobChallengeFailedBinding
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class DobChallengeBottomSheet(private val source: String = "") : BottomSheetUnify() {
+class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycDobChallengeFailedBinding>()
+
+    private var source = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            source = it.getString(SOURCE).orEmpty()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +56,19 @@ class DobChallengeBottomSheet(private val source: String = "") : BottomSheetUnif
 
     private fun initListener() {
         binding?.btnPrimary?.setOnClickListener {
-            activity?.setResult(Activity.RESULT_CANCELED)
+            activity?.setResult(KYCConstant.RESULT_FINISH)
             activity?.finish()
         }
+    }
+
+    companion object {
+        private const val SOURCE = "source"
+
+        fun newInstance(source: String) =
+            DobChallengeExhaustedBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(SOURCE, source)
+                }
+            }
     }
 }
