@@ -294,7 +294,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     }
 
     private fun createErrorLogData(requestParams: RequestParams): String {
-        val variables = requestParams.parameters[ProductAddUseCase.PARAM_INPUT] as ProductAddParam
+        val variables = requestParams.parameters[ProductAddUseCase.PARAM_INPUT]
         val json = gson.toJson(variables)
         val jsonMap = gson.fromJson(json, MutableMap::class.java)
         val logDataList = jsonMap
