@@ -116,7 +116,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
-    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+    private lateinit var dynamicPlatformFeeUseCase: GetPaymentFeeCheckoutUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
 

@@ -118,7 +118,7 @@ class ShipmentPresenterClearPromoTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
-    private lateinit var dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
+    private lateinit var dynamicPlatformFeeUseCase: GetPaymentFeeCheckoutUseCase
 
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase

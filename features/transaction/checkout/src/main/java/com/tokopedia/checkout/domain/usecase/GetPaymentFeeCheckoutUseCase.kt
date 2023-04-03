@@ -1,17 +1,18 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class DynamicPlatformFeeUseCase @Inject constructor(
+class GetPaymentFeeCheckoutUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : UseCase<PaymentFeeGqlResponse>() {
     private var params: Map<String, Any?>? = null
@@ -30,15 +31,15 @@ class DynamicPlatformFeeUseCase @Inject constructor(
             throw RuntimeException("Parameter is null!")
         }
 
-        /*val response = graphqlRepository.response(listOf(
+        val response = graphqlRepository.response(listOf(
                 GraphqlRequest(
-                        GetPlatformFeeQuery(),
+                        GetPlatformFeeCheckoutQuery(),
                         PaymentFeeGqlResponse::class.java,
                         params
                 )
-        )).getSuccessData<PaymentFeeGqlResponse>()*/
+        )).getSuccessData<PaymentFeeGqlResponse>()
 
-        val jsonRaw = """
+        /*val jsonRaw = """
             {
               "getPaymentFee": {
                 "success": true,
@@ -59,7 +60,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
             }
         """.trimIndent()
         val gson = Gson()
-        val response = gson.fromJson(jsonRaw, PaymentFeeGqlResponse::class.java)
+        val response = gson.fromJson(jsonRaw, PaymentFeeGqlResponse::class.java)*/
 
         if (response.response.success) {
             return response
@@ -75,11 +76,11 @@ class DynamicPlatformFeeUseCase @Inject constructor(
         private const val PROFILE_CODE_PARAM = "profileCode"
         private const val GATEWAY_CODE_PARAM = "gatewayCode"
         private const val PAYMENT_AMOUNT_PARAM = "paymentAmount"
-        private const val QUERY_GET_PLATFORM_FEE = "GetPlatformFeeQuery"
+        private const val QUERY_GET_PLATFORM_FEE = "GetPlatformFeeCheckoutQuery"
 
         private const val QUERY = """
-            query getPaymentFee(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!) {
-                getPaymentFee(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount) {
+            query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!) {
+                getPaymentFeeCheckout(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount) {
                     success
                     errors {
                         code
