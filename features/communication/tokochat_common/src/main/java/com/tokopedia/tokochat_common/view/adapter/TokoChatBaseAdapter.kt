@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat_common.view.adapter
 
-import android.os.Bundle
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatHeaderDateDelegate
@@ -31,21 +30,15 @@ open class TokoChatBaseAdapter(
         delegatesManager.addDelegate(TokoChatMessageCensorDelegate(messageCensorListener))
     }
 
-    fun getImageAttachmentPositionWithId(id: String): Int? {
-        var result: Int? = null
+    fun getImageAttachmentPairWithId(id: String): Pair<Int, TokoChatImageBubbleUiModel>? {
+        var result: Pair<Int, TokoChatImageBubbleUiModel>? = null
         for (i in Int.ZERO until itemList.size) {
             val item = itemList[i]
             if (item is TokoChatImageBubbleUiModel && item.imageId == id) {
-                result = i
+                result = Pair(i, item)
                 break
             }
         }
         return result
-    }
-
-    fun createPayloads(payloadName: String, value: Boolean): Bundle {
-        return Bundle().apply {
-            putBoolean(payloadName, value)
-        }
     }
 }

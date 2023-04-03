@@ -15,9 +15,9 @@ open class TokoChatImageBubbleUiModel protected constructor(
         private set
     var imagePath: String = ""
         private set
-    var shouldRetryLoad: Boolean = false
+    var state: ImageState = ImageState.LOADING_LOAD // Image state, default is loading
         private set
-    var isImageReady: Boolean = false
+    var isImageReady: Boolean = false // Flag for open image with image preview
         private set
     val impressHolder = ImpressHolder()
 
@@ -26,8 +26,12 @@ open class TokoChatImageBubbleUiModel protected constructor(
         this.isImageReady = status
     }
 
-    fun updateShouldRetry(shouldRetry: Boolean) {
-        this.shouldRetryLoad = shouldRetry
+    fun updateImageState(state: ImageState) {
+        this.state = state
+    }
+
+    enum class ImageState {
+        LOADING_LOAD, LOADING_UPLOAD, ERROR_LOAD, ERROR_UPLOAD, SUCCESS
     }
 
     open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatImageBubbleUiModel>() {
