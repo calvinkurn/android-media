@@ -1829,6 +1829,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun downloadPreset(preset: PresetFilterUiModel, forceActive: Boolean = false) {
         viewModelScope.launchCatchError(block = {
+            if(preset.isRemoveEffect) return@launchCatchError
+
             updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
 
             val isSuccess = repo.downloadPresetAsset(

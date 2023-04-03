@@ -43,7 +43,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     override suspend fun downloadLicense(url: String): Boolean = withContext(dispatchers.io) {
         val licenseName = assetHelper.getFileNameFromLink(url)
 
-        if(assetChecker.isLicenseAvailable(licenseName)) {
+        if (assetChecker.isLicenseAvailable(licenseName)) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.licenseDir)
@@ -59,7 +59,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadModel(url: String): Boolean = withContext(dispatchers.io) {
-        if(assetChecker.isModelAvailable()) {
+        if (assetChecker.isModelAvailable()) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.modelDir)
@@ -76,7 +76,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadCustomFace(url: String): Boolean = withContext(dispatchers.io) {
-        if(assetChecker.isCustomFaceAvailable()) {
+        if (assetChecker.isCustomFaceAvailable()) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.customFaceDir)
@@ -93,13 +93,18 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadPresetAsset(url: String, fileName: String): Boolean = withContext(dispatchers.io) {
-        val responseBody = beautificationAssetApi.downloadAsset(url)
+        if (assetChecker.isPresetFileAvailable(fileName)) {
+            true
+        } else {
+            assetManager.deleteDirectory(assetHelper.getPresetFilePath(fileName))
+            val responseBody = beautificationAssetApi.downloadAsset(url)
 
-        assetManager.unzipAndSave(
-            responseBody = responseBody,
-            fileName = fileName,
-            filePath = assetHelper.getPresetFilePath(fileName),
-            folderPath = assetHelper.presetDir,
-        )
+            assetManager.unzipAndSave(
+                responseBody = responseBody,
+                fileName = fileName,
+                filePath = assetHelper.getPresetFilePath(fileName),
+                folderPath = assetHelper.presetDir,
+            )
+        }
     }
 }
