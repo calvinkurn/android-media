@@ -591,6 +591,9 @@ class DiscoveryPageDataMapper(
     }
 
     private fun handleQuickFilter(component: ComponentsItem){
+        if (component.properties?.chipSize == Constant.ChipSize.LARGE) {
+            component.isSticky = true
+        }
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(

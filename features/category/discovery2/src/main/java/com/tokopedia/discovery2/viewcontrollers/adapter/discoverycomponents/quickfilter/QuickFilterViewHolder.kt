@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
@@ -109,22 +110,19 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
             it.prefixText =
-                if (prop?.fullFilterType == "category")
-                    "Semua Kategori"
-                else
-                    fragment.getString(R.string.filter)
-            if (prop?.chipSize == "large")
+                when {
+                    prop?.fullFilterType == Constant.FullFilterType.CATEGORY -> fragment.getString(R.string.semua_kategori)
+                    prop?.chipSize == Constant.ChipSize.LARGE -> ""
+                    else -> fragment.getString(R.string.filter)
+                }
+            if (prop?.chipSize == Constant.ChipSize.LARGE)
                 it.filterSize = SortFilter.SIZE_LARGE
             else
                 it.filterSize = SortFilter.SIZE_DEFAULT
             it.parentListener = {
-                if (prop?.fullFilterType == "category") {
+                if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
                     dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
-                        filterGeneralBottomSheet.show(
-                            fragment.childFragmentManager,
-                            filter,
-                            this,
-                        )
+                        openGeneralFilterForCategory(filter)
                     }
                 } else {
                     openBottomSheetFilterRevamp()
@@ -152,10 +150,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 }
                 SortFilterItem(option.name, icon)
             } else {
-                val iconUrl =
-                    if (!option.image.isNullOrEmpty()) option.image!!
-                    else if (option.iconUrl.isNotEmpty()) option.iconUrl else ""
-                SortFilterItem(option.name, iconUrl = iconUrl)
+                SortFilterItem(option.name, iconUrl = option.iconUrl)
             }
         item.listener = {
             quickFilterViewModel.onQuickFilterSelected(option)
@@ -249,6 +244,23 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 quickFilterViewModel.getSearchParameterHashMap(),
                 dynamicFilterModel,
                 this
+        )
+    }
+
+    private fun openGeneralFilterForCategory(filter: Filter) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            ?.trackClickDetailedFilter(componentName)
+        for (option in filter.options) {
+            if (quickFilterViewModel.isQuickFilterSelected(option)) {
+                option.inputState = true.toString()
+            } else {
+                option.inputState = ""
+            }
+        }
+        filterGeneralBottomSheet.show(
+            fragment.childFragmentManager,
+            filter,
+            this,
         )
     }
 

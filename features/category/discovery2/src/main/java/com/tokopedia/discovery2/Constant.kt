@@ -104,4 +104,14 @@ object Constant {
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"
     }
+
+    object ChipSize {
+        const val LARGE = "large"
+        const val SMALL = "small"
+    }
+
+    object FullFilterType {
+        const val CATEGORY = "category"
+        const val ALL_ATTRIBUTES = "all_attributes"
+    }
 }
