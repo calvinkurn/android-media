@@ -150,8 +150,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     playWidgetSubViewModel: PlayWidgetSubViewModel
 ) : BaseViewModel(dispatcher.main),
     IProductRecommSubViewModel by productRecommSubViewModel,
-    IPlayWidgetSubViewModel by playWidgetSubViewModel,
-    GetProductDetailDataMediator {
+    IPlayWidgetSubViewModel by playWidgetSubViewModel {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -281,17 +280,22 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    init {
-        productRecommSubViewModel.register(scope = viewModelScope)
-        playWidgetSubViewModel.register(scope = viewModelScope, mediator = this)
-        iniQuantityFlow()
+    private val getProductDetailDataMediator = object : GetProductDetailDataMediator {
+        override fun getP1Data(): DynamicProductInfoP1? = getDynamicProductInfoP1
+
+        override fun getP2Data(): ProductInfoP2UiData? = p2Data.value
+
+        override fun getVariant(): ProductVariant? = variantData
     }
 
-    override fun getP1Data(): DynamicProductInfoP1? = getDynamicProductInfoP1
-
-    override fun getP2Data(): ProductInfoP2UiData? = p2Data.value
-
-    override fun getVariant(): ProductVariant? = variantData
+    init {
+        productRecommSubViewModel.register(scope = viewModelScope)
+        playWidgetSubViewModel.register(
+            scope = viewModelScope,
+            mediator = getProductDetailDataMediator
+        )
+        iniQuantityFlow()
+    }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         _quantityUpdated.value = quantity to miniCartItem

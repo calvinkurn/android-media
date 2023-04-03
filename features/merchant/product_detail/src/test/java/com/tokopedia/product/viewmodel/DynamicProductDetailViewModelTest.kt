@@ -350,7 +350,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get multi origin but p1 data not null`() {
-        every { spykViewModel.p2Data.value } returns ProductInfoP2UiData()
         spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
         val data = spykViewModel.getMultiOriginByProductId()
         Assert.assertNotNull(data.id)
@@ -2665,25 +2664,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(testResults.size == 2)
 
         job.cancel()
-    }
-
-    @Test
-    fun `success get product detail data via mediator`() {
-        val p2Expected = ProductInfoP2UiData()
-        val p1Expected = DynamicProductInfoP1()
-        val variantExpected = ProductVariant()
-
-        every { spykViewModel.p2Data.value } returns p2Expected
-        spykViewModel.getDynamicProductInfoP1 = p1Expected
-        spykViewModel.variantData = variantExpected
-
-        Assert.assertNotNull(spykViewModel.getP2Data())
-        Assert.assertNotNull(spykViewModel.getP1Data())
-        Assert.assertNotNull(spykViewModel.getVariant())
-
-        Assert.assertTrue(spykViewModel.getP2Data() == p2Expected)
-        Assert.assertTrue(spykViewModel.getP1Data() == p1Expected)
-        Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
     }
 
     private fun getUserLocationCache(): LocalCacheModel {
