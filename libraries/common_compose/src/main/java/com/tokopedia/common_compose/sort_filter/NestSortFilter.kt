@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.sort_filter
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -142,16 +143,19 @@ fun NestSortFilterItemPreview() {
 }
 
 @Preview(name = "Sort Filter")
+@Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestSortFilterPreview() {
     val items = arrayListOf(
         SortFilter("Lokasi", true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
-    NestSortFilter(
-        modifier = Modifier,
-        items = items,
-        onClearFilter = {},
-        showClearFilterIcon = true
-    )
+    NestTheme {
+        NestSortFilter(
+            modifier = Modifier,
+            items = items,
+            onClearFilter = {},
+            showClearFilterIcon = true
+        )
+    }
 }
