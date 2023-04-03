@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
-import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -93,8 +92,6 @@ class FeedFragment :
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
 
-    private var videoPlayer: FeedExoPlayer? = null
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -151,10 +148,6 @@ class FeedFragment :
             postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
         )
 
-        context?.let {
-            videoPlayer = FeedExoPlayer(it)
-        }
-
         initView()
         observePostData()
         observeAddToCart()
@@ -168,7 +161,6 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
-        videoPlayer?.destroy()
         super.onDestroyView()
     }
 
@@ -274,14 +266,6 @@ class FeedFragment :
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
         showLoading()
-    }
-
-    override fun getVideoPlayer(): FeedExoPlayer {
-        if (videoPlayer == null) {
-            videoPlayer = FeedExoPlayer(requireContext())
-        }
-
-        return videoPlayer!!
     }
 
     override fun onProductTagButtonClicked(
