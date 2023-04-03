@@ -405,7 +405,7 @@ class TokoChatViewModel @Inject constructor(
             withContext(dispatcher.io) {
                 try {
                     val cachedImage = getTokoChatPhotoPath(imageId)
-                    // If image has never been downloaded, then download 84742
+                    // If image has never been downloaded, then download
                     if (!cachedImage.exists() || isFromRetry) {
                         delay(DELAY_FETCH_IMAGE)
                         val imageUrlResponse = getImageUrlUseCase(
