@@ -16,14 +16,13 @@ import com.tokopedia.iconunify.IconUnify
 object MapperFeedTabs {
     fun transform(
         header: FeedXHeader,
-        isLoggedIn: Boolean,
     ): FeedTabsModel =
         FeedTabsModel(
             meta = MetaModel(
                 selectedIndex = 0,
                 profileApplink = header.data.userProfile.applink,
                 profilePhotoUrl = header.data.userProfile.image,
-                showMyProfile = header.data.userProfile.isShown || !isLoggedIn,
+                showMyProfile = header.data.userProfile.isShown,
                 isCreationActive = header.data.creation.isActive,
                 showLive = header.data.live.isActive,
                 liveApplink = header.data.live.applink,

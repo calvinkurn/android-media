@@ -163,8 +163,7 @@ class FeedMainViewModel @Inject constructor(
                 )
                 feedXHeaderUseCase.executeOnBackground()
             }
-            val mappedData =
-                MapperFeedTabs.transform(response.feedXHeaderData, userSession.isLoggedIn)
+            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
             _feedTabs.value = Success(mappedData.data)
         }) {
             _feedTabs.value = Fail(it)
@@ -185,8 +184,7 @@ class FeedMainViewModel @Inject constructor(
                 )
                 feedXHeaderUseCase.executeOnBackground()
             }
-            val mappedData =
-                MapperFeedTabs.transform(response.feedXHeaderData, userSession.isLoggedIn)
+            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
             _metaData.value = Success(mappedData.meta)
 
             handleCreationData(
