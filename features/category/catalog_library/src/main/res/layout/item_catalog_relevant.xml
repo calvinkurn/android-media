@@ -24,6 +24,7 @@
             android:layout_height="96dp"
             app:unify_image_corner_radius="0"
             app:unify_image_type="rect"
+            android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

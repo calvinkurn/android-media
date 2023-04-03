@@ -12,6 +12,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -36,6 +37,10 @@ class CatalogLihatListItemVH(
         itemView.findViewById(R.id.lihat_item_title)
     }
 
+    private val lihatItemDivider: DividerUnify? by lazy(NONE) {
+        itemView.findViewById(R.id.lihat_item_divider)
+    }
+
     private val lihatExpandedItemLayout: View? by lazy(NONE) {
         itemView.findViewById(R.id.main_item_layout)
     }
@@ -46,29 +51,55 @@ class CatalogLihatListItemVH(
 
     override fun bind(element: CatalogLihatListItemDM?) {
         dataModel = element
-        val childDataItem = element?.catalogLibraryChildDataListItem
+        renderIcon()
+        renderCheckedIcon()
+        renderDivider()
+        renderExpandedLayout()
+        renderTitle()
+    }
+
+    private fun renderTitle() {
+        lihatItemTitle?.text = dataModel?.catalogLibraryChildDataListItem?.categoryName ?: ""
+    }
+
+    private fun renderIcon() {
+        val childDataItem = dataModel?.catalogLibraryChildDataListItem
         childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
         }
+    }
+
+    private fun renderCheckedIcon() {
         if (dataModel?.activeCategoryId == dataModel?.catalogLibraryChildDataListItem?.categoryId) {
             lihatItemIconCheck?.show()
         } else {
             lihatItemIconCheck?.hide()
         }
-        lihatItemTitle?.text = childDataItem?.categoryName ?: ""
+    }
+
+    private fun renderExpandedLayout(){
+        val childDataItem = dataModel?.catalogLibraryChildDataListItem
         lihatExpandedItemLayout?.setOnClickListener {
             CatalogAnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
-                element?.rootCategoryName ?: "",
-                element?.rootCategoryId ?: "",
-                element?.catalogLibraryChildDataListItem?.categoryName ?: "",
-                element?.catalogLibraryChildDataListItem?.categoryId ?: "",
-                element?.isAsc ?: true,
+                dataModel?.rootCategoryName ?: "",
+                dataModel?.rootCategoryId ?: "",
+                dataModel?.catalogLibraryChildDataListItem?.categoryName ?: "",
+                dataModel?.catalogLibraryChildDataListItem?.categoryId ?: "",
+                dataModel?.isAsc ?: true,
                 UserSession(itemView.context).userId
             )
             catalogLibraryListener.onCategoryItemClicked(
                 childDataItem?.categoryId ?: "",
                 childDataItem?.categoryName ?: ""
             )
+        }
+    }
+
+    private fun renderDivider(){
+        if(dataModel?.isLastItem == true){
+            lihatItemDivider?.hide()
+        }else {
+            lihatItemDivider?.show()
         }
     }
 

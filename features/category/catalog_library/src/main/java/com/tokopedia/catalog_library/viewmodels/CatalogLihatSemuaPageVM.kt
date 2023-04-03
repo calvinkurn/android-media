@@ -25,6 +25,10 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
     val catalogLihatLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogLihatLiveData
 
+    private val _brandNameLiveData = MutableLiveData<String>()
+    val brandNameLiveData: LiveData<String> =
+        _brandNameLiveData
+
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
 
     private var isAsc = true
@@ -66,6 +70,7 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
             onFailLihatData(IllegalStateException("No Lihat Semua Data"))
         } else {
             catalogLibraryResponse.let {
+                _brandNameLiveData.postValue(it.categoryList.brandName)
                 if(isTypeList){
                     _catalogLihatLiveData.postValue(Success(mapLihatData(it)))
                 }else {

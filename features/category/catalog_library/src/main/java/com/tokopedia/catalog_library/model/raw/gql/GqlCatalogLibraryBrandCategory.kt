@@ -7,6 +7,8 @@ const val GQL_CATALOG_LIBRARY_BRAND_CATEGORY: String =
           code
           message
         }
+        BrandName
+        BrandID
         CategoryList{
           RootCategoryId
           RootCategoryName

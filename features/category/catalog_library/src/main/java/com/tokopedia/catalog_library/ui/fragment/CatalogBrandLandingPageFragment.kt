@@ -47,6 +47,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     private var categoryIdStr = ""
     private var categoryNameStr = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
+    private var header: HeaderUnify? = null
     private val productsTrackingSet = HashSet<String>()
 
     @JvmField
@@ -169,10 +170,18 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
                 }
             }
         }
+
+        brandLandingPageViewModel?.brandNameLiveData?.observe(viewLifecycleOwner){ brandName ->
+            if(brandName.isNotBlank()){
+                header?.headerTitle = brandName
+                brandNameStr = brandName
+            }
+        }
     }
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
+            header = this
             headerTitle = brandNameStr
             setNavigationOnClickListener {
                 activity?.finish()

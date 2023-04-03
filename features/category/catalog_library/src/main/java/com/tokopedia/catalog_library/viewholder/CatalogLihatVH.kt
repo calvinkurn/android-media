@@ -111,18 +111,19 @@ class CatalogLihatVH(
         activeCategoryId: String
     ): MutableList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
-        childCategoryList?.forEach {
+        childCategoryList?.forEachIndexed { index, catalog ->
             if (isTypeList) {
                 visitableList.add(
                     CatalogLihatListItemDM(
                         CATALOG_LIHAT_SEMUA_ITEM,
                         CATALOG_LIHAT_SEMUA_ITEM,
-                        it,
+                        catalog,
                         rootCategoryId ?: "",
                         rootCategoryName ?: "",
                         false,
                         isAsc,
-                        activeCategoryId
+                        activeCategoryId,
+                        index == (childCategoryList.size - 1)
                     )
                 )
             } else {
@@ -130,7 +131,7 @@ class CatalogLihatVH(
                     CatalogLihatItemDM(
                         CATALOG_LIHAT_SEMUA_ITEM,
                         CATALOG_LIHAT_SEMUA_ITEM,
-                        it,
+                        catalog,
                         rootCategoryId ?: "",
                         rootCategoryName ?: "",
                         true,

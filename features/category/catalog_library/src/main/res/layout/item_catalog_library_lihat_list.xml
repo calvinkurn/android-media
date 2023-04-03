@@ -53,6 +53,7 @@
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/lihat_item_divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"

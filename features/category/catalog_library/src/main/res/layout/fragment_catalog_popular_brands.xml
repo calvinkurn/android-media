@@ -35,6 +35,8 @@
         app:layout_constraintTop_toBottomOf="@+id/popular_brands_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="6dp"
+        android:clipToPadding="false"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

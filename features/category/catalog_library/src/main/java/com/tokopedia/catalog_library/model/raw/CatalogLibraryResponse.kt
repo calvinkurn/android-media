@@ -14,6 +14,13 @@ data class CatalogLibraryResponse(
         @Expose
         val header: CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialHeader = CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialHeader(),
 
+        @SerializedName("BrandName")
+        @Expose
+        val brandName: String? = "",
+        @SerializedName("BrandID")
+        @Expose
+        val brandId: String? = "",
+
         @SerializedName("CategoryList")
         @Expose
         val categoryDataList: ArrayList<CategoryData>? = arrayListOf()
