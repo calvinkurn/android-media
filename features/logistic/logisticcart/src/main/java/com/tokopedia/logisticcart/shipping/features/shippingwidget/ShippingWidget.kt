@@ -137,13 +137,13 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             shippingNowWidget.gone()
-            if (shipmentCartItemModel.courierSelectionErrorTitle.isNullOrEmpty()) {
+            if (shipmentCartItemModel.courierSelectionErrorTitle.isEmpty()) {
                 labelErrorShippingTitle.text =
                     context.getString(R.string.checkout_error_shipping_title)
             } else {
                 labelErrorShippingTitle.text = shipmentCartItemModel.courierSelectionErrorTitle
             }
-            if (shipmentCartItemModel.courierSelectionErrorDescription.isNullOrEmpty()) {
+            if (shipmentCartItemModel.courierSelectionErrorDescription.isEmpty()) {
                 labelErrorShippingDescription.text =
                     context.getString(R.string.checkout_error_shipping_description)
             } else {

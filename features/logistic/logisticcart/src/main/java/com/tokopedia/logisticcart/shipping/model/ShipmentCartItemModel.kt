@@ -10,27 +10,27 @@ import kotlinx.parcelize.Parcelize
 data class ShipmentCartItemModel(
     var isAllItemError: Boolean = false,
     var isError: Boolean = false,
-    var errorTitle: String? = null,
-    var errorDescription: String? = null,
+    var errorTitle: String = "",
+    var errorDescription: String = "",
     var isHasUnblockingError: Boolean = false,
-    var unblockingErrorMessage: String? = null,
+    var unblockingErrorMessage: String = "",
     var firstProductErrorIndex: Int = -1,
     var isTriggerScrollToErrorProduct: Boolean = false,
     var isCustomEpharmacyError: Boolean = false,
 
-    var shipmentCartData: ShipmentCartData? = null,
+    var shipmentCartData: ShipmentCartData = ShipmentCartData(),
     var selectedShipmentDetailData: ShipmentDetailData? = null,
-    var shopShipmentList: List<ShopShipment>? = null,
+    var shopShipmentList: List<ShopShipment> = emptyList(),
 
     // Shop data
     var shopId: Long = 0,
-    var shopName: String? = null,
+    var shopName: String = "",
     var orderNumber: Int = 0,
-    var preOrderInfo: String? = null,
-    var freeShippingBadgeUrl: String? = null,
+    var preOrderInfo: String = "",
+    var freeShippingBadgeUrl: String = "",
     var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-    var shopLocation: String? = null,
-    var shopAlertMessage: String? = null,
+    var shopLocation: String = "",
+    var shopAlertMessage: String = "",
     var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     var isTokoNow: Boolean = false,
     var shopTickerTitle: String = "",
@@ -38,18 +38,18 @@ data class ShipmentCartItemModel(
     var enablerLabel: String = "",
 
     // AddOns
-    var addOnsOrderLevelModel: AddOnsDataModel? = null,
+    var addOnsOrderLevelModel: AddOnsDataModel = AddOnsDataModel(),
     var addOnWordingModel: AddOnWordingModel = AddOnWordingModel(),
-    var addOnDefaultFrom: String? = null,
-    var addOnDefaultTo: String? = null,
+    var addOnDefaultFrom: String = "",
+    var addOnDefaultTo: String = "",
 
     // Cart item state
     override val cartString: String,
     var shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",
-    var dropshiperName: String? = null,
-    var dropshiperPhone: String? = null,
+    var dropshiperName: String = "",
+    var dropshiperPhone: String = "",
     var isInsurance: Boolean = false,
     var isSaveStateFlag: Boolean = false,
 
@@ -76,11 +76,10 @@ data class ShipmentCartItemModel(
 
     // for robinhood III
     var isBlackbox: Boolean = false,
-    var addressId: String? = null,
-    var blackboxInfo: String? = null,
+    var addressId: String = "",
 
     var isFulfillment: Boolean = false,
-    var fulfillmentBadgeUrl: String? = null,
+    var fulfillmentBadgeUrl: String = "",
     var fulfillmentId: Long = 0,
 
     // promo stacking
@@ -89,7 +88,7 @@ data class ShipmentCartItemModel(
 
     var isLeasingProduct: Boolean = false,
     var bookingFee: Int = 0,
-    var listPromoCodes: List<String>? = null,
+    var listPromoCodes: List<String> = emptyList(),
 
     var isDropshipperDisable: Boolean = false,
     var isOrderPrioritasDisable: Boolean = false,
@@ -109,8 +108,8 @@ data class ShipmentCartItemModel(
     var durationCardDescription: String = "",
 
     // Courier Selection Error
-    var courierSelectionErrorTitle: String? = null,
-    var courierSelectionErrorDescription: String? = null,
+    var courierSelectionErrorTitle: String = "",
+    var courierSelectionErrorDescription: String = "",
 
     // Flag for tracking
     var isHasShownCourierError: Boolean = false,
@@ -198,7 +197,6 @@ data class ShipmentCartItemModel(
             newShipmentCartItemModel.isFulfillment = shipmentCartItemModel.isFulfillment
             newShipmentCartItemModel.fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl
             newShipmentCartItemModel.fulfillmentId = shipmentCartItemModel.fulfillmentId
-            newShipmentCartItemModel.blackboxInfo = shipmentCartItemModel.blackboxInfo
             newShipmentCartItemModel.hasPromoList = shipmentCartItemModel.hasPromoList
             newShipmentCartItemModel.voucherLogisticItemUiModel =
                 shipmentCartItemModel.voucherLogisticItemUiModel

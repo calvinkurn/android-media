@@ -464,13 +464,11 @@ class ShipmentPresenter @Inject constructor(
                 if (shipmentData.isLeasingProduct) {
                     totalBookingFee += shipmentData.bookingFee
                 }
-                if (shipmentData.addOnsOrderLevelModel != null) {
-                    val addOnsDataModel = shipmentData.addOnsOrderLevelModel
-                    if (addOnsDataModel != null && addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
-                        for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
-                            totalAddOnPrice += addOnPrice
-                            hasAddOnSelected = true
-                        }
+                val addOnsDataModel = shipmentData.addOnsOrderLevelModel
+                if (addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
+                    for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
+                        totalAddOnPrice += addOnPrice
+                        hasAddOnSelected = true
                     }
                 }
             }
@@ -2208,7 +2206,7 @@ class ShipmentPresenter @Inject constructor(
         clearOrders.add(
             ClearPromoOrder(
                 shipmentCartItemModel.cartString,
-                shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
                 promoCodeList,
                 shipmentCartItemModel.shopId,
                 shipmentCartItemModel.isProductIsPreorder,
@@ -2296,7 +2294,7 @@ class ShipmentPresenter @Inject constructor(
                             clearOrders.add(
                                 ClearPromoOrder(
                                     notEligiblePromo.uniqueId,
-                                    shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                                    shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
                                     codes,
                                     shipmentCartItemModel.shopId,
                                     shipmentCartItemModel.isProductIsPreorder,
@@ -2367,7 +2365,7 @@ class ShipmentPresenter @Inject constructor(
                             clearOrders.add(
                                 ClearPromoOrder(
                                     voucherOrder.uniqueId,
-                                    cartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                                    cartItemModel.shipmentCartData.boMetadata!!.boType,
                                     codes,
                                     cartItemModel.shopId,
                                     cartItemModel.isProductIsPreorder,
@@ -2406,13 +2404,13 @@ class ShipmentPresenter @Inject constructor(
         val clearOrders = ArrayList<ClearPromoOrder>()
         var hasBo = false
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.shipmentCartData != null && shipmentCartItemModel.voucherLogisticItemUiModel != null && shipmentCartItemModel.voucherLogisticItemUiModel!!.code.isNotEmpty()) {
+            if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null && shipmentCartItemModel.voucherLogisticItemUiModel!!.code.isNotEmpty()) {
                 val boCodes = ArrayList<String>()
                 boCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                 clearOrders.add(
                     ClearPromoOrder(
                         shipmentCartItemModel.cartString,
-                        shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                        shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
                         boCodes,
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
@@ -2914,7 +2912,7 @@ class ShipmentPresenter @Inject constructor(
                                                                             view?.activityContext?.getString(
                                                                                 R.string.checkout_error_unblocking_message,
                                                                                 shipmentCartItemModel.cartItemModels.size
-                                                                            )
+                                                                            ) ?: ""
                                                                         shipmentCartItemModel.isCustomEpharmacyError =
                                                                             true
                                                                         shipmentCartItemModel.spId =
@@ -2978,7 +2976,7 @@ class ShipmentPresenter @Inject constructor(
                                     view?.activityContext?.getString(
                                         R.string.checkout_error_unblocking_message,
                                         productErrorCount
-                                    )
+                                    ) ?: ""
                                 shipmentCartItemModel.spId = 0
                                 shipmentCartItemModel.shouldResetCourier = true
                                 view?.updateShipmentCartItemGroup(shipmentCartItemModel)
@@ -3090,7 +3088,7 @@ class ShipmentPresenter @Inject constructor(
                                                                     view?.activityContext?.getString(
                                                                         R.string.checkout_error_unblocking_message,
                                                                         shipmentCartItemModel.cartItemModels.size
-                                                                    )
+                                                                    ) ?: ""
                                                                 shipmentCartItemModel.isCustomEpharmacyError =
                                                                     true
                                                                 shipmentCartItemModel.spId = 0
@@ -3151,7 +3149,7 @@ class ShipmentPresenter @Inject constructor(
                                 view?.activityContext?.getString(
                                     R.string.checkout_error_unblocking_message,
                                     productErrorCount
-                                )
+                                ) ?: ""
                             shipmentCartItemModel.spId = 0
                             view?.updateShipmentCartItemGroup(shipmentCartItemModel)
                             view?.resetCourier(shipmentCartItemModel)
@@ -3231,11 +3229,11 @@ class ShipmentPresenter @Inject constructor(
                 if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartString + "-0").equals(
                         addOnResult.addOnKey,
                         ignoreCase = true
-                    ) && shipmentCartItemModel.addOnsOrderLevelModel != null
+                    )
                 ) {
                     val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
                     setAddOnsData(
-                        addOnsDataModel!!,
+                        addOnsDataModel,
                         addOnResult,
                         1,
                         shipmentCartItemModel.cartString,
@@ -3366,7 +3364,7 @@ class ShipmentPresenter @Inject constructor(
         clearOrders.add(
             ClearPromoOrder(
                 shipmentCartItemModel.cartString,
-                shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
                 promoCodes,
                 shipmentCartItemModel.shopId,
                 shipmentCartItemModel.isProductIsPreorder,
@@ -3455,7 +3453,7 @@ class ShipmentPresenter @Inject constructor(
         val mvc = generateRatesMvcParam(cartString)
         val shopShipmentList = shipmentCartItemModel.shopShipmentList
         val ratesParamBuilder = RatesParam.Builder(
-            shopShipmentList!!,
+            shopShipmentList,
             shippingParam
         )
             .isCorner(cornerId)
@@ -3630,13 +3628,13 @@ class ShipmentPresenter @Inject constructor(
             val clearOrders = ArrayList<ClearPromoOrder>()
             var hasBo = false
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.shipmentCartData != null && shipmentCartItemModel.voucherLogisticItemUiModel != null && shipmentCartItemModel.voucherLogisticItemUiModel!!.code.isNotEmpty()) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null && shipmentCartItemModel.voucherLogisticItemUiModel!!.code.isNotEmpty()) {
                     val boCodes = ArrayList<String>()
                     boCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                     clearOrders.add(
                         ClearPromoOrder(
                             shipmentCartItemModel.cartString,
-                            shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType,
+                            shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
                             boCodes,
                             shipmentCartItemModel.shopId,
                             shipmentCartItemModel.isProductIsPreorder,
@@ -3915,7 +3913,7 @@ class ShipmentPresenter @Inject constructor(
                         ordersItem.codes = listOrderCodes
                         ordersItem.uniqueId = cartStringOrder
                         ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
-                        ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                        ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata!!.boType
                         ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
                         ordersItem.poDuration =
                             shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
@@ -4086,16 +4084,14 @@ class ShipmentPresenter @Inject constructor(
                     ordersItem.product_details = productDetailsItems
                     ordersItem.isChecked = true
                     val listCodes = ArrayList<String>()
-                    if (shipmentCartItemModel.listPromoCodes != null) {
-                        for (code in shipmentCartItemModel.listPromoCodes!!) {
-                            listCodes.add(code)
-                        }
+                    for (code in shipmentCartItemModel.listPromoCodes) {
+                        listCodes.add(code)
                     }
                     ordersItem.codes = listCodes
                     ordersItem.cartStringGroup = shipmentCartItemModel.cartString
                     ordersItem.uniqueId = cartStringOrder
                     ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
-                    ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                    ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata!!.boType
                     ordersItem.isInsurancePrice = if (shipmentCartItemModel.isInsurance) 1 else 0
                     if (shipmentCartItemModel.selectedShipmentDetailData == null) {
                         ordersItem.shippingId = 0

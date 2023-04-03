@@ -2538,7 +2538,7 @@ class ShipmentFragment :
         recipientAddressModel: RecipientAddressModel,
         cartPosition: Int
     ) {
-        if (shipmentCartItemModel.shopShipmentList == null || shipmentCartItemModel.shopShipmentList!!.isEmpty()) {
+        if (shipmentCartItemModel.shopShipmentList.isEmpty()) {
             onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message))
         } else {
             val shipmentDetailData =
@@ -2558,7 +2558,7 @@ class ShipmentFragment :
                     this,
                     shipmentDetailData,
                     shipmentAdapter.lastServiceId,
-                    shipmentCartItemModel.shopShipmentList!!,
+                    shipmentCartItemModel.shopShipmentList,
                     recipientAddressModel,
                     cartPosition,
                     codHistory,
@@ -2569,7 +2569,7 @@ class ShipmentFragment :
                     shipmentCartItemModel.isOrderPrioritasDisable,
                     isTradeInByDropOff,
                     shipmentCartItemModel.isFulfillment,
-                    shipmentCartItemModel.shipmentCartData!!.preOrderDuration,
+                    shipmentCartItemModel.shipmentCartData.preOrderDuration,
                     shipmentPresenter.generateRatesMvcParam(
                         shipmentCartItemModel.cartString
                     ),
@@ -2636,7 +2636,7 @@ class ShipmentFragment :
                     cartPosition,
                     shipmentCartItemModel.selectedShipmentDetailData,
                     shipmentCartItemModel,
-                    shipmentCartItemModel.shopShipmentList!!,
+                    shipmentCartItemModel.shopShipmentList,
                     false,
                     shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                     shipmentCartItemModel.cartString,
@@ -3554,9 +3554,9 @@ class ShipmentFragment :
         cartItemModel: ShipmentCartItemModel,
         addOnWordingModel: AddOnWordingModel?
     ) {
-        if (activity != null && cartItemModel.addOnsOrderLevelModel != null) {
+        if (activity != null) {
             val addOnsDataModel = cartItemModel.addOnsOrderLevelModel
-            val addOnBottomSheetModel = addOnsDataModel!!.addOnsBottomSheetModel
+            val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
             if (addOnsDataModel.addOnsButtonModel.action == 0) return

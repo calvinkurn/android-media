@@ -1086,8 +1086,8 @@ class ShipmentAdapter @Inject constructor(
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is ShipmentCartItemModel) {
                 val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
-                if (shipmentCartItemModel.cartString == cartString && shipmentCartItemModel.addOnsOrderLevelModel != null) {
-                    if (shipmentCartItemModel.addOnsOrderLevelModel!!.addOnsButtonModel.title.isNotEmpty()) {
+                if (shipmentCartItemModel.cartString == cartString) {
+                    if (shipmentCartItemModel.addOnsOrderLevelModel.addOnsButtonModel.title.isNotEmpty()) {
                         return i
                     }
                 }
@@ -1141,10 +1141,8 @@ class ShipmentAdapter @Inject constructor(
                 addressShipmentData!!.longitude = longitude
             }
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
-                if (shipmentCartItemModel.shipmentCartData != null) {
-                    shipmentCartItemModel.shipmentCartData!!.destinationLatitude = latitude
-                    shipmentCartItemModel.shipmentCartData!!.destinationLongitude = longitude
-                }
+                shipmentCartItemModel.shipmentCartData.destinationLatitude = latitude
+                shipmentCartItemModel.shipmentCartData.destinationLongitude = longitude
             }
         }
     }
@@ -1212,10 +1210,10 @@ class ShipmentAdapter @Inject constructor(
     ) {
         val updatedData = shipmentCartItemTopModel.copy(
             isError = shipmentCartItemModel.isError,
-            errorTitle = shipmentCartItemModel.errorTitle ?: "",
-            errorDescription = shipmentCartItemModel.errorDescription ?: "",
+            errorTitle = shipmentCartItemModel.errorTitle,
+            errorDescription = shipmentCartItemModel.errorDescription,
             isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
-            unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage ?: "",
+            unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage,
             firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
             isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
             shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
