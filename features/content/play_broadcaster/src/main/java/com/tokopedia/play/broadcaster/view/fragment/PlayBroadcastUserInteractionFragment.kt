@@ -1039,7 +1039,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         // Have to be invisible because gone will resulting in not-rounded unify timer
         if (state.type == GameType.Unknown &&
             quizFormState.quizFormState == QuizFormStateUiModel.Nothing &&
-            pinnedState.editStatus == PinnedMessageEditStatus.Nothing
+            pinnedState.editStatus == PinnedMessageEditStatus.Nothing &&
+            !BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader).isBottomSheetShown
         ) {
             clInteraction.visible()
         } else {
