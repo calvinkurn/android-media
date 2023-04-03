@@ -103,7 +103,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
