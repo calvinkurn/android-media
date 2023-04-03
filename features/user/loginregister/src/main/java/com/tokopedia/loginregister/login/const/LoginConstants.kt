@@ -71,9 +71,4 @@ object LoginConstants {
         const val IS_AUTO_FILL = "auto_fill"
         const val AUTO_FILL_EMAIL = "email"
     }
-
-    object TopAdsClickUrlTrackerConstant{
-        const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
-        const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
-    }
 }
