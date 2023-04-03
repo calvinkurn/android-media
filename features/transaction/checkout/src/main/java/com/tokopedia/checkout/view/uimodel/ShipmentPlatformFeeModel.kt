@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class ShipmentPlatformFeeModel(
         var title: String = "",
         var fee: Double = 0.0,
-        var slashedFeeTitle: String = "",
+        var isShowSlashed: Boolean = false,
         var slashedFee: Double = 0.0,
         var minRange: Double = 0.0,
         var maxRange: Double = 0.0,

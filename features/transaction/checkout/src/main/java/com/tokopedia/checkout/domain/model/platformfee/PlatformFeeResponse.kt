@@ -30,18 +30,16 @@ class PaymentFee(
     val title: String = "",
     @SerializedName("fee")
     val fee: Double = 0.0,
-    @SerializedName("show_slashed")
-    val showSlashed: Boolean = false,
     @SerializedName("show_tooltip")
     val showTooltip: Boolean = false,
-    @SerializedName("slashed_fee")
-    val slashedFee: Int = 0,
-    @SerializedName("slashed_label")
-    val slashedLabel: String = "",
     @SerializedName("tooltip_info")
     val tooltipInfo: String = "",
-    @SerializedName("min_range")
+    @SerializedName("show_slashed")
+    val showSlashed: Boolean = false,
+    @SerializedName("slashed_fee")
+    val slashedFee: Int = 0,
+    @SerializedName("range_min")
     val minRange: Double = 0.0,
-    @SerializedName("max_range")
+    @SerializedName("range_max")
     val maxRange: Double = 0.0
 )

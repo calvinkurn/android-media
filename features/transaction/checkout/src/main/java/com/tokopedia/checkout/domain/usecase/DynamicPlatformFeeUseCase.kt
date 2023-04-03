@@ -41,7 +41,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
         val jsonRaw = """
             {
               "getPaymentFee": {
-                "success": false,
+                "success": true,
                 "errors": [],
                 "data": [
                   {
@@ -51,7 +51,7 @@ class DynamicPlatformFeeUseCase @Inject constructor(
                     "tooltip_info": "Biaya jasa aplikasi kami pakai untuk kasih kamu layanan terbaik. Jumlahnya disesuaikan dengan total tagihanmu.",
                     "show_tooltip": true,
                     "show_slashed": true,
-                    "slashed_fee": 500,
+                    "slashed_fee": 5000,
                     "slashed_label": "Diskon Jasa Aplikasi"
                   }
                 ]

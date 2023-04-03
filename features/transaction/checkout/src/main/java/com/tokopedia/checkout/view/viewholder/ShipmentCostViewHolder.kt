@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -62,7 +63,6 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_label)
     private val mIvPlatformFeeIconInfo: IconUnify = itemView.findViewById(R.id.ic_dynamic_platform_fee_info)
     private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_value)
-    private val mTvDiscountPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_label)
     private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_value)
     private val mLoaderPlatformFeeLabel: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_label)
     private val mLoaderPlatformFeeValue: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_value)
@@ -186,7 +186,6 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvPlatformFeeLabel.gone()
             mIvPlatformFeeIconInfo.gone()
             mTvPlatformFeeValue.gone()
-            mTvDiscountPlatformFeeLabel.gone()
             mTvDiscountPlatformFeeValue.gone()
             mLoaderPlatformFeeLabel.visible()
             mLoaderPlatformFeeValue.visible()
@@ -195,7 +194,6 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvPlatformFeeLabel.gone()
             mIvPlatformFeeIconInfo.gone()
             mTvPlatformFeeValue.gone()
-            mTvDiscountPlatformFeeLabel.gone()
             mTvDiscountPlatformFeeValue.gone()
             mLoaderPlatformFeeLabel.gone()
             mLoaderPlatformFeeValue.gone()
@@ -219,7 +217,6 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 mTvPlatformFeeLabel.gone()
                 mIvPlatformFeeIconInfo.gone()
                 mTvPlatformFeeValue.gone()
-                mTvDiscountPlatformFeeLabel.gone()
                 mTvDiscountPlatformFeeValue.gone()
             } else {
                 mLoaderPlatformFeeLabel.gone()
@@ -227,16 +224,15 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 mTvPlatformFeeLabel.visible()
                 mTvPlatformFeeLabel.text = platformFeeModel.title
                 mTvPlatformFeeValue.visible()
-                mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
 
-                if (platformFeeModel.slashedFeeTitle.isNotEmpty()) {
-                    mTvDiscountPlatformFeeLabel.visible()
-                    mTvDiscountPlatformFeeLabel.text = platformFeeModel.slashedFeeTitle
-                    mTvDiscountPlatformFeeValue.visible()
+                if (platformFeeModel.isShowSlashed) {
+                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
                     mTvDiscountPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+                    mTvDiscountPlatformFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    mTvDiscountPlatformFeeValue.visible()
                 } else {
-                    mTvDiscountPlatformFeeLabel.gone()
                     mTvDiscountPlatformFeeValue.gone()
+                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
                 }
 
                 if (platformFeeModel.isShowTooltip) {

@@ -4351,8 +4351,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 platformFeeModel.setMaxRange(paymentFee.getMaxRange());
                 platformFeeModel.setShowTooltip(paymentFee.getShowTooltip());
                 platformFeeModel.setTooltip(paymentFee.getTooltipInfo());
-                platformFeeModel.setSlashedFeeTitle(paymentFee.getSlashedLabel());
-                platformFeeModel.setSlashedFee(paymentFee.getSlashedFee() * -1);
+                platformFeeModel.setShowSlashed(paymentFee.getShowSlashed());
+                platformFeeModel.setSlashedFee(paymentFee.getSlashedFee());
             }
         }
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
