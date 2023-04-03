@@ -5,13 +5,13 @@ import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
+import com.tokopedia.track.TrackApp
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +42,8 @@ class InboxListPresenterTest {
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkStatic(TrackApp::class)
+        every { TrackApp.getInstance() } returns mockk(relaxed = true)
         Dispatchers.setMain(TestCoroutineDispatcher())
         getTicketListUseCase = mockk(relaxed = true)
         topBotStatusUseCase = mockk(relaxed = true)
@@ -215,11 +217,6 @@ class InboxListPresenterTest {
             presenter.getTicketList(mockk(relaxed = true))
         } just runs
 
-        mockkStatic(ContactUsTracking::class)
-        every {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
-        } just runs
-
         presenter.setFilter(ALL)
 
         assertTrue(presenter.fromFilter)
@@ -230,9 +227,6 @@ class InboxListPresenterTest {
         presenter.attachView(view)
 
         every { presenter.getTicketList(mockk(relaxed = true)) } just runs
-
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(IN_PROGRESS)
 
@@ -245,9 +239,6 @@ class InboxListPresenterTest {
 
         every { presenter.getTicketList(any()) } just runs
 
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
-
         presenter.setFilter(NEED_RATING)
 
         verify { presenter.getTicketList(any()) }
@@ -259,9 +250,6 @@ class InboxListPresenterTest {
 
         every { presenter.getTicketList(any()) } just runs
 
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
-
         presenter.setFilter(CLOSED)
 
         verify { presenter.getTicketList(any()) }
@@ -271,9 +259,6 @@ class InboxListPresenterTest {
     fun `check invocation getTicketList on invocation of setFilter when selection is CLOSED but view is null`() {
 
         every { presenter.getTicketList(any()) } just runs
-
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(CLOSED)
 
