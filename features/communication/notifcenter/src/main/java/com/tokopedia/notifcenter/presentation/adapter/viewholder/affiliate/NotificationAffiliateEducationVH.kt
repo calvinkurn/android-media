@@ -8,10 +8,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -33,6 +35,7 @@ class NotificationAffiliateEducationVH(
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
     private val seeMore = itemView?.findViewById<Typography>(R.id.tv_education_see_more)
+    private val userSession = UserSession(itemView?.context)
 
     override fun bind(element: NotificationAffiliateEducationUiModel?) {
         setData(element)
@@ -63,12 +66,26 @@ class NotificationAffiliateEducationVH(
                             )
                         view.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {
                             itemView.context?.let { ctx ->
+                                NotificationAffiliateAnalytics.trackAffiliateEducationClick(
+                                    userSession.userId
+                                )
                                 RouteManager.route(ctx, article.youtubeUrl)
                             }
                         }
                         view.updatePaddingRelative(
                             start = ITEM_HORIZONTAL_PADDING,
                             end = ITEM_HORIZONTAL_PADDING
+                        )
+                    }
+                }
+            }
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    element?.let {
+                        NotificationAffiliateAnalytics.trackAffiliateEducationImpression(
+                            it,
+                            current,
+                            userSession.userId
                         )
                     }
                 }
@@ -80,6 +97,7 @@ class NotificationAffiliateEducationVH(
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             seeMore?.setOnClickListener {
                 itemView.context?.let { ctx ->
+                    NotificationAffiliateAnalytics.trackAffiliateEducationSeeMoreClick(userSession.userId)
                     RouteManager.route(ctx, ApplinkConst.AFFILIATE_TOKO_EDU_PAGE)
                 }
             }
