@@ -31,10 +31,11 @@ import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
+import com.tokopedia.universal_sharing.di.UniversalShareModule
 import dagger.Component
 
 @AffiliateScope
-@Component(modules = [AffiliateModule::class, AffiliateVMModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [AffiliateModule::class, AffiliateVMModule::class, UniversalShareModule::class], dependencies = [BaseAppComponent::class])
 interface AffiliateComponent {
 
     @get:ApplicationContext
