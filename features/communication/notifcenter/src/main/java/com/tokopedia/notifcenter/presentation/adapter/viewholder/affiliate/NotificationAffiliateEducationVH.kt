@@ -4,15 +4,21 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.view.postDelayed
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-class NotificationAffiliateEducationVH(itemView: View?) :
+class NotificationAffiliateEducationVH(
+    itemView: View?
+) :
     AbstractViewHolder<NotificationAffiliateEducationUiModel>(itemView) {
     companion object {
         @JvmField
@@ -21,9 +27,13 @@ class NotificationAffiliateEducationVH(itemView: View?) :
 
         private const val SLIDE_TO_SHOW = 1.2f
         private const val THREE = 3
+        private const val YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss"
+        private const val DD_MMM = "dd MMM"
+        private const val DD_MMM_YY = "dd MMM yy"
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
+    private val seeMore = itemView?.findViewById<Typography>(R.id.tv_education_see_more)
 
     override fun bind(element: NotificationAffiliateEducationUiModel?) {
         setData(element)
@@ -45,9 +55,18 @@ class NotificationAffiliateEducationVH(itemView: View?) :
                             view.context?.getString(
                                 R.string.article_widget_detail,
                                 article.categories?.get(0)?.title,
-                                article.description,
-                                article.modifiedDate
+                                getFormattedDate(article.modifiedDate, YYYY_MM_DD_HH_MM_SS, DD_MMM),
+                                getFormattedDate(
+                                    article.publishTime,
+                                    YYYY_MM_DD_HH_MM_SS,
+                                    DD_MMM_YY
+                                )
                             )
+                        view.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {
+                            itemView.context?.let { ctx ->
+                                RouteManager.route(ctx, article.youtubeUrl)
+                            }
+                        }
                     }
                 }
             }
@@ -56,11 +75,24 @@ class NotificationAffiliateEducationVH(itemView: View?) :
             autoplay = false
             infinite = false
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-            onItemClick = {
+            seeMore?.setOnClickListener {
+                itemView.context?.let { ctx ->
+                    RouteManager.route(ctx, ApplinkConst.AFFILIATE_TOKO_EDU_PAGE)
+                }
             }
         }
         carousel?.postDelayed(TimeUnit.SECONDS.toMillis(THREE.toLong())) {
             carousel.activeIndex = THREE
         }
+    }
+
+    private fun getFormattedDate(
+        input: String?,
+        inputPattern: String,
+        outputPattern: String
+    ): String? {
+        val parsedDate =
+            LocalDate.parse(input, DateTimeFormatter.ofPattern(inputPattern))
+        return parsedDate.format(DateTimeFormatter.ofPattern(outputPattern))
     }
 }

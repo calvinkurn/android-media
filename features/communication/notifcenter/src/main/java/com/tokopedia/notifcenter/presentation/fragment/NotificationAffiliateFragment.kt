@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
-import androidx.collection.ArrayMap
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -26,8 +24,6 @@ import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResp
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
-import com.tokopedia.notifcenter.data.state.Resource
-import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -40,7 +36,6 @@ import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationIte
 import com.tokopedia.notifcenter.presentation.adapter.listener.NotificationEndlessRecyclerViewScrollListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -82,7 +77,6 @@ open class NotificationAffiliateFragment :
     private var rvScrollListener: NotificationEndlessRecyclerViewScrollListener? = null
     private var rvTypeFactory: NotificationTypeFactoryImpl? = null
     private var filter: NotificationFilterView? = null
-    private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
     private val scrollState = ScrollToBottomState()
 
     private val viewModel by lazy {
@@ -203,7 +197,6 @@ open class NotificationAffiliateFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         trackIfUserScrollToBottom()
-        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     private fun trackIfUserScrollToBottom() {
@@ -236,56 +229,8 @@ open class NotificationAffiliateFragment :
             filter?.updateFilterState(it)
         }
 
-        viewModel.bumpReminder.observe(
-            viewLifecycleOwner
-        ) {
-            updateReminderState(
-                resource = it,
-                isBumpReminder = true
-            )
-        }
-
-        viewModel.deleteReminder.observe(
-            viewLifecycleOwner
-        ) {
-            updateReminderState(
-                resource = it,
-                isBumpReminder = false
-            )
-        }
-
         viewModel.affiliateEducationArticle.observe(viewLifecycleOwner) {
             rvAdapter?.addAffiliateEducationArticles(it)
-        }
-    }
-
-    private fun updateReminderState(
-        resource: Resource<Any>,
-        isBumpReminder: Boolean
-    ) {
-        val viewHolderState: ViewHolderState? = viewHolderLoading[resource.referer]
-        when (resource.status) {
-            Status.LOADING -> {
-                rvAdapter?.loadingStateReminder(viewHolderState)
-            }
-            Status.SUCCESS -> {
-                if (isBumpReminder) {
-                    showMessage(R.string.title_success_bump_reminder)
-                } else {
-                    showMessage(R.string.title_success_delete_reminder)
-                }
-                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
-                viewHolderLoading.remove(resource.referer)
-            }
-            Status.ERROR -> {
-                resource.throwable?.let { error ->
-                    showErrorMessage(error)
-                }
-                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
-                viewHolderLoading.remove(resource.referer)
-            }
-            else -> {
-            }
         }
     }
 
@@ -383,13 +328,6 @@ open class NotificationAffiliateFragment :
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 .show()
-        }
-    }
-
-    private fun showMessage(@StringRes stringRes: Int) {
-        val msg = getString(stringRes)
-        view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
