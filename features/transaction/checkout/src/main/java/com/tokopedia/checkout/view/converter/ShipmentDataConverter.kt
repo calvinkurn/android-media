@@ -456,24 +456,20 @@ class ShipmentDataConverter @Inject constructor() {
             shouldShowShopInfo = product.shouldShowShopInfo,
             shopTypeInfoData = product.shopTypeInfoData,
             cartStringOrder = groupShopV2.cartStringOrder,
-            originWarehouseIds = product.originWarehouseIds
+            originWarehouseIds = product.originWarehouseIds,
+            cartId = product.cartId,
+            productId = product.productId,
+            productCatId = product.productCatId.toLong(),
+            name = product.productName,
+            shopId = groupShopV2.shop.shopId.toString(),
+            shopName = product.shopName,
+            currency = product.productPriceCurrency,
+            price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
+            originalPrice = product.productOriginalPrice,
+            variant = product.variant
         )
-        cartItemModel.cartId = product.cartId
-        cartItemModel.productId = product.productId
-        cartItemModel.productCatId = product.productCatId.toLong()
-        cartItemModel.name = product.productName
-        cartItemModel.shopId = groupShopV2.shop.shopId.toString()
-        cartItemModel.shopName = product.shopName
         cartItemModel.imageUrl = product.productImageSrc200Square
-        cartItemModel.currency = product.productPriceCurrency
-        if (product.productWholesalePrice != 0.0) {
-            cartItemModel.price = product.productWholesalePrice
-            cartItemModel.isWholesalePrice = true
-        } else {
-            cartItemModel.price = product.productPrice
-            cartItemModel.isWholesalePrice = false
-        }
-        cartItemModel.originalPrice = product.productOriginalPrice
+        cartItemModel.isWholesalePrice = product.productWholesalePrice != 0.0
         cartItemModel.quantity = product.productQuantity
         cartItemModel.weight = product.productWeight.toDouble()
         cartItemModel.weightFmt = product.productWeightFmt
@@ -495,7 +491,7 @@ class ShipmentDataConverter @Inject constructor() {
         cartItemModel.freeShippingName = product.freeShippingName
         cartItemModel.isShowTicker = product.isShowTicker
         cartItemModel.tickerMessage = product.tickerMessage
-        cartItemModel.variant = product.variant
+//        cartItemModel.variant = product.variant
         cartItemModel.variantParentId = product.variantParentId
         cartItemModel.productAlertMessage = product.productAlertMessage
         cartItemModel.productInformation = product.productInformation

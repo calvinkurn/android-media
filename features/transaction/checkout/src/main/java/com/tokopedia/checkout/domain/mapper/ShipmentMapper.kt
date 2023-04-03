@@ -386,45 +386,46 @@ class ShipmentMapper @Inject constructor() {
         promoSAFResponse: PromoSAFResponse,
         shopTypeInfoData: ShopTypeInfoData
     ): AnalyticsProductCheckoutData {
-        return AnalyticsProductCheckoutData().apply {
-            productId = product.productId.toString()
-            productAttribution = product.productTrackerData.attribution
-            productListName = product.productTrackerData.trackerListName
-            productCategory = product.productCategory
-            productCategoryId = product.productCatId.toString()
-            productName = product.productName
-            productPrice = product.productPrice.toString()
-            if (product.tradeInInfo.isValidTradeIn) {
-                productPrice = product.tradeInInfo.newDevicePrice.toString()
+        var promoCode = ""
+        var promoDetails = ""
+        promoSAFResponse.lastApply.data.trackingDetails.forEach {
+            if (it.productId == product.productId) {
+                promoCode = it.promoCodesTracking
+                promoDetails = it.promoDetailsTracking
             }
-            productShopId = groupShop.shop.shopId.toString()
-            productShopName = groupShop.shop.shopName
-            productShopType = shopTypeInfoData.shopType
-            productVariant = ""
-            productBrand = ""
-            productQuantity = product.productQuantity
-            warehouseId = groupShop2.warehouse.warehouseId.toString()
-            productWeight = product.productWeight.toString()
-            buyerAddressId = userAddress.addressId
-            shippingDuration = ""
-            courier = ""
-            shippingPrice = ""
-            codFlag = cod.isCod.toString()
+        }
+        return AnalyticsProductCheckoutData(
+            productId = product.productId.toString(),
+            productAttribution = product.productTrackerData.attribution,
+            productListName = product.productTrackerData.trackerListName,
+            productCategory = product.productCategory,
+            productCategoryId = product.productCatId.toString(),
+            productName = product.productName,
+            productPrice = if (product.tradeInInfo.isValidTradeIn) product.tradeInInfo.newDevicePrice.toString() else product.productPrice.toString(),
+            productShopId = groupShop.shop.shopId.toString(),
+            productShopName = groupShop.shop.shopName,
+            productShopType = shopTypeInfoData.shopType,
+            productVariant = "",
+            productBrand = "",
+            productQuantity = product.productQuantity,
+            warehouseId = groupShop2.warehouse.warehouseId.toString(),
+            productWeight = product.productWeight.toString(),
+            buyerAddressId = userAddress.addressId,
+            shippingDuration = "",
+            courier = "",
+            shippingPrice = "",
+            codFlag = cod.isCod.toString(),
             tokopediaCornerFlag = if (userAddress.cornerId.isNotBlankOrZero()) {
                 true.toString()
             } else {
                 false.toString()
-            }
-            isFulfillment = groupShop2.isFulfillment.toString()
-            isDiscountedPrice = product.productOriginalPrice > 0
-            campaignId = product.campaignId
-            promoSAFResponse.lastApply.data.trackingDetails.forEach {
-                if (it.productId == product.productId) {
-                    promoCode = it.promoCodesTracking
-                    promoDetails = it.promoDetailsTracking
-                }
-            }
-        }
+            },
+            isFulfillment = groupShop2.isFulfillment.toString(),
+            isDiscountedPrice = product.productOriginalPrice > 0,
+            campaignId = product.campaignId,
+            promoCode = promoCode,
+            promoDetails = promoDetails
+        )
     }
 
     private fun mapShopShipments(shopShipment: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopShipment>): List<ShopShipment> {
@@ -532,11 +533,11 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
-        return EthicalDrugDataModel().apply {
-            needPrescription = addOns.needPrescription
-            text = addOns.text
+        return EthicalDrugDataModel(
+            needPrescription = addOns.needPrescription,
+            text = addOns.text,
             iconUrl = addOns.iconUrl
-        }
+        )
     }
 
     private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItemModel> {
@@ -837,10 +838,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapCod(cod: Cod): CodModel {
-        return CodModel().apply {
-            isCod = cod.isCod
-            counterCod = cod.counterCod
-        }
+        return CodModel(cod.isCod, cod.counterCod)
     }
 
     private fun mapPopUp(popup: PopUp): PopUpData {
