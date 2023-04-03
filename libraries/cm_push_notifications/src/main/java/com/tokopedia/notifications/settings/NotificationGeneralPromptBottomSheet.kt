@@ -65,11 +65,16 @@ class NotificationGeneralPromptBottomSheet(
 
     private fun getResourcesConfig(): Triple<Int, Int, Int> =
         if (GlobalConfig.isSellerApp()) {
-            Triple(
-                R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
-                R.string.cm_notifications_general_prompt_sellerapp_title,
-                R.string.cm_notifications_general_prompt_sellerapp_description
-            )
+            if (isReminderPrompt) {
+                getResourcesConfigForReminderPrompt()
+            } else {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_sellerapp_title,
+                    R.string.cm_notifications_general_prompt_sellerapp_description
+                )
+            }
+
         } else {
             if (isReminderPrompt) {
                 getResourcesConfigForReminderPrompt()
@@ -103,6 +108,13 @@ class NotificationGeneralPromptBottomSheet(
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
                     R.string.cm_notifications_general_prompt_live_shopping_title,
                     R.string.cm_notifications_general_prompt_live_shopping_description
+                )
+            }
+            PRODUCT_LIST -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_product_list_title,
+                    R.string.cm_notifications_general_prompt_product_list_description
                 )
             }
             else -> {
@@ -161,12 +173,11 @@ class NotificationGeneralPromptBottomSheet(
             return
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
+        sendEventClickCta()
         if (isReminderPrompt && activity != null) {
             OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
             dismiss()
         } else {
-            sendEventClickCta()
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
             context?.let {
@@ -245,6 +256,7 @@ class NotificationGeneralPromptBottomSheet(
         const val KEJAR_DISKON = "kejarDiskon"
         const val TAP_TAP_KOTAK = "tapTapKotak"
         const val LIVE_SHOPPING = "liveShopping"
+        const val PRODUCT_LIST = "productList"
 
     }
 }

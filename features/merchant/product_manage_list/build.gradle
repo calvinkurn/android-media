@@ -79,6 +79,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewPager2
 
     implementation rootProject.ext.miscDependencies.dagger
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
 

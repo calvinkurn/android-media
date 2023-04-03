@@ -11,7 +11,9 @@
     <string name="cm_notifications_general_prompt_kejar_diskon_title">Pantau terus Flash Sale lewat notifikasi.</string>
     <string name="cm_notifications_general_prompt_tap_tap_kotak_title">Pantau terus Tap Tap Kotak lewat notifikasi</string>
     <string name="cm_notifications_general_prompt_live_shopping_title">Pantau terus Live terbaru lewat notifikasi</string>
+    <string name="cm_notifications_general_prompt_product_list_title">Pantau terus stok produk lewat notifikasi</string>
     <string name="cm_notifications_general_prompt_kejar_diskon_description">Supaya kamu nggak ketinggalan promo Flash Sale!</string>
     <string name="cm_notifications_general_prompt_tap_tap_kotak_description">Supaya Toped bisa ingetin kamu buat ambil hadiah lagi besok.</string>
     <string name="cm_notifications_general_prompt_live_shopping_description">Supaya nggak ketinggalan Live seru yang mungkin ada promo dan game berhadiah!</string>
+    <string name="cm_notifications_general_prompt_product_list_description">dSupaya kamu bisa tahu kapan harus restock untuk menghindari pembatalan pesanan.</string>
 </resources>

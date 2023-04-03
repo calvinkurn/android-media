@@ -2,6 +2,7 @@ package com.tokopedia.notifications.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.settings.NotificationGeneralPromptBottomSheet
@@ -25,11 +26,18 @@ class NotificationReminderPromptGtmTracker constructor(
             Context.MODE_PRIVATE
         )
     }
-    private var eventCategory = CMConstant.GtmTrackerEvents.VALUE_REMINDER_CATEGORY
+    private var eventCategory = if (GlobalConfig.isSellerApp()) {
+        CMConstant.GtmTrackerEvents.VALUE_REMINDER_CATEGORY_SA
+    } else {
+        CMConstant.GtmTrackerEvents.VALUE_REMINDER_CATEGORY
+    }
     private var trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_REMINDER_VIEW
     private var pageType = ""
 
     fun sendReminderPromptImpressionEvent(context: Context, pagePath: String) {
+        if (GlobalConfig.isSellerApp()) {
+            trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_REMINDER_VIEW_SA
+        }
         updateReminderPromptFrequency(useCase)
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
@@ -41,6 +49,9 @@ class NotificationReminderPromptGtmTracker constructor(
     }
 
     fun sendReminderPromptClickCtaEvent(context: Context, pagePath: String) {
+        if (GlobalConfig.isSellerApp()) {
+            trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER_SA
+        }
         trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
@@ -52,6 +63,9 @@ class NotificationReminderPromptGtmTracker constructor(
     }
 
     fun sendReminderPromptClickCloseEvent(context: Context, pagePath: String) {
+        if (GlobalConfig.isSellerApp()) {
+            trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER_SA
+        }
         trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
@@ -99,7 +113,7 @@ class NotificationReminderPromptGtmTracker constructor(
         map[CMConstant.GtmTrackerEvents.KEY_BUSINESS_UNIT] = CMConstant.GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[CMConstant.GtmTrackerEvents.KEY_CURRENT_SITE] = CMConstant.GtmTrackerEvents.VALUE_CURRENT_SITE
         map[CMConstant.GtmTrackerEvents.KEY_USER_ID] = userId
-        if (pagePath.isNotEmpty()) {
+        if (pagePath.isNotEmpty() && !GlobalConfig.isSellerApp()) {
             map[CMConstant.GtmTrackerEvents.KEY_PAGE_PATH] = pagePath
         }
         if (pageType.isNotEmpty()) {
@@ -122,6 +136,10 @@ class NotificationReminderPromptGtmTracker constructor(
                 pageType = "upcoming page"
                 return LIVE_SHOPPING
             }
+            NotificationGeneralPromptBottomSheet.PRODUCT_LIST -> {
+                pageType = "product list page"
+                return PRODUCT_LIST
+            }
             else -> {
                 return ""
             }
@@ -142,6 +160,9 @@ class NotificationReminderPromptGtmTracker constructor(
             MAIN_PARENT_ACTIVITY -> {
                 HOME_PAGE
             }
+            PRODUCT_MANAGE_ACTIVITY -> {
+                PRODUCT_LIST_PAGE
+            }
             else -> {
                 pagePath
             }
@@ -152,13 +173,16 @@ class NotificationReminderPromptGtmTracker constructor(
         const val KEJAR_DISKON = "kejar Diskon"
         const val TAP_TAP_KOTAK = "Tap Tap Kotak"
         const val LIVE_SHOPPING = "Live Shopping"
+        const val PRODUCT_LIST = "Product List"
         const val DISCOVERY_ACTIVITY = "DiscoveryActivity"
         const val PLAY_ACTIVITY = "PlayActivity"
         const val GIFT_BOX_DAILY_ACTIVITY = "GiftBoxDailyActivity"
         const val MAIN_PARENT_ACTIVITY = "MainParentActivity"
+        const val PRODUCT_MANAGE_ACTIVITY = "ProductManageActivity"
         const val DISCOVERY_PAGE = "Discovery Page"
         const val LIVE_SHOPPING_PAGE = "Live Shopping Page"
         const val GIFT_BOX_DAILY_PAGE = "GiftBoxDaily Page"
         const val HOME_PAGE = "Home Page"
+        const val PRODUCT_LIST_PAGE = "Product List Page"
     }
 }
