@@ -20,7 +20,7 @@ class AddEditProductUploadConstant {
         const val LOGGING_TAG = "PRODUCT_UPLOAD"
         const val LOGGING_ERROR_FIELD_NAME = "type"
         val DISABLED_LOGGING_DATA_LIST = listOf(
-            "Description" // Disabled because sometimes it's too long to log, or may contains PII data
+            "description" // Disabled because sometimes it's too long to log, or may contains PII data
         )
     }
 }
