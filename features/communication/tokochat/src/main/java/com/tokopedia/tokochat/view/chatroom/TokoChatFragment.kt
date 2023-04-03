@@ -314,8 +314,9 @@ open class TokoChatFragment :
             adapter.getImageAttachmentPairWithId(it.first)?.let { pair ->
                 val element = pair.second
                 element.updateImageState(TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD)
-                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false
-                    && baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE) {
+                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
+                    baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
+                ) {
                     adapter.notifyItemChanged(pair.first)
                 }
             }
@@ -977,16 +978,6 @@ open class TokoChatFragment :
         element: TokoChatImageBubbleUiModel,
         isFromRetry: Boolean
     ) {
-//        element.updateImageState(TokoChatImageBubbleUiModel.ImageState.LOADING_LOAD)
-//        // get item position
-//        adapter.getImageAttachmentPositionWithId(element.imageId)?.let {
-//            // notify
-//            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false
-//                && baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE) {
-//                adapter.notifyItemChanged(it)
-//            }
-//        }
-
         viewModel.getImageWithId(
             imageId = element.imageId,
             channelId = viewModel.channelId,
@@ -1020,8 +1011,9 @@ open class TokoChatFragment :
             // get item position
             adapter.getImageAttachmentPairWithId(element.imageId)?.let {
                 // notify
-                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false
-                    && baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE) {
+                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
+                    baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
+                ) {
                     adapter.notifyItemChanged(it.first)
                 }
             }
@@ -1101,8 +1093,9 @@ open class TokoChatFragment :
             }
 
             // notify
-            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false
-                && baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE) {
+            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
+                baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
+            ) {
                 adapter.notifyItemChanged(position)
             }
         }
@@ -1163,8 +1156,9 @@ open class TokoChatFragment :
         // get item position
         adapter.getImageAttachmentPairWithId(element.imageId)?.let {
             // notify
-            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false
-                && baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE) {
+            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
+                baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
+            ) {
                 adapter.notifyItemChanged(it.first)
             }
         }
