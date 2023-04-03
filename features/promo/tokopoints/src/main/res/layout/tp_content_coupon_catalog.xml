@@ -501,7 +501,6 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:id="@+id/btn_action_claim"
         android:layout_marginStart="@dimen/tp_margin_medium"
         android:layout_marginEnd="@dimen/tp_margin_medium"
