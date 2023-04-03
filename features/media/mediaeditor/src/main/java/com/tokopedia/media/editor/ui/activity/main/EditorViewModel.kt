@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity.main
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
+import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
@@ -96,6 +98,7 @@ class EditorViewModel @Inject constructor(
     }
 
     fun saveToGallery(
+        context: Context,
         dataList: List<EditorUiModel>,
         onFinish: (result: List<String>?, exception: Exception?) -> Unit
     ) {
@@ -107,6 +110,9 @@ class EditorViewModel @Inject constructor(
             if (it.isImageEdited()) {
                 // if use 'add logo' feature then need to flatten image first
                 it.getOverlayLogoValue()?.let { overlayData ->
+                    overlayData.imageRealSize.apply {
+                        if (context.isCreatedBitmapOverflow(first, second)) return
+                    }
                     addLogoFilterRepository.flattenImage(
                         it.getImageUrl(),
                         overlayData.overlayLogoUrl,

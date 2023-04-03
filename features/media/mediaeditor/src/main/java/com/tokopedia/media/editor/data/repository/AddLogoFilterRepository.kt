@@ -1,11 +1,10 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.net.Uri
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.editor.utils.mediaCreateScaledBitmap
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
@@ -18,7 +17,6 @@ interface AddLogoFilterRepository {
 }
 
 class AddLogoFilterRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val saveImage: SaveImageRepository,
     private val bitmapConverter: BitmapConverterRepository
 ) : AddLogoFilterRepository {
@@ -29,34 +27,42 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
     ): String {
         val latch = CountDownLatch(1)
 
-        var baseBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        var resultBitmap: Bitmap? = null
         Thread {
-            baseBitmap = bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))
+            bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))?.let { baseBitmap ->
+                resultBitmap = baseBitmap
 
-            bitmapConverter.uriToBitmap(Uri.parse(imageAddedUrl))?.let {
-                val widthValidation = baseBitmap.width != it.width
-                val heightValidation = baseBitmap.height != it.height
+                bitmapConverter.uriToBitmap(Uri.parse(imageAddedUrl))?.let { overlayBitmap ->
+                    val widthValidation = baseBitmap.width != overlayBitmap.width
+                    val heightValidation = baseBitmap.height != overlayBitmap.height
 
-                val finalBitmap = if (widthValidation || heightValidation) {
-                    Bitmap.createScaledBitmap(
-                        it,
-                        baseBitmap.width,
-                        baseBitmap.height,
-                        true
-                    )
-                } else {
-                    it
+                    val finalBitmap = if (widthValidation || heightValidation) {
+                        mediaCreateScaledBitmap(
+                            overlayBitmap,
+                            baseBitmap.width,
+                            baseBitmap.height,
+                            true
+                        )
+                    } else {
+                        overlayBitmap
+                    }
+
+                    val canvas = Canvas(baseBitmap)
+                    finalBitmap?.let {
+                        canvas.drawBitmap(it, XY_FLATTEN_COORDINATE, XY_FLATTEN_COORDINATE, Paint())
+                    }
                 }
-
-                val canvas = Canvas(baseBitmap)
-                canvas.drawBitmap(finalBitmap, XY_FLATTEN_COORDINATE, XY_FLATTEN_COORDINATE, Paint())
             }
 
             latch.countDown()
         }.start()
 
         latch.await()
-        return saveImage.saveToCache(baseBitmap, sourcePath = sourcePath)?.path ?: ""
+        return resultBitmap?.let {
+            saveImage.saveToCache(it, sourcePath = sourcePath)?.path ?: ""
+        } ?: run {
+            ""
+        }
     }
 
     companion object {

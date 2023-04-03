@@ -153,6 +153,7 @@ class EditorActivity : BaseEditorActivity() {
     private fun saveImageToGallery() {
         val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.saveToGallery(
+            this,
             listImageEditState
         ) { imageResultList, exception ->
             imageResultList?.let {

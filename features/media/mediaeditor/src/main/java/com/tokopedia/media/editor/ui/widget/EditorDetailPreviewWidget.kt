@@ -15,7 +15,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.E
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.tokopedia.media.editor.utils.mediaCreateBitmap
-import com.tokopedia.media.editor.utils.validateCreatedBitmapMemory
+import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
@@ -201,7 +201,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             cropRatio = imageRatio ?: EMPTY_RATIO
         )
 
-        return if (context.validateCreatedBitmapMemory(imageWidth, imageHeight)) {
+        return if (!context.isCreatedBitmapOverflow(imageWidth, imageHeight)) {
             mediaCreateBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
         } else {
             null

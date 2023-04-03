@@ -15,7 +15,7 @@ import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.ResourceProvider
-import com.tokopedia.media.editor.utils.validateCreatedBitmapMemory
+import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -120,7 +120,7 @@ class DetailEditorViewModel @Inject constructor(
     ) {
         initializeWatermarkAsset()
 
-        _watermarkFilter.value = if (context.validateCreatedBitmapMemory(bitmapSource.width, bitmapSource.height)) {
+        _watermarkFilter.value = if (!context.isCreatedBitmapOverflow(bitmapSource.width, bitmapSource.height)) {
             getWatermarkUseCase(
                 WatermarkUseCaseParam(
                     source = bitmapSource,
@@ -142,7 +142,7 @@ class DetailEditorViewModel @Inject constructor(
     ): Pair<Bitmap?, Bitmap?> {
         initializeWatermarkAsset()
 
-        return if (context.validateCreatedBitmapMemory(implementedBaseBitmap.width, implementedBaseBitmap.height)) {
+        return if (!context.isCreatedBitmapOverflow(implementedBaseBitmap.width, implementedBaseBitmap.height)) {
             watermarkFilterRepository.watermarkDrawerItem(
                 implementedBaseBitmap,
                 userSession.shopName

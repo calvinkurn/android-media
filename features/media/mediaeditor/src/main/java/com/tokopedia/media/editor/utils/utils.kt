@@ -23,7 +23,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
 import java.io.File
 
-
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
 
 @Suppress("SpellCheckingInspection")
@@ -289,6 +288,20 @@ fun mediaCreateBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap? {
     return null
 }
 
+fun mediaCreateScaledBitmap(src: Bitmap , dstWidth: Int, dstHeight: Int, filter: Boolean): Bitmap? {
+    try {
+        return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, filter)
+    } catch (e: Exception) {
+        val targetSize = Pair(dstWidth, dstHeight)
+        newRelicLog(
+            mapOf(
+                FAILED_CREATE_BITMAP to "scaled => {$targetSize} /n ${e.message}"
+            )
+        )
+    }
+    return null
+}
+
 private fun Context?.getActivity(): Activity? {
     var context = this
     while (context is ContextWrapper) {
@@ -300,7 +313,7 @@ private fun Context?.getActivity(): Activity? {
     return null
 }
 
-fun Context?.validateCreatedBitmapMemory(width: Int, height: Int): Boolean {
+fun Context?.isCreatedBitmapOverflow(width: Int, height: Int): Boolean {
     val bitmapPixelSize = 4
     val memoryUsage = width * height * bitmapPixelSize
     val sourceSize = Pair(width, height)
@@ -309,12 +322,10 @@ fun Context?.validateCreatedBitmapMemory(width: Int, height: Int): Boolean {
     getActivity()?.let {
         if (it.checkMemoryOverflow(memoryUsage)) {
             it.showMemoryLimitToast(sourceSize)
+            return true
+        } else {
             return false
         }
-    } ?: run {
-        showErrorGeneralToaster(this)
-        return false
     }
-
     return true
 }
