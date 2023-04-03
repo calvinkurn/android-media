@@ -48,5 +48,9 @@ abstract class PlayBroadcastSetupBindModule {
 
     @Binds
     @PlayBroadcastSetupScope
+    abstract fun bindProductTagDataStore(dataStore: ProductTagDataStoreImpl): ProductTagDataStore
+
+    @Binds
+    @PlayBroadcastSetupScope
     abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

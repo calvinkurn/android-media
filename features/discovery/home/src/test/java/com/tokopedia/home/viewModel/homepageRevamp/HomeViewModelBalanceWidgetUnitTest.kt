@@ -43,8 +43,8 @@ class HomeViewModelBalanceWidgetUnitTest {
         headerDataModel = HeaderDataModel(
             homeBalanceModel = HomeBalanceModel(
                 balanceDrawerItemModels = mutableListOf(
-                    BalanceDrawerItemModel(drawerItemType = TYPE_WALLET_APP_LINKED),
-                    BalanceDrawerItemModel(drawerItemType = TYPE_SUBSCRIPTION)
+                    BalanceDrawerItemModel(drawerItemType = TYPE_WALLET_APP_LINKED, position = 0),
+                    BalanceDrawerItemModel(drawerItemType = TYPE_SUBSCRIPTION, position = 1)
                 )
             )
         )

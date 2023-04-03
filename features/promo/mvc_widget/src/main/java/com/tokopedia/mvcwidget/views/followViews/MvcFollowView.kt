@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.mvcwidget.FollowWidget
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.WidgetImpression
 import com.tokopedia.user.session.UserSession

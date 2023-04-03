@@ -141,7 +141,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
         account: ContentAccountUiModel,
         page: PlayBroadcastBeautificationAnalytic.Page,
         tab: PlayBroadcastBeautificationAnalytic.Tab,
-        customFace: String
+        filterName: String
     ) {
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - slider beauty filter",
@@ -149,7 +149,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
                 account = account,
                 page = page,
                 tab = tab,
-                filterName = customFace,
+                filterName = filterName,
             ),
             trackerId = PlayBroadcasterAnalyticHelper.getTrackerIdBySite(
                 mainAppTrackerId = "41387",

@@ -96,7 +96,11 @@ data class P2RatesEstimateData(
 
     @SerializedName("isScheduled")
     @Expose
-    val isScheduled: Boolean = false
+    val isScheduled: Boolean = false,
+
+    @SerializedName("boBadge")
+    @Expose
+    val boBadge: BoBadge = BoBadge()
 )
 
 data class P2RatesError(
@@ -162,5 +166,31 @@ data class Ticker(
 
     @SerializedName("message")
     @Expose
-    val message: String = ""
+    val message: String = "",
+
+    @SerializedName("color")
+    @Expose
+    val color: String = "",
+
+    @SerializedName("link")
+    @Expose
+    val link: String = "",
+
+    @SerializedName("action")
+    @Expose
+    val action: String = ""
+)
+
+data class BoBadge(
+    @SerializedName("imageURL")
+    @Expose
+    val imageUrl: String = "",
+
+    @SerializedName("isUsingPadding")
+    @Expose
+    val isUsingPadding: Boolean = true,
+
+    @SerializedName("imageHeight")
+    @Expose
+    val imageHeight: Int = 0
 )

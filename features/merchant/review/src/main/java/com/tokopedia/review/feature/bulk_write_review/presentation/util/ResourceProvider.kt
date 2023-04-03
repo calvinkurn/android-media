@@ -1,14 +1,10 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.util
 
 import com.tokopedia.review.R
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.reviewcommon.uimodel.StringRes
 
 object ResourceProvider {
-
-    private const val RATING_1 = 1
-    private const val RATING_2 = 2
-    private const val RATING_3 = 3
-
     fun getErrorMessageCannotAddMediaWhileUploading(): StringRes {
         return StringRes(R.string.review_form_cannot_add_more_media_while_uploading)
     }
@@ -35,9 +31,9 @@ object ResourceProvider {
 
     fun getExpandedTextAreaTitle(rating: Int?): StringRes {
         return when (rating) {
-            RATING_1 -> StringRes(R.string.review_create_worst_title)
-            RATING_2 -> StringRes(R.string.review_form_bad_title)
-            RATING_3 -> StringRes(R.string.review_form_neutral_title)
+            ReviewConstants.RATING_1 -> StringRes(R.string.review_create_worst_title)
+            ReviewConstants.RATING_2 -> StringRes(R.string.review_form_bad_title)
+            ReviewConstants.RATING_3 -> StringRes(R.string.review_form_neutral_title)
             else -> StringRes(R.string.review_create_best_title)
         }
     }

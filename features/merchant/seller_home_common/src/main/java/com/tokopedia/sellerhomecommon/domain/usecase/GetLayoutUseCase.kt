@@ -97,6 +97,7 @@ class GetLayoutUseCase(
                   useRealtime
                 }
                 shopState
+                personaStatus
               }
             }
         """

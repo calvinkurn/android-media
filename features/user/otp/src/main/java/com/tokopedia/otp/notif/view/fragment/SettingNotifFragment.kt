@@ -1,19 +1,18 @@
 package com.tokopedia.otp.notif.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.LetUtil
-import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
-import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
@@ -31,7 +30,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+class SettingNotifFragment : BaseOtpFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,13 +45,9 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = SettingNotifViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
-
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_PUSH_NOTIF_SETTING
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
-
-    override fun onBackPressed(): Boolean = true
 
     override fun onStart() {
         super.onStart()
@@ -111,9 +106,10 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
-        (activity as AppCompatActivity).supportActionBar?.apply {
-            title = getString(R.string.title_setting_push_notif)
-            setDisplayShowTitleEnabled(true)
+        viewBound.headerUnify?.apply {
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
         showLoading()
         viewBound.mainImage?.setImageUrl(LINK_IMG_PHONE_OTP_PUSH_NOTIF)
@@ -178,7 +174,7 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         const val PARAM_DEVICE_STATUS = "device_status"
 
-        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = "https://images.tokopedia.net/android/user/phone_otp_push_notif.png"
+        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = TokopediaImageUrl.LINK_IMG_PHONE_OTP_PUSH_NOTIF
 
         fun createInstance(bundle: Bundle): SettingNotifFragment {
             val fragment = SettingNotifFragment()

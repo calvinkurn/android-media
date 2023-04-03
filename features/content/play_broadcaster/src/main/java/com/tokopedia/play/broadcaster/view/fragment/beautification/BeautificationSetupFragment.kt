@@ -194,20 +194,20 @@ class BeautificationSetupFragment @Inject constructor(
                 when(selectedTabIdx) {
                     BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
                         beautificationAnalytic.clickSliderBeautyFilter(
-                            viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                            PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
-                            viewModel.selectedFaceFilter?.id.orEmpty(),
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            tab = PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
+                            filterName = viewModel.selectedFaceFilter?.id.orEmpty(),
                         )
                         viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
                     }
                     BeautificationTabFragment.Companion.Type.Preset.value -> {
                         viewModel.submitAction(PlayBroadcastAction.ChangePresetValue(p0.first))
                         beautificationAnalytic.clickSliderBeautyFilter(
-                            viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                            PlayBroadcastBeautificationAnalytic.Tab.Makeup,
-                            viewModel.selectedPreset?.id.orEmpty(),
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            tab = PlayBroadcastBeautificationAnalytic.Tab.Makeup,
+                            filterName = viewModel.selectedPreset?.id.orEmpty(),
                         )
                     }
                     else -> {}

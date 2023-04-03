@@ -8,5 +8,6 @@ data class ProductBundleMaster(
         val preOrderStatus: String = "",
         val processDay: Long = 0L,
         val processTypeNum: Int = 0,
-        val isSelected: Boolean = false
+        val isSelected: Boolean = false,
+        val totalSold: Int = 0
 )
