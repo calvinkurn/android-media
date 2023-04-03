@@ -1905,26 +1905,24 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        lastValidateUseRequest = promoRequest
-        getLastApplyPromoUseCase
-            .setParam(promoRequest)
-            .execute(
-                onSuccess = { getLastApplyResponse ->
-                    setUpdateCartAndGetLastApplyLastResponse(
-                        UpdateAndGetLastApplyData().apply {
-                            promoUiModel = getLastApplyResponse.promoUiModel
-                        }
-                    )
-                    isLastApplyResponseStillValid = false
-                    view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-                },
-                onError = { throwable ->
-                    if (throwable is AkamaiErrorException) {
-                        view?.showToastMessageRed(throwable)
+        launch (dispatchers.io) {
+            try {
+                lastValidateUseRequest = promoRequest
+                val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
+                setUpdateCartAndGetLastApplyLastResponse(
+                    UpdateAndGetLastApplyData().apply {
+                        promoUiModel = getLastApplyResponse.promoUiModel
                     }
-                    view?.showPromoCheckoutStickyButtonInactive()
+                )
+                isLastApplyResponseStillValid = false
+                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
+            } catch(t: Throwable) {
+                if (t is AkamaiErrorException) {
+                    view?.showToastMessageRed(t)
                 }
-            )
+                view?.showPromoCheckoutStickyButtonInactive()
+            }
+        }
     }
 
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {

@@ -34,7 +34,7 @@ class AddToCartExternalUseCase @Inject constructor(
         const val QUERY_ADD_TO_CART_EXTERNAL = "AddToCartExternalQuery"
     }
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = ADD_TO_CART_EXTERNAL_QUERY
 
     @GqlQuery(QUERY_ADD_TO_CART_EXTERNAL, ADD_TO_CART_EXTERNAL_QUERY)
     override suspend fun execute(params: Pair<String, String>): AddToCartExternalModel {
