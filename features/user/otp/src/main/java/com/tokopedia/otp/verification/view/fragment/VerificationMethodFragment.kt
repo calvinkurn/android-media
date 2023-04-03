@@ -298,7 +298,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableDefaultOtp(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(KEY_DEFAULT_OTP_ROLLENCE, false)
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_DEFAULT_OTP_ROLLENCE, "").isNotEmpty()
     }
 
     private fun initObserver() {
