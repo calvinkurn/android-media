@@ -820,6 +820,7 @@ class DetailEditorFragment @Inject constructor(
             val mirroredBitmap = mediaCreateBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true) ?: return@let
 
             // get processed, since data param is set to be null then other data value is not necessary
+            if (context?.isCreatedBitmapOverflow(imageWidth, imageHeight) == true) return@let
             val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
                 mirroredBitmap,
                 offsetX,
