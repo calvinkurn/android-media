@@ -1583,11 +1583,14 @@ class ShipmentPresenter @Inject constructor(
                                 view?.showToastError(errMessage)
                                 view?.resetCourier(cartPosition)
                                 view?.getShipmentCartItemModel(cartPosition)?.let {
-                                    clearCacheAutoApply(it, promoCode)
-                                    clearOrderPromoCodeFromLastValidateUseRequest(
-                                        cartString,
-                                        promoCode
-                                    )
+                                    if (it.boCode.isNotEmpty()) {
+                                        clearCacheAutoApply(it, promoCode)
+                                        clearOrderPromoCodeFromLastValidateUseRequest(
+                                            cartString,
+                                            promoCode
+                                        )
+                                        it.boCode = ""
+                                    }
                                 }
                             } else {
                                 view?.showToastError(
@@ -1595,11 +1598,14 @@ class ShipmentPresenter @Inject constructor(
                                 )
                                 view?.resetCourier(cartPosition)
                                 view?.getShipmentCartItemModel(cartPosition)?.let {
-                                    clearCacheAutoApply(it, promoCode)
-                                    clearOrderPromoCodeFromLastValidateUseRequest(
-                                        cartString,
-                                        promoCode
-                                    )
+                                    if (it.boCode.isNotEmpty()) {
+                                        clearCacheAutoApply(it, promoCode)
+                                        clearOrderPromoCodeFromLastValidateUseRequest(
+                                            cartString,
+                                            promoCode
+                                        )
+                                        it.boCode = ""
+                                    }
                                 }
                             }
                         }
@@ -1630,11 +1636,14 @@ class ShipmentPresenter @Inject constructor(
                             view?.showToastError(e.message)
                             view?.resetCourier(cartPosition)
                             view?.getShipmentCartItemModel(cartPosition)?.let {
-                                clearCacheAutoApply(it, promoCode)
-                                clearOrderPromoCodeFromLastValidateUseRequest(
-                                    cartString,
-                                    promoCode
-                                )
+                                if (it.boCode.isNotEmpty()) {
+                                    clearCacheAutoApply(it, promoCode)
+                                    clearOrderPromoCodeFromLastValidateUseRequest(
+                                        cartString,
+                                        promoCode
+                                    )
+                                    it.boCode = ""
+                                }
                             }
                         }
                         view?.logOnErrorApplyBo(e, cartPosition, promoCode)
@@ -3382,7 +3391,7 @@ class ShipmentPresenter @Inject constructor(
     ) {
         if (lastValidateUseRequest != null) {
             for (order in lastValidateUseRequest!!.orders) {
-                if (order.uniqueId == uniqueId) {
+                if (order.cartStringGroup == uniqueId) {
                     order.codes.remove(promoCode)
                 }
             }
@@ -3588,7 +3597,7 @@ class ShipmentPresenter @Inject constructor(
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
                     for (order in lastValidateUseRequest!!.orders) {
-                        if (order.uniqueId == shipmentCartItemModel.cartString && order.codes.isEmpty() && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartString && order.codes.isEmpty() && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartString,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
@@ -3809,7 +3818,7 @@ class ShipmentPresenter @Inject constructor(
             val shipmentCartItemModelList = shipmentCartItemModelList
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 for (ordersItem in validateUsePromoRequest.orders) {
-                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == ordersItem.uniqueId) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == ordersItem.cartStringGroup) {
                         if (shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                             if (!ordersItem.codes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
                                 ordersItem.codes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
@@ -3877,12 +3886,13 @@ class ShipmentPresenter @Inject constructor(
                         }
                         ordersItem.codes = listOrderCodes
                         ordersItem.uniqueId = cartStringOrder
-                        ordersItem.shopId = shipmentCartItemModel.shopId
+                        ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
                         ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
                         ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
                         ordersItem.poDuration =
                             shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
                         ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                        ordersItem.cartStringGroup = shipmentCartItemModel.cartString
                         setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
                         listOrderItem.add(ordersItem)
                     }
