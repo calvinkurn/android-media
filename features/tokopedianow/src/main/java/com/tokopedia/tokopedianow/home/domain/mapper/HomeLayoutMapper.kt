@@ -258,19 +258,30 @@ object HomeLayoutMapper {
                 slugList = slugList
             )
 
-            val layout = it.layout.copy(
-                claimCouponList = couponList,
-                state = state,
-                slugs = slugList
-            )
-            val newItem = HomeLayoutItemUiModel(
-                layout = layout,
-                state = HomeLayoutItemState.LOADED
-            )
-            val index = indexOf(it)
+            if (couponList.isEmpty()) {
+                val layout = it.layout.copy(
+                    claimCouponList = couponList,
+                    state = state,
+                    slugs = slugList
+                )
+                val newItem = HomeLayoutItemUiModel(
+                    layout = layout,
+                    state = HomeLayoutItemState.LOADED
+                )
+                val index = indexOf(it)
 
+                removeAt(index)
+                add(index, newItem)
+            } else {
+                removeHomeCatalogCouponList(widgetId)
+            }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.removeHomeCatalogCouponList(widgetId: String) {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
+            val index = indexOf(it)
             removeAt(index)
-            add(index, newItem)
         }
     }
 

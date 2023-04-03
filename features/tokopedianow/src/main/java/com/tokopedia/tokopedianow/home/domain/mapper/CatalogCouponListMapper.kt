@@ -14,6 +14,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 object CatalogCouponListMapper {
     private const val RESPONSE_STYLE_PARAMS_COLUMNS = "columns"
     private const val RESPONSE_TYPE = "double"
+
+    const val COUPON_WIDGET_SINGLE_SLUG_SIZE = 1
+    const val COUPON_WIDGET_DOUBLE_SLUG_SIZE = 2
+
     fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState, warehouseId: String): HomeLayoutItemUiModel {
         val slugs = response.widgetParam.split(";")
 
