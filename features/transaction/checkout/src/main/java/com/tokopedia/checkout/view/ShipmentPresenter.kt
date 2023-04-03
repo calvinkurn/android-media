@@ -4073,77 +4073,80 @@ class ShipmentPresenter @Inject constructor(
         val shipmentCartItemModelList = shipmentCartItemModelList
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel) {
-                val ordersItem = Order()
-                val productDetailsItems = ArrayList<ProductDetail>()
-                for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                    if (!cartItemModel.isError) {
+                for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
+                    val ordersItem = Order()
+                    val productDetailsItems = ArrayList<ProductDetail>()
+                    for (cartItemModel in cartItemList) {
                         val productDetail = ProductDetail()
                         productDetail.productId = cartItemModel.productId
                         productDetail.quantity = cartItemModel.quantity
                         productDetail.bundleId = cartItemModel.bundleId.toLongOrZero()
                         productDetailsItems.add(productDetail)
                     }
-                }
-                ordersItem.product_details = productDetailsItems
-                ordersItem.isChecked = true
-                val listCodes = ArrayList<String>()
-                if (shipmentCartItemModel.listPromoCodes != null) {
-                    for (code in shipmentCartItemModel.listPromoCodes!!) {
-                        listCodes.add(code)
-                    }
-                }
-                ordersItem.codes = listCodes
-                ordersItem.uniqueId = shipmentCartItemModel.cartString
-                ordersItem.shopId = shipmentCartItemModel.shopId
-                ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
-                ordersItem.isInsurancePrice = if (shipmentCartItemModel.isInsurance) 1 else 0
-                if (shipmentCartItemModel.selectedShipmentDetailData == null) {
-                    ordersItem.shippingId = 0
-                    ordersItem.spId = 0
-                    ordersItem.freeShippingMetadata = ""
-                    ordersItem.validationMetadata = ""
-                } else {
-                    if (isTradeInByDropOff) {
-                        if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
-                            ordersItem.shippingId =
-                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperId
-                            ordersItem.spId =
-                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperProductId
-                            if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                                ordersItem.freeShippingMetadata =
-                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.freeShippingMetadata
-                            } else {
-                                ordersItem.freeShippingMetadata = ""
-                            }
-                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
-                        } else {
-                            ordersItem.shippingId = 0
-                            ordersItem.spId = 0
-                            ordersItem.freeShippingMetadata = ""
-                            ordersItem.validationMetadata = ""
+                    ordersItem.product_details = productDetailsItems
+                    ordersItem.isChecked = true
+                    val listCodes = ArrayList<String>()
+                    if (shipmentCartItemModel.listPromoCodes != null) {
+                        for (code in shipmentCartItemModel.listPromoCodes!!) {
+                            listCodes.add(code)
                         }
+                    }
+                    ordersItem.codes = listCodes
+                    ordersItem.cartStringGroup = shipmentCartItemModel.cartString
+                    ordersItem.uniqueId = cartStringOrder
+                    ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
+                    ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                    ordersItem.isInsurancePrice = if (shipmentCartItemModel.isInsurance) 1 else 0
+                    if (shipmentCartItemModel.selectedShipmentDetailData == null) {
+                        ordersItem.shippingId = 0
+                        ordersItem.spId = 0
+                        ordersItem.freeShippingMetadata = ""
+                        ordersItem.validationMetadata = ""
                     } else {
-                        if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
-                            ordersItem.shippingId =
-                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperId
-                            ordersItem.spId =
-                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperProductId
-                            if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                                ordersItem.freeShippingMetadata =
-                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.freeShippingMetadata
+                        if (isTradeInByDropOff) {
+                            if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
+                                ordersItem.shippingId =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperId
+                                ordersItem.spId =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperProductId
+                                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                                    ordersItem.freeShippingMetadata =
+                                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.freeShippingMetadata
+                                } else {
+                                    ordersItem.freeShippingMetadata = ""
+                                }
+                                ordersItem.validationMetadata =
+                                    shipmentCartItemModel.validationMetadata
                             } else {
+                                ordersItem.shippingId = 0
+                                ordersItem.spId = 0
                                 ordersItem.freeShippingMetadata = ""
+                                ordersItem.validationMetadata = ""
                             }
-                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                         } else {
-                            ordersItem.shippingId = 0
-                            ordersItem.spId = 0
-                            ordersItem.freeShippingMetadata = ""
-                            ordersItem.validationMetadata = ""
+                            if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+                                ordersItem.shippingId =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperId
+                                ordersItem.spId =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperProductId
+                                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                                    ordersItem.freeShippingMetadata =
+                                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.freeShippingMetadata
+                                } else {
+                                    ordersItem.freeShippingMetadata = ""
+                                }
+                                ordersItem.validationMetadata =
+                                    shipmentCartItemModel.validationMetadata
+                            } else {
+                                ordersItem.shippingId = 0
+                                ordersItem.spId = 0
+                                ordersItem.freeShippingMetadata = ""
+                                ordersItem.validationMetadata = ""
+                            }
                         }
                     }
+                    listOrderItem.add(ordersItem)
                 }
-                listOrderItem.add(ordersItem)
             }
         }
         promoRequest.orders = listOrderItem
