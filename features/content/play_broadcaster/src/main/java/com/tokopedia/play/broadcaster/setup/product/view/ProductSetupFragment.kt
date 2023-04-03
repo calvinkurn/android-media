@@ -67,6 +67,7 @@ class ProductSetupFragment @Inject constructor(
         }
 
         override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
+            mListener?.onProductSetupDismissed()
             bottomSheet.dismiss()
             removeFragment()
         }
@@ -226,5 +227,6 @@ class ProductSetupFragment @Inject constructor(
 
     interface Listener {
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
+        fun onProductSetupDismissed() {}
     }
 }
