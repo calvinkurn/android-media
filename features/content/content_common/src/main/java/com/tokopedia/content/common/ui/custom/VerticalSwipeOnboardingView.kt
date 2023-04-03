@@ -85,8 +85,8 @@ class VerticalSwipeOnboardingView : LinearLayout {
                 }
 
                 override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
-                    hideAnimated()
                     mAnimator = null
+                    hideAnimated()
                 }
             })
             startAnimator(animator)
