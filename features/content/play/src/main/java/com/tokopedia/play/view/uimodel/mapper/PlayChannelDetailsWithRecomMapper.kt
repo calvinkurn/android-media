@@ -53,7 +53,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig)
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
+                    showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -178,7 +179,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         voucher = VoucherUiModel.Empty,
         maxFeatured = 0,
         resultState = ResultState.Loading,
-        bottomSheetTitle = ""
+        bottomSheetTitle = "",
     )
 
     private fun mapProduct(configResponse: ChannelDetailsWithRecomResponse.Config) = ProductUiModel.Empty.copy(

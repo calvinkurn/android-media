@@ -11,8 +11,15 @@ class MockSetupDataStore(
         private val mScheduleDataStore: BroadcastScheduleDataStore,
         private val mTitleDataStore: TitleDataStore,
         private val mTagsDataStore: TagsDataStore,
-        private val mInteractiveDataStore: InteractiveDataStore
-) : PlayBroadcastSetupDataStore, CoverDataStore by mCoverDataStore, BroadcastScheduleDataStore by mScheduleDataStore, TitleDataStore by mTitleDataStore, TagsDataStore by mTagsDataStore , InteractiveDataStore by mInteractiveDataStore {
+        private val mInteractiveDataStore: InteractiveDataStore,
+        private val mProductTagDataStore: ProductTagDataStore,
+) : PlayBroadcastSetupDataStore,
+    CoverDataStore by mCoverDataStore,
+    BroadcastScheduleDataStore by mScheduleDataStore,
+    TitleDataStore by mTitleDataStore,
+    TagsDataStore by mTagsDataStore,
+    InteractiveDataStore by mInteractiveDataStore,
+    ProductTagDataStore by mProductTagDataStore {
 
     var isOverwritten: Boolean = false
 
@@ -30,6 +37,10 @@ class MockSetupDataStore(
 
     override fun getInteractiveDataStore(): InteractiveDataStore {
         return mInteractiveDataStore
+    }
+
+    override fun getProductTagDataStore(): ProductTagDataStore {
+        return mProductTagDataStore
     }
 
     override fun getTitleDataStore(): TitleDataStore {
