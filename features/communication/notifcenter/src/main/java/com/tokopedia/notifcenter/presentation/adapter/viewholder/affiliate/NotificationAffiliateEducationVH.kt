@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.affiliate
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.view.postDelayed
+import androidx.core.view.updatePaddingRelative
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -14,7 +14,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 class NotificationAffiliateEducationVH(
     itemView: View?
@@ -25,11 +24,11 @@ class NotificationAffiliateEducationVH(
         @LayoutRes
         var LAYOUT = R.layout.item_affiliate_education_carousel
 
-        private const val SLIDE_TO_SHOW = 1.2f
-        private const val THREE = 3
+        private const val SLIDE_TO_SHOW = 1.1f
         private const val YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss"
         private const val DD_MMM = "dd MMM"
         private const val DD_MMM_YY = "dd MMM yy"
+        private const val ITEM_HORIZONTAL_PADDING = 12
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
@@ -67,6 +66,10 @@ class NotificationAffiliateEducationVH(
                                 RouteManager.route(ctx, article.youtubeUrl)
                             }
                         }
+                        view.updatePaddingRelative(
+                            start = ITEM_HORIZONTAL_PADDING,
+                            end = ITEM_HORIZONTAL_PADDING
+                        )
                     }
                 }
             }
@@ -80,9 +83,6 @@ class NotificationAffiliateEducationVH(
                     RouteManager.route(ctx, ApplinkConst.AFFILIATE_TOKO_EDU_PAGE)
                 }
             }
-        }
-        carousel?.postDelayed(TimeUnit.SECONDS.toMillis(THREE.toLong())) {
-            carousel.activeIndex = THREE
         }
     }
 
