@@ -1819,27 +1819,25 @@ class CartListPresenter @Inject constructor(
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
         
-        addToCartExternalUseCase
-            .setParams(productId.toString(), userSessionInterface.userId)
-            .execute(
-                onSuccess = { model ->
-                    view?.let { cartListView ->
-                        cartListView.hideProgressLoading()
-                        if (model.message.isNotEmpty()) {
-                            cartListView.showToastMessageGreen(model.message[0])
-                        }
-                        cartListView.refreshCartWithSwipeToRefresh()
+        launch(dispatchers.io) {
+            try {
+                val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
+                view?.let { cartListView ->
+                    cartListView.hideProgressLoading()
+                    if (model.message.isNotEmpty()) {
+                        cartListView.showToastMessageGreen(model.message[0])
                     }
-                },
-                onError = { throwable ->
-                    Timber.d(throwable)
-                    view?.let {
-                        it.hideProgressLoading()
-                        it.showToastMessageRed(throwable)
-                        it.refreshCartWithSwipeToRefresh()
-                    }
+                    cartListView.refreshCartWithSwipeToRefresh()
                 }
-            )
+            } catch (t: Throwable) {
+                Timber.d(t)
+                view?.let {
+                    it.hideProgressLoading()
+                    it.showToastMessageRed(t)
+                    it.refreshCartWithSwipeToRefresh()
+                }
+            }
+        }
     }
 
     override fun redirectToLite(url: String) {
