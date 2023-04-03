@@ -8,7 +8,6 @@ import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.setupImageRatio
 import com.tokopedia.video_widget.VideoPlayerView
-import timber.log.Timber
 
 internal class ImageLayoutStrategyLong : ImageLayoutStrategy {
     override fun setupImageRatio(
