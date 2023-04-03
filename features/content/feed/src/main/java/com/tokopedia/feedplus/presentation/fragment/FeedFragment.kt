@@ -51,6 +51,8 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -83,7 +85,8 @@ class FeedFragment :
     ShareBottomsheetListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentFeedImmersiveBinding
+        get() = _binding!!
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
@@ -270,7 +273,7 @@ class FeedFragment :
     override fun reload() {
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
-        adapter?.showLoading()
+        showLoading()
     }
 
     override fun getVideoPlayer(): FeedExoPlayer {
@@ -492,7 +495,7 @@ class FeedFragment :
                 FeedAdapterTypeFactory(this, binding.rvFeedPost)
             )
             if (adapter!!.itemCount == 0) {
-                adapter?.showLoading()
+                showLoading()
             }
 
             it.rvFeedPost.adapter = adapter
@@ -525,7 +528,7 @@ class FeedFragment :
             binding.swipeRefreshFeedLayout.isRefreshing = false
             when (it) {
                 is Success -> {
-                    adapter?.hideLoading()
+                    hideLoading()
                     if (it.data.items.isEmpty()) {
                         adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
@@ -533,7 +536,7 @@ class FeedFragment :
                     }
                 }
                 is Fail -> {
-                    adapter?.hideLoading()
+                    hideLoading()
                     adapter?.showErrorNetwork()
                 }
             }
@@ -745,6 +748,24 @@ class FeedFragment :
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false) {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        } else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+        }
+    }
+
+    private fun showLoading() {
+        binding.feedLoading.show()
+        binding.swipeRefreshFeedLayout.hide()
+    }
+
+    private fun hideLoading() {
+        binding.feedLoading.hide()
+        binding.swipeRefreshFeedLayout.show()
+    }
+
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
@@ -764,14 +785,6 @@ class FeedFragment :
                 putParcelable(ARGUMENT_DATA, data)
                 putAll(extras)
             }
-        }
-    }
-
-    private fun showToast(message: String, type: Int, actionText: String? = null) {
-        if (actionText?.isEmpty() == false) {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
-        } else {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
         }
     }
 }
