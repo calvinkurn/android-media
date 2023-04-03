@@ -2079,23 +2079,22 @@ class CartListPresenter @Inject constructor(
 
     override fun followShop(shopId: String) {
         view?.showProgressLoading()
-        followShopUseCase.buildRequestParams(shopId)
-            .execute(
-                onSuccess = { data ->
-                    view?.let {
-                        it.hideProgressLoading()
-                        it.showToastMessageGreen(data.followShop?.message ?: "")
-                        processInitialGetCartData("0", false, false)
-                    }
-                },
-                onError = { throwable ->
-                    view?.let {
-                        Timber.e(throwable)
-                        it.hideProgressLoading()
-                        it.showToastMessageRed(throwable)
-                    }
+        launch(dispatchers.io) {
+            try {
+                val data = followShopUseCase(shopId)
+                view?.let {
+                    it.hideProgressLoading()
+                    it.showToastMessageGreen(data.followShop?.message ?: "")
+                    processInitialGetCartData("0", false, false)
                 }
-            )
+            } catch(t: Throwable) {
+                view?.let {
+                    Timber.e(t)
+                    it.hideProgressLoading()
+                    it.showToastMessageRed(t)
+                }
+            }
+        }
     }
 
     override fun setLocalizingAddressData(lca: LocalCacheModel?) {
