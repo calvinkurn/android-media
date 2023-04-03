@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -76,6 +77,7 @@ class ShopCampaignFlashSaleViewHolder(
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
+        productCarouselAdapter.parentPosition = ShopUtil.getActualPositionFromIndex(adapterPosition)
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.productList?.size ?: 0

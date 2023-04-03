@@ -1,13 +1,14 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import androidx.lifecycle.asLiveData
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
-import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
@@ -63,6 +64,7 @@ class CoverDataStoreImpl @Inject constructor(
         val currentCover = getSelectedCover()
         val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped -> croppedCover.coverImage.toString()
+            is CoverSetupState.GeneratedCover -> croppedCover.coverImage
             else -> throw IllegalStateException("Something went wrong: Cover url not found")
         }
 

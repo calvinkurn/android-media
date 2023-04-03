@@ -151,7 +151,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             parentContainer?.background?.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     parentContainer?.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700
+                    R.color.mvc_widget_dms_31353b
                 ),
                 PorterDuff.Mode.SRC_IN
             )

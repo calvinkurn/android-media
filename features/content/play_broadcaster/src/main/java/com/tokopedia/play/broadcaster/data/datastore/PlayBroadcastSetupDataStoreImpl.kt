@@ -7,22 +7,26 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
-        private val coverDataStore: CoverDataStore,
-        private val titleDataStore: TitleDataStore,
-        private val tagsDataStore: TagsDataStore,
-        private val scheduleDataStore: BroadcastScheduleDataStore,
-        private val interactiveDataStore: InteractiveDataStore,
+    private val coverDataStore: CoverDataStore,
+    private val titleDataStore: TitleDataStore,
+    private val tagsDataStore: TagsDataStore,
+    private val scheduleDataStore: BroadcastScheduleDataStore,
+    private val interactiveDataStore: InteractiveDataStore,
+    private val productTagDataStore: ProductTagDataStore,
 ) : PlayBroadcastSetupDataStore,
     TitleDataStore by titleDataStore,
     TagsDataStore by tagsDataStore,
-    InteractiveDataStore by interactiveDataStore {
+    InteractiveDataStore by interactiveDataStore,
+    ProductTagDataStore by productTagDataStore {
 
-    override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
+    override fun overwrite(
+        dataStore: PlayBroadcastSetupDataStore,
+        modeExclusion: List<OverwriteMode>
+    ) {
         if (!modeExclusion.contains(OverwriteMode.Cover)) {
             overwriteCoverDataStore(dataStore)
         }
@@ -48,6 +52,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override fun getInteractiveDataStore(): InteractiveDataStore {
         return interactiveDataStore
+    }
+
+    override fun getProductTagDataStore(): ProductTagDataStore {
+        return productTagDataStore
     }
 
     private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
@@ -91,7 +99,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         coverDataStore.updateCoverState(state)
     }
 
-    override suspend fun uploadSelectedCover(authorId: String, channelId: String): NetworkResult<Unit> {
+    override suspend fun uploadSelectedCover(
+        authorId: String,
+        channelId: String
+    ): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(authorId, channelId)
     }
 
@@ -117,7 +128,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         scheduleDataStore.setBroadcastSchedule(scheduleDate)
     }
 
-    override suspend fun updateBroadcastSchedule(channelId: String, scheduledTime: Date): NetworkResult<Unit> {
+    override suspend fun updateBroadcastSchedule(
+        channelId: String,
+        scheduledTime: Date
+    ): NetworkResult<Unit> {
         return scheduleDataStore.updateBroadcastSchedule(channelId, scheduledTime)
     }
 

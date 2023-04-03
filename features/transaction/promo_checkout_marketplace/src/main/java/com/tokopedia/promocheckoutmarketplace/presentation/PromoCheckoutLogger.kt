@@ -11,15 +11,15 @@ object PromoCheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_PROMO_CHECKOUT_PAGE_ERROR,
-                    LoggerConstant.Key.MESSAGE to errorMessage,
-                    LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_PROMO_CHECKOUT_PAGE_ERROR,
+                LoggerConstant.Key.MESSAGE to errorMessage,
+                LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
             )
 
             ServerLogger.log(
-                    Priority.P2,
-                    LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                    mapData
+                Priority.P2,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
+                mapData
             )
         }
     }
@@ -28,15 +28,15 @@ object PromoCheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.APPLY_PROMO_CHECKOUT_ERROR,
-                    LoggerConstant.Key.MESSAGE to errorMessage,
-                    LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.APPLY_PROMO_CHECKOUT_ERROR,
+                LoggerConstant.Key.MESSAGE to errorMessage,
+                LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
             )
 
             ServerLogger.log(
-                    Priority.P2,
-                    LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                    mapData
+                Priority.P2,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
+                mapData
             )
         }
     }
@@ -44,5 +44,4 @@ object PromoCheckoutLogger {
     private fun shouldTriggerLog(throwable: Throwable): Boolean {
         return throwable is PromoErrorException || throwable is AkamaiErrorException
     }
-
 }

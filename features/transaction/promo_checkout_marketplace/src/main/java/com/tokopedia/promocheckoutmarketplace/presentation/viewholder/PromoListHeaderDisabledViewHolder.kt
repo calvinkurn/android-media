@@ -10,8 +10,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.purchase_platform.common.utils.Utils
 
-class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderDisabledBinding,
-                                        private val listener: PromoCheckoutActionListener
+class PromoListHeaderDisabledViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderDisabledBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListHeaderUiModel>(viewBinding.root) {
 
     companion object {
@@ -43,5 +44,4 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
             itemView.setOnClickListener {}
         }
     }
-
 }

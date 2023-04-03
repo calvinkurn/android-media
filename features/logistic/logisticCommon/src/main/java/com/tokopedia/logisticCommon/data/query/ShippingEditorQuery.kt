@@ -113,7 +113,6 @@ object ShippingEditorQuery {
         }
     """.trimIndent()
 
-
     val getShipperDetails = """
         query ongkirShippingEditorGetShipperDetail {
           ongkirShippingEditorGetShipperDetail() {

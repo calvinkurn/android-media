@@ -3,10 +3,13 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMAX
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMIN
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.LAYOUT_FILTER
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Option.Companion.KEY_PRICE_RANGE
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -56,6 +59,9 @@ data class SearchProductModel(
     val backendFilters: String
         get() = searchProduct.backendFilters
 
+    val backendFiltersToggle: String
+        get() = searchProduct.backendFiltersToggle
+
     val keywordIntention: Int
         get() = searchProduct.data.keywordIntention
 
@@ -80,6 +86,9 @@ data class SearchProductModel(
 
         val backendFilters: String
             get() = data.backendFilters
+
+        val backendFiltersToggle: String
+            get() = data.backendFiltersToggle
 
         val errorMessage: String
             get() = header.errorMessage
@@ -146,6 +155,10 @@ data class SearchProductModel(
             @SerializedName("backendFilters")
             @Expose
             val backendFilters: String = "",
+
+            @SerializedName("backendFiltersToggle")
+            @Expose
+            val backendFiltersToggle: String = "",
 
             @SerializedName("redirection")
             @Expose
@@ -507,6 +520,10 @@ data class SearchProductModel(
             @SerializedName("parentId")
             @Expose
             val parentId: String = "",
+
+            @SerializedName("isPortrait")
+            @Expose
+            val isPortrait: Boolean = false,
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -1025,15 +1042,29 @@ data class SearchProductModel(
         val data: List<InspirationWidgetData> = listOf()
     ) {
         fun asFilterList(): List<Filter> =
-            data
-                .filter { it.type == TYPE_SIZE_PERSO }
+            filterWidgetList()
                 .map { it.asFilter() }
+
+        fun filterWidgetList() =
+            data.filter { it.layout == LAYOUT_FILTER }
     }
 
     data class InspirationWidgetData (
         @SerializedName("title")
         @Expose
         val title: String = "",
+
+        @SerializedName("header_title")
+        @Expose
+        val headerTitle: String = "",
+
+        @SerializedName("header_subtitle")
+        @Expose
+        val headerSubtitle: String = "",
+
+        @SerializedName("layout")
+        @Expose
+        val layout: String = "",
 
         @SerializedName("type")
         @Expose
@@ -1051,10 +1082,21 @@ data class SearchProductModel(
         @Expose
         val trackingOption: String = "0",
     ) {
-        fun asFilter(): Filter =
-            Filter(
-                options = inspirationWidgetOptions.map { it.asOption() }
-            )
+        fun asFilter(): Filter {
+            return if (isPriceRangeWidget()) Filter(options = priceRangeOptions())
+            else Filter(options = inspirationWidgetAsFilterOption())
+        }
+
+        private fun isPriceRangeWidget() = inspirationWidgetOptions
+            .flatMap { it.multiFilters.orEmpty() }
+            .any { it.key.contains(KEY_PRICE_RANGE) }
+
+        private fun priceRangeOptions() =
+            listOf(Option(key = PMIN), Option(key = PMAX))
+
+        private fun inspirationWidgetAsFilterOption() = inspirationWidgetOptions.flatMap {
+            it.asOptionList()
+        }
     }
 
     data class InspirationWidgetOption (
@@ -1078,19 +1120,26 @@ data class SearchProductModel(
         @Expose
         val applink: String = "",
 
-        @SerializedName("filters")
+        @SerializedName("multi_filters")
         @Expose
-        val filters: InspirationWidgetFilter,
+        val multiFilters: List<InspirationWidgetFilter>? = emptyList(),
 
         @SerializedName("component_id")
         @Expose
         val componentId: String,
     ) {
-        fun asOption() = Option(
-            key = filters.key,
-            value = filters.value,
-            name = filters.name,
-        )
+
+        private fun asOption(filter: InspirationWidgetFilter): Option {
+            return Option(
+                key = filter.key,
+                value = filter.value,
+                name = filter.name,
+                valMin = filter.valMin,
+                valMax = filter.valMax,
+            )
+        }
+
+        fun asOptionList() = multiFilters.orEmpty().map { asOption(it) }
     }
 
     data class InspirationWidgetFilter (
@@ -1105,6 +1154,14 @@ data class SearchProductModel(
         @SerializedName("value")
         @Expose
         val value: String = "",
+
+        @SerializedName("val_min")
+        @Expose
+        val valMin: String = "",
+
+        @SerializedName("val_max")
+        @Expose
+        val valMax: String = "",
     )
 
     data class Violation(
