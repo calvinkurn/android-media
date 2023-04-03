@@ -231,7 +231,7 @@ object CartUiModelMapper {
 //                        ?: "0"
                 boCode =
                     cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
-                        it.uniqueId == cartString && it.shippingId > 0 &&
+                        it.cartStringGroup == cartString && it.shippingId > 0 &&
                             it.spId > 0 && it.type == "logistic"
                     }?.code ?: ""
                 coachmarkPlus = CartShopCoachmarkPlusData(
