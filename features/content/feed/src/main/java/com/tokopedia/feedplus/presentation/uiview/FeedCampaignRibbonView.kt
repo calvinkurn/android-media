@@ -56,16 +56,19 @@ class FeedCampaignRibbonView(
         isTypeHighlight: Boolean
     ) {
         with(binding) {
-            if (!isTypeHighlight) {
-                root.hide()
-            } else {
-                root.show()
-            }
-
             type = getRibbonType(modelType, campaign.isOngoing)
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
+
+            val shouldHideRibbon =
+                campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
+
+            if (!isTypeHighlight || shouldHideRibbon) {
+                root.hide()
+            } else {
+                root.show()
+            }
 
             buildRibbonBasedOnType()
         }
@@ -114,9 +117,6 @@ class FeedCampaignRibbonView(
                     }
                 }
                 FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
-                    tyFeedCampaignRibbonTitle.text =
-                        "${mCta?.text} ${mCta?.subtitle?.joinToString(" ")}"
-
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient()
                     }
@@ -151,6 +151,7 @@ class FeedCampaignRibbonView(
                                 Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
+                            shape = GradientDrawable.RECTANGLE
                             cornerRadius = CORNER_RADIUS
                         }
                     }
@@ -163,6 +164,7 @@ class FeedCampaignRibbonView(
                                 Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
+                            shape = GradientDrawable.RECTANGLE
                             cornerRadius = CORNER_RADIUS
                         }
                     }
@@ -187,6 +189,7 @@ class FeedCampaignRibbonView(
                                 Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
+                            shape = GradientDrawable.RECTANGLE
                             cornerRadius = CORNER_RADIUS
                         }
                     }
@@ -300,14 +303,9 @@ class FeedCampaignRibbonView(
     }
 
     companion object {
-        private const val SIX_MILISECOND = 600L
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
 
-        private const val CORNER_RADIUS = 4f
-
-        private const val ONE = 1f
-        private const val ZERO = 0f
-        private const val MINUS_ONE = -1f
+        private const val CORNER_RADIUS = 20f
     }
 }
