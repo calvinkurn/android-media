@@ -142,20 +142,21 @@ data class RatesParam(
     )
 
     fun toCartShopGroupTickerAggregatorMap(): Map<String, Any?> = mapOf(
-            "origin" to origin,
-            "destination" to destination,
-            "weight" to weight,
-            "actual_weight" to actualWeight,
-            "order_value" to order_value,
-            "sp_ids" to spids,
-            "shop_id" to shop_id,
-            "shop_tier" to shop_tier,
-            "user_history" to user_history,
-            "is_fulfillment" to is_fulfillment,
-            "bo_metadata" to bo_metadata,
-            "products" to products,
-            "psl_code" to psl_code,
-            "unique_id" to unique_id,
+        "origin" to origin,
+        "destination" to destination,
+        "weight" to weight,
+        "actual_weight" to actualWeight,
+        "order_value" to order_value,
+        "sp_ids" to spids,
+        "shop_id" to shop_id,
+        "shop_tier" to shop_tier,
+        "user_history" to user_history,
+        "is_fulfillment" to is_fulfillment,
+        "bo_metadata" to bo_metadata,
+        "products" to products,
+        "psl_code" to psl_code,
+        "unique_id" to unique_id,
+        "warehouseId" to warehouse_id
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {

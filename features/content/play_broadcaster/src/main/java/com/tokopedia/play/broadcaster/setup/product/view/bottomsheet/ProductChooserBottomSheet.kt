@@ -118,7 +118,6 @@ class ProductChooserBottomSheet @Inject constructor(
     private var isSelectedProductsChanged = false
 
     private var mListener: Listener? = null
-    private var mDataSource: DataSource? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -140,7 +139,6 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
-        setupAnalytic()
     }
 
     override fun onStart() {
@@ -163,11 +161,6 @@ class ProductChooserBottomSheet @Inject constructor(
         when (childFragment) {
             is ProductSortBottomSheet -> {
                 childFragment.setListener(this)
-                childFragment.setDataSource(object : ProductSortBottomSheet.DataSource {
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return mDataSource?.getSelectedAccount().orUnknown()
-                    }
-                })
             }
         }
     }
@@ -182,10 +175,6 @@ class ProductChooserBottomSheet @Inject constructor(
 
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    fun setDataSource(dataSource: DataSource) {
-        mDataSource = dataSource
     }
 
     private fun setupBottomSheet() {
@@ -277,10 +266,6 @@ class ProductChooserBottomSheet @Inject constructor(
             eventBus,
             viewModel.uiState,
         )
-    }
-
-    private fun setupAnalytic() {
-        eventBus.emit(Event.SetSelectedAccount(mDataSource?.getSelectedAccount().orUnknown()))
     }
 
     private fun renderProductList(
@@ -560,13 +545,7 @@ class ProductChooserBottomSheet @Inject constructor(
         fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet)
     }
 
-    interface DataSource {
-        fun getSelectedAccount(): ContentAccountUiModel
-    }
-
     sealed class Event {
-
-        data class SetSelectedAccount(val account: ContentAccountUiModel) : Event()
         object ViewBottomSheet : Event()
         object ExitDialogConfirm : Event()
         object ExitDialogCancel : Event()
