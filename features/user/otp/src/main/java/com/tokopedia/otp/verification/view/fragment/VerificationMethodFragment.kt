@@ -40,6 +40,7 @@ import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialog
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
 import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant.KEY_DEFAULT_OTP_ROLLENCE
 import com.tokopedia.otp.verification.data.OtpConstant.OtpMode.SILENT_VERIFICATION
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -51,6 +52,7 @@ import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.util.AuthenticityUtils
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
@@ -272,7 +274,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     userIdEnc = otpData.userIdEnc)
         } else {
             val timeUnix = System.currentTimeMillis().toString()
-            viewmodel.getOtpModeList(
+            if(isEnableDefaultOtp()) {
+                viewmodel.getOtpModeListForDefaultOtp(
                     otpType = otpType,
                     userId = otpData.userId,
                     msisdn = otpData.msisdn,
@@ -280,8 +283,22 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix),
                     timeUnix = timeUnix,
                     cache = (activity as VerificationActivity).otpCache
-            )
+                )
+            } else {
+                viewmodel.getVerificationMethod(
+                    otpType = otpType,
+                    userId = otpData.userId,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix),
+                    timeUnix = timeUnix
+                )
+            }
         }
+    }
+
+    private fun isEnableDefaultOtp(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(KEY_DEFAULT_OTP_ROLLENCE, false)
     }
 
     private fun initObserver() {

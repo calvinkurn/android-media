@@ -198,7 +198,7 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    fun getOtpModeList(
+    fun getOtpModeListForDefaultOtp(
         otpType: String,
         userId: String,
         msisdn: String,

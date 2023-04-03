@@ -17,6 +17,8 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
+    const val KEY_DEFAULT_OTP_ROLLENCE = "and_default_otp_flow"
+
     private const val staging = "staging"
 
     val PIN_V2_SALT = getSalt()
