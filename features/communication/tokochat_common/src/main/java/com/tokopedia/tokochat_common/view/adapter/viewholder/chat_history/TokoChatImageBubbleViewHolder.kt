@@ -139,10 +139,12 @@ class TokoChatImageBubbleViewHolder(
             }
         }
         binding?.tokochatTvImageBubbleError?.setOnClickListener {
-//            bindImage(element, isFromRetry = true)
+            element.updateImageState(TokoChatImageBubbleUiModel.ImageState.LOADING_LOAD)
+            bindLoader(element)
+            bindImage(element, isFromRetry = true)
         }
         binding?.tokochatIconImageBubbleErrorUpload?.setOnClickListener {
-//            tokoChatImageAttachmentListener.resendImage(element)
+            tokoChatImageAttachmentListener.resendImage(element)
         }
     }
 
