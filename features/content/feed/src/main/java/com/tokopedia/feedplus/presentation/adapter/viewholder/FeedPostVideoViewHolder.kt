@@ -56,6 +56,7 @@ class FeedPostVideoViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
+                bindComments(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -180,6 +181,14 @@ class FeedPostVideoViewHolder(
             model.hasVoucher,
             model.isTypeProductHighlight
         )
+    }
+
+    private fun bindComments(model: FeedCardVideoContentModel) {
+        if (model.isTypeProductHighlight) {
+            binding.commentButton.hide()
+        } else {
+            binding.commentButton.show()
+        }
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {

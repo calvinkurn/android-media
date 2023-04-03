@@ -119,6 +119,7 @@ class FeedPostImageViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
+                bindComments(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -262,6 +263,14 @@ class FeedPostImageViewHolder(
             model.hasVoucher,
             model.isTypeProductHighlight
         )
+    }
+
+    private fun bindComments(model: FeedCardImageContentModel) {
+        if (model.isTypeProductHighlight) {
+            binding.commentButton.hide()
+        } else {
+            binding.commentButton.show()
+        }
     }
 
     private fun showClearView() {
