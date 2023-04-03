@@ -20,7 +20,12 @@
           "bundle_bottomsheet": {
             "title": "Pilih Paket Bundling",
             "description": "Dengan beli paketan, lebih hemat hingga Rp\u003cb\u003e31.250\u003c/b\u003e!",
-            "bottom_ticker": ""
+            "bottom_ticker": "",
+            "bundle_ids": [
+              62420,
+              62420,
+              62420
+            ]
           }
         }
       }

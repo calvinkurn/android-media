@@ -5,6 +5,7 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -103,6 +104,7 @@ class ProductChooserRobot(
     }
 
     fun saveProducts() = chainable {
+        closeSoftKeyboard()
         onView(
             ViewMatchers.withId(R.id.btn_next)
         ).perform(click())

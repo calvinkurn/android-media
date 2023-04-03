@@ -2024,7 +2024,9 @@ class CartListPresenter @Inject constructor(
                     }
                 }
                 val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
-                    ratesParam = RatesParam.Builder(shopShipments, shipping).build(),
+                    ratesParam = RatesParam.Builder(shopShipments, shipping)
+                        .warehouseId(cartShopHolderData.warehouseId.toString())
+                        .build(),
                     enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell,
                     isTokoNow = cartShopHolderData.isTokoNow
@@ -2048,10 +2050,7 @@ class CartListPresenter @Inject constructor(
                         title = response.bundleBottomSheet.title,
                         description = response.bundleBottomSheet.description,
                         bottomTicker = response.bundleBottomSheet.bottomTicker,
-                        bundleIds = cartShopHolderData.productUiModelList
-                            .filter { it.isSelected && !it.isBundlingItem }
-                            .flatMap { it.bundleIds }
-                            .distinct()
+                        bundleIds = response.bundleBottomSheet.bundleIds
                     )
                 cartShopHolderData.cartShopGroupTicker.hasSeenTicker = false
                 if (response.ticker.text.isBlank()) {
