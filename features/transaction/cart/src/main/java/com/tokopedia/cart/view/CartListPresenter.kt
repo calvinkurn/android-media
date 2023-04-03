@@ -16,7 +16,7 @@ import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
@@ -150,7 +150,7 @@ class CartListPresenter @Inject constructor(
     private var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
 
     // Store last validate use response from cart page
-    private var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
+    private var lastUpdateCartAndGetLastApplyResponse: UpdateAndGetLastApplyData? = null
     var isLastApplyResponseStillValid = true
 
     // Store last validate use request
@@ -274,7 +274,7 @@ class CartListPresenter @Inject constructor(
         view?.let {
             setLastApplyValid()
             setValidateUseLastResponse(null)
-            setUpdateCartAndValidateUseLastResponse(null)
+            setUpdateCartAndGetLastApplyLastResponse(null)
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
@@ -1917,8 +1917,8 @@ class CartListPresenter @Inject constructor(
             .setParam(promoRequest)
             .execute(
                 onSuccess = { getLastApplyResponse ->
-                    setUpdateCartAndValidateUseLastResponse(
-                        UpdateAndValidateUseData().apply {
+                    setUpdateCartAndGetLastApplyLastResponse(
+                        UpdateAndGetLastApplyData().apply {
                             promoUiModel = getLastApplyResponse.promoUiModel
                         }
                     )
@@ -1962,7 +1962,7 @@ class CartListPresenter @Inject constructor(
                                    updateCartDataResponse.promoUiModel?.let { promoUiModel ->
                                        setLastApplyNotValid()
                                        setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                       setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
+                                       setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
                                        view?.updatePromoCheckoutStickyButton(promoUiModel)
                                    }
                                }
@@ -2061,12 +2061,12 @@ class CartListPresenter @Inject constructor(
         lastValidateUseResponse = response
     }
 
-    override fun getUpdateCartAndValidateUseLastResponse(): UpdateAndValidateUseData? {
-        return lastUpdateCartAndValidateUseResponse
+    override fun getUpdateCartAndGetLastApplyLastResponse(): UpdateAndGetLastApplyData? {
+        return lastUpdateCartAndGetLastApplyResponse
     }
 
-    override fun setUpdateCartAndValidateUseLastResponse(response: UpdateAndValidateUseData?) {
-        lastUpdateCartAndValidateUseResponse = response
+    override fun setUpdateCartAndGetLastApplyLastResponse(response: UpdateAndGetLastApplyData?) {
+        lastUpdateCartAndGetLastApplyResponse = response
     }
 
     override fun isLastApplyValid(): Boolean {

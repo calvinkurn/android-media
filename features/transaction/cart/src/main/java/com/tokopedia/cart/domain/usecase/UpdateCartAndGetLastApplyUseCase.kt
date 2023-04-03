@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.usecase.coroutines.UseCase
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class UpdateCartAndGetLastApplyUseCase @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
-) : UseCase<UpdateAndValidateUseData>() {
+) : UseCase<UpdateAndGetLastApplyData>() {
 
     companion object {
         const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
@@ -26,8 +26,8 @@ class UpdateCartAndGetLastApplyUseCase @Inject constructor(
         return this
     }
 
-    override suspend fun executeOnBackground(): UpdateAndValidateUseData {
-        val updateAndValidateUseData = UpdateAndValidateUseData()
+    override suspend fun executeOnBackground(): UpdateAndGetLastApplyData {
+        val updateAndValidateUseData = UpdateAndGetLastApplyData()
         val updateCartData = updateCartUseCase
             .setParams(params)
             .executeOnBackground()
