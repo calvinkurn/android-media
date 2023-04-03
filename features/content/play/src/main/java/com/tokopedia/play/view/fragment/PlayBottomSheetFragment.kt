@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -41,8 +44,6 @@ import com.tokopedia.play.view.type.ProductButtonUiModel
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.type.orDefault
-import com.tokopedia.play.view.type.toAction
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -83,8 +84,12 @@ import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -112,6 +117,8 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
+
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
     }
 
     private val productSheetView by viewComponent {
@@ -136,6 +143,13 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val openLoginForCart = registerForActivityResult(OpenLogin(), resultRegistry) { success ->
         if (success) router.route(context, ApplinkConst.CART)
+    }
+
+    /**
+     * ViewModel for Global Variant BottomSheet
+     */
+    private val atcVariantViewModel by lazy {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -381,8 +395,25 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
-            showVariantSheet(selectedProduct)
+            atcVariantViewModel.setAtcBottomSheetParams(
+                ProductVariantBottomSheetParams(
+                    isTokoNow = product.isTokoNow,
+                    pageSource = VariantPageSource.PLAY_PAGESOURCE.source,
+                    productId = product.id,
+                    shopId = product.shopId,
+                    dismissAfterTransaction = false,
+                    showQtyEditor = false,
+                )
+            )
+
+            showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+                AtcVariantBottomSheet().apply {
+                    setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetStyle)
+                    this.view?.updateLayoutParams {
+                        height = variantSheetMaxHeight
+                    }
+                }
+            }
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
