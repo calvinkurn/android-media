@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.ProjectInfoResponse
 import javax.inject.Inject
 
@@ -30,7 +31,9 @@ class ProjectInfoUseCase @Inject constructor(
                 IsSelfie
                 DataSource
                 IsGotoKyc
-                AccountLinkingStatus
+                GoToLinked
+                AccountLinked
+                WaitMessage
               }
             }
         """.trimIndent()
@@ -44,13 +47,13 @@ class ProjectInfoUseCase @Inject constructor(
             } else {
                 if (status == NOT_VERIFIED) {
                     ProjectInfoResult.NotVerified(
-                        isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED
+                        isAccountLinked = accountLinked == ACCOUNT_LINKED
                     )
                 } else {
                     ProjectInfoResult.StatusSubmission(
                         status = status,
-                        dataSource = dataSource,
-                        listReason = reason
+                        listReason = reason,
+                        waitTimeInSeconds = waitMessage.toIntOrZero()
                     )
                 }
             }

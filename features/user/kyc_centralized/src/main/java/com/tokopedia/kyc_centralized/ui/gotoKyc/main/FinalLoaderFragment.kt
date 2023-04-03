@@ -71,7 +71,7 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.NotRiskyUser -> {
                     val parameter = StatusSubmissionParam(
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
-                        status = if (it.isPending) "0" else "1",
+                        status = it.status.toString(),
                         sourcePage = args.parameter.source
                     )
                     gotoStatusSubmission(parameter)

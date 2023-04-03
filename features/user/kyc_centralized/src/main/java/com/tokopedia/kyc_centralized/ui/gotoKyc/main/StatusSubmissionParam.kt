@@ -30,5 +30,10 @@ data class StatusSubmissionParam(
     /*
     * The purpose of this field is to know user get progressive or non progressive
     * */
-    val gotoKycType: String = ""
+    val gotoKycType: String = "",
+
+    /*
+    * The purpose of this field is to know how long user has to wait
+    * */
+    val waitTimeInSeconds: Int = 0
 ): Parcelable

@@ -88,7 +88,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         projectId = viewModel.projectId,
                         sourcePage = viewModel.source,
                         status = it.status,
-                        listReason = it.listReason
+                        listReason = it.listReason,
+                        waitTimeInSeconds = it.waitTimeInSeconds
                     )
                     gotoStatusSubmission(parameter)
                 }

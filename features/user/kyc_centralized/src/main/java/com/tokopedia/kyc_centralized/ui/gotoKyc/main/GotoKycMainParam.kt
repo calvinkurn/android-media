@@ -13,5 +13,6 @@ data class GotoKycMainParam (
     val status: String = "",
     val sourcePage: String = "",
     val listReason: List<String> = emptyList(),
-    val challengeId: String = ""
+    val challengeId: String = "",
+    val waitTimeInSeconds: Int = 0
 ): Parcelable

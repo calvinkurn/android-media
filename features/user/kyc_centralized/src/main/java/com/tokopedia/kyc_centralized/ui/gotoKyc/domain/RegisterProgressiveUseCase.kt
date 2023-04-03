@@ -22,6 +22,9 @@ class RegisterProgressiveUseCase @Inject constructor(
                 errorMessages
                 data {
                   challengeID
+                  status
+                  rejectionReasonCode
+                  rejectionReasonMessage
                 }
               }
             }
@@ -35,17 +38,11 @@ class RegisterProgressiveUseCase @Inject constructor(
             ).registerProgressiveKYC
 
         return if (!response.isSuccess) {
-            val errorMessage = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
-            RegisterProgressiveResult.Failed(throwable = MessageErrorException(errorMessage))
+            RegisterProgressiveResult.Failed(throwable = MessageErrorException(response.errorMessages.first()))
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
         } else {
-            //TODO: change implementation when API ready
-            RegisterProgressiveResult.NotRiskyUser(isPending = false)
+            RegisterProgressiveResult.NotRiskyUser(status = response.data.status, rejectionReason = response.data.rejectionReasonMessage)
         }
     }
 }

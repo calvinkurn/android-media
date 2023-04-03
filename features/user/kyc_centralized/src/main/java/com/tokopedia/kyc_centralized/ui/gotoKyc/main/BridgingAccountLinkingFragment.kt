@@ -139,7 +139,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     val parameter = StatusSubmissionParam(
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
-                        status = "0"
+                        status = it.status.toString(),
+                        listReason = listOf(it.rejectionReason)
                     )
                     gotoStatusSubmissionPending(parameter)
                 }

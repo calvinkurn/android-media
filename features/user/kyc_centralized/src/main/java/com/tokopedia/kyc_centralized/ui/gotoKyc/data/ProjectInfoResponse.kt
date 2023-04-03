@@ -11,8 +11,8 @@ data class KycProjectInfo(
     @SerializedName("Status")
 	val status: String = "",
 
-    @SerializedName("AccountLinkingStatus")
-	val accountLinkingStatus: Int = 0,
+    @SerializedName("AccountLinked")
+	val accountLinked: Int = 0,
 
     @SerializedName("Message")
 	val message: String = "",
@@ -39,7 +39,10 @@ data class KycProjectInfo(
 	val gotoLinked: Boolean = false,
 
     @SerializedName("DataSource")
-	val dataSource: String = ""
+	val dataSource: String = "",
+
+    @SerializedName("WaitMessage")
+    val waitMessage: String = ""
 )
 
 data class TypeListItem(

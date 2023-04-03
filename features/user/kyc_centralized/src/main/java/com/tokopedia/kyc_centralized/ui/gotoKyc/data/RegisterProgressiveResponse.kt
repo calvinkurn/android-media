@@ -9,7 +9,16 @@ data class RegisterProgressiveResponse(
 
 data class RegisterProgressiveKYCData(
 	@SerializedName("challengeID")
-	val challengeID: String = ""
+	val challengeID: String = "",
+
+    @SerializedName("status")
+    val status: Int = 0,
+
+    @SerializedName("rejectionReasonCode")
+    val rejectionReasonCode: String = "",
+
+    @SerializedName("rejectionReasonMessage")
+    val rejectionReasonMessage: String = ""
 )
 
 data class RegisterProgressiveKYC(

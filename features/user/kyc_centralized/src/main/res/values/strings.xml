@@ -212,7 +212,10 @@
     <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
     <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
-    <string name="goto_kyc_status_pending_subtitle_24_hours">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>%s</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_hours">%s jam</string>
+    <string name="goto_kyc_status_pending_minutes">%s menit</string>
+    <string name="goto_kyc_status_pending_seconds">%s detik</string>
     <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
