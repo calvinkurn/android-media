@@ -26,8 +26,7 @@ class FollowShopTest : BaseCartTest() {
             }
         }
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+        coEvery { followShopUseCase(any()) } returns dataFollowShop
         coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
         coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartData) -> Unit>().invoke(CartData())
@@ -48,8 +47,7 @@ class FollowShopTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Failed")
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { followShopUseCase(any()) } throws exception
         coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
         coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartData) -> Unit>().invoke(CartData())
@@ -75,8 +73,7 @@ class FollowShopTest : BaseCartTest() {
             }
         }
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+        coEvery { followShopUseCase(any()) } returns dataFollowShop
         coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
         coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartData) -> Unit>().invoke(CartData())
