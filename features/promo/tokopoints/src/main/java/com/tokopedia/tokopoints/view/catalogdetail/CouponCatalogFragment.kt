@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -63,10 +64,6 @@ import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import android.webkit.WebViewClient
-
-
-
 
 class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
@@ -419,6 +416,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         } else {
             gift_section_main_layout.hide()
             tp_bottom_separator.hide()
+            if (data.actionCTA?.isShown == true) {
+                catalog_bottom_section?.show()
+            } else {
+                catalog_bottom_section?.hide()
+            }
             if (data.globalPromoCodes?.isNotEmpty() == true) {
                 layout_coupon_code.show()
             } else {
@@ -449,7 +451,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             when (data.actionCTA?.type) {
                 "redirect" -> {
                     if (data.actionCTA?.isShown == true) {
-                        btn_action_claim?.show()
+                        btnContainer?.show()
                         catalog_bottom_section.hide()
                         btn_action_claim?.text = data.actionCTA?.text
                         btn_action_claim?.isEnabled = data.actionCTA?.isDisabled == false
@@ -467,6 +469,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                                 mCouponName
                             )
                         }
+                    } else {
+                        catalog_bottom_section?.hide()
                     }
                 }
                 "redeem" -> {
@@ -515,10 +519,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         data.tnc?.let { webTnc.loadDataWithBaseURL(null, it, "text/html", "utf-8", null) }
         webTnc.setWebViewClient(object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if(url.startsWith("tokopedia://")){
+                if (url.startsWith("tokopedia://")) {
                     RouteManager.route(context, url)
-                }
-                else{
+                } else {
                     RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url))
                 }
                 return true
