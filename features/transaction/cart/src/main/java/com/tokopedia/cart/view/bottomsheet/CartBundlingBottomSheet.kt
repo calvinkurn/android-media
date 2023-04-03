@@ -144,6 +144,12 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             }
 
             override fun onError(it: Throwable) {
+                super.onError(it)
+                renderError()
+            }
+
+            override fun onBundleEmpty() {
+                super.onBundleEmpty()
                 renderError()
             }
         })
