@@ -13,7 +13,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:lineSpacingExtra="6sp"
-        android:textColor="#F531353B"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="Tokopedia Care Gampang diakses"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,6 +41,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="#E5E7E9"/>
+        android:background="@color/Unify_N75"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
