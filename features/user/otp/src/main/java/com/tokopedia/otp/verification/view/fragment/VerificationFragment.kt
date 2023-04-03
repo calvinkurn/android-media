@@ -505,6 +505,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 viewBound.pin?.isError = false
             }
         }
+        setFooterText()
     }
 
     private fun showKeyboard() {
