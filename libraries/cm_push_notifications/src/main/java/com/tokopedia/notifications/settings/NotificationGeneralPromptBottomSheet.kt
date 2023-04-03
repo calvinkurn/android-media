@@ -161,12 +161,11 @@ class NotificationGeneralPromptBottomSheet(
             return
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
+        sendEventClickCta()
         if (isReminderPrompt && activity != null) {
             OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
             dismiss()
         } else {
-            sendEventClickCta()
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
             context?.let {
