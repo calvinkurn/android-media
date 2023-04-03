@@ -32,6 +32,7 @@ class UnsafeFragmentConstructorDetector : Detector(), SourceCodeScanner, ClassSc
         )
 
         private const val FRAGMENT_PACKAGE = "androidx.fragment.app.Fragment"
+        private const val INJECT_ANNOTATION = "javax.inject.Inject"
     }
 
     override fun applicableSuperClasses(): List<String> {
@@ -39,10 +40,10 @@ class UnsafeFragmentConstructorDetector : Detector(), SourceCodeScanner, ClassSc
     }
 
     override fun visitClass(context: JavaContext, declaration: UClass) {
-        val constructor = declaration.constructors
-            .find { it.parameters.isNotEmpty() }
+        val constructor = declaration.constructors.find { it.parameters.isNotEmpty() }
+        val hasInjectAnnotation = constructor?.hasAnnotation(INJECT_ANNOTATION) == true
 
-        if (constructor != null) {
+        if (constructor != null && !hasInjectAnnotation) {
             context.report(
                 ISSUE,
                 declaration,
