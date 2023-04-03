@@ -10,7 +10,8 @@ const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
 const val LINK_HISTORY_BUTTON_CLICKED = 403
 const val AFFILIATE_HELP_URL_WEBVIEW =
     "tokopedia://webview?titlebar=true&url=https://affiliate.tokopedia.com/help?navigation=hide"
-const val AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW = "tokopedia://webview?titlebar=true&url=https://www.tokopedia.com/privacy?lang=id"
+const val AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW =
+    "tokopedia://webview?titlebar=true&url=https://www.tokopedia.com/privacy?lang=id"
 const val AFFILIATE_TANDC_URL =
     "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
@@ -18,6 +19,8 @@ const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
+const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
+const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val KYC_DONE = 1
 
@@ -182,14 +185,17 @@ const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
+const val AFFILIATE_DISCO_PROMO = "aff_disco_link_gen"
 
-const val  AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
-const val  AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
+const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
+const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
 const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
 
 const val PAGE_TYPE_PDP = "pdp"
 
 const val PAGE_TYPE_SHOP = "shop"
+
+const val PAGE_TYPE_CAMPAIGN = "campaign"
 
 const val PAGE_EDUCATION_EVENT = "education_event"
 const val PAGE_EDUCATION_ARTICLE = "education_article"
