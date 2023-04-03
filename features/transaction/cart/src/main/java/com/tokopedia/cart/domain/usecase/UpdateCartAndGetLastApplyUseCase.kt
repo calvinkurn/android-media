@@ -6,7 +6,6 @@ import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -31,9 +30,7 @@ class UpdateCartAndGetLastApplyUseCase @Inject constructor(
         if (!updateCartData.isSuccess) {
             throw CartResponseErrorException(updateCartData.message)
         }
-        val getLastApplyData = getLastApplyPromoUseCase
-            .setParam(params.getLastApplyPromoRequest)
-            .executeOnBackground()
+        val getLastApplyData = getLastApplyPromoUseCase(params.getLastApplyPromoRequest)
         updateAndValidateUseData.promoUiModel = getLastApplyData.promoUiModel
         return updateAndValidateUseData
     }
