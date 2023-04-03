@@ -52,6 +52,7 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
                             title
                             description
                             bottom_ticker
+                            bundle_ids
                         }
                     }
                 }
