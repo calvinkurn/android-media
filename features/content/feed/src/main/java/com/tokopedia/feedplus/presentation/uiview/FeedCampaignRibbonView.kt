@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -210,8 +211,11 @@ class FeedCampaignRibbonView(
                     tyFeedCampaignRibbonSubtitle.text = product?.stockWording
                     val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
                     pbFeedCampaignRibbon.setValue(value, true)
+
+                    setupTimer(mCampaign?.endTime ?: "") {}
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> {
+                    tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                 }
                 FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE -> {
                     tyFeedCampaignRibbonTitle.text =
@@ -273,6 +277,7 @@ class FeedCampaignRibbonView(
         targetCalendar?.let {
             if (it.timeInMillis > Calendar.getInstance().timeInMillis) {
                 binding.timerFeedCampaignRibbon.apply {
+                    this.timerFormat = TimerUnifySingle.FORMAT_AUTO
                     targetDate = it
                     this.onFinish = onFinish
                 }
