@@ -451,7 +451,8 @@ class ShipmentDataConverter @Inject constructor() {
         addOnWordingModel: AddOnWordingModel,
         groupShopV2: GroupShopV2
     ): CartItemModel {
-        val cartItemModel = CartItemModel(
+        val ppp = product.purchaseProtectionPlanData
+        return CartItemModel(
             cartString = groupShop.cartString,
             shouldShowShopInfo = product.shouldShowShopInfo,
             shopTypeInfoData = product.shopTypeInfoData,
@@ -464,78 +465,70 @@ class ShipmentDataConverter @Inject constructor() {
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,
             currency = product.productPriceCurrency,
+            imageUrl = product.productImageSrc200Square,
             price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
+            isWholesalePrice = product.productWholesalePrice != 0.0,
             originalPrice = product.productOriginalPrice,
-            variant = product.variant
+            quantity = product.productQuantity,
+            weight = product.productWeight.toDouble(),
+            weightFmt = product.productWeightFmt,
+            weightActual = product.productWeightActual.toDouble(),
+            noteToSeller = product.productNotes,
+            isPreOrder = product.isProductIsPreorder,
+            preOrderInfo = product.productPreOrderInfo,
+            preOrderDurationDay = product.preOrderDurationDay,
+            isFreeReturn = product.isProductIsFreeReturns,
+            cashback = product.productCashback,
+            isCashback = product.productCashback.isNotEmpty(),
+            fInsurance = product.isProductFinsurance,
+            fCancelPartial = product.isProductFcancelPartial,
+            isError = product.isError,
+            errorMessage = product.errorMessage,
+            errorMessageDescription = product.errorMessageDescription,
+            isFreeShippingExtra = product.isFreeShippingExtra,
+            isFreeShipping = product.isFreeShipping,
+            freeShippingName = product.freeShippingName,
+            isShowTicker = product.isShowTicker,
+            tickerMessage = product.tickerMessage,
+            variant = product.variant,
+            variantParentId = product.variantParentId,
+            productAlertMessage = product.productAlertMessage,
+            productInformation = product.productInformation,
+            isValidTradeIn = product.tradeInInfoData.isValidTradeIn,
+            oldDevicePrice = if (product.tradeInInfoData.isValidTradeIn) product.tradeInInfoData.oldDevicePrice else 0,
+            newDevicePrice = if (product.tradeInInfoData.isValidTradeIn) product.tradeInInfoData.newDevicePrice else 0,
+            deviceModel = if (product.tradeInInfoData.isValidTradeIn) product.tradeInInfoData.deviceModel else "",
+            diagnosticId = if (product.tradeInInfoData.isValidTradeIn) product.tradeInInfoData.diagnosticId else "",
+            isProtectionAvailable = ppp.isProtectionAvailable,
+            protectionPricePerProduct = if (ppp.isProtectionAvailable) ppp.protectionPricePerProduct else 0,
+            protectionPrice = if (ppp.isProtectionAvailable) ppp.protectionPrice else 0.0,
+            protectionTitle = if (ppp.isProtectionAvailable) ppp.protectionTitle else "",
+            protectionSubTitle = if (ppp.isProtectionAvailable) ppp.protectionSubtitle else "",
+            protectionLinkText = if (ppp.isProtectionAvailable) ppp.protectionLinkText else "",
+            protectionLinkUrl = if (ppp.isProtectionAvailable) ppp.protectionLinkUrl else "",
+            isProtectionOptIn = if (ppp.isProtectionAvailable) ppp.isProtectionOptIn else false,
+            isProtectionCheckboxDisabled = if (ppp.isProtectionAvailable) ppp.isProtectionCheckboxDisabled else false,
+            isBundlingItem = product.isBundlingItem,
+            bundlingItemPosition = product.bundlingItemPosition,
+            bundleId = product.bundleId,
+            bundleGroupId = product.bundleGroupId,
+            bundleType = product.bundleType,
+            bundleTitle = product.bundleTitle,
+            bundlePrice = product.bundlePrice,
+            bundleSlashPriceLabel = product.bundleSlashPriceLabel,
+            bundleOriginalPrice = product.bundleOriginalPrice,
+            bundleQuantity = product.bundleQuantity,
+            bundleIconUrl = product.bundleIconUrl,
+            analyticsProductCheckoutData = product.analyticsProductCheckoutData,
+            addOnProductLevelModel = product.addOnProduct,
+            ethicalDrugDataModel = product.ethicalDrugs,
+            addOnDefaultFrom = username,
+            addOnDefaultTo = receiverName,
+            warehouseId = groupShop.fulfillmentId.toString(),
+            isTokoCabang = groupShop.isFulfillment,
+            cartItemPosition = index,
+            addOnOrderLevelModel = addOnWordingModel
         )
-        cartItemModel.imageUrl = product.productImageSrc200Square
-        cartItemModel.isWholesalePrice = product.productWholesalePrice != 0.0
-        cartItemModel.quantity = product.productQuantity
-        cartItemModel.weight = product.productWeight.toDouble()
-        cartItemModel.weightFmt = product.productWeightFmt
-        cartItemModel.weightActual = product.productWeightActual.toDouble()
-        cartItemModel.noteToSeller = product.productNotes
-        cartItemModel.isPreOrder = product.isProductIsPreorder
-        cartItemModel.preOrderInfo = product.productPreOrderInfo
-        cartItemModel.preOrderDurationDay = product.preOrderDurationDay
-        cartItemModel.isFreeReturn = product.isProductIsFreeReturns
-        cartItemModel.cashback = product.productCashback
-        cartItemModel.isCashback = !isNullOrEmpty(product.productCashback)
-        cartItemModel.fInsurance = product.isProductFcancelPartial
-        cartItemModel.fCancelPartial = product.isProductFinsurance
-        cartItemModel.isError = product.isError
-        cartItemModel.errorMessage = product.errorMessage
-        cartItemModel.errorMessageDescription = product.errorMessageDescription
-        cartItemModel.isFreeShippingExtra = product.isFreeShippingExtra
-        cartItemModel.isFreeShipping = product.isFreeShipping
-        cartItemModel.freeShippingName = product.freeShippingName
-        cartItemModel.isShowTicker = product.isShowTicker
-        cartItemModel.tickerMessage = product.tickerMessage
-//        cartItemModel.variant = product.variant
-        cartItemModel.variantParentId = product.variantParentId
-        cartItemModel.productAlertMessage = product.productAlertMessage
-        cartItemModel.productInformation = product.productInformation
-        if (product.tradeInInfoData.isValidTradeIn) {
-            cartItemModel.isValidTradeIn = true
-            cartItemModel.oldDevicePrice = product.tradeInInfoData.oldDevicePrice
-            cartItemModel.newDevicePrice = product.tradeInInfoData.newDevicePrice
-            cartItemModel.deviceModel = product.tradeInInfoData.deviceModel
-            cartItemModel.diagnosticId = product.tradeInInfoData.diagnosticId
-        }
-        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-            val ppp = product.purchaseProtectionPlanData
-            cartItemModel.isProtectionAvailable = ppp.isProtectionAvailable
-            cartItemModel.protectionPricePerProduct = ppp.protectionPricePerProduct
-            cartItemModel.protectionPrice = ppp.protectionPrice
-            cartItemModel.protectionTitle = ppp.protectionTitle
-            cartItemModel.protectionSubTitle = ppp.protectionSubtitle
-            cartItemModel.protectionLinkText = ppp.protectionLinkText
-            cartItemModel.protectionLinkUrl = ppp.protectionLinkUrl
-            cartItemModel.isProtectionOptIn = ppp.isProtectionOptIn
-            cartItemModel.isProtectionCheckboxDisabled = ppp.isProtectionCheckboxDisabled
-        }
-        cartItemModel.isBundlingItem = product.isBundlingItem
-        cartItemModel.bundlingItemPosition = product.bundlingItemPosition
-        cartItemModel.bundleId = product.bundleId
-        cartItemModel.bundleGroupId = product.bundleGroupId
-        cartItemModel.bundleType = product.bundleType
-        cartItemModel.bundleTitle = product.bundleTitle
-        cartItemModel.bundlePrice = product.bundlePrice
-        cartItemModel.bundleSlashPriceLabel = product.bundleSlashPriceLabel
-        cartItemModel.bundleOriginalPrice = product.bundleOriginalPrice
-        cartItemModel.bundleQuantity = product.bundleQuantity
-        cartItemModel.bundleIconUrl = product.bundleIconUrl
-        cartItemModel.analyticsProductCheckoutData = product.analyticsProductCheckoutData
-        cartItemModel.addOnProductLevelModel = product.addOnProduct
-        cartItemModel.ethicalDrugDataModel = product.ethicalDrugs
-        cartItemModel.addOnDefaultFrom = username
-        cartItemModel.addOnDefaultTo = receiverName
-//        cartItemModel.cartString = groupShop.cartString
-        cartItemModel.warehouseId = groupShop.fulfillmentId.toString()
-        cartItemModel.isTokoCabang = groupShop.isFulfillment
-        cartItemModel.cartItemPosition = index
-        cartItemModel.addOnOrderLevelModel = addOnWordingModel
-        return cartItemModel
     }
 
     private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnWordingModel {
