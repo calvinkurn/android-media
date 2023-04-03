@@ -10,6 +10,12 @@ object NotificationAffiliateAnalytics {
     private const val CURRENT_SITE = "tokopediamarketplace"
     private val SESSION_IRIS = TrackApp.getInstance().gtm.irisSessionId
 
+    private object Tracker {
+        const val EDUCATION_IMPRESSION = 42732
+        const val EDUCATION_SEE_MORE_CLICK = 42733
+        const val EDUCATION_CLICK = 42754
+    }
+
     private object EventKey {
         const val KEY_EVENT = "event"
         const val KEY_EVENT_ACTION = "eventAction"
@@ -37,9 +43,11 @@ object NotificationAffiliateAnalytics {
         const val CLICK_EDUCATION_SECTION = "click - education section"
     }
 
-    private object EventCategory {
-        const val AFFILIATE_NOTIFICATION_CENTER =
+    object EventCategory {
+        const val AFFILIATE_HOME_NOTIFICATION_CENTER =
             "affiliate home page - notification center"
+        const val AFFILIATE_NOTIFICATION_CENTER =
+            "notif center affiliate"
     }
 
     private object ItemKey {
@@ -59,10 +67,10 @@ object NotificationAffiliateAnalytics {
         )
         val bundle = bundleOf(
             EventKey.KEY_EVENT to Event.VIEW_ITEM,
-            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_NOTIFICATION_CENTER,
+            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_HOME_NOTIFICATION_CENTER,
             EventKey.KEY_EVENT_ACTION to EventAction.IMPRESSION_EDUCATION,
             EventKey.KEY_EVENT_LABEL to "",
-            EventKey.KEY_TRACKER_ID to 42732,
+            EventKey.KEY_TRACKER_ID to Tracker.EDUCATION_IMPRESSION,
             EventKey.KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             EventKey.KEY_CURRENT_SITE to CURRENT_SITE,
             EventKey.KEY_SESSION_IRIS to SESSION_IRIS,
@@ -77,10 +85,10 @@ object NotificationAffiliateAnalytics {
     ) {
         val data = mapOf(
             EventKey.KEY_EVENT to Event.CLICK_CONTENT,
-            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_NOTIFICATION_CENTER,
+            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_HOME_NOTIFICATION_CENTER,
             EventKey.KEY_EVENT_ACTION to EventAction.CLICK_EDUCATION_LIHAT_SEMUA,
             EventKey.KEY_EVENT_LABEL to "",
-            EventKey.KEY_TRACKER_ID to 42733,
+            EventKey.KEY_TRACKER_ID to Tracker.EDUCATION_SEE_MORE_CLICK,
             EventKey.KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             EventKey.KEY_CURRENT_SITE to CURRENT_SITE,
             EventKey.KEY_USER_ID to userId
@@ -93,10 +101,10 @@ object NotificationAffiliateAnalytics {
     ) {
         val data = mapOf(
             EventKey.KEY_EVENT to Event.CLICK_CONTENT,
-            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_NOTIFICATION_CENTER,
+            EventKey.KEY_EVENT_CATEGORY to EventCategory.AFFILIATE_HOME_NOTIFICATION_CENTER,
             EventKey.KEY_EVENT_ACTION to EventAction.CLICK_EDUCATION_SECTION,
             EventKey.KEY_EVENT_LABEL to "",
-            EventKey.KEY_TRACKER_ID to 42754,
+            EventKey.KEY_TRACKER_ID to Tracker.EDUCATION_CLICK,
             EventKey.KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             EventKey.KEY_CURRENT_SITE to CURRENT_SITE,
             EventKey.KEY_USER_ID to userId

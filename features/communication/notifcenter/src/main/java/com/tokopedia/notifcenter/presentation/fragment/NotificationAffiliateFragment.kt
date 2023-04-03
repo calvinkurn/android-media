@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
+import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -278,7 +279,8 @@ open class NotificationAffiliateFragment :
                     analytic.trackFilterClick(
                         filterType,
                         filterName,
-                        RoleType.AFFILIATE
+                        RoleType.AFFILIATE,
+                        eventCategory = NotificationAffiliateAnalytics.EventCategory.AFFILIATE_NOTIFICATION_CENTER
                     )
                 }
             }
@@ -393,9 +395,21 @@ open class NotificationAffiliateFragment :
 
     override fun refreshPage() = Unit
 
-    override fun trackClickCtaWidget(element: NotificationUiModel) = Unit
+    override fun trackClickCtaWidget(element: NotificationUiModel) {
+        analytic.trackClickCtaWidget(
+            element,
+            RoleType.AFFILIATE,
+            eventCategory = NotificationAffiliateAnalytics.EventCategory.AFFILIATE_NOTIFICATION_CENTER
+        )
+    }
 
-    override fun trackExpandTimelineHistory(element: NotificationUiModel) = Unit
+    override fun trackExpandTimelineHistory(element: NotificationUiModel) {
+        analytic.trackExpandTimelineHistory(
+            element,
+            RoleType.AFFILIATE,
+            eventCategory = NotificationAffiliateAnalytics.EventCategory.AFFILIATE_NOTIFICATION_CENTER
+        )
+    }
 
     override fun amISeller(): Boolean = false
 
