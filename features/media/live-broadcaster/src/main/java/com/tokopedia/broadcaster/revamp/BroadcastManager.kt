@@ -304,7 +304,7 @@ class BroadcastManager @Inject constructor(
             }
         }
 
-        if(withByteplus) {
+        if (withByteplus) {
             // initialize surface texture
             mTextureId = effectManager.getExternalOESTextureID()
             mSurfaceTexture = SurfaceTexture(mTextureId)
@@ -609,7 +609,6 @@ class BroadcastManager @Inject constructor(
         }
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
-        mStreamerSurface?.flip()
 
         // Re-select camera
         val cameraManager = mCameraManager ?: return
