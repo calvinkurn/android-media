@@ -11,7 +11,6 @@ data class DefaultOtpUiModel(
     var defaultMode: Int = 0,
     @SerializedName("defaultBehaviorMode")
     var defaultBehaviorMode: Int = 0,
-    var isFromVerificationPage: Boolean = false,
     val originalOtpModeList: ArrayList<ModeListData> = arrayListOf(),
     val displayedModeList: ArrayList<ModeListData> = arrayListOf()
 )
