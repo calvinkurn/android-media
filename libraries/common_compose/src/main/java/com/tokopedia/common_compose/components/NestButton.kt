@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,13 +66,16 @@ private fun buttonTextColor(enabled: Boolean): Color {
 }
 
 @Preview(name = "Button")
+@Preview(name = "Button Dark", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestButtonPreview() {
-    NestButton(
-        Modifier,
-        text = "Bagikan",
-        onClick = {}
-    )
+    NestTheme {
+        NestButton(
+            Modifier,
+            text = "Bagikan",
+            onClick = {}
+        )
+    }
 }
 
 @Preview(name = "Button disabled")
