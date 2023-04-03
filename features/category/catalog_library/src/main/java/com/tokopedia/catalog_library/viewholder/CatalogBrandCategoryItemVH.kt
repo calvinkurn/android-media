@@ -33,6 +33,10 @@ class CatalogBrandCategoryItemVH(
 
     override fun bind(element: CatalogBrandCategoryDM?) {
         dataModel = element
+        renderTabs()
+    }
+
+    private fun renderTabs() {
         tabs?.tabLayout?.removeAllTabs()
         tabs?.hasRightArrow = true
         var selectedIndex = 0

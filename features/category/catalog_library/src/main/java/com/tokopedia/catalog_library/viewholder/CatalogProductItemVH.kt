@@ -40,16 +40,30 @@ class CatalogProductItemVH(
 
     override fun bind(element: CatalogProductDM?) {
         dataModel = element
+        renderProductPrice()
+        renderProductImage()
+        renderProductTitle()
+        setUpClick()
+    }
+    private fun renderProductTitle() {
+        productTitle.text = dataModel?.catalogProduct?.name ?: ""
+    }
+
+    private fun renderProductPrice() {
         productPrice.text = String.format(
             itemView.context.getString(R.string.product_price),
             dataModel?.catalogProduct?.marketPrice?.minFmt,
             dataModel?.catalogProduct?.marketPrice?.maxFmt
         )
+    }
 
+    private fun renderProductImage() {
         dataModel?.catalogProduct?.imageUrl?.let { iconUrl ->
             productImage.loadImage(iconUrl)
         }
-        productTitle.text = element?.catalogProduct?.name ?: ""
+    }
+
+    private fun setUpClick() {
         productLayout.setOnClickListener {
             dataModel?.catalogProduct?.let { it1 ->
                 when (dataModel?.source) {

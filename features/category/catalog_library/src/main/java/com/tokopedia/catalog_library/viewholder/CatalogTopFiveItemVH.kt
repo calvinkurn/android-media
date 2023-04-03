@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDM
+import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
@@ -16,7 +17,7 @@ class CatalogTopFiveItemVH(
     private val catalogLibraryListener: CatalogLibraryListener
 ) : CatalogLibraryAbstractViewHolder<CatalogTopFiveDM>(view) {
     private var dataModel: CatalogTopFiveDM? = null
-
+    private var catalogTopFiveList : CatalogListResponse.CatalogGetList.CatalogsProduct? = null
     private val topFiveImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_top_five_product_image)
     }
@@ -39,17 +40,27 @@ class CatalogTopFiveItemVH(
 
     override fun bind(element: CatalogTopFiveDM?) {
         dataModel = element
+        catalogTopFiveList =  element?.catalogTopFiveList
+        renderImage()
+        renderText()
+        setUpOnClick()
+    }
 
-        val catalogTopFiveList = element?.catalogTopFiveList
-
-        catalogTopFiveList?.imageUrl?.let { iconUrl ->
-            topFiveImage.loadImage(iconUrl)
-        }
+    private fun renderText() {
         topFiveTitle.text = catalogTopFiveList?.name ?: ""
         topFiveRank.text = String.format(
             view.context.getString(R.string.top_five_rank),
             catalogTopFiveList?.rank ?: ""
         )
+    }
+
+    private fun renderImage() {
+        catalogTopFiveList?.imageUrl?.let { iconUrl ->
+            topFiveImage.loadImage(iconUrl)
+        }
+    }
+
+    private fun setUpOnClick() {
         topFiveLayout.setOnClickListener {
             CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnTopCatalogsInCategoryEvent(
                 dataModel?.categoryName ?: "",

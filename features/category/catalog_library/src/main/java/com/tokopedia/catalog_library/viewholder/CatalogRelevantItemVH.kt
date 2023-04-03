@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDM
+import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
 import com.tokopedia.catalog_library.util.EventKeys
@@ -17,6 +18,7 @@ import com.tokopedia.user.session.UserSession
 class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : CatalogLibraryAbstractViewHolder<CatalogRelevantDM>(view) {
 
     private var dataModel: CatalogRelevantDM? = null
+    private var relevantProduct : CatalogRelevantResponse.Catalogs? = null
 
     private val relevantImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_relevant_image)
@@ -36,11 +38,13 @@ class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: 
 
     override fun bind(element: CatalogRelevantDM?) {
         dataModel = element
-        val relevantProduct = dataModel?.relevantDataList
-        relevantProduct?.imageUrl?.let { iconUrl ->
-            relevantImage.loadImage(iconUrl)
-        }
-        relevantTitle.text = relevantProduct?.name ?: ""
+        relevantProduct  = dataModel?.relevantDataList
+        renderImage()
+        renderTitle()
+        setUpClick()
+    }
+
+    private fun setUpClick() {
         relevantLayout.setOnClickListener {
             CatalogAnalyticsHomePage.sendClickCatalogOnRelevantCatalogsEvent(
                 relevantProduct?.name ?: "",
@@ -49,6 +53,16 @@ class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: 
                 UserSession(itemView.context).userId
             )
             catalogLibraryListener.onProductCardClicked(relevantProduct?.applink)
+        }
+    }
+
+    private fun renderTitle() {
+        relevantTitle.text = relevantProduct?.name ?: ""
+    }
+
+    private fun renderImage() {
+        relevantProduct?.imageUrl?.let { iconUrl ->
+            relevantImage.loadImage(iconUrl)
         }
     }
 
