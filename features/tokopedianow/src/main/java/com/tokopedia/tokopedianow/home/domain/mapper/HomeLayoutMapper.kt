@@ -258,7 +258,7 @@ object HomeLayoutMapper {
                 slugList = slugList
             )
 
-            if (couponList.isEmpty()) {
+            if (couponList.isNotEmpty()) {
                 val layout = it.layout.copy(
                     claimCouponList = couponList,
                     state = state,
