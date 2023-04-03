@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
+import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -54,6 +55,12 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getImageUrlUseCase: TokoChatGetImageUseCase
 
     @RelaxedMockK
+    protected lateinit var uploadImageUseCase: TokoChatUploadImageUseCase
+
+    @RelaxedMockK
+    protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
+
+    @RelaxedMockK
     protected lateinit var cacheManager: TokoChatCacheManager
 
     @RelaxedMockK
@@ -77,7 +84,10 @@ abstract class TokoChatViewModelTestFixture {
                 getTokoChatRoomTickerUseCase,
                 getTokoChatOrderProgressUseCase,
                 getImageUrlUseCase,
+                uploadImageUseCase,
                 viewUtil,
+                imageAttachmentExtensionProvider,
+                cacheManager,
                 CoroutineTestDispatchersProvider
             )
         )
