@@ -103,6 +103,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -209,7 +210,7 @@ class ProductListPresenter @Inject constructor(
     private val newCardType by lazy {
         try {
             remoteConfig.getString(RollenceKey.PRODUCT_CARD_EXPERIMENT, "")
-        } catch (e: Exception) {
+        } catch (ignored: Exception) {
             ""
         }
     }

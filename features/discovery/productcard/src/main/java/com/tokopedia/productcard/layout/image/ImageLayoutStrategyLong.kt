@@ -8,6 +8,7 @@ import com.tokopedia.productcard.utils.LONG_IMAGE_RATIO
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.setupImageRatio
 import com.tokopedia.video_widget.VideoPlayerView
+import timber.log.Timber
 
 internal class ImageLayoutStrategyLong : ImageLayoutStrategy {
     override fun setupImageRatio(
@@ -39,7 +40,7 @@ internal class ImageLayoutStrategyLong : ImageLayoutStrategy {
             val ratioList = LONG_IMAGE_RATIO.split(":")
             val imageRatio: Float = try {
                 ratioList[1].toFloat() / ratioList[0].toFloat()
-            } catch (e: Exception) {
+            } catch (ignored: Exception) {
                 1f
             }
             (imageWidth * imageRatio).toInt()
