@@ -4,6 +4,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -35,6 +36,7 @@ data class PlayBroadcastUiState(
     val quizBottomSheetUiState: QuizBottomSheetUiState,
     val selectedContentAccount: ContentAccountUiModel,
     val accountStateInfo: AccountStateInfo,
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -61,6 +63,7 @@ data class PlayBroadcastUiState(
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
                 selectedContentAccount = ContentAccountUiModel.Empty,
                 accountStateInfo = AccountStateInfo(),
+                bannerPreparation = emptyList(),
             )
     }
 }

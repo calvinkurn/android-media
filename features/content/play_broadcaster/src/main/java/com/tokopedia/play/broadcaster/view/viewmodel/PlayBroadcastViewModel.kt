@@ -16,7 +16,6 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -183,7 +182,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _productSectionList.value
 
     private val bannerPreparationList = mutableListOf<PlayBroadcastPreparationBannerModel>()
-    val observableBanner = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
+    private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -233,6 +232,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
+
+    val isAllowToSeePerformanceDashboard: Boolean
+        get() = selectedAccount.isShop
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
@@ -308,7 +310,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountStateInfo
+        _accountStateInfo,
+        _bannerPreparation
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -322,7 +325,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         onBoarding,
         quizBottomSheetUiState,
         selectedFeedAccount,
-        accountStateInfo ->
+        accountStateInfo,
+        bannerPreparation ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -337,7 +341,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
-            accountStateInfo = accountStateInfo
+            accountStateInfo = accountStateInfo,
+            bannerPreparation = bannerPreparation,
         )
     }.stateIn(
         viewModelScope,
@@ -454,15 +459,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             if (bannerPreparationList.contains(data)) return@launchCatchError
             bannerPreparationList.add(data)
-            observableBanner.emit(bannerPreparationList)
-        }, onError = {
-        })
+            _bannerPreparation.update { bannerPreparationList }
+        }, onError = {})
     }
 
     private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
             bannerPreparationList.remove(data)
-            observableBanner.emit(bannerPreparationList)
+            _bannerPreparation.update { bannerPreparationList }
         }, onError = {})
     }
 
