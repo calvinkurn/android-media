@@ -448,11 +448,6 @@ class DetailEditorFragment @Inject constructor(
                                 context?.let { contextReady ->
                                     if (contextReady.isCreatedBitmapOverflow(resultBitmap.width, resultBitmap.height)) return@MediaBitmapEmptyTarget
                                     mediaCreateBitmap(resultBitmap.width, resultBitmap.height, resultBitmap.config)?.let { backgroundBitmap ->
-                                        Bitmap.createBitmap(
-                                            resultBitmap.width,
-                                            resultBitmap.height,
-                                            resultBitmap.config
-                                        )
                                         backgroundBitmap.eraseColor(color)
 
                                         val canvas = Canvas(backgroundBitmap)
@@ -689,15 +684,17 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 WatermarkType.map(it.watermarkType)?.let { type ->
-                    viewModel.setWatermark(
-                        context,
-                        finalBitmap,
-                        type,
-                        detailUiModel = detailUiModel,
-                        useStorageColor = true
-                    )
+                    finalBitmap?.let { finalBitmapReady ->
+                        viewModel.setWatermark(
+                            context,
+                            finalBitmapReady,
+                            type,
+                            detailUiModel = detailUiModel,
+                            useStorageColor = true
+                        )
 
-                    watermarkComponent.setWatermarkTypeSelected(type)
+                        watermarkComponent.setWatermarkTypeSelected(type)
+                    }
                 }
             }
         }
@@ -707,7 +704,7 @@ class DetailEditorFragment @Inject constructor(
         rotateValue: EditorCropRotateUiModel,
         source: Bitmap,
         isInverse: Boolean = false
-    ): Bitmap {
+    ): Bitmap? {
         var finalRotateDegree = rotateValue.let {
             it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
         }
@@ -731,17 +728,17 @@ class DetailEditorFragment @Inject constructor(
             globalWidth = source.width
             globalHeight = source.height
         }
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+        return mediaCreateBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     // neutralize rotate value on watermark result
-    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap {
-        val neutralizeBitmap =
-            watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
-
-        val cropX = (neutralizeBitmap.width - globalWidth) / 2
-        val cropY = (neutralizeBitmap.height - globalHeight) / 2
-        return Bitmap.createBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap? {
+        watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)?.let { neutralizeBitmap ->
+            val cropX = (neutralizeBitmap.width - globalWidth) / 2
+            val cropY = (neutralizeBitmap.height - globalHeight) / 2
+            return mediaCreateBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+        }
+        return null
     }
 
     private fun readPreviousState() {
@@ -820,8 +817,7 @@ class DetailEditorFragment @Inject constructor(
 
             val mirrorMatrix = Matrix()
             mirrorMatrix.preScale(cropRotateData.scaleX, cropRotateData.scaleY)
-            val mirroredBitmap =
-                Bitmap.createBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+            val mirroredBitmap = mediaCreateBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true) ?: return@let
 
             // get processed, since data param is set to be null then other data value is not necessary
             val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
