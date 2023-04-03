@@ -1,6 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.SetCartlistCheckboxStateRequest
 import com.tokopedia.cart.data.model.response.cartlistcheckboxstate.SetCartlistCheckboxGqlResponse
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -8,12 +9,13 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 class SetCartlistCheckboxStateUseCase @Inject constructor(
-    @ApplicationContext private val graphqlRepository: GraphqlRepository
-) : UseCase<Boolean>() {
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<List<CartItemHolderData>, Boolean>(dispatcher.io) {
 
     companion object {
         private const val PARAM = "params"
@@ -21,11 +23,12 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(
         const val QUERY_SET_CARTLIST_CHECKBOX_STATE = "SetCartlistCheckboxStateQuery"
     }
 
-    private var params: Map<String, Any> = emptyMap()
+    override fun graphqlQuery(): String = SET_CHECKBOX_STATE_QUERY
 
-    fun setParams(cartItemDataList: List<CartItemHolderData>): SetCartlistCheckboxStateUseCase {
+    @GqlQuery(QUERY_SET_CARTLIST_CHECKBOX_STATE, SET_CHECKBOX_STATE_QUERY)
+    override suspend fun execute(params: List<CartItemHolderData>): Boolean {
         val cartlistCheckboxStateRequestList = ArrayList<SetCartlistCheckboxStateRequest>()
-        cartItemDataList.forEach {
+        params.forEach {
             cartlistCheckboxStateRequestList.add(
                 SetCartlistCheckboxStateRequest(
                     cartId = it.cartId,
@@ -34,13 +37,8 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(
             )
         }
 
-        params = mapOf(PARAM to cartlistCheckboxStateRequestList)
-        return this
-    }
-    
-    @GqlQuery(QUERY_SET_CARTLIST_CHECKBOX_STATE, SET_CHECKBOX_STATE_QUERY)
-    override suspend fun executeOnBackground(): Boolean {
-        val request = GraphqlRequest(SetCartlistCheckboxStateQuery(), SetCartlistCheckboxGqlResponse::class.java, params)
+        val param = mapOf(PARAM to cartlistCheckboxStateRequestList)
+        val request = GraphqlRequest(SetCartlistCheckboxStateQuery(), SetCartlistCheckboxGqlResponse::class.java, param)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<SetCartlistCheckboxGqlResponse>()
         return response.setCartlistCheckboxStateResponse.data.success == 1
     }

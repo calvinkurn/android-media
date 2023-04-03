@@ -5,7 +5,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class UpdateAndValidateUseData(
+data class UpdateAndGetLastApplyData(
     var updateCartData: UpdateCartData? = null,
     var promoUiModel: PromoUiModel? = null
 ) : Parcelable

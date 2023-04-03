@@ -551,7 +551,7 @@ class CartFragment :
             if (validateUseUiModel != null) {
                 dPresenter.validateBoPromo(validateUseUiModel)
                 dPresenter.setValidateUseLastResponse(validateUseUiModel)
-                dPresenter.setUpdateCartAndValidateUseLastResponse(null)
+                dPresenter.setUpdateCartAndGetLastApplyLastResponse(null)
                 dPresenter.setLastApplyNotValid()
                 updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
             }
@@ -562,7 +562,7 @@ class CartFragment :
                 if (validateUseUiModel == null) {
                     dPresenter.setLastApplyNotValid()
                     dPresenter.setValidateUseLastResponse(null)
-                    dPresenter.setUpdateCartAndValidateUseLastResponse(null)
+                    dPresenter.setUpdateCartAndGetLastApplyLastResponse(null)
                 }
                 updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
             }
@@ -1268,7 +1268,7 @@ class CartFragment :
 
         if (cartListData != null) {
             val lastUpdateCartAndValidateUseResponse =
-                dPresenter.getUpdateCartAndValidateUseLastResponse()
+                dPresenter.getUpdateCartAndGetLastApplyLastResponse()
             lastUpdateCartAndValidateUseResponse?.promoUiModel?.let {
                 if (it.messageUiModel.state == "red") {
                     it.codes.forEach { code ->
@@ -2598,7 +2598,7 @@ class CartFragment :
     }
 
     private fun validateRenderPromoFromValidateUseCartPage() {
-        dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
+        dPresenter.getUpdateCartAndGetLastApplyLastResponse()?.promoUiModel?.let {
             val lastApplyUiModel =
                 LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
             renderPromoCheckout(lastApplyUiModel)

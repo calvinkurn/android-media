@@ -16,7 +16,7 @@ import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
@@ -32,9 +32,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
-import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
-import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -51,6 +49,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
@@ -150,7 +149,7 @@ class CartListPresenter @Inject constructor(
     private var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
 
     // Store last validate use response from cart page
-    private var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
+    private var lastUpdateCartAndGetLastApplyResponse: UpdateAndGetLastApplyData? = null
     var isLastApplyResponseStillValid = true
 
     // Store last validate use request
@@ -274,7 +273,7 @@ class CartListPresenter @Inject constructor(
         view?.let {
             setLastApplyValid()
             setValidateUseLastResponse(null)
-            setUpdateCartAndValidateUseLastResponse(null)
+            setUpdateCartAndGetLastApplyLastResponse(null)
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
@@ -550,40 +549,38 @@ class CartListPresenter @Inject constructor(
 
     override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
         view?.let { cartListView ->
-            val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in cartListView.getAllAvailableCartDataList()) {
-                if (!data.isError) {
-                    cartItemDataList.add(data)
+            launch(dispatchers.io) {
+                val cartItemDataList = ArrayList<CartItemHolderData>()
+                for (data in cartListView.getAllAvailableCartDataList()) {
+                    if (!data.isError) {
+                        cartItemDataList.add(data)
+                    }
                 }
-            }
 
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
-            if (updateCartRequestList.isNotEmpty()) {
-                val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                    updateCartRequestList = updateCartRequestList,
-                    source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                    cartId = cartId,
-                    getCartState = getCartState
-                )
-                updateAndReloadCartUseCase
-                    .setParams(updateCartWrapperRequest)
-                    .execute(
-                        onSuccess = { updateAndReloadCartListData ->
-                            view?.hideProgressLoading()
-                            processInitialGetCartData(
-                                updateAndReloadCartListData.cartId,
-                                initialLoad = false,
-                                isLoadingTypeRefresh = true,
-                                updateAndReloadCartListData.getCartState
-                            )
-                        },
-                        onError = { throwable ->
-                            view?.hideProgressLoading()
-                            view?.showToastMessageRed(throwable)
-                        }
-                    )
-            } else {
-                cartListView.hideProgressLoading()
+                val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+                if (updateCartRequestList.isNotEmpty()) {
+                    try {
+                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            cartId = cartId,
+                            getCartState = getCartState
+                        )
+                        val updateAndReloadCartListData = updateAndReloadCartUseCase(updateCartWrapperRequest)
+                        view?.hideProgressLoading()
+                        processInitialGetCartData(
+                            updateAndReloadCartListData.cartId,
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true,
+                            updateAndReloadCartListData.getCartState
+                        )
+                    } catch (t: Throwable) {
+                        view?.hideProgressLoading()
+                        view?.showToastMessageRed(t)
+                    }
+                } else {
+                    cartListView.hideProgressLoading()
+                }
             }
         }
     }
@@ -944,31 +941,30 @@ class CartListPresenter @Inject constructor(
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         view?.let {
-            val addCartToWishlistRequest = AddCartToWishlistRequest()
-            addCartToWishlistRequest.cartIds = listOf(cartId)
-            
-            addCartToWishlistUseCase.setParams(addCartToWishlistRequest)
-                .execute(
-                    onSuccess = { data ->
-                        view?.let { cartListView ->
-                            if (data.status == STATUS_OK) {
-                                if (data.success == 1) {
-                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-                                } else {
-                                    cartListView.showToastMessageRed(data.message)
-                                }
+            launch(dispatchers.io) {
+                try {
+                    val addCartToWishlistRequest = AddCartToWishlistRequest()
+                    addCartToWishlistRequest.cartIds = listOf(cartId)
+                    val data = addCartToWishlistUseCase(addCartToWishlistRequest)
+                    view?.let { cartListView ->
+                        if (data.status == STATUS_OK) {
+                            if (data.success == 1) {
+                                cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
                             } else {
                                 cartListView.showToastMessageRed(data.message)
                             }
-                        }
-                    },
-                    onError = { throwable ->
-                        view?.let { cartListView ->
-                            Timber.e(throwable)
-                            cartListView.showToastMessageRed(throwable)
+                        } else {
+                            cartListView.showToastMessageRed(data.message)
                         }
                     }
-                )
+                }
+                catch (t: Throwable) {
+                    view?.let { cartListView ->
+                        Timber.e(t)
+                        cartListView.showToastMessageRed(t)
+                    }
+                }
+            }
         }
     }
 
@@ -1824,27 +1820,25 @@ class CartListPresenter @Inject constructor(
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
         
-        addToCartExternalUseCase
-            .setParams(productId.toString(), userSessionInterface.userId)
-            .execute(
-                onSuccess = { model ->
-                    view?.let { cartListView ->
-                        cartListView.hideProgressLoading()
-                        if (model.message.isNotEmpty()) {
-                            cartListView.showToastMessageGreen(model.message[0])
-                        }
-                        cartListView.refreshCartWithSwipeToRefresh()
+        launch(dispatchers.io) {
+            try {
+                val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
+                view?.let { cartListView ->
+                    cartListView.hideProgressLoading()
+                    if (model.message.isNotEmpty()) {
+                        cartListView.showToastMessageGreen(model.message[0])
                     }
-                },
-                onError = { throwable ->
-                    Timber.d(throwable)
-                    view?.let {
-                        it.hideProgressLoading()
-                        it.showToastMessageRed(throwable)
-                        it.refreshCartWithSwipeToRefresh()
-                    }
+                    cartListView.refreshCartWithSwipeToRefresh()
                 }
-            )
+            } catch (t: Throwable) {
+                Timber.d(t)
+                view?.let {
+                    it.hideProgressLoading()
+                    it.showToastMessageRed(t)
+                    it.refreshCartWithSwipeToRefresh()
+                }
+            }
+        }
     }
 
     override fun redirectToLite(url: String) {
@@ -1912,26 +1906,24 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        lastValidateUseRequest = promoRequest
-        getLastApplyPromoUseCase
-            .setParam(promoRequest)
-            .execute(
-                onSuccess = { getLastApplyResponse ->
-                    setUpdateCartAndValidateUseLastResponse(
-                        UpdateAndValidateUseData().apply {
-                            promoUiModel = getLastApplyResponse.promoUiModel
-                        }
-                    )
-                    isLastApplyResponseStillValid = false
-                    view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-                },
-                onError = { throwable ->
-                    if (throwable is AkamaiErrorException) {
-                        view?.showToastMessageRed(throwable)
+        launch (dispatchers.io) {
+            try {
+                lastValidateUseRequest = promoRequest
+                val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
+                setUpdateCartAndGetLastApplyLastResponse(
+                    UpdateAndGetLastApplyData().apply {
+                        promoUiModel = getLastApplyResponse.promoUiModel
                     }
-                    view?.showPromoCheckoutStickyButtonInactive()
+                )
+                isLastApplyResponseStillValid = false
+                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
+            } catch(t: Throwable) {
+                if (t is AkamaiErrorException) {
+                    view?.showToastMessageRed(t)
                 }
-            )
+                view?.showPromoCheckoutStickyButtonInactive()
+            }
+        }
     }
 
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
@@ -1947,37 +1939,35 @@ class CartListPresenter @Inject constructor(
 
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
-                lastValidateUseRequest = promoRequest
-                val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                   updateCartRequestList = updateCartRequestList,
-                   source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                   getLastApplyPromoRequest = promoRequest
-                )
-                updateCartAndGetLastApplyUseCase
-                   .setParams(updateCartWrapperRequest)
-                   .execute(
-                       onSuccess = { updateCartDataResponse ->
-                           updateCartDataResponse.updateCartData?.let { updateCartData ->
-                               if (updateCartData.isSuccess) {
-                                   updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                       setLastApplyNotValid()
-                                       setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                       setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
-                                       view?.updatePromoCheckoutStickyButton(promoUiModel)
-                                   }
-                               }
-                           }
-                       },
-                       onError = { throwable ->
-                           if (throwable is AkamaiErrorException) {
-                               doClearAllPromo()
-                               if (!promoTicker.enable) {
-                                   view?.showToastMessageRed(throwable)
-                               }
-                           }
-                           view?.renderPromoCheckoutButtonActiveDefault(emptyList())
-                       }
-                   )
+                launch(dispatchers.io) {
+                    try {
+                        lastValidateUseRequest = promoRequest
+                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            getLastApplyPromoRequest = promoRequest
+                        )
+                        val updateCartDataResponse = updateCartAndGetLastApplyUseCase(updateCartWrapperRequest)
+                        updateCartDataResponse.updateCartData?.let { updateCartData ->
+                            if (updateCartData.isSuccess) {
+                                updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                    setLastApplyNotValid()
+                                    setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
+                                    setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
+                                    view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                }
+                            }
+                        }
+                    } catch (t: Throwable) {
+                        if (t is AkamaiErrorException) {
+                            doClearAllPromo()
+                            if (!promoTicker.enable) {
+                                view?.showToastMessageRed(t)
+                            }
+                        }
+                        view?.renderPromoCheckoutButtonActiveDefault(emptyList())
+                    }
+                }
             } else {
                 cartListView.hideProgressLoading()
             }
@@ -2061,12 +2051,12 @@ class CartListPresenter @Inject constructor(
         lastValidateUseResponse = response
     }
 
-    override fun getUpdateCartAndValidateUseLastResponse(): UpdateAndValidateUseData? {
-        return lastUpdateCartAndValidateUseResponse
+    override fun getUpdateCartAndGetLastApplyLastResponse(): UpdateAndGetLastApplyData? {
+        return lastUpdateCartAndGetLastApplyResponse
     }
 
-    override fun setUpdateCartAndValidateUseLastResponse(response: UpdateAndValidateUseData?) {
-        lastUpdateCartAndValidateUseResponse = response
+    override fun setUpdateCartAndGetLastApplyLastResponse(response: UpdateAndGetLastApplyData?) {
+        lastUpdateCartAndGetLastApplyResponse = response
     }
 
     override fun isLastApplyValid(): Boolean {
@@ -2082,30 +2072,29 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>) {
-        setCartlistCheckboxStateUseCase
-            .setParams(cartItemDataList)
-            .execute(onSuccess = {}, onError = {})
+        launchCatchError(dispatchers.io, block = {
+            setCartlistCheckboxStateUseCase(cartItemDataList)
+        }, onError = {})
     }
 
     override fun followShop(shopId: String) {
         view?.showProgressLoading()
-        followShopUseCase.buildRequestParams(shopId)
-            .execute(
-                onSuccess = { data ->
-                    view?.let {
-                        it.hideProgressLoading()
-                        it.showToastMessageGreen(data.followShop?.message ?: "")
-                        processInitialGetCartData("0", false, false)
-                    }
-                },
-                onError = { throwable ->
-                    view?.let {
-                        Timber.e(throwable)
-                        it.hideProgressLoading()
-                        it.showToastMessageRed(throwable)
-                    }
+        launch(dispatchers.io) {
+            try {
+                val data = followShopUseCase(shopId)
+                view?.let {
+                    it.hideProgressLoading()
+                    it.showToastMessageGreen(data.followShop?.message ?: "")
+                    processInitialGetCartData("0", false, false)
                 }
-            )
+            } catch(t: Throwable) {
+                view?.let {
+                    Timber.e(t)
+                    it.hideProgressLoading()
+                    it.showToastMessageRed(t)
+                }
+            }
+        }
     }
 
     override fun setLocalizingAddressData(lca: LocalCacheModel?) {

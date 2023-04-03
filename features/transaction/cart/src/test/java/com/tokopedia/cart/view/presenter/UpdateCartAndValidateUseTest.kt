@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -24,7 +24,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
             add(CartItemHolderData(isError = false))
         }
 
-        val updateAndValidateUseData = UpdateAndValidateUseData().apply {
+        val updateAndValidateUseData = UpdateAndGetLastApplyData().apply {
             updateCartData = UpdateCartData().apply {
                 isSuccess = true
             }
