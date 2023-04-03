@@ -1942,37 +1942,35 @@ class CartListPresenter @Inject constructor(
 
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
-                lastValidateUseRequest = promoRequest
-                val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                   updateCartRequestList = updateCartRequestList,
-                   source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                   getLastApplyPromoRequest = promoRequest
-                )
-                updateCartAndGetLastApplyUseCase
-                   .setParams(updateCartWrapperRequest)
-                   .execute(
-                       onSuccess = { updateCartDataResponse ->
-                           updateCartDataResponse.updateCartData?.let { updateCartData ->
-                               if (updateCartData.isSuccess) {
-                                   updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                       setLastApplyNotValid()
-                                       setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                       setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
-                                       view?.updatePromoCheckoutStickyButton(promoUiModel)
-                                   }
-                               }
-                           }
-                       },
-                       onError = { throwable ->
-                           if (throwable is AkamaiErrorException) {
-                               doClearAllPromo()
-                               if (!promoTicker.enable) {
-                                   view?.showToastMessageRed(throwable)
-                               }
-                           }
-                           view?.renderPromoCheckoutButtonActiveDefault(emptyList())
-                       }
-                   )
+                launch(dispatchers.io) {
+                    try {
+                        lastValidateUseRequest = promoRequest
+                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            getLastApplyPromoRequest = promoRequest
+                        )
+                        val updateCartDataResponse = updateCartAndGetLastApplyUseCase(updateCartWrapperRequest)
+                        updateCartDataResponse.updateCartData?.let { updateCartData ->
+                            if (updateCartData.isSuccess) {
+                                updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                    setLastApplyNotValid()
+                                    setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
+                                    setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
+                                    view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                }
+                            }
+                        }
+                    } catch (t: Throwable) {
+                        if (t is AkamaiErrorException) {
+                            doClearAllPromo()
+                            if (!promoTicker.enable) {
+                                view?.showToastMessageRed(t)
+                            }
+                        }
+                        view?.renderPromoCheckoutButtonActiveDefault(emptyList())
+                    }
+                }
             } else {
                 cartListView.hideProgressLoading()
             }

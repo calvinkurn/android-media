@@ -1,7 +1,9 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.usecase.coroutines.UseCase
@@ -13,20 +15,16 @@ import javax.inject.Inject
 class UpdateCartAndGetLastApplyUseCase @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
-) : UseCase<UpdateAndGetLastApplyData>() {
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<UpdateCartWrapperRequest, UpdateAndGetLastApplyData>(dispatcher.io) {
 
     companion object {
         const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
     }
 
-    private var params: UpdateCartWrapperRequest = UpdateCartWrapperRequest()
+    override fun graphqlQuery(): String = ""
 
-    fun setParams(request: UpdateCartWrapperRequest): UpdateCartAndGetLastApplyUseCase {
-        this.params = request
-        return this
-    }
-
-    override suspend fun executeOnBackground(): UpdateAndGetLastApplyData {
+    override suspend fun execute(params: UpdateCartWrapperRequest): UpdateAndGetLastApplyData {
         val updateAndValidateUseData = UpdateAndGetLastApplyData()
         val updateCartData = updateCartUseCase(params)
         updateAndValidateUseData.updateCartData = updateCartData
