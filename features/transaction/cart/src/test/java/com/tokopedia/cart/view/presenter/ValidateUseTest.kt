@@ -5,6 +5,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.verify
 import io.mockk.verifyOrder
@@ -14,20 +15,20 @@ import rx.Observable
 class ValidateUseTest : BaseCartTest() {
 
     @Test
-    fun `WHEN validate use success THEN should update promo button state`() {
+    fun `WHEN get last apply success THEN should update promo button state`() {
         // GIVEN
-        val validateUseModel = ValidateUsePromoRevampUiModel().apply {
+        val lastApplyModel = ValidateUsePromoRevampUiModel().apply {
             promoUiModel = PromoUiModel()
         }
 
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        coEvery { getLastApplyPromoUseCase(any()) } returns lastApplyModel
 
         // WHEN
-        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doGetLastApply(ValidateUsePromoRequest())
 
         // THEN
         verify {
-            view.updatePromoCheckoutStickyButton(validateUseModel.promoUiModel)
+            view.updatePromoCheckoutStickyButton(lastApplyModel.promoUiModel)
         }
     }
 
@@ -36,10 +37,10 @@ class ValidateUseTest : BaseCartTest() {
         // GIVEN
         val exception = CartResponseErrorException("error message")
 
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { getLastApplyPromoUseCase(any()) } throws exception
 
         // WHEN
-        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doGetLastApply(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -52,10 +53,10 @@ class ValidateUseTest : BaseCartTest() {
         // GIVEN
         val exception = AkamaiErrorException("error message")
 
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { getLastApplyPromoUseCase(any()) } throws exception
 
         // WHEN
-        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doGetLastApply(ValidateUsePromoRequest())
 
         // THEN
         verifyOrder {

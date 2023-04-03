@@ -6,13 +6,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 class ValidatePromoTest : BaseCartTest() {
 
@@ -21,8 +19,8 @@ class ValidatePromoTest : BaseCartTest() {
         // GIVEN
         val shopList = listOf(CartGroupHolderData(boCode = "asdf"), CartGroupHolderData())
         every { view.getAllGroupDataList() } returns shopList
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()) } returns clearCacheAutoApplyStackUseCase
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns ClearPromoUiModel()
 
         // WHEN
         cartListPresenter.detachView()
@@ -40,8 +38,8 @@ class ValidatePromoTest : BaseCartTest() {
         // GIVEN
         val shopList = listOf(CartGroupHolderData(boCode = "asdf"), CartGroupHolderData())
         every { view.getAllGroupDataList() } returns shopList
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()) } returns clearCacheAutoApplyStackUseCase
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns ClearPromoUiModel()
 
         // WHEN
         cartListPresenter.validateBoPromo(ValidateUsePromoRevampUiModel())
@@ -70,7 +68,7 @@ class ValidatePromoTest : BaseCartTest() {
                             spId = 1,
                             code = "asdf",
                             type = "logistic",
-                            uniqueId = "123",
+                            cartStringGroup = "123",
                             messageUiModel = MessageUiModel(
                                 state = "green"
                             )
@@ -92,8 +90,8 @@ class ValidatePromoTest : BaseCartTest() {
         // GIVEN
         val shopList = listOf(CartGroupHolderData(boCode = "asdf", cartString = "123"), CartGroupHolderData(cartString = "234"))
         every { view.getAllGroupDataList() } returns shopList
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()) } returns clearCacheAutoApplyStackUseCase
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns ClearPromoUiModel()
 
         // WHEN
         cartListPresenter.validateBoPromo(

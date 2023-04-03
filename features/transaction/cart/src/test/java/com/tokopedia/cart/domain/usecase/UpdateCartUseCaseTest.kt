@@ -1,24 +1,24 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.tokopedia.cart.data.model.request.UpdateCartRequest
+import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.updatecart.Data
 import com.tokopedia.cart.data.model.response.updatecart.UpdateCartDataResponse
 import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
-import rx.observers.AssertableSubscriber
 import java.lang.reflect.Type
 
 class UpdateCartUseCaseTest {
@@ -27,19 +27,20 @@ class UpdateCartUseCaseTest {
     private lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
 
     @MockK(relaxUnitFun = true)
-    private lateinit var graphqlUseCase: GraphqlUseCase
+    private lateinit var graphqlRepository: GraphqlRepository
+
+    val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
     private lateinit var updateCartUseCase: UpdateCartUseCase
-    lateinit var subscriber: AssertableSubscriber<UpdateCartData>
 
-    val params = RequestParams().apply {
-        putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, arrayListOf(UpdateCartRequest()))
-    }
+    val params = UpdateCartWrapperRequest(
+        updateCartRequestList = listOf(com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest())
+    )
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        updateCartUseCase = UpdateCartUseCase(graphqlUseCase, TestSchedulers, chosenAddressRequestHelper)
+        updateCartUseCase = UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper, coroutineTestDispatchers)
     }
 
     @Test
@@ -51,14 +52,16 @@ class UpdateCartUseCaseTest {
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(response)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
-        // When
-        subscriber = updateCartUseCase.createObservable(params).test()
-
-        // Then
-        subscriber.assertValue(UpdateCartData(isSuccess = true, message = ""))
+        runBlocking {
+            // When
+            val updateCartData = updateCartUseCase(params)
+            
+            // Then
+            assertEquals(UpdateCartData(isSuccess = true, message = ""), updateCartData)
+        }
     }
 
     @Test
@@ -72,14 +75,16 @@ class UpdateCartUseCaseTest {
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
-        // When
-        subscriber = updateCartUseCase.createObservable(params).test()
+        runBlocking {
+            // When
+            val updateCartData = updateCartUseCase(params)
 
-        // Then
-        subscriber.assertValue(UpdateCartData(isSuccess = false, message = errorMessage))
+            // Then
+            assertEquals(UpdateCartData(isSuccess = false, message = errorMessage), updateCartData)
+        }
     }
 
     @Test
@@ -91,13 +96,15 @@ class UpdateCartUseCaseTest {
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
-        // When
-        subscriber = updateCartUseCase.createObservable(params).test()
+        runBlocking {
+            // When
+            val updateCartData = updateCartUseCase(params)
 
-        // Then
-        subscriber.assertValue(UpdateCartData(isSuccess = false, message = ""))
+            // Then
+            assertEquals(UpdateCartData(isSuccess = false, message = ""), updateCartData)
+        }
     }
 }
