@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,22 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentGotoKycLoaderBinding>()
 
+    private var sourcePage = ""
+    private var data: GotoKycMainParam? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val intentExtras = requireActivity().intent.extras
+        sourcePage = intentExtras?.getString(PARAM_REQUEST_PAGE).orEmpty()
+
+        data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intentExtras?.getParcelable(PARAM_DATA, GotoKycMainParam::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intentExtras?.getParcelable(PARAM_DATA)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,16 +44,6 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val intentExtras = requireActivity().intent.extras
-
-        val sourcePage = intentExtras?.getString(PARAM_REQUEST_PAGE).orEmpty()
-        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intentExtras?.getParcelable(PARAM_DATA, GotoKycMainParam::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intentExtras?.getParcelable(PARAM_DATA)
-        }
 
         when (sourcePage) {
             PAGE_STATUS_SUBMISSION -> {
@@ -74,7 +81,12 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                 )
                 gotoBridgingAccountLinking(parameter)
             }
+            else -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
         }
+        sourcePage = ""
     }
 
     private fun gotoOnboardBenefitGotoKyc(parameter: OnboardBenefitParam) {

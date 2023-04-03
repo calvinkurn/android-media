@@ -60,4 +60,6 @@ object KYCConstant {
     }
 
     const val GotoKycSourceAccountPage = "account"
+
+    const val RESULT_FINISH = 99
 }

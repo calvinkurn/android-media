@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -16,13 +17,12 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -115,12 +115,14 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     gotoFinalLoader()
                 }
                 is SubmitChallengeResult.WrongAnswer -> {
+                    setButtonLoading(false)
                     binding?.fieldDob?.apply {
                         isInputError = true
                         setMessage(it.message)
                     }
                 }
                 is SubmitChallengeResult.Exhausted -> {
+                    setButtonLoading(false)
                     showDobChallengeFailedBottomSheet()
                 }
                 is SubmitChallengeResult.Failed -> {
@@ -205,23 +207,30 @@ class DobChallengeFragment : BaseDaggerFragment() {
     }
 
     private fun showDobChallengeFailedBottomSheet() {
-        val dobChallengeBottomSheet = DobChallengeBottomSheet(
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
             source = args.parameter.pageSource
         )
 
-        dobChallengeBottomSheet.show(
+        dobChallengeExhaustedBottomSheet.show(
             childFragmentManager,
             TAG_BOTTOM_SHEET_DOB_CHALLENGE_FAILED
         )
 
-        dobChallengeBottomSheet.setOnDismissListener {
-            activity?.setResult(Activity.RESULT_CANCELED)
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.RESULT_FINISH)
             activity?.finish()
         }
     }
 
     private fun gotoFinalLoader() {
-        //TODO: goto final loader
+        val parameter = FinalLoaderParam(
+            source = args.parameter.pageSource,
+            projectId = args.parameter.projectId,
+            challengeId = args.parameter.challengeId,
+            gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE
+        )
+        val toFinalLoaderPage = DobChallengeFragmentDirections.actionDobChallengeFragmentToFinalLoaderFragment(parameter)
+        view?.findNavController()?.navigate(toFinalLoaderPage)
     }
 
     private fun setButtonLoading(isLoading: Boolean) {
