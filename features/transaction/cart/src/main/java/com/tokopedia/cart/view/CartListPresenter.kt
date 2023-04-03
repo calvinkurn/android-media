@@ -548,40 +548,38 @@ class CartListPresenter @Inject constructor(
 
     override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
         view?.let { cartListView ->
-            val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in cartListView.getAllAvailableCartDataList()) {
-                if (!data.isError) {
-                    cartItemDataList.add(data)
+            launch(dispatchers.io) {
+                val cartItemDataList = ArrayList<CartItemHolderData>()
+                for (data in cartListView.getAllAvailableCartDataList()) {
+                    if (!data.isError) {
+                        cartItemDataList.add(data)
+                    }
                 }
-            }
 
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
-            if (updateCartRequestList.isNotEmpty()) {
-                val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                    updateCartRequestList = updateCartRequestList,
-                    source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                    cartId = cartId,
-                    getCartState = getCartState
-                )
-                updateAndReloadCartUseCase
-                    .setParams(updateCartWrapperRequest)
-                    .execute(
-                        onSuccess = { updateAndReloadCartListData ->
-                            view?.hideProgressLoading()
-                            processInitialGetCartData(
-                                updateAndReloadCartListData.cartId,
-                                initialLoad = false,
-                                isLoadingTypeRefresh = true,
-                                updateAndReloadCartListData.getCartState
-                            )
-                        },
-                        onError = { throwable ->
-                            view?.hideProgressLoading()
-                            view?.showToastMessageRed(throwable)
-                        }
-                    )
-            } else {
-                cartListView.hideProgressLoading()
+                val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+                if (updateCartRequestList.isNotEmpty()) {
+                    try {
+                        val updateCartWrapperRequest = UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            cartId = cartId,
+                            getCartState = getCartState
+                        )
+                        val updateAndReloadCartListData = updateAndReloadCartUseCase(updateCartWrapperRequest)
+                        view?.hideProgressLoading()
+                        processInitialGetCartData(
+                            updateAndReloadCartListData.cartId,
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true,
+                            updateAndReloadCartListData.getCartState
+                        )
+                    } catch (t: Throwable) {
+                        view?.hideProgressLoading()
+                        view?.showToastMessageRed(t)
+                    }
+                } else {
+                    cartListView.hideProgressLoading()
+                }
             }
         }
     }

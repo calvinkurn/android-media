@@ -1,6 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cart.domain.mapper.mapUpdateCartData
@@ -9,9 +10,9 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -20,8 +21,9 @@ import javax.inject.Inject
 
 class UpdateCartUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
-) : UseCase<UpdateCartData>() {
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<UpdateCartWrapperRequest, UpdateCartData>(dispatcher.io) {
 
     companion object {
         const val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
@@ -34,22 +36,17 @@ class UpdateCartUseCase @Inject constructor(
         const val QUERY_UPDATE_CART = "UpdateCartQuery"
     }
 
-    private var params: Map<String, Any> = emptyMap()
-
-    fun setParams(request: UpdateCartWrapperRequest): UpdateCartUseCase {
-        params = mapOf(
-            PARAM_KEY_LANG to PARAM_VALUE_ID,
-            PARAM_UPDATE_CART_REQUEST to request.getUpdateCartRequest(),
-            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-            PARAM_KEY_SOURCE to request.source
-        )
-        return this
-    }
+    override fun graphqlQuery(): String = UPDATE_CART_V2_QUERY
 
     @GqlQuery(QUERY_UPDATE_CART, UPDATE_CART_V2_QUERY)
-    override suspend fun executeOnBackground(): UpdateCartData {
-        val request =
-            GraphqlRequest(UpdateCartQuery(), UpdateCartGqlResponse::class.java, params)
+    override suspend fun execute(params: UpdateCartWrapperRequest): UpdateCartData {
+        val param = mapOf(
+            PARAM_KEY_LANG to PARAM_VALUE_ID,
+            PARAM_UPDATE_CART_REQUEST to params.getUpdateCartRequest(),
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_KEY_SOURCE to params.source
+        )
+        val request = GraphqlRequest(UpdateCartQuery(), UpdateCartGqlResponse::class.java, param)
         val updateCartGqlResponse =
             graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
         return mapUpdateCartData(

@@ -15,7 +15,7 @@ class UpdateAndReloadCartUseCase @Inject constructor(
 
     override suspend fun execute(params: UpdateCartWrapperRequest): UpdateAndReloadCartListData {
         val updateAndReloadCartListData = UpdateAndReloadCartListData()
-        val updateCartData = updateCartUseCase.setParams(params).executeOnBackground()
+        val updateCartData = updateCartUseCase(params)
         updateAndReloadCartListData.updateCartData = updateCartData
         updateAndReloadCartListData.cartId = params.cartId
         updateAndReloadCartListData.getCartState = params.getCartState
