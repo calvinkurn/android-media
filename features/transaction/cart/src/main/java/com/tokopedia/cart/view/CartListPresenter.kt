@@ -49,6 +49,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
@@ -2071,9 +2072,9 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>) {
-        setCartlistCheckboxStateUseCase
-            .setParams(cartItemDataList)
-            .execute(onSuccess = {}, onError = {})
+        launchCatchError(dispatchers.io, block = {
+            setCartlistCheckboxStateUseCase(cartItemDataList)
+        }, onError = {})
     }
 
     override fun followShop(shopId: String) {
