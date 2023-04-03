@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -33,13 +32,13 @@ import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
+import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,6 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -83,13 +83,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var isJustLoggedIn: Boolean
         get() = arguments?.getBoolean(
             ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-            false,
+            false
         ) ?: false
         set(value) {
             val arguments = getOrCreateArguments()
             arguments.putBoolean(
                 ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                value,
+                value
             )
         }
 
@@ -101,14 +101,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val arguments = getOrCreateArguments()
             arguments.putString(
                 ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-                value.toString(),
+                value.toString()
             )
         }
 
-    private val openCreateShorts = registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
-        if (!isCreatingNewShorts) return@registerForActivityResult
-        appLinkTabPosition = TAB_SECOND_INDEX
-    }
+    private val openCreateShorts =
+        registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
+            if (!isCreatingNewShorts) return@registerForActivityResult
+            appLinkTabPosition = TAB_SECOND_INDEX
+        }
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
@@ -213,7 +214,10 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun setupView() {
-        if (isJustLoggedIn) showJustLoggedInToaster()
+        if (isJustLoggedIn) {
+            showJustLoggedInToaster()
+            feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
+        }
         isJustLoggedIn = false
     }
 
@@ -316,14 +320,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                             router.route(
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,
-                                                status.contentId,
+                                                status.contentId
                                             )
                                         }
                                     )
                                 } else {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
+                                        duration = Toaster.LENGTH_LONG
                                     )
                                 }
                             }
@@ -442,28 +446,28 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             childFragmentManager,
             lifecycle,
             data,
-            appLinkExtras = arguments ?: Bundle.EMPTY,
+            appLinkExtras = arguments ?: Bundle.EMPTY
         )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
+                    }
+                    onChangeTab(position)
                 }
-                onChangeTab(position)
-            }
-        })
+            })
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
@@ -554,7 +558,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         showNormalToaster(
             getString(
                 R.string.feed_report_login_success_toaster_text,
-                feedMainViewModel.displayName,
+                feedMainViewModel.displayName
             )
         )
     }
@@ -563,7 +567,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         text: String,
         duration: Int = Toaster.LENGTH_SHORT,
         actionText: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {},
+        actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
         Toaster.build(
             binding.layoutToaster,
@@ -571,7 +575,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             duration,
             Toaster.TYPE_NORMAL,
             actionText,
-            actionListener,
+            actionListener
         ).show()
     }
 
