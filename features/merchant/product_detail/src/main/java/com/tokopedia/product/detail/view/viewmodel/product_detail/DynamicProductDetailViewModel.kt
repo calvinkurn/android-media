@@ -150,7 +150,8 @@ class DynamicProductDetailViewModel @Inject constructor(
     playWidgetSubViewModel: PlayWidgetSubViewModel
 ) : BaseViewModel(dispatcher.main),
     IProductRecommSubViewModel by productRecommSubViewModel,
-    IPlayWidgetSubViewModel by playWidgetSubViewModel {
+    IPlayWidgetSubViewModel by playWidgetSubViewModel,
+    GetProductDetailDataMediator {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -280,20 +281,15 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    private val getProductDetailDataMediator = object : GetProductDetailDataMediator {
-        override fun getP1Data(): DynamicProductInfoP1? = getDynamicProductInfoP1
+    override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
-        override fun getP2Data(): ProductInfoP2UiData? = p2Data.value
+    override fun getP2(): ProductInfoP2UiData? = p2Data.value
 
-        override fun getVariant(): ProductVariant? = variantData
-    }
+    override fun getVariant(): ProductVariant? = variantData
 
     init {
         productRecommSubViewModel.register(scope = viewModelScope)
-        playWidgetSubViewModel.register(
-            scope = viewModelScope,
-            mediator = getProductDetailDataMediator
-        )
+        playWidgetSubViewModel.register(scope = viewModelScope, mediator = this)
         iniQuantityFlow()
     }
 

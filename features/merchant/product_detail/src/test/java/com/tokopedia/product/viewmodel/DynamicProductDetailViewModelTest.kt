@@ -2670,6 +2670,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         return LocalCacheModel("123", "123", "123", "123")
     }
 
+    @Test
+    fun `success get product detail data via mediator`() {
+        val p2Expected = ProductInfoP2UiData()
+        val p1Expected = DynamicProductInfoP1()
+        val variantExpected = ProductVariant()
+
+        every { spykViewModel.p2Data.value } returns p2Expected
+        spykViewModel.getDynamicProductInfoP1 = p1Expected
+        spykViewModel.variantData = variantExpected
+
+        Assert.assertNotNull(spykViewModel.getP2())
+        Assert.assertNotNull(spykViewModel.getP1())
+        Assert.assertNotNull(spykViewModel.getVariant())
+
+        Assert.assertTrue(spykViewModel.getP2() == p2Expected)
+        Assert.assertTrue(spykViewModel.getP1() == p1Expected)
+        Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
+    }
+
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_SHOP_DOMAIN = "shopDomain"

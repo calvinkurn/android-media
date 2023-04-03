@@ -12,9 +12,9 @@ import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewMo
 
 interface GetProductDetailDataMediator : SubViewModelMediator {
 
-    fun getP1Data(): DynamicProductInfoP1?
+    fun getP1(): DynamicProductInfoP1?
 
-    fun getP2Data(): ProductInfoP2UiData?
+    fun getP2(): ProductInfoP2UiData?
 
     fun getVariant(): ProductVariant?
 }
