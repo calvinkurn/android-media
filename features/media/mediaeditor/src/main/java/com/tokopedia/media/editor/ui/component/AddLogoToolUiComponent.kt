@@ -25,6 +25,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.tokopedia.media.editor.utils.mediaCreateBitmap
+import com.tokopedia.media.editor.utils.mediaCreateScaledBitmap
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -168,10 +169,12 @@ class AddLogoToolUiComponent constructor(
                     roundedBitmap(bitmap, 8f.toPx())
                 }
 
-                drawBitmap(
-                    canvas,
-                    getDrawLogo(logoBitmap)
-                )
+                getDrawLogo(logoBitmap)?.let {
+                    drawBitmap(
+                        canvas,
+                        it
+                    )
+                }
 
                 return resultBitmap
             }
@@ -269,32 +272,37 @@ class AddLogoToolUiComponent constructor(
         }
     }
 
-    private fun getUploadAvatarBitmap(): Bitmap {
-        val resultBitmap =
-            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resultBitmap)
-        drawBitmap(
-            canvas,
-            getDrawLogo(
-                uploadAvatar.drawable.toBitmap()
-            )
-        )
+    private fun getUploadAvatarBitmap(): Bitmap? {
+        if (context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) return null
+        mediaCreateBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)?.let { resultBitmap ->
+            val canvas = Canvas(resultBitmap)
+            getDrawLogo(uploadAvatar.drawable.toBitmap())?.let {uploadAvatarBitmap ->
+                drawBitmap(
+                    canvas,
+                    uploadAvatarBitmap
+                )
+            }
 
-        return resultBitmap
+            return resultBitmap
+        }
+        return null
     }
 
-    private fun getShopAvatarBitmap(): Bitmap {
-        val resultBitmap =
-            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resultBitmap)
-        drawBitmap(
-            canvas,
-            getDrawLogo(
-                shopAvatar.drawable.toBitmap()
-            )
-        )
+    private fun getShopAvatarBitmap(): Bitmap? {
+        if (context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) return null
+        mediaCreateBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)?.let {resultBitmap ->
+            val canvas = Canvas(resultBitmap)
+            getDrawLogo(shopAvatar.drawable.toBitmap())?.let { shopAvatarBitmap ->
+                drawBitmap(
+                    canvas,
+                    shopAvatarBitmap
+                )
+            }
 
-        return resultBitmap
+            return resultBitmap
+        }
+        return null
+
     }
 
     private fun drawBitmap(canvas: Canvas, bitmap: Bitmap) {
@@ -341,11 +349,12 @@ class AddLogoToolUiComponent constructor(
     }
 
     // get logo bitmap that rescaled to 1/6 from base image
-    private fun getDrawLogo(source: Bitmap): Bitmap {
+    private fun getDrawLogo(source: Bitmap): Bitmap? {
         val widthTarget = originalImageWidth / LOGO_SIZE_DIVIDER
         val heightTarget = ((widthTarget.toFloat() / source.width) * source.height).toInt()
 
-        return Bitmap.createScaledBitmap(
+        if (context.isCreatedBitmapOverflow(widthTarget, heightTarget)) return null
+        return mediaCreateScaledBitmap(
             source,
             widthTarget,
             heightTarget,
@@ -354,7 +363,7 @@ class AddLogoToolUiComponent constructor(
     }
 
     interface Listener {
-        fun onLogoChosen(bitmap: Bitmap)
+        fun onLogoChosen(bitmap: Bitmap?)
         fun onUpload()
         fun onLoadFailed()
         fun onLoadRetry()

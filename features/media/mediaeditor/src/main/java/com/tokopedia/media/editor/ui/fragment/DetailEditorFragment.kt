@@ -358,11 +358,13 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLogoChosen(bitmap: Bitmap) {
+    override fun onLogoChosen(bitmap: Bitmap?) {
         viewBinding?.imgPreviewOverlay?.apply {
-            show()
-            setImageBitmap(validateImageSize(bitmap))
-            isEdited = true
+            bitmap?.let {
+                show()
+                setImageBitmap(validateImageSize(it))
+                isEdited = true
+            }
         }
     }
 
