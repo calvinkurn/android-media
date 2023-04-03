@@ -3,6 +3,7 @@ package com.tokopedia.broadcaster.revamp
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.net.Uri
+import android.opengl.GLES20
 import android.os.Handler
 import android.os.Looper
 import android.util.Pair
@@ -450,7 +451,7 @@ class BroadcastManager @Inject constructor(
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
         mStreamerGL?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
-        /** TODO: need to know how to update mStreamerSurface.setSurfaceSize() */
+        GLES20.glViewport(0, 0, surfaceSize.width, surfaceSize.height)
     }
 
     override fun start(rtmpUrl: String) {
@@ -740,6 +741,7 @@ class BroadcastManager @Inject constructor(
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopAudioCapture()
+                mStreamerSurface?.stopAudioCapture()
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
                         BroadcasterException(BroadcasterErrorType.AudioFailed)
