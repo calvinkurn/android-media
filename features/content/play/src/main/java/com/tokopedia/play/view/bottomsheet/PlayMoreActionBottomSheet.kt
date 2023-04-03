@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -48,13 +50,12 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created by jegul on 10/12/19
@@ -85,6 +86,29 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     var mListener: Listener? = null
 
+    private val performanceDashboardAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.PerformanceDashboard,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.GRAPH_REPORT,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = contentCommonR.string.performance_dashboard_wording_entry_point,
+            onClick = {
+                RouteManager.route(
+                    requireContext(),
+                    PerformanceDashboardNavigation.getPerformanceDashboardAppLink()
+                )
+            },
+            priority = 2,
+            onImpress = { }
+        )
+    }
+
     private val reportAction by lazy {
         PlayMoreActionUiModel(
             type = PlayMoreActionType.Report,
@@ -100,7 +124,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
             onClick = {
                 shouldOpenUserReport()
             },
-            priority = 4,
+            priority = 5,
             onImpress = { analytic2?.impressUserReport() }
         )
     }
@@ -114,7 +138,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickPiP()
                 mListener?.onPipClicked(this)
             },
-            priority = 2,
+            priority = 3,
             onImpress = { analytic2?.impressPiP() }
         )
     }
@@ -135,7 +159,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickWatchMode()
                 mListener?.onWatchModeClicked(this)
             },
-            priority = 3,
+            priority = 4,
             onImpress = { analytic2?.impressWatchMode() }
         )
     }
@@ -378,6 +402,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
 
     private fun setupListAction() {
+        buildListAction(action = performanceDashboardAction)
         buildListAction(action = reportAction)
 
         if(playViewModel.performanceSummaryPageLink.isNotEmpty())
