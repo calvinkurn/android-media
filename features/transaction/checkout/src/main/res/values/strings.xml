@@ -136,4 +136,6 @@
 
     <!--PLATFORM FEE-->
     <string name="platform_fee_title_info">Tentang %s</string>
+    <string name="platform_fee_diskon_label">Diskon %s</string>
+    <string name="platform_fee_diskon_format" formatted="false">-%s</string>
 </resources>

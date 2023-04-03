@@ -60,10 +60,11 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvSummaryAddOnLabel: Typography = itemView.findViewById(R.id.tv_summary_add_on_label)
     private val mTvSummaryAddOnPrice: Typography = itemView.findViewById(R.id.tv_summary_add_on_price)
     private val mTickerPlatformFeeInfo: Ticker = itemView.findViewById(R.id.ticker_platform_fee_info)
-    private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_label)
-    private val mIvPlatformFeeIconInfo: IconUnify = itemView.findViewById(R.id.ic_dynamic_platform_fee_info)
-    private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_value)
-    private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_value)
+    private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_platform_fee_label)
+    private val mIvPlatformFeeIconInfo: IconUnify = itemView.findViewById(R.id.ic_platform_fee_info)
+    private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_platform_fee_value)
+    private val mTvDiscountPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_discount_platform_fee_label)
+    private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_platform_fee_value)
     private val mLoaderPlatformFeeLabel: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_label)
     private val mLoaderPlatformFeeValue: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_value)
 
@@ -226,11 +227,20 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 mTvPlatformFeeValue.visible()
 
                 if (platformFeeModel.isShowSlashed) {
-                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvDiscountPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
-                    mTvDiscountPlatformFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    mTvDiscountPlatformFeeLabel.visible()
+                    mTvDiscountPlatformFeeLabel.text = String.format(
+                            mTvDiscountPlatformFeeLabel.context.getString(R.string.platform_fee_diskon_label), platformFeeModel.title
+                    )
                     mTvDiscountPlatformFeeValue.visible()
+                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+
+                    val diskonPlatformFee = platformFeeModel.slashedFee - platformFeeModel.fee
+                    mTvDiscountPlatformFeeValue.text = String.format(
+                            mTvDiscountPlatformFeeValue.context.getString(R.string.platform_fee_diskon_format),
+                            convertPriceValueToIdrFormat(diskonPlatformFee.toLong(), false).removeDecimalSuffix()
+                    )
                 } else {
+                    mTvDiscountPlatformFeeLabel.gone()
                     mTvDiscountPlatformFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
                 }
