@@ -662,7 +662,6 @@ class ChatbotFragment :
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
-        presenter.checkUploadVideoEligibility(messageId)
         showTicker()
 
         initRecyclerViewListener()
