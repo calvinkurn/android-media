@@ -75,4 +75,7 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+
+    // Payment
+    const val THANKYOU_PAGE_WIDGET_ORDERING = "android_typ_page_tca"
 }
