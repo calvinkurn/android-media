@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
@@ -16,7 +17,6 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,7 +148,7 @@ class FeedCampaignRibbonView(
                         root.background = GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             cta.colorGradient.map {
-                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                                Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
                             cornerRadius = CORNER_RADIUS
@@ -160,7 +160,7 @@ class FeedCampaignRibbonView(
                         root.background = GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             cta.colorGradient.map {
-                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                                Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
                             cornerRadius = CORNER_RADIUS
@@ -184,7 +184,7 @@ class FeedCampaignRibbonView(
                         root.background = GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             cta.colorGradient.map {
-                                it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                                Color.parseColor(it.color)
                             }.toIntArray()
                         ).apply {
                             cornerRadius = CORNER_RADIUS
@@ -304,8 +304,6 @@ class FeedCampaignRibbonView(
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
 
-        private const val HASH = "#"
-        private const val INT_COLOR_PREFIX = "0xFF"
         private const val CORNER_RADIUS = 4f
 
         private const val ONE = 1f

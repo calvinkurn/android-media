@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.util.FeedDiffUtilCallback
 
@@ -29,7 +30,9 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
                 is FeedCardImageContentModel -> {
                     visitables[rowNumber] = item.copy(like = like)
                 }
-                // TODO Furqan add for other type of models
+                is FeedCardVideoContentModel -> {
+                    visitables[rowNumber] = item.copy(like = like)
+                }
             }
         }
         notifyItemChanged(
@@ -43,6 +46,4 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
             notifyItemChanged(position, FEED_POST_CLEAR_MODE)
         }
     }
-
-    // TODO : Later to use DiffUtil
 }
