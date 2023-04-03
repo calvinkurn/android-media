@@ -8,4 +8,5 @@ interface DigitalKeyboardDelegate {
     fun registerLifecycleOwner(lifecycleOwner: LifecycleOwner)
     fun registerKeyboard(view: WeakReference<View>)
     fun isSoftKeyboardShown(): Boolean
+    fun hideKeyboard()
 }

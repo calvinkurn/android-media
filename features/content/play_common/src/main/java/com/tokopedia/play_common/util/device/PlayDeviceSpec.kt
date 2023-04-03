@@ -23,7 +23,7 @@ interface PlayDeviceSpec {
 
     val chipset: String
 
-    val manufacture: String
+    val manufacturer: String
 
     val supportedABIs: String
 }

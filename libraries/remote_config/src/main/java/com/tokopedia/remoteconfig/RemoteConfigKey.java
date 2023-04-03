@@ -291,6 +291,10 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
+    public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
+
+    public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
+
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
@@ -317,4 +321,6 @@ public class RemoteConfigKey {
     public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
 
     public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
+
+    public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 }

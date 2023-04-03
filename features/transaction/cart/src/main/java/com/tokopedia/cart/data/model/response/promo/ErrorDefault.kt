@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 07/03/20.
  */
-data class ErrorDefault (
-        @SerializedName("title")
-        var title: String = "",
+data class ErrorDefault(
+    @SerializedName("title")
+    var title: String = "",
 
-        @SerializedName("description")
-        var desc: String = ""
+    @SerializedName("description")
+    var desc: String = ""
 )

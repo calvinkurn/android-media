@@ -36,8 +36,9 @@ object FileUtil {
 
     fun writeResponseBodyToDisk(dirPath: String, fileName: String, body: ResponseBody): Boolean {
         return try {
-            val futureFile = File(dirPath + File.separator + fileName)
             val dir = File(dirPath)
+            val futureFile = File(dirPath, fileName)
+
             if (!dir.exists() && !dir.mkdirs()) {
                 throw IllegalStateException("mkdir failed")
             }

@@ -72,6 +72,16 @@ object SomDetailMapper {
         }
     }
 
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includePofData(
+        pofData: SomDynamicPriceResponse.GetSomDynamicPrice.PofData?
+    ) {
+        SomDynamicPaymentResponseMapper.mapResponseToPofDataUiModel(
+            pofData
+        )?.let {
+            add(it)
+        }
+    }
+
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeDivider() {
         add(
             DividerUiModel(
@@ -96,6 +106,7 @@ object SomDetailMapper {
             includeShipment(somGetOrderDetailResponse)
             includeDivider()
             includePayment(somGetSomDynamicPrice)
+            includePofData(somGetSomDynamicPrice?.pofData)
             includeMvc(somGetSomDynamicPrice)
         }
     }

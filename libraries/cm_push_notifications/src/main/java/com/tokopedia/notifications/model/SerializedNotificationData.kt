@@ -3,7 +3,6 @@ package com.tokopedia.notifications.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import kotlinx.android.parcel.Parcelize
 
@@ -62,7 +61,6 @@ data class SerializedNotificationData(
     @SerializedName(CUSTOM_VALUE)
     var customValues: String? = null,
 
-
     @Expose
     @SerializedName(NOTIFICATION_TYPE)
     var type: String? = null,
@@ -80,11 +78,11 @@ data class SerializedNotificationData(
     var subText: String? = null,
 
     @Expose
-    @SerializedName(VISUAL_EXPANDED_IMAGE)
+    @SerializedName(VISUAL_COLLAPSED_IMAGE)
     var visualCollapsedImageUrl: String? = null,
 
     @Expose
-    @SerializedName(VISUAL_COLLAPSED_IMAGE)
+    @SerializedName(VISUAL_EXPANDED_IMAGE)
     var visualExpandedImageUrl: String? = null,
 
     @Expose
@@ -225,7 +223,6 @@ data class SerializedNotificationData(
 
     @SerializedName(ADVANCE_TARGET)
     @Expose
-    val isAdvanceTargeting : String?
-
+    val isAdvanceTargeting: String?
 
 ) : Parcelable

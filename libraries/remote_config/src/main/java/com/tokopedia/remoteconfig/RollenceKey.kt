@@ -12,6 +12,8 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
+    const val HOME_COMPONENT_ATF = "revamp_atf"
+    const val HOME_COMPONENT_ATF_2 = "home_atf2"
 
     // home component rollence section
     const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
@@ -52,6 +54,12 @@ object RollenceKey {
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
+    // Product Card Experiment
+    const val PRODUCT_CARD_EXPERIMENT = "newcard1"
+    const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
+    const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
+    const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
+
     // Global Menu (Me Page)
     const val ME_PAGE_EXP = "mepage_secondexp"
     const val ME_PAGE_CONTROL = "control_variant"
@@ -70,9 +78,12 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    // Bubbles
-    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
-
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+
+    // Fulfillment
+    const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
+
+    //DG SBM Transition
+    const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }

@@ -6,8 +6,6 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificat
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.asset.AssetHelper
-import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
-import com.tokopedia.play.broadcaster.util.asset.FileUtil
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
@@ -21,7 +19,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     private val setBeautificationConfigUseCase: SetBeautificationConfigUseCase,
     private val beautificationAssetApi: BeautificationAssetApi,
     private val assetManager: AssetManager,
-    private val assetPathHelper: AssetPathHelper,
+    private val assetHelper: AssetHelper,
     private val assetChecker: AssetChecker,
 ) : PlayBroadcastBeautificationRepository {
 
@@ -33,27 +31,29 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         /** TODO: for mocking purpose, delete this soon when GQL is available in prod */
         return@withContext true
 
-        setBeautificationConfigUseCase.execute(
-            authorId = authorId,
-            authorType = authorType,
-            beautificationConfig = beautificationConfig
+        setBeautificationConfigUseCase(
+            SetBeautificationConfigUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = beautificationConfig
+            )
         ).wrapper.success
     }
 
     override suspend fun downloadLicense(url: String): Boolean = withContext(dispatchers.io) {
-        val licenseName = AssetHelper.getFileNameFromLink(url)
+        val licenseName = assetHelper.getFileNameFromLink(url)
 
         if(assetChecker.isLicenseAvailable(licenseName)) {
             true
         } else {
-            assetManager.deleteDirectory(assetPathHelper.licenseDir)
+            assetManager.deleteDirectory(assetHelper.licenseDir)
 
             val responseBody = beautificationAssetApi.downloadAsset(url)
 
             assetManager.save(
                 responseBody = responseBody,
                 fileName = licenseName,
-                folderPath = assetPathHelper.licenseDir,
+                folderPath = assetHelper.licenseDir,
             )
         }
     }
@@ -62,15 +62,15 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         if(assetChecker.isModelAvailable()) {
             true
         } else {
-            assetManager.deleteDirectory(assetPathHelper.modelDir)
+            assetManager.deleteDirectory(assetHelper.modelDir)
 
             val responseBody = beautificationAssetApi.downloadAsset(url)
 
             assetManager.unzipAndSave(
                 responseBody = responseBody,
-                fileName = AssetHelper.getFileNameFromLinkWithoutExtension(url),
-                filePath = assetPathHelper.modelDir,
-                folderPath = assetPathHelper.effectRootDir,
+                fileName = assetHelper.getFileNameFromLinkWithoutExtension(url),
+                filePath = assetHelper.modelDir,
+                folderPath = assetHelper.effectRootDir,
             )
         }
     }
@@ -79,15 +79,15 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         if(assetChecker.isCustomFaceAvailable()) {
             true
         } else {
-            assetManager.deleteDirectory(assetPathHelper.customFaceDir)
+            assetManager.deleteDirectory(assetHelper.customFaceDir)
 
             val responseBody = beautificationAssetApi.downloadAsset(url)
 
             assetManager.unzipAndSave(
                 responseBody = responseBody,
-                fileName = AssetHelper.getFileNameFromLink(url),
-                filePath = assetPathHelper.composeMakeupDir,
-                folderPath = assetPathHelper.composeMakeupDir,
+                fileName = assetHelper.getFileNameFromLink(url),
+                filePath = assetHelper.composeMakeupDir,
+                folderPath = assetHelper.composeMakeupDir,
             )
         }
     }
@@ -98,8 +98,8 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         assetManager.unzipAndSave(
             responseBody = responseBody,
             fileName = fileName,
-            filePath = assetPathHelper.getPresetFilePath(fileName),
-            folderPath = assetPathHelper.presetDir,
+            filePath = assetHelper.getPresetFilePath(fileName),
+            folderPath = assetHelper.presetDir,
         )
     }
 }

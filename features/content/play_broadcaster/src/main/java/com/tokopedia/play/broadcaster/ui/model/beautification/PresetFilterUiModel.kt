@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
+import com.tokopedia.content.common.util.toFuzzyPercent
+import com.tokopedia.content.common.util.toPercent
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -24,26 +26,24 @@ data class PresetFilterUiModel(
         get() = id == OPTION_NONE
 
     val minValueForSlider: Int
-        get() = (minValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = minValue.toPercent()
 
     val maxValueForSlider: Int
-        get() = (maxValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = maxValue.toPercent()
 
     val defaultValueForSlider: Int
-        get() = (defaultValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = defaultValue.toPercent()
 
     val valueForSlider: Int
-        get() = (value * PERCENTAGE_MULTIPLIER).toInt()
+        get() = value.toPercent()
 
     fun copyWithNewValue(newValueFromSlider: Int): PresetFilterUiModel {
         return copy(
-            value = newValueFromSlider / PERCENTAGE_MULTIPLIER.toDouble()
+            value = newValueFromSlider.toFuzzyPercent()
         )
     }
 
     companion object {
         private const val OPTION_NONE = "none"
-
-        private const val PERCENTAGE_MULTIPLIER = 100
     }
 }

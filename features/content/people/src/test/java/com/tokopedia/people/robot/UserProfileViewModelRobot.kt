@@ -1,6 +1,7 @@
 package com.tokopedia.people.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -20,6 +21,7 @@ import java.io.Closeable
 class UserProfileViewModelRobot(
     private val username: String = "",
     private val repo: UserProfileRepository = mockk(relaxed = true),
+    private val followRepo: UserFollowRepository = mockk(relaxed = true),
     private val userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
@@ -27,6 +29,7 @@ class UserProfileViewModelRobot(
     val viewModel = UserProfileViewModel(
         username = username,
         repo = repo,
+        followRepo = followRepo,
         userSession = userSession,
     )
 

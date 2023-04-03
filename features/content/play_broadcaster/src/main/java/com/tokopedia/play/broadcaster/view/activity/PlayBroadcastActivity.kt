@@ -44,6 +44,7 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PA
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
@@ -121,6 +122,9 @@ class PlayBroadcastActivity : BaseActivity(),
     lateinit var remoteConfig: RemoteConfig
 
     @Inject
+    lateinit var hydraConfigStore: HydraConfigStore
+
+    @Inject
     lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
 
     @Inject
@@ -174,6 +178,9 @@ class PlayBroadcastActivity : BaseActivity(),
         inject()
         setFragmentFactory()
         startPageMonitoring()
+        if (savedInstanceState != null) {
+            hydraConfigStore.setChannelId(savedInstanceState.getString(CHANNEL_ID).orEmpty())
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
         observeUiState()
@@ -219,9 +226,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
-            viewModel.saveState(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
+            viewModel.saveState(outState)
         } catch (e: Throwable) {}
         super.onSaveInstanceState(outState)
     }

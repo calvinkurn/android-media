@@ -1,15 +1,13 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohRecommendationItemBinding
+import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -33,14 +31,15 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
                 }
 
                 setImageProductViewHintListener(
-                        item.dataObject,
-                        object : ViewHintListener {
-                            override fun onViewHint() {
-                                actionListener?.trackProductViewRecommendation(
-                                        item.dataObject, position
-                                )
-                            }
+                    item.dataObject,
+                    object : ViewHintListener {
+                        override fun onViewHint() {
+                            actionListener?.trackProductViewRecommendation(
+                                item.dataObject,
+                                position
+                            )
                         }
+                    }
                 )
             }
         }

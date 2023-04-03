@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.setup.accountListResponse
+import com.tokopedia.play.broadcaster.setup.buildBroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.setup.channelResponse
 import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
@@ -52,6 +53,7 @@ class SwitchAccountTest {
     )
 
     init {
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns buildBroadcastingConfigUiModel()
         coEvery { mockRepo.getAccountList() } returns accountListResponse()
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
@@ -77,7 +79,7 @@ class SwitchAccountTest {
 
     @Test
     fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false)
+        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false, buyerHasAcceptTnc = false)
 
         createRobot().switchAccountSellerToBuyerAndNotHaveUsername()
     }
