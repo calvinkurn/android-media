@@ -1978,10 +1978,11 @@ class CartListPresenter @Inject constructor(
         launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-                view?.hideProgressLoading()
-                view?.onSuccessClearRedPromosThenGoToCheckout()
             } catch (t: Throwable) {
                 Timber.d(t)
+            } finally {
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToCheckout()
             }
         }
     }
@@ -1991,10 +1992,11 @@ class CartListPresenter @Inject constructor(
         launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-                view?.hideProgressLoading()
-                view?.onSuccessClearRedPromosThenGoToPromo()
             } catch (t: Throwable) {
                 Timber.d(t)
+            } finally {
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToPromo()
             }
         }
     }
