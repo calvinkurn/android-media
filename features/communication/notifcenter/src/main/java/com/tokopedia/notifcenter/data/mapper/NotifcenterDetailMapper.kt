@@ -23,8 +23,7 @@ class NotifcenterDetailMapper @Inject constructor() {
         val earlierSections = mapEarlierSection(
             response,
             needSectionTitle,
-            needLoadMoreButton,
-            newSections.isNotEmpty()
+            needLoadMoreButton
         ).items
         items.addAll(newSections)
         items.addAll(earlierSections)
@@ -37,12 +36,16 @@ class NotifcenterDetailMapper @Inject constructor() {
     fun mapNewSection(
         response: NotifcenterDetailResponse,
         needSectionTitle: Boolean = true,
-        needLoadMoreButton: Boolean = true
+        needLoadMoreButton: Boolean = true,
+        needDivider: Boolean = true
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
         if (notifcenterDetail.newList.isNotEmpty()) {
             updateNotificationOptions(notifcenterDetail.newList, notifcenterDetail)
+            if (needDivider && needSectionTitle) {
+                items.add(BigDividerUiModel())
+            }
             if (needSectionTitle) {
                 items.add(SectionTitleUiModel("Terbaru"))
             }
@@ -65,7 +68,7 @@ class NotifcenterDetailMapper @Inject constructor() {
         response: NotifcenterDetailResponse,
         needSectionTitle: Boolean = true,
         needLoadMoreButton: Boolean = true,
-        needDivider: Boolean = false
+        needDivider: Boolean = true
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
