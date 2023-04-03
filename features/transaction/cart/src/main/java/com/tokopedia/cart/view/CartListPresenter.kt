@@ -49,6 +49,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
@@ -942,31 +943,30 @@ class CartListPresenter @Inject constructor(
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         view?.let {
-            val addCartToWishlistRequest = AddCartToWishlistRequest()
-            addCartToWishlistRequest.cartIds = listOf(cartId)
-            
-            addCartToWishlistUseCase.setParams(addCartToWishlistRequest)
-                .execute(
-                    onSuccess = { data ->
-                        view?.let { cartListView ->
-                            if (data.status == STATUS_OK) {
-                                if (data.success == 1) {
-                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-                                } else {
-                                    cartListView.showToastMessageRed(data.message)
-                                }
+            launch(dispatchers.io) {
+                try {
+                    val addCartToWishlistRequest = AddCartToWishlistRequest()
+                    addCartToWishlistRequest.cartIds = listOf(cartId)
+                    val data = addCartToWishlistUseCase(addCartToWishlistRequest)
+                    view?.let { cartListView ->
+                        if (data.status == STATUS_OK) {
+                            if (data.success == 1) {
+                                cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
                             } else {
                                 cartListView.showToastMessageRed(data.message)
                             }
-                        }
-                    },
-                    onError = { throwable ->
-                        view?.let { cartListView ->
-                            Timber.e(throwable)
-                            cartListView.showToastMessageRed(throwable)
+                        } else {
+                            cartListView.showToastMessageRed(data.message)
                         }
                     }
-                )
+                }
+                catch (t: Throwable) {
+                    view?.let { cartListView ->
+                        Timber.e(t)
+                        cartListView.showToastMessageRed(t)
+                    }
+                }
+            }
         }
     }
 
