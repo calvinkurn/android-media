@@ -445,22 +445,26 @@ class DetailEditorFragment @Inject constructor(
                                 val color =
                                     ContextCompat.getColor(requireContext(), backgroundColor)
 
-                                val backgroundBitmap = Bitmap.createBitmap(
-                                    resultBitmap.width,
-                                    resultBitmap.height,
-                                    resultBitmap.config
-                                )
-                                backgroundBitmap.eraseColor(color)
+                                context?.let { contextReady ->
+                                    if (contextReady.isCreatedBitmapOverflow(resultBitmap.width, resultBitmap.height)) return@MediaBitmapEmptyTarget
+                                    mediaCreateBitmap(resultBitmap.width, resultBitmap.height, resultBitmap.config)?.let { backgroundBitmap ->
+                                        Bitmap.createBitmap(
+                                            resultBitmap.width,
+                                            resultBitmap.height,
+                                            resultBitmap.config
+                                        )
+                                        backgroundBitmap.eraseColor(color)
 
-                                val canvas = Canvas(backgroundBitmap)
-                                canvas.drawBitmap(resultBitmap, 0f, 0f, null)
+                                        val canvas = Canvas(backgroundBitmap)
+                                        canvas.drawBitmap(resultBitmap, 0f, 0f, null)
 
-                                getImageView()?.setImageBitmap(
-                                    backgroundBitmap
-                                )
+                                        getImageView()?.setImageBitmap(
+                                            backgroundBitmap
+                                        )
+                                        isEdited = true
+                                    }
+                                }
                             }
-
-                            isEdited = true
                         }
                     )
                 )
