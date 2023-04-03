@@ -201,19 +201,15 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun setPreset(presetId: String, value: Float) {
-        val key = assetHelper.getPresetFilePath(presetId)
+        if(presetId == mSavedComposeNode.preset.key) return
 
-        if(!mSavedComposeNode.presetComposeNodeApplied) {
-            val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(key)) == BEF_RESULT_SUC
-            if (isSuccessAppendNodes) {
-                mSavedComposeNode.update {
-                    copy(presetComposeNodeApplied = true)
-                }
-            }
-        }
+        removePreset()
 
-        mRenderManager?.updateComposerNodes(key, PRESET_MAKEUP_KEY, value)
-        mRenderManager?.updateComposerNodes(key, PRESET_FILTER_KEY, value)
+        val presetFilePath = assetHelper.getPresetFilePath(presetId)
+
+        mRenderManager?.appendComposerNodes(arrayOf(presetFilePath))
+        mRenderManager?.updateComposerNodes(presetFilePath, PRESET_MAKEUP_KEY, value)
+        mRenderManager?.updateComposerNodes(presetFilePath, PRESET_FILTER_KEY, value)
         mSavedComposeNode.update {
             copy(preset = preset.copy(key = presetId, value = value))
         }
