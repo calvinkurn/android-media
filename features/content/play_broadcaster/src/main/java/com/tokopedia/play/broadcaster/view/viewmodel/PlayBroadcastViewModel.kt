@@ -545,6 +545,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
 
             /** Beautification */
+            is PlayBroadcastAction.RemoveBeautificationMenu -> handleRemoveBeautificationMenu()
             is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
             is PlayBroadcastAction.SaveBeautificationConfig -> handleSaveBeautificationConfig()
 
@@ -1712,6 +1713,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     /** Beautification */
+    private fun handleRemoveBeautificationMenu() {
+        removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+    }
+
     private fun handleResetBeautification() {
         _beautificationConfig.update {
             it.copy(

@@ -305,79 +305,89 @@ class BroadcastManager @Inject constructor(
         }
 
         if (withByteplus) {
-            // initialize surface texture
-            mTextureId = effectManager.getExternalOESTextureID()
-            mSurfaceTexture = SurfaceTexture(mTextureId)
+            try {
+                effectManager.init()
 
-            mTextureWidth = surfaceSize.width
-            mTextureHeight = surfaceSize.height
+                // initialize surface texture
+                mTextureId = effectManager.getExternalOESTextureID()
+                mSurfaceTexture = SurfaceTexture(mTextureId)
 
-            mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
+                mTextureWidth = surfaceSize.width
+                mTextureHeight = surfaceSize.height
 
-            val glSurface = Surface(mSurfaceTexture)
-            mGLSurface = glSurface
+                mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
 
-            builder.setSurface(glSurface)
+                val glSurface = Surface(mSurfaceTexture)
+                mGLSurface = glSurface
 
-            effectManager.init()
+                builder.setSurface(glSurface)
 
-            mSurfaceTexture?.setOnFrameAvailableListener {
-                mGLHandler?.post {
-                    try {
-                        mSurfaceTexture?.updateTexImage()
-                        val destinationTexture = effectManager.process(
-                            textureId = mTextureId,
-                            textureWidth = mTextureWidth,
-                            textureHeight = mTextureHeight,
-                            width = surfaceSize.width,
-                            height = surfaceSize.height,
-                        )
 
-                        if (mDisplaySurface != null) {
-                            mDisplaySurface?.makeCurrent()
-                            effectManager.drawFrameBase(
+                mSurfaceTexture?.setOnFrameAvailableListener {
+                    mGLHandler?.post {
+                        try {
+                            mSurfaceTexture?.updateTexImage()
+                            val destinationTexture = effectManager.process(
+                                textureId = mTextureId,
                                 textureWidth = mTextureWidth,
                                 textureHeight = mTextureHeight,
-                                surfaceWidth = surfaceSize.width,
-                                surfaceHeight = surfaceSize.height,
-                                dstTexture = destinationTexture,
+                                width = surfaceSize.width,
+                                height = surfaceSize.height,
                             )
-                            mDisplaySurface?.swapBuffers()
-                        }
-                        if (mCodecSurface != null) {
-                            mStreamerSurface?.drainEncoder()
-                            mCodecSurface?.makeCurrent()
-                            effectManager.drawFrameBase(
-                                textureWidth = mTextureWidth,
-                                textureHeight = mTextureHeight,
-                                surfaceWidth = surfaceSize.width,
-                                surfaceHeight = surfaceSize.height,
-                                dstTexture = destinationTexture,
-                            )
-                            mCodecSurface?.setPresentationTime(System.nanoTime())
-                            mCodecSurface?.swapBuffers()
-                        }
-                    } catch (e: Exception) {
 
+                            if (mDisplaySurface != null) {
+                                mDisplaySurface?.makeCurrent()
+                                effectManager.drawFrameBase(
+                                    textureWidth = mTextureWidth,
+                                    textureHeight = mTextureHeight,
+                                    surfaceWidth = surfaceSize.width,
+                                    surfaceHeight = surfaceSize.height,
+                                    dstTexture = destinationTexture,
+                                )
+                                mDisplaySurface?.swapBuffers()
+                            }
+                            if (mCodecSurface != null) {
+                                mStreamerSurface?.drainEncoder()
+                                mCodecSurface?.makeCurrent()
+                                effectManager.drawFrameBase(
+                                    textureWidth = mTextureWidth,
+                                    textureHeight = mTextureHeight,
+                                    surfaceWidth = surfaceSize.width,
+                                    surfaceHeight = surfaceSize.height,
+                                    dstTexture = destinationTexture,
+                                )
+                                mCodecSurface?.setPresentationTime(System.nanoTime())
+                                mCodecSurface?.swapBuffers()
+                            }
+                        } catch (e: Exception) {
+
+                        }
                     }
                 }
+
+                mGLHandler?.post {
+                    // todo: what is this?
+                    mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+                    mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+                    mDisplaySurface?.makeCurrent() // todo: what?
+                    mStreamerSurface = createCodecStreamer(
+                        context,
+                        audioConfig,
+                        videoConfig
+                    )
+
+                    mStreamerSurface?.startVideoCapture()
+                    mStreamerSurface?.startAudioCapture(mAudioCallback)
+
+                    mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
+                }
             }
-
-            mGLHandler?.post {
-                // todo: what is this?
-                mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
-                mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
-                mDisplaySurface?.makeCurrent() // todo: what?
-                mStreamerSurface = createCodecStreamer(
-                    context,
-                    audioConfig,
-                    videoConfig
+            catch (e: ExceptionInInitializerError) {
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
                 )
-
-                mStreamerSurface?.startVideoCapture()
-                mStreamerSurface?.startAudioCapture(mAudioCallback)
-
-                mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
             }
         }
 

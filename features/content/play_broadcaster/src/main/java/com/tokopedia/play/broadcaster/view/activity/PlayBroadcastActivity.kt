@@ -836,7 +836,15 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
-        if (state is BroadcastInitState.Error) showDialogWhenUnSupportedDevices()
+        when(state) {
+            is BroadcastInitState.Error -> {
+                showDialogWhenUnSupportedDevices()
+            }
+            is BroadcastInitState.ByteplusInitializationError -> {
+                viewModel.submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
+            }
+        }
+
         lifecycleScope.launch(dispatcher.main) {
             debugView?.logBroadcastInitState(state)
         }
