@@ -22,6 +22,7 @@ const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
 const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
 const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
+const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"

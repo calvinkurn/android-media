@@ -369,6 +369,7 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_EDU_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_SSA_SHOP_LIST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_DISCO_PAGE_LIST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
         DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },

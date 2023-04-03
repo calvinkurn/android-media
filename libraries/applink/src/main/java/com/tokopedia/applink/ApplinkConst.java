@@ -415,6 +415,7 @@ public interface ApplinkConst {
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
     String AFFILIATE_TOKO_TRANSACTION_HISTORY = "tokopedia://affiliate/transaction-history";
     String AFFILIATE_TOKO_SSA_SHOP_LIST = "tokopedia://affiliate/shoplist-dipromosikan-affiliate";
+    String AFFILIATE_TOKO_DISCO_PAGE_LIST = "tokopedia://affiliate/discopage-list";
     String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
     String QRSCAN = "tokopedia://scanqr";
