@@ -9,20 +9,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.BottomsheetPlayWidgetSellerActionListBinding
 import com.tokopedia.play.widget.databinding.ItemPlayWidgetSellerActionListBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -85,7 +84,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
             if (channel.share.isShow) {
                 actionList.add(
                     Action(
-                        com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                        IconUnify.SHARE_MOBILE,
                         MethodChecker.getColor(
                             requireContext(),
                             com.tokopedia.unifyprinciples.R.color.Unify_N400
@@ -100,7 +99,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
             if (channel.performanceSummaryLink.isNotBlank() && channel.performanceSummaryLink.isNotEmpty()) {
                 actionList.add(
                     Action(
-                        R.drawable.ic_play_widget_sgc_performance,
+                        IconUnify.GRAPH,
                         MethodChecker.getColor(
                             requireContext(),
                             com.tokopedia.unifyprinciples.R.color.Unify_N400
@@ -114,7 +113,20 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
             }
             actionList.add(
                 Action(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                    IconUnify.GRAPH_REPORT,
+                    MethodChecker.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    ),
+                    getString(R.string.play_widget_action_menu_see_performance_video_analytics)
+                ) {
+                    mListener?.onClickSeePerformanceVideoAnalytics(channel)
+                    dismiss()
+                }
+            )
+            actionList.add(
+                Action(
+                    IconUnify.DELETE,
                     MethodChecker.getColor(
                         requireContext(),
                         com.tokopedia.unifyprinciples.R.color.Unify_N400
@@ -175,11 +187,11 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val viewBindingViewHolder: ItemPlayWidgetSellerActionListBinding? by viewBinding()
-        private val ivIcon: ImageView? = viewBindingViewHolder?.ivIcon
+        private val ivIcon: IconUnify? = viewBindingViewHolder?.ivIcon
         val tvSubtitle: TextView? = viewBindingViewHolder?.tvSubtitle
 
         fun bind(action: Action) {
-            ivIcon?.setImageResource(action.iconRes)
+            ivIcon?.setImage(newIconId = action.icon)
             action.tintColor?.let { color ->
                 ivIcon?.let { ImageViewCompat.setImageTintList(it, ColorStateList.valueOf(color)) }
             }
@@ -229,7 +241,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     }
 
     data class Action(
-        @DrawableRes val iconRes: Int,
+        val icon: Int,
         @ColorInt val tintColor: Int?,
         val subtitle: String,
         val onClick: () -> Unit
@@ -238,6 +250,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     interface Listener {
         fun onClickShare(channel: PlayWidgetChannelUiModel)
         fun onClickSeePerformance(channel: PlayWidgetChannelUiModel)
+        fun onClickSeePerformanceVideoAnalytics(channel: PlayWidgetChannelUiModel)
         fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel)
     }
 }

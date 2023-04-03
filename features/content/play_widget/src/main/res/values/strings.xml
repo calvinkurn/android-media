@@ -31,5 +31,6 @@
     <string name="play_widget_action_menu_delete_video">Hapus video</string>
     <string name="play_widget_action_menu_copy_link">Salin link</string>
     <string name="play_widget_action_menu_see_performance">Lihat Performa</string>
+    <string name="play_widget_action_menu_see_performance_video_analytics">Pelajari Wawasan Video</string>
 
 </resources>
