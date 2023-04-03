@@ -161,7 +161,7 @@ class AddLogoToolUiComponent constructor(
         val canvas = Canvas(resultBitmap)
 
         val logoBitmap = if (isCircular) {
-            roundedBitmap(bitmap, isCircular = true)
+            roundedBitmap(bitmap.toSquare(), isCircular = true)
         } else {
             roundedBitmap(bitmap, 8f.toPx())
         }
@@ -346,6 +346,18 @@ class AddLogoToolUiComponent constructor(
             heightTarget,
             true
         )
+    }
+
+    private fun Bitmap.toSquare(): Bitmap {
+        return if (width != height) {
+            val size = width.coerceAtMost(height)
+            val xOffset = (width - size) / 2
+            val yOffset = (height - size) / 2
+
+            Bitmap.createBitmap(this, xOffset, yOffset, size, size)
+        } else {
+            this
+        }
     }
 
     interface Listener {
