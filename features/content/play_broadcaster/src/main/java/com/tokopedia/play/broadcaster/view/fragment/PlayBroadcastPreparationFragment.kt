@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
@@ -36,9 +35,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Ke
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -413,32 +410,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        var lastPosition: Int = -1
         binding.rvBannerPreparation.apply {
             layoutManager = mLayoutManager
             adapter = adapterBanner
             if (itemDecorationCount == 0) addItemDecoration(
                 PlayBroadcastPreparationBannerItemDecoration(context)
             )
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val position = mLayoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == position) return
-                    lastPosition = position
-
-                    // TODO handle the coach mark
-                    when (adapterBanner.getItems()[lastPosition].type) {
-                        TYPE_SHORTS -> {
-
-                        }
-                        TYPE_DASHBOARD -> {
-
-                        }
-                        else -> {}
-                    }
-                }
-            })
         }
         snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
