@@ -400,7 +400,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_CURSOR = "cursor"
         private const val PARAMS_LIMIT = "limit"
 
-        private const val SOURCE_DETAIL = "detail"
+        private const val SOURCE_DETAIL = "detail-unified"
 
         private const val LIMIT_DETAIL = 1
     }
