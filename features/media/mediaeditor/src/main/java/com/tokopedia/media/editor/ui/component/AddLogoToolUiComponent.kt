@@ -23,6 +23,8 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
+import com.tokopedia.media.editor.utils.mediaCreateBitmap
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -152,26 +154,29 @@ class AddLogoToolUiComponent constructor(
         bitmap: Bitmap,
         newSize: Pair<Int, Int>,
         isCircular: Boolean = false
-    ): Bitmap {
+    ): Bitmap? {
         originalImageWidth = newSize.first
         originalImageHeight = newSize.second
 
-        val resultBitmap =
-            Bitmap.createBitmap(newSize.first, newSize.second, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resultBitmap)
+        if (!context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) {
+            mediaCreateBitmap(newSize.first, newSize.second, Bitmap.Config.ARGB_8888)?.let { resultBitmap ->
+                val canvas = Canvas(resultBitmap)
 
-        val logoBitmap = if (isCircular) {
-            roundedBitmap(bitmap, isCircular = true)
-        } else {
-            roundedBitmap(bitmap, 8f.toPx())
+                val logoBitmap = if (isCircular) {
+                    roundedBitmap(bitmap, isCircular = true)
+                } else {
+                    roundedBitmap(bitmap, 8f.toPx())
+                }
+
+                drawBitmap(
+                    canvas,
+                    getDrawLogo(logoBitmap)
+                )
+
+                return resultBitmap
+            }
         }
-
-        drawBitmap(
-            canvas,
-            getDrawLogo(logoBitmap)
-        )
-
-        return resultBitmap
+        return null
     }
 
     private fun initShopAvatar() {

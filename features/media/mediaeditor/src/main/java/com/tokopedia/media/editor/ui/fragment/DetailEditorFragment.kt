@@ -1145,15 +1145,15 @@ class DetailEditorFragment @Inject constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { logoBitmap ->
-                    viewModel.saveImageCache(
-                        addLogoComponent.generateOverlayImage(
-                            logoBitmap,
-                            newSize,
-                            isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
-                        ), sourcePath = PNG_KEY
-                    )?.let { fileResult ->
-                        data.addLogoValue.overlayLogoUrl = fileResult.path
-                        onFinish(fileResult.path)
+                    addLogoComponent.generateOverlayImage(
+                        logoBitmap,
+                        newSize,
+                        isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
+                    )?.let {
+                        viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
+                            data.addLogoValue.overlayLogoUrl = fileResult.path
+                            onFinish(fileResult.path)
+                        }
                     }
                 }
             ))
