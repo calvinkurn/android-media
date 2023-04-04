@@ -74,6 +74,8 @@ import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import com.tokopedia.recharge_credit_card.widget.RechargeCCBankListWidget
 import com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
 import com.tokopedia.recharge_credit_card.widget.util.RechargeCCWidgetMapper
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -106,6 +108,9 @@ class RechargeCCFragment :
 
     @Inject
     lateinit var creditCardAnalytics: CreditCardAnalytics
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var operatorIdSelected: String = ""
     private var productIdSelected: String = ""
@@ -227,10 +232,12 @@ class RechargeCCFragment :
                 when (it) {
                     is RechargeNetworkResult.Success -> {
                         renderTicker(it.data.tickers)
-                        renderPromoAndRecommendation(
-                            it.data.recommendations,
-                            it.data.promos
-                        )
+                        if (isEnablePromoRecomSection()) {
+                            renderPromoAndRecommendation(
+                                it.data.recommendations,
+                                it.data.promos
+                            )
+                        }
                         performanceMonitoring.stopTrace()
                     }
                     is RechargeNetworkResult.Fail -> {
@@ -938,6 +945,10 @@ class RechargeCCFragment :
 
     private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_CC_PAGE_PERFORMANCE)
+    }
+
+    private fun isEnablePromoRecomSection(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_CC_PROMO_RECOM, true)
     }
 
     companion object {

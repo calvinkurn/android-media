@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.dilayanitokopedia.di.module.HomeModule
 import com.tokopedia.dilayanitokopedia.di.module.HomeViewModelModule
 import com.tokopedia.dilayanitokopedia.ui.home.DtHomeFragment
-import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationForYouFragment
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationFragment
 import dagger.Component
 
 /**
@@ -21,5 +21,5 @@ import dagger.Component
 )
 interface HomeComponent {
     fun inject(fragmentDtHome: DtHomeFragment)
-    fun inject(fragmentDtRecommendationForYou: DtHomeRecommendationForYouFragment)
+    fun inject(fragmentDtRecommendationForYou: DtHomeRecommendationFragment)
 }
