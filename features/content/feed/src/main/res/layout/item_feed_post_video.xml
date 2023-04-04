@@ -209,15 +209,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <com.google.android.exoplayer2.ui.PlayerControlView
+    <com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
         android:id="@+id/player_control"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="16dp"
         android:layout_marginBottom="2dp"
+        android:translationY="6dp"
         app:controller_layout_id="@layout/feed_video_player_control"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:show_timeout="-1" />
+        app:show_timeout="-1"
+        />
+
+    <com.tokopedia.feedplus.presentation.customview.FeedVideoTimeView
+        android:id="@+id/video_time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
