@@ -204,7 +204,7 @@ class FeedXProduct(
     @SerializedName("stockWording")
     val stockWording: String = "",
     @SerializedName("stockSoldPercentage")
-    val stockSoldPercentage: String = "",
+    val stockSoldPercentage: Float = 0f,
     @SerializedName("cartable")
     val cartable: Boolean = false,
     @SerializedName("isCashback")
@@ -347,6 +347,8 @@ class FeedXScore(
 class FeedXCta(
     @SerializedName("text")
     val text: String = "",
+    @SerializedName("texts")
+    val texts: List<String> = emptyList(),
     @SerializedName("subtitle")
     val subtitle: List<String> = emptyList(),
     @SerializedName("color")

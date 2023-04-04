@@ -229,10 +229,6 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
-    fun toggleClearView(clearView: Boolean) {
-        _isInClearView.value = clearView
-    }
-
     /**
      * Creation Button Position is Static :
      * 1. Short

@@ -6,14 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_feed_post_image_content"
+    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+        android:id="@+id/scrollable_host"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_feed_post_image_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/indicator_feed_content"
@@ -59,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
+        android:layout_marginBottom="16dp"
         android:maxLines="2"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
@@ -72,7 +81,7 @@
         android:id="@+id/rv_feed_asgc_tags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/feed_campaign_ribbon"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
@@ -80,10 +89,9 @@
 
     <include
         android:id="@+id/feed_campaign_ribbon"
-        layout="@layout/layout_feed_campaign_ribbon"
+        layout="@layout/layout_feed_campaign_ribbon_motion"
         android:layout_width="0dp"
-        android:layout_height="10dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"

@@ -24,6 +24,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCampaignRestrictionMode
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaGradientModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
@@ -48,6 +49,8 @@ object MapperFeedHome {
                 transformToFeedCardImage(card)
             } else if (isVideoPost(card)) {
                 transformToFeedCardVideo(card)
+            } else if (isLivePreviewPost(card)) {
+                transformToFeedCardLivePreview(card)
             } else {
                 transformToFeedCardImage(card)
             }
@@ -58,9 +61,8 @@ object MapperFeedHome {
         )
         )
 
-    fun transformToFeedCardImage(card: FeedXCard): FeedCardImageContentModel =
-        FeedCardImageContentModel(
-            id = card.id,
+    private fun transformToFeedCardImage(card: FeedXCard): FeedCardImageContentModel =
+        FeedCardImageContentModel(id = card.id,
             typename = card.typename,
             type = card.type,
             author = transformAuthor(card.author),
@@ -68,24 +70,24 @@ object MapperFeedHome {
             subtitle = card.subtitle,
             text = card.text,
             cta = card.cta.let { cta ->
-                FeedCardCtaModel(
-                    text = cta.text,
+                FeedCardCtaModel(text = cta.text,
                     subtitle = cta.subtitle,
+                    texts = cta.texts,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
                             color = color.color, position = color.position
                         )
-                    }
-                )
+                    })
             },
             ribbonImageUrl = card.ribbonImageUrl,
             applink = card.applink,
             weblink = card.weblink,
             applinkProductList = card.applinkProductList,
             actionButtonLabel = card.actionButtonLabel,
-            products = if (card.products.isNotEmpty())
-                card.products.map { product -> transformProduct(product) }
+            products = if (card.products.isNotEmpty()) card.products.map { product ->
+                transformProduct(product)
+            }
             else card.tags.map { product -> transformProduct(product) },
             totalProducts = card.totalProducts,
             campaign = transformCampaign(card.campaign),
@@ -107,22 +109,33 @@ object MapperFeedHome {
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt
         )
 
-    fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel =
-        FeedCardVideoContentModel(
-            id = card.id,
+    private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel =
+        FeedCardVideoContentModel(id = card.id,
             typename = card.typename,
             type = card.type,
             author = transformAuthor(card.author),
             title = card.title,
             subtitle = card.subtitle,
             text = card.text,
+            cta = card.cta.let { cta ->
+                FeedCardCtaModel(text = cta.text,
+                    subtitle = cta.subtitle,
+                    color = cta.color,
+                    texts = cta.texts,
+                    colorGradient = cta.colorGradient.map { color ->
+                        FeedCardCtaGradientModel(
+                            color = color.color, position = color.position
+                        )
+                    })
+            },
             applink = card.applink,
             weblink = card.weblink,
             actionButtonLabel = card.actionButtonLabel,
             campaign = transformCampaign(card.campaign),
             hasVoucher = card.hasVoucher,
-            products = if (card.products.isNotEmpty())
-                card.products.map { product -> transformProduct(product) }
+            products = if (card.products.isNotEmpty()) card.products.map { product ->
+                transformProduct(product)
+            }
             else card.tags.map { product -> transformProduct(product) },
             totalProducts = card.totalProducts,
             media = card.media.map { media -> transformMedia(media) },
@@ -138,6 +151,20 @@ object MapperFeedHome {
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
+            playChannelId = card.playChannelId
+        )
+
+    private fun transformToFeedCardLivePreview(card: FeedXCard): FeedCardLivePreviewContentModel =
+        FeedCardLivePreviewContentModel(
+            id = card.id,
+            author = transformAuthor(card.author),
+            title = card.title,
+            subtitle = card.subtitle,
+            text = card.text,
+            applink = card.applink,
+            media = card.media.map { media -> transformMedia(media) },
+            hashtagApplinkFmt = card.hashtagApplinkFmt,
+            hashtagWeblinkFmt = card.hashtagWeblinkFmt,
             playChannelId = card.playChannelId
         )
 
@@ -185,22 +212,20 @@ object MapperFeedHome {
             cashbackFmt = product.cashbackFmt
         )
 
-    private fun transformMedia(media: FeedXMedia): FeedMediaModel = FeedMediaModel(
-        type = media.type,
-        id = media.id,
-        coverUrl = media.coverUrl,
-        mediaUrl = media.mediaUrl,
-        applink = media.applink,
-        tagging = media.tagging.map { tag ->
-            FeedMediaTagging(
-                tagIndex = tag.tagIndex
-            )
-        }
-    )
+    private fun transformMedia(media: FeedXMedia): FeedMediaModel =
+        FeedMediaModel(type = media.type,
+            id = media.id,
+            coverUrl = media.coverUrl,
+            mediaUrl = media.mediaUrl,
+            applink = media.applink,
+            tagging = media.tagging.map { tag ->
+                FeedMediaTagging(
+                    tagIndex = tag.tagIndex
+                )
+            })
 
     private fun transformCampaign(campaign: FeedXCampaign): FeedCardCampaignModel =
-        FeedCardCampaignModel(
-            id = campaign.id,
+        FeedCardCampaignModel(id = campaign.id,
             status = campaign.status,
             name = campaign.name,
             shortName = campaign.shortName,
@@ -210,8 +235,7 @@ object MapperFeedHome {
                 FeedCardCampaignRestrictionModel(
                     isActive = restriction.isActive, label = restriction.label
                 )
-            }
-        )
+            })
 
     private fun transformView(view: FeedXView): FeedViewModel = FeedViewModel(
         label = view.label, count = view.count, countFmt = view.countFmt
@@ -225,28 +249,27 @@ object MapperFeedHome {
         isLiked = like.isLiked
     )
 
-    private fun transformComment(comment: FeedXComments): FeedCommentModel = FeedCommentModel(
-        label = comment.label,
-        count = comment.count,
-        countFmt = comment.countFmt,
-        items = comment.items.map { item ->
-            FeedCommentItemModel(
-                id = item.id, author = item.author.let { author ->
-                    FeedAuthorModel(
-                        id = author.id,
-                        type = author.type,
-                        name = author.name,
-                        description = author.description,
-                        badgeUrl = author.badgeUrl,
-                        logoUrl = author.logoUrl,
-                        applink = author.applink,
-                        encryptedUserId = author.encryptedUserId,
-                        isLive = author.isLive
-                    )
-                }, text = item.text
-            )
-        }
-    )
+    private fun transformComment(comment: FeedXComments): FeedCommentModel =
+        FeedCommentModel(label = comment.label,
+            count = comment.count,
+            countFmt = comment.countFmt,
+            items = comment.items.map { item ->
+                FeedCommentItemModel(
+                    id = item.id, author = item.author.let { author ->
+                        FeedAuthorModel(
+                            id = author.id,
+                            type = author.type,
+                            name = author.name,
+                            description = author.description,
+                            badgeUrl = author.badgeUrl,
+                            logoUrl = author.logoUrl,
+                            applink = author.applink,
+                            encryptedUserId = author.encryptedUserId,
+                            isLive = author.isLive
+                        )
+                    }, text = item.text
+                )
+            })
 
     private fun transformShare(share: FeedXShare): FeedShareModel = FeedShareModel(
         label = share.label, operation = share.operation
@@ -264,13 +287,17 @@ object MapperFeedHome {
     )
 
     private fun isImagesPost(card: FeedXCard) =
-        ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)) && card.media.none { it.type == TYPE_FEED_LONG_VIDEO }
+        ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)) &&
+            card.media.none { it.type == TYPE_FEED_LONG_VIDEO }
 
     private fun isVideoPost(card: FeedXCard) =
         ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PLAY)) &&
-            card.type != TYPE_FEED_PLAY_LIVE &&
-            card.media.isNotEmpty() &&
-            card.media[0].type == TYPE_MEDIA_VIDEO
+            card.type != TYPE_FEED_PLAY_LIVE && card.media.isNotEmpty() && card.media[0].type == TYPE_MEDIA_VIDEO
 
-    private fun shouldShow(card: FeedXCard) = isImagesPost(card) || isVideoPost(card)
+    private fun isLivePreviewPost(card: FeedXCard) =
+        card.typename == TYPE_FEED_X_CARD_PLAY && card.type == TYPE_FEED_PLAY_LIVE &&
+            card.media.isNotEmpty() && card.media[0].type == TYPE_MEDIA_VIDEO
+
+    private fun shouldShow(card: FeedXCard) =
+        isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card)
 }

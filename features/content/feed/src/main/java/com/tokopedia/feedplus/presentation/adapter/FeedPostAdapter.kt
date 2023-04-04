@@ -3,8 +3,10 @@ package com.tokopedia.feedplus.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.util.FeedDiffUtilCallback
 
@@ -13,10 +15,6 @@ import com.tokopedia.feedplus.presentation.util.FeedDiffUtilCallback
  */
 class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
     BaseAdapter<FeedAdapterTypeFactory>(typeFactory) {
-
-    fun onToggleClearView() {
-        notifyDataSetChanged()
-    }
 
     fun updateList(newList: List<Visitable<*>>) {
         val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(visitables, newList))
@@ -32,15 +30,20 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
                 is FeedCardImageContentModel -> {
                     visitables[rowNumber] = item.copy(like = like)
                 }
-                // TODO Furqan add for other type of models
+                is FeedCardVideoContentModel -> {
+                    visitables[rowNumber] = item.copy(like = like)
+                }
             }
         }
         notifyItemChanged(
             rowNumber,
-            FeedPostImageViewHolder.IMAGE_POST_LIKED_UNLIKED
+            FEED_POST_LIKED_UNLIKED
         )
     }
 
-    // TODO : Later to use DiffUtil
-
+    fun showClearView(position: Int) {
+        if ((list?.size ?: 0) > position) {
+            notifyItemChanged(position, FEED_POST_CLEAR_MODE)
+        }
+    }
 }
