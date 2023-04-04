@@ -1,10 +1,7 @@
-package com.tokopedia.shop.common.constant
+package com.tokopedia.topads.dashboard.data.utils
 
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 
-/**
- * Created by nathan on 10/24/17.
- */
 open class ShopCommonUrl {
     companion object {
         @JvmField
