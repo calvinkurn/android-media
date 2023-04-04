@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.mps
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,10 +27,12 @@ import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
+import com.tokopedia.search.utils.mvvm.RefreshableView
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import kotlin.reflect.KProperty1
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener as EndlessScrollListener
 
 class MPSFragment:
@@ -54,9 +55,6 @@ class MPSFragment:
     private var binding: SearchMpsFragmentLayoutBinding? by autoClearedNullable()
     private val recycledViewPool = RecycledViewPool()
     private var mpsListAdapter: MPSListAdapter? = null
-    private val quickFilterView = QuickFilterView(::viewModel)
-    private val addToCartView = AddToCartView({ context }, ::viewModel)
-    private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var endlessScrollListener: EndlessScrollListener? = null
 
     override fun getScreenName(): String = ""
@@ -80,13 +78,15 @@ class MPSFragment:
     }
 
     private fun initViews() {
-        val context = context ?: return
-
-        initRecyclerView(context)
+        initRecyclerView()
+        initQuickFilterView()
         initBottomSheetFilter()
+        initAddToCartView()
     }
 
-    private fun initRecyclerView(context: Context) {
+    private fun initRecyclerView() {
+        val context = context ?: return
+
         initAdapter()
 
         binding?.mpsRecyclerView?.apply {
@@ -103,7 +103,7 @@ class MPSFragment:
             chooseAddressListener = this,
             shopWidgetListener = MPSShopWidgetListenerDelegate(
                 context,
-                ::viewModel,
+                viewModel,
                 trackingQueue,
             )
         )
@@ -118,12 +118,22 @@ class MPSFragment:
             }
         }
 
+    private fun initQuickFilterView() {
+        QuickFilterView(viewModel, binding?.mpsSortFilter)
+            .onStateRefresh(MPSState::quickFilterState)
+    }
+
     private fun initBottomSheetFilter() {
-        bottomSheetFilterView = BottomSheetFilterView(
-            context,
-            viewModel,
-            parentFragmentManager
-        )
+        BottomSheetFilterView(viewModel, context, parentFragmentManager)
+            .onStateRefresh(MPSState::bottomSheetFilterState)
+    }
+
+    private fun initAddToCartView() {
+        AddToCartView(viewModel, context, view).onStateRefresh(MPSState::addToCartState)
+    }
+
+    private fun <P> RefreshableView<P>.onStateRefresh(prop: KProperty1<MPSState, P>) {
+        viewModel?.onEach(prop, ::refresh)
     }
 
     override fun refresh() = withState(viewModel) { state ->
@@ -134,12 +144,6 @@ class MPSFragment:
         if (state.loadMoreThrowable != null) showNetworkErrorLoadMore(state.loadMoreThrowable)
 
         mpsListAdapter?.submitList(state.result.data)
-
-        quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, state)
-
-        addToCartView.refreshAddToCartToaster(view, state.addToCartState)
-
-        bottomSheetFilterView?.refreshBottomSheetFilter(state)
     }
 
     private fun showNetworkError(result: Error<List<Visitable<*>>>) {

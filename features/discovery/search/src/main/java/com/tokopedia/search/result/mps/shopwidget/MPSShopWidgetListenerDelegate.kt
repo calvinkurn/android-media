@@ -10,13 +10,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class MPSShopWidgetListenerDelegate(
     private val context: Context?,
-    private val mpsViewModel: () -> MPSViewModel?,
+    private val mpsViewModel: MPSViewModel?,
     private val trackingQueue: TrackingQueue,
 ): MPSShopWidgetListener,
     ApplinkOpener by ApplinkOpenerDelegate {
 
     private val keywords
-        get() = mpsViewModel()?.stateFlow?.value?.parameter?.keywords() ?: ""
+        get() = mpsViewModel?.stateFlow?.value?.parameter?.keywords() ?: ""
 
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
         mpsShopWidgetDataView.buttonList.first().click(TrackApp.getInstance().gtm)
@@ -64,7 +64,7 @@ class MPSShopWidgetListenerDelegate(
     ) {
         mpsShopWidgetProductDataView ?: return
 
-        mpsViewModel()?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
+        mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
     }
 
     override fun onProductItemSeeOtherProductClick(

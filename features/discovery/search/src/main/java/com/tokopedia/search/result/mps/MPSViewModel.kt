@@ -10,8 +10,11 @@ import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.result.mps.addtocart.AddToCartViewModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterViewModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
+import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterViewModel
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
 import com.tokopedia.search.utils.ChooseAddressWrapper
@@ -36,7 +39,11 @@ class MPSViewModel @Inject constructor(
     @param:Named(GET_DYNAMIC_FILTER_SHOP_USE_CASE)
     private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
-): ViewModel(), SearchViewModel<MPSState> {
+): ViewModel(),
+    SearchViewModel<MPSState>,
+    QuickFilterViewModel,
+    BottomSheetFilterViewModel,
+    AddToCartViewModel {
 
     private val _stateFlow = MutableStateFlow(mpsState)
 
@@ -48,6 +55,9 @@ class MPSViewModel @Inject constructor(
 
     private val chooseAddressModel
         get() = mpsState.chooseAddressModel
+
+    override val paramater: Map<String, String>
+        get() = stateFlow.value.parameter
 
     private fun updateState(function: (MPSState) -> MPSState) {
         _stateFlow.update(function)
@@ -106,7 +116,7 @@ class MPSViewModel @Inject constructor(
         return chooseAddressWrapper.isChooseAddressUpdated(chooseAddressModel)
     }
 
-    fun onQuickFilterSelected(quickFilterDataView: QuickFilterDataView) {
+    override fun onQuickFilterSelected(quickFilterDataView: QuickFilterDataView) {
         quickFilterDataView.firstOption ?: return
 
         updateState { it.applyQuickFilter(quickFilterDataView) }
@@ -144,11 +154,11 @@ class MPSViewModel @Inject constructor(
         }
     }
 
-    fun onAddToCartMessageDismissed() {
+    override fun onAddToCartMessageDismissed() {
         updateState { it.addToCartMessageDismissed() }
     }
 
-    fun openBottomSheetFilter() {
+    override fun openBottomSheetFilter() {
         updateState { it.openBottomSheetFilter() }
 
         if (mpsState.bottomSheetFilterModel != null) return
@@ -167,11 +177,11 @@ class MPSViewModel @Inject constructor(
         putString(SearchApiConst.SOURCE, SearchApiConst.MPS)
     }
 
-    fun closeBottomSheetFilter() {
+    override fun closeBottomSheetFilter() {
         updateState { it.closeBottomSheetFilter() }
     }
 
-    fun applyFilter(parameter: Map<String, String>) {
+    override fun applyFilter(parameter: Map<String, String>) {
         updateState { it.applyFilter(parameter).reload() }
 
         multiProductSearch()

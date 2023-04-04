@@ -1,17 +1,18 @@
 package com.tokopedia.search.result.mps.filter.bottomsheet
 
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.utils.mvvm.SearchUiState
 
 data class BottomSheetFilterState(
-    val isBottomSheetFilterOpen: Boolean = false,
-    val bottomSheetFilterModel: DynamicFilterModel? = null,
-) {
+    val isOpen: Boolean = false,
+    val dynamicFilterModel: DynamicFilterModel? = null,
+): SearchUiState {
 
-    fun openBottomSheetFilter() = copy(isBottomSheetFilterOpen = true)
+    fun openBottomSheetFilter() = copy(isOpen = true)
 
     fun setBottomSheetFilterModel(dynamicFilterModel: DynamicFilterModel) = copy(
-        bottomSheetFilterModel = dynamicFilterModel,
+        dynamicFilterModel = dynamicFilterModel,
     )
 
-    fun closeBottomSheetFilter() = copy(isBottomSheetFilterOpen = false)
+    fun closeBottomSheetFilter() = copy(isOpen = false)
 }

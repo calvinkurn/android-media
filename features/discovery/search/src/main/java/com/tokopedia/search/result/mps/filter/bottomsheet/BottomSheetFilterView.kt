@@ -7,34 +7,26 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.Callback
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.search.result.mps.MPSState
-import com.tokopedia.search.result.mps.MPSViewModel
+import com.tokopedia.search.utils.mvvm.RefreshableView
 
 class BottomSheetFilterView(
+    private val viewModel: BottomSheetFilterViewModel?,
     private val context: Context?,
-    private val mpsViewModel: MPSViewModel?,
     private val fragmentManager: FragmentManager,
-) {
+): RefreshableView<BottomSheetFilterState> {
 
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
-    private var bottomSheetFilterState: BottomSheetFilterState? = null
 
     private val parameter
-        get() = mpsViewModel?.stateFlow?.value?.parameter ?: mapOf()
+        get() = viewModel?.paramater ?: mapOf()
 
-    fun refreshBottomSheetFilter(mpsState: MPSState) {
-        if (bottomSheetFilterState == mpsState.bottomSheetFilterState) return
-
-        bottomSheetFilterState = mpsState.bottomSheetFilterState
-
-        val isBottomSheetFilterOpen = bottomSheetFilterState?.isBottomSheetFilterOpen ?: false
-
-        if (isBottomSheetFilterOpen) openBottomSheetFilter()
+    override fun refresh(state: BottomSheetFilterState) {
+        if (state.isOpen) openBottomSheetFilter(state)
         else dismissBottomSheetFilter()
     }
 
-    private fun openBottomSheetFilter() {
-        val bottomSheetFilterModel = bottomSheetFilterState?.bottomSheetFilterModel
+    private fun openBottomSheetFilter(bottomSheetFilterState: BottomSheetFilterState) {
+        val bottomSheetFilterModel = bottomSheetFilterState.dynamicFilterModel
 
         sortFilterBottomSheet = sortFilterBottomSheet ?: sortFilterBottomSheet(bottomSheetFilterModel)
 
@@ -52,13 +44,13 @@ class BottomSheetFilterView(
             )
 
             setOnDismissListener {
-                mpsViewModel?.closeBottomSheetFilter()
+                viewModel?.closeBottomSheetFilter()
             }
         }
 
     private fun sortFilterBottomSheetCallback() = object : Callback {
         override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
-            mpsViewModel?.applyFilter(applySortFilterModel.mapParameter)
+            viewModel?.applyFilter(applySortFilterModel.mapParameter)
         }
 
         override fun getResultCount(mapParameter: Map<String, String>) {

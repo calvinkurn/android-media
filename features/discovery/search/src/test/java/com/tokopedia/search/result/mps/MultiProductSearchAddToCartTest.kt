@@ -80,12 +80,12 @@ class MultiProductSearchAddToCartTest: MultiProductSearchTestFixtures() {
 
     private fun `Then assert add to cart success state`(mpsViewModel: MPSViewModel) {
         assertThat(
-            mpsViewModel.stateValue.addToCartState,
+            mpsViewModel.stateValue.addToCartState.state,
             `is`(instanceOf(State.Success::class.java))
         )
 
         assertEquals(
-            mpsViewModel.stateValue.addToCartState!!.data,
+            mpsViewModel.stateValue.addToCartState.state?.data,
             successAddToCartModel,
         )
     }
@@ -115,12 +115,12 @@ class MultiProductSearchAddToCartTest: MultiProductSearchTestFixtures() {
         testException: TestException
     ) {
         assertThat(
-            mpsViewModel.stateValue.addToCartState,
+            mpsViewModel.stateValue.addToCartState.state,
             `is`(instanceOf(State.Error::class.java))
         )
 
         val addToCartErrorState =
-            mpsViewModel.stateValue.addToCartState as State.Error<AddToCartDataModel>
+            mpsViewModel.stateValue.addToCartState.state as State.Error<AddToCartDataModel>
 
         assertEquals(addToCartErrorState.throwable, testException)
         assertEquals(addToCartErrorState.message, testException.message)
@@ -133,7 +133,7 @@ class MultiProductSearchAddToCartTest: MultiProductSearchTestFixtures() {
 
         mpsViewModel.onAddToCartMessageDismissed()
 
-        assertNull(mpsViewModel.stateValue.addToCartState)
+        assertNull(mpsViewModel.stateValue.addToCartState.state)
     }
 
     companion object {

@@ -9,6 +9,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.R
 import com.tokopedia.search.di.module.SearchContextModule
@@ -134,12 +136,32 @@ class MPSFragmentTest {
     fun open_bottomsheet_filter() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val dynamicFilterModel = rawToObject<DynamicFilterModel>(RTest.raw.mps_dynamic_filter_model)
-        val mpsStateSuccess = MPSState().success(mpsModel).setBottomSheetFilterModel(dynamicFilterModel)
+        val mpsStateSuccess = MPSState()
+            .success(mpsModel)
+            .openBottomSheetFilter()
+            .setBottomSheetFilterModel(dynamicFilterModel)
 
         launchFragmentInContainer {
             MPSFragment.newInstance(searchComponent(mpsStateSuccess))
         }
 
         onView(withId(R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun toaster_success_add_to_cart() {
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
+        val mpsStateSuccess = MPSState()
+            .success(mpsModel)
+            .successAddToCart(AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_OK,
+                data = DataModel(success = 1, message = arrayListOf("Success Add to Cart")),
+            ))
+
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+        }
+
+        Thread.sleep(3_000)
     }
 }
