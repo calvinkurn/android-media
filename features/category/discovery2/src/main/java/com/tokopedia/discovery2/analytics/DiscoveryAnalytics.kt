@@ -2365,8 +2365,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventBundleProductClicked(componentsItems: ComponentsItem, bundleType: BundleTypes, bundle: BundleUiModel, selectedMultipleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, productItemPosition: Int) {
         val list = ArrayList<Map<String, Any>>()
         val login = if (userSession.isLoggedIn) LOGIN else NON_LOGIN
+        val dataItem = componentsItems.data?.firstOrNull()
         val productBundlingMap = mutableMapOf<String, Any>()
-        componentsItems.data?.firstOrNull()?.let {
+        dataItem?.let {
             productBundlingMap[KEY_NAME] = selectedProduct.productName
             productBundlingMap[KEY_ID] = selectedProduct.productId
             productBundlingMap[KEY_POSITION] = "${componentsItems.position + 1}"
@@ -2375,6 +2376,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productBundlingMap[ITEM_BRAND] = EMPTY_STRING
             productBundlingMap[KEY_ITEM_CATEGORY] = EMPTY_STRING
             productBundlingMap[ITEM_VARIANT] = EMPTY_STRING
+            productBundlingMap[PRICE] = selectedMultipleBundle.displayPriceRaw
             productBundlingMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems) + 1} - $login - ${componentsItems.name} - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${componentsItems.sectionId} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productBundlingMap[DIMENSION117] = selectedMultipleBundle.bundleType
             productBundlingMap[DIMENSION118] = selectedMultipleBundle.bundleId
@@ -2388,6 +2390,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
+        map[ITEM_LIST] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems) + 1} - $login - ${componentsItems.name} - - ${if (dataItem?.isTopads == true) TOPADS else NON_TOPADS} - ${if (dataItem?.creativeName.isNullOrEmpty()) "" else dataItem?.creativeName} - ${componentsItems.sectionId} - ${if (dataItem?.tabName.isNullOrEmpty()) "" else dataItem?.tabName}"
         map[PAGE_SOURCE] = sourceIdentifier
         map[BUSINESS_UNIT] = PHYSICAL_GOODS
         map[TRACKER_ID] = "42740"
