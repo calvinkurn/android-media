@@ -1728,7 +1728,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 },
                 presets = it.presets.map { preset ->
                     preset.copy(
-                        value = preset.defaultValue
+                        value = preset.defaultValue,
+                        isSelected = preset.active,
                     )
                 }
             )
@@ -1793,7 +1794,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _beautificationConfig.update {
                 it.copy(
                     presets = it.presets.map { preset ->
-                        if(preset.active) preset.copyWithNewValue(newValueFromSlider = newValue)
+                        if(preset.isSelected) preset.copyWithNewValue(newValueFromSlider = newValue)
                         else preset
                     }
                 )
@@ -1922,7 +1923,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 presets = it.presets.map { item ->
                     item.copy(
                         assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus,
-                        active = if(preset.id == item.id) false else item.active
+                        isSelected = if(preset.id == item.id) false else item.isSelected
                     )
                 }
             )
