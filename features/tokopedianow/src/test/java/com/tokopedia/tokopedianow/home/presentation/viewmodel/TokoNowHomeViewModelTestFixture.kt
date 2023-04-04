@@ -241,6 +241,18 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
+    protected fun verifyGetCarouselChipsRecomCalled(times: Int = 1, pageName: String) {
+        coVerify(exactly = times) {
+            getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    xSource = "recom_widget",
+                    xDevice = "android"
+                )
+            )
+        }
+    }
+
     protected fun verifyGetRealTimeRecommendationCalled(pageName: String = any(), productId: List<String> = any()) {
         coVerify {
             getRecommendationUseCase.getData(
