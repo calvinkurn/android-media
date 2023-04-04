@@ -71,8 +71,8 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ty_feed_campaign_ribbon_subtitle"
-        app:unify_progress_bar_track_color="@color/Unify_Static_White"
         app:unify_progress_bar_height="4"
+        app:unify_progress_bar_track_color="@color/Unify_Static_White"
         app:unify_progress_bar_value="75" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle

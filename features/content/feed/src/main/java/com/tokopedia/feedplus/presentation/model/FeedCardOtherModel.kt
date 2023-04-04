@@ -58,6 +58,7 @@ data class FeedScoreModel(
 data class FeedCardCtaModel(
     val text: String = "",
     val subtitle: List<String> = emptyList(),
+    val texts: List<String> = emptyList(),
     val color: String = "",
     val colorGradient: List<FeedCardCtaGradientModel> = emptyList()
 )
