@@ -70,7 +70,7 @@ abstract class TokoChatViewModelTestFixture {
     protected val throwableDummy = Throwable("Oops!")
 
     @Before
-    fun setup() {
+    open fun setup() {
         MockKAnnotations.init(this)
         viewModel = spyk(
             TokoChatViewModel(

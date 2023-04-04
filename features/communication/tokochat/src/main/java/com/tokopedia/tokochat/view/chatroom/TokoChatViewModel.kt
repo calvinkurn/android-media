@@ -516,27 +516,37 @@ class TokoChatViewModel @Inject constructor(
             channelId = channelId
         )
         val uploadResult = uploadImageUseCase(params)
-        if (!uploadResult.error.isNullOrEmpty()) {
-            // Set transient to failed
-            handleImageUploadError(
-                localUUID = localUUID,
-                throwable = Throwable(uploadResult.error?.joinToString())
-            )
-        } else {
-            val newImageId = uploadResult.data?.imageId!! // Expected error when null
-            // Rename Image to imageId
-            renameImage(
-                originalFileUri = Uri.parse(filePath),
-                newFileName = newImageId
-            )
-            replaceCacheImageData(newImageId, localUUID)
-            // Send transient message and change the payload from UUID to image Id
-            sendTransientExtensionMessage(
-                createExtensionMessage(
+        when {
+            (!uploadResult.error.isNullOrEmpty()) -> {
+                // Set transient to failed
+                handleImageUploadError(
                     localUUID = localUUID,
-                    extensionId = newImageId
+                    throwable = Throwable(uploadResult.error!!.joinToString()) // Checked in the first checker
                 )
-            )
+            }
+            (uploadResult.data == null) -> { // Error is empty / null, but data is also null
+                // Set transient to failed
+                handleImageUploadError(
+                    localUUID = localUUID,
+                    throwable = Throwable(TokoChatUploadImageUseCase.ERROR_PAYLOAD_NOT_EXPECTED)
+                )
+            }
+            else -> { // Success
+                val newImageId = uploadResult.data!!.imageId!! // Expected error when null
+                // Rename Image to imageId
+                renameImage(
+                    originalFileUri = Uri.parse(filePath),
+                    newFileName = newImageId
+                )
+                replaceCacheImageData(newImageId, localUUID)
+                // Send transient message and change the payload from UUID to image Id
+                sendTransientExtensionMessage(
+                    createExtensionMessage(
+                        localUUID = localUUID,
+                        extensionId = newImageId
+                    )
+                )
+            }
         }
     }
 

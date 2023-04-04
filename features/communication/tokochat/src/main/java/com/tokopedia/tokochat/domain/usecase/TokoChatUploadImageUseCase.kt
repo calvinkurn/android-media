@@ -36,5 +36,7 @@ class TokoChatUploadImageUseCase @Inject constructor(
         private const val FILE_PART = "file"
         val IMAGE = "image/jpeg".toMediaTypeOrNull()
         val TEXT = "text/plain".toMediaTypeOrNull()
+
+        const val ERROR_PAYLOAD_NOT_EXPECTED = "Error payload not expected"
     }
 }
