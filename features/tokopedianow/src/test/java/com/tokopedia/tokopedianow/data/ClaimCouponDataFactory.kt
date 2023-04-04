@@ -15,7 +15,12 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 
 object ClaimCouponDataFactory {
-    fun createChannelLayout(widgetId: String, widgetTitle: String, slugText: String, styleParam: String): List<HomeLayoutResponse> {
+    fun createChannelLayout(
+        widgetId: String,
+        widgetTitle: String,
+        slugText: String,
+        styleParam: String
+    ): List<HomeLayoutResponse> {
         return listOf(
             HomeLayoutResponse(
                 id = widgetId,
@@ -35,11 +40,12 @@ object ClaimCouponDataFactory {
         buttonStr: String,
         isEmpty: Boolean
     ): GetCatalogCouponListResponse.TokopointsCatalogWithCouponList {
-        val resultStatus = GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.ResultStatus(
-            code = "200",
-            message = listOf(),
-            status = "success"
-        )
+        val resultStatus =
+            GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.ResultStatus(
+                code = "200",
+                message = listOf(),
+                status = "success"
+            )
         return GetCatalogCouponListResponse.TokopointsCatalogWithCouponList(
             catalogWithCouponList =
             if (isEmpty) {
@@ -87,7 +93,7 @@ object ClaimCouponDataFactory {
             listOf<Visitable<*>>(
                 TokoNowChooseAddressWidgetUiModel(id = "0")
             )
-        } else if (isError){
+        } else if (isError) {
             listOf<Visitable<*>>(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
                 claimCoupon.copy(state = TokoNowLayoutState.HIDE)
@@ -95,7 +101,13 @@ object ClaimCouponDataFactory {
         } else {
             listOf<Visitable<*>>(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
-                claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr, false).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
+                claimCoupon.copy(
+                    claimCouponList = createCatalogCouponList(
+                        slugs,
+                        buttonStr,
+                        false
+                    ).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs)
+                )
             )
         }
 
