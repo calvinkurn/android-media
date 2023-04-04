@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -360,7 +359,8 @@ open class NotificationAffiliateFragment :
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) = Unit
 
-    override fun markNotificationAsRead(element: NotificationUiModel) = Unit
+    override fun markNotificationAsRead(element: NotificationUiModel) =
+        viewModel.markNotificationAsRead(RoleType.AFFILIATE, element)
 
     override fun bumpReminder(
         product: ProductData,
@@ -398,9 +398,9 @@ open class NotificationAffiliateFragment :
 
     override fun trackDeleteReminder() = Unit
 
-    override fun markAsSeen(notifId: String) = Unit
+    override fun markAsSeen(notifId: String) = markAsSeenAnalytic.markAsSeen(notifId)
 
-    override fun refreshPage() = Unit
+    override fun refreshPage() = onRetryClicked()
 
     override fun trackClickCtaWidget(element: NotificationUiModel) {
         analytic.trackClickCtaWidget(
