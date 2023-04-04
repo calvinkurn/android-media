@@ -1,11 +1,9 @@
 package com.tokopedia.shop_nib.presentation.submission
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
 import com.tokopedia.shop_nib.presentation.di.component.DaggerShopNibComponent
+import com.tokopedia.shop_nib.presentation.util.FileHelper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -39,8 +37,11 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession : UserSessionInterface
 
+    @Inject
+    lateinit var fileHelper: FileHelper
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider[NibSubmissionViewModel::class.java] }
+    private val viewModel by lazy { viewModelProvider.get(NibSubmissionViewModel::class.java) }
     private var binding by autoClearedNullable<SsnFragmentNibSubmissionBinding>()
 
     override fun getScreenName(): String = NibSubmissionFragment::class.java.canonicalName.orEmpty()
@@ -67,52 +68,34 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         setupView()
     }
 
-
-
     private fun setupView() {
         binding?.layoutFilePicker?.setOnClickListener {
             showFilePicker()
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_SELECT_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val uri = data.data
-                val filePath = getRealPathFromURI( uri ?: return)
-                val result = MediaPicker.result(data)
-                print(result)
+                val file = fileHelper.getFileFromUri(activity ?: return, uri ?: return)
+                print(file)
             }
         }
     }
-    private fun getRealPathFromURI(contentURI: Uri): String? {
-        val cursor: Cursor? = context?.contentResolver?.query(contentURI, null, null, null, null)
-        return if (cursor == null) { // Source is Dropbox or other similar local file path
-            contentURI.path
-        } else {
-            cursor.moveToFirst()
-            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            cursor.getString(idx)
-        }
-    }
+
     private fun showFilePicker() {
+        val allowedFileTypes = arrayOf("image/png", "image/jpeg", "application/pdf")
+
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        val allowedFileTypes = arrayOf("image/png", "image/jpeg", "application/pdf")
         intent.type = "*/*"
         intent.putExtra(Intent.EXTRA_MIME_TYPES, allowedFileTypes)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE)
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FILE)
+        } catch (e: ActivityNotFoundException) {}
+
     }
-
-    /*private fun showFilePicker() {
-        val pintent = MediaPicker.intent(activity ?: return){
-            modeType(ModeType.IMAGE_ONLY)
-            singleSelectionMode()
-            maxImageFileSize(5_000_000) //5MB
-        }
-        startActivityForResult(pintent, REQUEST_CODE_SELECT_FILE)
-    }*/
-
 }
