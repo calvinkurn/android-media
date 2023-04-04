@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -47,7 +46,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
         R.dimen.dp_chatbot_1,
         Gravity.CENTER,
         R.color.chatbot_dms_stroke,
-        getStrokeWidthSenderDimenRes()
+        R.dimen.dp_chatbot_3
     )
 
     override fun bind(element: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
@@ -106,11 +105,6 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
         if (thumbnail != null) {
             ImageHandler.clearImage(thumbnail)
         }
-    }
-
-    @DimenRes
-    fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.dp_chatbot_3
     }
 
     companion object {

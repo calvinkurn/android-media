@@ -1,12 +1,11 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble
 
-import android.view.Gravity
 import android.view.View
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.util.generateRightMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,30 +18,14 @@ class RightChatMessageUnifyViewHolder(
     private val userSession: UserSessionInterface
 ) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener, userSession) {
 
-    private val backgroundChatWithoutReplyBubble = ViewUtil.generateBackgroundWithShadow(
-        customChatLayout?.fxChat,
-        R.color.chatbot_dms_right_chat_message_bg,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_0,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER
+    private val backgroundChatWithoutReplyBubble = generateRightMessageBackground(
+        customChatLayout?.fxChat
     )
 
-    private val backgroundChatWithReplyBubble = ViewUtil.generateBackgroundWithShadow(
+    private val backgroundChatWithReplyBubble = generateRightMessageBackground(
         customChatLayout?.fxChat,
         com.tokopedia.unifyprinciples.R.color.Unify_GN50,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_0,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
     )
 
     override fun bind(message: MessageUiModel) {

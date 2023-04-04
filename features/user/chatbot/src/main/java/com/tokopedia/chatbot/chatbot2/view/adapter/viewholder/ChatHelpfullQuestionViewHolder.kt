@@ -29,8 +29,12 @@ class ChatHelpfullQuestionViewHolder(
 
     private val adapter: ChatOptionListAdapter
     private var model: HelpFullQuestionsUiModel? = null
-    private var chatActionListSelection: RecyclerView = itemView.findViewById(R.id.chat_option_list_selection)
-    private var chatActionBubbleSelectionContainer: CardUnify = itemView.findViewById(R.id.chat_option_list_container)
+    private var chatActionListSelection: RecyclerView = itemView.findViewById(
+        R.id.chat_option_list_selection
+    )
+    private var chatActionBubbleSelectionContainer: CardUnify = itemView.findViewById(
+        R.id.chat_option_list_container
+    )
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     init {
@@ -47,9 +51,13 @@ class ChatHelpfullQuestionViewHolder(
 
     override fun bind(viewModel: HelpFullQuestionsUiModel) {
         super.bind(viewModel)
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            viewModel.message,
+            customChatLayout,
+            movementMethod
+        )
         model = viewModel
-        if (viewModel.isSubmited == true) {
+        if (viewModel.isSubmited) {
             chatActionBubbleSelectionContainer.hide()
         } else {
             chatActionBubbleSelectionContainer.show()
@@ -58,7 +66,9 @@ class ChatHelpfullQuestionViewHolder(
         }
     }
 
-    private fun getOptionListViewModelList(helpfulQuestions: List<HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions>?): ArrayList<ChatOptionListUiModel> {
+    private fun getOptionListViewModelList(
+        helpfulQuestions: List<HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions>?
+    ): ArrayList<ChatOptionListUiModel> {
         val list = arrayListOf<ChatOptionListUiModel>()
         helpfulQuestions?.forEach {
             val option = ChatOptionListUiModel()

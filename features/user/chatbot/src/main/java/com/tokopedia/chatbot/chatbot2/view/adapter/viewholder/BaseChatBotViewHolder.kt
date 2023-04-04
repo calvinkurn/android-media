@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
 
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -13,9 +12,9 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.data.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatBotTimeConverter
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,7 +27,9 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(
     private val chatbotAdapterListener: ChatbotAdapterListener? = null
 ) : BaseChatViewHolder<T>(itemView) {
 
-    protected val customChatLayout: CustomChatbotChatLayout? = itemView.findViewById(getCustomChatLayoutId())
+    protected val customChatLayout: CustomChatbotChatLayout? = itemView.findViewById(
+        getCustomChatLayoutId()
+    )
     private val senderAvatar = itemView.findViewById<ImageUnify>(getSenderAvatarId())
     private val senderName = itemView.findViewById<Typography>(getSenderNameId())
     private val dateContainer: CardView? = itemView.findViewById(getDateContainerId())
@@ -38,19 +39,11 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(
     protected open fun getSenderNameId(): Int = R.id.senderName
     open fun getDateContainerId(): Int = R.id.dateContainer
 
-    private val bg = ViewUtil.generateBackgroundWithShadow(
+    private val bg = generateLeftMessageBackground(
         customChatLayout,
         R.color.chatbot_dms_left_message_bg,
-        R.dimen.dp_chatbot_0,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
     )
-
     override fun bind(viewModel: T) {
         if (viewModel is BaseChatUiModel) {
             bindBackground()

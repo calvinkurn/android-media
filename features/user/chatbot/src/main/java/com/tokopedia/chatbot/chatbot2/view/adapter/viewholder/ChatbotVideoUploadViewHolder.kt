@@ -56,7 +56,9 @@ class ChatbotVideoUploadViewHolder(
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
     private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
     private val action: ImageView? = itemView?.findViewById(getLeftActionId())
-    private val progressBarSendVideo: FrameLayout? = itemView?.findViewById(getProgressBarSendVideoId())
+    private val progressBarSendVideo: FrameLayout? = itemView?.findViewById(
+        getProgressBarSendVideoId()
+    )
     private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
     private var chatbotExoPlayer: ChatbotExoPlayer? = null
     private var videoWidth = 0
@@ -102,7 +104,13 @@ class ChatbotVideoUploadViewHolder(
     private fun setUpExoPlayerRadius() {
         videoPlayerView?.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
-                outline.setRoundRect(SIDE_VALUE_VIDEO_PLACEHOLDER, SIDE_VALUE_VIDEO_PLACEHOLDER, view.width, view.height, RADIUS_FOR_VIDEO)
+                outline.setRoundRect(
+                    SIDE_VALUE_VIDEO_PLACEHOLDER,
+                    SIDE_VALUE_VIDEO_PLACEHOLDER,
+                    view.width,
+                    view.height,
+                    RADIUS_FOR_VIDEO
+                )
             }
         }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble
 
-import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -8,7 +7,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.data.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotAdapterListener
-import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
+import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.view.isInDarkMode
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,17 +27,10 @@ class LeftChatMessageUnifyViewHolder(
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
 
-    private val backgroundForChat = ViewUtil.generateBackgroundWithShadow(
+    private val backgroundForChat = generateLeftMessageBackground(
         customChatLayout?.fxChat,
         R.color.chatbot_dms_left_chat_message_bg,
-        R.dimen.dp_chatbot_0,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
     )
 
     override fun bind(message: MessageUiModel) {

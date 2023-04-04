@@ -20,13 +20,20 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
     private val dataPool = ArrayList<ChatActionBubbleUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatActionBubbleViewHolder {
-        val holder: BaseChatActionBubbleViewHolder?
-        if (viewType == 0) {
-            val itemView = ItemChatbotHelpfulBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            holder = ChatActionBubbleViewHolder(itemView.root)
+        val holder: BaseChatActionBubbleViewHolder = if (viewType == 0) {
+            val itemView = ItemChatbotHelpfulBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            ChatActionBubbleViewHolder(itemView.root)
         } else {
-            val itemView = ItemChatbotReadMoreActionBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            holder = ChatActionBubbleReadMoreViewHolder(itemView.root)
+            val itemView = ItemChatbotReadMoreActionBubbleBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            ChatActionBubbleReadMoreViewHolder(itemView.root)
         }
 
         return holder

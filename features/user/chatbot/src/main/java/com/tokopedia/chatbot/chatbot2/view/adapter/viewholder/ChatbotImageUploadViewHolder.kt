@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
 
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
@@ -27,8 +26,9 @@ import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_APP_VERSION
 import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_DEVICE
 import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_USER_ID
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackgroundWithoutCorner
+import com.tokopedia.chatbot.chatbot2.view.util.generateRightMessageBackgroundWithoutCorner
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatBotTimeConverter
-import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,33 +55,11 @@ class ChatbotImageUploadViewHolder(
 
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
-    private val bgSender = ViewUtil.generateBackgroundWithShadow(
-        chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER,
-        R.color.chatbot_dms_stroke,
-        getStrokeWidthSenderDimenRes()
+    private val bgSender = generateRightMessageBackgroundWithoutCorner(
+        chatBalloon
     )
-    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-        view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        elevation = R.dimen.dp_chatbot_2,
-        shadowRadius = R.dimen.dp_chatbot_1,
-        shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        strokeWidth = getStrokeWidthSenderDimenRes()
+    private val bgOpposite = generateLeftMessageBackgroundWithoutCorner(
+        chatBalloon
     )
 
     private val attachmentUnify get() = attachment as? ImageUnify
@@ -139,10 +117,6 @@ class ChatbotImageUploadViewHolder(
                 )
             }
         }
-    }
-
-    private fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.dp_chatbot_3
     }
 
     private fun loadImage(

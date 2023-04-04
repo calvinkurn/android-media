@@ -17,7 +17,12 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
 
     override fun bind(element: ChatActionBubbleUiModel, onSelect: (Int) -> Unit) {
         chatActionMessage.text = element.text
-        chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context, (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)))
+        chatActionMessage.setTextColor(
+            MethodChecker.getColor(
+                itemView.context,
+                (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            )
+        )
         customerCareImage.hide()
         if (element.iconUrl.isNotEmpty()) {
             setLiveChatButtonAction(element)
@@ -26,7 +31,14 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
     }
 
     private fun setLiveChatButtonAction(element: ChatActionBubbleUiModel) {
-        chatActionMessage.setTextColor(Color.parseColor(String.format(itemView.context.getString(R.string.chatbot_action_bubble_text_color_prefix), element.hexColor)))
+        chatActionMessage.setTextColor(
+            Color.parseColor(
+                String.format(
+                    itemView.context.getString(R.string.chatbot_action_bubble_text_color_prefix),
+                    element.hexColor
+                )
+            )
+        )
         customerCareImage.show()
         ImageHandler.LoadImage(customerCareImage, element.iconUrl)
     }

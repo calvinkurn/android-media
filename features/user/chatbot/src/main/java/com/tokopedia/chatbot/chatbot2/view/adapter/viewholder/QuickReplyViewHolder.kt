@@ -22,7 +22,11 @@ class QuickReplyViewHolder(
 
     override fun bind(viewModel: QuickReplyListUiModel) {
         super.bind(viewModel)
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            viewModel.message,
+            customChatLayout,
+            movementMethod
+        )
     }
 
     override fun getCustomChatLayoutId(): Int = R.id.customChatLayout
