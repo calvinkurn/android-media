@@ -101,6 +101,7 @@ object ShopPageHomeMapper {
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
                 it.parentId = parentId
+                it.averageRating = stats.averageRating
             }
         }
 
