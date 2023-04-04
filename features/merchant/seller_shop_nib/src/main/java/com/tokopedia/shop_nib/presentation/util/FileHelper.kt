@@ -3,14 +3,37 @@ package com.tokopedia.shop_nib.presentation.util
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import javax.inject.Inject
 
-class FileHelper @Inject constructor() {
+class FileHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun getFileFromUri(context: Context, uri: Uri): File? {
-        val filePath = getRealPathFromUri(context, uri)
-        return if (filePath != null) File(filePath) else null
+    fun getFileFromUri(uri: Uri): File? {
+        val filePath = getRealPathFromUri(context, uri) ?: return null
+        return File(filePath)
+    }
+
+    fun getFileSize(uri: Uri): Long {
+        val contentResolver = context.contentResolver
+        var inputStream: InputStream? = null
+        var fileSize: Long = 0
+
+        try {
+            inputStream = contentResolver.openInputStream(uri)
+            fileSize = inputStream?.available()?.toLong() ?: 0
+        } catch (_: IOException) {
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+
+        return fileSize
     }
 
     private fun getRealPathFromUri(context: Context, uri: Uri): String? {

@@ -93,10 +93,6 @@ dependencies {
     //Campaign Common
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
-    //Media picker
-    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
-    implementation projectOrAar(rootProject.ext.features.medialoader)
-
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }

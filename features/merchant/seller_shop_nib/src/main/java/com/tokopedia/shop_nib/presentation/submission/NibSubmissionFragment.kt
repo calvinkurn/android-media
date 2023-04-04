@@ -78,24 +78,23 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_CODE_SELECT_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val uri = data.data
-                val file = fileHelper.getFileFromUri(activity ?: return, uri ?: return)
+                val file = fileHelper.getFileFromUri( uri ?: return)
+                val fileSize = fileHelper.getFileSize(uri)
                 print(file)
             }
         }
     }
 
     private fun showFilePicker() {
-        val allowedFileTypes = arrayOf("image/png", "image/jpeg", "application/pdf")
-
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/jpeg,image/png,application/pdf"
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "*/*"
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, allowedFileTypes)
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
 
         try {
             startActivityForResult(intent, REQUEST_CODE_SELECT_FILE)
-        } catch (e: ActivityNotFoundException) {}
+        } catch (_: ActivityNotFoundException) {}
 
     }
 }
