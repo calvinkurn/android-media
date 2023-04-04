@@ -31,7 +31,9 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -88,6 +90,22 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         initView()
         initListener()
         initObserver()
+        initUserConsent()
+    }
+
+    private fun initUserConsent() {
+        val consentParam = ConsentCollectionParam(
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentGotoKycProgressiveStaging
+            } else {
+                KYCConstant.consentGotoKycProgressiveStaging
+            }
+        )
+        binding?.consentGotoKycProgressive?.load(
+            lifecycleOwner = viewLifecycleOwner,
+            viewModelStoreOwner = this,
+            consentCollectionParam = consentParam
+        )
     }
 
     private fun initView() {

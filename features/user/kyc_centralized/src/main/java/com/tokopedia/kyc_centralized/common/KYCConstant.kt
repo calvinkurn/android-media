@@ -54,6 +54,8 @@ object KYCConstant {
     const val consentCollectionIdProduction = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
     const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
 
+    const val consentGotoKycProgressiveStaging = "b41f13da-f6ef-425a-b65e-f07bbb42821c"
+
     object GotoKycFlow {
         const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
         const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
