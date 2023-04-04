@@ -20,7 +20,7 @@ class RatesDataConverter @Inject constructor() {
         recipientAddressModel: RecipientAddressModel
     ): ShipmentDetailData {
         val shipmentDetailData = ShipmentDetailData()
-        val shipmentCartData = shipmentCartItemModel.shipmentCartData!!
+        val shipmentCartData = shipmentCartItemModel.shipmentCartData
         shipmentCartData.destinationAddress = recipientAddressModel.street
         shipmentCartData.destinationDistrictId = recipientAddressModel.destinationDistrictId
         shipmentCartData.destinationLatitude = recipientAddressModel.latitude
@@ -52,14 +52,6 @@ class RatesDataConverter @Inject constructor() {
         keroToken: String,
         keroUnixTime: String
     ): ShipmentCartData {
-        val shipmentCartData = ShipmentCartData()
-        initializeShipmentCartData(
-            userAddress,
-            groupShop,
-            shipmentCartData,
-            keroToken,
-            keroUnixTime
-        )
         var orderValue: Long = 0
         var totalWeight = 0
         var totalWeightActual = 0
@@ -77,49 +69,96 @@ class RatesDataConverter @Inject constructor() {
                 preOrderDuration = cartItemModel.preOrderDurationDay
             }
         }
-        shipmentCartData.orderValue = orderValue
-        shipmentCartData.weight = totalWeight.toDouble()
-        shipmentCartData.weightActual = totalWeightActual.toDouble()
-        shipmentCartData.preOrderDuration = preOrderDuration
-        shipmentCartData.isFulfillment = shipmentCartItemModel.isFulfillment
-        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier
-        return shipmentCartData
+        //        initializeShipmentCartData(
+//            userAddress,
+//            groupShop,
+//            shipmentCartData,
+//            keroToken,
+//            keroUnixTime
+//        )
+//        var orderValue: Long = 0
+//        var totalWeight = 0
+//        var totalWeightActual = 0
+//        var preOrderDuration = 0
+//        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+//            if (!cartItemModel.isError) {
+//                orderValue += (cartItemModel.quantity * cartItemModel.price).toLong()
+//                totalWeight += (cartItemModel.quantity * cartItemModel.weight).toInt()
+//                val weightActual: Double = if (cartItemModel.weightActual > 0) {
+//                    cartItemModel.weightActual
+//                } else {
+//                    cartItemModel.weight
+//                }
+//                totalWeightActual += (cartItemModel.quantity * weightActual).toInt()
+//                preOrderDuration = cartItemModel.preOrderDurationDay
+//            }
+//        }
+//        shipmentCartData.orderValue = orderValue,
+//        shipmentCartData.weight = totalWeight.toDouble(),
+//        shipmentCartData.weightActual = totalWeightActual.toDouble(),
+//        shipmentCartData.preOrderDuration = preOrderDuration,
+//        shipmentCartData.isFulfillment = shipmentCartItemModel.isFulfillment,
+//        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier,
+        return ShipmentCartData(
+            token = keroToken,
+            ut = keroUnixTime,
+            destinationAddress = userAddress.address,
+            destinationDistrictId = userAddress.districtId,
+            destinationLatitude =
+            if (!isNullOrEmpty(userAddress.latitude)) userAddress.latitude else null,
+            destinationLongitude =
+            if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null,
+            destinationPostalCode = userAddress.postalCode,
+            // TODO: fix group shop
+            originDistrictId = groupShop.groupShopData.first().shop.districtId,
+            originLatitude =
+            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.latitude)) groupShop.groupShopData.first().shop.latitude else null,
+            originLongitude =
+            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.longitude)) groupShop.groupShopData.first().shop.longitude else null,
+            originPostalCode = groupShop.groupShopData.first().shop.postalCode,
+            categoryIds = getCategoryIds(groupShop.groupShopData.first().products),
+            productInsurance = if (isForceInsurance(groupShop.groupShopData.first().products)) 1 else 0,
+            shopShipments = groupShop.shopShipments,
+            insurance = 1,
+            boMetadata = groupShop.boMetadata,
+            orderValue = orderValue,
+            weight = totalWeight.toDouble(),
+            weightActual = totalWeightActual.toDouble(),
+            preOrderDuration = preOrderDuration,
+            isFulfillment = shipmentCartItemModel.isFulfillment,
+            shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier
+        )
     }
 
-    private fun initializeShipmentCartData(
-        userAddress: UserAddress,
-        groupShop: GroupShop,
-        shipmentCartData: ShipmentCartData,
-        keroToken: String,
-        keroUnixTime: String
-    ) {
-        shipmentCartData.token = keroToken
-        shipmentCartData.ut = keroUnixTime
-        shipmentCartData.destinationAddress = userAddress.address
-        shipmentCartData.destinationDistrictId = userAddress.districtId
-        shipmentCartData.destinationLatitude =
-            if (!isNullOrEmpty(userAddress.latitude)) userAddress.latitude else null
-        shipmentCartData.destinationLongitude =
-            if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null
-        shipmentCartData.destinationPostalCode = userAddress.postalCode
-        // TODO: fix group shop
-        shipmentCartData.originDistrictId = groupShop.groupShopData.first().shop.districtId
-        shipmentCartData.originLatitude =
-            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.latitude)) groupShop.groupShopData.first().shop.latitude else null
-        shipmentCartData.originLongitude =
-            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.longitude)) groupShop.groupShopData.first().shop.longitude else null
-        shipmentCartData.originPostalCode = groupShop.groupShopData.first().shop.postalCode
-        shipmentCartData.categoryIds = getCategoryIds(groupShop.groupShopData.first().products)
-        shipmentCartData.productInsurance = if (isForceInsurance(groupShop.groupShopData.first().products)) 1 else 0
-        shipmentCartData.shopShipments = groupShop.shopShipments
-        val shippingNames = getShippingNames(groupShop.shopShipments)
-        shipmentCartData.shippingNames = shippingNames
-        val shippingServices = getShippingServices(groupShop.shopShipments)
-        shipmentCartData.shippingServices = shippingServices
-        shipmentCartData.insurance = 1
-        shipmentCartData.deliveryPriceTotal = 0
-        shipmentCartData.boMetadata = groupShop.boMetadata
-    }
+//    private fun initializeShipmentCartData(
+//        userAddress: UserAddress,
+//        groupShop: GroupShop,
+//        shipmentCartData: ShipmentCartData,
+//        keroToken: String,
+//        keroUnixTime: String
+//    ) {
+//        shipmentCartData.token = keroToken
+//        shipmentCartData.ut = keroUnixTime
+//        shipmentCartData.destinationAddress = userAddress.address
+//        shipmentCartData.destinationDistrictId = userAddress.districtId
+//        shipmentCartData.destinationLatitude =
+//            if (!isNullOrEmpty(userAddress.latitude)) userAddress.latitude else null
+//        shipmentCartData.destinationLongitude =
+//            if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null
+//        shipmentCartData.destinationPostalCode = userAddress.postalCode
+//        // TODO: fix group shop
+//        shipmentCartData.originDistrictId = groupShop.groupShopData.first().shop.districtId
+//        shipmentCartData.originLatitude =
+//            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.latitude)) groupShop.groupShopData.first().shop.latitude else null
+//        shipmentCartData.originLongitude =
+//            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.longitude)) groupShop.groupShopData.first().shop.longitude else null
+//        shipmentCartData.originPostalCode = groupShop.groupShopData.first().shop.postalCode
+//        shipmentCartData.categoryIds = getCategoryIds(groupShop.groupShopData.first().products)
+//        shipmentCartData.productInsurance = if (isForceInsurance(groupShop.groupShopData.first().products)) 1 else 0
+//        shipmentCartData.shopShipments = groupShop.shopShipments
+//        shipmentCartData.insurance = 1
+//        shipmentCartData.boMetadata = groupShop.boMetadata
+//    }
 
     private fun getCategoryIds(products: List<Product>): String {
         val categoryIds: MutableList<Int> = ArrayList()

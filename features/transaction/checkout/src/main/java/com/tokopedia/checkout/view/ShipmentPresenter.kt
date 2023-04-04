@@ -93,7 +93,6 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.GroupProduct
@@ -102,7 +101,6 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel.Companion.clone
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -1120,62 +1118,14 @@ class ShipmentPresenter @Inject constructor(
         val newShipmentCartItemModelList: MutableList<ShipmentCartItemModel> = ArrayList()
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel) {
-                val cartItemModels: ArrayList<CartItemModel> = ArrayList(
-                    shipmentCartItemModel.cartItemModels
-                )
-                newShipmentCartItemModelList.add(clone(shipmentCartItemModel, cartItemModels))
-            }
-        }
-        var cartListHasError = false
-        val indexShopErrorList = ArrayList<ShipmentCartItemModel>()
-        val indexShopItemErrorMap: MutableMap<ShipmentCartItemModel, List<CartItemModel>> =
-            HashMap()
-        for (i in newShipmentCartItemModelList.indices) {
-            for (j in newShipmentCartItemModelList[i].cartItemModels.indices) {
-                if (newShipmentCartItemModelList[i].cartItemModels[j].isError) {
-                    newShipmentCartItemModelList[i].isError = true
+                if (shipmentCartItemModel.isAllItemError) {
+                    continue
                 }
-            }
-            if (newShipmentCartItemModelList[i].isAllItemError) {
-                cartListHasError = true
-                indexShopErrorList.add(newShipmentCartItemModelList[i])
-            }
-            if (newShipmentCartItemModelList[i].isError) {
-                val deletedCartItemModels: MutableList<CartItemModel> = ArrayList()
-                for (j in newShipmentCartItemModelList[i].cartItemModels.indices) {
-                    if (newShipmentCartItemModelList[i].cartItemModels[j].isError) {
-                        cartListHasError = true
-                        deletedCartItemModels.add(newShipmentCartItemModelList[i].cartItemModels[j])
-                    }
+                val validCartItemModels = shipmentCartItemModel.cartItemModels.filter { !it.isError }
+                if (validCartItemModels.isEmpty()) {
+                    continue
                 }
-                indexShopItemErrorMap[newShipmentCartItemModelList[i]] = deletedCartItemModels
-                if (deletedCartItemModels.size == newShipmentCartItemModelList[i].cartItemModels.size) {
-                    indexShopErrorList.add(newShipmentCartItemModelList[i])
-                }
-            }
-        }
-        if (cartListHasError) {
-            for (oldShipmentCartItemModel in shipmentCartItemModelList) {
-                if (oldShipmentCartItemModel is ShipmentCartItemModel) {
-                    for (newShipmentCartItemModel in newShipmentCartItemModelList) {
-                        if (oldShipmentCartItemModel == newShipmentCartItemModel) {
-                            newShipmentCartItemModel.selectedShipmentDetailData =
-                                oldShipmentCartItemModel.selectedShipmentDetailData
-                        }
-                    }
-                }
-            }
-            for ((key, value) in indexShopItemErrorMap) {
-                for (cartItemModel in value) {
-                    val index = newShipmentCartItemModelList.indexOf(key)
-                    val cartItemModels =
-                        newShipmentCartItemModelList[index].cartItemModels.toMutableList()
-                    cartItemModels.remove(cartItemModel)
-                    newShipmentCartItemModelList[index].cartItemModels = cartItemModels
-                }
-            }
-            for (indexShopError in indexShopErrorList) {
-                newShipmentCartItemModelList.remove(indexShopError)
+                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(cartItemModels = validCartItemModels))
             }
         }
         return shipmentDataRequestConverter.createCheckoutRequestDataNew(newShipmentCartItemModelList, recipientAddressModel, isTradeInByDropOff)
@@ -1936,11 +1886,13 @@ class ShipmentPresenter @Inject constructor(
 
     private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<Data>): Int {
         var hasTokoNowProduct = false
-        for (dataCheckoutRequest in dataCheckoutRequestList) {
-            for (shopProduct in dataCheckoutRequest.shopOrders) {
-                if (shopProduct.isTokoNow) {
-                    hasTokoNowProduct = true
-                    break
+        loopall@for (dataCheckoutRequest in dataCheckoutRequestList) {
+            for (groupOrder in dataCheckoutRequest.groupOrders) {
+                for (shopOrder in groupOrder.shopOrders) {
+                    if (shopOrder.isTokoNow) {
+                        hasTokoNowProduct = true
+                        break@loopall
+                    }
                 }
             }
         }
@@ -1949,19 +1901,19 @@ class ShipmentPresenter @Inject constructor(
 
     private fun setCheckoutRequestPromoData(data: List<Data>) {
         for (dataCheckoutRequest in data) {
-            for (shopProductCheckoutRequest in dataCheckoutRequest.shopOrders) {
-                for (voucherOrder in validateUsePromoRevampUiModel!!.promoUiModel.voucherOrderUiModels) {
-                    if (shopProductCheckoutRequest.cartstring == voucherOrder.uniqueId) {
-                        if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
-                            if (!hasInsertPromo(
-                                    shopProductCheckoutRequest.promos,
-                                    voucherOrder.code
-                                )
-                            ) {
-                                val promoRequest = Promo()
-                                promoRequest.code = voucherOrder.code
-                                promoRequest.type = voucherOrder.type
-                                shopProductCheckoutRequest.promos = shopProductCheckoutRequest.promos.toMutableList().apply { add(promoRequest) }
+            for (groupOrder in dataCheckoutRequest.groupOrders) {
+                for (shopOrder in groupOrder.shopOrders) {
+                    // reset promo to prevent duplicate bo promo in owoc order
+                    shopOrder.promos = emptyList()
+                    for (voucherOrder in validateUsePromoRevampUiModel!!.promoUiModel.voucherOrderUiModels) {
+                        if (groupOrder.cartStringGroup == voucherOrder.cartStringGroup && shopOrder.cartStringOrder == voucherOrder.uniqueId) {
+                            if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
+                                if (!hasInsertPromo(shopOrder.promos, voucherOrder.code)) {
+                                    val promoRequest = Promo()
+                                    promoRequest.code = voucherOrder.code
+                                    promoRequest.type = voucherOrder.type
+                                    shopOrder.promos = shopOrder.promos.toMutableList().apply { add(promoRequest) }
+                                }
                             }
                         }
                     }
@@ -4091,7 +4043,7 @@ class ShipmentPresenter @Inject constructor(
                     ordersItem.cartStringGroup = shipmentCartItemModel.cartString
                     ordersItem.uniqueId = cartStringOrder
                     ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
-                    ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata!!.boType
+                    ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata.boType
                     ordersItem.isInsurancePrice = if (shipmentCartItemModel.isInsurance) 1 else 0
                     if (shipmentCartItemModel.selectedShipmentDetailData == null) {
                         ordersItem.shippingId = 0

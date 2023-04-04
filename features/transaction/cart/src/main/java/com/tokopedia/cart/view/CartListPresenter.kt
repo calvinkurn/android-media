@@ -958,8 +958,7 @@ class CartListPresenter @Inject constructor(
                             cartListView.showToastMessageRed(data.message)
                         }
                     }
-                }
-                catch (t: Throwable) {
+                } catch (t: Throwable) {
                     view?.let { cartListView ->
                         Timber.e(t)
                         cartListView.showToastMessageRed(t)
@@ -1906,7 +1905,7 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        launch (dispatchers.io) {
+        launch(dispatchers.io) {
             try {
                 lastValidateUseRequest = promoRequest
                 val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
@@ -1917,7 +1916,7 @@ class CartListPresenter @Inject constructor(
                 )
                 isLastApplyResponseStillValid = false
                 view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-            } catch(t: Throwable) {
+            } catch (t: Throwable) {
                 if (t is AkamaiErrorException) {
                     view?.showToastMessageRed(t)
                 }
@@ -2089,7 +2088,7 @@ class CartListPresenter @Inject constructor(
                     it.showToastMessageGreen(data.followShop?.message ?: "")
                     processInitialGetCartData("0", false, false)
                 }
-            } catch(t: Throwable) {
+            } catch (t: Throwable) {
                 view?.let {
                     Timber.e(t)
                     it.hideProgressLoading()
@@ -2170,7 +2169,7 @@ class CartListPresenter @Inject constructor(
                 }
                 val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
                     ratesParam = RatesParam.Builder(shopShipments, shipping)
-                        .warehouseId(cartShopHolderData.warehouseId.toString())
+                        .warehouseId(cartGroupHolderData.warehouseId.toString())
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,

@@ -94,13 +94,13 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
       "disabled_features": [],
       "donation_checkbox_status": false,
       "image_upload": {
-        "show_image_upload": true,
+        "show_image_upload": false,
         "text": "Lampirkan Resep Dokter",
         "left_icon_url": "https://images.tokopedia.net/img/cartapp/icons/doctor_receipt.png",
         "right_icon_url": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
         "checkout_id": "d41d8cd98f00b204e9800998ecf8427e",
-        "front_end_validation": true,
-        "consultation_flow": true,
+        "front_end_validation": false,
+        "consultation_flow": false,
         "rejected_wording": "Produk berikut tidak bisa diproses karena pembeliannya tidak disetujui dokter."
       },
       "open_prerequisite_site": false,
@@ -809,7 +809,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                 }
               },
               "errors": [],
-              "errors_unblocking": [],
+              "errors_unblocking": ["testing123"],
               "shipping_id": 0,
               "sp_id": 0,
               "scheduled_delivery": {
@@ -927,7 +927,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                               }
                             }
                           },
-                          "errors": [],
+                          "errors": ["asdf"],
                           "cart_id": "5432225267",
                           "product_id": 5232131732,
                           "product_name": "RAVEN_pereda_nyeri_tablet",
