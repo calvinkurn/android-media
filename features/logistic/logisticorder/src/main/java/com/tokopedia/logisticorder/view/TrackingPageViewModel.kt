@@ -80,14 +80,12 @@ class TrackingPageViewModel @Inject constructor(
     }
 
     fun getDriverTipsData(orderId: String?) {
-        if (orderId != null) {
-            viewModelScope.launch {
-                try {
-                    val driverTipData = getDriverTipUseCase(orderId)
-                    _driverTipsData.value = Success(driverTipMapper.mapDriverTipData(driverTipData))
-                } catch (e: Throwable) {
-                    _driverTipsData.value = Fail(e)
-                }
+        viewModelScope.launch {
+            try {
+                val driverTipData = getDriverTipUseCase(orderId)
+                _driverTipsData.value = Success(driverTipMapper.mapDriverTipData(driverTipData))
+            } catch (e: Throwable) {
+                _driverTipsData.value = Fail(e)
             }
         }
     }

@@ -12,13 +12,13 @@ import javax.inject.Inject
 class GetDriverTipUseCase @Inject constructor(
     @ApplicationContext private val gql: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<String, GetDriverTipResponse>(dispatcher.io) {
+) : CoroutineUseCase<String?, GetDriverTipResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
         return TrackingPageQuery.getDriverTip
     }
 
-    override suspend fun execute(orderId: String): GetDriverTipResponse {
+    override suspend fun execute(orderId: String?): GetDriverTipResponse {
         val param = mapOf(
             "input" to mapOf(
                 "order_id" to orderId
