@@ -115,9 +115,11 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         return@withContext try {
             NetworkResult.Success(createLiveStreamChannelUseCase.apply {
                 val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw ClientException(PlayErrorCode.Play001)
-                val coverImage =
-                        if (cover.croppedCover !is CoverSetupState.Cropped) throw ClientException(PlayErrorCode.Play001)
-                        else cover.croppedCover.coverImage
+                val coverImage = when (cover.croppedCover) {
+                    is CoverSetupState.Cropped -> cover.croppedCover.coverImage
+                    is CoverSetupState.GeneratedCover -> cover.croppedCover.coverImage
+                    else -> throw ClientException(PlayErrorCode.Play001)
+                }
                 val titleModel = mDataStore.getSetupDataStore().getTitle()
                 val title = if (titleModel is PlayTitleUiModel.HasTitle) titleModel.title else throw ClientException(PlayErrorCode.Play002)
                 params = CreateLiveStreamChannelUseCase.createParams(
@@ -136,6 +138,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         return when(val cover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped.Uploaded -> {
                 cover.localImage != null || cover.coverImage.toString().isNotEmpty()
+            }
+            is CoverSetupState.GeneratedCover -> {
+                cover.coverImage.isNotEmpty()
             }
             else -> false
         }
