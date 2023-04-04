@@ -12,7 +12,6 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -160,37 +159,31 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             }
         }
 
-        viewModel.retryAvailability.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        val avail = it.data.retryAvailability
-                        val deadline = avail.deadlineRetryUnixtime.toLong()
-                        if (avail.showRetryButton && avail.availabilityRetry) {
-                            setRetryButton(true, 0L)
-                        } else if (!avail.availabilityRetry) {
-                            setRetryButton(false, deadline)
-                        } else {
-                            setRetryButton(false, 0L)
-                        }
-                    }
-                    is Fail -> {
-                        showSoftError(it.throwable)
+        viewModel.retryAvailability.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val avail = it.data.retryAvailability
+                    val deadline = avail.deadlineRetryUnixtime.toLong()
+                    if (avail.showRetryButton && avail.availabilityRetry) {
+                        setRetryButton(true, 0L)
+                    } else if (!avail.availabilityRetry) {
+                        setRetryButton(false, deadline)
+                    } else {
+                        setRetryButton(false, 0L)
                     }
                 }
+                is Fail -> {
+                    showSoftError(it.throwable)
+                }
             }
-        )
+        }
 
-        viewModel.retryBooking.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> startSuccessCountdown()
-                    is Fail -> showError(it.throwable)
-                }
+        viewModel.retryBooking.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> startSuccessCountdown()
+                is Fail -> showError(it.throwable)
             }
-        )
+        }
     }
 
     private fun fetchData() {
