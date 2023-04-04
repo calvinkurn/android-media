@@ -25,6 +25,7 @@ enum class PageSource(val value: String) {
     PlayShorts("Play Shorts"),
     AddLogo("Add Logo"),
     WebView("WebView"),
+    ShopNib("Shop Nib"),
     Unknown("");
 
     companion object {

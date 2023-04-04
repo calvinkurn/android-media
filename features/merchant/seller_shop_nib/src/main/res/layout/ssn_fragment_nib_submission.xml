@@ -45,6 +45,7 @@
                 app:typographyType="display_3" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutFilePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ssn_shape_dashed_select_file"
