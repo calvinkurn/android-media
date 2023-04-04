@@ -14,13 +14,14 @@ object UserConsentComponentProvider {
     }
 
     fun getUserConsentComponent(context: Context): UserConsentComponent? {
-        if (userConsentComponent == null) {
-            userConsentComponent = DaggerUserConsentComponent.builder()
+        return if (userConsentComponent == null) {
+            DaggerUserConsentComponent.builder()
                 .baseAppComponent(
                     (context.applicationContext as BaseMainApplication).baseAppComponent
                 )
                 .build()
+        } else {
+            userConsentComponent
         }
-        return userConsentComponent
     }
 }
