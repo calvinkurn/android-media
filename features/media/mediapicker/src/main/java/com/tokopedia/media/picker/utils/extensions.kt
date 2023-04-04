@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -26,10 +25,6 @@ fun exceptionHandler(invoke: () -> Unit) {
             e.printStackTrace()
         }
     }
-}
-
-fun isOppoManufacturer(): Boolean {
-    return Build.MANUFACTURER.contains("oppo", ignoreCase = true)
 }
 
 fun <T> List<T>.flattenFilter(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {

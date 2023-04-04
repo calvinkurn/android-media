@@ -19,6 +19,8 @@ const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
+const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
+const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val KYC_DONE = 1
 
