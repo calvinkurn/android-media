@@ -840,7 +840,7 @@ class TokoNowHomeViewModel @Inject constructor(
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val chipList = carouselModel.chipList
-            val selectedChip = chipList.first { it.selected }
+            val selectedChip = chipList.first()
             getCarouselChipsProductList(carouselModel, selectedChip)
         }) {
 
