@@ -34,6 +34,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -492,6 +493,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun handleSendComment() {
+        showKeyboard(false)
         if (binding.newComment.length() > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
