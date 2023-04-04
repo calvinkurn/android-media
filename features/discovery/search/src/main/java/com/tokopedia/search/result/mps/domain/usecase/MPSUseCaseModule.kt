@@ -26,7 +26,7 @@ class MPSUseCaseModule {
     @SearchScope
     @Named(MPS_LOAD_MORE_USE_CASE)
     fun provideMPSLoadMoreUseCase(): UseCase<MPSModel> {
-        return MPSFirstPageUseCase(
+        return MPSLoadMoreUseCase(
             graphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
         )
     }
