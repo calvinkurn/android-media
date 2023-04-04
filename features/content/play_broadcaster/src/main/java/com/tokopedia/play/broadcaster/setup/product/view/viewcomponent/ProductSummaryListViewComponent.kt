@@ -35,8 +35,8 @@ internal class ProductSummaryListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun setProductList(productSectionList: List<ProductTagSectionUiModel>, isEligibleForPin: Boolean, isProductNumerationShown: Boolean) {
+        var productIdx = 0 //Product Index
         val finalList = buildList {
             productSectionList.forEachIndexed { idx, section ->
                 /** Don't display section title if its at the top && title is empty */
@@ -44,9 +44,9 @@ internal class ProductSummaryListViewComponent(
                     add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
                 }
 
-                addAll(section.products.mapIndexed { index, product ->
-                    val number = product.number.ifBlank { index.plus(1).toString() }
-                    ProductSummaryAdapter.Model.Body(product.copy(number = number), isEligibleForPin, isProductNumerationShown)
+                addAll(section.products.map { product ->
+                    productIdx += 1
+                    ProductSummaryAdapter.Model.Body(product.copy(number = productIdx.toString()), isEligibleForPin, isProductNumerationShown)
                 })
             }
         }
