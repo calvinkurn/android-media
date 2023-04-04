@@ -345,7 +345,7 @@ class PlayBroadcastActivity : BaseActivity(),
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
-                        initBroadcaster(event.data)
+                        initBroadcaster(event.data, event.withByteplus)
                         createBroadcaster(event.withByteplus)
                     }
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
@@ -431,7 +431,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster(config: BroadcastingConfigUiModel, ) {
+    private fun initBroadcaster(config: BroadcastingConfigUiModel, withByteplus: Boolean) {
         if(::broadcaster.isInitialized) return
 
         val handler = Handler(Looper.getMainLooper())
@@ -441,6 +441,7 @@ class PlayBroadcastActivity : BaseActivity(),
             callback = this,
             remoteConfig = remoteConfig,
             broadcastingConfigUiModel = config,
+            withByteplus = withByteplus
         )
     }
 

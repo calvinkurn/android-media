@@ -126,11 +126,18 @@ class BroadcastManager @Inject constructor(
         mListeners.remove(listener)
     }
 
-    override fun init(activityContext: Context, handler: Handler?) {
+    override fun init(
+        activityContext: Context,
+        handler: Handler?,
+        withByteplus: Boolean,
+    ) {
         mContext = activityContext
         mHandler = handler
 
-        effectManager.startRenderThread()
+        if (withByteplus)
+            effectManager.startRenderThread()
+        else
+            effectManager.stopRenderThread()
     }
 
     override fun create(

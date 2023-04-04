@@ -18,7 +18,11 @@ interface Broadcaster {
 
     fun removeListener(listener: Listener)
 
-    fun init(activityContext: Context, handler: Handler?)
+    fun init(
+        activityContext: Context,
+        handler: Handler?,
+        withByteplus: Boolean,
+    )
 
     fun create(
         holder: SurfaceHolder,
