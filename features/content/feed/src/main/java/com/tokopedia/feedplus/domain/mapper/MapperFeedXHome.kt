@@ -72,6 +72,7 @@ object MapperFeedHome {
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(text = cta.text,
                     subtitle = cta.subtitle,
+                    texts = cta.texts,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
@@ -120,6 +121,7 @@ object MapperFeedHome {
                 FeedCardCtaModel(text = cta.text,
                     subtitle = cta.subtitle,
                     color = cta.color,
+                    texts = cta.texts,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
                             color = color.color, position = color.position

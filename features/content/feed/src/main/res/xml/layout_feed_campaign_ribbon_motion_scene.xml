@@ -118,26 +118,6 @@
         app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/initial_title_with_icon"
         app:duration="600">
-        <KeyFrameSet>
-            <KeyPosition
-                app:framePosition="0"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/timer_feed_campaign_ribbon"
-                app:percentX="1"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="10"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentX="1"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="100"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/timer_feed_campaign_ribbon"
-                app:percentX="1"
-                app:percentY="1" />
-        </KeyFrameSet>
     </Transition>
 
     <ConstraintSet android:id="@+id/initial_title_with_timer_and_icon">
@@ -240,34 +220,78 @@
             app:layout_constraintVertical_chainStyle="packed" />
         <Constraint
             android:id="@+id/timer_feed_campaign_ribbon"
-            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
-            app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="2dp"
-            app:layout_constraintTop_toTopOf="parent" />
-        <Constraint
-            android:id="@+id/timer_feed_campaign_ribbon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
             app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="2dp"
-            app:layout_constraintTop_toTopOf="parent" />
-        <Constraint
-            android:id="@+id/timer_feed_campaign_ribbon"
-            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
-            app:layout_constraintStart_toEndOf="@id/ty_feed_campaign_ribbon_title"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="2dp"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
     <Transition
         app:constraintSetEnd="@+id/availability_state"
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:duration="600" />
+    <ConstraintSet
+        android:id="@+id/second_title_with_icon"
+        app:deriveConstraintsFrom="@+id/initial_title_with_icon">
+        <Constraint
+            android:id="@+id/ty_feed_campaign_ribbon_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/ty_feed_campaign_ribbon_title_second"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/ty_feed_campaign_ribbon_title_second"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/ty_feed_campaign_ribbon_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ty_feed_campaign_ribbon_title_second"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/timer_feed_campaign_ribbon"
+            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintTop_toBottomOf="@id/ty_feed_campaign_ribbon_title_second"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/pb_feed_campaign_ribbon"
+            android:layout_width="96dp"
+            android:layout_height="4dp"
+            app:layout_constraintTop_toBottomOf="@id/ty_feed_campaign_ribbon_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="6dp" />
+        <Constraint
+            android:id="@+id/ic_feed_campaign_ribbon_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </ConstraintSet>
+    <Transition
+        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:constraintSetEnd="@+id/second_title_with_icon"
         app:duration="600" />
 </MotionScene>

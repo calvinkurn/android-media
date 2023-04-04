@@ -28,9 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <include
+    <com.tokopedia.content.common.ui.custom.VerticalSwipeOnboardingView
         android:id="@+id/view_vertical_swipe_coachmark"
-        layout="@layout/view_vertical_swipe_coachmark"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"

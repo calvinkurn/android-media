@@ -156,12 +156,10 @@
         tools:visibility="visible"
         />
 
-    <View
-        android:id="@+id/v_onboarding_prevent_interaction"
+    <com.tokopedia.content.common.ui.custom.VerticalSwipeOnboardingView
+        android:id="@+id/view_vertical_swipe_onboarding"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -20,7 +20,8 @@ class FeedXHomeUseCase @Inject constructor(
 
     override suspend fun execute(params: Map<String, Any>): FeedModel {
         val response =
-            graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.Response>(
+            graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.
+            Response>(
                 graphqlQuery(),
                 params
             )
