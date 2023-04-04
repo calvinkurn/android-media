@@ -8,8 +8,6 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogResponse
 import com.tokopedia.common_electronic_money.domain.usecase.RechargeEmoneyInquiryLogUseCase
-import com.tokopedia.common_electronic_money.util.KeyLogEmoney.LOG_TYPE
-import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArrayRadix
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
@@ -20,8 +18,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
