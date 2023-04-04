@@ -50,7 +50,7 @@ class FindingNewDriverBottomSheet : BottomSheetUnify() {
     interface FindingNewDriverListener {
         fun onClickFindNewDriver()
 
-        fun onFailedGetNewDriverAvailability()
+        fun onFailedGetNewDriverAvailability(errorMessage: String?)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +83,7 @@ class FindingNewDriverBottomSheet : BottomSheetUnify() {
         viewModel.newDriverAvailability.observe(viewLifecycleOwner) {
             when (it) {
                 is NewDriverAvailabilityState.Success -> onSuccessGetNewDriverAvailability(it.data)
-                is NewDriverAvailabilityState.Fail -> mListener?.onFailedGetNewDriverAvailability()
+                is NewDriverAvailabilityState.Fail -> mListener?.onFailedGetNewDriverAvailability(it.errorMessage)
                 is NewDriverAvailabilityState.Loading -> showLoadingView()
             }
         }

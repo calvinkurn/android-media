@@ -83,7 +83,7 @@ class FindingNewDriverFragment :
         viewModel.newDriverBooking.observe(viewLifecycleOwner) {
             when (it) {
                 is NewDriverBookingState.Success -> showSuccessDialog(it.message)
-                is NewDriverBookingState.Fail -> showFailedDialog()
+                is NewDriverBookingState.Fail -> showFailedDialog(it.errorMessage)
                 is NewDriverBookingState.Loading ->
                     binding?.loaderFindingDriver?.isVisible = it.isShowLoading
             }
@@ -102,12 +102,18 @@ class FindingNewDriverFragment :
         )
     }
 
-    private fun showFailedDialog() {
+    private fun showFailedDialog(errorMessage: String?) {
+        val message = if (errorMessage.isNullOrBlank()) {
+            getString(R.string.error_message_failed_find_new_driver)
+        } else {
+            errorMessage
+        }
+
         showDialog(
             title = getString(R.string.title_failed_find_new_driver),
             description = getString(
                 R.string.description_failed_find_new_driver,
-                invoice
+                invoice, message
             ).parseAsHtml(),
             primaryCtaText = getString(R.string.btn_understand),
             imageIcon = R.drawable.ic_logisticseller_reschedulepickup_fail,
@@ -169,10 +175,10 @@ class FindingNewDriverFragment :
         findingNewDriverBottomSheet?.dismiss()
     }
 
-    override fun onFailedGetNewDriverAvailability() {
+    override fun onFailedGetNewDriverAvailability(errorMessage: String?) {
         isRequestNewDriver = true
         findingNewDriverBottomSheet?.dismiss()
-        showFailedDialog()
+        showFailedDialog(errorMessage)
     }
 
     private fun doFinishActivity(resultCode: Int = RESULT_CANCELED) {

@@ -45,11 +45,11 @@ class FindingNewDriverViewModel @Inject constructor(
                         _newDriverAvailability.value = NewDriverAvailabilityState.Success(this)
                     }
                 } ?: run {
-                    _newDriverAvailability.value = NewDriverAvailabilityState.Fail
+                    _newDriverAvailability.value = NewDriverAvailabilityState.Fail(null)
                 }
             },
             onError = {
-                _newDriverAvailability.value = NewDriverAvailabilityState.Fail
+                _newDriverAvailability.value = NewDriverAvailabilityState.Fail(it.message)
             }
         )
     }
@@ -69,12 +69,12 @@ class FindingNewDriverViewModel @Inject constructor(
                 response.data?.apply {
                     _newDriverBooking.value = NewDriverBookingState.Success(message)
                 } ?: run {
-                    _newDriverBooking.value = NewDriverBookingState.Fail
+                    _newDriverBooking.value = NewDriverBookingState.Fail(null)
                 }
             },
             onError = {
                 _newDriverBooking.value = NewDriverBookingState.Loading(isShowLoading = false)
-                _newDriverBooking.value = NewDriverBookingState.Fail
+                _newDriverBooking.value = NewDriverBookingState.Fail(it.message)
             }
         )
     }

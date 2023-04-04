@@ -2,7 +2,6 @@ package com.tokopedia.logisticseller.ui.findingnewdriver
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.logisticseller.data.model.FindingNewDriverModel
 import com.tokopedia.logisticseller.data.response.NewDriverAvailabilityResponse
 import com.tokopedia.logisticseller.data.response.NewDriverBookingResponse
@@ -78,11 +77,8 @@ class FindingNewDriverViewModelTest {
     @Test
     fun `verify when get new driver availability error`() {
         val orderId = "12345"
-        val errorMessage = "error"
-        val graphqlError = mockk<GraphqlError>()
         val mockResponse = spyk(NewDriverAvailabilityResponse())
 
-        coEvery { graphqlError.message } returns errorMessage
         coEvery {
             newDriverAvailabilityUseCase.invoke(any())
         } returns mockResponse
@@ -91,7 +87,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail
+                NewDriverAvailabilityState.Fail(null)
             )
         }
     }
@@ -109,7 +105,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail
+                NewDriverAvailabilityState.Fail(errorMessage)
             )
         }
     }
@@ -126,7 +122,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail
+                NewDriverAvailabilityState.Fail(null)
             )
         }
     }
@@ -161,11 +157,8 @@ class FindingNewDriverViewModelTest {
     @Test
     fun `verify when get new driver booking error`() {
         val orderId = "12345"
-        val errorMessage = "error"
-        val graphqlError = mockk<GraphqlError>()
         val mockResponse = spyk(NewDriverBookingResponse())
 
-        coEvery { graphqlError.message } returns errorMessage
         coEvery {
             newDriverBookingUseCase.invoke(any())
         } returns mockResponse
@@ -174,7 +167,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverBookingObserver.onChanged(
-                NewDriverBookingState.Fail
+                NewDriverBookingState.Fail(null)
             )
         }
     }
@@ -190,7 +183,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverBookingObserver.onChanged(
-                NewDriverBookingState.Fail
+                NewDriverBookingState.Fail(mockThrowable.message)
             )
         }
     }
