@@ -91,6 +91,7 @@ object Constant {
         const val BG_AFFECT_PM_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_deactivation_dark_mode.png"
         const val BG_AFFECT_PM_PRO_DEACTIVATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation.png"
         const val BG_AFFECT_PM_PRO_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation_dark_mode.png"
+        const val IL_PM_OPT_OUT_CONFIRMATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/il_pm_opt_out_confirmation.png"
     }
 
     object MembershipConst {

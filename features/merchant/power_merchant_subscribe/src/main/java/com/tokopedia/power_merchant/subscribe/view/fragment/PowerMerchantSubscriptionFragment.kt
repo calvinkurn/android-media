@@ -16,8 +16,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
@@ -52,7 +54,8 @@ import javax.inject.Inject
  */
 
 open class PowerMerchantSubscriptionFragment :
-    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener {
+    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener,
+    OptOutConfirmationBottomSheet.OptInConfirmationListener {
 
     companion object {
         fun createInstance(): PowerMerchantSubscriptionFragment {
@@ -186,11 +189,37 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
+    override fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel) {
+        val isPmPro = pmActivationStatusUiModel.currentShopTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val successMessage = if (isPmPro) {
+            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_pro_activation_success_message)
+        } else {
+            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_activation_success_message)
+        }
+        setOnPmActivationSuccess(pmActivationStatusUiModel, successMessage)
+    }
+
     protected open fun observePowerMerchantBasicInfo() {
         observe(sharedViewModel.powerMerchantBasicInfo) {
             if (it is Success) {
                 initBasicInfo(it.data)
                 fetchPageContent()
+                showPmOptOutConfirmation(it.data)
+            }
+        }
+    }
+
+    private fun showPmOptOutConfirmation(data: PowerMerchantBasicInfoUiModel) {
+        if (!data.pmStatus.autoExtendEnabled) {
+            activity?.intent?.data?.let {
+                val params = UriUtil.uriQueryParamsToMap(it)
+                val showPopupValue = params[PowerMerchantDeepLinkMapper.QUERY_PARAM_SHOW_POPUP]
+                showPopupValue?.let { showPopup ->
+                    val isPmPro = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+                    val bottomSheet = OptOutConfirmationBottomSheet.newInstance(isPmPro)
+                    bottomSheet.setOptInListener(this)
+                    bottomSheet.show(childFragmentManager)
+                }
             }
         }
     }
@@ -388,7 +417,7 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun observePmActivationStatus() {
-        mViewModel.pmActivationStatus.observeOnce(viewLifecycleOwner, {
+        mViewModel.pmActivationStatus.observeOnce(this.viewLifecycleOwner, {
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
@@ -485,11 +514,11 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
+    private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel, successMessage: String? = null) {
         notifyUpgradePmProWidget()
 
         if (data.isSuccess) {
-            renderUiOnActivationSuccess()
+            renderUiOnActivationSuccess(successMessage)
         } else {
             if (data.shouldUpdateApp()) {
                 openFallbackPage()
@@ -506,10 +535,10 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun renderUiOnActivationSuccess() {
+    private fun renderUiOnActivationSuccess(successMessage: String?) {
         view?.rootView?.let {
             it.post {
-                val message = context?.getString(R.string.pm_submit_activation_success).orEmpty()
+                val message = if (successMessage.isNullOrBlank()) getString(R.string.pm_submit_activation_success) else successMessage
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl5
                 )

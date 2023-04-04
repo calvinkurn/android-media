@@ -222,4 +222,15 @@
     <string name="pm_tokopedia_play_desc">Berjualan dan berinteraksi live dengan pembeli</string>
     <string name="pm_questionnaire_chip_info">Kamu bisa pilih lebih dari satu fitur, ya.</string>
 
+    <string name="opt_out_confirmation_pm_pro_title">Batalkan pengajuan &amp; tetap jadi Power Merchant PRO?</string>
+    <string name="opt_out_confirmation_pm_pro_desc">Dengan jadi Power Merchant PRO, tokomu dapat menikmati berbagai keuntungan eksklusif untuk tingkatkan penjualan.</string>
+
+    <string name="opt_out_confirmation_pm_title">Batalkan pengajuan &amp; tetap jadi Power Merchant?</string>
+    <string name="opt_out_confirmation_pm_desc">Dengan jadi Power Merchant, tokomu dapat menikmati berbagai keuntungan eksklusif untuk tingkatkan penjualan.</string>
+    <string name="opt_out_confirmation_pm_pro_btn_title">Tetap Jadi Power Merchant PRO</string>
+    <string name="opt_out_confirmation_pm_btn_title">Tetap Jadi Power Merchant</string>
+
+    <string name="opt_in_pm_pro_activation_success_message">Berhasil membatalkan pengajuan untuk berhenti jadi Power Merchant PRO.</string>
+    <string name="opt_in_pm_activation_success_message">Berhasil membatalkan pengajuan untuk berhenti jadi Power Merchant.</string>
+
 </resources>
