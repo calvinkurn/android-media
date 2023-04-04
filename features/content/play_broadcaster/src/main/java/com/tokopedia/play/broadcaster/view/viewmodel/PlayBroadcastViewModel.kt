@@ -1817,7 +1817,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
                 if (_allowRetryDownloadAsset.value) {
                     _allowRetryDownloadAsset.value = false
-                    throw e
+                    setBeautificationConfig(beautificationConfig)
                 }
             }
         }
