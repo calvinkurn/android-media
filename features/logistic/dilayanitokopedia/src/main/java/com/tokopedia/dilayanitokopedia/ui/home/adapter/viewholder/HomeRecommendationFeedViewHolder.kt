@@ -12,7 +12,7 @@ import com.tokopedia.dilayanitokopedia.databinding.DtHomeRecommendationViewholde
 import com.tokopedia.dilayanitokopedia.ui.home.DtHomeActivity
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtHomeCategoryListener
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.uimodel.HomeRecommendationFeedDataModel
-import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationForYouFragment
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationFragment
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -55,7 +55,7 @@ class HomeRecommendationFeedViewHolder(
 
     private class ViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
         override fun getItem(position: Int): Fragment {
-            return DtHomeRecommendationForYouFragment.newInstance()
+            return DtHomeRecommendationFragment.newInstance()
         }
 
         override fun getCount() = 1

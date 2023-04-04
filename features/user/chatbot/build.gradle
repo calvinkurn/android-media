@@ -90,6 +90,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

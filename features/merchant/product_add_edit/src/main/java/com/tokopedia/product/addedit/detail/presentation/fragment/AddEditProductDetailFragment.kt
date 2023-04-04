@@ -80,7 +80,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
@@ -112,8 +111,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
-import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
-import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -2130,27 +2127,6 @@ class AddEditProductDetailFragment :
 
             bottomSheet.show(childFragmentManager)
         }
-    }
-
-    private fun showProductPriceRecommendationTips() {
-        val tooltipBottomSheet = TooltipBottomSheet()
-        val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
-        val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        val contentTitles = context?.resources?.getStringArray(R.array.array_price_recommendation_content_titles).orEmpty()
-        val contentDescriptions = context?.resources?.getStringArray(R.array.array_price_recommendation_content_descriptions).orEmpty()
-
-        contentTitles.forEachIndexed { index, title ->
-            val description = contentDescriptions.getOrNull(index).orEmpty()
-            tips.add(NumericWithDescriptionTooltipModel(title, description))
-        }
-
-        tooltipBottomSheet.apply {
-            setTitle(tooltipTitle)
-            setItemMenuList(tips)
-            setDividerVisible(false)
-            setBannerImage(PRICE_RECOMMENDATION_BANNER_URL)
-        }
-        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     private fun enableWholesale() {
