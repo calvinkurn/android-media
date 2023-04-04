@@ -52,6 +52,7 @@ class TokoChatImageBubbleViewHolder(
         if (element.state == TokoChatImageBubbleUiModel.ImageState.LOADING_LOAD) {
             binding?.tokochatTvImageBubbleError?.hide()
             binding?.tokochatImageBubble?.let {
+                it.setImageDrawable(null)
                 tokoChatImageAttachmentListener.loadImage(
                     it,
                     element,
@@ -168,7 +169,7 @@ class TokoChatImageBubbleViewHolder(
     }
 
     private fun handleImageDelivered(element: TokoChatImageBubbleUiModel) {
-        if (element.isSent()) {
+        if (element.isSent() || element.isRead()) {
             tokoChatImageAttachmentListener.onImageDelivered(element)
         }
     }

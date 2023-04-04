@@ -153,7 +153,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(null, viewModel.imageUploadError.value)
@@ -172,7 +172,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(
@@ -194,7 +194,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(
@@ -219,7 +219,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             } returns null
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(
@@ -244,7 +244,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             } returns null
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(
@@ -267,7 +267,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(dummyErrorMessage, viewModel.imageUploadError.value?.second?.message)
@@ -286,7 +286,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
 
             // When
-            viewModel.uploadImage(dummyImagePath)
+            viewModel.uploadImage(dummyImagePath) {}
 
             // Then
             assertEquals(null, viewModel.imageUploadError.value)

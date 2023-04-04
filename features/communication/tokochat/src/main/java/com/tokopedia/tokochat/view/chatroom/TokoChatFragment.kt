@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -87,6 +86,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -167,7 +167,6 @@ open class TokoChatFragment :
         setupTrackers()
         setupAttachmentMenu()
         initializeChatRoom(savedInstanceState)
-        setupExtensionProvider()
         setupLifeCycleObserver()
     }
 
@@ -314,11 +313,7 @@ open class TokoChatFragment :
             adapter.getImageAttachmentPairWithId(it.first)?.let { pair ->
                 val element = pair.second
                 element.updateImageState(TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD)
-                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
-                    baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
-                ) {
-                    adapter.notifyItemChanged(pair.first)
-                }
+                notifyWhenAllowed(pair.first)
             }
         }
     }
@@ -1011,11 +1006,7 @@ open class TokoChatFragment :
             // get item position
             adapter.getImageAttachmentPairWithId(element.imageId)?.let {
                 // notify
-                if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
-                    baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
-                ) {
-                    adapter.notifyItemChanged(it.first)
-                }
+                notifyWhenAllowed(it.first)
             }
         }
     }
@@ -1064,7 +1055,7 @@ open class TokoChatFragment :
                         onSuccessImageAttachment(element.imageId)
                     }, onError = {
                             onErrorLoadImage(element)
-                        })
+                    })
                     this.transforms(listOf(CenterCrop(), RoundedCorners(EIGHT_DP.toPx())))
                     this.setRoundedRadius(EIGHT_DP.toFloat())
                 })
@@ -1085,19 +1076,23 @@ open class TokoChatFragment :
             val position = it.first
             val element = it.second
             if (viewModel.imageAttachmentMap[imageId] != null) {
-                // change image state to error upload
-                element.updateImageState(TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD)
+                when {
+                    (element.isFailed()) -> {
+                        // change image state to error upload
+                        element.updateImageState(TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD)
+                    }
+                    (element.isDummy()) -> {
+                        // change image state to error upload
+                        element.updateImageState(TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD)
+                    }
+                }
             } else {
                 // change image state to success
                 element.updateImageState(TokoChatImageBubbleUiModel.ImageState.SUCCESS)
             }
 
             // notify
-            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
-                baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
-            ) {
-                adapter.notifyItemChanged(position)
-            }
+            notifyWhenAllowed(position)
         }
     }
 
@@ -1156,11 +1151,7 @@ open class TokoChatFragment :
         // get item position
         adapter.getImageAttachmentPairWithId(element.imageId)?.let {
             // notify
-            if (baseBinding?.tokochatChatroomRv?.isComputingLayout == false &&
-                baseBinding?.tokochatChatroomRv?.scrollState == SCROLL_STATE_IDLE
-            ) {
-                adapter.notifyItemChanged(it.first)
-            }
+            notifyWhenAllowed(it.first)
         }
         viewModel.resendImage(element.imageId)
     }
@@ -1254,13 +1245,27 @@ open class TokoChatFragment :
     private fun processImagePathToUpload(imagePathList: List<String>): String? {
         imagePathList.firstOrNull()?.let { imagePath ->
             if (imagePath.isNotEmpty() && context != null) {
-                viewModel.uploadImage(filePath = imagePath)
+                viewModel.uploadImage(filePath = imagePath) {
+                    adapter.getImageAttachmentPairWithId(it)?.let { pair ->
+                        val position = pair.first
+                        val element = pair.second
+                        element.updateImageState(
+                            TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD)
+                        // notify
+                        notifyWhenAllowed(position)
+                    }
+                }
             }
         }
         return null
     }
 
-    private fun setupExtensionProvider() {
+    private fun notifyWhenAllowed(position: Int) {
+        try {
+            adapter.notifyItemChanged(position)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
     }
 
     companion object {

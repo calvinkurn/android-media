@@ -126,6 +126,7 @@ class TokoChatViewModel @Inject constructor(
     var pushNotifTemplateKey = ""
     var channelId = ""
 
+    @Volatile
     var imageAttachmentMap = mutableMapOf<String, String>()
 
     @VisibleForTesting
@@ -442,7 +443,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun uploadImage(filePath: String) {
+    fun uploadImage(filePath: String, onDummyAdded: ((String) -> Unit)) {
         viewModelScope.launch {
             withContext(dispatcher.io) {
                 val localUUID = UUID.randomUUID().toString()
@@ -453,6 +454,8 @@ class TokoChatViewModel @Inject constructor(
                     addTransientExtensionMessage(
                         extensionMessage = createExtensionMessage(localUUID = localUUID)
                     )
+                    // Handle loading dummy
+                    onDummyAdded(localUUID)
                     // Save the combination of imageId (localUUID for transient) and localUUID
                     imageAttachmentMap[localUUID] = localUUID
                     // Image id is still local UUID
@@ -510,12 +513,17 @@ class TokoChatViewModel @Inject constructor(
         ) ?: throw MessageErrorException(ERROR_RENAMED_IMAGE_NULL)
     }
 
+    var counter = 1
     private suspend fun uploadImageToServer(filePath: String, localUUID: String) {
         val params = TokoChatUploadImageUseCase.Param(
             filePath = filePath,
             channelId = channelId
         )
         val uploadResult = uploadImageUseCase(params)
+        if (counter > 0) {
+            uploadResult.error = listOf("ASD")
+            counter--
+        }
         when {
             (!uploadResult.error.isNullOrEmpty()) -> {
                 // Set transient to failed

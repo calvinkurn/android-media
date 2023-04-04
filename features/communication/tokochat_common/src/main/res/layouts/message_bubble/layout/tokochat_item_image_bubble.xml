@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:padding="2dp"
                 android:scaleType="centerCrop"
-                android:visibility="gone"/>
+                app:srcCompat="@drawable/tokochat_bg_image_bubble_white_loading"/>
 
             <LinearLayout
                 android:id="@+id/tokochat_layout_image_bubble_status"
@@ -76,7 +76,7 @@
             app:layout_constraintLeft_toLeftOf="@id/tokochat_layout_image_bubble_container"
             app:layout_constraintRight_toRightOf="@id/tokochat_layout_image_bubble_container"
             app:layout_constraintBottom_toBottomOf="@id/tokochat_layout_image_bubble_container"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_tv_image_bubble_error"
@@ -91,7 +91,7 @@
             android:paddingEnd="16dp"
             android:paddingBottom="4dp"
             android:text="@string/tokochat_retry"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/tokochat_icon_image_bubble_error_upload"
