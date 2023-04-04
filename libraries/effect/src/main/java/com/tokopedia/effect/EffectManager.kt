@@ -1,19 +1,29 @@
 package com.tokopedia.effect
 
+import android.graphics.SurfaceTexture
+import android.os.Handler
+
 /**
  * Created By : Jonathan Darwin on March 24, 2023
  */
 interface EffectManager {
 
+    fun startRenderThread()
+
+    fun stopRenderThread()
+
     fun init()
 
-    fun process(
-        textureId: Int,
-        textureWidth: Int,
-        textureHeight: Int,
-        width: Int,
-        height: Int,
-    ): Int
+    fun setupTexture(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+    )
+
+    fun setRenderListener(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        listener: Listener,
+    )
 
     fun drawFrameBase(
         textureWidth: Int,
@@ -25,8 +35,6 @@ interface EffectManager {
 
     fun setCameraPosition(isFront: Boolean)
 
-    fun getExternalOESTextureID(): Int
-
     fun setFaceFilter(faceFilterId: String, value: Float)
 
     fun removeFaceFilter()
@@ -36,4 +44,16 @@ interface EffectManager {
     fun removePreset()
 
     fun release()
+
+    fun getSurfaceTexture(): SurfaceTexture?
+
+    fun getHandler(): Handler?
+
+    interface Listener {
+        fun onRenderFrame(
+            destinationTexture: Int,
+            textureWidth: Int,
+            textureHeight: Int,
+        )
+    }
 }

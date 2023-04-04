@@ -2,7 +2,10 @@ package com.tokopedia.effect
 
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.SurfaceTexture
 import android.opengl.GLES20
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.widget.ImageView
@@ -36,12 +39,42 @@ class EffectManagerImpl @Inject constructor(
 
     private var mImageUtil: ImageUtil? = null
 
+    // Texture
+    private var mTextureId = 0
+    private var mSurfaceTexture: SurfaceTexture? = null
+    private var mTextureWidth = 0
+    private var mTextureHeight = 0
+
+    // thread
+    private var mRenderThread: Thread? = null
+    private var mGLHandler: Handler? = null
+
     private val renderApi: Int
         get() {
             val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             return if (activityManager.deviceConfigurationInfo.reqGlEsVersion >= GLES_VERSION) 1 else 0
         }
 
+    override fun startRenderThread() {
+        stopRenderThread()
+
+        mRenderThread = Thread(
+            object : Runnable {
+                override fun run() {
+                    Looper.prepare()
+                    mGLHandler = Handler()
+                    Looper.loop()
+                }
+            },
+            "RenderThread"
+        )
+        mRenderThread?.start()
+    }
+
+    override fun stopRenderThread() {
+        mRenderThread?.interrupt()
+        mRenderThread = null
+    }
 
     override fun init() {
         if(mRenderManager != null) return
@@ -84,7 +117,47 @@ class EffectManagerImpl @Inject constructor(
         bindAppliedEffect()
     }
 
-    override fun process(
+    override fun setupTexture(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+    ) {
+        // initialize surface texture
+        mTextureId = OpenGLUtils.getExternalOESTextureID()
+        mSurfaceTexture = SurfaceTexture(mTextureId)
+
+        mTextureWidth = surfaceWidth
+        mTextureHeight = surfaceHeight
+
+        mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
+    }
+
+    override fun setRenderListener(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        listener: EffectManager.Listener
+    ) {
+        mSurfaceTexture?.setOnFrameAvailableListener {
+            mGLHandler?.post {
+                try {
+                    mSurfaceTexture?.updateTexImage()
+
+                    val destinationTexture = process(
+                        textureId = mTextureId,
+                        textureWidth = mTextureWidth,
+                        textureHeight = mTextureHeight,
+                        width = surfaceWidth,
+                        height = surfaceHeight,
+                    )
+
+                    listener.onRenderFrame(destinationTexture, mTextureWidth, mTextureHeight)
+                } catch (e: Exception) {
+
+                }
+            }
+        }
+    }
+
+    private fun process(
         textureId: Int,
         textureWidth: Int,
         textureHeight: Int,
@@ -151,10 +224,6 @@ class EffectManagerImpl @Inject constructor(
 
     override fun setCameraPosition(isFront: Boolean) {
         mRenderManager?.setCameraPostion(isFront)
-    }
-
-    override fun getExternalOESTextureID(): Int {
-        return OpenGLUtils.getExternalOESTextureID()
     }
 
     override fun setFaceFilter(faceFilterId: String, value: Float) {
@@ -224,10 +293,16 @@ class EffectManagerImpl @Inject constructor(
         removeFaceFilter()
         removePreset()
 
+        mSurfaceTexture?.release()
         mRenderManager?.release()
+
         mRenderManager = null
         mImageUtil = null
     }
+
+    override fun getSurfaceTexture(): SurfaceTexture? = mSurfaceTexture
+
+    override fun getHandler(): Handler? = mGLHandler
 
     private fun bindAppliedEffect() {
         mSavedComposeNode.faceFilters.forEach {

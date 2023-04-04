@@ -63,16 +63,6 @@ class BroadcastManager @Inject constructor(
     /** Joe : mCodecSurface works with mStreamerSurface for pushing */
     private var mCodecSurface: WindowSurface? = null
 
-    // texture
-    private var mTextureId = 0
-    private var mSurfaceTexture: SurfaceTexture? = null
-    private var mTextureWidth = 0
-    private var mTextureHeight = 0
-    private var mGLSurface: Surface? = null
-
-    // thread
-    private var mRenderThread: Thread? = null
-    private var mGLHandler: Handler? = null
     private var mEglCore: EglCore? = null
 
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
@@ -140,7 +130,7 @@ class BroadcastManager @Inject constructor(
         mContext = activityContext
         mHandler = handler
 
-        initHandler()
+        effectManager.startRenderThread()
     }
 
     override fun create(
@@ -306,29 +296,22 @@ class BroadcastManager @Inject constructor(
         if (withByteplus) {
             try {
                 effectManager.init()
-
-                // initialize surface texture
-                mTextureId = effectManager.getExternalOESTextureID()
-                mSurfaceTexture = SurfaceTexture(mTextureId)
-
-                mTextureWidth = surfaceSize.width
-                mTextureHeight = surfaceSize.height
-
-                mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
-
-                val glSurface = Surface(mSurfaceTexture)
-                mGLSurface = glSurface
-
-                builder.setSurface(glSurface)
-
-
-                mSurfaceTexture?.setOnFrameAvailableListener {
-                    mGLHandler?.post {
-                        renderFrame(surfaceSize)
-                    }
+                effectManager.setupTexture(surfaceSize.width, surfaceSize.height).also {
+                    builder.setSurface(Surface(effectManager.getSurfaceTexture()))
                 }
 
-                mGLHandler?.post {
+                effectManager.setRenderListener(surfaceSize.width, surfaceSize.height, object : EffectManager.Listener {
+                    override fun onRenderFrame(
+                        destinationTexture: Int,
+                        textureWidth: Int,
+                        textureHeight: Int
+                    ) {
+                        renderDisplayFrame(surfaceSize, textureWidth, textureHeight, destinationTexture)
+                        renderCodecFrame(surfaceSize,textureWidth, textureHeight, destinationTexture)
+                    }
+                })
+
+                effectManager.getHandler()?.post {
                     mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
                     mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
                     mDisplaySurface?.makeCurrent()
@@ -410,31 +393,17 @@ class BroadcastManager @Inject constructor(
         return builder.build()
     }
 
-    private fun renderFrame(surfaceSize: Broadcaster.Size) {
-        try {
-            mSurfaceTexture?.updateTexImage()
-
-            val destinationTexture = effectManager.process(
-                textureId = mTextureId,
-                textureWidth = mTextureWidth,
-                textureHeight = mTextureHeight,
-                width = surfaceSize.width,
-                height = surfaceSize.height,
-            )
-
-            renderDisplayFrame(surfaceSize, destinationTexture)
-            renderCodecFrame(surfaceSize, destinationTexture)
-        } catch (e: Exception) {
-
-        }
-    }
-
-    private fun renderDisplayFrame(surfaceSize: Broadcaster.Size, destinationTexture: Int) {
+    private fun renderDisplayFrame(
+        surfaceSize: Broadcaster.Size,
+        textureWidth: Int,
+        textureHeight: Int,
+        destinationTexture: Int
+    ) {
         if (mDisplaySurface != null) {
             mDisplaySurface?.makeCurrent()
             effectManager.drawFrameBase(
-                textureWidth = mTextureWidth,
-                textureHeight = mTextureHeight,
+                textureWidth = textureWidth,
+                textureHeight = textureHeight,
                 surfaceWidth = surfaceSize.width,
                 surfaceHeight = surfaceSize.height,
                 dstTexture = destinationTexture,
@@ -443,13 +412,18 @@ class BroadcastManager @Inject constructor(
         }
     }
 
-    private fun renderCodecFrame(surfaceSize: Broadcaster.Size, destinationTexture: Int) {
+    private fun renderCodecFrame(
+        surfaceSize: Broadcaster.Size,
+        textureWidth: Int,
+        textureHeight: Int,
+        destinationTexture: Int
+    ) {
         if (mCodecSurface != null) {
             mStreamerSurface?.drainEncoder()
             mCodecSurface?.makeCurrent()
             effectManager.drawFrameBase(
-                textureWidth = mTextureWidth,
-                textureHeight = mTextureHeight,
+                textureWidth = textureWidth,
+                textureHeight = textureHeight,
                 surfaceWidth = surfaceSize.width,
                 surfaceHeight = surfaceSize.height,
                 dstTexture = destinationTexture,
@@ -488,22 +462,6 @@ class BroadcastManager @Inject constructor(
         val connectionConfig = BroadcasterUtil.getConnectionConfig(rtmpUrl)
         val success = createConnection(connectionConfig)
         if (success) broadcastStateChanged(BroadcastState.Started)
-    }
-
-    private fun initHandler() {
-        stopThread()
-
-        mRenderThread = Thread(
-            object : Runnable {
-                override fun run() {
-                    Looper.prepare()
-                    mGLHandler = Handler()
-                    Looper.loop()
-                }
-            },
-            "RenderThread"
-        )
-        mRenderThread?.start()
     }
 
     private fun isStreamerReady(): Boolean {
@@ -598,8 +556,8 @@ class BroadcastManager @Inject constructor(
         // if a Streamer is in released state, all methods will throw an IllegalStateException
         mStreamer?.release()
         mStreamerSurface?.release()
-        mSurfaceTexture?.release()
         mDisplaySurface?.release()
+        mCodecSurface?.release()
         effectManager.release()
 
         // sanitize Streamer object holder
@@ -608,6 +566,7 @@ class BroadcastManager @Inject constructor(
         mStreamerGL = null
         mStreamerSurface = null
         mDisplaySurface = null
+        mCodecSurface = null
 
         // discard adaptive bitrate calculator
         mAdaptiveBitrate = null
@@ -620,7 +579,7 @@ class BroadcastManager @Inject constructor(
         mHandler = null
         mSelectedCamera = null
 
-        stopThread()
+        effectManager.stopRenderThread()
     }
 
     override fun flip() {
@@ -673,7 +632,7 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun getHandler(): Handler? {
-        return if(mWithByteplus == true) mGLHandler else mHandler
+        return if(mWithByteplus == true) effectManager.getHandler() else mHandler
     }
 
     override fun onConnectionStateChanged(
@@ -891,11 +850,6 @@ class BroadcastManager @Inject constructor(
                 broadcastStatisticUpdate()
             }
         }, STATISTIC_TIMER_DELAY, mStatisticTimerInterval)
-    }
-
-    private fun stopThread() {
-        mRenderThread?.interrupt()
-        mRenderThread = null
     }
 
     private fun stopTracking() {
