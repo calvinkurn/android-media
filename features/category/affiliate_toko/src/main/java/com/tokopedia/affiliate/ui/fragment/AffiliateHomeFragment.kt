@@ -202,6 +202,7 @@ class AffiliateHomeFragment :
             setIcon(
                 IconBuilder()
                     .addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                        sendNotificationClickEvent()
                         RouteManager.route(
                             context,
                             ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
@@ -226,6 +227,16 @@ class AffiliateHomeFragment :
             affiliateActivityInterface?.showCoachMarker()
         }
         setUserDetails()
+    }
+
+    private fun sendNotificationClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     private fun openHistoryActivity() {

@@ -344,6 +344,7 @@ object AffiliateAnalytics {
             const val CLICK_SALIN_DISCO_HOME = "click - salin link - event - link dengan performa"
             const val CLICK_LIHAT_DISCO_BANNER = "click - lihat semua - discovery banner"
             const val CLICK_EVENT_LINK_DENGAN_PERFORMA = "click - event - link dengan performa"
+            const val CLICK_NOTIFICATION_ENTRY_POINT = "click - notification center entry point"
         }
     }
 
