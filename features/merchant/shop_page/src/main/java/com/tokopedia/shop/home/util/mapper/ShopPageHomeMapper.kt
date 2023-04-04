@@ -226,7 +226,7 @@ object ShopPageHomeMapper {
             discountPercentage = discountPercentage,
             slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
             formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-            countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
+            countSoldRating = shopHomeProductViewModel.averageRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                 mapToProductCardLabelGroup(it)
