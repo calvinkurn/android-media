@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.GqlParam
  */
 data class GetTrackingParam(
     @SerializedName("input")
-    val cplDataParam: TrackingParam = TrackingParam()
+    val trackingParam: TrackingParam = TrackingParam()
 ) : GqlParam {
     data class TrackingParam(
         @SerializedName("order_id")

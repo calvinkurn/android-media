@@ -8,8 +8,10 @@ import com.tokopedia.logisticorder.mapper.DriverTipMapper
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.usecase.GetDriverTipUseCase
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
-import com.tokopedia.logisticorder.usecase.TrackingPageRepository
+import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
+import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,8 +21,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
-    private val repo: TrackingPageRepository,
     private val trackingUseCase: GetTrackingUseCase,
+    private val setRetryBookingUseCase: SetRetryBookingUseCase,
+    private val setRetryAvailabilityUseCase: SetRetryAvailabilityUseCase,
+    private val getDriverTipUseCase: GetDriverTipUseCase,
     private val mapper: TrackingPageMapperNew,
     private val driverTipMapper: DriverTipMapper
 ) : ViewModel() {
@@ -56,7 +60,7 @@ class TrackingPageViewModel @Inject constructor(
     fun retryBooking(orderId: String) {
         viewModelScope.launch {
             try {
-                val retryBooking = repo.retryBooking(orderId)
+                val retryBooking = setRetryBookingUseCase(orderId)
                 _retryBooking.value = Success(retryBooking)
             } catch (e: Throwable) {
                 _retryBooking.value = Fail(e)
@@ -67,7 +71,7 @@ class TrackingPageViewModel @Inject constructor(
     fun retryAvailability(orderId: String) {
         viewModelScope.launch {
             try {
-                val retryAvailability = repo.retryAvailability(orderId)
+                val retryAvailability = setRetryAvailabilityUseCase(orderId)
                 _retryAvailability.value = Success(retryAvailability)
             } catch (e: Throwable) {
                 _retryAvailability.value = Fail(e)
@@ -76,12 +80,14 @@ class TrackingPageViewModel @Inject constructor(
     }
 
     fun getDriverTipsData(orderId: String?) {
-        viewModelScope.launch {
-            try {
-                val driverTipData = repo.getDriverTip(orderId)
-                _driverTipsData.value = Success(driverTipMapper.mapDriverTipData(driverTipData))
-            } catch (e: Throwable) {
-                _driverTipsData.value = Fail(e)
+        if (orderId != null) {
+            viewModelScope.launch {
+                try {
+                    val driverTipData = getDriverTipUseCase(orderId)
+                    _driverTipsData.value = Success(driverTipMapper.mapDriverTipData(driverTipData))
+                } catch (e: Throwable) {
+                    _driverTipsData.value = Fail(e)
+                }
             }
         }
     }
