@@ -246,6 +246,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationCarouselPresenterDelegate,
             RecommendationPresenterDelegate(viewUpdater, recommendationUseCase),
             adsLowOrganic,
+            abTestRemoteConfig,
         )
         productListPresenter.attachView(productListView)
     }
