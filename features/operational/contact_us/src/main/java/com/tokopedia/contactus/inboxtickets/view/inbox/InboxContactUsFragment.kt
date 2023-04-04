@@ -41,6 +41,7 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.ma
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -409,14 +410,14 @@ class InboxContactUsFragment :
 
     private fun toggleNoTicketLayout(name: String) {
         ivNoTicket?.loadRemoteImageDrawable("no_messages.png")
-        ivNoTicket?.visibility = View.VISIBLE
+        ivNoTicket?.show()
         tvNoTicket?.text = getString(R.string.contact_us_no_ticket_message)
-        tvNoTicket?.visibility = View.VISIBLE
+        tvNoTicket?.show()
         tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
         tvRaiseTicket?.tag = RAISE_TICKET_TAG
-        tvRaiseTicket?.visibility = View.VISIBLE
+        tvRaiseTicket?.show()
         tvGreetNoTicket?.text = String.format(getString(R.string.contact_us_greet_user), name)
-        tvGreetNoTicket?.visibility = View.VISIBLE
+        tvGreetNoTicket?.show()
     }
 
     private fun toggleEmptyLayout(visibility: Int) {
@@ -514,11 +515,11 @@ class InboxContactUsFragment :
     }
 
     private fun showProgressBar() {
-        binding?.progressBarLayout?.visibility = View.VISIBLE
+        binding?.progressBarLayout?.show()
     }
 
     private fun hideProgressBar() {
-        binding?.progressBarLayout?.visibility = View.GONE
+        binding?.progressBarLayout?.gone()
     }
 
     override fun onDestroy() {

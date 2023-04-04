@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_NN0">
+    android:background="@color/contact_us_dms_detail_background_dark">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
