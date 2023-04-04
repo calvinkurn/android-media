@@ -9,9 +9,7 @@ interface FeedListener {
     fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
     fun changeTab()
     fun reload()
-
-    fun setReminder()
-    fun removeReminder()
+    fun onReminderClicked(campaignId: Long, setReminder: Boolean, itemPosition: Int)
     fun onTimerFinishUpcoming()
     fun onTimerFinishOnGoing()
 

@@ -410,12 +410,8 @@ class FeedFragment :
         dissmisByGreyArea = false
     }
 
-    override fun setReminder() {
-//        TODO("Not yet implemented")
-    }
-
-    override fun removeReminder() {
-//        TODO("Not yet implemented")
+    override fun onReminderClicked(campaignId: Long, setReminder: Boolean, itemPosition: Int) {
+        feedPostViewModel.setUnsetReminder(campaignId, setReminder, itemPosition)
     }
 
     override fun onTimerFinishUpcoming() {

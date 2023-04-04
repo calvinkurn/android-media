@@ -56,7 +56,6 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -235,23 +234,23 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
+                    }
+                    onChangeTab(position)
                 }
-                onChangeTab(position)
-            }
-        })
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -412,8 +411,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) onPauseInternal()
-        else onResumeInternal()
+        if (!isVisibleToUser) {
+            onPauseInternal()
+        } else {
+            onResumeInternal()
+        }
     }
 
     override fun onPause() {

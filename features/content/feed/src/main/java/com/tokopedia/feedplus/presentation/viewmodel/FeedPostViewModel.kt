@@ -13,6 +13,8 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -23,6 +25,7 @@ import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -43,6 +46,8 @@ class FeedPostViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
+    private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
+    private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -68,7 +73,7 @@ class FeedPostViewModel @Inject constructor(
     fun fetchFeedPosts(
         source: String,
         isNewData: Boolean = false,
-        postId: String? = null,
+        postId: String? = null
     ) {
         if (isNewData) _feedHome.value = null
 
@@ -96,11 +101,35 @@ class FeedPostViewModel @Inject constructor(
 
                 _feedHome.value = try {
                     val feedPosts = feedPostsDeferred.await()
+                    val items = feedPosts.items.map {
+                        when (it) {
+                            is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                it.copy(
+                                    campaign = it.campaign.copy(
+                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                    )
+                                )
+                            } else {
+                                it
+                            }
+                            is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                it.copy(
+                                    campaign = it.campaign.copy(
+                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                    )
+                                )
+                            } else {
+                                it
+                            }
+                            else -> it
+                        }
+                    }.toList()
+
                     Success(
                         feedPosts.copy(
                             items = relevantPostsDeferred.await() +
                                 _feedHome.value?.items.orEmpty() +
-                                feedPosts.items
+                                items
                         )
                     )
                 } catch (e: Throwable) {
@@ -125,6 +154,68 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun setUnsetReminder(
+        campaignId: Long,
+        setReminder: Boolean,
+        itemPosition: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = setCampaignReminderUseCase(
+                    setCampaignReminderUseCase.createParams(
+                        campaignId,
+                        setReminder
+                    )
+                )
+
+                if (response.success && response.errorMessage.isEmpty()) {
+                    _feedHome.value?.let {
+                        if (it is Success) {
+                            val prevDataItems = if (itemPosition > 0) {
+                                it.data.items.subList(
+                                    0,
+                                    itemPosition
+                                )
+                            } else {
+                                listOf()
+                            }
+                            val nextDataItems =
+                                if (itemPosition < it.data.items.size - 1) {
+                                    it.data.items.subList(
+                                        itemPosition + 1,
+                                        it.data.items.size
+                                    )
+                                } else {
+                                    listOf()
+                                }
+
+                            val data = it.data.items[itemPosition]
+                            when (data) {
+                                is FeedCardImageContentModel ->
+                                    data.campaign.isReminderActive =
+                                        setReminder
+                                is FeedCardVideoContentModel ->
+                                    data.campaign.isReminderActive =
+                                        setReminder
+                            }
+
+                            _feedHome.value = it.copy(
+                                data = it.data.copy(
+                                    items = mutableListOf<Visitable<FeedAdapterTypeFactory>>().also { list ->
+                                        list.addAll(prevDataItems)
+                                        list.add(data)
+                                        list.addAll(nextDataItems)
+                                    }
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+            }
+        }
+    }
+
     private suspend fun getRelevantPosts(postId: String): FeedModel {
         return feedXHomeUseCase(
             feedXHomeUseCase.createPostDetailParams(postId)
@@ -133,7 +224,7 @@ class FeedPostViewModel @Inject constructor(
 
     private suspend fun getFeedPosts(
         source: String,
-        cursor: String = "",
+        cursor: String = ""
     ): FeedModel {
         return feedXHomeUseCase(
             feedXHomeUseCase.createParams(
@@ -142,6 +233,15 @@ class FeedPostViewModel @Inject constructor(
             )
         )
     }
+
+    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
+        try {
+            checkCampaignReminderUseCase(
+                checkCampaignReminderUseCase.createParams(campaignId)
+            ).isAvailable
+        } catch (e: Throwable) {
+            false
+        }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
         _suspendedFollowData.value =
@@ -260,23 +360,25 @@ class FeedPostViewModel @Inject constructor(
         currentValue?.let {
             when (it) {
                 is Success -> {
-                    _feedHome.value = Success(it.data.copy(
-                        items = it.data.items.map { item ->
-                            when {
-                                item is FeedCardImageContentModel && item.author.id == id -> item.copy(
-                                    followers = item.followers.copy(
-                                        isFollowed = isFollowing
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = it.data.items.map { item ->
+                                when {
+                                    item is FeedCardImageContentModel && item.author.id == id -> item.copy(
+                                        followers = item.followers.copy(
+                                            isFollowed = isFollowing
+                                        )
                                     )
-                                )
-                                item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
-                                    followers = item.followers.copy(
-                                        isFollowed = isFollowing
+                                    item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
+                                        followers = item.followers.copy(
+                                            isFollowed = isFollowing
+                                        )
                                     )
-                                )
-                                else -> item
+                                    else -> item
+                                }
                             }
-                        }
-                    ))
+                        )
+                    )
                 }
                 else -> {}
             }
@@ -298,6 +400,7 @@ class FeedPostViewModel @Inject constructor(
     companion object {
         private const val SHOP = "toko"
         private const val USER = "akun"
-    }
 
+        private const val FOLLOWING_TYPE = "type"
+    }
 }

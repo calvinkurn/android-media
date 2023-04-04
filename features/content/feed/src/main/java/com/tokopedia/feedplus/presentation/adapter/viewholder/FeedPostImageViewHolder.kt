@@ -261,7 +261,8 @@ class FeedPostImageViewHolder(
             model.cta,
             model.products.firstOrNull(),
             model.hasVoucher,
-            model.isTypeProductHighlight
+            model.isTypeProductHighlight,
+            absoluteAdapterPosition
         )
     }
 
