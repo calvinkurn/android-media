@@ -1,7 +1,10 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.Nullable
+import androidx.core.app.ActivityOptionsCompat
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -188,5 +191,21 @@ class PlayTestModule(
     @Provides
     fun provideSharedPref(@ApplicationContext context: Context): PlayPreference {
         return playPreference(context)
+    }
+
+    private val resultRegistry = object : ActivityResultRegistry() {
+        override fun <I : Any?, O : Any?> onLaunch(
+            requestCode: Int,
+            contract: ActivityResultContract<I, O>,
+            input: I,
+            options: ActivityOptionsCompat?
+        ) {
+            dispatchResult(requestCode, null)
+        }
+    }
+    @PlayScope
+    @Provides
+    fun provideActivityResultRegistry(): ActivityResultRegistry {
+        return resultRegistry
     }
 }

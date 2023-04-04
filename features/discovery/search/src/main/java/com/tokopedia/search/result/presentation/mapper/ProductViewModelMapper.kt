@@ -41,6 +41,7 @@ class ProductViewModelMapper {
         keyword: String,
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
+        newCardType: String = "",
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -59,13 +60,14 @@ class ProductViewModelMapper {
             keyword,
             externalReference,
         )
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
             searchProductData.productList,
             pageTitle,
             dimension90,
             isLocalSearchRecommendation,
-            searchProductModel.getProductListType(),
+            productListType,
             externalReference,
             searchProductData.keywordIntention,
             searchProductModel.isShowButtonAtc,
@@ -203,6 +205,7 @@ class ProductViewModelMapper {
         productItem.keywordIntention = keywordIntention
         productItem.showButtonAtc = showButtonAtc
         productItem.parentId = productModel.parentId
+        productItem.isPortrait = productModel.isPortrait
         return productItem
     }
 
