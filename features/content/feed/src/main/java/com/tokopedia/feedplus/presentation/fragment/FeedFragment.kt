@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -33,8 +33,10 @@ import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -87,7 +89,6 @@ class FeedFragment :
     private var adapter: FeedPostAdapter? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
-    private var isInClearViewMode: Boolean = false
 
     private var videoPlayer: FeedExoPlayer? = null
 
@@ -99,8 +100,6 @@ class FeedFragment :
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
-
-    private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -135,7 +134,7 @@ class FeedFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -154,7 +153,6 @@ class FeedFragment :
         }
 
         initView()
-        observeClearViewData()
         observePostData()
         observeAddToCart()
         observeReport()
@@ -162,28 +160,12 @@ class FeedFragment :
         observeLikeContent()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
-        feedMainViewModel.run {
-            reportResponse.observe(lifecycleOwner) {
-                when (it) {
-                    is Success -> {
-                        if (::feedMenuSheet.isInitialized) {
-                            feedMenuSheet.setFinalView()
-                        }
-                    }
-                    is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
     override fun onDestroyView() {
         _binding = null
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+        videoPlayer?.destroy()
         super.onDestroyView()
     }
 
@@ -218,8 +200,10 @@ class FeedFragment :
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                feedMainViewModel.toggleClearView(true)
+                adapter?.showClearView(binding.rvFeedPost.currentItem)
             }
+
+            else -> {}
         }
     }
 
@@ -230,12 +214,6 @@ class FeedFragment :
     override fun onMenuBottomSheetCloseClick(contentId: String) {
         // implement bottomsheet close tracker
     }
-
-    override fun disableClearView() {
-        feedMainViewModel.toggleClearView(false)
-    }
-
-    override fun inClearViewMode(): Boolean = isInClearViewMode
 
     override fun onSharePostClicked(
         id: String,
@@ -449,6 +427,10 @@ class FeedFragment :
 //        TODO("Not yet implemented")
     }
 
+    override fun removeReminder() {
+//        TODO("Not yet implemented")
+    }
+
     override fun onTimerFinishUpcoming() {
 //        TODO("Not yet implemented")
     }
@@ -474,8 +456,7 @@ class FeedFragment :
                     }
                 }
                 is FeedResult.Failure -> {
-                    val errorMessage =
-                        it.error.message
+                    val errorMessage = it.error.message
                     if (errorMessage != null) {
                         productBottomSheet?.showToasterOnBottomSheetOnSuccessFollow(
                             errorMessage,
@@ -507,27 +488,35 @@ class FeedFragment :
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
-            adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
+            adapter = FeedPostAdapter(
+                FeedAdapterTypeFactory(this, binding.rvFeedPost)
+            )
             if (adapter!!.itemCount == 0) {
                 adapter?.showLoading()
             }
 
             it.rvFeedPost.adapter = adapter
             it.rvFeedPost.orientation = ViewPager2.ORIENTATION_VERTICAL
-            it.rvFeedPost.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            it.rvFeedPost.registerOnPageChangeCallback(object : OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
-                    if (state == ViewPager2.SCROLL_STATE_IDLE && it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)) {
+                    if (state == SCROLL_STATE_IDLE && it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)) {
                         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
                     }
                 }
-            })
-        }
-    }
 
-    private fun observeClearViewData() {
-        feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
-            isInClearViewMode = it
-            adapter?.onToggleClearView()
+                override fun onPageSelected(position: Int) {
+                    view?.post {
+                        if (position > ZERO) {
+                            adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
+                        }
+                        if (position < (adapter?.itemCount ?: 0)) {
+                            adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                        }
+
+                        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                    }
+                }
+            })
         }
     }
 
@@ -557,7 +546,7 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     showToast(
-                        getString(feedR.string.feed_message_success_follow),
+                        getString(feedR.string.feed_message_success_follow, it.data),
                         Toaster.TYPE_NORMAL
                     )
                 }
@@ -600,10 +589,10 @@ class FeedFragment :
         }
     }
 
-    override fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int) {
-        val feedLikeAction = FeedLikeAction.getLikeAction(model.like.isLiked)
+    override fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int) {
+        val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
         feedPostViewModel.likeContent(
-            contentId = model.id,
+            contentId = id,
             action = feedLikeAction,
             rowNumber = rowNumber
         )
@@ -615,12 +604,9 @@ class FeedFragment :
         if ((newList?.size ?: 0) > data.rowNumber) {
             val item = newList?.get(rowNumber)
             if (item is FeedCardImageContentModel) {
-//                val like = (item as FeedCardImageContentModel).like
-//                like.isLiked = !like.isLiked
                 if (!item.like.isLiked) {
                     try {
                         val likeValue = Integer.valueOf(item.like.countFmt) + 1
-//                        like.countFmt = likeValue.toString()
                         adapter?.updateLikeUnlikeData(
                             rowNumber,
                             like = item.like.copy(
@@ -632,12 +618,9 @@ class FeedFragment :
                     } catch (ignored: NumberFormatException) {
                         Timber.e(ignored)
                     }
-
-//                    like.count = like.count + 1
                 } else {
                     try {
                         val likeValue = Integer.valueOf(item.like.countFmt) - 1
-//                        like.countFmt = likeValue.toString()
                         adapter?.updateLikeUnlikeData(
                             rowNumber,
                             like = item.like.copy(
@@ -652,7 +635,7 @@ class FeedFragment :
                 }
                 adapter?.notifyItemChanged(
                     rowNumber,
-                    FeedPostImageViewHolder.IMAGE_POST_LIKED_UNLIKED
+                    FEED_POST_LIKED_UNLIKED
                 )
             }
         }
@@ -768,12 +751,15 @@ class FeedFragment :
 
         private const val MINIMUM_ENDLESS_CALL = 1
 
+        private const val ZERO = 0
+        private const val ONE = 1
+
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
         fun createFeedFragment(
             data: FeedDataModel,
-            extras: Bundle,
+            extras: Bundle
         ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)

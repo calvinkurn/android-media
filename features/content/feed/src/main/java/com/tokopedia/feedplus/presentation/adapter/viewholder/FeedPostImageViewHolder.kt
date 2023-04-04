@@ -3,16 +3,21 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
@@ -35,16 +40,23 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 @SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
+    private val parentToBeDisabled: ViewParent?,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+
+    private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption)
+    private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
+    private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
+    private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
+    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(
         binding.root
     )
-    private val smallLikeAnimationView =
-        FeedSmallLikeIconAnimationComponent(binding.root)
+    private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
 
     init {
         with(binding) {
@@ -58,20 +70,22 @@ class FeedPostImageViewHolder(
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
-            LinearSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
+            PagerSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
             rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     indicatorFeedContent.setCurrentIndicator(layoutManager.findFirstVisibleItemPosition())
                 }
             })
         }
+
+        binding.scrollableHost.setTargetParent(parentToBeDisabled)
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let { data ->
-            binding.apply {
+            with(binding) {
                 val postGestureDetector = GestureDetector(
-                    itemView.context,
+                    root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                             return true
@@ -79,7 +93,11 @@ class FeedPostImageViewHolder(
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
                             if (element.like.isLiked.not()) {
-                                listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                                listener.onLikePostCLicked(
+                                    element.id,
+                                    element.like.isLiked,
+                                    absoluteAdapterPosition
+                                )
                             }
                             return true
                         }
@@ -102,7 +120,7 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
-                menuButton.setOnClickListener { _ ->
+                menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
                 }
                 shareButton.setOnClickListener {
@@ -115,26 +133,41 @@ class FeedPostImageViewHolder(
                     )
                 }
                 postLikeButton.likeButton.setOnClickListener {
-                    listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                    listener.onLikePostCLicked(
+                        element.id,
+                        element.like.isLiked,
+                        absoluteAdapterPosition
+                    )
                 }
 
                 btnDisableClearMode.setOnClickListener {
-                    if (listener.inClearViewMode()) {
-                        listener.disableClearView()
-                    }
-                }
-
-                if (listener.inClearViewMode()) {
-                    showClearView()
-                } else {
                     hideClearView()
                 }
 
                 rvFeedPostImageContent.setOnTouchListener { _, event ->
                     postGestureDetector.onTouchEvent(event)
-                    true
                 }
             }
+        }
+    }
+
+    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        element?.let {
+            if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
+                setLikeUnlike(it.like)
+            }
+        }
+
+        if (payloads.contains(FEED_POST_CLEAR_MODE)) {
+            showClearView()
+        }
+        if (payloads.contains(FEED_POST_SELECTED)) {
+            campaignView.startAnimation()
+        }
+        if (payloads.contains(FEED_POST_NOT_SELECTED)) {
+            campaignView.resetView()
+            hideClearView()
         }
     }
 
@@ -165,29 +198,15 @@ class FeedPostImageViewHolder(
         }
     }
 
-    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (element == null) {
-            return
-        }
-        if (payloads.contains(IMAGE_POST_LIKED_UNLIKED)) {
-            setLikeUnlike(element.like)
-        }
-    }
-
     private fun bindAuthor(model: FeedCardImageContentModel) {
-        val authorView =
-            FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
         authorView.bindData(model.author, false, !model.followers.isFollowed)
     }
 
     private fun bindCaption(model: FeedCardImageContentModel) {
-        val captionView = FeedCaptionView(binding.tvFeedCaption)
         captionView.bind(model.text)
     }
 
     private fun bindProductTag(model: FeedCardImageContentModel) {
-        val productTagView = FeedProductTagView(binding.productTagView, listener)
         productTagView.bindData(
             postId = model.id,
             author = model.author,
@@ -199,7 +218,6 @@ class FeedPostImageViewHolder(
             totalProducts = model.totalProducts
         )
 
-        val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -232,16 +250,15 @@ class FeedPostImageViewHolder(
     }
 
     private fun bindAsgcTags(model: FeedCardImageContentModel) {
-        val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
         asgcTagsView.bindData(model.type, model.campaign)
     }
 
     private fun bindCampaignRibbon(model: FeedCardImageContentModel) {
-        val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
         campaignView.bindData(
             model.type,
             model.campaign,
             model.cta,
+            model.products.firstOrNull(),
             model.hasVoucher,
             model.isTypeProductHighlight
         )
@@ -278,7 +295,6 @@ class FeedPostImageViewHolder(
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
-        const val IMAGE_POST_LIKED_UNLIKED = 1011
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
