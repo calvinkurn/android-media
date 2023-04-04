@@ -227,39 +227,41 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun setFaceFilter(faceFilterId: String, value: Float) {
-        val faceFilterType = FaceFilterType.getById(faceFilterId)
-        if(faceFilterType.isUnknown) return
+        mRenderManager?.let { renderManager ->
+            val faceFilterType = FaceFilterType.getById(faceFilterId)
+            if(faceFilterType.isUnknown) return
 
-        if (!mSavedComposeNode.faceFilterComposeNodeApplied) {
-            val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir)) == BEF_RESULT_SUC
+            if (!mSavedComposeNode.faceFilterComposeNodeApplied) {
+                val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir)) == BEF_RESULT_SUC
 
-            if (isSuccessAppendNodes) {
-                mSavedComposeNode.update {
-                    copy(faceFilterComposeNodeApplied = true)
+                if (isSuccessAppendNodes) {
+                    mSavedComposeNode.update {
+                        copy(faceFilterComposeNodeApplied = true)
+                    }
                 }
             }
-        }
 
-        mRenderManager?.updateComposerNodes(
-            assetHelper.customFaceDir,
-            faceFilterType.key,
-            value
-        )
+            renderManager.updateComposerNodes(
+                assetHelper.customFaceDir,
+                faceFilterType.key,
+                value
+            )
 
-        mSavedComposeNode.update {
-            val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
-            if (isFound) {
-                copy(
-                    faceFilters = faceFilters.map {
-                        if(it.type == faceFilterType) it.copy(value = value)
-                        else it
-                    }.toMutableList()
-                )
-            }
-            else {
-                copy(
-                    faceFilters = faceFilters + FaceFilter(type = faceFilterType, value = value)
-                )
+            mSavedComposeNode.update {
+                val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
+                if (isFound) {
+                    copy(
+                        faceFilters = faceFilters.map {
+                            if(it.type == faceFilterType) it.copy(value = value)
+                            else it
+                        }.toMutableList()
+                    )
+                }
+                else {
+                    copy(
+                        faceFilters = faceFilters + FaceFilter(type = faceFilterType, value = value)
+                    )
+                }
             }
         }
     }
@@ -270,17 +272,20 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun setPreset(presetId: String, value: Float) {
-        if(presetId == mSavedComposeNode.preset.key) return
+        mRenderManager?.let { renderManager ->
+            if(presetId == mSavedComposeNode.preset.key) return
 
-        removePreset()
+            removePreset()
 
-        val presetFilePath = assetHelper.getPresetFilePath(presetId)
+            val presetFilePath = assetHelper.getPresetFilePath(presetId)
 
-        mRenderManager?.appendComposerNodes(arrayOf(presetFilePath))
-        mRenderManager?.updateComposerNodes(presetFilePath, PRESET_MAKEUP_KEY, value)
-        mRenderManager?.updateComposerNodes(presetFilePath, PRESET_FILTER_KEY, value)
-        mSavedComposeNode.update {
-            copy(preset = preset.copy(key = presetId, value = value))
+            renderManager.appendComposerNodes(arrayOf(presetFilePath))
+            renderManager.updateComposerNodes(presetFilePath, PRESET_MAKEUP_KEY, value)
+            renderManager.updateComposerNodes(presetFilePath, PRESET_FILTER_KEY, value)
+
+            mSavedComposeNode.update {
+                copy(preset = preset.copy(key = presetId, value = value))
+            }
         }
     }
 

@@ -20,6 +20,7 @@ data class PresetFilterUiModel(
     val iconUrl: String,
     val assetLink: String,
     val assetStatus: BeautificationAssetStatus,
+    val isSelected: Boolean,
 ) : Parcelable {
 
     val isRemoveEffect: Boolean

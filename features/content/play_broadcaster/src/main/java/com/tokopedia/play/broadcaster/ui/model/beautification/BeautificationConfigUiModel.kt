@@ -29,7 +29,7 @@ data class BeautificationConfigUiModel(
         get() = faceFilters.firstOrNull { it.isSelected }
 
     val selectedPreset: PresetFilterUiModel?
-        get() = presets.firstOrNull { it.active }
+        get() = presets.firstOrNull { it.isSelected }
 
     fun convertToDTO() = Config.BeautificationConfig(
         license = licenseLink,
@@ -49,7 +49,7 @@ data class BeautificationConfigUiModel(
         presets = presets.map { preset ->
             Config.BeautificationConfig.Preset(
                 name = preset.name,
-                active = preset.active,
+                active = preset.isSelected,
                 minValue = preset.minValue,
                 maxValue = preset.maxValue,
                 defaultValue = preset.defaultValue,

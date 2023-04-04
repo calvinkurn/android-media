@@ -86,7 +86,7 @@ class BeautificationFilterOptionViewHolder private constructor() {
                 tvBeautificationFilter.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
-                        if(item.active) unifyR.color.Unify_GN500
+                        if(item.isSelected) unifyR.color.Unify_GN500
                         else unifyR.color.Unify_NN950
                     )
                 )
@@ -112,7 +112,7 @@ class BeautificationFilterOptionViewHolder private constructor() {
                 }
 
                 clIcon.setBackgroundResource(
-                    if(item.active) R.drawable.bg_face_filter_option_selected
+                    if(item.isSelected) R.drawable.bg_face_filter_option_selected
                     else R.drawable.bg_face_filter_option
                 )
 

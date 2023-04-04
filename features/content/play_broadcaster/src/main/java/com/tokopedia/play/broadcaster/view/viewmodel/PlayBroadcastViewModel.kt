@@ -1783,7 +1783,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _beautificationConfig.update {
                     it.copy(
                         presets = it.presets.map { item ->
-                            item.copy(active = item.id == preset.id)
+                            item.copy(isSelected = item.id == preset.id)
                         }
                     )
                 }
@@ -1813,12 +1813,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         if (!beautificationConfig.isUnknown) {
             try {
                 downloadInitialBeautificationAsset(beautificationConfig)
+                setupOnDemandAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
-
-                val notDownloadedActivePreset = beautificationConfig.presets.firstOrNull { it.active && it.assetStatus == BeautificationAssetStatus.NotDownloaded }
-                if (notDownloadedActivePreset != null) {
-                    downloadPreset(notDownloadedActivePreset, forceActive = true)
-                }
             } catch (e: Exception) {
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
 
@@ -1873,7 +1869,29 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun downloadPreset(preset: PresetFilterUiModel, forceActive: Boolean = false) {
+    private fun setupOnDemandAsset(beautificationConfig: BeautificationConfigUiModel) {
+        val presetReady = beautificationConfig.presets.firstOrNull { it.active && it.assetStatus == BeautificationAssetStatus.Available }
+        if(presetReady != null) {
+            /** Auto-select */
+            _beautificationConfig.update {
+                it.copy(
+                    presets = it.presets.map { item ->
+                        if (item.id == presetReady.id) item.copy(isSelected = true)
+                        else item
+                    }
+                )
+            }
+        }
+        else {
+            /** Download & Auto-select */
+            val notDownloadedActivePreset = beautificationConfig.presets.firstOrNull { it.active && it.assetStatus == BeautificationAssetStatus.NotDownloaded }
+            if (notDownloadedActivePreset != null) {
+                downloadPreset(notDownloadedActivePreset, forceSelect = true)
+            }
+        }
+    }
+
+    private fun downloadPreset(preset: PresetFilterUiModel, forceSelect: Boolean = false) {
         viewModelScope.launchCatchError(block = {
             if(preset.isRemoveEffect) return@launchCatchError
 
@@ -1887,11 +1905,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (isSuccess) {
                 updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
 
-                if (forceActive) {
+                if (forceSelect) {
                     _beautificationConfig.update {
                         it.copy(
                             presets = it.presets.map { item ->
-                                if (item.id == preset.id) item.copy(active = true)
+                                if (item.id == preset.id) item.copy(isSelected = true)
                                 else item
                             }
                         )

@@ -189,6 +189,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         iconUrl = "",
                         assetLink = "asset link $it",
                         assetStatus = BeautificationAssetStatus.Available,
+                        isSelected = false,
                     )
                 }
             )

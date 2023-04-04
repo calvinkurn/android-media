@@ -284,6 +284,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                             iconUrl = iconUrl,
                             assetLink = assetLink,
                             assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                            isSelected = false,
                         )
                     },
 //                licenseLink = config.beautificationConfig.license,
@@ -312,6 +313,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        iconUrl = preset.urlIcon,
 //                        assetLink = preset.assetLink,
 //                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+//                        isSelected = false,
 //                    )
 //                }
                 )
