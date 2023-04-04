@@ -32,21 +32,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
-import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
-import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -422,15 +421,15 @@ class CartListPresenter @Inject constructor(
                     updateCartUseCase.execute(onSuccess = {}, onError = {})
                     return@let
                 } else {
-                    updateCartUseCase.setParams(updateCartRequestList)
-                    updateCartUseCase.execute(
-                        onSuccess = { updateCartV2Data ->
-                            onSuccessUpdateCartForCheckout(updateCartV2Data, cartItemDataList)
-                        },
-                        onError = { throwable ->
-                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
-                        }
-                    )
+//                    updateCartUseCase.setParams(updateCartRequestList)
+//                    updateCartUseCase.execute(
+//                        onSuccess = { updateCartV2Data ->
+                    onSuccessUpdateCartForCheckout(UpdateCartV2Data(data = Data(status = true)), cartItemDataList)
+//                        },
+//                        onError = { throwable ->
+//                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
+//                        }
+//                    )
                 }
             } else {
                 if (!fireAndForget) {
@@ -946,7 +945,7 @@ class CartListPresenter @Inject constructor(
         view?.let {
             val addCartToWishlistRequest = AddCartToWishlistRequest()
             addCartToWishlistRequest.cartIds = listOf(cartId)
-            
+
             addCartToWishlistUseCase.setParams(addCartToWishlistRequest)
                 .execute(
                     onSuccess = { data ->
@@ -1823,7 +1822,7 @@ class CartListPresenter @Inject constructor(
 
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
-        
+
         addToCartExternalUseCase
             .setParams(productId.toString(), userSessionInterface.userId)
             .execute(
@@ -1949,35 +1948,35 @@ class CartListPresenter @Inject constructor(
             if (updateCartRequestList.isNotEmpty()) {
                 lastValidateUseRequest = promoRequest
                 val updateCartWrapperRequest = UpdateCartWrapperRequest(
-                   updateCartRequestList = updateCartRequestList,
-                   source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
-                   getLastApplyPromoRequest = promoRequest
+                    updateCartRequestList = updateCartRequestList,
+                    source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                    getLastApplyPromoRequest = promoRequest
                 )
                 updateCartAndGetLastApplyUseCase
-                   .setParams(updateCartWrapperRequest)
-                   .execute(
-                       onSuccess = { updateCartDataResponse ->
-                           updateCartDataResponse.updateCartData?.let { updateCartData ->
-                               if (updateCartData.isSuccess) {
-                                   updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                       setLastApplyNotValid()
-                                       setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                       setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
-                                       view?.updatePromoCheckoutStickyButton(promoUiModel)
-                                   }
-                               }
-                           }
-                       },
-                       onError = { throwable ->
-                           if (throwable is AkamaiErrorException) {
-                               doClearAllPromo()
-                               if (!promoTicker.enable) {
-                                   view?.showToastMessageRed(throwable)
-                               }
-                           }
-                           view?.renderPromoCheckoutButtonActiveDefault(emptyList())
-                       }
-                   )
+                    .setParams(updateCartWrapperRequest)
+                    .execute(
+                        onSuccess = { updateCartDataResponse ->
+                            updateCartDataResponse.updateCartData?.let { updateCartData ->
+                                if (updateCartData.isSuccess) {
+                                    updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                        setLastApplyNotValid()
+                                        setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
+                                        setUpdateCartAndValidateUseLastResponse(updateCartDataResponse)
+                                        view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                    }
+                                }
+                            }
+                        },
+                        onError = { throwable ->
+                            if (throwable is AkamaiErrorException) {
+                                doClearAllPromo()
+                                if (!promoTicker.enable) {
+                                    view?.showToastMessageRed(throwable)
+                                }
+                            }
+                            view?.renderPromoCheckoutButtonActiveDefault(emptyList())
+                        }
+                    )
             } else {
                 cartListView.hideProgressLoading()
             }
@@ -2154,7 +2153,7 @@ class CartListPresenter @Inject constructor(
                     destinationLongitude = lca?.long
                     destinationLatitude = lca?.lat
                     destinationPostalCode = lca?.postal_code
-                    // TODO: Fix Param 
+                    // TODO: Fix Param
 //                    originDistrictId = cartGroupHolderData.districtId
 //                    originLongitude = cartGroupHolderData.longitude
 //                    originLatitude = cartGroupHolderData.latitude
@@ -2162,10 +2161,10 @@ class CartListPresenter @Inject constructor(
                     weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
-                    // TODO: Fix Param 
+                    // TODO: Fix Param
 //                    shopId = cartGroupHolderData.shopId
 //                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
-                    // TODO: replace uniqueId 
+                    // TODO: replace uniqueId
                     uniqueId = cartGroupHolderData.cartString
                     isFulfillment = cartGroupHolderData.isFulfillment
                     boMetadata = cartGroupHolderData.boMetadata

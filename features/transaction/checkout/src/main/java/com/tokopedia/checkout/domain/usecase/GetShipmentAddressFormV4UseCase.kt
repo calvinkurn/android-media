@@ -809,7 +809,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                 }
               },
               "errors": [],
-              "errors_unblocking": ["ada yg error nih"],
+              "errors_unblocking": [],
               "shipping_id": 0,
               "sp_id": 0,
               "scheduled_delivery": {
@@ -927,7 +927,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                               }
                             }
                           },
-                          "errors": ["ehh"],
+                          "errors": [],
                           "cart_id": "5432225267",
                           "product_id": 5232131732,
                           "product_name": "RAVEN_pereda_nyeri_tablet",
@@ -1183,7 +1183,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                               }
                             }
                           },
-                          "errors": ["ada yang aneh nih"],
+                          "errors": [],
                           "cart_id": "5918021828",
                           "product_id": 508261332,
                           "product_name": "cyp - kotak kosong",
