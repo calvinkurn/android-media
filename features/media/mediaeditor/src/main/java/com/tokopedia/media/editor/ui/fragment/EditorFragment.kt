@@ -27,11 +27,7 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.checkMemoryOverflow
-import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.showErrorLoadToaster
-import com.tokopedia.media.editor.utils.showMemoryLimitToast
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -177,6 +173,7 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
+        if (context?.isCreatedBitmapOverflow(bitmap.width, bitmap.height) == true) return
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,

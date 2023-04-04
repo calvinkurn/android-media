@@ -189,6 +189,7 @@ class AddLogoToolUiComponent constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { loadedBitmap ->
+                    if (context.isCreatedBitmapOverflow(loadedBitmap.width, loadedBitmap.height)) return@MediaBitmapEmptyTarget
                     val finalBitmap =
                         cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
                             ?: loadedBitmap
