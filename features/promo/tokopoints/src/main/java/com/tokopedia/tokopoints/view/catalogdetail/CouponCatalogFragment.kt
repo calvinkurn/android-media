@@ -418,8 +418,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             tp_bottom_separator.hide()
             if (data.actionCTA?.isShown == true) {
                 catalog_bottom_section?.show()
+                btn_action_claim?.show()
             } else {
                 catalog_bottom_section?.hide()
+                btn_action_claim?.hide()
             }
             if (data.globalPromoCodes?.isNotEmpty() == true) {
                 layout_coupon_code.show()
