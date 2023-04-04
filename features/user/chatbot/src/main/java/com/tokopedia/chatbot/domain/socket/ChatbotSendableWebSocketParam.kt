@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.socket
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
@@ -401,6 +402,7 @@ object ChatbotSendableWebSocketParam {
         return try {
             Gson().toJson(content)
         } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             ""
         }
     }
