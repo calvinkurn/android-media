@@ -113,7 +113,7 @@ class NotificationReminderPromptGtmTracker constructor(
         map[CMConstant.GtmTrackerEvents.KEY_BUSINESS_UNIT] = CMConstant.GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[CMConstant.GtmTrackerEvents.KEY_CURRENT_SITE] = CMConstant.GtmTrackerEvents.VALUE_CURRENT_SITE
         map[CMConstant.GtmTrackerEvents.KEY_USER_ID] = userId
-        if (pagePath.isNotEmpty() && !GlobalConfig.isSellerApp()) {
+        if (pagePath.isNotEmpty()) {
             map[CMConstant.GtmTrackerEvents.KEY_PAGE_PATH] = pagePath
         }
         if (pageType.isNotEmpty()) {
@@ -136,9 +136,9 @@ class NotificationReminderPromptGtmTracker constructor(
                 pageType = "upcoming page"
                 return LIVE_SHOPPING
             }
-            NotificationGeneralPromptBottomSheet.PRODUCT_LIST -> {
+            NotificationGeneralPromptBottomSheet.STOCK_REMINDER -> {
                 pageType = "product list page"
-                return PRODUCT_LIST
+                return STOCK_REMINDER
             }
             else -> {
                 return ""
@@ -173,7 +173,7 @@ class NotificationReminderPromptGtmTracker constructor(
         const val KEJAR_DISKON = "kejar Diskon"
         const val TAP_TAP_KOTAK = "Tap Tap Kotak"
         const val LIVE_SHOPPING = "Live Shopping"
-        const val PRODUCT_LIST = "Product List"
+        const val STOCK_REMINDER = "Stock Reminder"
         const val DISCOVERY_ACTIVITY = "DiscoveryActivity"
         const val PLAY_ACTIVITY = "PlayActivity"
         const val GIFT_BOX_DAILY_ACTIVITY = "GiftBoxDailyActivity"

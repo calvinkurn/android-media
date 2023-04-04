@@ -67,8 +67,6 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
-import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
@@ -2138,7 +2136,6 @@ open class ProductManageFragment :
             }
             is StockReminder -> {
                 onSetStockReminderClicked(product)
-                showNotificationReminderPrompt()
                 ProductManageTracking.eventSettingsReminder(productId)
             }
             is Delete -> {
@@ -2277,15 +2274,6 @@ open class ProductManageFragment :
             productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
-    }
-
-    private fun showNotificationReminderPrompt() {
-        val pageName = "productList"
-        activity?.let {
-            val view = NotificationGeneralPromptLifecycleCallbacks()
-                .notificationGeneralPromptView(it, pageName)
-            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
-        }
     }
 
     private fun onPromoTopAdsClicked(productId: String) {

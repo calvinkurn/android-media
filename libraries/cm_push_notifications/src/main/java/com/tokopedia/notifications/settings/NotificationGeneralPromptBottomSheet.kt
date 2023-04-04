@@ -110,7 +110,7 @@ class NotificationGeneralPromptBottomSheet(
                     R.string.cm_notifications_general_prompt_live_shopping_description
                 )
             }
-            PRODUCT_LIST -> {
+            STOCK_REMINDER -> {
                 Triple(
                     R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
                     R.string.cm_notifications_general_prompt_product_list_title,
@@ -256,7 +256,7 @@ class NotificationGeneralPromptBottomSheet(
         const val KEJAR_DISKON = "kejarDiskon"
         const val TAP_TAP_KOTAK = "tapTapKotak"
         const val LIVE_SHOPPING = "liveShopping"
-        const val PRODUCT_LIST = "productList"
+        const val STOCK_REMINDER = "stockReminder"
 
     }
 }
