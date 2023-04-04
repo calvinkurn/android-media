@@ -477,10 +477,7 @@ class ShopPageProductListResultFragment :
     private fun initRecyclerView(view: View) {
         recyclerView = super.getRecyclerView(view)
         recyclerView?.let {
-            val animator = it.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
+            it.itemAnimator = null
             rvDefaultPaddingBottom = it.paddingBottom
         }
     }
