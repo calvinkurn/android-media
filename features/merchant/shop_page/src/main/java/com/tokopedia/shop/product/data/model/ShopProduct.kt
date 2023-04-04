@@ -158,7 +158,10 @@ data class ShopProduct(
 
         @SerializedName("viewCount")
         @Expose
-        val viewCount: Int = 0
+        val viewCount: Int = 0,
 
+        @SerializedName("averageRating")
+        @Expose
+        val averageRating: String = ""
     )
 }
