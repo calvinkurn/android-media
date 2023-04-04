@@ -2169,7 +2169,7 @@ class CartListPresenter @Inject constructor(
                 }
                 val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
                     ratesParam = RatesParam.Builder(shopShipments, shipping)
-                        .warehouseId(cartShopHolderData.warehouseId.toString())
+                        .warehouseId(cartGroupHolderData.warehouseId.toString())
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,
