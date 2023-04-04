@@ -2,13 +2,13 @@ package com.tokopedia.logisticorder.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
 import com.tokopedia.logisticorder.mapper.DriverTipMapper
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
@@ -20,12 +20,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 class TrackingPageViewModelTest {
 
@@ -33,6 +31,7 @@ class TrackingPageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val repo: TrackingPageRepository = mockk(relaxed = true)
+    private val getTrackerTrackingUseCase: GetTrackingUseCase = mockk(relaxed = true)
     private val mapper = TrackingPageMapperNew()
     private val driverTipMapper = DriverTipMapper()
 
@@ -48,7 +47,7 @@ class TrackingPageViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        trackingPageViewModel = TrackingPageViewModel(repo, mapper, driverTipMapper)
+        trackingPageViewModel = TrackingPageViewModel(repo, getTrackerTrackingUseCase, mapper, driverTipMapper)
         trackingPageViewModel.trackingData.observeForever(trackingDataObserver)
         trackingPageViewModel.retryBooking.observeForever(retryBookingObserver)
         trackingPageViewModel.retryAvailability.observeForever(retryAvailabilityObserver)
@@ -57,14 +56,14 @@ class TrackingPageViewModelTest {
 
     @Test
     fun `Get Tracking Data Success`() {
-        coEvery { repo.getTrackingPage(any(), any()) } returns GetLogisticTrackingResponse()
+        coEvery { getTrackerTrackingUseCase(any()) } returns GetLogisticTrackingResponse()
         trackingPageViewModel.getTrackingData("12234")
         verify { trackingDataObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Tracking Data Fail`() {
-        coEvery { repo.getTrackingPage(any(), any()) } throws  defaultThrowable
+        coEvery { getTrackerTrackingUseCase(any()) } throws defaultThrowable
         trackingPageViewModel.getTrackingData("12234")
         verify { trackingDataObserver.onChanged(match { it is Fail }) }
     }
