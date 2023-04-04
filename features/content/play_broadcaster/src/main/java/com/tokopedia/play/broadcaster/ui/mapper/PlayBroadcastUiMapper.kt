@@ -279,7 +279,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                             active = it == 1,
                             minValue = 0.0,
                             maxValue = 1.0,
-                            defaultValue = it * 0.1,
+                            defaultValue = if (it == 1) 0.7 else it * 0.1,
                             value = if(it == 1) 0.7 else it * 0.1,
                             iconUrl = iconUrl,
                             assetLink = assetLink,

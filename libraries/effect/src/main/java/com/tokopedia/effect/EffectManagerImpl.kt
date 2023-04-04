@@ -17,7 +17,6 @@ import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.effect.model.FaceFilter
 import com.tokopedia.effect.model.FaceFilterType
-import com.tokopedia.effect.model.Preset
 import com.tokopedia.effect.model.SavedComposeNode
 import com.tokopedia.effect.util.ImageUtil
 import com.tokopedia.effect.util.asset.checker.AssetChecker
@@ -273,7 +272,7 @@ class EffectManagerImpl @Inject constructor(
 
     override fun setPreset(presetId: String, value: Float) {
         mRenderManager?.let { renderManager ->
-            if(presetId == mSavedComposeNode.preset.key) return
+            if(presetId == mSavedComposeNode.preset.key && value == mSavedComposeNode.preset.value) return
 
             removePreset()
 

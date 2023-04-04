@@ -19,6 +19,9 @@ data class BeautificationConfigUiModel(
     val isUnknown: Boolean
         get() = this == Empty
 
+    val isBeautificationApplied: Boolean
+        get() = faceFilters.any { it.isChecked } || presets.any { it.isSelected && !it.isRemoveEffect }
+
     val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
         get() = faceFilters.filter { !it.isRemoveEffect }
 
