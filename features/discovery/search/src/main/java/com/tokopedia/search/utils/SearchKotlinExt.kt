@@ -8,6 +8,9 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import timber.log.Timber
 
+private const val WAREHOUSES_SEPARATOR = ","
+private const val WAREHOUSE_ID_SERVICE_TYPE_SEPARATOR = "#"
+
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
 
@@ -67,6 +70,12 @@ internal fun LocalCacheModel.toSearchParams(): Map<String, String> {
         if (district_id.isNotEmpty()) map[SearchApiConst.USER_DISTRICT_ID] = district_id
         if (postal_code.isNotEmpty()) map[SearchApiConst.USER_POST_CODE] = postal_code
         if (warehouse_id.isNotEmpty()) map[SearchApiConst.USER_WAREHOUSE_ID] = warehouse_id
+        if (warehouses.isNotEmpty()) map[SearchApiConst.WAREHOUSES] =
+            warehouses.joinToString(separator = WAREHOUSES_SEPARATOR) {
+                it.warehouse_id.toString() +
+                    WAREHOUSE_ID_SERVICE_TYPE_SEPARATOR +
+                    it.service_type
+            }
     }
 }
 
