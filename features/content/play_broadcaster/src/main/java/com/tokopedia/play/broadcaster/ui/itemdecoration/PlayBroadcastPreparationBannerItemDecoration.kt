@@ -14,7 +14,7 @@ class PlayBroadcastPreparationBannerItemDecoration(
     }
 
     private val spaceItemEdge = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
-    private val spaceItem = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl3)
+    private val spaceItem = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl2)
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -28,10 +28,10 @@ class PlayBroadcastPreparationBannerItemDecoration(
         when (position) {
             FIRST_ITEM -> {
                 outRect.left = spaceItemEdge
-                outRect.right = spaceItemEdge
+                outRect.right = spaceItem
             }
             last - 1 -> {
-                outRect.left = spaceItemEdge
+                outRect.left = spaceItem
                 outRect.right = spaceItemEdge
             }
             else -> {
