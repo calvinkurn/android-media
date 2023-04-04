@@ -51,6 +51,19 @@ object DeeplinkMapperMarketplace {
         }
     }
 
+    fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
+        return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
+            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
+        } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
+            ApplinkConstInternalTokopediaNow.HOME
+        } else {
+            if (isShopReviewAppLink(deeplink)) {
+                getShopReviewDestinationPage(uri, shopId)
+            } else {
+                internalAppLink
+            }
+        }
+    }
     fun getShopOperationalHourInternalAppLink(shopId: String):String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
     }

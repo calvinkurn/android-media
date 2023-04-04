@@ -237,8 +237,7 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
 
     //ShopPenaltyActivity
-    @JvmField
-    val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+    const val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
 
     //ShopPenaltyDetailPageActivity
     @JvmField

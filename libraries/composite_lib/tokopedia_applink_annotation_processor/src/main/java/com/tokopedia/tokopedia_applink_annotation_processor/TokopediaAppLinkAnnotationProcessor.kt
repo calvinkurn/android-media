@@ -2,6 +2,8 @@ package com.tokopedia.tokopedia_applink_annotation_processor
 
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*
+import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
+import com.tokopedia.tokopedia_applink_annotation.start.StartsMatcher
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
@@ -9,8 +11,12 @@ import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
-import com.tokopedia.tokopedia_applink_annotation.TokopediaAppLink
-import com.tokopedia.tokopedia_applink_annotation.TokopediaAppLinks
+import com.tokopedia.tokopedia_applink_annotation.exact.ExactMatcher
+import com.tokopedia.tokopedia_applink_annotation.exact.ExactsMatcher
+import com.tokopedia.tokopedia_applink_annotation.host.HostMatcher
+import com.tokopedia.tokopedia_applink_annotation.host.HostsMatcher
+import com.tokopedia.tokopedia_applink_annotation.match.MatchPatternMatcher
+import com.tokopedia.tokopedia_applink_annotation.match.MatchesPatternMatcher
 
 @AutoService(Processor::class)
 class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
@@ -25,7 +31,6 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
     private val function4ClassName: ClassName = ClassName.get("kotlin.jvm.functions", "Function4")
     private val contextClassName: ClassName = ClassName.get("android.content", "Context")
     private val uriClassName: ClassName = ClassName.get("android.net", "Uri")
-    private val collectionsClassName: ClassName = ClassName.get("java.util", "Collections")
     private val stringClassName: ClassName = ClassName.get("java.lang", "String")
     private val uriUtilClassName: ClassName = ClassName.get("com.tokopedia.applink", "UriUtil")
 
@@ -60,13 +65,12 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
         annotations: MutableSet<out TypeElement>?,
         roundEnv: RoundEnvironment?
     ): Boolean {
-        val matchedElementWithAnnotation = getElementsWithTokopediaAppLinkAnnotation(roundEnv)
+        val matchedElementWithAnnotation = getListElementWithAnnotation(roundEnv)
         val mapperClass = createMapperClass()
         val mapperMethod = createMapperMethodHeader()
         matchedElementWithAnnotation.forEach { element ->
-            val listTokopediaAppLinkAnnotation = getListTokopediaAppLinkAnnotation(element)
-            listTokopediaAppLinkAnnotation.forEachIndexed { index, tokopediaAppLinkAnnotation ->
-                createMapperFromAnnotation(element, index, tokopediaAppLinkAnnotation, mapperMethod)
+            getListMatcherAppLinkAnnotation(element).forEachIndexed { index, matcherAnnotation ->
+                createMapperFromAnnotation(matcherAnnotation, mapperMethod)
             }
         }.also {
             if (matchedElementWithAnnotation.isNotEmpty()) {
@@ -80,7 +84,6 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
         mapperClass: TypeSpec.Builder?,
         mapperMethod: MethodSpec.Builder?
     ) {
-        mapperMethod?.addStatement("\$T.reverse(list)", collectionsClassName)
         mapperMethod?.addStatement("return list")
         mapperClass?.addMethod(mapperMethod?.build())
         JavaFile.builder(
@@ -92,17 +95,9 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
     }
 
     private fun createMapperFromAnnotation(
-        element: Element,
-        index: Int,
-        tokopediaAppLinkAnnotation: TokopediaAppLink,
+        matcherAnnotation: Annotation,
         mapperMethod: MethodSpec.Builder?
     ) {
-        val interfaceCustomLogic = elementUtils?.getTypeElement(
-            "com.tokopedia.applink.CustomAppLinkMapping"
-        )?.asType()
-        val elementType = element.asType()
-        val isElementForCustomAppLinkMapperLogic =
-            typeUtils?.isAssignable(elementType, interfaceCustomLogic)
         val methodInvoke = MethodSpec.methodBuilder("invoke")
             .addAnnotation(Override::class.java)
             .addModifiers(
@@ -113,41 +108,86 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
             .addParameter(stringClassName, "s")
             .addParameter(parameterizedListString, "strings")
             .returns(stringClassName).also { methodSpec ->
-                if (index == 0 && isElementForCustomAppLinkMapperLogic == true) {
-                    val customMappingClassName: ClassName = ClassName.get(
-                        "com.tokopedia.applink",
-                        element.simpleName.toString()
-                    )
-                    methodSpec.addStatement(
-                        "return \$T.INSTANCE.customDest(context, uri, s, strings)",
-                        customMappingClassName
-                    )
-                } else {
-                    if (tokopediaAppLinkAnnotation.dlpLogic == "MatchPattern") {
+                when (matcherAnnotation) {
+                    is HostMatcher -> {
+                        methodSpec.addStatement(
+                            "return \$S",
+                            matcherAnnotation.destinationAppLink
+                        )
+                    }
+                    is ExactMatcher -> {
+                        methodSpec.addStatement(
+                            "return \$S",
+                            matcherAnnotation.destinationAppLink
+                        )
+                    }
+                    is MatchPatternMatcher -> {
                         methodSpec.addStatement(
                             "return \$T.buildUri(\$S, strings.toArray(new \$T[strings.size()]))",
                             uriUtilClassName,
-                            tokopediaAppLinkAnnotation.internalAppLink,
+                            matcherAnnotation.destinationAppLink,
                             stringClassName
                         )
-                    } else {
+                    }
+                    is StartMatcher -> {
                         methodSpec.addStatement(
                             "return \$S",
-                            tokopediaAppLinkAnnotation.internalAppLink
+                            matcherAnnotation.destinationAppLink
                         )
                     }
                 }
             }.build()
         val dlpLogicClassName: ClassName =
-            ClassName.get("com.tokopedia.applink", tokopediaAppLinkAnnotation.dlpLogic)
+            ClassName.get("com.tokopedia.applink", getDlpLogic(matcherAnnotation))
+        val matchedAppLink = getListMatchedAppLink(matcherAnnotation)
         mapperMethod?.addStatement(
             "list.add(new \$T(new \$T(\$S), \$L))",
             dlpClassName,
             dlpLogicClassName,
-            tokopediaAppLinkAnnotation.matchedAppLink,
+            matchedAppLink,
             TypeSpec.anonymousClassBuilder("").addSuperinterface(parameterizedFunction4)
                 .addMethod(methodInvoke).build()
         )
+    }
+
+    private fun getListMatchedAppLink(matcherAnnotation: Annotation): String {
+        when (matcherAnnotation) {
+            is HostMatcher -> {
+                return matcherAnnotation.matchesAppLink
+            }
+            is ExactMatcher -> {
+                return matcherAnnotation.matchesAppLink
+            }
+            is MatchPatternMatcher -> {
+                return matcherAnnotation.matchesAppLink
+            }
+            is StartMatcher -> {
+                return matcherAnnotation.matchesAppLink
+            }
+            else -> {
+                return ""
+            }
+        }
+    }
+
+    private fun getDlpLogic(matcherAnnotation: Annotation): String {
+        when (matcherAnnotation) {
+            is HostMatcher -> {
+                return "Host"
+            }
+            is ExactMatcher -> {
+                return "Exact"
+            }
+            is MatchPatternMatcher -> {
+                return "MatchPattern"
+            }
+            is StartMatcher -> {
+                return "StartsWith"
+            }
+            else -> {
+                return ""
+            }
+        }
     }
 
     private fun createMapperMethodHeader(): MethodSpec.Builder? {
@@ -161,35 +201,80 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
         return TypeSpec.classBuilder(MAPPER_CLASS_NAME)
     }
 
-    private fun getListTokopediaAppLinkAnnotation(element: Element): MutableList<TokopediaAppLink> {
-        val listTokopediaAppLinksAnnotation = element.getAnnotation(TokopediaAppLinks::class.java)
-        val listTokopediaAppLinkAnnotation = element.getAnnotation(TokopediaAppLink::class.java)
-        return mutableListOf<TokopediaAppLink>().apply {
-            addAll(listTokopediaAppLinksAnnotation?.value?.toList() ?: listOf())
-            if (listTokopediaAppLinkAnnotation != null) {
-                add(listTokopediaAppLinkAnnotation)
+    private fun getListMatcherAppLinkAnnotation(element: Element): MutableList<Annotation> {
+        return mutableListOf<Annotation>().apply {
+            addAll(getListHostMatcherAnnotation(element).reversed())
+            addAll(getListExactMatcherAnnotation(element).reversed())
+            addAll(getListMatchMatcherAnnotation(element).reversed())
+            addAll(getListStartMatcherAnnotation(element).reversed())
+        }
+    }
+
+    private fun getListStartMatcherAnnotation(element: Element): Collection<Annotation> {
+        val listStartMatcherAnnotation = element.getAnnotation(StartsMatcher::class.java)
+        val startMatcherAnnotation = element.getAnnotation(StartMatcher::class.java)
+        return mutableListOf<Annotation>().apply {
+            addAll(listStartMatcherAnnotation?.value?.toList() ?: listOf())
+            if (startMatcherAnnotation != null) {
+                add(startMatcherAnnotation)
             }
         }
     }
 
-    private fun getElementsWithTokopediaAppLinkAnnotation(roundEnv: RoundEnvironment?): Collection<Element> {
-        val elementsWithTokopediaAppLinksAnnotation = roundEnv?.getElementsAnnotatedWith(
-            TokopediaAppLinks::class.java
-        ) ?: listOf()
-        val elementsWithTokopediaAppLinkAnnotation = roundEnv?.getElementsAnnotatedWith(
-            TokopediaAppLink::class.java
-        ) ?: listOf()
-        val mappedElement = mutableListOf<Element>().apply {
-            addAll(elementsWithTokopediaAppLinksAnnotation)
-            addAll(elementsWithTokopediaAppLinkAnnotation)
+    private fun getListMatchMatcherAnnotation(element: Element): Collection<Annotation> {
+        val listMatchMatcherAnnotation = element.getAnnotation(MatchesPatternMatcher::class.java)
+        val matchMatcherAnnotation = element.getAnnotation(MatchPatternMatcher::class.java)
+        return mutableListOf<Annotation>().apply {
+            addAll(listMatchMatcherAnnotation?.value?.toList() ?: listOf())
+            if (matchMatcherAnnotation != null) {
+                add(matchMatcherAnnotation)
+            }
         }
-        return mappedElement
+    }
+
+    private fun getListExactMatcherAnnotation(element: Element): Collection<Annotation> {
+        val listExactMatcherAnnotation = element.getAnnotation(ExactsMatcher::class.java)
+        val exactMatcherMatcherAnnotation = element.getAnnotation(ExactMatcher::class.java)
+        return mutableListOf<Annotation>().apply {
+            addAll(listExactMatcherAnnotation?.value?.toList() ?: listOf())
+            if (exactMatcherMatcherAnnotation != null) {
+                add(exactMatcherMatcherAnnotation)
+            }
+        }
+    }
+
+    private fun getListHostMatcherAnnotation(element: Element): Collection<Annotation> {
+        val listHostMatcherAnnotation = element.getAnnotation(HostsMatcher::class.java)
+        val hostMatcherMatcherAnnotation = element.getAnnotation(HostMatcher::class.java)
+        return mutableListOf<Annotation>().apply {
+            addAll(listHostMatcherAnnotation?.value?.toList() ?: listOf())
+            if (hostMatcherMatcherAnnotation != null) {
+                add(hostMatcherMatcherAnnotation)
+            }
+        }
+    }
+
+    private fun getListElementWithAnnotation(roundEnv: RoundEnvironment?): Collection<Element> {
+        return roundEnv?.getElementsAnnotatedWithAny(setOf(
+            HostsMatcher::class.java,
+            HostMatcher::class.java,
+            ExactMatcher::class.java,
+            ExactMatcher::class.java,
+            MatchPatternMatcher::class.java,
+            StartMatcher::class.java
+        )).orEmpty()
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(
-            TokopediaAppLink::class.java.canonicalName,
-            TokopediaAppLinks::class.java.canonicalName
+            HostMatcher::class.java.canonicalName,
+            HostsMatcher::class.java.canonicalName,
+            ExactMatcher::class.java.canonicalName,
+            ExactsMatcher::class.java.canonicalName,
+            MatchPatternMatcher::class.java.canonicalName,
+            MatchesPatternMatcher::class.java.canonicalName,
+            StartMatcher::class.java.canonicalName,
+            StartsMatcher::class.java.canonicalName
         )
     }
 
