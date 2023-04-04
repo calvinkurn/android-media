@@ -5,7 +5,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -129,9 +129,9 @@ interface ICartListPresenter {
 
     fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?)
 
-    fun getUpdateCartAndValidateUseLastResponse(): UpdateAndValidateUseData?
+    fun getUpdateCartAndGetLastApplyLastResponse(): UpdateAndGetLastApplyData?
 
-    fun setUpdateCartAndValidateUseLastResponse(response: UpdateAndValidateUseData?)
+    fun setUpdateCartAndGetLastApplyLastResponse(response: UpdateAndGetLastApplyData?)
 
     fun isLastApplyValid(): Boolean
 
