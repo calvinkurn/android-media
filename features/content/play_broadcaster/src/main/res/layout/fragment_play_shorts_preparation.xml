@@ -64,6 +64,19 @@
         tools:listitem="@layout/view_play_bro_banner"
         tools:itemCount="2"/>
 
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pc_banner_preparation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:indicator_color="INVERTED"
+        app:indicator_type="CIRCLE"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_banner_preparation" />
+
     <com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenuView
         android:id="@+id/preparation_menu"
         android:layout_width="wrap_content"

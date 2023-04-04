@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
@@ -186,6 +187,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         fragment
     }
 
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position)
+            }
+        }
+    }
+
     /** Lifecycle */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -213,6 +226,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
         coachMark = null
 
@@ -416,6 +430,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             if (itemDecorationCount == 0) addItemDecoration(
                 PlayBroadcastPreparationBannerItemDecoration(context)
             )
+            addOnScrollListener(scrollListener)
         }
         snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
@@ -892,6 +907,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     ) {
         if (prev == null || prev == curr) return
         adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
 
         val containsShorts = curr.find { it.type == TYPE_SHORTS } != null
         val containsDashboard = curr.find { it.type == TYPE_DASHBOARD } != null

@@ -101,6 +101,18 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -137,6 +149,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
         coachMark = null
 
@@ -274,6 +287,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             if (itemDecorationCount == 0) addItemDecoration(
                 PlayBroadcastPreparationBannerItemDecoration(context)
             )
+            addOnScrollListener(scrollListener)
         }
         snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
 
@@ -538,6 +552,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     ) {
         if (prev == curr) return
         adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
 
         val containsDashboard = curr.find { it.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD } != null
 
