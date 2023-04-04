@@ -63,8 +63,6 @@ class BroadcastManager @Inject constructor(
     /** Joe : mCodecSurface works with mStreamerSurface for pushing */
     private var mCodecSurface: WindowSurface? = null
 
-    private var mRenderThread: Thread? = null
-
     // texture
     private var mTextureId = 0
     private var mSurfaceTexture: SurfaceTexture? = null
@@ -73,6 +71,7 @@ class BroadcastManager @Inject constructor(
     private var mGLSurface: Surface? = null
 
     // thread
+    private var mRenderThread: Thread? = null
     private var mGLHandler: Handler? = null
     private var mEglCore: EglCore? = null
 
@@ -325,51 +324,14 @@ class BroadcastManager @Inject constructor(
 
                 mSurfaceTexture?.setOnFrameAvailableListener {
                     mGLHandler?.post {
-                        try {
-                            mSurfaceTexture?.updateTexImage()
-                            val destinationTexture = effectManager.process(
-                                textureId = mTextureId,
-                                textureWidth = mTextureWidth,
-                                textureHeight = mTextureHeight,
-                                width = surfaceSize.width,
-                                height = surfaceSize.height,
-                            )
-
-                            if (mDisplaySurface != null) {
-                                mDisplaySurface?.makeCurrent()
-                                effectManager.drawFrameBase(
-                                    textureWidth = mTextureWidth,
-                                    textureHeight = mTextureHeight,
-                                    surfaceWidth = surfaceSize.width,
-                                    surfaceHeight = surfaceSize.height,
-                                    dstTexture = destinationTexture,
-                                )
-                                mDisplaySurface?.swapBuffers()
-                            }
-                            if (mCodecSurface != null) {
-                                mStreamerSurface?.drainEncoder()
-                                mCodecSurface?.makeCurrent()
-                                effectManager.drawFrameBase(
-                                    textureWidth = mTextureWidth,
-                                    textureHeight = mTextureHeight,
-                                    surfaceWidth = surfaceSize.width,
-                                    surfaceHeight = surfaceSize.height,
-                                    dstTexture = destinationTexture,
-                                )
-                                mCodecSurface?.setPresentationTime(System.nanoTime())
-                                mCodecSurface?.swapBuffers()
-                            }
-                        } catch (e: Exception) {
-
-                        }
+                        renderFrame(surfaceSize)
                     }
                 }
 
                 mGLHandler?.post {
-                    // todo: what is this?
                     mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
                     mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
-                    mDisplaySurface?.makeCurrent() // todo: what?
+                    mDisplaySurface?.makeCurrent()
                     mStreamerSurface = createCodecStreamer(
                         context,
                         audioConfig,
@@ -446,6 +408,55 @@ class BroadcastManager @Inject constructor(
         builder.setVideoConfig(videoConfig)
 
         return builder.build()
+    }
+
+    private fun renderFrame(surfaceSize: Broadcaster.Size) {
+        try {
+            mSurfaceTexture?.updateTexImage()
+
+            val destinationTexture = effectManager.process(
+                textureId = mTextureId,
+                textureWidth = mTextureWidth,
+                textureHeight = mTextureHeight,
+                width = surfaceSize.width,
+                height = surfaceSize.height,
+            )
+
+            renderDisplayFrame(surfaceSize, destinationTexture)
+            renderCodecFrame(surfaceSize, destinationTexture)
+        } catch (e: Exception) {
+
+        }
+    }
+
+    private fun renderDisplayFrame(surfaceSize: Broadcaster.Size, destinationTexture: Int) {
+        if (mDisplaySurface != null) {
+            mDisplaySurface?.makeCurrent()
+            effectManager.drawFrameBase(
+                textureWidth = mTextureWidth,
+                textureHeight = mTextureHeight,
+                surfaceWidth = surfaceSize.width,
+                surfaceHeight = surfaceSize.height,
+                dstTexture = destinationTexture,
+            )
+            mDisplaySurface?.swapBuffers()
+        }
+    }
+
+    private fun renderCodecFrame(surfaceSize: Broadcaster.Size, destinationTexture: Int) {
+        if (mCodecSurface != null) {
+            mStreamerSurface?.drainEncoder()
+            mCodecSurface?.makeCurrent()
+            effectManager.drawFrameBase(
+                textureWidth = mTextureWidth,
+                textureHeight = mTextureHeight,
+                surfaceWidth = surfaceSize.width,
+                surfaceHeight = surfaceSize.height,
+                dstTexture = destinationTexture,
+            )
+            mCodecSurface?.setPresentationTime(System.nanoTime())
+            mCodecSurface?.swapBuffers()
+        }
     }
 
     // To get vertical video just swap width and height
