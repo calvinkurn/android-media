@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -33,13 +32,13 @@ import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
+import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -48,9 +47,15 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -212,26 +217,71 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    @OptIn(ExperimentalTime::class)
+    fun showSwipeOnboarding() {
+        lifecycleScope.launchWhenResumed {
+            delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
+            binding.viewVerticalSwipeOnboarding.showAnimated()
+        }
+    }
+
     private fun setupView() {
         if (isJustLoggedIn) showJustLoggedInToaster()
         isJustLoggedIn = false
+
+        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
+            OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
+                        )
+                    )
+                }
+                onChangeTab(position)
+            }
+        })
+
+        binding.viewVerticalSwipeOnboarding.setText(
+            getString(R.string.feed_check_next_content)
+        )
     }
 
     override fun onResume() {
         super.onResume()
+        onResumeInternal()
+    }
+
+    private fun onResumeInternal() {
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
     }
 
+    private fun onPauseInternal() {
+        mOnboarding?.dismiss()
+        mOnboarding = null
+    }
+
     private fun observeFeedTabData() {
-        feedMainViewModel.feedTabs.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> initTabsView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.feedTabs.collectLatest {
+                    when (it) {
+                        is Success -> initTabsView(it.data)
+                        is Fail -> Toast.makeText(
+                            requireContext(),
+                            it.throwable.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> {}
+                    }
+                }
             }
         }
 
@@ -275,8 +325,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     if (event == null) return@collect
 
                     when (event) {
-                        is FeedMainEvent.HasJustLoggedIn -> {
+                        FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
+                        }
+                        FeedMainEvent.ShowSwipeOnboarding -> {
+                            showSwipeOnboarding()
                         }
                     }
 
@@ -352,10 +405,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (!isVisibleToUser) onPauseInternal()
+        else onResumeInternal()
+    }
+
     override fun onPause() {
         super.onPause()
-        mOnboarding?.dismiss()
-        mOnboarding = null
+        onPauseInternal()
     }
 
     private fun initMetaView(meta: MetaModel) {
@@ -376,7 +434,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             )
             .setListener(object : ImmersiveFeedOnboarding.Listener {
                 override fun onStarted() {
-                    binding.vOnboardingPreventInteraction.show()
                 }
 
                 override fun onCompleteCreateContentOnboarding() {
@@ -387,13 +444,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     feedMainViewModel.setHasShownProfileEntryPoint()
                 }
 
-                override fun onDismissed() {
-                    binding.vOnboardingPreventInteraction.hide()
+                override fun onFinished(isForcedDismiss: Boolean) {
+                    if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
                 }
             })
             .build()
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            mOnboarding?.dismiss()
             mOnboarding?.show()
         }
 
@@ -446,24 +504,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
-        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
-                        )
-                    )
-                }
-                onChangeTab(position)
-            }
-        })
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
@@ -587,5 +627,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+
+        private const val COACHMARK_START_DELAY_IN_SEC = 1
     }
 }

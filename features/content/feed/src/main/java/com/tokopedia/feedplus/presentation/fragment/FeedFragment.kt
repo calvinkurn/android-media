@@ -531,6 +531,7 @@ class FeedFragment :
                     } else {
                         adapter?.setElements(it.data.items)
                     }
+                    feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
                 is Fail -> {
                     adapter?.hideLoading()
