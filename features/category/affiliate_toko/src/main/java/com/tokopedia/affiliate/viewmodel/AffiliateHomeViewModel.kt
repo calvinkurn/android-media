@@ -88,7 +88,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var itemTypes = emptyList<ItemTypesItem>()
     private var sseJob: Job? = null
 
-    private val _unreadNotificationCount = MutableLiveData<Int>(5)
+    private val _unreadNotificationCount = MutableLiveData<Int>()
 
     fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
