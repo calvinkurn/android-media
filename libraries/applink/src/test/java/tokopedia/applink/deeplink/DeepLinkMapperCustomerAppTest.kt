@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 220
+        const val SIZE_MAPPER = 222
     }
 
     override fun setup() {
@@ -2247,14 +2247,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check affiliate toko customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE, expectedDeepLink)
+        val affiliateAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE, affiliateAppLink)
 
-        val expectedDeepLink2 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, expectedDeepLink2)
+        val helpAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, helpAppLink)
 
-        val expectedDeepLink3 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/transaction-history"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY, expectedDeepLink3)
+        val transactionHistoryAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/transaction-history"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY, transactionHistoryAppLink)
+
+        val ssaShopListAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/shoplist-dipromosikan-affiliate"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_SSA_SHOP_LIST, ssaShopListAppLink)
+
+        val eduAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/edu-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_EDU_PAGE, eduAppLink)
     }
 
     @Test

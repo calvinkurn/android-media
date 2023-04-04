@@ -24,9 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom|center_vertical"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -34,8 +33,7 @@
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl1"
+            android:layout_marginEnd="2dp"
             tools:srcCompat="@drawable/ic_chat_read"
             android:contentDescription="@null"/>
 
@@ -55,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_marginTop="@dimen/dp_chatbot_6"
+        android:layout_marginTop="6dp"
         android:text="@string/read_more"
         android:textColor="@color/chatbot_dms_message_see_more"
         android:textStyle="bold"

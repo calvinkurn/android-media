@@ -8,10 +8,6 @@ class Eligible {
     @Expose
     var value: Boolean? = null
 
-    @SerializedName("totalProduct")
-    @Expose
-    var totalProduct: Int? = null
-
     @SerializedName("limit")
     @Expose
     var limit: Int? = null
