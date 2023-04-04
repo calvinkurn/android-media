@@ -82,6 +82,7 @@ ext {
             universal_sharing       : ":libraries:universal_sharing",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
+            loginHelper             : ":libraries:login_helper",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             network                 : ":libraries:network",
             oms                     : ":libraries:oms",
