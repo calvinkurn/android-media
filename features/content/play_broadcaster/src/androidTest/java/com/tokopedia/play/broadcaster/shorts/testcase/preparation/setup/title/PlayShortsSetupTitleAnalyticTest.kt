@@ -71,6 +71,7 @@ class PlayShortsSetupTitleAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
+                        mockDataStore = mockk(relaxed = true),
                     )
                 )
                 .build()

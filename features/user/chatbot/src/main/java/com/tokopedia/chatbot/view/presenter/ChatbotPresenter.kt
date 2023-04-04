@@ -341,13 +341,16 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun checkForDynamicAttachment(pojo: ChatSocketPojo): Boolean {
+    private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        if (attachmentType != DYNAMIC_ATTACHMENT) {
+            return false
+        }
         val dynamicAttachment = GsonBuilder().create().fromJson(
             pojo.attachment?.attributes,
             DynamicAttachment::class.java
         )
         val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
-        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+        return !PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -1375,6 +1378,23 @@ class ChatbotPresenter @Inject constructor(
                 onError.invoke(it)
                 FirebaseCrashlytics.getInstance().recordException(it)
             }
+        )
+    }
+
+    override fun sendDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        opponentId: String
+    ) {
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                messageId,
+                bubbleUiModel,
+                startTime,
+                opponentId
+            ),
+            listInterceptor
         )
     }
 
