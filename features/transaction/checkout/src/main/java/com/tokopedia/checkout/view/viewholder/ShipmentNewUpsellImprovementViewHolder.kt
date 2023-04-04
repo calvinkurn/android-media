@@ -136,7 +136,7 @@ class ShipmentNewUpsellImprovementViewHolder(
                 )
             )
             checkoutUpsellLogoContainer.setOnClickListener {
-                actionListener?.onClickCancelNewUpsellCard(data)
+                actionListener?.onClickApplyNewUpsellCard(data)
             }
             checkoutUpsellCard.setOnClickListener {
                 actionListener?.onClickApplyNewUpsellCard(data)
