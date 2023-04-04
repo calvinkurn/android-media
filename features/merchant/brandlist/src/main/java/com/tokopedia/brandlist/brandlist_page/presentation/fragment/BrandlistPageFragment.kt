@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -45,11 +46,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class BrandlistPageFragment :
-    BaseDaggerFragment(),
-    HasComponent<BrandlistPageComponent>,
-    BrandlistPageTrackingListener,
-    BrandlistHeaderBrandInterface,
-    AllBrandNotFoundViewHolder.Listener {
+        BaseDaggerFragment(),
+        HasComponent<BrandlistPageComponent>,
+        BrandlistPageTrackingListener,
+        BrandlistHeaderBrandInterface,
+        AllBrandNotFoundViewHolder.Listener {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
@@ -163,10 +164,13 @@ class BrandlistPageFragment :
                                 isScrolling = false
                             }, 200)
                         }
+
                     }
+
                 })
             }
         }
+
     }
 
     override fun onResume() {
@@ -177,10 +181,10 @@ class BrandlistPageFragment :
     override fun getComponent(): BrandlistPageComponent? {
         return activity?.run {
             DaggerBrandlistPageComponent
-                .builder()
-                .brandlistPageModule(BrandlistPageModule())
-                .brandlistComponent(BrandlistInstance.getComponent(application))
-                .build()
+                    .builder()
+                    .brandlistPageModule(BrandlistPageModule())
+                    .brandlistComponent(BrandlistInstance.getComponent(application))
+                    .build()
         }
     }
 
@@ -200,13 +204,13 @@ class BrandlistPageFragment :
     private fun createOnRefreshListener(): SwipeRefreshLayout.OnRefreshListener {
         return SwipeRefreshLayout.OnRefreshListener {
             adapter?.getVisitables()?.removeAll {
-                it is FeaturedBrandUiModel ||
-                    it is PopularBrandUiModel ||
-                    it is NewBrandUiModel ||
-                    it is AllBrandHeaderUiModel ||
-                    it is AllBrandGroupHeaderUiModel ||
-                    it is AllbrandNotFoundUiModel ||
-                    it is AllBrandUiModel
+                it is FeaturedBrandUiModel
+                        || it is PopularBrandUiModel
+                        || it is NewBrandUiModel
+                        || it is AllBrandHeaderUiModel
+                        || it is AllBrandGroupHeaderUiModel
+                        || it is AllbrandNotFoundUiModel
+                        || it is AllBrandUiModel
             }
 
             isChipSelected = false
@@ -221,11 +225,9 @@ class BrandlistPageFragment :
 
     private fun showErrorMessage(t: Throwable) {
         view?.let {
-            Toaster.showError(
-                it,
-                ErrorHandler.getErrorMessage(context, t),
-                Snackbar.LENGTH_LONG
-            )
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(context, t),
+                    Snackbar.LENGTH_LONG)
         }
     }
 
@@ -296,13 +298,13 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
-        viewModel.remindingRequestSize.observe(viewLifecycleOwner) { remindingSize ->
+        viewModel.remindingRequestSize.observe(viewLifecycleOwner) {remindingSize ->
             val remindingRequestSize = remindingSize.first
             if (remindingRequestSize > 0 && adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
                 isLoadMore = true
                 adapter?.showLoading()
                 viewModel.loadMoreAllBrandsReminding(remindingRequestSize, category, remindingSize.second)
-            }
+             }
         }
 
         viewModel.getAllBrandResult.observe(viewLifecycleOwner, {
@@ -310,12 +312,7 @@ class BrandlistPageFragment :
                 is Success -> {
                     val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
-                        stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
-                    ) {
-                        totalBrandsNumber
-                    } else {
-                        it.data.totalBrands
-                    }
+                            stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     if (recyclerView?.isComputingLayout == false) {
                         adapter?.hideLoading()
                     }
@@ -325,13 +322,7 @@ class BrandlistPageFragment :
 
                     if (recyclerView?.isComputingLayout == false) {
                         BrandlistPageMapper.mappingAllBrandGroupHeader(
-                            adapter,
-                            this,
-                            totalBrandsFiltered,
-                            selectedChip,
-                            lastTimeChipIsClicked,
-                            recyclerViewLastState
-                        )
+                            adapter, this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
                     }
 
                     if (totalBrandPerCharacter == 0) {
@@ -344,9 +335,10 @@ class BrandlistPageFragment :
                         stickySingleHeaderView?.let { headerView ->
                             layoutManager?.scrollToPositionWithOffset(
                                 BrandlistPageMapper.ALL_BRAND_POSITION,
-                                headerView.containerHeight
-                            )
+                                headerView.containerHeight)
                         }
+
+
                     } else {
                         if (recyclerView?.isComputingLayout == false) {
                             BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
@@ -357,8 +349,7 @@ class BrandlistPageFragment :
                             stickySingleHeaderView?.let { headerView ->
                                 layoutManager?.scrollToPositionWithOffset(
                                     BrandlistPageMapper.ALL_BRAND_POSITION,
-                                    headerView.containerHeight
-                                )
+                                    headerView.containerHeight)
                             }
                         }
                     }
@@ -393,28 +384,17 @@ class BrandlistPageFragment :
         stateLoadBrands = stateLoadData
     }
 
+
     override fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.clickBrandPopular(
-            categoryName,
-            shopId,
-            shopLogoPosition,
-            shopName,
-            imgUrl,
-            isLogin
-        )
+        brandlistTracking?.clickBrandPopular(categoryName, shopId,
+                shopLogoPosition, shopName, imgUrl, isLogin)
     }
 
     override fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.clickBrandPilihan(
-            shopId,
-            isLogin,
-            shopName,
-            imgUrl,
-            shoplogoPosition,
-            categoryName
-        )
+        brandlistTracking?.clickBrandPilihan(shopId, isLogin, shopName,
+                imgUrl, shoplogoPosition, categoryName)
     }
 
     override fun clickLihatSemua() {
@@ -425,92 +405,43 @@ class BrandlistPageFragment :
     override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.clickBrandBaruTokopedia(
-            isLogin,
-            shopId,
-            categoryName,
-            shoplogoPosition,
-            shopName,
-            imgUrl
-        )
+                isLogin, shopId, categoryName,
+                shoplogoPosition, shopName, imgUrl)
     }
 
     override fun clickBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String) {
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.clickBrand(
-            isLogin,
-            shopId,
-            categoryName,
-            shoplogoPosition,
-            shopName,
-            imgUrl,
-            false,
-            ""
-        )
+                isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, false, "")
     }
 
     override fun impressionBrandPilihan(shopId: String, shoplogoPosition: String, imgUrl: String, shopName: String) {
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.impressionBrandPilihan(
-            isLogin,
-            categoryName,
-            shopId,
-            shoplogoPosition,
-            imgUrl,
-            shopName
-        )
+                isLogin, categoryName, shopId, shoplogoPosition,
+                imgUrl, shopName)
     }
 
-    override fun impressionBrandPopular(
-        shopId: String,
-        shoplogoPosition: String,
-        shopName: String,
-        imgUrl: String
-    ) {
+    override fun impressionBrandPopular(shopId: String, shoplogoPosition: String, shopName: String,
+                                        imgUrl: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.impressionBrandPopular(
-            isLogin,
-            shopId,
-            categoryName,
-            shoplogoPosition,
-            shopName,
-            imgUrl
-        )
+        brandlistTracking?.impressionBrandPopular(isLogin, shopId, categoryName,
+                shoplogoPosition, shopName, imgUrl)
     }
 
-    override fun impressionBrandBaru(
-        shopId: String,
-        shoplogoPosition: String,
-        shopName: String,
-        imgUrl: String
-    ) {
+    override fun impressionBrandBaru(shopId: String, shoplogoPosition: String, shopName: String,
+                                     imgUrl: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.impressionBrandBaru(
-            isLogin,
-            shopId,
-            categoryName,
-            shoplogoPosition,
-            shopName,
-            imgUrl
-        )
+        brandlistTracking?.impressionBrandBaru(isLogin, shopId, categoryName, shoplogoPosition,
+                shopName, imgUrl)
     }
 
-    override fun impressionBrand(
-        shopId: String,
-        shoplogoPosition: String,
-        shopName: String,
-        imgUrl: String
-    ) {
+    override fun impressionBrand(shopId: String, shoplogoPosition: String, shopName: String,
+                                 imgUrl: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.impressionBrand(
-            isLogin,
-            shopId,
-            categoryName,
-            shoplogoPosition,
-            shopName,
-            imgUrl,
-            false,
-            ""
-        )
+        brandlistTracking?.impressionBrand(isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, false, "")
     }
 
     override fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?) {
@@ -524,7 +455,7 @@ class BrandlistPageFragment :
             resetCurrentBrandRecom()
             showLoadingBrandRecom()
 
-            if (position > 0 && position < 2) { // Load Semua Brand
+            if (position > 0 && position < 2) {     // Load Semua Brand
                 isLoadMore = false
                 selectedBrandLetter = defaultBrandLetter
                 setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
@@ -532,7 +463,8 @@ class BrandlistPageFragment :
                 Handler().postDelayed({
                     viewModel.loadAllBrands(category)
                 }, 100)
-            } else if (position >= 2) { // Load per alphabet
+
+            } else if (position >= 2) {     // Load per alphabet
                 isLoadMore = false
                 selectedBrandLetter = chipName
                 setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)

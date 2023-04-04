@@ -176,7 +176,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         setTitle("")
 
         val errorView: View? = if (errorViewStub?.parent != null) {
-            errorViewStub?.inflate()
+            errorViewStub?.inflate();
         } else {
             viewContent
         }

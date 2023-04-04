@@ -374,8 +374,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
-                listener?.getPdpDataSource(),
-                userSession.userId.orEmpty()
+                listener?.getPdpDataSource(), userSession.userId.orEmpty()
             )
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }

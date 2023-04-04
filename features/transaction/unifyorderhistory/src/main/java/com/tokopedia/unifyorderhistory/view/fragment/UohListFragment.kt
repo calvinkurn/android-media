@@ -1,5 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -57,7 +59,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx

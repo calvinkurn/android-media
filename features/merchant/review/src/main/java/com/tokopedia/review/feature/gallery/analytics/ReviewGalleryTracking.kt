@@ -19,7 +19,7 @@ class ReviewGalleryTracking @Inject constructor(
         mediaNumber: Int,
         mediaType: String,
         mediaName: String,
-        videoId: String
+        videoId: String,
     ) {
         val payload = hashMapOf<String, Any>(
             TrackAppUtils.EVENT to ReviewTrackingConstant.EVENT_PROMO_VIEW,
@@ -42,9 +42,7 @@ class ReviewGalleryTracking @Inject constructor(
                             ReviewTrackingConstant.KEY_ITEM_ID to attachmentId,
                             ReviewTrackingConstant.KEY_ITEM_NAME to String.format(
                                 ReviewGalleryTrackingConstants.ITEM_NAME_TRACK_MEDIA_IMPRESSION,
-                                mediaType,
-                                videoId,
-                                mediaName
+                                mediaType, videoId, mediaName
                             )
                         )
                     )
@@ -66,8 +64,7 @@ class ReviewGalleryTracking @Inject constructor(
             TrackAppUtils.EVENT_CATEGORY to ReviewGalleryTrackingConstants.EVENT_CATEGORY,
             TrackAppUtils.EVENT_LABEL to String.format(
                 ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_THUMBNAIL,
-                feedbackId,
-                attachmentId
+                feedbackId, attachmentId
             ),
             ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
             ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,

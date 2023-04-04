@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.inbox.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -24,7 +26,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType

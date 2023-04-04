@@ -89,6 +89,7 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         if (selectedPosition == -1) {
             showToaster(imageGallery)
         }
+
     }
 
     private fun showToaster(view: View) {

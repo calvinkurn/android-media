@@ -57,11 +57,8 @@ import javax.inject.Inject
 
 class ReviewGalleryFragment :
     BaseListFragment<ReviewGalleryMediaThumbnailUiModel, ReviewGalleryAdapterTypeFactory>(),
-    HasComponent<ReviewGalleryComponent>,
-    ReviewPerformanceMonitoringContract,
-    ReadReviewHeaderListener,
-    ReviewGalleryHeaderListener,
-    ReviewGalleryMediaThumbnailListener {
+    HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
+    ReadReviewHeaderListener, ReviewGalleryHeaderListener, ReviewGalleryMediaThumbnailListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -117,13 +114,13 @@ class ReviewGalleryFragment :
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                    reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
-            })
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
@@ -133,6 +130,7 @@ class ReviewGalleryFragment :
             null
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -321,9 +319,7 @@ class ReviewGalleryFragment :
     private fun onFailGetReviewImages(throwable: Throwable) {
         if (isFirstPage()) showFullPageError()
         showToasterError(throwable.getErrorMessage(context)) {
-            if (isFirstPage()) {
-                loadInitialData()
-            } else {
+            if (isFirstPage()) loadInitialData() else {
                 loadData(currentPage)
             }
         }
@@ -358,9 +354,7 @@ class ReviewGalleryFragment :
                     it.videoId,
                     it.mediaNumber
                 )
-            } else {
-                null
-            }
+            } else null
         }
     }
 

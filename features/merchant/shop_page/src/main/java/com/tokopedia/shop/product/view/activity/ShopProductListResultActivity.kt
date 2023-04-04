@@ -164,12 +164,10 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     override fun updateUIByShopName(shopName: String) {
-        if (null != editTextSearch) {
-            editTextSearch?.hint = getString(
-                R.string.shop_product_search_hint_2,
-                MethodChecker.fromHtml(shopName)
-            )
-        }
+        if (null != editTextSearch) editTextSearch?.hint = getString(
+            R.string.shop_product_search_hint_2,
+            MethodChecker.fromHtml(shopName)
+        )
     }
 
     override fun updateUIByEtalaseName(etalaseName: String?) {

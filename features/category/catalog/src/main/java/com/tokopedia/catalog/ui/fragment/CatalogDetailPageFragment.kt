@@ -606,8 +606,7 @@ class CatalogDetailPageFragment :
 
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0,
-                linkerShareData,
+                0, linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.resources?.getString(

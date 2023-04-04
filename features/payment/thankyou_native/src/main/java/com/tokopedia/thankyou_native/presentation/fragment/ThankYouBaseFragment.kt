@@ -81,9 +81,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
-abstract class ThankYouBaseFragment :
-    BaseDaggerFragment(),
-    OnDialogRedirectListener,
+
+abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener,
     RegisterMemberShipListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
@@ -146,19 +145,22 @@ abstract class ThankYouBaseFragment :
         activity?.apply {
             digitalRecomTrackingQueue = TrackingQueue(this)
         }
+
     }
+
 
     override fun onPause() {
         super.onPause()
         digitalRecomTrackingQueue?.sendAll()
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFeatureListingContainer()?.gone()
-        if (!::thanksPageData.isInitialized) {
+        if (!::thanksPageData.isInitialized)
             activity?.finish()
-        } else {
+        else {
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
             getFeatureRecommendationData()
@@ -175,9 +177,8 @@ abstract class ThankYouBaseFragment :
 
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
-            if (isThanksWidgetEnabled && shouldHideFeatureRecom == false) {
+            if (isThanksWidgetEnabled && shouldHideFeatureRecom == false)
                 thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
-            }
         }
     }
 
@@ -205,18 +206,19 @@ abstract class ThankYouBaseFragment :
 
     private fun addMarketPlaceRecommendation() {
         if (::thanksPageData.isInitialized) {
+
             if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
             val recomContainer = getRecommendationContainer()
             iRecommendationView = recomContainer?.let { container ->
                 val view = getRecommendationView(marketRecommendationPlaceLayout)
 
-                // container 1 to display top ads recommendation view
+                //container 1 to display top ads recommendation view
                 container.addContainer(TOP_ADS_HEADLINE_ABOVE_RECOM)
 
                 container.addView(view)
 
-                // container 2 to display top ads recommendation view
+                //container 2 to display top ads recommendation view
                 container.addContainer(TOP_ADS_HEADLINE_BELOW_RECOM)
 
                 view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
@@ -230,6 +232,7 @@ abstract class ThankYouBaseFragment :
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
+
             if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
             val recomContainer = getRecommendationContainer()
@@ -240,9 +243,7 @@ abstract class ThankYouBaseFragment :
             }
 
             iDigitalRecommendationView?.loadRecommendation(
-                this,
-                pgCategoryIds,
-                pageType
+                this, pgCategoryIds, pageType
             )
         }
     }
@@ -267,49 +268,38 @@ abstract class ThankYouBaseFragment :
         thanksPageDataViewModel.getThanksPageTicker(thanksPageData.configList)
     }
 
+
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> onThankYouPageDataReLoaded(it.data)
-                    is Fail -> onThankYouPageDataLoadingFail(it.throwable)
-                }
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onThankYouPageDataReLoaded(it.data)
+                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
-        )
-        thanksPageDataViewModel.gyroRecommendationLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
-                addDataToGyroRecommendationView(it)
-            }
-        )
+        })
+        thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+            gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
+            addDataToGyroRecommendationView(it)
+        })
 
-        thanksPageDataViewModel.topTickerLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        setTopTickerData(it.data)
-                    }
-                    is Fail -> getTopTickerView()?.gone()
+        thanksPageDataViewModel.topTickerLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    setTopTickerData(it.data)
                 }
+                is Fail -> getTopTickerView()?.gone()
             }
-        )
+        })
 
-        thanksPageDataViewModel.defaultAddressLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        updateLocalizingAddressData(it.data)
-                    }
-                    is Fail -> {
-                        // do nothing
-                    }
+        thanksPageDataViewModel.defaultAddressLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    updateLocalizingAddressData(it.data)
+                }
+                is Fail -> {
+                    //do nothing
                 }
             }
-        )
+        })
 
         thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner) {
             addDataToTopAdsView(it)
@@ -372,6 +362,7 @@ abstract class ThankYouBaseFragment :
                 )
             }
         }
+
     }
 
     private fun setTopTickerData(tickerData: List<TickerData>) {
@@ -385,9 +376,8 @@ abstract class ThankYouBaseFragment :
                         if (itemData is ThankPageTopTickerData) {
                             if (itemData.isAppLink()) {
                                 openAppLink(linkUrl.toString())
-                            } else {
+                            } else
                                 openWebLink(linkUrl.toString())
-                            }
                         }
                     }
                 })
@@ -401,8 +391,7 @@ abstract class ThankYouBaseFragment :
                 getFeatureListingContainer()?.visible()
                 getFeatureListingContainer()?.listener = this
                 getFeatureListingContainer()?.addData(
-                    gyroRecommendation,
-                    thanksPageData,
+                    gyroRecommendation, thanksPageData,
                     gyroRecommendationAnalytics.get()
                 )
             } else {
@@ -441,14 +430,12 @@ abstract class ThankYouBaseFragment :
         var paymentStatus = PaymentStatusMapper
             .getPaymentStatusByInt(thanksPageData.paymentStatus)
 
-        if (isTimerFinished && !isPaymentVerified(paymentStatus)) {
+        if (isTimerFinished && !isPaymentVerified(paymentStatus))
             paymentStatus = PaymentExpired
-        }
 
         context?.let {
-            if (!::dialogHelper.isInitialized) {
+            if (!::dialogHelper.isInitialized)
                 dialogHelper = DialogHelper(it, this)
-            }
             dialogHelper.showPaymentStatusDialog(paymentStatus)
         }
     }
@@ -465,19 +452,17 @@ abstract class ThankYouBaseFragment :
             homeButton?.let {
                 thanksPageData.customDataMessage?.let {
                     it.titleHomeButton?.apply {
-                        if (isNotBlank()) {
+                        if (isNotBlank())
                             homeButton.text = this
-                        }
                     }
                 }
 
                 homeButton.setOnClickListener {
                     thanksPageData.customDataAppLink?.let {
-                        if (it.home.isNullOrBlank()) {
+                        if (it.home.isNullOrBlank())
                             gotoHomePage()
-                        } else {
+                        else
                             launchApplink(it.home)
-                        }
                     } ?: run {
                         gotoHomePage()
                     }
@@ -528,6 +513,7 @@ abstract class ThankYouBaseFragment :
         }
     }
 
+
     override fun launchApplink(applink: String) {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
         val intent = RouteManager.getIntent(context, applink, "")
@@ -544,6 +530,7 @@ abstract class ThankYouBaseFragment :
         )
         activity?.finish()
     }
+
 
     override fun gotoPaymentWaitingPage() {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
@@ -601,6 +588,7 @@ abstract class ThankYouBaseFragment :
         }
     }
 
+
     private fun getOrderListPageIntent(): Intent? {
         return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
@@ -626,14 +614,9 @@ abstract class ThankYouBaseFragment :
     fun showErrorOnUI(errorMessage: String, retry: (() -> Unit)?) {
         view?.let { view ->
             retry?.let {
-                Toaster.make(
-                    view,
-                    errorMessage,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR,
-                    getString(R.string.thank_coba_lagi),
-                    View.OnClickListener { retry.invoke() }
-                )
+                Toaster.make(view, errorMessage,
+                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    getString(R.string.thank_coba_lagi), View.OnClickListener { retry.invoke() })
             }
         }
     }

@@ -89,10 +89,10 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
-import com.tokopedia.play_common.lifecycle.viewLifecycleBound
-import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.util.ActivityResultHelper
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -176,14 +176,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponentOrNull {
-        EngagementCarouselViewComponent(
-            listener = this,
-            resId = R.id.scrollable_host_engagement,
-            scope = viewLifecycleOwner.lifecycleScope,
-            container = it
-        )
-    }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(
+        listener = this,
+        resId = R.id.scrollable_host_engagement,
+        scope = viewLifecycleOwner.lifecycleScope,
+        container = it
+    ) }
 
     /**
      * Interactive
@@ -253,8 +251,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Animation
      */
-    private val fadeInAnimation by viewLifecycleBound({ PlayFadeInAnimation(FADE_DURATION) })
-    private val fadeOutAnimation by viewLifecycleBound({ PlayFadeOutAnimation(FADE_DURATION) })
+    private val fadeInAnimation by viewLifecycleBound( { PlayFadeInAnimation(FADE_DURATION) } )
+    private val fadeOutAnimation by viewLifecycleBound( { PlayFadeOutAnimation(FADE_DURATION) })
     private val fadeInFadeOutAnimation by viewLifecycleBound(
         { PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
     )
@@ -650,9 +648,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams?.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
-                } else {
-                    error("Insets not supported")
-                }
+                } else error("Insets not supported")
             } catch (e: Throwable) {
                 Timber.e(e)
             }
@@ -1290,7 +1286,7 @@ class PlayUserInteractionFragment @Inject constructor(
             getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(
                 requireView(),
                 estimatedKeyboardHeight,
-                playViewModel.videoOrientation
+                playViewModel.videoOrientation,
             )
         } catch (e: Throwable) { getScreenHeight() }
     }
@@ -1475,7 +1471,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun gradientBackgroundViewOnStateChanged(
         videoOrientation: VideoOrientation = playViewModel.videoOrientation,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (bottomInsets.isAnyShown ||
             (videoOrientation.isHorizontal && orientation.isPortrait)
@@ -1513,7 +1509,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun statsInfoViewOnStateChanged(
         channelType: PlayChannelType = playViewModel.channelType,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
@@ -1671,7 +1667,7 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        status: PlayStatusUiModel
+        status: PlayStatusUiModel,
     ) {
         if (!bottomInsets.isAnyShown && !address.shouldShow && status.channelStatus.statusType.isActive) {
             productSeeMoreView?.show()
@@ -1757,16 +1753,15 @@ class PlayUserInteractionFragment @Inject constructor(
                 { it.status },
                 { it.channel.channelInfo.channelType.isLive }
             )
-        ) {
-            return
-        }
+        ) return
 
         val isLive = state.value.channel.channelInfo.channelType.isLive
 
         if (isAllowAutoSwipe(
                 if (isLive) {
                     !state.value.status.channelStatus.statusType.isActive
-                } else {
+                }
+                else {
                     !state.value.status.channelStatus.statusType.isActive ||
                         state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
                 }

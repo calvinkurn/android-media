@@ -9,11 +9,11 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.di.PlayWidgetComponent
 import com.tokopedia.play.widget.di.PlayWidgetComponentCreator
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
@@ -32,7 +32,7 @@ class PlayWidgetCoordinator constructor(
     lifecycleOwner: LifecycleOwner,
     mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
-    private val autoHandleLifecycleMethod: Boolean = true
+    private val autoHandleLifecycleMethod: Boolean = true,
 ) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -53,10 +53,10 @@ class PlayWidgetCoordinator constructor(
     private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
 
     private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
-        scope,
-        mainCoroutineDispatcher,
-        workCoroutineDispatcher,
-        this
+            scope,
+            mainCoroutineDispatcher,
+            workCoroutineDispatcher,
+            this
     )
 
     private val mWidgetInternalListener = object : PlayWidgetInternalListener {
@@ -183,12 +183,9 @@ class PlayWidgetCoordinator constructor(
         if (!autoHandleLifecycleMethod) return
 
         if (lifecycleOwner is Fragment) {
-            lifecycleOwner.viewLifecycleOwnerLiveData.observe(
-                lifecycleOwner,
-                Observer {
-                    it.lifecycle.addObserver(this)
-                }
-            )
+            lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, Observer {
+                it.lifecycle.addObserver(this)
+            })
         } else {
             lifecycleOwner.lifecycle.addObserver(this)
         }
