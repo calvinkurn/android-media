@@ -5,6 +5,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.NowAffiliateData
 import com.tokopedia.tokopedianow.common.util.ShopIdProvider
@@ -30,18 +31,19 @@ class NowAffiliateService @Inject constructor(
     private var affiliateData = NowAffiliateData()
 
     suspend fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
+        val uuid = affiliateUuid.decodeToUtf8()
         val shopId = ShopIdProvider.getShopId()
         val source = AffiliateSdkPageSource.Shop(shopId)
         val pageDetail = AffiliatePageDetail(shopId, source)
 
         affiliateData = NowAffiliateData(
-            affiliateUuid = affiliateUuid,
+            affiliateUuid = uuid,
             affiliateChannel = affiliateChannel,
             affiliateTrackerId = UUID.randomUUID().toString()
         )
 
         affiliateCookieHelper.initCookie(
-            affiliateUUID = affiliateUuid,
+            affiliateUUID = uuid,
             affiliateChannel = affiliateChannel,
             affiliatePageDetail = pageDetail
         )
