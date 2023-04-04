@@ -16,7 +16,7 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
         return File(filePath)
     }
 
-    fun getFileSize(uri: Uri): Long {
+    fun getFileSizeInBytes(uri: Uri): Long {
         val contentResolver = context.contentResolver
         var inputStream: InputStream? = null
         var fileSize: Long = 0

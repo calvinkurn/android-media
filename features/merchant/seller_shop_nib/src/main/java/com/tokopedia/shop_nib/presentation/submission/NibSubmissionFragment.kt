@@ -23,6 +23,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     companion object {
         private const val REQUEST_CODE_SELECT_FILE = 100
+        private const val MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 //5 MB
 
         @JvmStatic
         fun newInstance(): NibSubmissionFragment {
@@ -41,7 +42,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     lateinit var fileHelper: FileHelper
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(NibSubmissionViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider[NibSubmissionViewModel::class.java] }
     private var binding by autoClearedNullable<SsnFragmentNibSubmissionBinding>()
 
     override fun getScreenName(): String = NibSubmissionFragment::class.java.canonicalName.orEmpty()
@@ -79,7 +80,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val uri = data.data
                 val file = fileHelper.getFileFromUri( uri ?: return)
-                val fileSize = fileHelper.getFileSize(uri)
+                val fileSize = fileHelper.getFileSizeInBytes(uri)
                 print(file)
             }
         }
