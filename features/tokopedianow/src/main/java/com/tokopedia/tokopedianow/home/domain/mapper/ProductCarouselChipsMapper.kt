@@ -61,7 +61,7 @@ object ProductCarouselChipsMapper {
 
             chipList.forEachIndexed { index, chipItem ->
                 val selected = index == selectedChipIndex
-                chipList[selectedChipIndex] = chipItem.copy(selected = selected)
+                chipList[index] = chipItem.copy(selected = selected)
             }
 
             val productList = mapRecomWidgetToProductList(
