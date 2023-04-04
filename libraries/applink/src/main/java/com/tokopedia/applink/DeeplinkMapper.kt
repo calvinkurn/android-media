@@ -766,7 +766,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
             ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
             ApplinkConst.SellerApp.SELLER_PERSONA -> ApplinkConstInternalSellerapp.SELLER_PERSONA
-            ApplinkConst.SellerApp.SELLER_SHOP_NIB -> ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
             else -> when {
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)
@@ -780,6 +779,7 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
                 DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
+                DeeplinkMapperMerchant.isSellerShopNibAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopNib()
                 // For Tokomember applinks with params
                 trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(trimmedDeeplink)
                 else -> ""
