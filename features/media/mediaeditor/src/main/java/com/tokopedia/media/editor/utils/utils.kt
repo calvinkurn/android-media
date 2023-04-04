@@ -250,13 +250,21 @@ fun showErrorLoadToaster(view: View, msg: String) {
     }
 }
 
-fun showErrorGeneralToaster(context: Context?) {
+fun showErrorGeneralToaster(context: Context?, msg: String? = null) {
     if (context == null) return
     Toast.makeText(
         context,
         context.resources.getString(R.string.editor_activity_general_error),
         Toast.LENGTH_LONG
     ).show()
+
+    if (msg != null) {
+        newRelicLog(
+            mapOf(
+                GENERAL_ERROR to msg
+            )
+        )
+    }
 }
 
 fun mediaCreateBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int, matrix: Matrix? = null, filter: Boolean? = null): Bitmap? {
