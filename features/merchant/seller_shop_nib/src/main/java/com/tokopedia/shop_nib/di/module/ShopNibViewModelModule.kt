@@ -1,10 +1,10 @@
-package com.tokopedia.shop_nib.presentation.di.module
+package com.tokopedia.shop_nib.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.shop_nib.presentation.di.scope.ShopNibScope
+import com.tokopedia.shop_nib.di.scope.ShopNibScope
 import com.tokopedia.shop_nib.presentation.submission.NibSubmissionViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap

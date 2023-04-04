@@ -1,9 +1,9 @@
-package com.tokopedia.shop_nib.presentation.di.module
+package com.tokopedia.shop_nib.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.shop_nib.presentation.di.scope.ShopNibScope
+import com.tokopedia.shop_nib.di.scope.ShopNibScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
-import com.tokopedia.shop_nib.presentation.di.component.DaggerShopNibComponent
-import com.tokopedia.shop_nib.presentation.util.FileHelper
+import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
+import com.tokopedia.shop_nib.util.FileHelper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject

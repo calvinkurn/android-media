@@ -1,4 +1,4 @@
-package com.tokopedia.shop_nib.presentation.util
+package com.tokopedia.shop_nib.util
 
 import android.content.Context
 import android.net.Uri

@@ -1,4 +1,4 @@
-package com.tokopedia.shop_nib.presentation.di.scope
+package com.tokopedia.shop_nib.di.scope
 
 import javax.inject.Scope
 
