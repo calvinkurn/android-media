@@ -3010,7 +3010,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3131,7 +3132,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         var catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3156,7 +3158,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetCatalogCouponList_thenReturn(
@@ -3209,7 +3212,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3280,10 +3284,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
-
-        println(catalogCouponList)
 
         onGetHomeLayoutData_thenReturn(
             layoutResponse = layoutResponse,
@@ -3403,7 +3406,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         var catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3428,7 +3432,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetCatalogCouponList_thenReturn(
@@ -3481,7 +3486,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3531,7 +3537,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when fetching list of catalog coupons (double coupon) but slug size and style param not matching then receiving nothing first condition`() {
+    fun `when fetching list of catalog coupons (double coupon) but slug size and style param not matching then receiving nothing`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
@@ -3552,10 +3558,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
         )
-
-        println(catalogCouponList)
 
         onGetHomeLayoutData_thenReturn(
             layoutResponse = layoutResponse,
@@ -3596,7 +3601,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when fetching list of catalog coupons (single coupon) but slug size and style param not matching then receiving nothing first condition`() {
+    fun `when fetching list of catalog coupons (single coupon) but slug size and style param not matching then receiving nothing`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
@@ -3617,7 +3622,72 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            isEmpty = false
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            isEmpty = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons then receiving nothing`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=double"
+        val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr,
+            isEmpty = true
         )
 
         println(catalogCouponList)

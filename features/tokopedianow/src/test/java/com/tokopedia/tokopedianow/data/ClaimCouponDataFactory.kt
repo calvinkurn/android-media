@@ -32,7 +32,8 @@ object ClaimCouponDataFactory {
 
     fun createCatalogCouponList(
         slugs: List<String>,
-        buttonStr: String
+        buttonStr: String,
+        isEmpty: Boolean
     ): GetCatalogCouponListResponse.TokopointsCatalogWithCouponList {
         val resultStatus = GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.ResultStatus(
             code = "200",
@@ -40,15 +41,20 @@ object ClaimCouponDataFactory {
             status = "success"
         )
         return GetCatalogCouponListResponse.TokopointsCatalogWithCouponList(
-            catalogWithCouponList = slugs.map { slug ->
-                GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.CatalogWithCoupon(
-                    id = "1",
-                    appLink = "tokopedia://now",
-                    buttonStr = buttonStr,
-                    imageUrlMobile = "tokopedia://now/123",
-                    smallImageUrlMobile = "tokopedia://now/1234",
-                    slug = slug
-                )
+            catalogWithCouponList =
+            if (isEmpty) {
+                listOf()
+            } else {
+                slugs.map { slug ->
+                    GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.CatalogWithCoupon(
+                        id = "1",
+                        appLink = "tokopedia://now",
+                        buttonStr = buttonStr,
+                        imageUrlMobile = "tokopedia://now/123",
+                        smallImageUrlMobile = "tokopedia://now/1234",
+                        slug = slug
+                    )
+                }
             },
             resultStatus = resultStatus
         )
@@ -89,7 +95,7 @@ object ClaimCouponDataFactory {
         } else {
             listOf<Visitable<*>>(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
-                claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
+                claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr, false).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
             )
         }
 
