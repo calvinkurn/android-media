@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.viewholder
 import android.view.View
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -14,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -83,13 +83,7 @@ class ShipmentNewUpsellImprovementViewHolder(
             // no-op
         }
         checkoutUpsellContentGroup.gone()
-        checkoutUpsellBackgroundImage.setImageDrawable(
-            VectorDrawableCompat.create(
-                itemView.context.resources,
-                R.drawable.checkout_module_upsell_new_background,
-                itemView.context.theme
-            )
-        )
+        checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
         checkoutUpsellBackgroundImage.invisible()
         checkoutUpsellIcon.invisible()
         checkoutUpsellLogoLoader.type = LoaderUnify.TYPE_CIRCLE
@@ -113,33 +107,15 @@ class ShipmentNewUpsellImprovementViewHolder(
         checkoutUpsellLogo.setImageUrl(data.image)
         checkoutUpsellTitle.text = HtmlLinkHelper(itemView.context, data.description).spannedString
         if (data.isSelected) {
-            checkoutUpsellBackgroundImage.setImageDrawable(
-                VectorDrawableCompat.create(
-                    itemView.context.resources,
-                    R.drawable.checkout_module_upsell_new_short_background,
-                    itemView.context.theme
-                )
-            )
+            checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_short_background)
             checkoutUpsellDescription.gone()
-            checkoutUpsellIcon.setImageDrawable(
-                VectorDrawableCompat.create(
-                    itemView.context.resources,
-                    R.drawable.checkout_module_upsell_opt_out,
-                    itemView.context.theme
-                )
-            )
+            checkoutUpsellIcon.loadImage(R.drawable.checkout_module_upsell_opt_out)
             checkoutUpsellCard.setOnClickListener {
                 actionListener?.onClickCancelNewUpsellCard(data)
             }
             checkoutUpsellContentGroup.visible()
         } else {
-            checkoutUpsellBackgroundImage.setImageDrawable(
-                VectorDrawableCompat.create(
-                    itemView.context.resources,
-                    R.drawable.checkout_module_upsell_new_background,
-                    itemView.context.theme
-                )
-            )
+            checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
             checkoutUpsellDescription.text =
                 itemView.context.getString(
                     R.string.checkout_label_upsell_description,
@@ -147,7 +123,7 @@ class ShipmentNewUpsellImprovementViewHolder(
                     data.duration
                 )
             checkoutUpsellDescription.visible()
-            checkoutUpsellIcon.setImageDrawable(
+            checkoutUpsellIcon.loadImage(
                 getIconUnifyDrawable(
                     itemView.context,
                     IconUnify.CHEVRON_RIGHT
