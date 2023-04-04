@@ -132,4 +132,8 @@
     <string name="article_widget_detail">%s • Diperbarui %s • %s</string>
     <string name="info_affiliate">Info Affiliate</string>
     <string name="affiliate_lihat_semua">Lihat Semua</string>
+    <string name="affiliate_notification_empty_title">Hmm, belum ada notifikasi untukmu</string>
+    <string name="affiliate_notification_empty_filter_title">Hmm, belum ada notifikasi di filter ini</string>
+    <string name="affiliate_notification_empty_msg">Coba cek lagi nanti, yuk.</string>
+    <string name="affiliate_notification_empty_filter_msg">Coba cek di filter yang lain, yuk.</string>
 </resources>

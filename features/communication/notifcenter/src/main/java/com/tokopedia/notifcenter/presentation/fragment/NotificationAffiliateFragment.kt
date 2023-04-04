@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,7 +119,9 @@ open class NotificationAffiliateFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             triggerMarkAsSeenTracker()
-            trackIfUserScrollToBottom()
+            if (scrollState.hasScrolledDown()) {
+                scrollState.updateOffset()
+            }
         }
     }
 
@@ -164,7 +167,16 @@ open class NotificationAffiliateFragment :
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        return EmptyNotificationUiModel(viewModel.hasFilter())
+        val title: String
+        val msg: String
+        if (viewModel.hasFilter()) {
+            title = getString(R.string.affiliate_notification_empty_filter_title)
+            msg = getString(R.string.affiliate_notification_empty_filter_msg)
+        } else {
+            title = getString(R.string.affiliate_notification_empty_title)
+            msg = getString(R.string.affiliate_notification_empty_msg)
+        }
+        return EmptyNotificationUiModel(viewModel.hasFilter(), title, msg)
     }
 
     override fun isListEmpty(): Boolean {
@@ -192,17 +204,14 @@ open class NotificationAffiliateFragment :
 
     override fun onPause() {
         super.onPause()
-        trackIfUserScrollToBottom()
+        if (scrollState.hasScrolledDown()) {
+            scrollState.updateOffset()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        trackIfUserScrollToBottom()
-    }
-
-    private fun trackIfUserScrollToBottom() {
         if (scrollState.hasScrolledDown()) {
-            analytic.trackScrollToBottom(scrollState.lastSeenItem.toString())
             scrollState.updateOffset()
         }
     }
@@ -293,7 +302,6 @@ open class NotificationAffiliateFragment :
     }
 
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
-        analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(
             RoleType.AFFILIATE,
@@ -311,7 +319,6 @@ open class NotificationAffiliateFragment :
         lastKnownPosition: Int,
         element: LoadMoreUiModel
     ) {
-        analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(
             RoleType.AFFILIATE,
