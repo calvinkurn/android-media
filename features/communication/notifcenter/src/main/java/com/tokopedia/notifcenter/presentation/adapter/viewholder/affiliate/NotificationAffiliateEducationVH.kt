@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
@@ -16,6 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class NotificationAffiliateEducationVH(
     itemView: View?
@@ -31,6 +33,9 @@ class NotificationAffiliateEducationVH(
         private const val DD_MMM = "dd MMM"
         private const val DD_MMM_YY = "dd MMM yy"
         private const val ITEM_HORIZONTAL_PADDING = 12
+        private const val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
+            "https://affiliate-staging.tokopedia.com/edu/"
+        private const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
@@ -69,7 +74,7 @@ class NotificationAffiliateEducationVH(
                                 NotificationAffiliateAnalytics.trackAffiliateEducationClick(
                                     userSession.userId
                                 )
-                                RouteManager.route(ctx, article.youtubeUrl)
+                                RouteManager.route(ctx, getArticleEventUrl(data.slug.toString()))
                             }
                         }
                         view.updatePaddingRelative(
@@ -102,6 +107,20 @@ class NotificationAffiliateEducationVH(
                 }
             }
         }
+    }
+
+    private fun getArticleEventUrl(slug: String): String {
+        return String.format(
+            Locale.getDefault(),
+            "%s?url=%s%s?navigation=hide",
+            ApplinkConst.WEBVIEW,
+            if (GraphqlUrl.BASE_URL.contains("staging")) {
+                EDUCATION_ARTICLE_DETAIL_STAGING_URL
+            } else {
+                EDUCATION_ARTICLE_DETAIL_PROD_URL
+            },
+            slug
+        )
     }
 
     private fun getFormattedDate(
