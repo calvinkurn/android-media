@@ -22,7 +22,11 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     private fun getDrawable(resId: Int): Drawable? {
         return context?.let {
-            ContextCompat.getDrawable(it, resId)
+            try {
+                ContextCompat.getDrawable(it, resId)
+            } catch (e: Exception) {
+                null
+            }
         } ?: run {
             null
         }
