@@ -39,8 +39,6 @@ class ProductSortBottomSheet @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private var mDataSource: DataSource? = null
-
     private var mSelectedSort: SortUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +51,6 @@ class ProductSortBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
-        setupAnalytic()
     }
 
     override fun onStart() {
@@ -65,15 +62,10 @@ class ProductSortBottomSheet @Inject constructor(
         super.onDestroyView()
         _binding = null
         mListener = null
-        mDataSource = null
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    fun setDataSource(dataSource: DataSource?) {
-        mDataSource = dataSource
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -115,10 +107,6 @@ class ProductSortBottomSheet @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun setupAnalytic() {
-        analytic.setSelectedAccount(mDataSource?.getSelectedAccount().orUnknown())
     }
 
     private fun refreshSortList() {
@@ -165,9 +153,5 @@ class ProductSortBottomSheet @Inject constructor(
 
     interface Listener {
         fun onSortChosen(bottomSheet: ProductSortBottomSheet, item: SortUiModel)
-    }
-
-    interface DataSource {
-        fun getSelectedAccount(): ContentAccountUiModel
     }
 }
