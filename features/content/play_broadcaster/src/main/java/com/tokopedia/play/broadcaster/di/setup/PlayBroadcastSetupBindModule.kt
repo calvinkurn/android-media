@@ -43,4 +43,8 @@ abstract class PlayBroadcastSetupBindModule {
     @Binds
     @PlayBroadcastSetupScope
     abstract fun bindPlayBroCoverPickerAnalytic(analytic: PlayBroCoverPickerAnalyticImpl): PlayBroCoverPickerAnalytic
+
+    @Binds
+    @PlayBroadcastSetupScope
+    abstract fun bindProductTagDataStore(dataStore: ProductTagDataStoreImpl): ProductTagDataStore
 }
