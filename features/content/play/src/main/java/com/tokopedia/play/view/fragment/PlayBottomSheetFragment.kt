@@ -10,9 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultRegistry
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.lifecycle.*
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -22,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -152,6 +151,22 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     private val atcVariantViewModel by lazy {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
+    private val variantSheet by lazyThreadSafetyNone {
+        AtcVariantBottomSheet()
+    }
+
+    private val variantObserver by lazyThreadSafetyNone {
+        object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun onResume() {
+                variantSheet.dialog?.window?.setBackgroundDrawable(null)
+                variantSheet.view?.updateLayoutParams {
+                    height = variantSheetMaxHeight
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -381,6 +396,8 @@ class PlayBottomSheetFragment @Inject constructor(
         variantSheetView.hide()
         couponSheetView.hide()
         leaderboardSheetView.hide()
+
+        variantSheet.lifecycle.addObserver(variantObserver)
     }
 
     private fun setupObserve() {
@@ -410,12 +427,7 @@ class PlayBottomSheetFragment @Inject constructor(
             )
 
             showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
-                AtcVariantBottomSheet().apply {
-                    setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetStyle)
-                    this.view?.updateLayoutParams {
-                        height = variantSheetMaxHeight
-                    }
-                }
+                variantSheet
             }
             analytic.clickActionProductWithVariant(product.id, action)
         }
