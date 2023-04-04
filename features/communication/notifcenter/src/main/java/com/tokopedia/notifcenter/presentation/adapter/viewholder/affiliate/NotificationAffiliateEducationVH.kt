@@ -19,8 +19,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.toDate
 import timber.log.Timber
 import java.text.ParseException
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class NotificationAffiliateEducationVH(
@@ -140,8 +138,6 @@ class NotificationAffiliateEducationVH(
                 ""
             }
         }
-        val parsedDate =
-            LocalDate.parse(input, DateTimeFormatter.ofPattern(inputPattern))
-        return parsedDate.format(DateTimeFormatter.ofPattern(outputPattern))
+        return ""
     }
 }
