@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemMo
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithdrawalTitleItemModel
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
@@ -112,7 +113,11 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
     fun extractBranchLink(branchLink: String) {
         launchCatchError(
             block = {
-                applink.value = extractBranchLinkUseCase.invoke(branchLink).android_deeplink
+                var deeplink = extractBranchLinkUseCase.invoke(branchLink).android_deeplink
+                if (!(deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://"))) {
+                    deeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink
+                }
+                applink.value = deeplink
             },
             onError = { it }
         )
