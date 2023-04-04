@@ -128,11 +128,21 @@ class ContentCommentBottomSheet @Inject constructor(
                     )
                 }
 
+                val prevLength = binding.newComment.length()
+                val selEnd = binding.newComment.selectionEnd
+                val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
+
                 val newText =
                     TagMentionBuilder.spanText(p0.toSpanned(), textLength = p0.length.orZero())
                 binding.newComment.setText(newText)
 
-                binding.newComment.setSelection(binding.newComment.length())
+                val currentLength = binding.newComment.length()
+                if (distanceFromEnd > 0 && distanceFromEnd < currentLength) {
+                    binding.newComment.setSelection(selEnd)
+                } else {
+                    binding.newComment.setSelection(currentLength)
+                }
+
                 binding.newComment.addTextChangedListener(this)
             }
         }
@@ -264,12 +274,16 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if(!event.message.message?.equals(CommentException.FailedDelete.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message)
+                                    .orFalse()
+                            ) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
-                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
+                                    .orFalse()
+                            ) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
@@ -392,7 +406,8 @@ class ContentCommentBottomSheet @Inject constructor(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
-        val avatar = if(viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        val avatar =
+            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
         viewModel.submitAction(CommentAction.RefreshComment)
     }
@@ -503,7 +518,10 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun requireInternet(action: (isAvailable: Boolean) -> Unit) {
-        val isInetAvailable = ConnectionHelper.isConnectWifi(requireContext()) || ConnectionHelper.isConnectCellular(requireContext())
+        val isInetAvailable =
+            ConnectionHelper.isConnectWifi(requireContext()) || ConnectionHelper.isConnectCellular(
+                requireContext()
+            )
         if (isInetAvailable) {
             action(true)
         } else {
