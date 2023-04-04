@@ -259,30 +259,24 @@ object HomeLayoutMapper {
                 slugList = slugList
             )
 
-            if (response?.resultStatus?.code == SUCCESS_CODE && response.catalogWithCouponList.isNullOrEmpty()) {
-                removeHomeCatalogCouponList(widgetId)
+            if (response?.resultStatus?.code == SUCCESS_CODE && couponList.isEmpty()) {
+                removeItem(widgetId)
             } else {
-                val layout = it.layout.copy(
-                    claimCouponList = couponList,
-                    state = state,
-                    slugs = slugList
+                updateItemById(
+                    id = widgetId,
+                    block = {
+                        val layout = it.layout.copy(
+                            claimCouponList = couponList,
+                            state = state,
+                            slugs = slugList
+                        )
+                        HomeLayoutItemUiModel(
+                            layout = layout,
+                            state = HomeLayoutItemState.LOADED
+                        )
+                    }
                 )
-                val newItem = HomeLayoutItemUiModel(
-                    layout = layout,
-                    state = HomeLayoutItemState.LOADED
-                )
-                val index = indexOf(it)
-
-                removeAt(index)
-                add(index, newItem)
             }
-        }
-    }
-
-    fun MutableList<HomeLayoutItemUiModel?>.removeHomeCatalogCouponList(widgetId: String) {
-        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
-            val index = indexOf(it)
-            removeAt(index)
         }
     }
 

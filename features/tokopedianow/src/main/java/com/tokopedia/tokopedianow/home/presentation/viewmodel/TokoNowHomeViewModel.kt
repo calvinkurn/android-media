@@ -62,7 +62,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestDa
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeHomeCatalogCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
@@ -790,7 +789,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     state = TokoNowLayoutState.SHOW
                 )
             } else {
-                homeLayoutItemList.removeHomeCatalogCouponList(item.id)
+                homeLayoutItemList.removeItem(item.id)
             }
         }) {
             homeLayoutItemList.mapHomeCatalogCouponList(
