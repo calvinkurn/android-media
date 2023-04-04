@@ -79,6 +79,9 @@ class ShipmentNewUpsellImprovementViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
+        checkoutUpsellLogoContainer.setOnClickListener {
+            // no-op
+        }
         checkoutUpsellCard.setOnClickListener {
             // no-op
         }
@@ -110,6 +113,9 @@ class ShipmentNewUpsellImprovementViewHolder(
             checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_short_background)
             checkoutUpsellDescription.gone()
             checkoutUpsellIcon.loadImage(R.drawable.checkout_module_upsell_opt_out)
+            checkoutUpsellLogoContainer.setOnClickListener {
+                actionListener?.onClickCancelNewUpsellCard(data)
+            }
             checkoutUpsellCard.setOnClickListener {
                 actionListener?.onClickCancelNewUpsellCard(data)
             }
@@ -129,6 +135,9 @@ class ShipmentNewUpsellImprovementViewHolder(
                     IconUnify.CHEVRON_RIGHT
                 )
             )
+            checkoutUpsellLogoContainer.setOnClickListener {
+                actionListener?.onClickCancelNewUpsellCard(data)
+            }
             checkoutUpsellCard.setOnClickListener {
                 actionListener?.onClickApplyNewUpsellCard(data)
             }
