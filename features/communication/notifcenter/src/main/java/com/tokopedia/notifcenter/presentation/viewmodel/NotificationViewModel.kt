@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -24,7 +25,14 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
-import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.domain.AffiliateEducationArticleUseCase
+import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
+import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
+import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
+import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -453,10 +461,9 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    fun loadAffiliateEducationArticles() {
-        launchCatchError(
-            dispatcher.io,
-            block = {
+    private fun loadAffiliateEducationArticles() {
+        viewModelScope.launch {
+            try {
                 affiliateEducationArticleUseCase.getEducationArticles().collect { response ->
                     if (response.data != null && !response.data.cardsArticle?.data?.cards.isNullOrEmpty()) {
                         response.data.cardsArticle?.data?.cards?.get(0)?.let {
@@ -466,11 +473,10 @@ class NotificationViewModel @Inject constructor(
                         }
                     }
                 }
-            },
-            onError = {
-                it.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        )
+        }
     }
 
     companion object {
