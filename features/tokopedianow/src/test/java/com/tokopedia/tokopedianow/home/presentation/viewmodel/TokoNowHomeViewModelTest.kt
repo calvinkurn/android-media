@@ -2989,12 +2989,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when fetching list of catalog coupons then receiving success result with show status`() {
+    fun `when fetching list of catalog coupons (single coupon) then receiving success result with show status`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        val slugText = "ABC;CDE"
+        val slugText = "ABC"
+        val styleParam = "columns=single"
         val buttonStr = COUPON_STATUS_CLAIM
         val slugs = slugText.split(";")
 
@@ -3004,7 +3005,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val layoutResponse = createChannelLayout(
             widgetId = widgetId,
             widgetTitle = widgetTitle,
-            slugText = slugText
+            slugText = slugText,
+            styleParam = styleParam
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
@@ -3035,7 +3037,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText,
             isError = false,
             warehouseId = warehouseId,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            styleParam = styleParam,
+            isEmpty = false,
         )
         val expectedResult = Success(data)
 
@@ -3048,12 +3052,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when fetching list of catalog coupons but failed then receiving success result with hide status`() {
+    fun `when fetching list of catalog coupons (single coupon) but failed then receiving success result with hide status`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        val slugText = "ABC;CDE"
+        val slugText = "ABC"
+        val styleParam = "columns=single"
         val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
@@ -3062,7 +3067,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val layoutResponse = createChannelLayout(
             widgetId = widgetId,
             widgetTitle = widgetTitle,
-            slugText = slugText
+            slugText = slugText,
+            styleParam = styleParam
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -3089,7 +3095,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText,
             isError = true,
             warehouseId = warehouseId,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            styleParam = styleParam,
+            isEmpty = false,
         )
         val expectedResult = Success(data)
 
@@ -3102,12 +3110,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when refetching list of catalog coupons then receiving success result with show status`() {
+    fun `when refetching list of catalog coupons (single coupon) then receiving success result with show status`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        val slugText = "ABC;CDE"
+        val slugText = "ABC"
+        val styleParam = "columns=single"
         val slugs = slugText.split(";")
         var buttonStr = COUPON_STATUS_CLAIM
 
@@ -3117,7 +3126,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val layoutResponse = createChannelLayout(
             widgetId = widgetId,
             widgetTitle = widgetTitle,
-            slugText = slugText
+            slugText = slugText,
+            styleParam = styleParam
         )
         var catalogCouponList = createCatalogCouponList(
             slugs = slugs,
@@ -3162,8 +3172,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetTitle = widgetTitle,
             slugText = slugText,
             isError = false,
+            isEmpty = false,
             warehouseId = warehouseId,
-            buttonStr = buttonStr
+            buttonStr = buttonStr,
+            styleParam = styleParam
         )
         val expectedResult = Success(data)
 
@@ -3176,12 +3188,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when refetching list of catalog coupons then receiving success result with hide status`() {
+    fun `when refetching list of catalog coupons (single coupon) then receiving success result with hide status`() {
         //create dummy data
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        val slugText = "ABC;CDE"
+        val slugText = "ABC"
+        val styleParam = "columns=single"
         val slugs = slugText.split(";")
         val buttonStr = COUPON_STATUS_CLAIM
 
@@ -3191,7 +3204,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val layoutResponse = createChannelLayout(
             widgetId = widgetId,
             widgetTitle = widgetTitle,
-            slugText = slugText
+            slugText = slugText,
+            styleParam = styleParam
         )
         val catalogCouponList = createCatalogCouponList(
             slugs = slugs,
@@ -3229,8 +3243,412 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetTitle = widgetTitle,
             slugText = slugText,
             isError = true,
+            isEmpty = false,
             warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons (double coupon) then receiving success result with show status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=double"
+        val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
             buttonStr = buttonStr
+        )
+
+        println(catalogCouponList)
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            isEmpty = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons (double coupon) but failed then receiving success result with hide status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=double"
+        val buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            errorThrowable = Exception()
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = true,
+            isEmpty = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when refetching list of catalog coupons (double coupon) then receiving success result with show status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=double"
+        val slugs = slugText.split(";")
+        var buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        var catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //reset dummy data
+        buttonStr = COUPON_STATUS_CLAIMED
+
+        catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //refetch catalog list
+        viewModel.getCatalogCouponList(widgetId, slugs)
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            isEmpty = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when refetching list of catalog coupons (double coupon) then receiving success result with hide status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=double"
+        val slugs = slugText.split(";")
+        val buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //reset dummy data
+        onGetCatalogCouponList_thenReturn(
+            errorThrowable = Exception()
+        )
+
+        //refetch catalog list
+        viewModel.getCatalogCouponList(widgetId, slugs)
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = true,
+            isEmpty = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons (double coupon) but slug size and style param not matching then receiving nothing first condition`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC"
+        val styleParam = "columns=double"
+        val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        println(catalogCouponList)
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            isEmpty = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons (single coupon) but slug size and style param not matching then receiving nothing first condition`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;DEF"
+        val styleParam = "columns=single"
+        val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            styleParam = styleParam
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        println(catalogCouponList)
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            isEmpty = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr,
+            styleParam = styleParam
         )
         val expectedResult = Success(data)
 

@@ -1,7 +1,11 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.util.QueryParamUtil.mapToQueryParamsMap
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.RESPONSE_STYLE_PARAMS_COLUMNS
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.RESPONSE_TYPE
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -11,7 +15,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 
 object ClaimCouponDataFactory {
-    fun createChannelLayout(widgetId: String, widgetTitle: String, slugText: String): List<HomeLayoutResponse> {
+    fun createChannelLayout(widgetId: String, widgetTitle: String, slugText: String, styleParam: String): List<HomeLayoutResponse> {
         return listOf(
             HomeLayoutResponse(
                 id = widgetId,
@@ -20,7 +24,8 @@ object ClaimCouponDataFactory {
                     name = widgetTitle,
                     serverTimeUnix = 0
                 ),
-                widgetParam = slugText
+                widgetParam = slugText,
+                styleParam = styleParam
             )
         )
     }
@@ -54,8 +59,10 @@ object ClaimCouponDataFactory {
         widgetTitle: String,
         slugText: String,
         isError: Boolean,
+        isEmpty: Boolean,
         warehouseId: String,
-        buttonStr: String
+        buttonStr: String,
+        styleParam: String
     ): HomeLayoutListUiModel {
         val slugs = slugText.split(";")
 
@@ -63,22 +70,31 @@ object ClaimCouponDataFactory {
             id = widgetId,
             title = widgetTitle,
             claimCouponList = listOf(),
-            isDouble = false,
+            isDouble = styleParam.mapToQueryParamsMap()[RESPONSE_STYLE_PARAMS_COLUMNS] == RESPONSE_TYPE,
             slugs = slugs,
             state = TokoNowLayoutState.SHOW,
             slugText = slugText,
             warehouseId = warehouseId
         )
 
-        return HomeLayoutListUiModel(
-            items = listOf(
+        val newListClaimCoupon: List<Visitable<*>> = if (isEmpty) {
+            listOf<Visitable<*>>(
+                TokoNowChooseAddressWidgetUiModel(id = "0")
+            )
+        } else if (isError){
+            listOf<Visitable<*>>(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
-                if (isError) {
-                    claimCoupon.copy(state = TokoNowLayoutState.HIDE)
-                } else {
-                    claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
-                }
-            ),
+                claimCoupon.copy(state = TokoNowLayoutState.HIDE)
+            )
+        } else {
+            listOf<Visitable<*>>(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
+            )
+        }
+
+        return HomeLayoutListUiModel(
+            items = newListClaimCoupon,
             state = TokoNowLayoutState.UPDATE
         )
     }

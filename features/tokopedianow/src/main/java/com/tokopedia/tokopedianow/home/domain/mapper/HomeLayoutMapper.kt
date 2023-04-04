@@ -93,6 +93,7 @@ object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
+    private const val SUCCESS_CODE = "200"
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -258,7 +259,9 @@ object HomeLayoutMapper {
                 slugList = slugList
             )
 
-            if (couponList.isNotEmpty()) {
+            if (response?.resultStatus?.code == SUCCESS_CODE && response.catalogWithCouponList.isNullOrEmpty()) {
+                removeHomeCatalogCouponList(widgetId)
+            } else {
                 val layout = it.layout.copy(
                     claimCouponList = couponList,
                     state = state,
@@ -272,8 +275,6 @@ object HomeLayoutMapper {
 
                 removeAt(index)
                 add(index, newItem)
-            } else {
-                removeHomeCatalogCouponList(widgetId)
             }
         }
     }

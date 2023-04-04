@@ -12,9 +12,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 
 object CatalogCouponListMapper {
-    private const val RESPONSE_STYLE_PARAMS_COLUMNS = "columns"
-    private const val RESPONSE_TYPE = "double"
-
+    const val RESPONSE_STYLE_PARAMS_COLUMNS = "columns"
+    const val RESPONSE_TYPE = "double"
     const val COUPON_WIDGET_SINGLE_SLUG_SIZE = 1
     const val COUPON_WIDGET_DOUBLE_SLUG_SIZE = 2
 
