@@ -163,6 +163,11 @@ class AffiliateHomeFragment :
         sendOpenScreenTracking()
     }
 
+    override fun onResume() {
+        super.onResume()
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
+    }
+
     private fun sendOpenScreenTracking() {
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
@@ -257,7 +262,9 @@ class AffiliateHomeFragment :
             }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isNoPromoItem && !isNoMoreData) {
@@ -333,6 +340,11 @@ class AffiliateHomeFragment :
         }
         affiliateHomeViewModel.noMoreDataAvailable().observe(this) { noDataAvailable ->
             isNoMoreData = noDataAvailable
+        }
+        affiliateHomeViewModel.getUnreadNotificationCount().observe(this) { count ->
+            view?.findViewById<NavToolbar>(R.id.home_navToolbar)?.apply {
+                setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+            }
         }
     }
 

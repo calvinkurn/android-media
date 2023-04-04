@@ -32,6 +32,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipR
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
@@ -57,6 +58,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase,
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase,
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase,
+    private val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val affiliateSSE: AffiliateSSE
 ) : BaseViewModel() {
@@ -85,6 +87,10 @@ class AffiliateHomeViewModel @Inject constructor(
 
     private var itemTypes = emptyList<ItemTypesItem>()
     private var sseJob: Job? = null
+
+    private val _unreadNotificationCount = MutableLiveData<Int>(5)
+
+    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
     companion object {
         private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
@@ -345,6 +351,17 @@ class AffiliateHomeViewModel @Inject constructor(
         when (result) {
             is AffiliateSSEAdpTotalClick -> affiliateSSEAdpTotalClick.value = result
             is AffiliateSSEAdpTotalClickItem -> affiliateSSEAdpTotalClickItem.value = result
+        }
+    }
+
+    fun fetchUnreadNotificationCount() {
+        viewModelScope.launch {
+            try {
+                _unreadNotificationCount.value =
+                    affiliateUnreadNotificationUseCase.getUnreadNotifications()
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
     }
 

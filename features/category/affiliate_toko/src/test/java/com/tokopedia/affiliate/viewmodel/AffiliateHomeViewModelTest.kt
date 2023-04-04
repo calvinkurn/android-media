@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
@@ -51,6 +52,7 @@ class AffiliateHomeViewModelTest {
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase = mockk()
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase = mockk()
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase = mockk()
+    private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val dispatchers: CoroutineDispatchers = mockk()
     private val affiliateSSE: AffiliateSSE = mockk()
     private var affiliateHomeViewModel = spyk(
@@ -62,6 +64,7 @@ class AffiliateHomeViewModelTest {
             affiliatePerformanceItemTypeUseCase,
             affiliatePerformanceDataUseCase,
             affiliateSSEAuthTokenUseCase,
+            getUnreadNotificationUseCase,
             dispatchers,
             affiliateSSE
         )
@@ -282,5 +285,15 @@ class AffiliateHomeViewModelTest {
         affiliateHomeViewModel.onRangeChanged(range)
 
         assertEquals(affiliateHomeViewModel.getRangeChanged().value, true)
+    }
+
+    @Test
+    fun `successfully getting unread notification count`() {
+        coEvery {
+            getUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateHomeViewModel.getUnreadNotificationCount().value)
     }
 }
