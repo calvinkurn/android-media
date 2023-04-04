@@ -28,7 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @TopAdsTest
-internal class SearchProductTopAdsVerificationTest {
+internal class SearchProductTopAdsVerficationTest {
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
