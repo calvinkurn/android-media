@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.tokopedia.shop_showcase.common.touchhelper
 
-package com.tokopedia.design.touchhelper;
-
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Listener for manual initiation of a drag.
  */
-public interface OnStartDragListener {
-
+interface OnStartDragListener {
     /**
      * Called when a view is requesting a start of a drag.
      *
      * @param viewHolder The holder of the view to drag.
      */
-    void onStartDrag(RecyclerView.ViewHolder viewHolder);
-
+    fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
 }
