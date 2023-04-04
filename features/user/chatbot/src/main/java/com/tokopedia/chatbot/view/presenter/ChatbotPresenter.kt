@@ -48,17 +48,17 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
 import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.MEDIA_BUTTON_TOGGLE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -328,7 +328,7 @@ class ChatbotPresenter @Inject constructor(
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
                     attachmentType == UPDATE_TOOLBAR ||
-                    checkForDynamicAttachment(pojo)
+                    checkForDynamicAttachment(pojo, attachmentType)
                 ) {
                     return
                 }
