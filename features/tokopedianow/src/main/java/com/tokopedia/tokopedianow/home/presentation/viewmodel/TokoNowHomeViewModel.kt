@@ -729,6 +729,13 @@ class TokoNowHomeViewModel @Inject constructor(
 
             val selectedChip = carouselModel.chipList.first { it.id == chipId }
             getCarouselChipsProductList(carouselModel, selectedChip)
+
+            val data = HomeLayoutListUiModel(
+                getHomeVisitableList(),
+                TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
         }) {
 
         }.let {
@@ -1088,13 +1095,6 @@ class TokoNowHomeViewModel @Inject constructor(
             miniCartData,
             selectedChip
         )
-
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-
-        _homeLayoutList.postValue(Success(data))
     }
 
     private fun updateProductCartQuantity(
