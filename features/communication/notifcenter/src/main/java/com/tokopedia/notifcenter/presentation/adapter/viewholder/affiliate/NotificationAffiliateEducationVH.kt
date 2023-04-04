@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
@@ -15,6 +16,9 @@ import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEdu
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.date.toDate
+import timber.log.Timber
+import java.text.ParseException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -128,6 +132,14 @@ class NotificationAffiliateEducationVH(
         inputPattern: String,
         outputPattern: String
     ): String? {
+        if (!input.isNullOrEmpty()) {
+            return try {
+                input.toDate(inputPattern).formatTo(outputPattern)
+            } catch (e: ParseException) {
+                Timber.e(e)
+                ""
+            }
+        }
         val parsedDate =
             LocalDate.parse(input, DateTimeFormatter.ofPattern(inputPattern))
         return parsedDate.format(DateTimeFormatter.ofPattern(outputPattern))

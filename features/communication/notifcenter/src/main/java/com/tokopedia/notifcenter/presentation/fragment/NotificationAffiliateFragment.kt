@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -94,9 +93,6 @@ open class NotificationAffiliateFragment :
 
     override fun loadData(page: Int) {
         if (page == Int.ONE) {
-            if (!hasFilter() && !GlobalConfig.isSellerApp()) {
-                viewModel.loadNotifOrderList(RoleType.AFFILIATE)
-            }
             viewModel.loadFirstPageNotification(
                 RoleType.AFFILIATE
             )
