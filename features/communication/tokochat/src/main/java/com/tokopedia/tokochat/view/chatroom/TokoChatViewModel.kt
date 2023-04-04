@@ -513,17 +513,12 @@ class TokoChatViewModel @Inject constructor(
         ) ?: throw MessageErrorException(ERROR_RENAMED_IMAGE_NULL)
     }
 
-    var counter = 1
     private suspend fun uploadImageToServer(filePath: String, localUUID: String) {
         val params = TokoChatUploadImageUseCase.Param(
             filePath = filePath,
             channelId = channelId
         )
         val uploadResult = uploadImageUseCase(params)
-        if (counter > 0) {
-            uploadResult.error = listOf("ASD")
-            counter--
-        }
         when {
             (!uploadResult.error.isNullOrEmpty()) -> {
                 // Set transient to failed
