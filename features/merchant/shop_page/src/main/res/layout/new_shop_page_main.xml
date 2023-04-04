@@ -118,7 +118,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout="@layout/new_shop_page_fragment_content_layout" />
+        android:layout="@layout/shop_page_header_fragment_content_layout" />
 
     <com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
         android:id="@+id/mini_cart"

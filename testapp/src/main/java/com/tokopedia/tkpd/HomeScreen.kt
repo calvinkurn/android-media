@@ -75,6 +75,14 @@ fun HomeScreen(
                     onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                NestButton(
+                    text = "Login Helper",
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGINHELPER) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = model.applink,
                     modifier = Modifier
