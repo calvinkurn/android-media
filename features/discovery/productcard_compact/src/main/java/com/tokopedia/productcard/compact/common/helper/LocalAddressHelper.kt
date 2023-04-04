@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.compact.common.helper
 
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
@@ -17,7 +18,8 @@ class LocalAddressHelper @Inject constructor(@ApplicationContext private val con
 
     fun getChooseAddressData() = try {
         ChooseAddressUtils.getLocalizingAddressData(context)
-    } catch (exception: Exception) {
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         ChooseAddressConstant.emptyAddress
     }
 

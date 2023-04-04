@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 internal object ViewUtil {
     private const val FORMAT_HEX_COLOR = "#%06x"
@@ -41,6 +42,7 @@ internal object ViewUtil {
         return try {
             String.format(FORMAT_HEX_COLOR, ContextCompat.getColor(context, idColor) and COLOR_WHITE).uppercase()
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             ""
         }
     }
@@ -49,7 +51,8 @@ internal object ViewUtil {
         return try {
             Color.parseColor(color)
         }
-        catch (exception: Exception) {
+        catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             defaultColor
         }
     }
