@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
@@ -92,7 +93,7 @@ open class NotificationAffiliateFragment :
     override fun isAutoLoadEnabled(): Boolean = true
 
     override fun loadData(page: Int) {
-        if (page == 1) {
+        if (page == Int.ONE) {
             if (!hasFilter() && !GlobalConfig.isSellerApp()) {
                 viewModel.loadNotifOrderList(RoleType.AFFILIATE)
             }
@@ -221,14 +222,19 @@ open class NotificationAffiliateFragment :
         ) {
             when (it) {
                 is Success -> {
+                    if (viewModel.hasFilter()) {
+                        rvAdapter?.removeLoadingComponents()
+                    }
                     renderNotifications(it.data)
                     if (!viewModel.hasFilter() && isVisible) {
                         viewModel.clearNotifCounter(RoleType.AFFILIATE)
                     }
+                    if (viewModel.hasFilter()) {
+                        rvAdapter?.removeAffiliateBanner()
+                        rvAdapter?.reAddAffiliateBanner()
+                    }
                 }
                 is Fail -> showGetListError(it.throwable)
-                else -> {
-                }
             }
         }
 
@@ -284,6 +290,7 @@ open class NotificationAffiliateFragment :
                 override fun onFilterChanged(filterType: Long, filterName: String) {
                     viewModel.filter = filterType
                     loadInitialData()
+                    rvAdapter?.affiliateBannerPair = null
                     analytic.trackFilterClick(
                         filterType,
                         filterName,
