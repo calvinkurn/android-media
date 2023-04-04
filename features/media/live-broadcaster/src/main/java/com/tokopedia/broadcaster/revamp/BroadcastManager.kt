@@ -138,19 +138,16 @@ class BroadcastManager @Inject constructor(
             effectManager.startRenderThread()
         else
             effectManager.stopRenderThread()
+
+        mWithByteplus = withByteplus
     }
 
     override fun create(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
-        withByteplus: Boolean,
     ) {
-        if(mWithByteplus == withByteplus) {
-            if(mWithByteplus == true && mStreamerSurface != null) return
-            if(mWithByteplus == false && mStreamer != null) return
-        }
-
-        mWithByteplus = withByteplus
+        if(mWithByteplus == true && mStreamerSurface != null) return
+        if(mWithByteplus == false && mStreamer != null) return
 
         if(mStreamer != null) {
             release()
@@ -300,7 +297,7 @@ class BroadcastManager @Inject constructor(
             }
         }
 
-        if (withByteplus) {
+        if (mWithByteplus == true) {
             try {
                 effectManager.init()
                 effectManager.setupTexture(surfaceSize.width, surfaceSize.height).also {

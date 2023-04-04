@@ -237,7 +237,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (isRequiredPermissionGranted()) createBroadcaster(viewModel.isBeautificationEnabled)
+            if (isRequiredPermissionGranted()) createBroadcaster()
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -295,7 +295,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         surfaceHolder = holder
         if (!::broadcaster.isInitialized) return
-        createBroadcaster(viewModel.isBeautificationEnabled)
+        createBroadcaster()
     }
 
     override fun surfaceChanged(
@@ -346,7 +346,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data, event.withByteplus)
-                        createBroadcaster(event.withByteplus)
+                        createBroadcaster()
                     }
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
                         rebindEffect()
@@ -790,22 +790,21 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun createBroadcaster(withByteplus: Boolean) {
+    private fun createBroadcaster() {
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            initBroadcasterWithDelay(holder, surfaceSize, withByteplus)
+            initBroadcasterWithDelay(holder, surfaceSize)
         } else showPermissionPage()
     }
 
     private fun initBroadcasterWithDelay(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
-        withByteplus: Boolean,
     ) {
         lifecycleScope.launch(dispatcher.main) {
             delay(INIT_BROADCASTER_DELAY)
-            broadcaster.create(holder, surfaceSize, withByteplus)
+            broadcaster.create(holder, surfaceSize)
             rebindEffect()
         }
     }

@@ -27,7 +27,6 @@ interface Broadcaster {
     fun create(
         holder: SurfaceHolder,
         surfaceSize: Size,
-        withByteplus: Boolean
     )
 
     fun updateSurfaceSize(surfaceSize: Size)

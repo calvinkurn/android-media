@@ -103,9 +103,8 @@ class PlayBroadcaster(
     override fun create(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
-        withByteplus: Boolean
     ) {
-        broadcaster.create(holder, surfaceSize, withByteplus)
+        broadcaster.create(holder, surfaceSize)
         updateAspectFrameSize()
     }
 
