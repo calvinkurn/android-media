@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -36,15 +34,19 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -694,13 +696,28 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun navigateToSetPinpoint(locationPass: LocationPass) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                    putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
+                }
+                RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
+                }
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
@@ -780,9 +797,17 @@ class TokoFoodPurchaseFragment :
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
                 val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-                locationPass?.let {
-                    showLoadingLayout()
-                    viewModel.updateAddressPinpoint(locationPass.latitude, locationPass.longitude)
+                if (locationPass == null) {
+                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    addressData?.let { address ->
+                        showLoadingLayout()
+                        viewModel.updateAddressPinpoint(address.latitude, address.longitude)
+                    }
+                } else {
+                    locationPass.let { location ->
+                        showLoadingLayout()
+                        viewModel.updateAddressPinpoint(location.latitude, location.longitude)
+                    }
                 }
             }
         }

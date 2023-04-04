@@ -16,11 +16,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
@@ -42,7 +44,6 @@ import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.EDIT_SHI
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.EDIT_SHIPPING_RESULT_KEY
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.MAP_MODE
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.MODIFIED_COURIER_INDEX_KEY
-import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.OPEN_MAP_CODE
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.RESUME_OPEN_SHOP_DATA_KEY
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.SETTING_PAGE
@@ -52,10 +53,12 @@ import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
 import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
 import com.tokopedia.editshipping.util.EditShippingConstant.ARGUMENT_DATA_TOKEN
 import com.tokopedia.editshipping.util.EditShippingConstant.LABEL_VALIDATION_BO
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -84,6 +87,14 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private var cacheManager: SaveInstanceCacheManager? = null
 
     private var whitelabelCoachmark: CoachMark2? = null
+
+    private val pinpointPageResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            changeGoogleMapData(it.data)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -391,7 +402,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                     )
                     changeLocationRequest(address?.districtId)
                 }
-                OPEN_MAP_CODE -> changeGoogleMapData(data)
                 ADDITIONAL_OPTION_REQUEST_CODE -> {
                     additionalOptionRequest(data)
                     inputMethodManager?.hideSoftInputFromWindow(
@@ -496,7 +506,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
         }
         val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
-        startActivityForResult(intent, OPEN_MAP_CODE)
+        pinpointPageResult.launch(intent)
     }
 
     override fun showInfoBottomSheet(information: String?, serviceName: String?) {
@@ -679,12 +689,30 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         activity: Activity,
         locationPass: LocationPass
     ): Intent? {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        intent.apply {
-            putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putExtra(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, false)
+        activity.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    if (!locationPass.latitude.isNullOrEmpty() && !locationPass.longitude.isNullOrEmpty()) {
+                        putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                        putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
+                    }
+                    putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
+                    putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
+                }
+                return RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                }
+            } else {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                intent.apply {
+                    putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putExtra(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, false)
+                }
+                return intent
+            }
         }
-        return intent
     }
 
     companion object {

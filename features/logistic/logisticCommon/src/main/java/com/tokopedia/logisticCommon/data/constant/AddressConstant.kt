@@ -7,4 +7,8 @@ object AddressConstant {
     const val EXTRA_IS_GET_PINPOINT_ONLY = "EXTRA_IS_GET_PINPOINT_ONLY"
     const val EXTRA_DISTRICT_NAME = "EXTRA_DISTRICT_NAME"
     const val EXTRA_CITY_NAME = "EXTRA_CITY_NAME"
+    const val EXTRA_BUNDLE = "extra_bundle"
+    const val EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL"
+    const val EXTRA_LAT = "EXTRA_LAT"
+    const val EXTRA_LONG = "EXTRA_LONG"
 }

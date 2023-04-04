@@ -1,5 +1,7 @@
 package com.tokopedia.editshipping.ui.customview;
 
+import static com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
@@ -14,6 +16,7 @@ import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -115,6 +118,15 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
                 presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
             }
             chooseLocation.setText(getReverseGeocode(locationPass));
+        } else {
+            SaveAddressDataModel addressData = data.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL);
+            if (addressData != null) {
+                if (presenter.getShopInformation() != null) {
+                    presenter.getShopInformation().setShopLatitude(addressData.getLatitude());
+                    presenter.getShopInformation().setShopLongitude(addressData.getLongitude());
+                }
+                chooseLocation.setText(addressData.getFormattedAddress());
+            }
         }
     }
 

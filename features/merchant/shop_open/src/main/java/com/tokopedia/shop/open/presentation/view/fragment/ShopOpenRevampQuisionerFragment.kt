@@ -23,7 +23,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
@@ -53,9 +55,9 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class ShopOpenRevampQuisionerFragment :
-        BaseDaggerFragment(),
-        SurveyListener,
-        HasComponent<ShopOpenRevampComponent>  {
+    BaseDaggerFragment(),
+    SurveyListener,
+    HasComponent<ShopOpenRevampComponent> {
 
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
@@ -165,10 +167,10 @@ class ShopOpenRevampQuisionerFragment :
     override fun getComponent(): ShopOpenRevampComponent {
         return activity.run {
             DaggerShopOpenRevampComponent
-                    .builder()
-                    .shopOpenRevampModule(ShopOpenRevampModule())
-                    .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
+                .builder()
+                .shopOpenRevampModule(ShopOpenRevampModule())
+                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         }
     }
 
@@ -205,100 +207,125 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun observeSurveyData() {
-        viewModel.getSurveyDataResponse.observe(viewLifecycleOwner, Observer {
-            EspressoIdlingResource.decrement()
-            when (it) {
-                is Success -> {
-                    hideLoader()
-                    val questions = it.data.getSurveyData.result.questions
-                    if (questions.size > 0) {
-                        adapter?.updateDataQuestionsList(questions)
+        viewModel.getSurveyDataResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                EspressoIdlingResource.decrement()
+                when (it) {
+                    is Success -> {
+                        hideLoader()
+                        val questions = it.data.getSurveyData.result.questions
+                        if (questions.size > 0) {
+                            adapter?.updateDataQuestionsList(questions)
+                        }
                     }
-                }
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    showErrorNetwork(errorMessage) {
-                        loadDataSurvey()
-                    }
-                    ShopOpenRevampErrorHandler.logMessage(
+                    is Fail -> {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                        showErrorNetwork(errorMessage) {
+                            loadDataSurvey()
+                        }
+                        ShopOpenRevampErrorHandler.logMessage(
                             title = ERROR_GET_SURVEY_QUESTIONS,
                             userId = userSession.userId,
                             message = it.throwable.message ?: ""
-                    )
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeSendSurveyResult() {
-        viewModel.sendSurveyDataResponse.observe(viewLifecycleOwner, Observer {
-            EspressoIdlingResource.decrement()
-            when (it) {
-                is Success -> {
-                    val isSuccess = it.data.sendSurveyData.success
-                    val message = it.data.sendSurveyData.message
-                    if (isSuccess) {
-                        showLoader()
-                        gotoPickLocation()
-                    } else {
-                        showErrorResponse(message)
+        viewModel.sendSurveyDataResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                EspressoIdlingResource.decrement()
+                when (it) {
+                    is Success -> {
+                        val isSuccess = it.data.sendSurveyData.success
+                        val message = it.data.sendSurveyData.message
+                        if (isSuccess) {
+                            showLoader()
+                            gotoPickLocation()
+                        } else {
+                            showErrorResponse(message)
+                        }
                     }
-                }
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    showErrorNetwork(errorMessage) {
-                        val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
-                        viewModel.sendSurveyData(dataSurveyInput)
-                    }
-                    ShopOpenRevampErrorHandler.logMessage(
+                    is Fail -> {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                        showErrorNetwork(errorMessage) {
+                            val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+                            viewModel.sendSurveyData(dataSurveyInput)
+                        }
+                        ShopOpenRevampErrorHandler.logMessage(
                             title = ERROR_SEND_SURVEY,
                             userId = userSession.userId,
                             message = errorMessage
-                    )
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeSaveShipmentLocationData() {
-        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner, Observer {
-            EspressoIdlingResource.decrement()
-            when (it) {
-                is Success -> {
-                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
-                    if (isSuccess) {
-                        showLoader()
-                        EspressoIdlingResource.increment()
-                        fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
-                    } else {
-                        showLoader()
-                        gotoPickLocation()
-                    }
-                }
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    showErrorNetwork(errorMessage) {
-                        if (shopId != 0 && postCode != "" && courierOrigin != 0
-                                && addrStreet != "" && latitude != "" && longitude != "") {
-                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+        viewModel.saveShopShipmentLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                EspressoIdlingResource.decrement()
+                when (it) {
+                    is Success -> {
+                        val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                        if (isSuccess) {
+                            showLoader()
+                            EspressoIdlingResource.increment()
+                            fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
+                        } else {
+                            showLoader()
+                            gotoPickLocation()
                         }
                     }
-                    ShopOpenRevampErrorHandler.logMessage(
+                    is Fail -> {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                        showErrorNetwork(errorMessage) {
+                            if (shopId != 0 && postCode != "" && courierOrigin != 0 &&
+                                addrStreet != "" && latitude != "" && longitude != ""
+                            ) {
+                                saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                            }
+                        }
+                        ShopOpenRevampErrorHandler.logMessage(
                             title = ERROR_SAVE_LOCATION_SHIPPING,
                             userId = userSession.userId,
                             message = errorMessage
-                    )
-                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        )
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun gotoPickLocation() {
-        val intent = RouteManager.getIntent(
-                activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-        intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-        startActivityForResult(intent, REQUEST_CODE_PINPOINT)
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                }
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_PINPOINT)
+                }
+            } else {
+                val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalLogistic.ADD_ADDRESS_V2
+                )
+                intent.putExtra(EXTRA_IS_FULL_FLOW, false)
+                startActivityForResult(intent, REQUEST_CODE_PINPOINT)
+            }
+        }
     }
 
     private fun showErrorResponse(message: String) {
@@ -310,13 +337,13 @@ class ShopOpenRevampQuisionerFragment :
     private fun showErrorNetwork(errorMessage: String, retry: () -> Unit) {
         view?.let {
             Toaster.showErrorWithAction(
-                    it,
-                    errorMessage,
-                    Snackbar.LENGTH_LONG,
-                    getString(R.string.open_shop_revamp_retry),
-                    View.OnClickListener {
-                        retry.invoke()
-                    }
+                it,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                getString(R.string.open_shop_revamp_retry),
+                View.OnClickListener {
+                    retry.invoke()
+                }
             )
         }
     }
@@ -330,8 +357,9 @@ class ShopOpenRevampQuisionerFragment :
         arguments?.let {
             // Check the needs to bypass to logistic without opening survey page
             isNeedLocation = it.getBoolean(
-                    ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC,
-                    false)
+                ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC,
+                false
+            )
         }
 
         if (isNeedLocation) {
@@ -341,26 +369,37 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun showLoader() {
-        header?.visibility =  View.INVISIBLE
+        header?.visibility = View.INVISIBLE
         recyclerView?.visibility = View.INVISIBLE
         btnNext?.visibility = View.INVISIBLE
         loading?.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
-        header?.visibility =  View.VISIBLE
+        header?.visibility = View.VISIBLE
         recyclerView?.visibility = View.VISIBLE
         btnNext?.visibility = View.VISIBLE
         loading?.visibility = View.INVISIBLE
     }
 
-    private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
-                                     addrStreet: String, lat: String, long: String) {
+    private fun saveShipmentLocation(
+        shopId: Int,
+        postalCode: String,
+        courierOrigin: Int,
+        addrStreet: String,
+        lat: String,
+        long: String
+    ) {
         EspressoIdlingResource.increment()
         viewModel.saveShippingLocation(
-                viewModel.getSaveShopShippingLocationData(
-                        shopId, postalCode, courierOrigin, addrStreet, lat, long
-                )
+            viewModel.getSaveShopShippingLocationData(
+                shopId,
+                postalCode,
+                courierOrigin,
+                addrStreet,
+                lat,
+                long
+            )
         )
     }
 
@@ -377,7 +416,11 @@ class ShopOpenRevampQuisionerFragment :
             REQUEST_CODE_PINPOINT -> if (resultCode == Activity.RESULT_OK) {
                 showLoader()
                 data?.let {
-                    val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                    val saveAddressDataModel =
+                        it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                            ?: it.getParcelableExtra<SaveAddressDataModel>(
+                                AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
+                            )
                     var _latitudeString: String = ""
                     var _longitudeString: String = ""
                     var _postalCode: String = ""
@@ -395,12 +438,12 @@ class ShopOpenRevampQuisionerFragment :
                     val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
 
                     if (!_shopId.equals(0) &&
-                            _postalCode.isNotEmpty() &&
-                            _latitudeString.isNotEmpty() &&
-                            _longitudeString.isNotEmpty() &&
-                            _districtId != 0L &&
-                            _formattedAddress.isNotEmpty()) {
-
+                        _postalCode.isNotEmpty() &&
+                        _latitudeString.isNotEmpty() &&
+                        _longitudeString.isNotEmpty() &&
+                        _districtId != 0L &&
+                        _formattedAddress.isNotEmpty()
+                    ) {
                         shopId = _shopId
                         postCode = _postalCode
                         courierOrigin = _districtId.toInt()

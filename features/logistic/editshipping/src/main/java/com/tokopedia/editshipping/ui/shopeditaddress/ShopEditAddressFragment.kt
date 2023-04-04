@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.maps.*
@@ -38,11 +39,13 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -94,6 +97,23 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var googleMap: GoogleMap? = null
     private var validate: Boolean = true
     private var uncoveredCourierFlag: Boolean = false
+
+    private val pinpointPageResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val addressModel =
+                it.data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                    ?: it.data?.getParcelableExtra<SaveAddressDataModel>(
+                        AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
+                    )
+            addressModel?.let { address ->
+                warehouseModel?.districtId = address.districtId
+                detailAddressHelper = address.formattedAddress
+                adjustMap(address.latitude.toDouble(), address.longitude.toDouble())
+            }
+        }
+    }
 
     override fun getScreenName(): String = ""
 
@@ -151,16 +171,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     address?.let {
                         viewModel.getAutoCompleteList(it.districtName)
                         warehouseModel?.districtId = it.districtId
-                    }
-                }
-
-                OPEN_MAP_REQUEST_CODE -> {
-                    val addressModel =
-                        data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-                    addressModel?.let {
-                        warehouseModel?.districtId = it.districtId
-                        detailAddressHelper = it.formattedAddress
-                        adjustMap(it.latitude.toDouble(), it.longitude.toDouble())
                     }
                 }
             }
@@ -558,16 +568,33 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToPinpointActivity(lat: Double?, long: Double?, warehouseDataModel: Warehouse?) {
-        val intent = RouteManager.getIntent(
-            activity,
-            ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-        )
-        intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-        intent.putExtra(EXTRA_LAT, lat)
-        intent.putExtra(EXTRA_LONG, long)
-        intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
-        intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
-        startActivityForResult(intent, OPEN_MAP_REQUEST_CODE)
+        context?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    if (lat != null && long != null) {
+                        putDouble(AddressConstant.EXTRA_LAT, lat)
+                        putDouble(AddressConstant.EXTRA_LONG, long)
+                    }
+                }
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    pinpointPageResult.launch(this)
+                }
+            } else {
+                val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalLogistic.ADD_ADDRESS_V2
+                )
+                intent.putExtra(EXTRA_IS_FULL_FLOW, false)
+                intent.putExtra(EXTRA_LAT, lat)
+                intent.putExtra(EXTRA_LONG, long)
+                intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
+                intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
+                pinpointPageResult.launch(intent)
+            }
+        }
     }
 
     companion object {
