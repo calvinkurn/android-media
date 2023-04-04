@@ -1810,6 +1810,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 setupOnDemandAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
             } catch (e: Exception) {
+                _beautificationConfig.value = BeautificationConfigUiModel.Empty
+
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
 
                 if (_allowRetryDownloadAsset.value) {
@@ -1908,8 +1910,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _beautificationConfig.update {
             it.copy(
                 presets = it.presets.map { item ->
-                    if (item.id == preset.id) item.copy(isSelected = true)
-                    else item
+                    item.copy(isSelected = item.id == preset.id)
                 }
             )
         }
