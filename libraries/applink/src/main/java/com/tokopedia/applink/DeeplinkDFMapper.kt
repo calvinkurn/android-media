@@ -135,6 +135,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_L
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_CREATE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.TOKOMEMBER
@@ -729,6 +730,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWithPattern(SELLER_MVC_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_detail))
+            add(DFP({ it.startsWith(SELLER_SHOP_NIB)}, DF_BASE_SELLER_APP, R.string.title_seller_shop_nib))
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))

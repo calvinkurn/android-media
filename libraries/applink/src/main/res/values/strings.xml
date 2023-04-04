@@ -186,4 +186,7 @@
     <string name="title_seller_mvc_create">Mvc Create</string>
     <string name="title_seller_mvc_product_create">Mvc Product Create</string>
     <string name="title_seller_mvc_detail">Mvc Detail</string>
+
+    <!--Shop NIB-->
+    <string name="title_seller_shop_nib">Nomor Induk Berusaha</string>
 </resources>

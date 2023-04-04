@@ -145,4 +145,7 @@ object ApplinkConstInternalSellerapp {
 
     //Seller Persona
     const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
+
+    //Seller Shop NIB
+    const val SELLER_SHOP_NIB = "$INTERNAL_SELLERAPP/shop-nib"
 }
