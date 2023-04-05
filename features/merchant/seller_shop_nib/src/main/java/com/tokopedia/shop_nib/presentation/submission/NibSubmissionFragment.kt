@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.disable
+import com.tokopedia.campaign.utils.extension.setHyperlinkText
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -23,7 +26,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shop_nib.R
 import com.tokopedia.shop_nib.util.extension.toMb
-import java.io.File
 
 class NibSubmissionFragment : BaseDaggerFragment() {
 
@@ -80,6 +82,13 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             showFilePicker()
         }
         binding?.iconClose?.setOnClickListener { removeSelectedFile() }
+        binding?.tpgNibBenefit?.setHyperlinkText(
+            fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
+            hyperlinkSubstring = context?.getString(R.string.ssn_here).orEmpty(),
+            onHyperlinkClick = {
+
+            }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,11 +115,19 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     private fun showSelectedFile(intent: Intent) {
         val fileUri = intent.data ?: return
+        val fileSizeInKb = fileHelper.getFileSizeInBytes(fileUri)
 
+        if (fileSizeInKb <= MAX_FILE_SIZE_BYTES) {
+            renderSelectedFileThumbnail(fileUri, fileSizeInKb)
+        } else {
+            binding?.btnAddProduct?.disable()
+            binding?.root?.showToasterError(context?.getString(R.string.ssn_error_message_file_size).orEmpty())
+        }
+    }
+
+    private fun renderSelectedFileThumbnail(fileUri: Uri, fileSizeInKb: Long) {
         val fileName = fileHelper.getFileName(fileUri)
         val fileExtension = fileHelper.getFileExtension(fileUri)
-        val fileSizeInMb = fileHelper.getFileSizeInBytes(fileUri).toMb()
-
         val isPdf = fileExtension == "pdf"
 
         binding?.run {
@@ -125,6 +142,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             layoutFilePickerSelected.visible()
             tpgFileName.text = fileName
 
+            val fileSizeInMb = fileSizeInKb.toMb()
             val roundedFileSizeInMb = String.format("%.2f", fileSizeInMb)
             tpgFileSize.text = context?.getString(R.string.ssn_placeholder_file_size, roundedFileSizeInMb)
         }

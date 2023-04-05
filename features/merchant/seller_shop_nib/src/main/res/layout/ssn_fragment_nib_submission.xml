@@ -169,6 +169,7 @@
                 android:layout_height="wrap_content"/>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgNibBenefit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ssn_nib_benefit"

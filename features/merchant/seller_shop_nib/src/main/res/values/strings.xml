@@ -9,7 +9,8 @@
     <string name="ssn_nib_benefit">Belum punya NIB? Daftar dan lihat berbagai keuntungannya di sini</string>
     <string name="ssn_finish">Selesai</string>
     <string name="ssn_placeholder_file_size">File size: %smb </string>
-    <string name="ssn_error_message_file_size">Ukuran file maks %s mb </string>
+    <string name="ssn_error_message_file_size">Ukuran file maks 5 Mb</string>
+    <string name="ssn_here">di sini</string>
 
     <!--Date Picker Bottomsheet-->
     <string name="ssn_select">Pilih</string>
