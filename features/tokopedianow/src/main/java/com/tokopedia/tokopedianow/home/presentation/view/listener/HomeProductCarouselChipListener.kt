@@ -8,12 +8,14 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 
 class HomeProductCarouselChipListener(
     private val context: Context,
     private val viewModel: TokoNowHomeViewModel,
+    private val analytics: HomeProductCarouselChipsAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ): HomeProductCarouselChipsViewListener {
 
@@ -41,17 +43,35 @@ class HomeProductCarouselChipListener(
         )
     }
 
-    override fun onClickProductCard(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
+    override fun onClickProductCard(
+        position: Int,
+        channelId: String,
+        chipName: String,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
         RouteManager.route(context, product.appLink)
+        analytics.trackProductCardClick(position, channelId, chipName, product)
     }
 
     override fun onProductCardImpressed(
         position: Int,
+        channelId: String,
+        chipName: String,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
+        analytics.trackProductCardImpression(position, channelId, chipName, product)
     }
 
-    override fun onClickChipItem(channelId: String, chip: TokoNowChipUiModel) {
+    override fun onClickChipItem(
+        channelId: String,
+        headerName: String,
+        chip: TokoNowChipUiModel
+    ) {
         viewModel.switchProductCarouselChipTab(channelId, chip.id)
+        analytics.trackClickChip(channelId, headerName, chip.text)
+    }
+
+    override fun onWidgetImpressed() {
+        analytics.trackWidgetImpression()
     }
 }

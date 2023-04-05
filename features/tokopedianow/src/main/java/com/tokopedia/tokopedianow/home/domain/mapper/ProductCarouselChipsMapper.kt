@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCardMapper.mapRecomWidgetToProductList
@@ -95,5 +96,17 @@ object ProductCarouselChipsMapper {
     ): HomeProductCarouselChipsUiModel {
         val visitableItem = first { it?.layout?.getVisitableId() == id }
         return visitableItem?.layout as HomeProductCarouselChipsUiModel
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.getProductCarouselChipByProductId(
+        productId: String
+    ): HomeProductCarouselChipsUiModel? {
+        filter { it?.layout is HomeProductCarouselChipsUiModel }.firstOrNull {
+            val model = it?.layout as HomeProductCarouselChipsUiModel
+            val products = model.carouselItemList.filterIsInstance<TokoNowProductCardCarouselItemUiModel>()
+            products.firstOrNull { product -> product.getProductId() == productId } != null
+        }.let {
+            return it?.layout as? HomeProductCarouselChipsUiModel
+        }
     }
 }

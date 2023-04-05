@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CHIP_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
@@ -70,6 +71,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getProductCarouselChipByProductId
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getProductCarouselChipsItem
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.setProductCarouselChipsLoading
@@ -1137,6 +1139,7 @@ class TokoNowHomeViewModel @Inject constructor(
             REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
             MIX_LEFT_CAROUSEL_ATC -> trackLeftCarouselAddToCart(productId, quantity, cartId)
+            CHIP_CAROUSEL -> trackCarouselChipAddToCart(productId, quantity, cartId)
         }
     }
 
@@ -1211,6 +1214,24 @@ class TokoNowHomeViewModel @Inject constructor(
                 val data = HomeAddToCartTracker(position, quantity, cartId, it)
                 _homeAddToCartTracker.postValue(data)
             }
+        }
+    }
+
+    private fun trackCarouselChipAddToCart(productId: String, quantity: Int, cartId: String) {
+        homeLayoutItemList.getProductCarouselChipByProductId(productId)?.let { carousel ->
+            val productList = carousel.carouselItemList
+                .filterIsInstance<TokoNowProductCardCarouselItemUiModel>()
+            val product = productList.first { it.getProductId() == productId }
+            val position = productList.indexOf(product)
+
+            val data = HomeAddToCartTracker(
+                position,
+                quantity,
+                cartId,
+                carousel
+            )
+
+            _homeAddToCartTracker.postValue(data)
         }
     }
 

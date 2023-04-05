@@ -1,21 +1,26 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
@@ -24,6 +29,7 @@ import org.junit.Test
 class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixture() {
 
     companion object {
+        private const val ADD_TO_CART_DELAY = 500L
         private const val SWITCH_PRODUCT_CAROUSEL_TAB_DELAY = 500L
     }
 
@@ -566,6 +572,254 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
 
             verifyGetHomeLayoutDataUseCaseCalled()
+        }
+    }
+
+    @Test
+    fun `given chip carousel when add to cart should update homeAddToCartTracker live data`() {
+        coroutineTestRule.runBlockingTest {
+            val channelId = "1001"
+            val productId = "5"
+            val shopId = "5"
+            val quantity = 2
+
+            val productCarouselItemList = listOf(
+                RecommendationItem(
+                    productId = 1,
+                    parentID = 1,
+                    shopId = 2,
+                    name = "Tahu Kotak",
+                    appUrl = "tokopedia://product/detail/1"
+                ),
+                RecommendationItem(
+                    productId = productId.toLong(),
+                    parentID = 1,
+                    shopId = shopId.toInt(),
+                    name = "Tahu Bulat",
+                    appUrl = "tokopedia://product/detail/2"
+                )
+            )
+
+            val productCarouselResponse = listOf(
+                RecommendationWidget(recommendationItemList = productCarouselItemList),
+                RecommendationWidget(recommendationItemList = emptyList())
+            )
+
+            val homeLayoutResponse = listOf(
+                HomeLayoutResponse(
+                    id = channelId,
+                    layout = "chip_carousel",
+                    header = Header(
+                        id = "5",
+                        name = "Lagi Diskon",
+                        serverTimeUnix = 0
+                    ),
+                    grids = listOf(
+                        Grid(
+                            id = "1",
+                            name = "Sayur-sayuran",
+                            param = "?pagename=page_name1"
+                        ),
+                        Grid(
+                            id = "2",
+                            name = "Buah-buahan",
+                            param = "?pagename=page_name2"
+                        ),
+                        Grid(
+                            id = "3",
+                            name = "Bumbu Dapur",
+                            param = "?pagename=page_name3"
+                        )
+                    )
+                )
+            )
+            val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "9"))
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+            onGetRecommendation_thenReturn(productCarouselResponse)
+            onAddToCart_thenReturn(addToCartResponse)
+
+            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+            viewModel.onCartQuantityChanged(
+                productId = productId,
+                quantity = quantity,
+                shopId = shopId,
+                type = TokoNowLayoutType.CHIP_CAROUSEL
+            )
+            advanceTimeBy(ADD_TO_CART_DELAY)
+
+            verifyGetHomeLayoutDataUseCaseCalled()
+            verifyGetCarouselChipsRecomCalled(
+                pageName = "page_name1"
+            )
+
+            val chipList = listOf(
+                TokoNowChipUiModel(
+                    id = "1",
+                    text = "Sayur-sayuran",
+                    param = "page_name1",
+                    selected = true
+                ),
+                TokoNowChipUiModel(
+                    id = "2",
+                    text = "Buah-buahan",
+                    param = "page_name2",
+                    selected = false
+                ),
+                TokoNowChipUiModel(
+                    id = "3",
+                    text = "Bumbu Dapur",
+                    param = "page_name3",
+                    selected = false
+                )
+            )
+
+            val productList = listOf(
+                TokoNowProductCardCarouselItemUiModel(
+                    shopId = "2",
+                    shopType = "",
+                    appLink = "tokopedia://product/detail/1",
+                    headerName = "Lagi Diskon",
+                    productCardModel = TokoNowProductCardViewUiModel(
+                        productId = "1",
+                        name = "Tahu Kotak",
+                        isVariant = true,
+                        price = "",
+                        orderQuantity = 0,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true,
+                        needToChangeMaxLinesName = true
+                    ),
+                    parentId = "1"
+                ),
+                TokoNowProductCardCarouselItemUiModel(
+                    shopId = "5",
+                    shopType = "",
+                    appLink = "tokopedia://product/detail/2",
+                    headerName = "Lagi Diskon",
+                    productCardModel = TokoNowProductCardViewUiModel(
+                        productId = "5",
+                        name = "Tahu Bulat",
+                        isVariant = true,
+                        price = "",
+                        orderQuantity = 0,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true,
+                        needToChangeMaxLinesName = true
+                    ),
+                    parentId = "1"
+                )
+            )
+
+            val headerUiModel = TokoNowDynamicHeaderUiModel(
+                title = "Lagi Diskon",
+                subTitle = "",
+                ctaText = "",
+                ctaTextLink = "",
+                expiredTime = "",
+                serverTimeOffset = 0,
+                backColor = ""
+            )
+
+            val carouselChipsUiModel = HomeProductCarouselChipsUiModel(
+                id = "1001",
+                header = headerUiModel,
+                chipList = chipList,
+                carouselItemList = productList,
+                state = TokoNowProductRecommendationState.LOADED
+            )
+
+            val expectedResult = HomeAddToCartTracker(
+                position = 1,
+                quantity = quantity,
+                cartId = "9",
+                data = carouselChipsUiModel
+            )
+
+            viewModel.homeAddToCartTracker
+                .verifyValueEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `given product not found when add to cart should NOT update homeAddToCartTracker live data`() {
+        coroutineTestRule.runBlockingTest {
+            val channelId = "1001"
+            val productId = "5"
+            val shopId = "5"
+            val quantity = 2
+
+            val productCarouselItemList = listOf(
+                RecommendationItem(
+                    productId = 1,
+                    parentID = 1,
+                    shopId = 2,
+                    name = "Tahu Kotak",
+                    appUrl = "tokopedia://product/detail/1"
+                ),
+                RecommendationItem(
+                    productId = productId.toLong(),
+                    parentID = 1,
+                    shopId = shopId.toInt(),
+                    name = "Tahu Bulat",
+                    appUrl = "tokopedia://product/detail/2"
+                )
+            )
+
+            val productCarouselResponse = listOf(
+                RecommendationWidget(recommendationItemList = productCarouselItemList),
+                RecommendationWidget(recommendationItemList = emptyList())
+            )
+
+            val homeLayoutResponse = listOf(
+                HomeLayoutResponse(
+                    id = channelId,
+                    layout = "chip_carousel",
+                    header = Header(
+                        id = "5",
+                        name = "Lagi Diskon",
+                        serverTimeUnix = 0
+                    ),
+                    grids = listOf(
+                        Grid(
+                            id = "1",
+                            name = "Sayur-sayuran",
+                            param = "?pagename=page_name1"
+                        ),
+                        Grid(
+                            id = "2",
+                            name = "Buah-buahan",
+                            param = "?pagename=page_name2"
+                        ),
+                        Grid(
+                            id = "3",
+                            name = "Bumbu Dapur",
+                            param = "?pagename=page_name3"
+                        )
+                    )
+                )
+            )
+            val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "9"))
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+            onGetRecommendation_thenReturn(productCarouselResponse)
+            onAddToCart_thenReturn(addToCartResponse)
+
+            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+            viewModel.onCartQuantityChanged(
+                productId = "99",
+                quantity = quantity,
+                shopId = shopId,
+                type = TokoNowLayoutType.CHIP_CAROUSEL
+            )
+            advanceTimeBy(ADD_TO_CART_DELAY)
+
+            verifyGetHomeLayoutDataUseCaseCalled()
+
+            viewModel.homeAddToCartTracker
+                .verifyValueEquals(null)
         }
     }
 }

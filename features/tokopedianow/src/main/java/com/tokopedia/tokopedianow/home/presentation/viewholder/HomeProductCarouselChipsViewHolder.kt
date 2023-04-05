@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductCarouselChipsBinding
@@ -30,6 +31,9 @@ class HomeProductCarouselChipsViewHolder(
             carouselItems = uiModel.carouselItemList,
             state = uiModel.state
         )
+        itemView.addOnImpressionListener(uiModel) {
+            listener?.onWidgetImpressed()
+        }
     }
 
     override fun bind(uiModel: HomeProductCarouselChipsUiModel?, payloads: MutableList<Any>) {

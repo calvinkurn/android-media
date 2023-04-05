@@ -29,6 +29,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     TokoNowProductCardCarouseBasicListener, ChipListener {
 
     private var channelId = ""
+    private var headerName = ""
     private var chipList = emptyList<TokoNowChipUiModel>()
 
     private var listener: HomeProductCarouselChipsViewListener? = null
@@ -59,10 +60,11 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         header: TokoNowDynamicHeaderUiModel? = null,
         state: TokoNowProductRecommendationState = TokoNowProductRecommendationState.LOADING
     ) {
-        initData(channelId, chipList)
-
-        val loaded = TokoNowProductRecommendationState.LOADED
+        val title = header?.title.orEmpty()
         val loading = TokoNowProductRecommendationState.LOADING
+        val loaded = TokoNowProductRecommendationState.LOADED
+
+        initData(channelId, chipList, title)
 
         binding.header.showIfWithBlock(header != null) {
             header?.let { setModel(it) }
@@ -83,7 +85,10 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         state: TokoNowProductRecommendationState
     ) {
         val loading = TokoNowProductRecommendationState.LOADING
+        val loaded = TokoNowProductRecommendationState.LOADED
+
         binding.productCardCarousel.bindItems(items = carouselItemList)
+        binding.productCardCarousel.showWithCondition(state == loaded)
         binding.productCardShimmering.root.showWithCondition(state == loading)
     }
 
@@ -94,27 +99,31 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     private fun initData(
         channelId: String,
         chipList: List<TokoNowChipUiModel>,
+        headerName: String
     ) {
         this.channelId = channelId
         this.chipList = chipList
+        this.headerName = headerName
     }
 
     private fun submitChipList(chipList: List<TokoNowChipUiModel>) {
         chipAdapter.submitList(chipList)
     }
 
+    private fun getSelectedChipName() = chipList.first { it.selected }.text
+
     override fun onProductCardClicked(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
-        listener?.onClickProductCard(position, product)
+        listener?.onClickProductCard(position, channelId, getSelectedChipName(), product)
     }
 
     override fun onProductCardImpressed(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
-        listener?.onProductCardImpressed(position, product)
+        listener?.onProductCardImpressed(position, channelId, getSelectedChipName(), product)
     }
 
     override fun onProductCardQuantityChanged(
@@ -146,7 +155,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
             (viewHolder as? TokoNowChipViewHolder)?.setChipType(type)
         }
 
-        listener?.onClickChipItem(channelId, chip)
+        listener?.onClickChipItem(channelId, headerName, chip)
     }
 
     interface HomeProductCarouselChipsViewListener {
@@ -161,12 +170,17 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         )
         fun onClickProductCard(
             position: Int,
+            channelId: String,
+            chipName: String,
             product: TokoNowProductCardCarouselItemUiModel
         )
         fun onProductCardImpressed(
             position: Int,
+            channelId: String,
+            chipName: String,
             product: TokoNowProductCardCarouselItemUiModel
         )
-        fun onClickChipItem(channelId: String, chip: TokoNowChipUiModel)
+        fun onClickChipItem(channelId: String, headerName: String, chip: TokoNowChipUiModel)
+        fun onWidgetImpressed()
     }
 }
