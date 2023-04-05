@@ -509,7 +509,7 @@ class FeedTimeBar : View, TimeBar {
             // Allocating inside onLayout is considered a DrawAllocation lint error, so avoid if possible.
             return
         }
-        this.lastExclusionRectangle = Rect( /* left= */0,  /* top= */0, width, height)
+        this.lastExclusionRectangle = Rect( 0, 0, width, height)
         systemGestureExclusionRects = Collections.singletonList(lastExclusionRectangle)
     }
 
