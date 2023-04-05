@@ -6,7 +6,7 @@ import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
-class TokoChatSendMessageUseCase @Inject constructor(
+open class TokoChatSendMessageUseCase @Inject constructor(
     @TokoChatQualifier private val repository: TokoChatRepository
 ) {
     fun sendTextMessage(
@@ -21,7 +21,7 @@ class TokoChatSendMessageUseCase @Inject constructor(
         )
     }
 
-    fun addTransientMessage(
+    open fun addTransientMessage(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {
@@ -31,7 +31,7 @@ class TokoChatSendMessageUseCase @Inject constructor(
         )
     }
 
-    fun sendTransientMessage(
+    open fun sendTransientMessage(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {

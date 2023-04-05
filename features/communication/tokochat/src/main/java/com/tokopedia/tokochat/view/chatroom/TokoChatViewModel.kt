@@ -524,14 +524,17 @@ class TokoChatViewModel @Inject constructor(
                 // Set transient to failed
                 handleImageUploadError(
                     localUUID = localUUID,
-                    throwable = Throwable(uploadResult.error!!.joinToString()) // Checked in the first checker
+                    // Checked in the first checker
+                    throwable = MessageErrorException(uploadResult.error!!.joinToString())
                 )
             }
             (uploadResult.data == null) -> { // Error is empty / null, but data is also null
                 // Set transient to failed
                 handleImageUploadError(
                     localUUID = localUUID,
-                    throwable = Throwable(TokoChatUploadImageUseCase.ERROR_PAYLOAD_NOT_EXPECTED)
+                    throwable = MessageErrorException(
+                        TokoChatUploadImageUseCase.ERROR_PAYLOAD_NOT_EXPECTED
+                    )
                 )
             }
             else -> { // Success

@@ -4,7 +4,7 @@ import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
 import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
-import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
+import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -23,7 +23,7 @@ class TokoChatImageRepository @Inject constructor(
         return tokoChatDownloadImageApi.getImage(url)
     }
 
-    suspend fun uploadImage(file: MultipartBody.Part, channelId: RequestBody): TokoChatUploadImageResult {
+    suspend fun uploadImage(file: MultipartBody.Part, channelId: RequestBody): TokoChatUploadImageResponse {
         return tokoChatUploadImageApi.uploadImage(file = file, key = channelId)
     }
 }

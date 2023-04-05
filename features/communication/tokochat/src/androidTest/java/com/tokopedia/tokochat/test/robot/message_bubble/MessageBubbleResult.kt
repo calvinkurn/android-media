@@ -3,7 +3,9 @@ package com.tokopedia.tokochat.test.robot.message_bubble
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.tokochat.stub.common.matcher.withRecyclerView
@@ -20,6 +22,42 @@ object MessageBubbleResult {
         Espresso.onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_layout_image_bubble)
+        ).check(matcher)
+    }
+
+    fun assertImageAttachmentRetryDownloadVisibility(position: Int, isVisible: Boolean) {
+        val matcher = if (isVisible) {
+            matches(isDisplayed())
+        } else {
+            matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        }
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_chatroom_rv)
+                .atPositionOnView(position, R.id.tokochat_tv_image_bubble_error)
+        ).check(matcher)
+    }
+
+    fun assertImageAttachmentRetryUploadVisibility(position: Int, isVisible: Boolean) {
+        val matcher = if (isVisible) {
+            matches(isDisplayed())
+        } else {
+            matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        }
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_chatroom_rv)
+                .atPositionOnView(position, R.id.tokochat_icon_image_bubble_error_upload)
+        ).check(matcher)
+    }
+
+    fun assertImageAttachmentLoadingVisibility(position: Int, isVisible: Boolean) {
+        val matcher = if (isVisible) {
+            matches(isDisplayed())
+        } else {
+            matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        }
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_chatroom_rv)
+                .atPositionOnView(position, R.id.tokochat_loader_image_bubble)
         ).check(matcher)
     }
 

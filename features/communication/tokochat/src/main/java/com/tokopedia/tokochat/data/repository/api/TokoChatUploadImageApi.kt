@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat.data.repository.api
 
-import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
+import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
@@ -13,5 +13,5 @@ interface TokoChatUploadImageApi {
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
         @Part("key") key: RequestBody
-    ): TokoChatUploadImageResult
+    ): TokoChatUploadImageResponse
 }

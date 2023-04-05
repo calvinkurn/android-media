@@ -13,6 +13,7 @@ import com.tokopedia.network.data.model.response.TkpdV4ResponseError
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
+import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -132,5 +133,11 @@ object TokoChatNetworkModuleStub {
     @Provides
     fun provideTokoChatImageApiDownload(@TokoChatQualifier retrofit: Retrofit): TokoChatDownloadImageApi {
         return retrofit.create(TokoChatDownloadImageApi::class.java)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatUploadImageApi(@TokoChatQualifier retrofit: Retrofit): TokoChatUploadImageApi {
+        return retrofit.create(TokoChatUploadImageApi::class.java)
     }
 }

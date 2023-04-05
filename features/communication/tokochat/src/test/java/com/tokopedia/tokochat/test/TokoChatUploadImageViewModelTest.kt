@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
-import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
+import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -147,7 +147,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = "testImageId"
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -166,7 +166,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data = null
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -188,7 +188,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = null
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -210,7 +210,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = "testImageId"
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -235,7 +235,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = "testImageId"
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -261,7 +261,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
             val dummyErrorMessage = "testError"
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.error = listOf(dummyErrorMessage)
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -280,7 +280,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.error = null
             }
             mockImageUploadUseCases(dummyImagePath, uriMock, dummyImageUploadResult)
@@ -300,7 +300,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = dummyImageId
             }
             viewModel.imageAttachmentMap[dummyImageId] = dummyImageId
@@ -321,7 +321,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = dummyImageId
             }
             viewModel.imageAttachmentMap.clear()
@@ -345,7 +345,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"
             val uriMock = mockk<Uri>()
-            val dummyImageUploadResult = TokoChatUploadImageResult().apply {
+            val dummyImageUploadResult = TokoChatUploadImageResponse().apply {
                 this.data?.imageId = dummyImageId
             }
             viewModel.imageAttachmentMap[dummyImageId] = dummyImageId
@@ -365,7 +365,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
     private fun mockImageUploadUseCases(
         dummyImagePath: String,
         uriMock: Uri,
-        dummyImageUploadResult: TokoChatUploadImageResult
+        dummyImageUploadResult: TokoChatUploadImageResponse
     ) {
         mockkStatic(Uri::class)
         every {

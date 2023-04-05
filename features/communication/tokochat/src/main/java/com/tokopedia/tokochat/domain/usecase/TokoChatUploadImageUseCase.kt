@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
-import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
+import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -14,12 +14,12 @@ import javax.inject.Inject
 class TokoChatUploadImageUseCase @Inject constructor(
     private val repository: TokoChatImageRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<TokoChatUploadImageUseCase.Param, TokoChatUploadImageResult>(dispatchers.io) {
+) : CoroutineUseCase<TokoChatUploadImageUseCase.Param, TokoChatUploadImageResponse>(dispatchers.io) {
 
     // Not used
     override fun graphqlQuery(): String = ""
 
-    override suspend fun execute(params: Param): TokoChatUploadImageResult {
+    override suspend fun execute(params: Param): TokoChatUploadImageResponse {
         val file = File(params.filePath)
         val requestBodyFile = file.asRequestBody(IMAGE)
         val multiPartFile = MultipartBody.Part.createFormData(FILE_PART, file.name, requestBodyFile)

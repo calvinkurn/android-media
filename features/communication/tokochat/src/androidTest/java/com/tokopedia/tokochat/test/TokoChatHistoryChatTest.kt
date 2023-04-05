@@ -1,5 +1,15 @@
 package com.tokopedia.tokochat.test
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
@@ -9,7 +19,10 @@ import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleRobot
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat.test.robot.ticker.TickerResult
+import com.tokopedia.tokochat.util.TokoChatViewUtil
 import org.junit.Test
+import timber.log.Timber
+import java.io.FileOutputStream
 
 @UiTest
 class TokoChatHistoryChatTest : BaseTokoChatTest() {
@@ -37,7 +50,7 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
     }
 
     @Test
-    fun should_show_picture_attachment() {
+    fun should_show_image_attachment() {
         // Given
         ApiResponseStub.chatHistoryResponse = Pair(
             200,
@@ -53,6 +66,54 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
             position = 0,
             isVisible = true
         )
+    }
+
+    @Test
+    fun should_show_image_attachment_when_user_upload_image() {
+        // Given
+        saveDummyImage()
+
+        // When
+        launchChatRoomActivity()
+        Intents.intending(IntentMatchers.hasData(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
+
+        ReplyAreaRobot.clickAttachmentPlusButton()
+        ReplyAreaRobot.clickAttachmentMenuButton(0)
+
+        // Then
+        MessageBubbleResult.assertImageAttachmentVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
+            position = 0,
+            isVisible = false
+        )
+    }
+
+    private fun saveDummyImage() {
+        try {
+            val dummyBitmap: Bitmap = BitmapFactory.decodeResource(
+                context.resources, com.tokopedia.tokochat.test.R.drawable.ic_launcher)
+            val file = TokoChatViewUtil.getTokoChatPhotoPath("ic_launcher")
+            if (!file.exists()) {
+                val outStream = FileOutputStream(file)
+                dummyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                outStream.flush()
+                outStream.close()
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
     }
 
     @Test
@@ -210,5 +271,16 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
 
         // Then
         MessageBubbleResult.assertGuideChatBottomSheet()
+    }
+
+    private fun getImageData(): Intent {
+        return Intent().apply {
+            putExtra(
+                EXTRA_RESULT_PICKER,
+                PickerResult(
+                    originalPaths = listOf(TokoChatViewUtil.getTokoChatPhotoPath("ic_launcher").path)
+                )
+            )
+        }
     }
 }
