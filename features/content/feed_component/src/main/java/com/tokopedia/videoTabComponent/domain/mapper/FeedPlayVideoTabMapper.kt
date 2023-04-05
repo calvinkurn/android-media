@@ -4,11 +4,26 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
+import com.tokopedia.play.widget.ui.model.getReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
-import com.tokopedia.videoTabComponent.domain.model.data.*
+import com.tokopedia.videoTabComponent.domain.model.data.Configurations
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlayPagingProperties
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
@@ -171,7 +186,7 @@ object FeedPlayVideoTabMapper {
                         item.configurations.promoLabels.firstOrNull()?.text ?: ""
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString()),
+                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString(), item.partner.type),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
                         item.is_live,
@@ -185,6 +200,11 @@ object FeedPlayVideoTabMapper {
                     poolType = poolType,
                     recommendationType = recommendationType,
                     hasAction = shouldHaveActionMenu(channelType, item.partner.id, shopId),
+                    shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
+                        partnerType = item.partner.type,
+                        partnerId = item.partner.id,
+                        shopId = shopId,
+                    ),
                     channelTypeTransition = PlayWidgetChannelTypeTransition(
                         PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
@@ -202,5 +222,9 @@ object FeedPlayVideoTabMapper {
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
             shopId == partnerId
+    }
+
+    private fun shouldShowPerformanceDashboard(partnerType: String, partnerId: String, shopId: String): Boolean {
+        return partnerType == "shop" && partnerId == shopId
     }
 }

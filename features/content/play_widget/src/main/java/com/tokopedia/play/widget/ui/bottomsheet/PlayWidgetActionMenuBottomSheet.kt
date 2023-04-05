@@ -39,6 +39,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
 
     private var mChannel: PlayWidgetChannelUiModel? = null
+    private var isEligibleSeePerformanceDashboard = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +68,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
 
     fun setChannel(channel: PlayWidgetChannelUiModel) {
         mChannel = channel
+        isEligibleSeePerformanceDashboard = channel.shouldShowPerformanceDashboard
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -111,19 +113,21 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                     }
                 )
             }
-            actionList.add(
-                Action(
-                    IconUnify.GRAPH_REPORT,
-                    MethodChecker.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                    ),
-                    getString(R.string.play_widget_action_menu_see_performance_video_analytics)
-                ) {
-                    mListener?.onClickSeePerformanceVideoAnalytics(channel)
-                    dismiss()
-                }
-            )
+            if (isEligibleSeePerformanceDashboard) {
+                actionList.add(
+                    Action(
+                        IconUnify.GRAPH_REPORT,
+                        MethodChecker.getColor(
+                            requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                        ),
+                        getString(R.string.play_widget_action_menu_see_performance_video_analytics)
+                    ) {
+                        mListener?.onClickSeePerformanceVideoAnalytics(channel)
+                        dismiss()
+                    }
+                )
+            }
             actionList.add(
                 Action(
                     IconUnify.DELETE,

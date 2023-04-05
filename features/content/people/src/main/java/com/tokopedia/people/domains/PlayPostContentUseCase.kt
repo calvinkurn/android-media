@@ -98,6 +98,7 @@ class PlayPostContentUseCase @Inject constructor(
                         partner {
                           id
                           name
+                          type
                         }
                         share {
                           text
