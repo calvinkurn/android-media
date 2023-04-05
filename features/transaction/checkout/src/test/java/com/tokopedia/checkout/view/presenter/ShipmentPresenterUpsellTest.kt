@@ -24,9 +24,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
     fun `WHEN cancel upsell THEN should try clear all BO`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -46,9 +45,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
 
         // When
         presenter.cancelUpsell(
-            true, false, false, true,
-            false, null, "", "",
+            true,
+            false,
             false
+//            true,
+//            false, null, "", "",
+//            false
         )
 
         // Then
@@ -85,19 +87,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -152,19 +153,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
             }
         )
@@ -217,19 +217,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
             }
@@ -283,19 +282,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
             }
         )
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
@@ -347,19 +345,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -413,19 +410,18 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }

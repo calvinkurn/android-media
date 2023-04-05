@@ -159,7 +159,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel()
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartString = "")
         every { presenter.processBoPromoCourierRecommendation(any(), any(), any()) } just runs
 
         // When
@@ -182,7 +182,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel()),
+            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -279,7 +279,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val promoCode = "BOCODE"
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel()
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartString = "")
 //        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
         coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns
             ClearPromoUiModel(
@@ -310,14 +310,12 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN clear BO promo while user has active BO promoin checkout page and user success to clear used BO promo THEN call unapply BO promo`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartString = "111-111-111"
+            ShipmentCartItemModel(cartString = "111-111-111").apply {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TESTBO1"
                 )
             },
-            ShipmentCartItemModel().apply {
-                cartString = "222-222-222"
+            ShipmentCartItemModel(cartString = "222-222-222").apply {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TESTBO2"
                 )
@@ -354,8 +352,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has active BO promo in checkout page and user failed to clear used BO promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-111-111"
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                 code = "TESTBO"
             )
@@ -387,8 +384,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then clear all promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-111-111"
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -418,8 +414,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then apply new promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-111-111"
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -449,8 +444,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo with cart item unique_id different from validateUse unique_id THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-111-111"
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -545,7 +539,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.lastApplyData = LastApplyUiModel(
+        presenter.lastApplyData.value = LastApplyUiModel(
             voucherOrders = mutableListOf(
                 LastApplyVoucherOrdersItemUiModel(
                     code = "TESTBO",
@@ -558,7 +552,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData!!.voucherOrders.isEmpty())
+        assert(presenter.lastApplyData.value.voucherOrders.isEmpty())
     }
 
     @Test
@@ -594,7 +588,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.lastApplyData = LastApplyUiModel(
+        presenter.lastApplyData.value = LastApplyUiModel(
             voucherOrders = listOf(
                 LastApplyVoucherOrdersItemUiModel(
                     uniqueId = "111-111-111",
@@ -607,9 +601,9 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData!!.voucherOrders.size == 1)
-        assert(presenter.lastApplyData!!.voucherOrders[0].uniqueId == "111-111-111")
-        assert(presenter.lastApplyData!!.voucherOrders[0].code == "TESTNONBO")
+        assert(presenter.lastApplyData.value.voucherOrders.size == 1)
+        assert(presenter.lastApplyData.value.voucherOrders[0].uniqueId == "111-111-111")
+        assert(presenter.lastApplyData.value.voucherOrders[0].code == "TESTNONBO")
     }
 
     @Test
@@ -644,7 +638,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.lastApplyData = LastApplyUiModel(
+        presenter.lastApplyData.value = LastApplyUiModel(
             voucherOrders = listOf(
                 LastApplyVoucherOrdersItemUiModel(
                     uniqueId = "222-222-222",
@@ -657,9 +651,9 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData!!.voucherOrders.size == 1)
-        assert(presenter.lastApplyData!!.voucherOrders[0].uniqueId == "222-222-222")
-        assert(presenter.lastApplyData!!.voucherOrders[0].code == "TESTNONBO")
+        assert(presenter.lastApplyData.value.voucherOrders.size == 1)
+        assert(presenter.lastApplyData.value.voucherOrders[0].uniqueId == "222-222-222")
+        assert(presenter.lastApplyData.value.voucherOrders[0].code == "TESTNONBO")
     }
 
     @Test
@@ -669,14 +663,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val promoCode = "TESTBO"
 
         presenter.setLatValidateUseRequest(null)
-        presenter.lastApplyData = null
+        presenter.lastApplyData.value = LastApplyUiModel()
 
         // When
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
         assert(presenter.lastValidateUseRequest == null)
-        assert(presenter.lastApplyData == null)
+        assert(presenter.lastApplyData.value == LastApplyUiModel())
     }
 
     @Test
@@ -686,14 +680,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val promoCode = "TESTBO"
 
         presenter.setLatValidateUseRequest(ValidateUsePromoRequest(orders = emptyList()))
-        presenter.lastApplyData = LastApplyUiModel(voucherOrders = emptyList())
+        presenter.lastApplyData.value = LastApplyUiModel(voucherOrders = emptyList())
 
         // When
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
         assert(presenter.lastValidateUseRequest!!.orders.isEmpty())
-        assert(presenter.lastApplyData!!.voucherOrders.isEmpty())
+        assert(presenter.lastApplyData.value.voucherOrders.isEmpty())
     }
 
     // Test ShipmentPresenter.validateBoPromo()
@@ -1066,12 +1060,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             cartString = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = false,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = false,
                     productId = 2,
                     isFreeShipping = true,
@@ -1095,12 +1091,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             cartString = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = true,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = false,
                     productId = 2,
                     isFreeShipping = true,
@@ -1124,12 +1122,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             cartString = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = true,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
+                    cartString = "111-111-111",
                     isError = true,
                     productId = 2,
                     isFreeShipping = true,
@@ -1171,7 +1171,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
-        every { presenter.getProductForRatesRequest(any()) } returns listOf()
+        every { presenter.getProductForRatesRequest(any()) } returns arrayListOf()
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0
@@ -1220,7 +1220,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             shippingRecommendationData
         )
 
-        every { presenter.getProductForRatesRequest(any()) } returns listOf()
+        every { presenter.getProductForRatesRequest(any()) } returns arrayListOf()
         val isTradeInByDropOff = true
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0
@@ -1230,6 +1230,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = ShipmentDetailData(
@@ -1266,7 +1267,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
-        every { presenter.getProductForRatesRequest(any()) } returns listOf()
+        every { presenter.getProductForRatesRequest(any()) } returns arrayListOf()
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0

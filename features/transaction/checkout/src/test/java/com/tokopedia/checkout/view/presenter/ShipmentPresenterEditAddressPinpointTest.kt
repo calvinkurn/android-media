@@ -39,7 +39,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartString = ""), LocationPass())
 
         // Then
         verifyOrder {
@@ -84,7 +84,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartString = ""), locationPass)
 
         // Then
         verifyOrder {
@@ -133,7 +133,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         } returns errorMessage
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartString = ""), locationPass)
 
         // Then
         verifyOrder {
@@ -166,7 +166,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartString = ""), LocationPass())
 
         // Then
         verifyOrder {

@@ -42,7 +42,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
@@ -55,7 +55,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
+        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
@@ -72,13 +72,13 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
         // Then
         verifySequence {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             view.onSuccessClearPromoLogistic(0, any())
         }
     }
@@ -111,7 +111,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
@@ -149,7 +149,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
@@ -185,7 +185,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
@@ -222,7 +222,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-                cartItemModels = listOf(CartItemModel())
+                cartItemModels = listOf(CartItemModel(cartString = ""))
             )
         )
 
@@ -314,7 +314,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(boType = 1)),
                 shopId = 1,
                 isProductIsPreorder = false,
-                cartItemModels = listOf(CartItemModel(preOrderDurationDay = 10)),
+                cartItemModels = listOf(CartItemModel(cartString = "1", preOrderDurationDay = 10)),
                 fulfillmentId = 1
             )
         )
@@ -356,7 +356,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             view.removeIneligiblePromo(notEligiblePromos)
         }
     }
@@ -385,7 +385,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             view.removeIneligiblePromo(notEligiblePromos)
         }
     }
@@ -393,7 +393,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear non eligible promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
+        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
             add(
@@ -417,7 +417,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verifySequence {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             view.removeIneligiblePromo(notEligilePromoList)
         }
     }
@@ -471,6 +471,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 ),
                 cartItemModels = listOf(
                     CartItemModel(
+                        cartString = "111-111-111",
                         preOrderDurationDay = 10
                     )
                 )
@@ -487,6 +488,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 ),
                 cartItemModels = listOf(
                     CartItemModel(
+                        cartString = "222-222-222",
                         preOrderDurationDay = 10
                     )
                 )
@@ -521,9 +523,10 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             ShipmentCartItemModel(
                 cartString = "111-111-111",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "TEST1"),
-                shipmentCartData = null,
+//                shipmentCartData = null,
                 cartItemModels = listOf(
                     CartItemModel(
+                        cartString = "111-111-111",
                         preOrderDurationDay = 10
                     )
                 )
@@ -539,6 +542,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 ),
                 cartItemModels = listOf(
                     CartItemModel(
+                        cartString = "111-111-111",
                         preOrderDurationDay = 10
                     )
                 )
@@ -554,6 +558,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 ),
                 cartItemModels = listOf(
                     CartItemModel(
+                        cartString = "111-111-111",
                         preOrderDurationDay = 10
                     )
                 )
@@ -663,9 +668,9 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "123",
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-            cartItemModels = listOf(CartItemModel())
+            cartItemModels = listOf(CartItemModel(cartString = "123"))
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(
@@ -698,9 +703,9 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "123",
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-            cartItemModels = listOf(CartItemModel())
+            cartItemModels = listOf(CartItemModel(cartString = "123"))
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(

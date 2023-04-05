@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -38,25 +39,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    true,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        true,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNotNull(presenter.shipmentDonationModel)
@@ -77,25 +80,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    true,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        true,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNotNull(presenter.shipmentDonationModel)
@@ -116,25 +121,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    true,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        true,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNotNull(presenter.shipmentDonationModel)
@@ -155,25 +162,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    false,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        false,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNotNull(presenter.shipmentDonationModel)
@@ -194,25 +203,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    true,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        true,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNull(presenter.shipmentDonationModel)
@@ -233,25 +244,27 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
-        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel)assertEquals(true, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList!!.each {
-            cartItemModels.each {
-                assertEquals(
-                    false,
-                    isProtectionAvailable
-                )
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                cartItemModels.each {
+                    assertEquals(
+                        false,
+                        isProtectionAvailable
+                    )
+                }
             }
         }
         assertNull(presenter.shipmentDonationModel)
