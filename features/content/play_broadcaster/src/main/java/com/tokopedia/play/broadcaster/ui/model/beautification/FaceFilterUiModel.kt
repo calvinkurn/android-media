@@ -51,7 +51,7 @@ data class FaceFilterUiModel(
         Unknown("", UNKNOWN_ICON_UNIFY),
         None("none", IconUnify.BLOCK),
         Blur("buffing", IconUnify.BLUR),
-        Sharpen("shapings", IconUnify.SHARPEN),
+        Sharpen("sharpen", IconUnify.SHARPEN),
         Clarity("toning", IconUnify.CLARITY);
 
         companion object {
