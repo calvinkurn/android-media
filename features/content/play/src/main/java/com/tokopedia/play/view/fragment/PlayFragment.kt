@@ -100,6 +100,9 @@ class PlayFragment @Inject constructor(
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
+    private val sheetMaxHeight: Int
+        get() = (getScreenHeight() * SHEET_MAX_PERCENTAGE).roundToIntOrZero()
+
     val viewModelProviderFactory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return viewModelFactory.create(channelId) as T
@@ -279,9 +282,9 @@ class PlayFragment @Inject constructor(
                 object : LifecycleObserver {
                     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                     fun onResume() {
-                        variantSheet.dialog?.window?.setBackgroundDrawable(null)
+                        variantSheet?.dialog?.window?.setBackgroundDrawable(null)
                         variantSheet.view?.updateLayoutParams {
-                            height = (getScreenHeight() * 0.6).roundToIntOrZero()
+                            height = sheetMaxHeight
                         }
                     }
                 }
@@ -694,5 +697,7 @@ class PlayFragment @Inject constructor(
 
         const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
+
+        private const val SHEET_MAX_PERCENTAGE = 0.6
     }
 }
