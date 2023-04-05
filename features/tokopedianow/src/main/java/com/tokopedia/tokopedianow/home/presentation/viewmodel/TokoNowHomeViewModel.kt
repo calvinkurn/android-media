@@ -43,6 +43,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.COUPON_WIDGET_DOUBLE_SLUG_SIZE
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.COUPON_WIDGET_SINGLE_SLUG_SIZE
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
@@ -778,11 +780,17 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getCatalogCouponListUseCase.execute(
                 catalogSlugs = item.slugs
             )
-            homeLayoutItemList.mapHomeCatalogCouponList(
-                widgetId = item.id,
-                response = response,
-                state = TokoNowLayoutState.SHOW
-            )
+            val isDouble = item.isDouble && item.slugs.size == COUPON_WIDGET_DOUBLE_SLUG_SIZE
+            val isSingle = !item.isDouble && item.slugs.size == COUPON_WIDGET_SINGLE_SLUG_SIZE
+            if ((isDouble || isSingle)) {
+                homeLayoutItemList.mapHomeCatalogCouponList(
+                    widgetId = item.id,
+                    response = response,
+                    state = TokoNowLayoutState.SHOW
+                )
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
         }) {
             homeLayoutItemList.mapHomeCatalogCouponList(
                 widgetId = item.id,
