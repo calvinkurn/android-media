@@ -29,10 +29,11 @@ interface MediaQueryDataSource {
      * on local device.
      *
      * @param bucketId The directory id
-     * @param offset A limit of media to fetch
+     * @param index A position to fetch the media
+     * @param limitSize A limit of media to fetch
      * @return [Cursor]
      */
-    fun setupMediaQuery(bucketId: Long, offset: Int? = null): Cursor?
+    fun setupMediaQuery(bucketId: Long, index: Int? = null, limitSize: Int? = null): Cursor?
 
     /**
      * If the media succeed to catch, this method will create a [Media] object to define a valid file.
@@ -43,4 +44,6 @@ interface MediaQueryDataSource {
     fun createMedia(cursor: Cursor): Media?
 
     fun getVideoDuration(file: PickerFile): Int
+
+    fun isFileValidFromParam(media: Media): Boolean
 }

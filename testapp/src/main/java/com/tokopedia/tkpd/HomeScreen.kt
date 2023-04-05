@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.NestButton
+import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
-
 
 @SuppressLint("UnsupportedDarkModeColor")
 @Composable
@@ -48,16 +48,17 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 72.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onNavigateTo(MainActivity.HomeDestination.LOGIN) }
                 ) {
                     Text(
+                        modifier = Modifier.padding(vertical = 8.dp),
                         text = model.loginText,
                         textAlign = TextAlign.Center,
-                        style = NestTheme.typography.heading6,
+                        style = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold),
                         color = Color.White
                     )
                 }
@@ -74,6 +75,14 @@ fun HomeScreen(
                     onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                NestButton(
+                    text = "Login Helper",
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGINHELPER) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = model.applink,
                     modifier = Modifier

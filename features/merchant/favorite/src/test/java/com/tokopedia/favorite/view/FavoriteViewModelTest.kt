@@ -73,11 +73,7 @@ class FavoriteViewModelTest {
                 toggleFavouriteShopUseCase,
                 getAllDataFavoriteUseCase,
                 getFavoriteShopUseCaseWithCoroutine,
-                getTopAdsShopUseCase,
-                userSession,
-                pagingHandler,
-                topAdsAddressHelper
-
+                pagingHandler
         )
     }
 
