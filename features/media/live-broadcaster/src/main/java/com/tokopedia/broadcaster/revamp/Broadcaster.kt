@@ -49,13 +49,13 @@ interface Broadcaster {
 
     fun enableStatistic(interval: Long)
 
-    fun setPreset(presetId: String, value: Float)
-
-    fun removePreset()
-
-    fun setFaceFilter(faceFilterId: String, value: Float)
+    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
 
     fun removeFaceFilter()
+
+    fun setPreset(presetId: String, value: Float): Boolean
+
+    fun removePreset()
 
     val broadcastState: BroadcastState
 

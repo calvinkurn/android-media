@@ -35,11 +35,11 @@ interface EffectManager {
 
     fun setCameraPosition(isFront: Boolean)
 
-    fun setFaceFilter(faceFilterId: String, value: Float)
+    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
 
     fun removeFaceFilter()
 
-    fun setPreset(presetId: String, value: Float)
+    fun setPreset(presetId: String, value: Float): Boolean
 
     fun removePreset()
 

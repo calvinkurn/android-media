@@ -9,7 +9,7 @@ enum class FaceFilterType(
 ) {
     Unknown(id = "", key = ""),
     Buffing(id = "buffing", key = "smooth"),
-    Sharpen(id = "shapings", key = "sharp"),
+    Sharpen(id = "sharpen", key = "sharp"),
     Toning(id = "toning", key = "whiten");
 
     val isUnknown: Boolean

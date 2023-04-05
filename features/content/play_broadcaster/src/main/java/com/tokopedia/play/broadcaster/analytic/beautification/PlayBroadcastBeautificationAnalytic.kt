@@ -65,11 +65,9 @@ interface PlayBroadcastBeautificationAnalytic {
     fun viewFailDownloadPreset(account: ContentAccountUiModel, page: Page, preset: String)
 
     /** Row 18 */
-    /** TODO: skip for now */
     fun viewFailApplyBeautyFilter(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 19 */
-    /** TODO: skip for now */
     fun clickRetryApplyBeautyFilter(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 20 */
@@ -79,11 +77,9 @@ interface PlayBroadcastBeautificationAnalytic {
     fun viewBeautificationEntryPointOnLivePage(account: ContentAccountUiModel)
 
     /** Row 22 */
-    /** TODO: skip for now */
     fun clickRetryReapplyBeautyFilter(account: ContentAccountUiModel)
 
     /** Row 23 */
-    /** TODO: skip for now */
     fun viewFailReapplyBeautyFilter(account: ContentAccountUiModel)
 
     enum class Page(val value: String) {

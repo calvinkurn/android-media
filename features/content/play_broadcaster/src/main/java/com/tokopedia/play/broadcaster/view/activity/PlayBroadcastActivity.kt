@@ -348,7 +348,7 @@ class PlayBroadcastActivity : BaseActivity(),
                         createBroadcaster(viewModel.isBeautificationEnabled)
                     }
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
-                        rebindEffect()
+                        rebindEffect(isFirstTimeOpenPage = false)
                     }
                     is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
                         analytic.viewFailDownloadPreset(
@@ -402,28 +402,97 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun applyFaceFilter(vararg faceFilters: FaceFilterUiModel) {
+    private fun applyFaceFilter(vararg faceFilters: FaceFilterUiModel): Boolean {
+        var isAllFilterApplied = true
+
         faceFilters.forEach { faceFilter ->
             if (faceFilter.isRemoveEffect) {
                 broadcaster.removeFaceFilter()
             } else {
-                broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
+                val isSuccess = broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
+
+                if(!isSuccess) {
+                    isAllFilterApplied = false
+                    analytic.viewFailApplyBeautyFilter(
+                        account = viewModel.selectedAccount,
+                        page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                        customFace = faceFilter.id,
+                    )
+
+                    showToaster(
+                        err = Exception("fail to apply face filter : ${faceFilter.id}"),
+                        customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                        duration = Toaster.LENGTH_SHORT,
+                        actionLabel = getString(R.string.play_broadcaster_retry),
+                        actionListener = {
+                            analytic.clickRetryApplyBeautyFilter(
+                                account = viewModel.selectedAccount,
+                                page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                                customFace = faceFilter.id,
+                            )
+                            applyFaceFilter(faceFilter)
+                        }
+                    )
+                }
             }
         }
+
+        return isAllFilterApplied
     }
 
-    private fun applyPreset(preset: PresetFilterUiModel) {
-        if (preset.isRemoveEffect) {
+    private fun applyPreset(preset: PresetFilterUiModel): Boolean {
+        return if (preset.isRemoveEffect) {
             broadcaster.removePreset()
+            true
         } else {
-            broadcaster.setPreset(preset.id, preset.value.toFloat())
+            val isSuccess = broadcaster.setPreset(preset.id, preset.value.toFloat())
+
+            if(!isSuccess) {
+                analytic.viewFailApplyBeautyFilter(
+                    account = viewModel.selectedAccount,
+                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                    customFace = preset.id,
+                )
+
+                showToaster(
+                    err = Exception("fail to apply preset : ${preset.id}"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                    duration = Toaster.LENGTH_SHORT,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        analytic.clickRetryApplyBeautyFilter(
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            customFace = preset.id,
+                        )
+                        applyPreset(preset)
+                    }
+                )
+            }
+
+            isSuccess
         }
     }
 
-    private fun rebindEffect() {
+    private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
         if (viewModel.isBeautificationEnabled) {
-            applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
-            viewModel.selectedPreset?.let { applyPreset(it) }
+            val isAllFaceFilterApplied = applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it) } ?: true
+
+            if(isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
+                analytic.viewFailReapplyBeautyFilter(account = viewModel.selectedAccount)
+
+                showToaster(
+                    err = Exception("fail to apply face filter & preset for the first time"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_save_filter),
+                    duration = Toaster.LENGTH_SHORT,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        analytic.clickRetryReapplyBeautyFilter(account = viewModel.selectedAccount)
+                        rebindEffect(true)
+                    }
+                )
+            }
         } else {
             broadcaster.removeFaceFilter()
             broadcaster.removePreset()
@@ -805,7 +874,7 @@ class PlayBroadcastActivity : BaseActivity(),
             broadcaster.setupThread(withByteplus)
             delay(INIT_BROADCASTER_DELAY)
             broadcaster.create(holder, surfaceSize, withByteplus)
-            rebindEffect()
+            rebindEffect(isFirstTimeOpenPage = true)
         }
     }
 
