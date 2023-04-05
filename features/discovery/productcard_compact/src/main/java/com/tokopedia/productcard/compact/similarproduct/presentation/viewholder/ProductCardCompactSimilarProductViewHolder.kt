@@ -12,8 +12,8 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.Pro
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ItemProductCardCompactSimilarProductBinding
+import com.tokopedia.productcard.compact.R
+import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactSimilarProductBinding
 
 class ProductCardCompactSimilarProductViewHolder(
     itemView: View,

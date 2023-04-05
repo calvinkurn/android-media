@@ -22,7 +22,7 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.productcard.compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder.SimilarProductListener
-import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.di.component.DaggerCommonComponent
 import com.tokopedia.productcard.compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
 import com.tokopedia.productcard.compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel

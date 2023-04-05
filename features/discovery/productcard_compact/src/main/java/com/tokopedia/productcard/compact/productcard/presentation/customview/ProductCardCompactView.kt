@@ -27,7 +27,7 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.listener.Pr
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
@@ -36,7 +36,7 @@ import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
 import com.tokopedia.productcard.compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
-import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactViewBinding
+import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
 
 class ProductCardCompactView @JvmOverloads constructor(
     context: Context,

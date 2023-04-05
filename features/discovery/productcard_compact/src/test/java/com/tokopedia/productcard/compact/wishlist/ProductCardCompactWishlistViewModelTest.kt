@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.wishlist
+package com.tokopedia.productcard.compact.wishlist
 
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals

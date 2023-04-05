@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.wishlist
+package com.tokopedia.productcard.compact.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.productcard.compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel

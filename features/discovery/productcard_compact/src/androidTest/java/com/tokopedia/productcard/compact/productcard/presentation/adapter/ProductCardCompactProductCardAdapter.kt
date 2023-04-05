@@ -3,7 +3,7 @@ package com.tokopedia.productcard.compact.productcard.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard_compact.test.R
+import com.tokopedia.productcard.compact.test.R
 import com.tokopedia.productcard.compact.productcard.presentation.model.ProductCardCompactProductCardMatcherModel
 
 internal class ProductCardCompactProductCardAdapter(

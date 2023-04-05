@@ -21,7 +21,7 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.Pro
 import com.tokopedia.productcard.compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.productcard_compact.databinding.BottomSheetProductCardCompactSimilarProductBinding
+import com.tokopedia.productcard.compact.databinding.BottomSheetProductCardCompactSimilarProductBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {

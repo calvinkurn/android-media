@@ -3,8 +3,8 @@ package com.tokopedia.productcard.compact.productcardcarousel.presentation.viewh
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ItemProductCardCompactCarouselSeeMoreCardBinding
+import com.tokopedia.productcard.compact.R
+import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselSeeMoreCardBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 

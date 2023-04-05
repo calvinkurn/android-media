@@ -12,9 +12,9 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.di.component.DaggerCommonComponent
-import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactWishlistButtonViewBinding
+import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactWishlistButtonViewBinding
 import javax.inject.Inject
 
 class ProductCardCompactWishlistButtonView @JvmOverloads constructor(

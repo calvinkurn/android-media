@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard_compact.databinding.ItemProductCardCompactCarouselBinding
+import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding

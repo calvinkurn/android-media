@@ -17,9 +17,9 @@ import com.tokopedia.productcard.compact.common.util.ViewUtil.setDimenAsTextSize
 import com.tokopedia.productcard.compact.productcard.helper.MotionLayoutTransitionImpl
 import com.tokopedia.productcard.compact.productcard.helper.TextWatcherImpl
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.productcard.helper.TimerTaskImpl
-import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactQuantityEditorViewBinding
+import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactQuantityEditorViewBinding
 import java.util.Timer
 import java.util.TimerTask
 

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
     android:versionName="1.0.0"
-    package="com.tokopedia.productcard_compact.test">
+    package="com.tokopedia.productcard.compact.test">
 
     <application
         android:label="Product Card Test"

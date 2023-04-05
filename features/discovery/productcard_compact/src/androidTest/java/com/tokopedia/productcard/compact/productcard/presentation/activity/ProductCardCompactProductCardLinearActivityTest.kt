@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard_compact.test.R
+import com.tokopedia.productcard.compact.test.R
 import com.tokopedia.productcard.compact.productcard.presentation.adapter.ProductCardCompactProductCardAdapter
 import com.tokopedia.productcard.compact.productcard.presentation.decoration.ProductCardCompactProductCardLinearDecoration
 import com.tokopedia.productcard.compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData

@@ -3,7 +3,7 @@ package com.tokopedia.productcard.compact.productcardcarousel.helper
 import android.content.Context
 import android.graphics.Rect
 import android.view.View
-import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard.compact.R
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 

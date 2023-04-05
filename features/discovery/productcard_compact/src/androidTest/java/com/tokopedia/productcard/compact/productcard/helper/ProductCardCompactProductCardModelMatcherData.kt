@@ -21,7 +21,7 @@ import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isPr
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isProgressBarDisplayed
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isQuantityEditorDisplayed
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isWishlistButtonDisplayed
-import com.tokopedia.productcard_compact.test.R
+import com.tokopedia.productcard.compact.test.R
 import org.hamcrest.Matcher
 
 internal object ProductCardCompactProductCardModelMatcherData {

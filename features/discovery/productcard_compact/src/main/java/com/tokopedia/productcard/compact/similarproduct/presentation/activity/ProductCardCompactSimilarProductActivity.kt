@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.productcard.compact.similarproduct.presentation.fragment.ProductCardCompactSimilarProductFragment
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ActivityProductCardCompactBaseBinding
+import com.tokopedia.productcard.compact.R
+import com.tokopedia.productcard.compact.databinding.ActivityProductCardCompactBaseBinding
 
 class ProductCardCompactSimilarProductActivity: BaseActivity() {
 

@@ -16,7 +16,7 @@ import com.tokopedia.productcard.compact.productcard.presentation.activity.Produ
 import com.tokopedia.productcard.compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.withComponentsInProductCardMatched
 import org.hamcrest.Matcher
-import com.tokopedia.productcard_compact.test.R
+import com.tokopedia.productcard.compact.test.R
 import org.junit.Test
 
 @MediumTest
