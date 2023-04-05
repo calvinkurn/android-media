@@ -163,11 +163,6 @@ class AffiliateHomeFragment :
         sendOpenScreenTracking()
     }
 
-    override fun onResume() {
-        super.onResume()
-        affiliateHomeViewModel.fetchUnreadNotificationCount()
-    }
-
     private fun sendOpenScreenTracking() {
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
@@ -227,6 +222,7 @@ class AffiliateHomeFragment :
             affiliateActivityInterface?.showCoachMarker()
         }
         setUserDetails()
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
     }
 
     private fun sendNotificationClickEvent() {
@@ -261,6 +257,7 @@ class AffiliateHomeFragment :
         listSize = 0
         adapter.resetList()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
     }
 
     private fun setAffiliateGreeting() {
