@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -94,14 +95,14 @@ enum class NestLabelType {
     HIGHLIGHT_DARK_IMAGE_LABEL,
 }
 
-//region Preview
+//region Preview: Light
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelGreenPreview() {
+private fun NestLightLabelGreenPreview() {
     NestTheme {
         NestLabel(
-            labelText = "Green",
+            labelText = "Light - Green",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
         )
     }
@@ -109,10 +110,10 @@ private fun NestLabelGreenPreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelOrangePreview() {
+private fun NestLightLabelOrangePreview() {
     NestTheme {
         NestLabel(
-            labelText = "Orange",
+            labelText = "Light - Orange",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_ORANGE
         )
     }
@@ -121,10 +122,10 @@ private fun NestLabelOrangePreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelGreyPreview() {
+private fun NestLightLabelGreyPreview() {
     NestTheme {
         NestLabel(
-            labelText = "Grey",
+            labelText = "Light - Grey",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY
         )
     }
@@ -133,10 +134,10 @@ private fun NestLabelGreyPreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelRedPreview() {
+private fun NestLightLabelRedPreview() {
     NestTheme {
         NestLabel(
-            labelText = "Red",
+            labelText = "Light - Red",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
         )
     }
@@ -144,10 +145,10 @@ private fun NestLabelRedPreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelBluePreview() {
+private fun NestLightLabelBluePreview() {
     NestTheme {
         NestLabel(
-            labelText = "Blue",
+            labelText = "Light - Blue",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_BLUE
         )
     }
@@ -156,11 +157,37 @@ private fun NestLabelBluePreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelTealPreview() {
+private fun NestLightLabelTealPreview() {
     NestTheme {
         NestLabel(
-            labelText = "Teal",
+            labelText = "Light - Teal",
             nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL
+        )
+    }
+}
+
+//endregion
+
+//region Preview: Dark
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestDarkLabelGreenPreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Green",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREEN
+        )
+    }
+}
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestDarkLabelOrangePreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Orange",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_ORANGE
         )
     }
 }
@@ -168,14 +195,65 @@ private fun NestLabelTealPreview() {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NestLabelOnImagePreview() {
+private fun NestDarkLabelGreyPreview() {
     NestTheme {
         NestLabel(
-            labelText = "Label on Image",
+            labelText = "Dark - Grey",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREY
+        )
+    }
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestDarkLabelRedPreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Red",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_RED
+        )
+    }
+}
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestDarkLabelBluePreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Blue",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_BLUE
+        )
+    }
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestDarkLabelTealPreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Teal",
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_TEAL
+        )
+    }
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NestLightLabelOnImagePreview() {
+    NestTheme {
+        NestLabel(
+            labelText = "Dark - Label on Image",
             nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
         )
     }
 }
+//endregion
+
+//region Preview: Device preview
+
 @Preview(
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
@@ -213,18 +291,44 @@ private fun NestLabelOnDevicesPreview() {
                 NestLabel(labelText = "Teal", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL)
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                NestLabel(labelText = "Dark - Green", nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREEN)
+                NestLabel(
+                    labelText = "Dark - Orange",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_ORANGE
+                )
+                NestLabel(labelText = "Dark - Grey", nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREY)
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                NestLabel(labelText = "Dark - Red", nestLabelType = NestLabelType.HIGHLIGHT_DARK_RED)
+                NestLabel(labelText = "Dark - Blue", nestLabelType = NestLabelType.HIGHLIGHT_DARK_BLUE)
+                NestLabel(labelText = "Dark - Teal", nestLabelType = NestLabelType.HIGHLIGHT_DARK_TEAL)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 NestLabel(
-                    labelText = "Label on Image",
+                    labelText = "Dark - Label on Image",
                     nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
                 )
             }
         }
     }
 }
+
 //endregion
 
 //region Custom colors for NestLabel
