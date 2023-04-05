@@ -632,12 +632,12 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.TOKO_CHAT) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
-    )
+    ).apply {
+        addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
+    }
 
     fun getTokopediaSchemeList(): List<DLP> {
-        return deeplinkPatternTokopediaSchemeList.apply {
-            addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
-        }
+        return deeplinkPatternTokopediaSchemeList
     }
 
     /**
