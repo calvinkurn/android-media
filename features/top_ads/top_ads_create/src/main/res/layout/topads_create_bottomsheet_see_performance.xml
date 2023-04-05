@@ -83,7 +83,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:maxLines="2"
@@ -92,6 +92,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/product_image"
                 app:layout_constraintStart_toEndOf="@id/product_image"
                 app:layout_constraintTop_toTopOf="@id/product_image"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Sepatu New Balance Terbaru" />
