@@ -17,10 +17,16 @@ sealed interface BulkReviewTextAreaUiState {
         val hint: StringRes,
         val message: StringRes,
         val isError: Boolean,
-        val focused: Boolean
+        val focused: Boolean,
+        val shouldApplyText: Boolean
     ) : BulkReviewTextAreaUiState {
         override fun areContentsTheSame(other: BulkReviewTextAreaUiState): Boolean {
-            return other is Showing && text == other.text && hint == other.hint
+            return other is Showing &&
+                text == other.text &&
+                hint == other.hint &&
+                message == other.message &&
+                isError == other.isError &&
+                shouldApplyText == other.shouldApplyText
         }
     }
 }

@@ -224,6 +224,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         viewModel.onExpandTextArea(inboxID, text)
     }
 
+    override fun onTextChanged(inboxID: String, text: String) {
+        viewModel.onReviewItemTextAreaTextChanged(inboxID, text)
+    }
+
     override fun onSingleTapToDismissKeyboard() {
         clearViewFocus()
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
@@ -90,7 +91,8 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
                     StringRes(Int.ZERO)
                 },
                 isError = hasEmptyOtherBadRatingCategoryTestimony,
-                focused = reviewItemTestimony?.testimonyUiModel?.focused.orFalse()
+                focused = reviewItemTestimony?.testimonyUiModel?.focused.orFalse(),
+                shouldApplyText = reviewItemTestimony?.testimonyUiModel?.shouldApplyText.orTrue()
             )
         } else {
             BulkReviewTextAreaUiState.Hidden

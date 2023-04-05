@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.core.widget.addTextChangedListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -40,7 +41,7 @@ class WidgetBulkReviewTextArea(
                 animateHide(animate = animate, onAnimationEnd = { gone() })
             }
             is BulkReviewTextAreaUiState.Showing -> {
-                if (binding.root.editText.text.toString() != uiState.text) {
+                if (binding.root.editText.text.toString() != uiState.text && uiState.shouldApplyText) {
                     binding.root.editText.setText(uiState.text)
                 }
                 binding.root.setPlaceholder(uiState.hint.getStringValue(context))
@@ -75,6 +76,9 @@ class WidgetBulkReviewTextArea(
                 listener?.onLostFocus(view, binding.root.editText.text?.toString().orEmpty())
             }
         }
+        binding.root.editText.addTextChangedListener(afterTextChanged = {
+            listener?.onTextChanged(it?.toString().orEmpty())
+        })
         binding.root.icon2.setOnClickListener {
             listener?.onExpandTextArea(binding.root.editText.text?.toString().orEmpty())
         }
@@ -84,5 +88,6 @@ class WidgetBulkReviewTextArea(
         fun onGainFocus(view: View)
         fun onLostFocus(view: View, text: String)
         fun onExpandTextArea(text: String)
+        fun onTextChanged(text: String)
     }
 }

@@ -408,18 +408,36 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onReviewItemTextAreaLostFocus(inboxID: String, text: String) {
         reviewItemsTestimony.update {
-            it.filterAndPut(
+            it.copyAndReplace(
                 matcher = { reviewItemTestimony ->
-                    reviewItemTestimony.inboxID != inboxID
+                    reviewItemTestimony.inboxID == inboxID
                 },
-                newItem = BulkReviewItemTestimonyUiModel(
-                    inboxID = inboxID,
-                    testimonyUiModel = ReviewTestimonyUiModel(
-                        text = text,
-                        shouldShowTextArea = text.isNotBlank(),
-                        focused = false
+                copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                            shouldShowTextArea = text.isNotBlank(),
+                            focused = false
+                        )
                     )
-                )
+                }
+            )
+        }
+    }
+
+    fun onReviewItemTextAreaTextChanged(inboxID: String, text: String) {
+        reviewItemsTestimony.update {
+            it.copyAndReplace(
+                matcher = { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID == inboxID
+                },
+                copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                            text = text,
+                            shouldApplyText = false
+                        )
+                    )
+                }
             )
         }
     }
@@ -1473,7 +1491,8 @@ class BulkReviewViewModel @Inject constructor(
                             testimonyUiModel = ReviewTestimonyUiModel(
                                 text = text,
                                 shouldShowTextArea = text.isNotBlank(),
-                                focused = false
+                                focused = false,
+                                shouldApplyText = true
                             )
                         )
                     )
@@ -1495,7 +1514,8 @@ class BulkReviewViewModel @Inject constructor(
                     testimonyUiModel = ReviewTestimonyUiModel(
                         text = String.EMPTY,
                         shouldShowTextArea = true,
-                        focused = true
+                        focused = true,
+                        shouldApplyText = true
                     )
                 )
             )
@@ -1507,10 +1527,13 @@ class BulkReviewViewModel @Inject constructor(
             it.copyAndReplace(matcher = { reviewItemTestimony ->
                 reviewItemTestimony.inboxID == inboxID
             }, copier = { reviewItemTestimony ->
-                    reviewItemTestimony.copy(
-                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(text = text)
+                reviewItemTestimony.copy(
+                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                        text = text,
+                        shouldApplyText = false
                     )
-                })
+                )
+            })
         }
     }
 
