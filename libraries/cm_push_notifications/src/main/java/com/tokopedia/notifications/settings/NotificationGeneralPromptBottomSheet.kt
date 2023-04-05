@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.settings
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -132,8 +133,6 @@ class NotificationGeneralPromptBottomSheet(
     }
 
     private fun onCloseClick(ignored: View) {
-        sendEventClose()
-
         dismiss()
     }
 
@@ -153,6 +152,11 @@ class NotificationGeneralPromptBottomSheet(
             }
 
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        sendEventClose()
     }
 
     private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
