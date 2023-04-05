@@ -38,6 +38,7 @@ data class BeautificationConfigUiModel(
             assetAndroid = customFaceAssetLink,
             menu = faceFilters.map { faceFilter ->
                 Config.BeautificationConfig.CustomFace.Menu(
+                    id = faceFilter.id,
                     name = faceFilter.name,
                     minValue = faceFilter.minValue,
                     maxValue = faceFilter.maxValue,
@@ -48,6 +49,7 @@ data class BeautificationConfigUiModel(
         ),
         presets = presets.map { preset ->
             Config.BeautificationConfig.Preset(
+                id = preset.id,
                 name = preset.name,
                 active = preset.isSelected,
                 minValue = preset.minValue,

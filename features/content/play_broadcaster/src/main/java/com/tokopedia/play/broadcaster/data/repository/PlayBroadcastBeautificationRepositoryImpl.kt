@@ -28,9 +28,6 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         authorType: String,
         beautificationConfig: BeautificationConfigUiModel
     ): Boolean = withContext(dispatchers.io) {
-        /** TODO: for mocking purpose, delete this soon when GQL is available in prod */
-        return@withContext true
-
         setBeautificationConfigUseCase(
             SetBeautificationConfigUseCase.RequestParam(
                 authorId = authorId,
