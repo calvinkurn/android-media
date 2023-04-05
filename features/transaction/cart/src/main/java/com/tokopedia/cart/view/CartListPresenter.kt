@@ -2264,18 +2264,20 @@ class CartListPresenter @Inject constructor(
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         val groupDataList = view?.getAllGroupDataList()
         if (groupDataList != null) {
-            val boUniqueIds = mutableSetOf<String>()
+            val boGroupUniqueIds = mutableSetOf<String>()
             for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
                     if (voucherOrderUiModel.messageUiModel.state == "green") {
-                        groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.boCode =
-                            voucherOrderUiModel.code
-                        boUniqueIds.add(voucherOrderUiModel.cartStringGroup)
+                        groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.apply {
+                            boCode = voucherOrderUiModel.code
+                            boUniqueId = voucherOrderUiModel.uniqueId
+                        }
+                        boGroupUniqueIds.add(voucherOrderUiModel.cartStringGroup)
                     }
                 }
             }
             for (group in groupDataList) {
-                if (group.boCode.isNotEmpty() && !boUniqueIds.contains(group.cartString)) {
+                if (group.boCode.isNotEmpty() && !boGroupUniqueIds.contains(group.cartString)) {
                     clearBo(group)
                 }
             }
@@ -2294,7 +2296,7 @@ class CartListPresenter @Inject constructor(
                                 ClearPromoOrder(
                                     uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
-                                    codes = if (it.needToAddCodes) mutableListOf(group.boCode) else mutableListOf(),
+                                    codes = if (it.cartStringOrder == group.boUniqueId) mutableListOf(group.boCode) else mutableListOf(),
                                     shopId = it.shopId.toLongOrZero(),
                                     isPo = group.isPo,
                                     poDuration = it.poDuration,
@@ -2313,6 +2315,7 @@ class CartListPresenter @Inject constructor(
 //        )
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
+        group.boUniqueId = ""
     }
 
     override fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {

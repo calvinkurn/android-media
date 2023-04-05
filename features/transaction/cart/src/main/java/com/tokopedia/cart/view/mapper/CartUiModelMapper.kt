@@ -229,11 +229,12 @@ object CartUiModelMapper {
 //                    availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)
 //                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
 //                        ?: "0"
-                boCode =
-                    cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
-                        it.cartStringGroup == cartString && it.shippingId > 0 &&
-                            it.spId > 0 && it.type == "logistic"
-                    }?.code ?: ""
+                val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
+                    it.cartStringGroup == cartString && it.shippingId > 0 &&
+                        it.spId > 0 && it.type == "logistic"
+                }
+                boCode = lastApplyData?.code ?: ""
+                boUniqueId = lastApplyData?.uniqueId ?: ""
                 coachmarkPlus = CartShopCoachmarkPlusData(
                     isShown = cartData.coachmark.plus.isShown && (firstPlusAvailableGroupIndex == index),
                     title = cartData.coachmark.plus.title,

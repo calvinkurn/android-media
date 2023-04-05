@@ -12,5 +12,7 @@ data class CartPromoHolderData(
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
     var poDuration: String = "",
-    var needToAddCodes: Boolean = false
+    var boCode: String = "",
+    var hasSelectedProduct: Boolean = false,
+    var needToAddBoCodeManually: Boolean = false
 )
