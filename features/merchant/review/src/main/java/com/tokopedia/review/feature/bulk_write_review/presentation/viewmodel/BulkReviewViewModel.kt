@@ -499,22 +499,17 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onSubmitReviews() {
-        reviewItemsMediaPickerUiState.value.let { currentMediaPickerUiState ->
-            val firstFailMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
-                it.key !in removedReviewItemsInboxID.value &&
-                    it.value is CreateReviewMediaPickerUiState.FailedUpload
-            }?.value as? CreateReviewMediaPickerUiState.FailedUpload
-            val firstUploadingMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
-                it.key !in removedReviewItemsInboxID.value &&
-                    it.value is CreateReviewMediaPickerUiState.Uploading
-            }?.value as? CreateReviewMediaPickerUiState.Uploading
-            if (firstFailMediaPickerUiState != null) {
-                enqueueToasterErrorUploadMedia(firstFailMediaPickerUiState.errorCode)
-            } else if (firstUploadingMediaPickerUiState != null) {
-                enqueueToasterWaitForUploadMedia()
-            } else {
-                shouldSubmitReview.value = true
-            }
+        val itemWithFailMediaUpload = getFirstItemWithFailMediaUpload()
+        val itemWithUploadingMedia = getFirstItemWithUploadingMedia()
+        val itemWithEmptyOtherReasonTestimony = getFirstItemWithEmptyOtherReasonTestimony()
+        if (itemWithFailMediaUpload != null) {
+            enqueueToasterErrorUploadMedia(itemWithFailMediaUpload.getMediaUploadErrorCode())
+        } else if (itemWithUploadingMedia != null) {
+            enqueueToasterWaitForUploadMedia()
+        } else if (itemWithEmptyOtherReasonTestimony != null) {
+            scrollToReviewItemVisitable(itemWithEmptyOtherReasonTestimony)
+        } else {
+            shouldSubmitReview.value = true
         }
     }
 
@@ -725,13 +720,8 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewVisitableList
             .value
             .filterIsInstance<BulkReviewItemUiModel>()
-            .find {
-                it.uiState is BulkReviewItemUiState.Focused
-            }?.let {
-                viewModelScope.launch {
-                    _reviewItemScrollRequest.emit(it)
-                }
-            }
+            .find { it.uiState is BulkReviewItemUiState.Focused }
+            ?.let(::scrollToReviewItemVisitable)
     }
 
     fun getReviewItemVisitablePosition(reviewItem: BulkReviewItemUiModel): Int {
@@ -1654,6 +1644,33 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
+    private fun getFirstItemWithFailMediaUpload(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.isMediaUploadFailed()
+            }
+    }
+
+    private fun getFirstItemWithUploadingMedia(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.isUploadingMedia()
+            }
+    }
+
+    private fun getFirstItemWithEmptyOtherReasonTestimony(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.hasEmptyOtherReasonTestimony()
+            }
+    }
+
     private fun <T> List<T>.copyAndReplace(
         matcher: (T) -> Boolean,
         copier: (T) -> T
@@ -1861,5 +1878,9 @@ class BulkReviewViewModel @Inject constructor(
             rating = rating,
             timestamp = System.currentTimeMillis()
         )
+    }
+
+    private fun scrollToReviewItemVisitable(reviewItem: BulkReviewItemUiModel) {
+        viewModelScope.launch { _reviewItemScrollRequest.emit(reviewItem) }
     }
 }
