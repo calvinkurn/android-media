@@ -1,16 +1,15 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
-import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
@@ -20,7 +19,8 @@ import javax.inject.Inject
 class EditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val addLogoFilterRepository: AddLogoFilterRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val bitmapCreationRepository: BitmapCreationRepository
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -98,7 +98,6 @@ class EditorViewModel @Inject constructor(
     }
 
     fun saveToGallery(
-        context: Context,
         dataList: List<EditorUiModel>,
         onFinish: (result: List<String>?, exception: Exception?) -> Unit
     ) {
@@ -110,9 +109,6 @@ class EditorViewModel @Inject constructor(
             if (it.isImageEdited()) {
                 // if use 'add logo' feature then need to flatten image first
                 it.getOverlayLogoValue()?.let { overlayData ->
-                    overlayData.imageRealSize.apply {
-                        if (context.isCreatedBitmapOverflow(first, second)) return
-                    }
                     addLogoFilterRepository.flattenImage(
                         it.getImageUrl(),
                         overlayData.overlayLogoUrl,
@@ -155,6 +151,10 @@ class EditorViewModel @Inject constructor(
 
     fun isShopAvailable(): Boolean {
         return userSession.hasShop()
+    }
+
+    fun isMemoryOverflow(width: Int, height: Int): Boolean {
+        return bitmapCreationRepository.isBitmapOverflow(width, height)
     }
 
     private fun updateEditedItem(originalUrl: String) {

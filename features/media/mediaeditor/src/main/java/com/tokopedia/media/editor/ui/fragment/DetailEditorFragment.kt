@@ -38,14 +38,11 @@ import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
-import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageRounded
@@ -163,8 +160,8 @@ class DetailEditorFragment @Inject constructor(
                 rotateNumber = rotateNumber,
                 initialRotateNumber = initialRotateNumber,
                 data
-            ) { resultBitmap ->
-                resultBitmap?.let {
+            ) { processedData ->
+                viewModel.getProcessedBitmap(processedData)?.let {
                     data.resultUrl = viewModel.saveImageCache(
                         it,
                         sourcePath = data.originalUrl
@@ -280,7 +277,6 @@ class DetailEditorFragment @Inject constructor(
     override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
             viewModel.setWatermark(
-                context,
                 it,
                 type,
                 detailUiModel = data,
@@ -358,11 +354,11 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLogoChosen(bitmap: Bitmap?) {
-        viewBinding?.imgPreviewOverlay?.apply {
-            bitmap?.let {
+    override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
+        viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
+            viewBinding?.imgPreviewOverlay?.apply {
                 show()
-                setImageBitmap(validateImageSize(it))
+                setImageBitmap(validateImageSize(overlayBitmap))
                 isEdited = true
             }
         }
@@ -445,19 +441,22 @@ class DetailEditorFragment @Inject constructor(
                                 val color =
                                     ContextCompat.getColor(requireContext(), backgroundColor)
 
-                                context?.let { contextReady ->
-                                    if (contextReady.isCreatedBitmapOverflow(resultBitmap.width, resultBitmap.height)) return@MediaBitmapEmptyTarget
-                                    mediaCreateBitmap(resultBitmap.width, resultBitmap.height, resultBitmap.config)?.let { backgroundBitmap ->
-                                        backgroundBitmap.eraseColor(color)
+                                viewModel.bitmapCreation(
+                                    BitmapCreation.emptyBitmap(
+                                        resultBitmap.width,
+                                        resultBitmap.height,
+                                        resultBitmap.config
+                                    )
+                                )?.let { backgroundBitmap ->
+                                    backgroundBitmap.eraseColor(color)
 
-                                        val canvas = Canvas(backgroundBitmap)
-                                        canvas.drawBitmap(resultBitmap, 0f, 0f, null)
+                                    val canvas = Canvas(backgroundBitmap)
+                                    canvas.drawBitmap(resultBitmap, 0f, 0f, null)
 
-                                        getImageView()?.setImageBitmap(
-                                            backgroundBitmap
-                                        )
-                                        isEdited = true
-                                    }
+                                    getImageView()?.setImageBitmap(
+                                        backgroundBitmap
+                                    )
+                                    isEdited = true
                                 }
                             }
                         }
@@ -686,7 +685,6 @@ class DetailEditorFragment @Inject constructor(
                 WatermarkType.map(it.watermarkType)?.let { type ->
                     finalBitmap?.let { finalBitmapReady ->
                         viewModel.setWatermark(
-                            context,
                             finalBitmapReady,
                             type,
                             detailUiModel = detailUiModel,
@@ -728,7 +726,10 @@ class DetailEditorFragment @Inject constructor(
             globalWidth = source.width
             globalHeight = source.height
         }
-        return mediaCreateBitmap(source, 0, 0, source.width, source.height, matrix, true)
+
+        return viewModel.bitmapCreation(
+            BitmapCreation.cropBitmap(source, 0, 0, source.width, source.height, matrix, true)
+        )
     }
 
     // neutralize rotate value on watermark result
@@ -736,7 +737,10 @@ class DetailEditorFragment @Inject constructor(
         watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)?.let { neutralizeBitmap ->
             val cropX = (neutralizeBitmap.width - globalWidth) / 2
             val cropY = (neutralizeBitmap.height - globalHeight) / 2
-            return mediaCreateBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+
+            return viewModel.bitmapCreation(
+                BitmapCreation.cropBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+            )
         }
         return null
     }
@@ -817,27 +821,31 @@ class DetailEditorFragment @Inject constructor(
 
             val mirrorMatrix = Matrix()
             mirrorMatrix.preScale(cropRotateData.scaleX, cropRotateData.scaleY)
-            val mirroredBitmap = mediaCreateBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true) ?: return@let
+
+            val mirroredBitmap = viewModel.bitmapCreation(
+                BitmapCreation.cropBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+            ) ?: return@let
 
             // get processed, since data param is set to be null then other data value is not necessary
-            if (context?.isCreatedBitmapOverflow(imageWidth, imageHeight) == true) return@let
-            val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
-                mirroredBitmap,
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                finalRotationDegree,
-                cropRotateData.rotateDegree,
-                cropRotateData.orientationChangeNumber,
-                null,
-                0f,
-                0f,
-                0f,
-                isRotate = false,
-                isCrop = false,
-                1f,
-                1f
+            val bitmapResult = viewModel.getProcessedBitmap(
+                ProcessedBitmapModel(
+                    mirroredBitmap,
+                    offsetX,
+                    offsetY,
+                    imageWidth,
+                    imageHeight,
+                    finalRotationDegree,
+                    cropRotateData.rotateDegree,
+                    cropRotateData.orientationChangeNumber,
+                    null,
+                    0f,
+                    0f,
+                    0f,
+                    isRotate = false,
+                    isCrop = false,
+                    1f,
+                    1f
+                )
             )
 
             if (bitmapResult == null) {
@@ -850,10 +858,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun setWatermarkDrawerItem(bitmap: Bitmap) {
-        val bitmapResult = viewModel.setWatermarkFilterThumbnail(
-            context,
-            bitmap
-        )
+        val bitmapResult = viewModel.setWatermarkFilterThumbnail(bitmap)
 
         watermarkComponent.getButtonRef().apply {
             val roundedCorner =
@@ -968,17 +973,8 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
-        var memoryOverflow: Boolean
-
-        val imageSize = getImageSize(url).apply {
-            val usageEstimation = first * second * PIXEL_BYTE_SIZE
-            memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
-        }
-
-        if (memoryOverflow) {
-            activity?.showMemoryLimitToast(imageSize)
-        } else {
-            loadImageWithEmptyTarget(requireContext(),
+        context?.let {
+            loadImageWithEmptyTarget(it,
                 url,
                 properties = {
                     listener(
@@ -1030,7 +1026,8 @@ class DetailEditorFragment @Inject constructor(
                         onImageReady()
                     },
                     onCleared = {}
-                ))
+                )
+            )
         }
     }
 
@@ -1148,7 +1145,7 @@ class DetailEditorFragment @Inject constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { logoBitmap ->
-                    addLogoComponent.generateOverlayImage(
+                    viewModel.generateAddLogoOverlay(
                         logoBitmap,
                         newSize,
                         isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)

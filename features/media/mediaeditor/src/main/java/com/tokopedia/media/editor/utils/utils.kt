@@ -14,7 +14,9 @@ import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
@@ -202,35 +204,32 @@ fun validateImageSize(source: Bitmap): Bitmap {
     }
 }
 
-fun Activity.getFreeMemory(): Long {
+private fun Context.getFreeMemory(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     activityManager.getMemoryInfo(mi)
     return mi.availMem
 }
 
-fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+fun Context.checkMemoryOverflow(memoryUsage: Int): Boolean {
     return getFreeMemory() < memoryUsage
 }
 
-fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
+fun Context.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
     // format = image width || image height || avail memory
     newRelicLog(
         mapOf(
             "Error" to (msg ?: ""),
             MEMORY_LIMIT_FIELD to "width: ${imageSize.first} || height: ${imageSize.second} || " +
-                "avail memory: ${getFreeMemory()}"
+                "avail memory: ${this.getFreeMemory()}"
         )
     )
 
-    if (!this.isDestroyed) {
-        Toast.makeText(
-            this,
-            R.string.editor_activity_memory_limit,
-            Toast.LENGTH_LONG
-        ).show()
-        finish()
-    }
+    Toast.makeText(
+        this,
+        R.string.editor_activity_memory_limit,
+        Toast.LENGTH_LONG
+    ).show()
 }
 
 fun showErrorLoadToaster(view: View, msg: String) {
@@ -267,78 +266,14 @@ fun showErrorGeneralToaster(context: Context?, msg: String? = null) {
     }
 }
 
-fun mediaCreateBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int, matrix: Matrix? = null, filter: Boolean? = null): Bitmap? {
-    try {
-        return if (matrix != null && filter != null) {
-            Bitmap.createBitmap(source, x, y, width, height, matrix, filter)
-        } else {
-            Bitmap.createBitmap(source, x, y, width, height)
-        }
-    } catch (e: Exception) {
-        val sourceSize = Pair(source.width, source.height)
-        val targetSize = Pair(width, height)
-        val targetCor = Pair(x, y)
-        newRelicLog(
-            mapOf(
-                FAILED_CREATE_BITMAP to "{$sourceSize} | {$targetSize} | {$targetCor} /n ${e.message}"
-            )
-        )
-    }
-    return null
-}
+fun roundedBitmap(
+    context: Context,
+    source: Bitmap,
+    cornerRadius: Float = 0f,
+    isCircular: Boolean = false
+): Bitmap {
+    val roundedBitmap = RoundedBitmapDrawableFactory.create(context.resources, source)
+    roundedBitmap.cornerRadius = if (isCircular) (source.width.toFloat() / 2) else cornerRadius
 
-fun mediaCreateBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap? {
-    try {
-        return Bitmap.createBitmap(width, height, config)
-    } catch (e: Exception) {
-        val targetSize = Pair(width, height)
-        newRelicLog(
-            mapOf(
-                FAILED_CREATE_BITMAP to "{$targetSize} /n ${e.message}"
-            )
-        )
-    }
-    return null
-}
-
-fun mediaCreateScaledBitmap(src: Bitmap , dstWidth: Int, dstHeight: Int, filter: Boolean): Bitmap? {
-    try {
-        return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, filter)
-    } catch (e: Exception) {
-        val targetSize = Pair(dstWidth, dstHeight)
-        newRelicLog(
-            mapOf(
-                FAILED_CREATE_BITMAP to "scaled => {$targetSize} /n ${e.message}"
-            )
-        )
-    }
-    return null
-}
-
-private fun Context?.getActivity(): Activity? {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) {
-            return context
-        }
-        context = context.baseContext
-    }
-    return null
-}
-
-fun Context?.isCreatedBitmapOverflow(width: Int, height: Int): Boolean {
-    val bitmapPixelSize = 4
-    val memoryUsage = width * height * bitmapPixelSize
-    val sourceSize = Pair(width, height)
-
-    // check memory limit when create new bitmap
-    getActivity()?.let {
-        if (it.checkMemoryOverflow(memoryUsage)) {
-            it.showMemoryLimitToast(sourceSize)
-            return true
-        } else {
-            return false
-        }
-    }
-    return true
+    return roundedBitmap.toBitmap()
 }

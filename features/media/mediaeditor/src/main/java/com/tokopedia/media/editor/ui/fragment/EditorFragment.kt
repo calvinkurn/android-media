@@ -122,44 +122,33 @@ class EditorFragment @Inject constructor(
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
             val filePath = data.getOriginalUrl()
-            var memoryOverflow: Boolean
 
-            val imageSize = getImageSize(filePath).apply {
-                val usageEstimation = first * second * PIXEL_BYTE_SIZE
-                memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
-            }
-
-            if (memoryOverflow) {
-                activity?.showMemoryLimitToast(imageSize)
-                return
-            } else {
-                loadImageWithEmptyTarget(requireContext(),
-                    filePath,
-                    properties = {
-                        listener(
-                            onError = {
-                                it?.let { exception ->
-                                    loader?.dismiss()
-                                    viewBinding?.mainEditorFragmentLayout?.let { view ->
-                                        showErrorLoadToaster(view, exception.message ?: "")
-                                    }
-
+            loadImageWithEmptyTarget(requireContext(),
+                filePath,
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                loader?.dismiss()
+                                viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
                                 }
+
                             }
+                        }
+                    )
+                },
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        imageCrop(bitmap, data.getOriginalUrl())
+                        thumbnailDrawerComponent.refreshItem(
+                            currentProcess,
+                            viewModel.editStateList.values.toList()
                         )
+                        iterateCrop(listData, currentProcess + 1)
                     },
-                    mediaTarget = MediaBitmapEmptyTarget(
-                        onReady = { bitmap ->
-                            imageCrop(bitmap, data.getOriginalUrl())
-                            thumbnailDrawerComponent.refreshItem(
-                                currentProcess,
-                                viewModel.editStateList.values.toList()
-                            )
-                            iterateCrop(listData, currentProcess + 1)
-                        },
-                        onCleared = {}
-                    ))
-            }
+                    onCleared = {}
+                ))
         } else {
             iterateCrop(listData, currentProcess + 1)
         }
@@ -173,7 +162,9 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
-        if (context?.isCreatedBitmapOverflow(bitmap.width, bitmap.height) == true) return
+        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
+            activity?.finish()
+        }
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,

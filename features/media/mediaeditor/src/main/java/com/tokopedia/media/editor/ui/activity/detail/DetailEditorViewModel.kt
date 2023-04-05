@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import androidx.lifecycle.LiveData
@@ -11,11 +10,9 @@ import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.domain.param.WatermarkUseCaseParam
+import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.ResourceProvider
-import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -35,6 +32,7 @@ class DetailEditorViewModel @Inject constructor(
     private val rotateFilterRepository: RotateFilterRepository,
     private val saveImageRepository: SaveImageRepository,
     private val getWatermarkUseCase: GetWatermarkUseCase,
+    private val bitmapCreationRepository: BitmapCreationRepository,
     private val addLogoFilterRepository: AddLogoFilterRepository
 ) : ViewModel() {
 
@@ -111,7 +109,6 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setWatermark(
-        context: Context?,
         bitmapSource: Bitmap,
         type: WatermarkType,
         isThumbnail: Boolean = false,
@@ -120,36 +117,27 @@ class DetailEditorViewModel @Inject constructor(
     ) {
         initializeWatermarkAsset()
 
-        _watermarkFilter.value = if (!context.isCreatedBitmapOverflow(bitmapSource.width, bitmapSource.height)) {
-            getWatermarkUseCase(
-                WatermarkUseCaseParam(
-                    source = bitmapSource,
-                    type = type,
-                    shopNameParam = userSession.shopName,
-                    isThumbnail = isThumbnail,
-                    element = detailUiModel,
-                    useStorageColor = useStorageColor
-                )
+        _watermarkFilter.value = getWatermarkUseCase(
+            WatermarkUseCaseParam(
+                source = bitmapSource,
+                type = type,
+                shopNameParam = userSession.shopName,
+                isThumbnail = isThumbnail,
+                element = detailUiModel,
+                useStorageColor = useStorageColor
             )
-        } else {
-            null
-        }
+        )
     }
 
     fun setWatermarkFilterThumbnail(
-        context: Context?,
         implementedBaseBitmap: Bitmap
     ): Pair<Bitmap?, Bitmap?> {
         initializeWatermarkAsset()
 
-        return if (!context.isCreatedBitmapOverflow(implementedBaseBitmap.width, implementedBaseBitmap.height)) {
-            watermarkFilterRepository.watermarkDrawerItem(
-                implementedBaseBitmap,
-                userSession.shopName
-            )
-        } else {
-            Pair(null, null)
-        }
+        return watermarkFilterRepository.watermarkDrawerItem(
+            implementedBaseBitmap,
+            userSession.shopName
+        )
     }
 
     fun setRotate(
@@ -208,6 +196,26 @@ class DetailEditorViewModel @Inject constructor(
 
     fun getAvatarShop(): String {
         return userSession.shopAvatarOriginal
+    }
+
+    fun bitmapCreation(bitmapCreation: BitmapCreationModel): Bitmap? {
+        return bitmapCreationRepository.createBitmap(bitmapCreation)
+    }
+
+    fun generateAddLogoOverlay(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean): Bitmap? {
+        return bitmap?.let {
+            addLogoFilterRepository.generateOverlayImage(
+                it,
+                newSize,
+                isCircular
+            )
+        } ?: kotlin.run {
+            null
+        }
+    }
+
+    fun getProcessedBitmap(data: ProcessedBitmapModel): Bitmap? {
+        return bitmapCreationRepository.getProcessedBitmap(data)
     }
 
     private fun initializeWatermarkAsset() {

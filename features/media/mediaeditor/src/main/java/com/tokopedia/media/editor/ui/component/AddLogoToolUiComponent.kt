@@ -23,9 +23,7 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.isCreatedBitmapOverflow
-import com.tokopedia.media.editor.utils.mediaCreateBitmap
-import com.tokopedia.media.editor.utils.mediaCreateScaledBitmap
+import com.tokopedia.media.editor.utils.roundedBitmap
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -125,7 +123,7 @@ class AddLogoToolUiComponent constructor(
                 onReady = {
                     uploadAvatarWrapper.show()
                     uploadAvatar.setImageBitmap(
-                        roundedBitmap(it, cornerRadius = 8f)
+                        roundedBitmap(context, it, cornerRadius = 8f)
                     )
                     uploadText.text = resources().getString(editorR.string.editor_add_logo_upload)
 
@@ -148,40 +146,6 @@ class AddLogoToolUiComponent constructor(
         }
     }
 
-    /**
-     * generate new overlay image if product image size is change
-     */
-    fun generateOverlayImage(
-        bitmap: Bitmap,
-        newSize: Pair<Int, Int>,
-        isCircular: Boolean = false
-    ): Bitmap? {
-        originalImageWidth = newSize.first
-        originalImageHeight = newSize.second
-
-        if (!context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) {
-            mediaCreateBitmap(newSize.first, newSize.second, Bitmap.Config.ARGB_8888)?.let { resultBitmap ->
-                val canvas = Canvas(resultBitmap)
-
-                val logoBitmap = if (isCircular) {
-                    roundedBitmap(bitmap, isCircular = true)
-                } else {
-                    roundedBitmap(bitmap, 8f.toPx())
-                }
-
-                getDrawLogo(logoBitmap)?.let {
-                    drawBitmap(
-                        canvas,
-                        it
-                    )
-                }
-
-                return resultBitmap
-            }
-        }
-        return null
-    }
-
     private fun initShopAvatar() {
         loadImageWithEmptyTarget(
             context,
@@ -189,13 +153,12 @@ class AddLogoToolUiComponent constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { loadedBitmap ->
-                    if (context.isCreatedBitmapOverflow(loadedBitmap.width, loadedBitmap.height)) return@MediaBitmapEmptyTarget
                     val finalBitmap =
                         cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
                             ?: loadedBitmap
 
                     shopAvatar.setImageBitmap(
-                        roundedBitmap(finalBitmap, isCircular = true)
+                        roundedBitmap(context, finalBitmap, isCircular = true)
                     )
                     isShopAvatarReady = true
                     isLogoChosen(shopAvatarUrl)
@@ -260,70 +223,27 @@ class AddLogoToolUiComponent constructor(
     private fun initListener() {
         uploadAvatar.setOnClickListener {
             selectedLogoUrl = uploadAvatarUrl
-            listener.onLogoChosen(getUploadAvatarBitmap())
+            listener.onLogoChosen(
+                uploadAvatar.drawable.toBitmap(),
+                Pair(originalImageWidth, originalImageHeight),
+                false
+            )
         }
 
         shopAvatar.setOnClickListener {
             selectedLogoUrl = shopAvatarUrl
-            if (isShopAvatarReady) listener.onLogoChosen(getShopAvatarBitmap())
+            if (isShopAvatarReady) {
+                listener.onLogoChosen(
+                    shopAvatar.drawable.toBitmap(),
+                    Pair(originalImageWidth, originalImageHeight),
+                    true
+                )
+            }
         }
 
         uploadButton.setOnClickListener {
             listener.onUpload()
         }
-    }
-
-    private fun getUploadAvatarBitmap(): Bitmap? {
-        if (context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) return null
-        mediaCreateBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)?.let { resultBitmap ->
-            val canvas = Canvas(resultBitmap)
-            getDrawLogo(uploadAvatar.drawable.toBitmap())?.let {uploadAvatarBitmap ->
-                drawBitmap(
-                    canvas,
-                    uploadAvatarBitmap
-                )
-            }
-
-            return resultBitmap
-        }
-        return null
-    }
-
-    private fun getShopAvatarBitmap(): Bitmap? {
-        if (context.isCreatedBitmapOverflow(originalImageWidth, originalImageHeight)) return null
-        mediaCreateBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)?.let {resultBitmap ->
-            val canvas = Canvas(resultBitmap)
-            getDrawLogo(shopAvatar.drawable.toBitmap())?.let { shopAvatarBitmap ->
-                drawBitmap(
-                    canvas,
-                    shopAvatarBitmap
-                )
-            }
-
-            return resultBitmap
-        }
-        return null
-
-    }
-
-    private fun drawBitmap(canvas: Canvas, bitmap: Bitmap) {
-        canvas.drawBitmap(
-            bitmap,
-            LOGO_X_POS * originalImageWidth,
-            LOGO_Y_POS * originalImageHeight,
-            Paint()
-        )
-    }
-
-    private fun roundedBitmap(
-        source: Bitmap,
-        cornerRadius: Float = 0f,
-        isCircular: Boolean = false
-    ): Bitmap {
-        val roundedBitmap = RoundedBitmapDrawableFactory.create(resources(), source)
-        roundedBitmap.cornerRadius = if (isCircular) (source.width.toFloat() / 2) else cornerRadius
-
-        return roundedBitmap.toBitmap()
     }
 
     private fun shopLoadFailedToaster() {
@@ -349,39 +269,19 @@ class AddLogoToolUiComponent constructor(
         }, TOASTER_DELAY_TIME)
     }
 
-    // get logo bitmap that rescaled to 1/6 from base image
-    private fun getDrawLogo(source: Bitmap): Bitmap? {
-        val widthTarget = originalImageWidth / LOGO_SIZE_DIVIDER
-        val heightTarget = ((widthTarget.toFloat() / source.width) * source.height).toInt()
-
-        if (context.isCreatedBitmapOverflow(widthTarget, heightTarget)) return null
-        return mediaCreateScaledBitmap(
-            source,
-            widthTarget,
-            heightTarget,
-            true
-        )
-    }
-
     interface Listener {
-        fun onLogoChosen(bitmap: Bitmap?)
+        fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean)
         fun onUpload()
         fun onLoadFailed()
         fun onLoadRetry()
     }
 
     companion object {
-        private var LOGO_X_POS = 0.03f
-        private var LOGO_Y_POS = 0.03f
-
         private const val BOTTOM_SHEET_TITLE = "Tips upload logo"
         private const val BOTTOM_SHIT_ICON_SIZE = 17
 
         private const val TOASTER_DELAY_TIME = 300L
         private const val RETRY_LIMIT = 3
-
-        // logo size 1/6 from base image
-        private const val LOGO_SIZE_DIVIDER = 6
 
         const val LOGO_SHOP = 0
         const val LOGO_UPLOAD = 1

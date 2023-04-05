@@ -9,10 +9,10 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.data.entity.EditorDetailEntity
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import javax.inject.Inject
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
-import com.tokopedia.media.editor.utils.mediaCreateBitmap
 import kotlin.math.min
 import com.tokopedia.unifyprinciples.R as principleR
 
@@ -36,7 +36,8 @@ interface WatermarkFilterRepository {
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    private val bitmapCreationRepository: BitmapCreationRepository
 ) : WatermarkFilterRepository {
     private var logoDrawable: Drawable? = null
 
@@ -105,7 +106,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         val sourceWidth: Int = source.width
         val sourceHeight: Int = source.height
 
-        return mediaCreateBitmap(sourceWidth, sourceHeight, source.config)?.let { result ->
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.emptyBitmap(
+                sourceWidth, sourceHeight, source.config
+            )
+        )?.let { result ->
             logoDrawableWidth = if (!isThumbnail)
                 (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
             else
