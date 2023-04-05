@@ -36,11 +36,11 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
-import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -268,7 +268,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
-        }else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
+        } else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
             ((ShipmentNewUpsellImprovementViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
@@ -1147,7 +1147,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 }
                             }
                         }
-                    }    
+                    }
                 }
             }
         }
