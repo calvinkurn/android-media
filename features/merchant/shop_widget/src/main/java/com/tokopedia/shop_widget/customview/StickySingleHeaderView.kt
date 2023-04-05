@@ -29,6 +29,16 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
+    @Suppress("unused")
+    val containerHeight: Int
+        get() {
+            if (null != mHeaderContainer) {
+                mHeaderContainer?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+                return mHeaderContainer?.measuredHeight.orZero()
+            }
+            return 0
+        }
+
     interface OnStickySingleHeaderAdapter {
         val stickyHeaderPosition: Int
         fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder?

@@ -157,6 +157,17 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
+    @Suppress("unused")
+    fun resetContentText() {
+        content = contentText
+        invalidate()
+        requestLayout()
+    }
+
+    @Suppress("unused")
+    val isContentDefault: Boolean
+        get() = contentTextView?.text == contentText
+
     override fun setEnabled(enabled: Boolean) {
         this.enabled = enabled
         isClickable = enabled
