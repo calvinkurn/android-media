@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.shop_nib.databinding.SsnActivityNibSubmissionSuccessBinding
-import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionSuccessBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class NibSubmissionSuccessFragment : Fragment() {
@@ -16,16 +17,18 @@ class NibSubmissionSuccessFragment : Fragment() {
         fun newInstance(): NibSubmissionSuccessFragment {
             return NibSubmissionSuccessFragment()
         }
+        private const val IMAGE_URL_ALREADY_SUBMITTED = "https://images.tokopedia.net/img/android/campaign/shop-nib/already_submitted.png"
+        private const val IMAGE_URL_SUBMISSION_SUCCESS = "https://images.tokopedia.net/img/android/campaign/shop-nib/submission_success.png"
     }
 
-    private var binding by autoClearedNullable<SsnActivityNibSubmissionSuccessBinding>()
+    private var binding by autoClearedNullable<SsnFragmentNibSubmissionSuccessBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = SsnActivityNibSubmissionSuccessBinding.inflate(inflater, container, false)
+        binding = SsnFragmentNibSubmissionSuccessBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -35,7 +38,10 @@ class NibSubmissionSuccessFragment : Fragment() {
     }
 
     private fun setupView() {
-
+        binding?.emptyState?.setImageUrl(IMAGE_URL_SUBMISSION_SUCCESS)
+        binding?.emptyState?.setPrimaryCTAClickListener {
+            RouteManager.route(activity ?: return@setPrimaryCTAClickListener, ApplinkConst.SellerApp.SELLER_APP_HOME)
+        }
     }
 
 

@@ -26,6 +26,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shop_nib.R
 import com.tokopedia.shop_nib.presentation.datepicker.NibDatePicker
+import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessActivity
 import com.tokopedia.shop_nib.util.extension.toMb
 import java.util.*
 
@@ -80,19 +81,18 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun setupView() {
-        binding?.layoutFilePickerDefault?.setOnClickListener {
-            showFilePicker()
-        }
-        binding?.iconClose?.setOnClickListener { removeSelectedFile() }
-        binding?.tpgNibBenefit?.setHyperlinkText(
-            fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
-            hyperlinkSubstring = context?.getString(R.string.ssn_here).orEmpty(),
-            onHyperlinkClick = {
+        binding?.run {
+            layoutFilePickerDefault.setOnClickListener { showFilePicker() }
+            iconClose.setOnClickListener { removeSelectedFile() }
+            tpgNibBenefit.setHyperlinkText(
+                fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
+                hyperlinkSubstring = context?.getString(R.string.ssn_here).orEmpty(),
+                onHyperlinkClick = {
 
-            }
-        )
-        binding?.tauNibPublishedDate?.editText?.setOnClickListener {
-            showDatePickerBottomSheet()
+                }
+            )
+            tauNibPublishedDate.editText.setOnClickListener { showDatePickerBottomSheet() }
+            btnFinish.setOnClickListener { NibSubmissionSuccessActivity.start(activity ?: return@setOnClickListener) }
         }
     }
 
@@ -125,7 +125,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         if (fileSizeInKb <= MAX_FILE_SIZE_BYTES) {
             renderSelectedFileThumbnail(fileUri, fileSizeInKb)
         } else {
-            binding?.btnAddProduct?.disable()
+            binding?.btnFinish?.disable()
             binding?.root?.showToasterError(context?.getString(R.string.ssn_error_message_file_size).orEmpty())
         }
     }
