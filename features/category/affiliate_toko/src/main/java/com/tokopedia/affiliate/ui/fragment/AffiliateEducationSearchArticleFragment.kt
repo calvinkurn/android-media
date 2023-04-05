@@ -26,10 +26,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -177,6 +180,9 @@ class AffiliateEducationSearchArticleFragment :
                 view?.findViewById<EmptyStateUnify>(R.id.eta_empty_state)?.gone()
                 view?.findViewById<Typography>(R.id.tv_latest_article_education_search)?.gone()
             }
+        }
+        affiliateEducationSearchArticleViewModel?.progressBar()?.observe(viewLifecycleOwner) {
+            view?.findViewById<LoaderUnify>(R.id.eduaction_search_article_progress_bar)?.isVisible = it.orTrue()
         }
     }
 

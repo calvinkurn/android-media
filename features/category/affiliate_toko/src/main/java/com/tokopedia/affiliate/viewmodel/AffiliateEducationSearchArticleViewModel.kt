@@ -50,8 +50,10 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
         mutableMapOf<Int, AffiliateEducationArticleCardsResponse>()
     private var latestCardCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
+    private var progressBar = MutableLiveData<Boolean>()
 
     fun fetchSearchData(pageType: String?, keyword: String?, categoryID: String? = null) {
+        progressBar.value = true
         launchCatchError(block = {
             if (educationCategoryChip.value.isNullOrEmpty()) {
                 loadCategory(pageType)
@@ -75,6 +77,7 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
             }
         }, onError = {
                 errorMessage.value = it.localizedMessage
+                progressBar.value = false
                 Timber.e(it)
             })
     }
@@ -100,11 +103,14 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                 latestCardCount.value =
                     educationArticleCards?.cardsArticle?.data?.cards?.get(0)?.totalCount ?: 0
                 educationArticleCards?.let { convertToVisitableArticleCard(it, pageType) }
+                progressBar.value = false
             } else {
                 convertToVisitableSearchResult(data, pageType)
+                progressBar.value = false
             }
         }, onError = {
                 errorMessage.value = it.localizedMessage
+                progressBar.value = false
                 Timber.e(it)
             })
     }
@@ -205,6 +211,7 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
     fun getLatestCardCount(): LiveData<Int> = latestCardCount
     fun getEducationSearchData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationSearchPageData
+    fun progressBar(): LiveData<Boolean> = progressBar
 
     fun getEducationCategoryChip(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationCategoryChip

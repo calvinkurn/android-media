@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInt
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
@@ -106,17 +107,13 @@ class AffiliateEducationLandingPage :
         return view
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        handleBack()
+        return true
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
-            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_edukasi)
-            setOnBackButtonClickListener {
-                handleBack()
-            }
-        }
         setSearchListener(searchBar)
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
@@ -157,6 +154,7 @@ class AffiliateEducationLandingPage :
                             )
                         )
                     }
+                    searchBar.searchBarTextField.text.clear()
                     return true
                 }
                 return false

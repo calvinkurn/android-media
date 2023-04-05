@@ -61,4 +61,15 @@
         app:layout_constraintTop_toBottomOf="@id/tv_latest_article_education_search"
         tools:listitem="@layout/affiliate_education_see_all_item" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/eduaction_search_article_progress_bar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
