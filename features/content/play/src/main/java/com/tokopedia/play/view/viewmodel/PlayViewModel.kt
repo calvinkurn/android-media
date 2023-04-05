@@ -2474,20 +2474,15 @@ class PlayViewModel @AssistedInject constructor(
         action: ProductAction,
         isProductFeatured: Boolean
     ) {
-        if (product.isVariantAvailable) {
-            //TODO() show Variant Sheet
-            //openVariantDetail(product, sectionInfo, isProductFeatured)
-        } else {
-            needLogin {
-                addProductToCart(product, action) { cartId ->
-                    _uiEvent.emit(
-                        when (action) {
-                            ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                            ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                            else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                        }
-                    )
-                }
+        needLogin {
+            addProductToCart(product, action) { cartId ->
+                _uiEvent.emit(
+                    when (action) {
+                        ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                    }
+                )
             }
         }
     }
