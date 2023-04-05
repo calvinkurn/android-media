@@ -401,7 +401,10 @@ class BulkReviewViewModel @Inject constructor(
                 reviewItemTestimony.inboxID == inboxID
             }, copier = { reviewItemTestimony ->
                 reviewItemTestimony.copy(
-                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(focused = true)
+                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                        shouldShowTextArea = true,
+                        focused = true
+                    )
                 )
             })
         }
