@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -9,48 +12,40 @@
         android:id="@+id/ivOptOutConfirmation"
         android:layout_width="280dp"
         android:layout_height="210dp"
-        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:scaleType="fitXY" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOptOutConfirmationTitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
         app:typographyType="heading_2"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintTop_toBottomOf="@id/ivOptOutConfirmation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:text="@string/opt_out_confirmation_pm_pro_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOptOutConfirmationDesc"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
+        android:layout_gravity="center"
         app:typographyType="paragraph_2"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintTop_toBottomOf="@id/tvOptOutConfirmationTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:text="@string/opt_out_confirmation_pm_pro_desc"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnOptOutConfirmation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"
         app:unifyButtonSize="medium"
-        tools:text="@string/opt_out_confirmation_pm_pro_btn_title"
-        app:layout_constraintTop_toBottomOf="@id/tvOptOutConfirmationDesc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        tools:text="@string/opt_out_confirmation_pm_pro_btn_title" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

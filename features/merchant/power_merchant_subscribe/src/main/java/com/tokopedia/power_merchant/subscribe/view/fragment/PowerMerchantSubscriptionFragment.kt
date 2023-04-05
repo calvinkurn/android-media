@@ -55,7 +55,7 @@ import javax.inject.Inject
 
 open class PowerMerchantSubscriptionFragment :
     BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener,
-    OptOutConfirmationBottomSheet.OptInConfirmationListener {
+    OptInConfirmationBottomSheet.OptInConfirmationListener {
 
     companion object {
         fun createInstance(): PowerMerchantSubscriptionFragment {
@@ -216,7 +216,7 @@ open class PowerMerchantSubscriptionFragment :
                 val showPopupValue = params[PowerMerchantDeepLinkMapper.QUERY_PARAM_SHOW_POPUP]
                 showPopupValue?.let { showPopup ->
                     val isPmPro = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-                    val bottomSheet = OptOutConfirmationBottomSheet.newInstance(isPmPro)
+                    val bottomSheet = OptInConfirmationBottomSheet.newInstance(isPmPro)
                     bottomSheet.setOptInListener(this)
                     bottomSheet.show(childFragmentManager)
                 }

@@ -26,7 +26,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class OptOutConfirmationBottomSheet: BottomSheetUnify() {
+
+class OptInConfirmationBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomSheetOptOutConfirmationBinding>()
 
@@ -52,6 +53,7 @@ class OptOutConfirmationBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        isFullpage = true
         binding = BottomSheetOptOutConfirmationBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -62,7 +64,6 @@ class OptOutConfirmationBottomSheet: BottomSheetUnify() {
         setupViews()
         observePmActivationStatus()
     }
-
 
     private fun initInjector() {
         activity?.let {
@@ -170,10 +171,11 @@ class OptOutConfirmationBottomSheet: BottomSheetUnify() {
     companion object {
 
         private const val ARGS_IS_PM_PRO = "arg_is_pm_pro"
-        private const val TAG = "OptOutConfirmationBottomSheet"
+        private const val TAG = "OptInConfirmationBottomSheet"
+        private const val PEAK_HEIGHT = 1.75
 
-        fun newInstance(isPmPro: Boolean): OptOutConfirmationBottomSheet {
-            return OptOutConfirmationBottomSheet().apply {
+        fun newInstance(isPmPro: Boolean): OptInConfirmationBottomSheet {
+            return OptInConfirmationBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARGS_IS_PM_PRO, isPmPro)
                 }
