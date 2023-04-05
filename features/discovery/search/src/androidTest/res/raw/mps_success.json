@@ -170,6 +170,46 @@
                 "tracking_option": 2
               }
             ]
+          },
+          {
+            "id": 0,
+            "name": "",
+            "applink": "",
+            "image_url": "",
+            "price": 0,
+            "price_format": "",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 0,
+            "min_order": 0,
+            "component_id": "",
+            "tracking_option": 0,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "",
+                "is_cta": true,
+                "component_id": "",
+                "tracking_option": 0
+              }
+            ]
           }
         ],
         "buttons": [
@@ -317,6 +357,46 @@
               {
                 "position": "campaign",
                 "title": "Campaign",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "",
+                "is_cta": true,
+                "component_id": "",
+                "tracking_option": 0
+              }
+            ]
+          },
+          {
+            "id": 0,
+            "name": "",
+            "applink": "",
+            "image_url": "",
+            "price": 0,
+            "price_format": "",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 0,
+            "min_order": 0,
+            "component_id": "",
+            "tracking_option": 0,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }

@@ -91,6 +91,15 @@ data class MPSModel(
             val buttonList: List<Button> = listOf(),
         ) {
 
+            val productCardList
+                get() = productList.filter { it.id != "0" }
+
+            val viewAllCard: Button?
+                get() = productList
+                    .firstOrNull { it.id == "0" }
+                    ?.buttonList
+                    ?.firstOrNull()
+
             data class Ticker(
                 @SerializedName("type")
                 @Expose

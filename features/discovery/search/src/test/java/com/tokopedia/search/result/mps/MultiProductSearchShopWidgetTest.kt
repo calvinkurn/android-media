@@ -82,8 +82,14 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         assertThat(mpsShopWidgetDataView.ticker.type, `is`(shopItemModel.ticker.type))
         assertThat(mpsShopWidgetDataView.ticker.message, `is`(shopItemModel.ticker.message))
 
-        assertThat(mpsShopWidgetDataView.shopFreeOngkir.imageUrl, `is`(shopItemModel.freeOngkir.imageUrl))
-        assertThat(mpsShopWidgetDataView.shopFreeOngkir.isActive, `is`(shopItemModel.freeOngkir.isActive))
+        assertThat(
+            mpsShopWidgetDataView.shopFreeOngkir.imageUrl,
+            `is`(shopItemModel.freeOngkir.imageUrl)
+        )
+        assertThat(
+            mpsShopWidgetDataView.shopFreeOngkir.isActive,
+            `is`(shopItemModel.freeOngkir.isActive)
+        )
 
         assertThat(mpsShopWidgetDataView.badgeList.size, `is`(shopItemModel.badgeList.size))
         mpsShopWidgetDataView.badgeList.forEachIndexed { index, mpsShopBadgeDataView ->
@@ -98,13 +104,21 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
             shopItemModel.name,
         )
 
-        assertThat(mpsShopWidgetDataView.productList.size, `is`(shopItemModel.productList.size))
+        assertThat(mpsShopWidgetDataView.productList.size, `is`(shopItemModel.productCardList.size))
         mpsShopWidgetDataView.productList.forEachIndexed { index, mpsShopWidgetProductDataView ->
             assertMPSShopWidgetProductDataView(
                 mpsShopWidgetProductDataView,
                 shopItemModel,
-                shopItemModel.productList[index],
+                shopItemModel.productCardList[index],
             )
+        }
+
+        shopItemModel.viewAllCard?.let { viewAllCard ->
+            assertEquals(viewAllCard.text, mpsShopWidgetDataView.viewAllCard.text)
+            assertEquals(viewAllCard.applink, mpsShopWidgetDataView.viewAllCard.applink)
+            assertEquals(viewAllCard.componentId, mpsShopWidgetDataView.viewAllCard.componentId)
+            assertEquals(viewAllCard.trackingOption, mpsShopWidgetDataView.viewAllCard.trackingOption)
+            assertEquals(parameter.keywords(), mpsShopWidgetDataView.viewAllCard.keywords)
         }
     }
 

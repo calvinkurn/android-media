@@ -17,6 +17,7 @@ class MPSShopWidgetDataView(
     val shopFreeOngkir: MPSShopFreeOngkirDataView = MPSShopFreeOngkirDataView(),
     val buttonList: List<MPSButtonDataView> = listOf(),
     val productList: List<MPSShopWidgetProductDataView> = listOf(),
+    val viewAllCard: MPSShopWidgetViewAllCardDataView = MPSShopWidgetViewAllCardDataView(),
 ): Visitable<MPSTypeFactory> {
 
     fun willShowFreeOngkir() =
@@ -39,8 +40,9 @@ class MPSShopWidgetDataView(
             shopFreeOngkir = MPSShopFreeOngkirDataView.create(shopItem.freeOngkir),
             buttonList = shopItem.buttonList
                 .map { MPSButtonDataView.create(it, keywords, shopItem.id, shopItem.name) },
-            productList = shopItem.productList
+            productList = shopItem.productCardList
                 .map { MPSShopWidgetProductDataView.create(shopItem, it, keywords) },
+            viewAllCard = MPSShopWidgetViewAllCardDataView.create(shopItem.viewAllCard, keywords)
         )
     }
 

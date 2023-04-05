@@ -25,7 +25,7 @@ class MPSShopWidgetListenerDelegate(
     }
 
     override fun onSeeAllCardClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-
+        openApplink(context, mpsShopWidgetDataView.viewAllCard.applink)
     }
 
     override fun onProductItemImpressed(

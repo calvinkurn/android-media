@@ -94,37 +94,16 @@ class MPSShopWidgetViewHolder(
             productCardModelList = productList.map(::productCardModel),
             carouselProductCardOnItemImpressedListener =
                 onItemImpressedListener(dataView, productList),
+            carouselViewAllCardData =
+                dataView.viewAllCard.toCarouselViewAllCard(),
             carouselProductCardOnItemClickListener =
-                object: CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(
-                        productCardModel: ProductCardModel,
-                        carouselProductCardPosition: Int
-                    ) {
-                        listener.onProductItemClicked(dataView, productList.getOrNull(carouselProductCardPosition))
-                    }
-
-                },
+                onItemClickListener(dataView, productList),
             carouselProductCardOnItemAddToCartListener =
-                object: CarouselProductCardListener.OnItemAddToCartListener {
-                    override fun onItemAddToCart(
-                        productCardModel: ProductCardModel,
-                        carouselProductCardPosition: Int,
-                    ) {
-                        listener.onProductItemAddToCart(dataView, productList.getOrNull(carouselProductCardPosition))
-                    }
-                },
+                onItemAddToCartListener(dataView, productList),
             carouselProductCardOnItemSeeOtherProductClickListener =
-                object: CarouselProductCardListener.OnSeeOtherProductClickListener {
-                    override fun onSeeOtherProductClick(
-                        productCardModel: ProductCardModel,
-                        carouselProductCardPosition: Int,
-                    ) {
-                        listener.onProductItemSeeOtherProductClick(
-                            dataView,
-                            productList.getOrNull(carouselProductCardPosition)
-                        )
-                    }
-                },
+                onSeeOtherProductClickListener(dataView, productList),
+            carouselViewAllCardClickListener =
+                onViewAllCardClickListener(dataView),
         )
     }
 
@@ -148,6 +127,9 @@ class MPSShopWidgetViewHolder(
         )
     }
 
+    private fun MPSShopWidgetViewAllCardDataView.toCarouselViewAllCard(): CarouselViewAllCardData =
+        CarouselViewAllCardData(title = text)
+
     private fun toLabelGroup(labelGroupDataView: MPSProductLabelGroupDataView) =
         ProductCardModel.LabelGroup(
             position = labelGroupDataView.position,
@@ -158,9 +140,8 @@ class MPSShopWidgetViewHolder(
 
     private fun onItemImpressedListener(
         dataView: MPSShopWidgetDataView,
-        productList: List<MPSShopWidgetProductDataView>
+        productList: List<MPSShopWidgetProductDataView>,
     ) = object : CarouselProductCardListener.OnItemImpressedListener {
-
         override fun onItemImpressed(
             productCardModel: ProductCardModel,
             carouselProductCardPosition: Int,
@@ -174,6 +155,59 @@ class MPSShopWidgetViewHolder(
         override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? =
             productList.getOrNull(carouselProductCardPosition)?.impressHolder
     }
+
+    private fun onItemClickListener(
+        dataView: MPSShopWidgetDataView,
+        productList: List<MPSShopWidgetProductDataView>,
+    ) = object : CarouselProductCardListener.OnItemClickListener {
+        override fun onItemClick(
+            productCardModel: ProductCardModel,
+            carouselProductCardPosition: Int,
+        ) {
+            listener.onProductItemClicked(
+                dataView,
+                productList.getOrNull(carouselProductCardPosition)
+            )
+        }
+
+    }
+
+    private fun onItemAddToCartListener(
+        dataView: MPSShopWidgetDataView,
+        productList: List<MPSShopWidgetProductDataView>,
+    ) = object : CarouselProductCardListener.OnItemAddToCartListener {
+        override fun onItemAddToCart(
+            productCardModel: ProductCardModel,
+            carouselProductCardPosition: Int,
+        ) {
+            listener.onProductItemAddToCart(
+                dataView,
+                productList.getOrNull(carouselProductCardPosition)
+            )
+        }
+    }
+
+    private fun onSeeOtherProductClickListener(
+        dataView: MPSShopWidgetDataView,
+        productList: List<MPSShopWidgetProductDataView>,
+    ) = object : CarouselProductCardListener.OnSeeOtherProductClickListener {
+        override fun onSeeOtherProductClick(
+            productCardModel: ProductCardModel,
+            carouselProductCardPosition: Int,
+        ) {
+            listener.onProductItemSeeOtherProductClick(
+                dataView,
+                productList.getOrNull(carouselProductCardPosition)
+            )
+        }
+    }
+
+    private fun onViewAllCardClickListener(dataView: MPSShopWidgetDataView) =
+        object : CarouselProductCardListener.OnViewAllCardClickListener {
+            override fun onViewAllCardClick() {
+                listener.onSeeAllCardClicked(dataView)
+            }
+        }
 
     companion object {
         @LayoutRes
