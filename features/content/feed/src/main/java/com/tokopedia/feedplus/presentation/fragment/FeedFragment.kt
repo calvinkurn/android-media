@@ -511,6 +511,7 @@ class FeedFragment :
                         adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
                         adapter?.setElements(it.data.items)
+                        feedPostViewModel.fetchTopAdsData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
