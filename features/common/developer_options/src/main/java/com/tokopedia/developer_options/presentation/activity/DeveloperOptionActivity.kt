@@ -77,6 +77,8 @@ class DeveloperOptionActivity : BaseActivity() {
         const val PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
         const val PREFERENCE_NAME = "coahmark_choose_address"
         const val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+        const val DEPRECATED_API_SWITCHER_TOASTER_SP_NAME = "deprecated_switcher_toggle"
+        const val DEPRECATED_API_SWITCHER_TOASTER_KEY = "deprecated_switcher_key"
     }
 
     private var userSession: UserSession? = null

@@ -92,6 +92,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
+        const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
     }
 
     /**
@@ -141,6 +142,7 @@ class DeveloperOptionAdapter(
         ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
+        DeprecatedApiSwitcherToasterUiModel(listOf(KEYWORD_DEPRECATED_API_SWITCHER_TOASTER)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(

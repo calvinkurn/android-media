@@ -70,6 +70,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
     override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
+    override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -122,6 +123,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
             LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view, loginHelperListener)
+            DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
