@@ -52,7 +52,7 @@ fun NestLabel(
     ) {
         Text(
             text = labelText,
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
             color = textColor,
             maxLines = 1,
             style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
