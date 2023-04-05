@@ -138,6 +138,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         fun create(handle: SavedStateHandle): PlayBroadcastViewModel
     }
 
+    private val jobMap = mutableMapOf<String, Job>()
+
     val mDataStore = dataStore
 
     val channelId: String
@@ -547,7 +549,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** Beautification */
             is PlayBroadcastAction.RemoveBeautificationMenu -> handleRemoveBeautificationMenu()
             is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
-            is PlayBroadcastAction.SaveBeautificationConfig -> handleSaveBeautificationConfig()
 
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
             is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
@@ -1735,16 +1736,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _uiEvent.emit(PlayBroadcastEvent.BeautificationRebindEffect)
         }
-    }
 
-    private fun handleSaveBeautificationConfig() {
-        viewModelScope.launchCatchError(block = {
-            repo.saveBeautificationConfig(
-                authorId = authorId,
-                authorType = authorType,
-                beautificationConfig = _beautificationConfig.value
-            )
-        }) {}
+        saveBeautificationConfig()
     }
 
     private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
@@ -1760,6 +1753,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleChangeFaceFilterValue(newValue: Int) {
@@ -1773,6 +1768,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleSelectPresetOption(preset: PresetFilterUiModel) {
@@ -1784,6 +1781,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 downloadPreset(preset)
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleChangePresetValue(newValue: Int) {
@@ -1797,6 +1796,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
@@ -1925,6 +1926,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    private fun saveBeautificationConfig() {
+        val job = viewModelScope.launchCatchError(block = {
+            delay(SAVE_BEAUTIFICATION_DELAY)
+
+            repo.saveBeautificationConfig(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = _beautificationConfig.value
+            )
+        }) {}
+
+        saveJob(SAVE_BEAUTIFICATION_JOB_ID, job)
     }
 
     private fun getSelectedAccount(
@@ -2203,6 +2218,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun saveJob(jobId: String, job: Job) {
+        cancelJob(jobId)
+        jobMap[jobId] = job
+    }
+
+    private fun cancelJob(jobId: String) {
+        jobMap[jobId]?.cancel()
+    }
+
     companion object {
 
         private const val UI_STATE_STOP_TIMEOUT = 5000L
@@ -2224,5 +2248,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
 
         private const val FAIL_SAVE_ERROR_MESSAGE = "fail to save asset to local storage"
+
+        private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
+        private const val SAVE_BEAUTIFICATION_DELAY = 500L
     }
 }

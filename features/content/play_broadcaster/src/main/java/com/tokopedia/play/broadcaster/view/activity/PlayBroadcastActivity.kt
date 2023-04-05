@@ -216,7 +216,6 @@ class PlayBroadcastActivity : BaseActivity(),
     override fun onPause() {
         super.onPause()
         releaseBroadcaster()
-        viewModel.submitAction(PlayBroadcastAction.SaveBeautificationConfig)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.sendLogs()
     }
