@@ -23,7 +23,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -128,22 +127,6 @@ class PlayFragment @Inject constructor(
 
     private val atcVariantViewModel by lazy {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
-    }
-
-    private val variantSheet by lazyThreadSafetyNone {
-        AtcVariantBottomSheet()
-    }
-
-    private val variantObserver by lazyThreadSafetyNone {
-        object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-            fun onResume() {
-                variantSheet.dialog?.window?.setBackgroundDrawable(null)
-                variantSheet.view?.updateLayoutParams {
-                    height = (getScreenHeight() * 0.6).roundToIntOrZero()
-                }
-            }
-        }
     }
 
     override fun getScreenName(): String = "Play"
@@ -271,8 +254,11 @@ class PlayFragment @Inject constructor(
     }
 
     fun getCloseIconView(): View? {
-        return if (::ivClose.isInitialized) ivClose
-        else null
+        return if (::ivClose.isInitialized) {
+            ivClose
+        } else {
+            null
+        }
     }
 
     fun openVariantBottomSheet(product: PlayProductUiModel.Product) {
@@ -283,11 +269,23 @@ class PlayFragment @Inject constructor(
                 productId = product.id,
                 shopId = product.shopId,
                 dismissAfterTransaction = false,
-                showQtyEditor = false,
+                showQtyEditor = false
             )
         )
 
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+            val variantSheet = AtcVariantBottomSheet()
+            variantSheet.lifecycle.addObserver(
+                object : LifecycleObserver {
+                    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+                    fun onResume() {
+                        variantSheet.dialog?.window?.setBackgroundDrawable(null)
+                        variantSheet.view?.updateLayoutParams {
+                            height = (getScreenHeight() * 0.6).roundToIntOrZero()
+                        }
+                    }
+                }
+            )
             variantSheet
         }
     }
@@ -440,8 +438,6 @@ class PlayFragment @Inject constructor(
 
         invalidateVideoTopBounds()
         hideAllInsets()
-
-        variantSheet.lifecycle.addObserver(variantObserver)
     }
 
     private fun setupInsets(view: View) {
