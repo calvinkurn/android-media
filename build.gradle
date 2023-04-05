@@ -30,6 +30,17 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven { url 'https://plugins.gradle.org/m2/' }
+
+        maven {
+            url = 'https://repo.indodana.com/repository/indodana-maven-releases'
+            credentials {
+                username = "tiket.dev"
+                password = "bE#Q!p3&Lqb=od"
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
     }
     dependencies {
         classpath ('com.android.tools.build:gradle:7.4.2') {

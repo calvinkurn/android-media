@@ -1,0 +1,73 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        credentials {
+            username = "tiket.dev"
+            password = "bE#Q!p3&Lqb=od"
+        }
+        url = 'https://repo.indodana.com/repository/indodana-maven-releases'
+        authentication {
+            basic(BasicAuthentication)
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            credentials {
+                username = "tiket.dev"
+                password = "bE#Q!p3&Lqb=od"
+            }
+            url = 'https://repo.indodana.com/repository/indodana-maven-releases'
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation 'com.indodana:indodana-whitelabel-sdk-lite:0.5.12'
+}
+
+project.ext {
+    artifactId = 'indodana'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "0.0.2"
+    artifactName ="indodana"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

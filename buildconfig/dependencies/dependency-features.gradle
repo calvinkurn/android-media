@@ -113,8 +113,9 @@ ext {
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
+			indodana						: ":features:fintech:indodana",
 
-            dynamicBanner                   : ":features:home:dynamicbanner",
+			dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
