@@ -8,7 +8,6 @@ import com.tokopedia.tokopedianow.recipelist.presentation.fragment.TokoNowRecipe
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeFilterViewHolder.RecipeChipFilterListener
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
-import java.util.*
 
 class RecipeFilterListener(
     private val view: RecipeListView,
@@ -19,6 +18,7 @@ class RecipeFilterListener(
     override fun onClickMoreFilter() {
         val selectedFilters = ArrayList(view.viewModel().selectedFilters)
         val intent = Intent(view.context(), TokoNowRecipeFilterActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, selectedFilters)
         intent.putExtra(EXTRA_PAGE_NAME, pageName)
         view.fragment().startActivityForResult(intent, REQUEST_CODE_FILTER)

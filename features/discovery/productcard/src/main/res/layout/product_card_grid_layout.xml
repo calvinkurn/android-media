@@ -106,6 +106,51 @@
             tools:text="Semarak Ramadan" />
 
         <ImageView
+            android:id="@+id/labelOverlayBackground"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="null"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            app:layout_constraintEnd_toStartOf="@+id/textTopAds"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_goneMarginEnd="26dp"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelOverlay"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N0"
+            android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="@id/labelOverlayBackground"
+            app:layout_constraintTop_toTopOf="@id/labelOverlayBackground"
+            app:layout_constraintEnd_toEndOf="@id/labelOverlayBackground"
+            app:layout_constraintBottom_toBottomOf="@id/labelOverlayBackground"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelOverlayStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            app:layout_constraintLeft_toLeftOf="@id/mediaAnchorProduct"
+            tools:text="Preorder"
+            tools:visibility="visible"/>
+
+        <ImageView
             android:id="@+id/labelCampaignBackground"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_campaign_height"

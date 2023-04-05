@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentQuotaInfoBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -143,9 +144,13 @@ class QuotaInfoFragment: BaseDaggerFragment() {
     }
 
     private fun SmvcFragmentQuotaInfoBinding.setupExpandQuotaListButton(isExpanded: Boolean) {
-        binding?.viewExpand?.setOnClickListener {
+        viewExpand.setOnClickListener {
             val iconRes = if (isExpanded) IconUnify.CHEVRON_DOWN else IconUnify.CHEVRON_UP
-            binding?.iconExpand?.setImage(iconRes)
+            val sourcesCount = viewModel.quotaInfo.value?.sources?.size.orZero()
+            val actionText = if (isExpanded) getString(R.string.smvc_quota_info_quota_button_format, sourcesCount)
+            else getString(R.string.smvc_quota_info_quota_button_collapse)
+            iconExpand.setImage(iconRes)
+            tfMoreSource.text = actionText
             viewModel.toggleSourceListExpanded(isExpanded)
         }
     }

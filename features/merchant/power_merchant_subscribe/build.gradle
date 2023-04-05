@@ -48,7 +48,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.lottie

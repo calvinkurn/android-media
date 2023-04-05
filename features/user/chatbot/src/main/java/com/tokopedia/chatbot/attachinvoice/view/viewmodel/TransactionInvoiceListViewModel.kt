@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.attachinvoice.view.viewmodel
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,8 +21,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-private const val INVOICE_ERROR_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_error.png"
-private const val INVOICE_EMPTY_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_empty.png"
+private const val INVOICE_ERROR_URL = TokopediaImageUrl.INVOICE_ERROR_URL
+private const val INVOICE_EMPTY_URL = TokopediaImageUrl.INVOICE_EMPTY_URL
 
 class TransactionInvoiceListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,

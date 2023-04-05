@@ -17,7 +17,11 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.REQUEST_DELAY_MILLIS
-import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
+import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadException
+import com.tokopedia.product.addedit.common.util.AddEditSellerReviewHelper
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
