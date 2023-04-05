@@ -110,6 +110,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+        if (mAudioRate == null && mVideoRate == null && mVideoFps == null) return
         if (mStreamer != null) return
 
         val context = mContext
