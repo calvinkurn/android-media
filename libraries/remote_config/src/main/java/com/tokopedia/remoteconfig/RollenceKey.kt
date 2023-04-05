@@ -8,6 +8,7 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
+    const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "share_icon_affiliate_shop"
 
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
@@ -84,6 +85,6 @@ object RollenceKey {
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
 
-    //DG SBM Transition
+    // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }
