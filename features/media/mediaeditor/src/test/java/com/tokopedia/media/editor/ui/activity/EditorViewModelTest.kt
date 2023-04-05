@@ -10,6 +10,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
@@ -35,11 +36,13 @@ class EditorViewModelTest {
     private val saveImageRepo = mockk<SaveImageRepository>()
     private val userSession = mockk<UserSessionInterface>()
     private val addLogoRepository = mockk<AddLogoFilterRepository>()
+    private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = EditorViewModel(
         saveImageRepo,
         addLogoRepository,
-        userSession
+        userSession,
+        bitmapCreationRepository
     )
 
     @Test
@@ -305,6 +308,21 @@ class EditorViewModelTest {
 
         // Then
         assertEquals(false, isShopAvail)
+    }
+
+    @Test
+    fun `check memory is overflow`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns true
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(true, isMemoryOverflow)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
