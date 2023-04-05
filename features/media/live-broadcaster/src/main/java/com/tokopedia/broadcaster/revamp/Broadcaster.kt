@@ -21,12 +21,12 @@ interface Broadcaster {
     fun init(
         activityContext: Context,
         handler: Handler?,
-        withByteplus: Boolean,
     )
 
     fun create(
         holder: SurfaceHolder,
         surfaceSize: Size,
+        withByteplus: Boolean,
     )
 
     fun updateSurfaceSize(surfaceSize: Size)

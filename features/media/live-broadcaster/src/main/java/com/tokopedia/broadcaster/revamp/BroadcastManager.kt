@@ -20,6 +20,9 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithByteplus
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithoutByteplus
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWrapper
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.effect.EffectManager
 import com.wmspanel.libstream.*
@@ -45,17 +48,11 @@ class BroadcastManager @Inject constructor(
         get() = mInitState
 
     override val activeCameraVideoSize: Broadcaster.Size?
-        get() = mStreamerGL?.activeCameraVideoSize?.let {
+        get() = mStreamerWrapper?.activeCameraVideoSize()?.let {
             Broadcaster.Size(it.width, it.height)
         }
 
-    private var mStreamer: Streamer? = null
-
-    /** Joe : mStreamerGL is responsible for  displaying camera to user device */
-    private var mStreamerGL: StreamerGL? = null
-
-    /** Joe : mStreamerSurface is responsible for pushing the display to backend */
-    private var mStreamerSurface: StreamerSurface? = null
+    private var mStreamerWrapper: StreamerWrapper? = null
 
     /** Joe : mDisplaySurface works with mStreamerGL for display camera */
     private var mDisplaySurface: WindowSurface? = null
@@ -129,28 +126,33 @@ class BroadcastManager @Inject constructor(
     override fun init(
         activityContext: Context,
         handler: Handler?,
-        withByteplus: Boolean,
     ) {
         mContext = activityContext
         mHandler = handler
 
-        if (withByteplus)
-            effectManager.startRenderThread()
-        else
-            effectManager.stopRenderThread()
-
-        mWithByteplus = withByteplus
+        effectManager.startRenderThread()
     }
 
     override fun create(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
     ) {
-        if(mWithByteplus == true && mStreamerSurface != null) return
-        if(mWithByteplus == false && mStreamer != null) return
+        if(mWithByteplus == withByteplus) {
+            if(mWithByteplus == true && mStreamerWrapper?.pusherStreamer != null) return
+            if(mWithByteplus == false && mStreamerWrapper?.displayStreamer != null) return
+        }
 
-        if(mStreamer != null) {
+        if(mStreamerWrapper?.displayStreamer != null) {
             release()
+        }
+
+        mWithByteplus = withByteplus
+
+        mStreamerWrapper = if (withByteplus) {
+            StreamerWithByteplus()
+        } else {
+            StreamerWithoutByteplus()
         }
 
         val context = mContext
@@ -319,16 +321,16 @@ class BroadcastManager @Inject constructor(
                     mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
                     mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
                     mDisplaySurface?.makeCurrent()
-                    mStreamerSurface = createCodecStreamer(
+                    mStreamerWrapper?.pusherStreamer = createCodecStreamer(
                         context,
                         audioConfig,
                         videoConfig
-                    )
+                    )?.apply {
+                        startVideoCapture()
+                        startAudioCapture(mAudioCallback)
+                    }
 
-                    mStreamerSurface?.startVideoCapture()
-                    mStreamerSurface?.startAudioCapture(mAudioCallback)
-
-                    mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
+                    mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
                 }
             }
             catch (e: ExceptionInInitializerError) {
@@ -340,8 +342,8 @@ class BroadcastManager @Inject constructor(
             }
         }
 
-        mStreamerGL = builder.build()
-        if (mStreamerGL == null) {
+        val displayStreamer = builder.build()
+        if (displayStreamer == null) {
             broadcastInitStateChanged(
                 BroadcastInitState.Error(
                     BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
@@ -350,13 +352,11 @@ class BroadcastManager @Inject constructor(
             return
         }
 
-        mStreamer = mStreamerGL
-
-        // Streamer build succeeded, can start Video/Audio capture
-        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
-        startVideoCapture()
-        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
-        startAudioCapture()
+        mStreamerWrapper?.displayStreamer = displayStreamer
+        mStreamerWrapper?.displayStreamer?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
             BroadcasterAdaptiveBitrate.Builder(
@@ -423,7 +423,7 @@ class BroadcastManager @Inject constructor(
         destinationTexture: Int
     ) {
         if (mCodecSurface != null) {
-            mStreamerSurface?.drainEncoder()
+            mStreamerWrapper?.pusherStreamer?.drainEncoder()
             mCodecSurface?.makeCurrent()
             effectManager.drawFrameBase(
                 textureWidth = textureWidth,
@@ -449,12 +449,12 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
-        mStreamerGL?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
+        mStreamerWrapper?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
         GLES20.glViewport(0, 0, surfaceSize.width, surfaceSize.height)
     }
 
     override fun start(rtmpUrl: String) {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
 
         if (rtmpUrl.isEmpty()) {
             broadcastStateChanged(
@@ -497,11 +497,7 @@ class BroadcastManager @Inject constructor(
             return false
         }
 
-        val connectionId = if (mWithByteplus == true) {
-            mStreamerSurface?.createConnection(connectionConfig)
-        } else {
-            mStreamer?.createConnection(connectionConfig)
-        } ?: -1
+        val connectionId = mStreamerWrapper?.createConnection(connectionConfig) ?: -1
 
         if (connectionId == -1) {
             broadcastStateChanged(
@@ -525,8 +521,7 @@ class BroadcastManager @Inject constructor(
         stopTracking()
 
         mConnectionId?.let {
-            mStreamer?.releaseConnection(it.first)
-            mStreamerSurface?.releaseConnection(it.first)
+            mStreamerWrapper?.releaseConnection(it.first)
         }
 
         mAdaptiveBitrate?.stop()
@@ -548,27 +543,21 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun release() {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
         // stop broadcast
         stop()
         // cancel audio and video capture
-        mStreamer?.stopAudioCapture()
-        mStreamer?.stopVideoCapture()
-        mStreamerSurface?.stopAudioCapture()
-        mStreamerSurface?.stopVideoCapture()
+        mStreamerWrapper?.stopVideoCapture()
+        mStreamerWrapper?.stopAudioCapture()
+
         // finally release streamer, after release(), the object is no longer available
         // if a Streamer is in released state, all methods will throw an IllegalStateException
-        mStreamer?.release()
-        mStreamerSurface?.release()
+        mStreamerWrapper?.release()
         mDisplaySurface?.release()
         mCodecSurface?.release()
         effectManager.release()
 
         // sanitize Streamer object holder
-        mStreamer = null
-        mStreamerSurface = null
-        mStreamerGL = null
-        mStreamerSurface = null
         mDisplaySurface = null
         mCodecSurface = null
 
@@ -587,12 +576,12 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun flip() {
-        if (mStreamer == null || !isVideoCaptureStarted()) {
+        if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
         }
         mAdaptiveBitrate?.pause()
-        mStreamerGL?.flip()
+        mStreamerWrapper?.flip()
 
         // Re-select camera
         val cameraManager = mCameraManager ?: return
@@ -606,7 +595,7 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun snapShot() {
-        if (mStreamer == null || !isVideoCaptureStarted()) {
+        if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
         }
@@ -645,7 +634,7 @@ class BroadcastManager @Inject constructor(
         status: Streamer.STATUS?,
         info: JSONObject?,
     ) {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
         if (mConnectionId?.first != connectionId) return
 
         mConnectionState = state
@@ -699,8 +688,7 @@ class BroadcastManager @Inject constructor(
                 // stop confirmation
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
-                mStreamer?.stopVideoCapture()
-                mStreamerSurface?.stopVideoCapture()
+                mStreamerWrapper?.stopVideoCapture()
 
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
@@ -723,8 +711,8 @@ class BroadcastManager @Inject constructor(
                 // stop confirmation
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
-                mStreamer?.stopAudioCapture()
-                mStreamerSurface?.stopAudioCapture()
+                mStreamerWrapper?.stopAudioCapture()
+
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
                         BroadcasterException(BroadcasterErrorType.AudioFailed)
@@ -755,33 +743,27 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun fps(): Double? {
-        return if (mWithByteplus == true) mStreamerSurface?.fps
-        else mStreamer?.fps
+        return mStreamerWrapper?.fps()
     }
 
     override fun bytesSent(connectionId: Int): Long? {
-        return if (mWithByteplus == true) mStreamerSurface?.getBytesSent(connectionId)
-        else mStreamer?.getBytesSent(connectionId)
+        return mStreamerWrapper?.byteSend(connectionId)
     }
 
     override fun audioPacketsLost(connectionId: Int): Long? {
-        return if (mWithByteplus == true) mStreamerSurface?.getAudioPacketsLost(connectionId)
-        else mStreamer?.getAudioPacketsLost(connectionId)
+        return mStreamerWrapper?.audioPacketsLost(connectionId)
     }
 
     override fun videoPacketsLost(connectionId: Int): Long? {
-        return if (mWithByteplus == true) mStreamerSurface?.getVideoPacketsLost(connectionId)
-        else mStreamer?.getVideoPacketsLost(connectionId)
+        return mStreamerWrapper?.videoPacketsLost(connectionId)
     }
 
     override fun udpPacketsLost(connectionId: Int): Long? {
-        return if (mWithByteplus == true) mStreamerSurface?.getUdpPacketsLost(connectionId)
-        else mStreamer?.getUdpPacketsLost(connectionId)
+        return mStreamerWrapper?.udpPacketsLost(connectionId)
     }
 
     override fun changeBitrate(bitrate: Int) {
-        if (mWithByteplus == true) mStreamerSurface?.changeBitRate(bitrate)
-        else mStreamer?.changeBitRate(bitrate)
+        mStreamerWrapper?.changeBitrate(bitrate)
 
         mMetric = mMetric.copy(
             videoBitrate = bitrate.toLong()
@@ -789,12 +771,11 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
-        if (mWithByteplus == true) mStreamerSurface?.changeFpsRange(fpsRange)
-        else mStreamer?.changeFpsRange(fpsRange)
+        mStreamerWrapper?.changeFpsRange(fpsRange)
     }
 
     private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
-        val activeCamId = mStreamerGL?.activeCameraId
+        val activeCamId = mStreamerWrapper?.activeCameraId()
         if (activeCamId != null) {
             val activeCamera = cameraList.firstOrNull { it.cameraId == activeCamId }
             if (activeCamera != null)
@@ -806,15 +787,6 @@ class BroadcastManager @Inject constructor(
             return frontFacingCamera
 
         return cameraList.first()
-    }
-
-    private fun startAudioCapture() {
-        // Pass Streamer.AudioCallback instance to access raw pcm audio and calculate audio level
-        mStreamer?.startAudioCapture(mAudioCallback)
-    }
-
-    private fun startVideoCapture() {
-        mStreamer?.startVideoCapture()
     }
 
     private fun isAudioCaptureStarted(): Boolean {

@@ -25,7 +25,6 @@ class PlayBroadcaster(
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
     configData: BroadcastingConfigUiModel,
-    withByteplus: Boolean,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -38,7 +37,6 @@ class PlayBroadcaster(
             callback: Callback,
             remoteConfig: RemoteConfig,
             broadcastingConfigUiModel: BroadcastingConfigUiModel,
-            withByteplus: Boolean,
         ): PlayBroadcaster {
             return PlayBroadcaster(
                 activityContext,
@@ -47,7 +45,6 @@ class PlayBroadcaster(
                 callback,
                 remoteConfig,
                 broadcastingConfigUiModel,
-                withByteplus,
             )
         }
     }
@@ -76,7 +73,7 @@ class PlayBroadcaster(
     }
 
     init {
-        broadcaster.init(activityContext, handler, withByteplus)
+        broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
         broadcaster.setConfig(
             audioRate = configData.audioRate,
@@ -103,8 +100,9 @@ class PlayBroadcaster(
     override fun create(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
     ) {
-        broadcaster.create(holder, surfaceSize)
+        broadcaster.create(holder, surfaceSize, withByteplus)
         updateAspectFrameSize()
     }
 

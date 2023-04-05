@@ -237,7 +237,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (isRequiredPermissionGranted()) createBroadcaster()
+            if (isRequiredPermissionGranted()) createBroadcaster(viewModel.isBeautificationEnabled)
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -295,7 +295,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         surfaceHolder = holder
         if (!::broadcaster.isInitialized) return
-        createBroadcaster()
+        createBroadcaster(viewModel.isBeautificationEnabled)
     }
 
     override fun surfaceChanged(
@@ -345,8 +345,8 @@ class PlayBroadcastActivity : BaseActivity(),
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
-                        initBroadcaster(event.data, event.withByteplus)
-                        createBroadcaster()
+                        initBroadcaster(event.data)
+                        createBroadcaster(viewModel.isBeautificationEnabled)
                     }
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
                         rebindEffect()
@@ -431,7 +431,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster(config: BroadcastingConfigUiModel, withByteplus: Boolean) {
+    private fun initBroadcaster(config: BroadcastingConfigUiModel) {
         if(::broadcaster.isInitialized) return
 
         val handler = Handler(Looper.getMainLooper())
@@ -441,7 +441,6 @@ class PlayBroadcastActivity : BaseActivity(),
             callback = this,
             remoteConfig = remoteConfig,
             broadcastingConfigUiModel = config,
-            withByteplus = withByteplus
         )
     }
 
@@ -790,21 +789,22 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun createBroadcaster() {
+    private fun createBroadcaster(withByteplus: Boolean) {
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            initBroadcasterWithDelay(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize, withByteplus)
         } else showPermissionPage()
     }
 
     private fun initBroadcasterWithDelay(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
     ) {
         lifecycleScope.launch(dispatcher.main) {
             delay(INIT_BROADCASTER_DELAY)
-            broadcaster.create(holder, surfaceSize)
+            broadcaster.create(holder, surfaceSize, withByteplus)
             rebindEffect()
         }
     }

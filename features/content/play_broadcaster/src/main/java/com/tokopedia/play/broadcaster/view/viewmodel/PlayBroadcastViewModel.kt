@@ -660,10 +660,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setBeautificationConfig(configUiModel.beautificationConfig)
 
             _uiEvent.emit(
-                PlayBroadcastEvent.InitializeBroadcaster(
-                    data = hydraConfigStore.getBroadcastingConfig(),
-                    withByteplus = !configUiModel.beautificationConfig.isUnknown,
-                )
+                PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
             )
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
