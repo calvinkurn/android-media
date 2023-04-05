@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
@@ -45,6 +46,7 @@ class DeveloperOptionActivity : BaseActivity() {
         private const val API_KEY_TRANSLATOR = ""
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
+        private const val LOGIN_HELPER_REQUEST_CODE = 789
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -87,7 +89,8 @@ class DeveloperOptionActivity : BaseActivity() {
                 accessTokenListener = clickAccessTokenBtn(),
                 resetOnBoardingListener = clickResetOnBoarding(),
                 urlEnvironmentListener = selectUrlEnvironment(),
-                homeAndNavigationRevampListener = homeAndNavigationListener()
+                homeAndNavigationRevampListener = homeAndNavigationListener(),
+                loginHelperListener = loginHelperListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -236,20 +239,40 @@ class DeveloperOptionActivity : BaseActivity() {
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
         override fun onClickSkipOnBoardingBtn() {
             userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun selectUrlEnvironment() = object : UrlEnvironmentViewHolder.UrlEnvironmentListener {
         override fun onLogOutUserSession() {
             userSession?.logoutSession()
+        }
+    }
+
+    private fun loginHelperListener() = object : LoginHelperListener {
+        override fun routeToLoginHelperActivity() {
+            val loginHelperIntent = RouteManager.getIntent(
+                this@DeveloperOptionActivity,
+                ApplinkConstInternalGlobal.LOGIN_HELPER
+            )
+            startActivityForResult(loginHelperIntent, LOGIN_HELPER_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LOGIN_HELPER_REQUEST_CODE -> {
+                this.setResult(Activity.RESULT_OK)
+                this.finish()
+            }
         }
     }
 
