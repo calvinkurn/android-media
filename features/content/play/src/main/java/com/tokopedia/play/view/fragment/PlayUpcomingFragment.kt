@@ -382,17 +382,13 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun showNotificationReminderPrompt() {
-        when (val status = playUpcomingViewModel.remindState) {
-            is PlayUpcomingState.ReminderStatus -> {
-                if (!status.isReminded) {
-                    activity?.let {
-                        val view = NotificationGeneralPromptLifecycleCallbacks()
-                            .notificationGeneralPromptView(it, LIVE_SHOPPING)
-                        NotificationReminderPrompt(view).showReminderPrompt(it, LIVE_SHOPPING)
-                    }
-                }
+        val status = playUpcomingViewModel.remindState
+        if ((status is PlayUpcomingState.ReminderStatus) && !status.isReminded) {
+            activity?.let {
+                val view = NotificationGeneralPromptLifecycleCallbacks()
+                    .notificationGeneralPromptView(it, LIVE_SHOPPING)
+                NotificationReminderPrompt(view).showReminderPrompt(it, LIVE_SHOPPING)
             }
-            else -> {}
         }
     }
 
