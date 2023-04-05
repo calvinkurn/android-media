@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class ContactListViewHolder(
     private val binding: ItemTopupBillsContactBinding,
     private val listener: TopupBillsContactListAdapter.ContactNumberClickListener
-): AbstractViewHolder<TopupBillsContactDataView>(binding.root) {
+) : AbstractViewHolder<TopupBillsContactDataView>(binding.root) {
 
     override fun bind(contact: TopupBillsContactDataView) {
         binding.run {
@@ -20,12 +20,14 @@ class ContactListViewHolder(
                 commonTopupBillsContactNumber.show()
                 commonTopupBillsContactName.text = contact.name
                 commonTopupBillsContactNumber.text = contact.number
+                commonTopupBillsInitial.text = contact.name[0].toString()
                 commonTopupBillsContainerContactNumber.setOnClickListener {
                     listener.onContactNumberClick(contact.name, contact.number)
                 }
             } else {
                 commonTopupBillsContactNumber.hide()
                 commonTopupBillsContactName.text = contact.number
+                commonTopupBillsInitial.text = contact.number[0].toString()
                 commonTopupBillsContainerContactNumber.setOnClickListener {
                     listener.onContactNumberClick(
                         getString(R.string.common_topup_contact_name_default),
@@ -33,7 +35,6 @@ class ContactListViewHolder(
                     )
                 }
             }
-            commonTopupBillsInitial.text = contact.name[0].toString()
         }
     }
 
