@@ -16,19 +16,21 @@ object FeatureRecommendationMapper {
     private val gson = Gson()
 
     fun getTopAdsParams(engineData: FeatureEngineData?): TopAdsRequestParams? {
+        return gson.fromJson("\"{\"type\":\"tdn_user\",\"ep\":\"banner\",\"inventory_id\":\"15\",\"item\":\"3\",\"dimen_id_desktop\":\"8\",\"dimen_id_mobile\":\"3\",\"title\":\"Sesuai seleramu\",\"desc\":\"Cobain yuk\",\"section_title\":\"Promo Brand Pilihan\"}\"\n", TopAdsRequestParams::class.java)
+
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true)
-                        || jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)) {
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true) ||
+                        jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)
+                    ) {
                         val requestParam = gson.fromJson(
                             featureEngineItem.detail,
                             TopAdsRequestParams::class.java
                         )
                         return requestParam
                     }
-
                 } catch (e: Exception) { }
             }
         }
@@ -40,7 +42,7 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
                         return true
                     }
                 } catch (e: Exception) { }
@@ -69,7 +71,7 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
                         if (i == 0) {
                             isFirstElement = true
                             sectionTitle = jsonObject[KEY_TITLE].toString()
@@ -79,7 +81,7 @@ object FeatureRecommendationMapper {
                 } catch (e: Exception) { }
             }
         }
-        return TokoMemberRequestParam (
+        return TokoMemberRequestParam(
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
@@ -92,11 +94,13 @@ object FeatureRecommendationMapper {
     }
 
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
-        if (engineData == null)
+        if (engineData == null) {
             return null
+        }
 
-        if (engineData.featureEngineItem.isNullOrEmpty())
+        if (engineData.featureEngineItem.isNullOrEmpty()) {
             return null
+        }
 
         // For gyro section header will be equivalent to title of first element
         getGyroRecommendationItemList(engineData.featureEngineItem).also {
@@ -143,5 +147,4 @@ object FeatureRecommendationMapper {
     const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"
     const val TYPE_TDN_PRODUCT = "tdn_product"
-
 }
