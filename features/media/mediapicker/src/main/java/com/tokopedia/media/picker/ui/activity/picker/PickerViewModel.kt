@@ -8,7 +8,6 @@ import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
-import com.tokopedia.media.picker.data.repository.MediaFileRepositoryImpl.Companion.LIMIT_MEDIA_OFFSET
 import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.utils.flattenFilter
@@ -77,10 +76,10 @@ class PickerViewModel @Inject constructor(
         }
 
     fun navigateToEditorPage(result: PickerResult) {
-        viewModelScope.launch {
-            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
-            _editorParam.value = data
-        }
+        val editorParam = param.get().getEditorParam() ?: EditorParam()
+        val data = Pair(result, editorParam)
+
+        _editorParam.value = data
     }
 
     fun setPickerParam(pickerParam: PickerParam?) {
@@ -140,7 +139,7 @@ class PickerViewModel @Inject constructor(
             mediaFiles(bucketId, start)
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
-                .onEach { isMediaListLessThanThreshold = it.size < LIMIT_MEDIA_OFFSET }
+                .onEach { isMediaListLessThanThreshold = it.size < mediaFiles.maxLimitSize() }
                 .onCompletion { _isFetchMediaLoading.value = false }
                 .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
