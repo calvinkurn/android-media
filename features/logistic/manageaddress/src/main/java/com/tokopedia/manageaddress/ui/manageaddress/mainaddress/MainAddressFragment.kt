@@ -292,6 +292,7 @@ class MainAddressFragment :
                                 longitude = data.longitude
                                 destinationDistrictId = data.districtId.toString()
                                 postalCode = data.postalCode
+                                cityId = data.cityId.toString()
                             }
                             _selectedAddressItem = newRecipientAddressModel
                             if (isFromEditChosenAddress == true) {

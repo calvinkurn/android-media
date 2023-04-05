@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.payment.PaymentConstant
@@ -41,7 +40,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
-
 class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
@@ -63,8 +61,8 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
         const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
         const val STATUS_SUCCESS = 2
-        const val MONEY_IN_TNC_SPAN_START_INDEX =16
-        const val MONEY_IN_TNC_SPAN_END_INDEX =36
+        const val MONEY_IN_TNC_SPAN_START_INDEX = 16
+        const val MONEY_IN_TNC_SPAN_END_INDEX = 36
     }
 
     override fun initInject() {
@@ -74,10 +72,12 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
     override fun initView() {
         moneyInStringCancelled = getString(R.string.money_in_alert_payment_canceled)
         moneyInStringCancelledOrFailed = getString(R.string.money_in_alert_payment_canceled_or_failed)
-        sendGeneralEvent(MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
-                MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                MoneyInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
-                "")
+        sendGeneralEvent(
+            MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
+            MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+            MoneyInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
+            ""
+        )
         if (intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
             orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE) ?: ""
         }
@@ -92,13 +92,14 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         if (intent.hasExtra(MONEY_IN_NEW_ADDRESS)) {
             val saveAddressViewModel: SaveAddressDataModel = intent.getParcelableExtra(MONEY_IN_NEW_ADDRESS) ?: SaveAddressDataModel()
             saveAddressViewModel.apply {
-                val keroGetAddress = KeroGetAddress.Data(id.toInt(), title, address1, address2, cityId.toInt(),
-                        "", "", districtId.toInt(), selectedDistrict, true,
-                        true, true, latitude, longitude, phone, postalCode,
-                        provinceId.toInt(), "", receiverName, 1)
+                val keroGetAddress = KeroGetAddress.Data(
+                    id.toInt(), title, address1, address2, cityId.toInt(),
+                    "", "", districtId.toInt(), selectedDistrict, true,
+                    true, true, latitude, longitude, phone, postalCode,
+                    provinceId.toInt(), "", receiverName, 1
+                )
                 setAddressView(keroGetAddress)
             }
-
         }
         moneyInCheckoutViewModel.getPickupScheduleOption()
         setObservers()
@@ -135,89 +136,106 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
     }
 
     private fun setObservers() {
-        moneyInCheckoutViewModel.getPickupScheduleOptionLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.scheduleDate.isNullOrEmpty())
-                        setScheduleBottomSheet(it.data.scheduleDate)
+        moneyInCheckoutViewModel.getPickupScheduleOptionLiveData().observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (!it.data.scheduleDate.isNullOrEmpty()) {
+                            setScheduleBottomSheet(it.data.scheduleDate)
+                        }
+                    }
                 }
             }
-        })
-        moneyInCheckoutViewModel.getCourierRatesLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    resetRateAndTime()
-                    if (it.data.error?.message.isNullOrEmpty() && !it.data.services.isNullOrEmpty())
-                        setCourierRatesBottomSheet(it.data)
-                    else {
-                        val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
-                        var errorMsg = it.data.error?.message
-                        if (errorMsg.isNullOrEmpty()) {
-                            errorMsg = getString(R.string.money_in_courier_service_error)
-                        }
-                        showMessageWithAction(
-                            errorMsg,
-                            getString(com.tokopedia.abstraction.R.string.title_ok)
-                        ) {}
-                        courierBtn.setOnClickListener { v ->
-                            sendGeneralEvent(
-                                MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                                MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                                MoneyInGTMConstants.ACTION_CLICK_PILIH_KURIR,
-                                ""
-                            )
+        )
+        moneyInCheckoutViewModel.getCourierRatesLiveData().observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        resetRateAndTime()
+                        if (it.data.error?.message.isNullOrEmpty() && !it.data.services.isNullOrEmpty()) {
+                            setCourierRatesBottomSheet(it.data)
+                        } else {
+                            val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
+                            var errorMsg = it.data.error?.message
+                            if (errorMsg.isNullOrEmpty()) {
+                                errorMsg = getString(R.string.money_in_courier_service_error)
+                            }
                             showMessageWithAction(
                                 errorMsg,
                                 getString(com.tokopedia.abstraction.R.string.title_ok)
                             ) {}
+                            courierBtn.setOnClickListener { v ->
+                                sendGeneralEvent(
+                                    MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                                    MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                                    MoneyInGTMConstants.ACTION_CLICK_PILIH_KURIR,
+                                    ""
+                                )
+                                showMessageWithAction(
+                                    errorMsg,
+                                    getString(com.tokopedia.abstraction.R.string.title_ok)
+                                ) {}
+                            }
                         }
                     }
                 }
             }
-        })
-        moneyInCheckoutViewModel.getCheckoutDataLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+        )
+        moneyInCheckoutViewModel.getCheckoutDataLiveData().observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        sendGeneralEvent(
+                            MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                             MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION_DROP,
                             MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
-                            MoneyInGTMConstants.SUCCESS)
-                    val paymentPassData = PaymentPassData()
-                    paymentPassData.redirectUrl = it.data.redirectUrl
-                    paymentPassData.transactionId = it.data.parameter.transactionId
-                    paymentPassData.paymentId = ""
-                    paymentPassData.callbackSuccessUrl = it.data.callbackUrl
-                    paymentPassData.callbackFailedUrl = ""
-                    paymentPassData.queryString = it.data.queryString
-                    val intent = RouteManager.getIntent(this, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                    startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                            MoneyInGTMConstants.SUCCESS
+                        )
+                        val paymentPassData = PaymentPassData()
+                        paymentPassData.redirectUrl = it.data.redirectUrl
+                        paymentPassData.transactionId = it.data.parameter.transactionId
+                        paymentPassData.paymentId = ""
+                        paymentPassData.callbackSuccessUrl = it.data.callbackUrl
+                        paymentPassData.callbackFailedUrl = ""
+                        paymentPassData.queryString = it.data.queryString
+                        val intent = RouteManager.getIntent(this, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    }
                 }
             }
-        })
-        moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
-            when (it) {
-                is ScheduleTimeError -> {
-                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getPickupScheduleOption()
+        )
+        moneyInCheckoutViewModel.getErrorLiveData().observe(
+            this,
+            Observer {
+                when (it) {
+                    is ScheduleTimeError -> {
+                        showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                            moneyInCheckoutViewModel.getPickupScheduleOption()
+                        }
                     }
-                }
-                is CourierPriceError -> {
-                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getCourierRates(destination)
+                    is CourierPriceError -> {
+                        showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                            moneyInCheckoutViewModel.getCourierRates(destination)
+                        }
                     }
-                }
-                is MutationCheckoutError -> {
-                    sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                    is MutationCheckoutError -> {
+                        sendGeneralEvent(
+                            MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                             MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                             MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
-                            MoneyInGTMConstants.FAILURE)
-                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                            MoneyInGTMConstants.FAILURE
+                        )
+                        showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                            moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                        }
                     }
                 }
             }
-        })
+        )
     }
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
@@ -285,13 +303,15 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         val retrievalBtn = findViewById<UnifyButton>(R.id.retrival_time_btn)
         val moneyInScheduledTimeBottomSheet = MoneyInScheduledTimeBottomSheet.newInstance(scheduleDate)
         retrievalBtn.setOnClickListener {
-            sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                    MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                    when {
-                        isTimeSet -> MoneyInGTMConstants.ACTION_CLICK_UBAH_WAKTU
-                        else -> MoneyInGTMConstants.ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN
-                    },
-                    "")
+            sendGeneralEvent(
+                MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                when {
+                    isTimeSet -> MoneyInGTMConstants.ACTION_CLICK_UBAH_WAKTU
+                    else -> MoneyInGTMConstants.ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN
+                },
+                ""
+            )
             moneyInScheduledTimeBottomSheet.show(supportFragmentManager, "")
         }
         moneyInScheduledTimeBottomSheet.setActionListener(this)
@@ -309,10 +329,12 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         retrieverTimeButton.text = getString(R.string.change_time)
         retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         isTimeSet = true
-        sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                MoneyInGTMConstants.ACTION_CLICK_PILIH,
-                "$dateFmt - ${scheduleTime.timeFmt}")
+        sendGeneralEvent(
+            MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+            MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+            MoneyInGTMConstants.ACTION_CLICK_PILIH,
+            "$dateFmt - ${scheduleTime.timeFmt}"
+        )
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data) {
@@ -343,16 +365,20 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
-                sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                        MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                        MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
-                        MoneyInGTMConstants.SUCCESS)
+                sendGeneralEvent(
+                    MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                    MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                    MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                    MoneyInGTMConstants.SUCCESS
+                )
                 showMessage(getString(R.string.select_shipping))
             } else if (!isTimeSet) {
-                sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                        MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                        MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
-                        MoneyInGTMConstants.SUCCESS)
+                sendGeneralEvent(
+                    MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                    MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                    MoneyInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                    MoneyInGTMConstants.SUCCESS
+                )
                 showMessage(getString(R.string.select_fetch_time))
             }
         }
@@ -360,57 +386,57 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) run {
-            onResultFromRequestCodeAddressOptions(resultCode, data)
-        } else if (requestCode == PaymentConstant.REQUEST_CODE) run {
-            onResultFromPayment(resultCode)
-        }
-    }
-
-    private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
-        if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS) {
-            when (resultCode) {
-                CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS -> {
-                    if (data != null) {
-                        val addressModel = data.getParcelableExtra<RecipientAddressModel>(
-                                CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
-                        ) ?: RecipientAddressModel()
-                        if (addressModel.id != null && addressModel.cityId != null
-                            && addressModel.provinceId != null && addressModel.destinationDistrictId != null) {
-                            val recipientAddress = KeroGetAddress.Data(
-                                addressModel.id.toIntOrZero(),
-                                addressModel.addressName ?: "",
-                                addressModel.addressName ?: "",
-                                addressModel.addressName ?: "",
-                                addressModel.cityId.toIntOrZero(),
-                                addressModel.cityName ?: "",
-                                addressModel.countryName ?: "",
-                                addressModel.destinationDistrictId.toIntOrZero(),
-                                addressModel.destinationDistrictName ?: "",
-                                addressModel.isSelected,
-                                addressModel.isSelected,
-                                addressModel.isSelected,
-                                addressModel.latitude ?: "",
-                                addressModel.longitude ?: "",
-                                addressModel.recipientPhoneNumber,
-                                addressModel.postalCode ?: "",
-                                addressModel.provinceId.toIntOrZero(),
-                                addressModel.provinceName ?: "",
-                                addressModel.recipientName ?: "",
-                                addressModel.addressStatus
-                            )
-                            setAddressView(recipientAddress)
-                        }else{
-                            showMessage(getString(R.string.money_in_alert_error_fetching_location))
-                        }
-                    }
-                }
-
-                else -> finish()
+        if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
+            run {
+                onResultFromRequestCodeAddressOptions(resultCode, data)
+            }
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) {
+            run {
+                onResultFromPayment(resultCode)
             }
         }
     }
 
+    private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS -> {
+                if (data != null) {
+                    val addressModel = data.getParcelableExtra<RecipientAddressModel>(
+                        CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
+                    ) ?: RecipientAddressModel()
+                    if (addressModel.id != null && addressModel.cityId != null && addressModel.destinationDistrictId != null) {
+                        val recipientAddress = KeroGetAddress.Data(
+                            addressModel.id.toIntOrZero(),
+                            addressModel.addressName ?: "",
+                            addressModel.addressName ?: "",
+                            addressModel.addressName ?: "",
+                            addressModel.cityId.toIntOrZero(),
+                            addressModel.cityName ?: "",
+                            addressModel.countryName ?: "",
+                            addressModel.destinationDistrictId.toIntOrZero(),
+                            addressModel.destinationDistrictName ?: "",
+                            addressModel.isSelected,
+                            addressModel.isSelected,
+                            addressModel.isSelected,
+                            addressModel.latitude ?: "",
+                            addressModel.longitude ?: "",
+                            addressModel.recipientPhoneNumber,
+                            addressModel.postalCode ?: "",
+                            addressModel.provinceId.toIntOrZero(),
+                            addressModel.provinceName ?: "",
+                            addressModel.recipientName ?: "",
+                            addressModel.addressStatus
+                        )
+                        setAddressView(recipientAddress)
+                    } else {
+                        showMessage(getString(R.string.money_in_alert_error_fetching_location))
+                    }
+                }
+            }
+
+            else -> finish()
+        }
+    }
 
     private fun onResultFromPayment(resultCode: Int) {
         when (resultCode) {
@@ -425,16 +451,17 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                 showMessage(moneyInStringCancelled)
             }
             else -> {
-
             }
         }
     }
 
     private fun getFullAddress(recipientAddress: KeroGetAddress.Data): String {
-        return (recipientAddress.address1 + ", "
-                + recipientAddress.districtName + ", "
-                + recipientAddress.cityName + ", "
-                + recipientAddress.provinceName)
+        return (
+            recipientAddress.address1 + ", " +
+                recipientAddress.districtName + ", " +
+                recipientAddress.cityName + ", " +
+                recipientAddress.provinceName
+            )
     }
 
     override fun getViewModelType(): Class<MoneyInCheckoutViewModel> {
