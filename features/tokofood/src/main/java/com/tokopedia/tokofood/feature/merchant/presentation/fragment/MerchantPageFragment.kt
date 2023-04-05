@@ -42,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -1091,7 +1090,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
-                showToast(cartTokoFoodData.message)
+            }
+
+            cartTokoFoodData.message.takeIf { it.isNotBlank() }?.let { message ->
+                view?.let { view ->
+                    Toaster.build(
+                        view = view,
+                        text = message,
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_NORMAL
+                    ).show()
+                }
             }
         }
     }
