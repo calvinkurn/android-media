@@ -20,6 +20,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -199,27 +202,35 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun moveToAutoCompleteActivity() {
-        val query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ")
-        val currentAutoCompleteApplink = getAutoCompleteApplink(query)
+        val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
 
-        val autoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
-        autoCompleteParams[SearchApiConst.PREVIOUS_KEYWORD] = query
-
-        startActivityWithApplink(
-                ApplinkConstInternalDiscovery.AUTOCOMPLETE
-                        + "?"
-                        + UrlParamUtils.generateUrlParamString(autoCompleteParams)
-        )
+        RouteManager.route(this, applink)
     }
+
+    private fun autoCompleteParamsString() =
+        UrlParamUtils.generateUrlParamString(autoCompleteParams())
+
+    private fun autoCompleteParams() =
+        if (searchParameter.isMps()) {
+            searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
+        } else {
+            val query = encodedQuery()
+            val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
+            val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+
+            currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
+        }
+
+    private fun encodedQuery() = URLEncoder
+        .encode(searchParameter.getSearchQuery())
+        .replace("+", " ")
+
+    private fun currentAutoCompleteApplink(query: String) =
+        autocompleteApplink.ifEmpty { ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query }
 
     override fun startActivityWithApplink(applink: String?, vararg parameter: String?) {
         RouteManager.route(this, applink, *parameter)
     }
-
-    private fun getAutoCompleteApplink(query: String) =
-            if (autocompleteApplink.isNotEmpty()) autocompleteApplink
-            else ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query
-
 
     private fun configureToolbarVisibility() {
         if (!isLandingPage()) return
@@ -322,9 +333,9 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun setSearchParameterDefaultActiveTab() {
-        val activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB)
+        val activeTab = searchParameter.get(ACTIVE_TAB)
         if (shouldSetActiveTabToDefault(activeTab)) {
-            searchParameter.set(SearchApiConst.ACTIVE_TAB, SearchConstant.ActiveTab.PRODUCT)
+            searchParameter.set(ACTIVE_TAB, SearchConstant.ActiveTab.PRODUCT)
         }
     }
 
