@@ -134,7 +134,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
-        viewmodel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
+        viewmodel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW) ?: false
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -176,18 +176,18 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun gotoSilentVerificationPage(modeListData: ModeListData) {
-        if(activity != null && isEnableSilentVerif()) {
+        if (activity != null && isEnableSilentVerif()) {
             goToSilentVerificationpage(modeListData)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_SILENT_VERIF -> {
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     activity?.setResult(Activity.RESULT_OK, data)
                     activity?.finish()
-                } else if(resultCode == RESULT_DELETE_METHOD) {
+                } else if (resultCode == RESULT_DELETE_METHOD) {
                     val list = adapter.listData.filter { it.modeText != SILENT_VERIFICATION }.toMutableList()
                     adapter.setList(list)
                 }
@@ -206,7 +206,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         super.onActivityResult(requestCode, resultCode, data)
     }
     private fun onSilentVerificationClicked(modeListData: ModeListData) {
-        if (ConnectivityUtils.isSilentVerificationPossible(activity)){
+        if (ConnectivityUtils.isSilentVerificationPossible(activity)) {
             gotoSilentVerificationPage(modeListData)
         } else {
             activity?.run {
@@ -218,7 +218,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     },
                     onSecondaryButtonClicked = {
                         analytics.trackCellularDialogButton(TrackingOtpConstant.Label.LABEL_BATAL)
-                    })
+                    }
+                )
             }
         }
     }
@@ -231,7 +232,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
-                if(!isSameIdentifier()) {
+                if (!isSameIdentifier()) {
                     verificationPref.resetByMode(modeList.modeText)
                 }
                 viewmodel.done = true
@@ -269,15 +270,17 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 email = otpData.email,
                 validateToken = otpData.accessToken
             )
-        } else if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
-                && otpData.userIdEnc.isNotEmpty()) {
+        } else if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) &&
+            otpData.userIdEnc.isNotEmpty()
+        ) {
             viewmodel.getVerificationMethod2FA(
-                    otpType = otpType,
-                    validateToken = otpData.accessToken,
-                    userIdEnc = otpData.userIdEnc)
+                otpType = otpType,
+                validateToken = otpData.accessToken,
+                userIdEnc = otpData.userIdEnc
+            )
         } else {
             val timeUnix = System.currentTimeMillis().toString()
-            if(isEnableDefaultOtp()) {
+            if (isEnableDefaultOtp()) {
                 viewmodel.getOtpModeListForDefaultOtp(
                     otpType = otpType,
                     userId = otpData.userId,
@@ -301,20 +304,22 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableDefaultOtp(): Boolean {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_DEFAULT_OTP_ROLLENCE, "").isNotEmpty()
-        return true
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_DEFAULT_OTP_ROLLENCE, "").isNotEmpty()
     }
 
     private fun initObserver() {
-        viewmodel.getVerificationMethodResult.observe(viewLifecycleOwner, Observer {
-            (activity as VerificationActivity).isDefaultOtp = false
-            when (it) {
-                is Success -> {
-                    onSuccessGetVerificationMethod().invoke(it.data)
+        viewmodel.getVerificationMethodResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                (activity as VerificationActivity).isDefaultOtp = false
+                when (it) {
+                    is Success -> {
+                        onSuccessGetVerificationMethod().invoke(it.data)
+                    }
+                    is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
                 }
-                is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
             }
-        })
+        )
 
         viewmodel.defaultOtpUiModel.observe(viewLifecycleOwner) {
             renderDefaultOtpFlow(it)
@@ -328,13 +333,13 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     fun renderDefaultOtpFlow(data: DefaultOtpUiModel) {
         val currentStatus = (activity as VerificationActivity).otpCache
         isMoreThanOneMethod = data.originalOtpModeList.size > 1
-        if(currentStatus != null) {
+        if (currentStatus != null) {
             renderOtpModeListsDefaultOtp(data)
         } else {
             (activity as VerificationActivity).otpCache = data
             (activity as VerificationActivity).isDefaultOtp = true
             val directOtp = getDirectRequest(data)
-            if(directOtp != null) {
+            if (directOtp != null) {
                 viewmodel.goToInputOtp(directOtp)
             } else {
                 renderOtpModeListsDefaultOtp(data)
@@ -343,7 +348,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     fun getDirectRequest(data: DefaultOtpUiModel): ModeListData? {
-        if(data.defaultBehaviorMode == 0 || data.defaultBehaviorMode == 1) {
+        if (data.defaultBehaviorMode == 0 || data.defaultBehaviorMode == 1) {
             return null
         }
         return data.displayedModeList.find { it.directRequest }
@@ -353,7 +358,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         if (defaultOtpUiModel.displayedModeList.isNotEmpty()) {
             hideLoading()
             renderOtpModeList(defaultOtpUiModel.displayedModeList)
-            if(defaultOtpUiModel.originalOtpModeList.size > 1) {
+            if (defaultOtpUiModel.originalOtpModeList.size > 1) {
                 renderDefaultOtpFooter(defaultOtpUiModel.footerText, defaultOtpUiModel.footerClickableSpan, defaultOtpUiModel.footerAction)
             } else {
                 hideDefaultOtpFooter()
@@ -419,9 +424,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     showListView(otpModeListData)
                 }
 
-                if(otpModeListData.defaultMode == DEFAULT_MODE_SILENT_VERIF) {
+                if (otpModeListData.defaultMode == DEFAULT_MODE_SILENT_VERIF) {
                     val silentVerifModeData = otpModeListData.modeList.find { it.modeCode == DEFAULT_MODE_SILENT_VERIF }
-                    if(silentVerifModeData != null) {
+                    if (silentVerifModeData != null) {
                         gotoSilentVerificationPage(silentVerifModeData)
                     }
                 }
@@ -434,8 +439,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun showListView(otpModeListData: OtpModeListData) {
-        if(context != null) {
-            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext()) || !isEnableSilentVerif() || GlobalConfig.isSellerApp()) {
+        if (context != null) {
+            if (!ConnectivityUtils.isSilentVerificationPossible(requireContext()) || !isEnableSilentVerif() || GlobalConfig.isSellerApp()) {
                 otpModeListData.modeList.removeAll { it.modeText == SILENT_VERIFICATION }
             }
         }
@@ -461,9 +466,12 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         return { throwable ->
             throwable.printStackTrace()
             hideLoading()
-            val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
-                className = VerificationMethodFragment::class.java.name
-            }.build())
+            val message = ErrorHandler.getErrorMessage(
+                context, throwable,
+                ErrorHandler.Builder().apply {
+                    className = VerificationMethodFragment::class.java.name
+                }.build()
+            )
             NetworkErrorHelper.showEmptyState(context, viewBound.containerView, message) {
                 getVerificationMethod()
             }
@@ -494,7 +502,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     private fun setFooterSpannable(message: String, clickableMessage: String, onClick: () -> Unit) {
         context?.let {
             val spannable = SpannableString(message).apply {
-                setSpan(clickableSpan { onClick.invoke() },
+                setSpan(
+                    clickableSpan { onClick.invoke() },
                     message.indexOf(clickableMessage),
                     message.indexOf(clickableMessage) + clickableMessage.length,
                     0
@@ -511,15 +520,15 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         context?.let {
             val spannable = SpannableString(footerUiModel.message).apply {
                 footerUiModel.spannableUiModel.forEach { spannableModel ->
-                    setSpan(clickableSpan {
-                        spannableModel.action.invoke()
-                    },
+                    setSpan(
+                        clickableSpan {
+                            spannableModel.action.invoke()
+                        },
                         footerUiModel.message.indexOf(spannableModel.clickableMessage),
                         footerUiModel.message.indexOf(spannableModel.clickableMessage) + spannableModel.clickableMessage.length,
                         0
                     )
                 }
-
             }
             viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
