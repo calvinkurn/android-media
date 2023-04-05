@@ -183,7 +183,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 isPeriod = voucherConfiguration.isPeriod,
                 periodRepeat = voucherConfiguration.periodRepeat,
                 periodType = voucherConfiguration.periodType,
-                totalPeriod = voucherConfiguration.totalPeriod
+                totalPeriod = voucherConfiguration.totalPeriod,
+                productIdsImage = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() }
             )
         }
     }

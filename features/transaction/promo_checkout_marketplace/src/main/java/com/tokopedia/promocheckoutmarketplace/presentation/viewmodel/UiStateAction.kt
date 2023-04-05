@@ -6,10 +6,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 
 data class ClearPromoResponseAction(
-        var state: Int = 0,
-        var exception: Throwable? = null,
-        var data: ClearPromoUiModel? = null,
-        var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    var state: Int = 0,
+    var exception: Throwable? = null,
+    var data: ClearPromoUiModel? = null,
+    var lastValidateUseRequest: ValidateUsePromoRequest? = null
 ) {
     companion object {
         val ACTION_STATE_SUCCESS = 1
@@ -18,10 +18,10 @@ data class ClearPromoResponseAction(
 }
 
 data class ApplyPromoResponseAction(
-        var state: Int = 0,
-        var exception: Throwable? = null,
-        var data: ValidateUsePromoRevampUiModel? = null,
-        var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    var state: Int = 0,
+    var exception: Throwable? = null,
+    var data: ValidateUsePromoRevampUiModel? = null,
+    var lastValidateUseRequest: ValidateUsePromoRequest? = null
 ) {
     companion object {
         val ACTION_NAVIGATE_TO_CALLER_PAGE = 1
@@ -31,8 +31,8 @@ data class ApplyPromoResponseAction(
 }
 
 data class GetPromoListResponseAction(
-        var state: Int = 0,
-        var exception: Throwable? = null
+    var state: Int = 0,
+    var exception: Throwable? = null
 ) {
     companion object {
         val ACTION_CLEAR_DATA = 1
@@ -41,8 +41,8 @@ data class GetPromoListResponseAction(
 }
 
 data class GetPromoSuggestionAction(
-        var state: Int = 0,
-        var data: PromoSuggestionUiModel? = null
+    var state: Int = 0,
+    var data: PromoSuggestionUiModel? = null
 ) {
     companion object {
         val ACTION_SHOW = 1

@@ -1,11 +1,13 @@
 package com.tokopedia.topads.sdk.view.adapter
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -15,7 +17,10 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -25,12 +30,13 @@ import timber.log.Timber
 class TdnCarouselAdapter(
     private val onTdnBannerClicked: (applink: String) -> Unit,
     private val cornerRadius: Int,
+    private val isUsingInfiniteScroll: Boolean,
     private val onLoadFailed: () -> Unit,
     private val onTdnBannerImpressed: () -> Unit
 ) : RecyclerView.Adapter<TdnCarouselAdapter.TdnCarouselViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<TopAdsImageViewModel>()
-    private var recyclerView:RecyclerView?= null
+    private var recyclerView: RecyclerView? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -48,14 +54,13 @@ class TdnCarouselAdapter(
     }
 
     override fun getItemCount(): Int {
-        return shopAdsProductItemList.count()
+        return shopAdsProductItemList.size
     }
 
     fun setList(list: List<TopAdsImageViewModel>) {
         shopAdsProductItemList.clear()
         shopAdsProductItemList.addAll(list)
         notifyDataSetChanged()
-
     }
 
     inner class TdnCarouselViewHolder(
@@ -117,13 +122,16 @@ class TdnCarouselAdapter(
         ) {
             if (!imageData.imageUrl.isNullOrEmpty()) {
                 val width = itemView.context.resources.displayMetrics.widthPixels
-                val calculatedWidth = if (imageData.layoutType == TYPE_VERTICAL_CAROUSEL)
-                    widthVerticalCarousel(width) else widthHorizontalCarousel(width)
-                getRequestBuilder(imageData.imageUrl, cornerRadius).override(
+                val calculatedWidth = if (imageData.layoutType == TYPE_VERTICAL_CAROUSEL) {
+                    widthVerticalCarousel(width)
+                } else {
+                    widthHorizontalCarousel(width)
+                }
+                getRequestBuilder(imageData.imageUrl, cornerRadius)?.override(
                     calculatedWidth,
                     getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
                 )
-                    .addListener(object : RequestListener<Drawable> {
+                    ?.addListener(object : RequestListener<Drawable> {
 
                         override fun onLoadFailed(
                             e: GlideException?,
@@ -144,7 +152,7 @@ class TdnCarouselAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             recordImpression(imageData, onTdnBannerImpressed)
-                            recyclerView?.smoothScrollBy(Int.ONE,Int.ONE)
+                            if (!isUsingInfiniteScroll) recyclerView?.smoothScrollBy(Int.ONE, Int.ONE)
                             Timber.d("TDN Banner is loaded successfully")
 
                             tdnShimmer.hide()
@@ -154,11 +162,10 @@ class TdnCarouselAdapter(
                             return false
                         }
                     })
-                    .into(tdnBanner)
+                    ?.into(tdnBanner)
             } else {
                 tdnBanner.hide()
             }
-
         }
 
         private fun widthHorizontalCarousel(width: Int): Int {
@@ -200,16 +207,19 @@ class TdnCarouselAdapter(
             }
         }
 
-        private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable> {
-            return if (radius > Int.ZERO) {
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .transform(FitCenter(), RoundedCorners(radius))
+        private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable>? {
+            return if (itemView.context.isAvailable()) {
+                if (radius > Int.ZERO) {
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .transform(FitCenter(), RoundedCorners(radius))
+                } else {
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .fitCenter()
+                }
             } else {
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .fitCenter()
-
+                null
             }
         }
 
@@ -218,11 +228,18 @@ class TdnCarouselAdapter(
             val widthRatio = deviceWidth / width.toFloat()
             return (widthRatio * height).toInt()
         }
-
     }
 
     private fun widthVerticalCarousel(width: Int): Int {
-        return (width/2.8).toInt()
+        return (width / 2.8).toInt()
     }
 
+    fun Context?.isAvailable(): Boolean {
+        if (this == null) {
+            return false
+        } else if (this is FragmentActivity) {
+            return !this.isDestroyed
+        }
+        return true
+    }
 }

@@ -51,7 +51,6 @@ allprojects {
         }
         flatDir {
             dirs rootProject.file('aars')
-            dirs rootProject.file('libraries/liveness_lib/libs')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -109,11 +108,6 @@ subprojects {
                 substitute module('androidx.arch.core:core-common') with module("androidx.arch.core:core-common:${archCoreVersion}")
                 if (project.name != 'wearosapp') {
                     substitute module('androidx.cardview:cardview') with module("androidx.cardview:cardview:${supportLegacyLibraryVersion}")
-                    substitute module('androidx.core:core') with module("androidx.core:core:${androidxCoreVersion}")
-                    substitute module('androidx.lifecycle:lifecycle-runtime') with module("androidx.lifecycle:lifecycle-runtime:${lifeCycleVersion}")
-                    substitute module('androidx.lifecycle:lifecycle-viewmodel') with module("androidx.lifecycle:lifecycle-viewmodel:${lifeCycleVersion}")
-                    substitute module('androidx.lifecycle:lifecycle-livedata-core') with module("androidx.lifecycle:lifecycle-livedata-core:${lifeCycleVersion}")
-                    substitute module('androidx.lifecycle:lifecycle-service') with module("androidx.lifecycle:lifecycle-service:${lifeCycleVersion}")
                 }
                 substitute module('androidx.fragment:fragment') with module("androidx.fragment:fragment:${androidxFragment}")
                 substitute module('com.google.android.material:material') with module("com.google.android.material:material:${materialVersion}")

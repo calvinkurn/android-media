@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tokochat_dms_right_button_pressed">#209155</color>
+    <color name="tokochat_dms_left_button_pressed">#292D34</color>
+    <color name="tokochat_dms_send_button_gray_bg">#5D6775</color>
+</resources>

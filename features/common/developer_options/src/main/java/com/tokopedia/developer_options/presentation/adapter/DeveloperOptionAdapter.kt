@@ -91,6 +91,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
+        const val KEYWORD_LOGIN_HELPER = "Login Helper"
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
     }
 
@@ -101,6 +102,7 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
+        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         SystemNonSystemAppsUiModel(

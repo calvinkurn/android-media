@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
@@ -49,6 +50,7 @@ class DeveloperOptionActivity : BaseActivity() {
         private const val API_KEY_TRANSLATOR = ""
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
+        private const val LOGIN_HELPER_REQUEST_CODE = 789
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -94,6 +96,7 @@ class DeveloperOptionActivity : BaseActivity() {
                 resetOnBoardingListener = clickResetOnBoarding(),
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
+                loginHelperListener = loginHelperListener(),
                 authorizeListener = checkAuthorize()
             ),
             differ = DeveloperOptionDiffer()
@@ -263,6 +266,26 @@ class DeveloperOptionActivity : BaseActivity() {
     private fun selectUrlEnvironment() = object : UrlEnvironmentViewHolder.UrlEnvironmentListener {
         override fun onLogOutUserSession() {
             userSession?.logoutSession()
+        }
+    }
+
+    private fun loginHelperListener() = object : LoginHelperListener {
+        override fun routeToLoginHelperActivity() {
+            val loginHelperIntent = RouteManager.getIntent(
+                this@DeveloperOptionActivity,
+                ApplinkConstInternalGlobal.LOGIN_HELPER
+            )
+            startActivityForResult(loginHelperIntent, LOGIN_HELPER_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LOGIN_HELPER_REQUEST_CODE -> {
+                this.setResult(Activity.RESULT_OK)
+                this.finish()
+            }
         }
     }
 

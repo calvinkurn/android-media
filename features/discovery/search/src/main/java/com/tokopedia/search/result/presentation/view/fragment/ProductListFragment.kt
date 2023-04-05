@@ -36,6 +36,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
+import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
@@ -101,12 +102,13 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.SmallGridSpanCount
-import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
+import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.search.utils.manualFilterToggleMap
+import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.search.utils.removeQuickFilterElevation
-import com.tokopedia.search.utils.updateComponentId
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -392,6 +394,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameterMap)
             }
         }
@@ -478,7 +481,7 @@ class ProductListFragment: BaseDaggerFragment(),
             chooseAddressListener = this,
             bannerListener = BannerListenerDelegate(iris, activity),
             lastFilterListener = lastFilterListenerDelegate,
-            inspirationSizeListener = inspirationWidgetListenerDelegate,
+            inspirationFilterListener = inspirationWidgetListenerDelegate,
             violationListener = ViolationListenerDelegate(activity),
             videoCarouselListener = videoCarouselListenerDelegate,
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
@@ -573,10 +576,12 @@ class ProductListFragment: BaseDaggerFragment(),
     //region adding visitable list to recycler view adapter
     override fun addProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.appendItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.setItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun addLoading() {
@@ -600,6 +605,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun showNetworkError(throwable: Throwable?) {
         val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
 
+        SearchIdlingResource.decrement()
         if (productListAdapter.isListEmpty())
             showNetworkErrorOnEmptyList(throwable)
         else
@@ -632,11 +638,13 @@ class ProductListFragment: BaseDaggerFragment(),
         if (throwable!= null) {
             NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }.showRetrySnackbar()
         }
@@ -974,9 +982,11 @@ class ProductListFragment: BaseDaggerFragment(),
         val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
-        val queryParams = filterController.getParameter()
-            .addFilterOrigin()
-            .updateComponentId(SearchSortFilterTracking.QUICK_FILTER_COMPONENT_ID)
+        val queryParams = filterController.getParameter() +
+            originFilterMap() +
+            componentIdMap(SearchSortFilterTracking.QUICK_FILTER_COMPONENT_ID) +
+            manualFilterToggleMap()
+
         refreshSearchParameter(queryParams)
 
         lastFilterListenerDelegate.updateLastFilter()
@@ -1063,7 +1073,7 @@ class ProductListFragment: BaseDaggerFragment(),
         shimmeringView?.visible()
     }
 
-    private fun setSortFilterIndicatorCounter() {
+    override fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
         searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
     }
@@ -1081,9 +1091,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         hideSearchSortFilter()
 
+        SearchIdlingResource.increment()
         presenter?.loadData(searchParameter.getSearchParameterMap())
-
-        setSortFilterIndicatorCounter()
     }
 
     //region Change product card layout
@@ -1184,6 +1193,15 @@ class ProductListFragment: BaseDaggerFragment(),
             return !isSortHasDefaultValue(mapParameter)
         }
 
+    override fun setAutoFilterToggle(autoFilterParameter: String) {
+        val autoFilterParameterMap = autoFilterParameter.toMapParam()
+        val searchParameter = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+
+        val autoFilterSearchParameterMap = searchParameter + autoFilterParameterMap
+
+        refreshSearchParameter(autoFilterSearchParameterMap)
+    }
+
     override fun refreshSearchParameter(queryParams: Map<String, String>) {
         searchParameter?.resetParams(queryParams)
         searchNavigationListener?.updateSearchParameter(searchParameter)
@@ -1261,9 +1279,11 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun applyDropdownQuickFilter(optionList: List<Option>?) {
         filterController.setFilter(optionList)
 
-        val queryParams = filterController.getParameter()
-            .addFilterOrigin()
-            .updateComponentId(SearchSortFilterTracking.DROPDOWN_QUICK_FILTER_COMPONENT_ID)
+        val queryParams = filterController.getParameter() +
+            originFilterMap() +
+            componentIdMap(SearchSortFilterTracking.DROPDOWN_QUICK_FILTER_COMPONENT_ID) +
+            manualFilterToggleMap()
+
         refreshSearchParameter(queryParams)
 
         lastFilterListenerDelegate.updateLastFilter()
