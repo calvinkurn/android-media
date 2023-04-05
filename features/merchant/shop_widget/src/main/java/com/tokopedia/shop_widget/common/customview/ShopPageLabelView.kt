@@ -207,6 +207,13 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
+    @Suppress("unused")
+    fun setTitleContentTypeFace(typeFace: Int) {
+        titleTextView?.setTypeface(null, typeFace)
+        invalidate()
+        requestLayout()
+    }
+
     var content: CharSequence?
         get() = contentTextView?.text.toString()
         set(textValue) {
