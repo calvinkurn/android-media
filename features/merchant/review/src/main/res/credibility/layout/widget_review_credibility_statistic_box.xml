@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_review_credibility_statistic_box"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="wrap_content"
     android:padding="12dp"
     app:card_type="border"
     app:layout_constraintTop_toTopOf="parent"
-    tools:background="@drawable/bg_review_credibility_statistics_box"
-    tools:layout_height="wrap_content">
+    tools:background="@drawable/bg_review_credibility_statistics_box">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_credibility_statistic_box_title"
