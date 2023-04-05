@@ -1223,18 +1223,28 @@ class AddressFormFragment :
     }
 
     private fun setUserConsent() {
-        if (viewModel.isDisableAddressImprovement && viewModel.isEdit.not()) {
+        if (viewModel.isDisableAddressImprovement) {
             binding?.userConsent?.visible()
             binding?.userConsentWidget?.gone()
 
             context?.apply {
-                LogisticUserConsentHelper.displayUserConsent(
-                    this,
-                    userSession.userId,
-                    binding?.userConsent,
-                    getString(R.string.btn_simpan),
-                    if (viewModel.isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
-                )
+                if (viewModel.isEdit) {
+                    LogisticUserConsentHelper.displayUserConsent(
+                        this,
+                        userSession.userId,
+                        binding?.userConsent,
+                        getString(R.string.btn_simpan),
+                        EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE
+                    )
+                } else {
+                    LogisticUserConsentHelper.displayUserConsent(
+                        this,
+                        userSession.userId,
+                        binding?.userConsent,
+                        getString(R.string.btn_simpan),
+                        if (viewModel.isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
+                    )
+                }
             }
         } else {
             binding?.userConsent?.gone()
