@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.model.platformfee
 import com.google.gson.annotations.SerializedName
 
 class PaymentFeeGqlResponse(
-    @SerializedName("getPaymentFee")
+    @SerializedName("getPaymentFeeCheckout")
     val response: PaymentFeeResponse = PaymentFeeResponse()
 )
 

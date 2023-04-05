@@ -57,7 +57,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
-import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.GetPlatformFeeCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
@@ -221,7 +221,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
-    private final GetPaymentFeeCheckoutUseCase getPaymentFeeCheckoutUseCase;
+    private final GetPlatformFeeCheckoutUseCase getPlatformFeeCheckoutUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -299,7 +299,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              EligibleForAddressUseCase eligibleForAddressUseCase,
                              GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
                              UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase,
-                             GetPaymentFeeCheckoutUseCase platformFeeUseCase) {
+                             GetPlatformFeeCheckoutUseCase platformFeeUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -325,7 +325,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
         this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
-        this.getPaymentFeeCheckoutUseCase = platformFeeUseCase;
+        this.getPlatformFeeCheckoutUseCase = platformFeeUseCase;
     }
 
     @Override
@@ -351,8 +351,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (updateDynamicDataPassingUseCase != null) {
             updateDynamicDataPassingUseCase.cancelJobs();
         }
-        if (getPaymentFeeCheckoutUseCase != null) {
-            getPaymentFeeCheckoutUseCase.cancelJobs();
+        if (getPlatformFeeCheckoutUseCase != null) {
+            getPlatformFeeCheckoutUseCase.cancelJobs();
         }
         ratesPublisher = null;
         logisticDonePublisher = null;
@@ -3445,8 +3445,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void getDynamicPlatformFee(PlatformFeeRequest request) {
         getView().showPlatformFeeSkeletonLoading();
 
-        getPaymentFeeCheckoutUseCase.setParams(request);
-        getPaymentFeeCheckoutUseCase.execute(
+        getPlatformFeeCheckoutUseCase.setParams(request);
+        getPlatformFeeCheckoutUseCase.execute(
                 platformFeeData -> {
                     if (getView() != null) {
                         if (platformFeeData.getResponse().getSuccess()) {

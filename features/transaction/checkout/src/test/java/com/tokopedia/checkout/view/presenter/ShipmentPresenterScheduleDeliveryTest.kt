@@ -104,7 +104,7 @@ class ShipmentPresenterScheduleDeliveryTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
-    private lateinit var dynamicPlatformFeeUseCase: GetPaymentFeeCheckoutUseCase
+    private lateinit var dynamicPlatformFeeUseCase: GetPlatformFeeCheckoutUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()

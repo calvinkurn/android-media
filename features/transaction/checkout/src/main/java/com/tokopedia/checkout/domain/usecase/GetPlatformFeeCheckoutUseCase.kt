@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetPaymentFeeCheckoutUseCase @Inject constructor(
+class GetPlatformFeeCheckoutUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : UseCase<PaymentFeeGqlResponse>() {
     private var params: Map<String, Any?>? = null
@@ -79,7 +79,7 @@ class GetPaymentFeeCheckoutUseCase @Inject constructor(
         private const val QUERY_GET_PLATFORM_FEE = "GetPlatformFeeCheckoutQuery"
 
         private const val QUERY = """
-            query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!) {
+            query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String, ${"$"}paymentAmount: Float!) {
                 getPaymentFeeCheckout(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount) {
                     success
                     errors {
