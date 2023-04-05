@@ -29,10 +29,7 @@ class GetPromoDataTest : BaseCartTest() {
             )
         )
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -53,10 +50,7 @@ class GetPromoDataTest : BaseCartTest() {
             )
         )
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
