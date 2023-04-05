@@ -19,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ enum class FeedCampaignRibbonType {
     ASGC_FLASH_SALE_UPCOMING,
     ASGC_FLASH_SALE_ONGOING,
     ASGC_SPECIAL_RELEASE_ONGOING,
-    ASGC_SPECIAL_RELEASE_UPCOMING,
+    ASGC_SPECIAL_RELEASE_UPCOMING
 }
 
 class FeedCampaignRibbonView(
@@ -43,11 +44,11 @@ class FeedCampaignRibbonView(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
-    var product: FeedCardProductModel? = null
-    var mCampaign: FeedCardCampaignModel? = null
-    var mCta: FeedCardCtaModel? = null
-    var mHasVoucher: Boolean = false
+    private var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
+    private var mProduct: FeedCardProductModel? = null
+    private var mCampaign: FeedCardCampaignModel? = null
+    private var mCta: FeedCardCtaModel? = null
+    private var mHasVoucher: Boolean = false
 
     fun bindData(
         modelType: String,
@@ -55,10 +56,11 @@ class FeedCampaignRibbonView(
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
         hasVoucher: Boolean,
-        isTypeHighlight: Boolean
+        isTypeHighlight: Boolean,
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
+            mProduct = product
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
@@ -215,7 +217,6 @@ class FeedCampaignRibbonView(
 
     private fun buildRibbonBasedOnType() {
         with(binding) {
-
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL,
                 FeedCampaignRibbonType.ASGC_DISCOUNT -> {
@@ -226,34 +227,48 @@ class FeedCampaignRibbonView(
                     }
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
+                    icFeedCampaignRibbonIcon.setOnClickListener { }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING,
                 FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
-                    tyFeedCampaignRibbonSubtitle.text = product?.stockWording
+                    tyFeedCampaignRibbonSubtitle.text = mProduct?.stockWording
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
 
                     val value = getProgressValue()
                     pbFeedCampaignRibbon.setValue(value, true)
 
                     setupTimer(mCampaign?.endTime ?: "") {}
+                    icFeedCampaignRibbonIcon.setOnClickListener { }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING,
                 FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                     setupTimer(mCampaign?.startTime ?: "") {}
-                    icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
+
+                    if (mCampaign?.isReminderActive == true) {
+                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
+                    } else {
+                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
+                    }
+
+                    icFeedCampaignRibbonIcon.setOnClickListener {
+                        listener.onReminderClicked(
+                            mCampaign?.id.toLongOrZero(),
+                            !(mCampaign?.isReminderActive ?: false)
+                        )
+                    }
                 }
             }
         }
     }
 
-    private fun getProgressValue(): Int = if (product == null) {
+    private fun getProgressValue(): Int = if (mProduct == null) {
         SEVENTY_FIVE_PERCENT
-    } else if (product!!.stockSoldPercentage > 1) {
-        product!!.stockSoldPercentage.toIntSafely()
+    } else if (mProduct!!.stockSoldPercentage > 1) {
+        mProduct!!.stockSoldPercentage.toIntSafely()
     } else {
-        (product!!.stockSoldPercentage * 100).toIntSafely()
+        (mProduct!!.stockSoldPercentage * 100).toIntSafely()
     }
 
     private fun resetAnimationBasedOnType() {
@@ -300,13 +315,6 @@ class FeedCampaignRibbonView(
         scope.launch {
             delay(delayDurationInMilis)
             block()
-        }
-    }
-
-    private fun setupReminderButtonAction() {
-        binding.icFeedCampaignRibbonIcon.setOnClickListener {
-//            listener.setReminder()
-//            listener.removeReminder()
         }
     }
 

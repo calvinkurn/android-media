@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
@@ -36,7 +37,7 @@ class FeedPostVideoViewHolder(
 
     private var feedVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
-    private val videoPlayer = listener.getVideoPlayer()
+    private var videoPlayer: FeedExoPlayer? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
@@ -46,7 +47,6 @@ class FeedPostVideoViewHolder(
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
-
     override fun bind(element: FeedCardVideoContentModel?) {
         element?.let { data ->
             with(binding) {
@@ -56,6 +56,7 @@ class FeedPostVideoViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
+                bindComments(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -92,11 +93,15 @@ class FeedPostVideoViewHolder(
                 bindVideoPlayer(element)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                videoPlayer.stop()
+                videoPlayer?.stop()
                 campaignView.resetView()
                 hideClearView()
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        videoPlayer?.destroy()
     }
 
     private fun renderLikeView(
@@ -178,20 +183,32 @@ class FeedPostVideoViewHolder(
         )
     }
 
+    private fun bindComments(model: FeedCardVideoContentModel) {
+        if (model.isTypeProductHighlight) {
+            binding.commentButton.hide()
+        } else {
+            binding.commentButton.show()
+        }
+    }
+
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
         feedVideoJob?.cancel()
         with(binding) {
+            if (videoPlayer == null) {
+                videoPlayer = FeedExoPlayer(root.context)
+            }
+
             feedVideoJob = scope.launch {
-                playerFeedVideo.player = videoPlayer.getExoPlayer()
-                playerControl.player = videoPlayer.getExoPlayer()
+                playerFeedVideo.player = videoPlayer?.getExoPlayer()
+                playerControl.player = videoPlayer?.getExoPlayer()
                 playerFeedVideo.videoSurfaceView?.setOnClickListener {
-                    videoPlayer.getExoPlayer().playWhenReady =
-                        !videoPlayer.getExoPlayer().playWhenReady
+                    videoPlayer?.getExoPlayer()?.playWhenReady =
+                        videoPlayer?.getExoPlayer()?.playWhenReady != true
                 }
                 element.media[0].let {
-                    videoPlayer.start(it.mediaUrl, false)
+                    videoPlayer?.start(it.mediaUrl, false)
                 }
-                videoPlayer.setVideoStateListener(object : VideoStateListener {
+                videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showLoading()
                     }

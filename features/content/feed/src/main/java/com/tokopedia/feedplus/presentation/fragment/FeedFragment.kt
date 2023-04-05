@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
-import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -51,6 +50,8 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -83,14 +84,13 @@ class FeedFragment :
     ShareBottomsheetListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentFeedImmersiveBinding
+        get() = _binding!!
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
-
-    private var videoPlayer: FeedExoPlayer? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -148,10 +148,6 @@ class FeedFragment :
             postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
         )
 
-        context?.let {
-            videoPlayer = FeedExoPlayer(it)
-        }
-
         initView()
         observePostData()
         observeAddToCart()
@@ -165,7 +161,6 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
-        videoPlayer?.destroy()
         super.onDestroyView()
     }
 
@@ -270,15 +265,7 @@ class FeedFragment :
     override fun reload() {
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
-        adapter?.showLoading()
-    }
-
-    override fun getVideoPlayer(): FeedExoPlayer {
-        if (videoPlayer == null) {
-            videoPlayer = FeedExoPlayer(requireContext())
-        }
-
-        return videoPlayer!!
+        showLoading()
     }
 
     override fun onProductTagButtonClicked(
@@ -423,12 +410,8 @@ class FeedFragment :
         dissmisByGreyArea = false
     }
 
-    override fun setReminder() {
-//        TODO("Not yet implemented")
-    }
-
-    override fun removeReminder() {
-//        TODO("Not yet implemented")
+    override fun onReminderClicked(campaignId: Long, setReminder: Boolean) {
+        feedPostViewModel.setUnsetReminder(campaignId, setReminder)
     }
 
     override fun onTimerFinishUpcoming() {
@@ -492,7 +475,7 @@ class FeedFragment :
                 FeedAdapterTypeFactory(this, binding.rvFeedPost)
             )
             if (adapter!!.itemCount == 0) {
-                adapter?.showLoading()
+                showLoading()
             }
 
             it.rvFeedPost.adapter = adapter
@@ -505,16 +488,14 @@ class FeedFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    view?.post {
-                        if (position > ZERO) {
-                            adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
-                        }
-                        if (position < (adapter?.itemCount ?: 0)) {
-                            adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
-                        }
-
-                        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                    if (position > ZERO) {
+                        adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
                     }
+                    if (position < (adapter?.itemCount ?: 0)) {
+                        adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                    }
+
+                    adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
                 }
             })
         }
@@ -525,7 +506,7 @@ class FeedFragment :
             binding.swipeRefreshFeedLayout.isRefreshing = false
             when (it) {
                 is Success -> {
-                    adapter?.hideLoading()
+                    hideLoading()
                     if (it.data.items.isEmpty()) {
                         adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
@@ -534,7 +515,7 @@ class FeedFragment :
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
                 is Fail -> {
-                    adapter?.hideLoading()
+                    hideLoading()
                     adapter?.showErrorNetwork()
                 }
             }
@@ -746,6 +727,24 @@ class FeedFragment :
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false) {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        } else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+        }
+    }
+
+    private fun showLoading() {
+        binding.feedLoading.show()
+        binding.swipeRefreshFeedLayout.hide()
+    }
+
+    private fun hideLoading() {
+        binding.feedLoading.hide()
+        binding.swipeRefreshFeedLayout.show()
+    }
+
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
@@ -765,14 +764,6 @@ class FeedFragment :
                 putParcelable(ARGUMENT_DATA, data)
                 putAll(extras)
             }
-        }
-    }
-
-    private fun showToast(message: String, type: Int, actionText: String? = null) {
-        if (actionText?.isEmpty() == false) {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
-        } else {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
         }
     }
 }

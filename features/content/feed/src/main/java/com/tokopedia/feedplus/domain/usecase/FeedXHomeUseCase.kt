@@ -20,8 +20,7 @@ class FeedXHomeUseCase @Inject constructor(
 
     override suspend fun execute(params: Map<String, Any>): FeedModel {
         val response =
-            graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.
-            Response>(
+            graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.Response>(
                 graphqlQuery(),
                 params
             )
@@ -362,7 +361,7 @@ class FeedXHomeUseCase @Inject constructor(
               shopName
               mods
             }
-        """.trimIndent()
+    """.trimIndent()
 
     fun createParams(
         source: String,
@@ -387,7 +386,7 @@ class FeedXHomeUseCase @Inject constructor(
             PARAMS_SOURCE to SOURCE_DETAIL,
             PARAMS_SOURCE_ID to postId,
             PARAMS_CURSOR to "",
-            PARAMS_LIMIT to LIMIT_DETAIL,
+            PARAMS_LIMIT to LIMIT_DETAIL
         )
 
         return mapOf(PARAMS_REQUEST to params)

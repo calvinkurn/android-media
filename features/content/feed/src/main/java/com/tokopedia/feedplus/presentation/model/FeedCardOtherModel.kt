@@ -76,7 +76,7 @@ data class FeedCardCampaignModel(
     val startTime: String = "",
     val endTime: String = "",
     val restrictions: List<FeedCardCampaignRestrictionModel> = emptyList(),
-    var isReminderActive: Boolean = false
+    val isReminderActive: Boolean = false
 ) {
 
     val isExclusiveForMember: Boolean
