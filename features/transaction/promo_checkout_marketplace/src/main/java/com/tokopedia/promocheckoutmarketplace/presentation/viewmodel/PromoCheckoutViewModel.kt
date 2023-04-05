@@ -875,7 +875,7 @@ class PromoCheckoutViewModel @Inject constructor(
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
                 val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (!it.codes.contains(boData.code)) {
@@ -910,7 +910,7 @@ class PromoCheckoutViewModel @Inject constructor(
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {

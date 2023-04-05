@@ -23,15 +23,16 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                ShipmentCartItemModel().apply {
+                ShipmentCartItemModel(cartString = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
                         add(
-                            CartItemModel().apply {
-                                quantity = 1
-                                productId = 1
-                                noteToSeller = "note"
+                            CartItemModel(
+                                cartString = "",
+                                quantity = 1,
+                                productId = 1,
+                                noteToSeller = "note",
                                 cartId = 123
-                            }
+                            )
                         )
                     }
                 }
@@ -135,15 +136,16 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                ShipmentCartItemModel().apply {
+                ShipmentCartItemModel(cartString = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
                         add(
-                            CartItemModel().apply {
-                                quantity = 1
-                                productId = 1
-                                noteToSeller = "note"
+                            CartItemModel(
+                                cartString = "",
+                                quantity = 1,
+                                productId = 1,
+                                noteToSeller = "note",
                                 cartId = 123
-                            }
+                            )
                         )
                     }
                 }

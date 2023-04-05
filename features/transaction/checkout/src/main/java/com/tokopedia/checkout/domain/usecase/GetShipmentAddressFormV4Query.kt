@@ -181,6 +181,169 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     booking_fee
                     is_leasing_product
                   }
+                  #group_shop_v2_saf {
+                  #  cart_string_order
+                  #  shop {
+                  #    shop_id
+                  #    shop_name
+                  #    postal_code
+                  #    latitude
+                  #    longitude
+                  #    district_id
+                  #    shop_alert_message
+                  #    is_tokonow
+                  #    is_gold
+                  #    is_official
+                  #    shop_ticker
+                  #    shop_ticker_title
+                  #    shop_type_info {
+                  #      shop_tier
+                  #      shop_grade
+                  #      badge
+                  #      badge_svg
+                  #      title
+                  #    }
+                  #    enabler_data {
+                  #      label_name
+                  #      show_label
+                  #    }
+                  #  }
+                  #  cart_details {
+                  #    origin_warehouse_ids
+                  #    errors
+                  #    bundle_detail {
+                  #      bundle_group_id
+                  #      bundle_id
+                  #      bundle_name
+                  #      bundle_original_price
+                  #      bundle_price
+                  #      bundle_qty
+                  #      bundle_type                     
+                  #      slash_price_label
+                  #      bundle_icon_url
+                  #    }
+                  #    products {
+                  #      add_ons {
+                  #        status
+                  #        add_on_data {
+                  #          add_on_id
+                  #          add_on_qty
+                  #          add_on_price
+                  #          add_on_metadata {
+                  #            add_on_note {
+                  #              is_custom_note
+                  #              to
+                  #              from
+                  #              notes
+                  #            }
+                  #          }
+                  #        }
+                  #        add_on_button {
+                  #          title
+                  #          description
+                  #          left_icon_url
+                  #          right_icon_url
+                  #          action
+                  #        }
+                  #        add_on_bottomsheet {
+                  #          header_title
+                  #          description
+                  #          products {
+                  #           product_name
+                  #           product_image_url
+                  #          }
+                  #          ticker {
+                  #           text
+                  #          }
+                  #        }
+                  #      }
+                  #      errors
+                  #      cart_id
+                  #      product_id
+                  #      product_name
+                  #      product_price
+                  #      product_original_price
+                  #      product_wholesale_price
+                  #      product_weight_fmt
+                  #      product_weight
+                  #      product_weight_actual
+                  #      product_is_free_returns
+                  #      product_is_preorder
+                  #      product_cashback
+                  #      product_price_currency
+                  #      product_image_src_200_square
+                  #      product_notes
+                  #      product_quantity
+                  #      product_menu_id
+                  #      product_finsurance
+                  #      product_fcancel_partial
+                  #      product_cat_id
+                  #      product_catalog_id
+                  #      product_category
+                  #      purchase_protection_plan_data {
+                  #        protection_available
+                  #        protection_type_id
+                  #        protection_price_per_product
+                  #        protection_price
+                  #        protection_title
+                  #        protection_subtitle
+                  #        protection_link_text
+                  #        protection_link_url
+                  #        protection_opt_in
+                  #        protection_checkbox_disabled
+                  #      }
+                  #      product_variants {
+                  #        parent_id
+                  #      }
+                  #      product_tracker_data {
+                  #        attribution
+                  #        tracker_list_name
+                  #      }
+                  #      product_preorder {
+                  #        duration_text
+                  #        duration_day
+                  #      }
+                  #      trade_in_info {
+                  #        is_valid_trade_in
+                  #        new_device_price
+                  #        new_device_price_fmt
+                  #        old_device_price
+                  #        old_device_price_fmt
+                  #        drop_off_enable
+                  #        device_model
+                  #        diagnostic_id
+                  #      }
+                  #      free_shipping {
+                  #        eligible
+                  #        badge_url
+                  #      }
+                  #      free_shipping_extra {
+                  #        eligible
+                  #        badge_url
+                  #      }
+                  #      free_shipping_general {
+                  #        bo_name
+                  #        bo_type
+                  #        badge_url
+                  #      }
+                  #      product_ticker {
+                  #        show_ticker
+                  #        message
+                  #      }
+                  #      variant_description_detail {
+                  #        variant_description
+                  #      }
+                  #      product_alert_message
+                  #      product_information
+                  #      campaign_id
+                  #      ethical_drug {
+                  #        need_prescription
+                  #        icon_url
+                  #        text
+                  #      }
+                  #    }
+                  #  }
+                  #}
                   shop {
                     shop_id
                     shop_name
@@ -226,7 +389,6 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     telp_no
                   }
                   cart_details {
-                    # origin_warehouse_ids
                     errors
                     bundle_detail {
                       bundle_group_id

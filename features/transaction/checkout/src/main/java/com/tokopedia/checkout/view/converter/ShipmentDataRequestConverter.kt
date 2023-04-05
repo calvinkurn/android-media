@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.model.request.checkout.BundleInfo
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutGiftingAddOn
 import com.tokopedia.checkout.data.model.request.checkout.Data
 import com.tokopedia.checkout.data.model.request.checkout.Dropship
+import com.tokopedia.checkout.data.model.request.checkout.GroupOrder
 import com.tokopedia.checkout.data.model.request.checkout.OrderFeature
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata
 import com.tokopedia.checkout.data.model.request.checkout.Product
@@ -38,8 +39,8 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         val addressId = getSelectedAddressId(recipientAddress)
         val data = Data()
         data.addressId = addressId.toLongOrZero()
-        data.shopOrders = shipmentCartItemModels.mapNotNull { shipmentCartItemModel ->
-            var shopOrder: ShopOrder? = null
+        data.groupOrders = shipmentCartItemModels.mapNotNull { shipmentCartItemModel ->
+            var groupOrder: GroupOrder? = null
             val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
             if (shipmentDetailData != null && (
                 shipmentDetailData.selectedCourier != null ||
@@ -86,39 +87,46 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                         promoRequest.type = Promo.TYPE_LOGISTIC
                         promoRequests.add(promoRequest)
                     }
-                    shopOrder = ShopOrder(
-                        cartstring = shipmentCartItemModel.cartString,
-                        shopId = shipmentCartItemModel.shopId,
-                        warehouseId = shipmentCartItemModel.fulfillmentId,
-                        isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0,
-                        orderFeature = OrderFeature(
-                            isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
-                        ),
+                    val shopOrders = shipmentCartItemModel.cartItemModelsGroupByOrder.map {
+                        ShopOrder(
+                            bundle = mapBundle(it.value),
+                            cartStringOrder = it.key,
+                            isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0,
+                            orderFeature = OrderFeature(
+                                isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
+                            ),
+                            promos = promoRequests,
+                            shopId = shipmentCartItemModel.shopId,
+                            warehouseId = shipmentCartItemModel.fulfillmentId,
+                            isTokoNow = shipmentCartItemModel.isTokoNow
+                        )
+                    }
+                    groupOrder = GroupOrder(
+                        groupType = shipmentCartItemModel.groupType,
+                        cartStringGroup = shipmentCartItemModel.cartString,
                         shippingInfo = shippingInfoCheckoutRequest,
                         dropship = Dropship(
                             isDropship = if (shipmentDetailData.useDropshipper == true) 1 else 0,
                             name = shipmentDetailData.dropshipperName ?: "",
                             telpNo = shipmentDetailData.dropshipperPhone ?: ""
                         ),
-                        promos = promoRequests,
-                        bundle = mapBundle(shipmentCartItemModel),
-                        checkoutGiftingOrderLevel = mapGiftingAddOn(shipmentCartItemModel.addOnsOrderLevelModel ?: AddOnsDataModel()),
+                        checkoutGiftingOrderLevel = mapGiftingAddOn(shipmentCartItemModel.addOnsOrderLevelModel),
                         orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
-                        isTokoNow = shipmentCartItemModel.isTokoNow
+                        shopOrders = shopOrders
                     )
                 }
             }
-            shopOrder
+            groupOrder
         }
         return listOf(data)
     }
 
-    private fun mapBundle(shipmentCartItemModel: ShipmentCartItemModel): List<Bundle> {
+    private fun mapBundle(cartItemModels: List<CartItemModel>): List<Bundle> {
         val bundleList = mutableListOf<Bundle>()
 
         val bundleIdProductsMap = mutableMapOf<String, MutableList<Product>>()
         val bundleIdGroupIdMap = mutableMapOf<String, String>()
-        shipmentCartItemModel.cartItemModels.forEach {
+        cartItemModels.forEach {
             if (!bundleIdProductsMap.containsKey(it.bundleId)) {
                 val product = mapProduct(it)
                 bundleIdProductsMap[it.bundleId] = mutableListOf(product)

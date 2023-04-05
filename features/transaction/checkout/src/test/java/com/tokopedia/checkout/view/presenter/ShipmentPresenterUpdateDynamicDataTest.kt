@@ -4,6 +4,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -147,12 +148,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel().apply {
+            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 )
             }
         )
@@ -169,13 +170,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
@@ -198,12 +199,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel().apply {
+            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 )
             }
         )
@@ -220,13 +221,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
@@ -256,12 +257,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel().apply {
+            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 )
             }
         )
@@ -278,13 +279,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
@@ -351,11 +352,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
+                cartString = "239594-0-301643",
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 ),
                 addOnWordingModel = AddOnWordingModel(
                     packagingAndGreetingCard = "packaging and greeting",
@@ -371,13 +373,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
@@ -439,7 +441,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         )
         listProduct.add(product)
         val groupShop = GroupShop(
-            products = listProduct
+            groupShopData = listOf(
+                GroupShopV2(
+                    products = listProduct
+                )
+            )
         )
         listGroupShop.add(groupShop)
         val groupAddress = GroupAddress(
@@ -463,11 +469,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
+                cartString = "239594-0-301643",
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 ),
                 addOnWordingModel = AddOnWordingModel(
                     packagingAndGreetingCard = "packaging and greeting",
@@ -483,13 +490,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then
@@ -515,12 +522,12 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel().apply {
+            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel().apply {
-                        cartId = 88
+                    CartItemModel(
+                        cartId = 88,
                         cartString = "239594-0-301643"
-                    }
+                    )
                 )
             }
         )
@@ -537,13 +544,13 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
+//            false,
+//            false,
+//            null,
+//            "",
+//            "",
+//            false
         )
 
         // Then

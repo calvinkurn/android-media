@@ -57,10 +57,12 @@ data class CartShipmentAddressFormData(
             val addresses = groupAddress
             for (address in addresses) {
                 for (groupShop in address.groupShop) {
-                    for (product in groupShop.products) {
-                        product.purchaseProtectionPlanData.let { ppData ->
-                            if (ppData.isProtectionAvailable) {
-                                pppList.add("${ppData.protectionTitle} - ${ppData.protectionPricePerProduct} - ${product.productCatId}")
+                    for (groupShopV2 in groupShop.groupShopData) {
+                        for (product in groupShopV2.products) {
+                            product.purchaseProtectionPlanData.let { ppData ->
+                                if (ppData.isProtectionAvailable) {
+                                    pppList.add("${ppData.protectionTitle} - ${ppData.protectionPricePerProduct} - ${product.productCatId}")
+                                }
                             }
                         }
                     }

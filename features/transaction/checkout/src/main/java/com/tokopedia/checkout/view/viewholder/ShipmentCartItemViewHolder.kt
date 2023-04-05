@@ -27,6 +27,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import java.util.*
 
 class ShipmentCartItemViewHolder(
     itemView: View,
@@ -47,6 +48,7 @@ class ShipmentCartItemViewHolder(
     fun bind(
         cartItem: CartItemModel
     ) {
+        renderShopInfo(cartItem)
         renderError(cartItem)
         renderItem(cartItem)
         renderProductPrice(cartItem)
@@ -57,6 +59,27 @@ class ShipmentCartItemViewHolder(
         val isFirstItem = cartItem.cartItemPosition == 0
         renderBundlingInfo(cartItem, isFirstItem)
         renderAddOnProductLevel(cartItem, cartItem.addOnOrderLevelModel)
+    }
+
+    private fun renderShopInfo(cartItem: CartItemModel) {
+        if (cartItem.shouldShowShopInfo) {
+            binding.tvShopName.text = cartItem.shopName
+            if (cartItem.shopTypeInfoData.shopBadge.isNotEmpty()) {
+                binding.imgShopBadge.setImageUrl(cartItem.shopTypeInfoData.shopBadge)
+                binding.imgShopBadge.visible()
+                binding.imgShopBadge.contentDescription = itemView.context.getString(
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                    cartItem.shopTypeInfoData.title.lowercase(
+                        Locale.getDefault()
+                    )
+                )
+            } else {
+                binding.imgShopBadge.gone()
+            }
+            binding.productShopInfo.visible()
+        } else {
+            binding.productShopInfo.gone()
+        }
     }
 
     private fun renderError(cartItem: CartItemModel) {

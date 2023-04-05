@@ -65,4 +65,10 @@ internal object RatesParamHelper {
         }
         return ""
     }
+
+    fun generateGroupProducts(shipping: ShippingParam): String {
+        val gson = Gson()
+        val json = gson.toJson(shipping.groupProducts)
+        return json.replace("\n", "")
+    }
 }

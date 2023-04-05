@@ -25,8 +25,10 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.GroupProduct
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -308,11 +310,13 @@ interface ShipmentContract {
             isTradeInDropOff: Boolean,
             recipientAddressModel: RecipientAddressModel?,
             isForceReload: Boolean,
-            skipMvc: Boolean
+            skipMvc: Boolean,
+            cartStringGroup: String,
+            groupProducts: List<GroupProduct>
         )
 
         var recipientAddressModel: RecipientAddressModel
-        var shipmentCartItemModelList: List<ShipmentCartItemModel>
+        var shipmentCartItemModelList: List<ShipmentCartItem>
 
         val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?>
         val shipmentTickerErrorModel: ShipmentTickerErrorModel
@@ -396,7 +400,7 @@ interface ShipmentContract {
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
         fun doUnapplyBo(uniqueId: String, promoCode: String)
-        fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): List<Product>
+        fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product>
         fun processBoPromoCourierRecommendation(
             itemPosition: Int,
             voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,

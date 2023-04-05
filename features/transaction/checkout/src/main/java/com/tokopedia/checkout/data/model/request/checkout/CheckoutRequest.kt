@@ -53,7 +53,6 @@ data class Carts(
     var featureType: Int = 0,
     @SerializedName("cross_sell")
     var crossSell: CrossSellRequest? = null,
-
     @SerializedName("data")
     var data: List<Data> = emptyList()
 ) {
@@ -61,18 +60,20 @@ data class Carts(
         get() {
             val pppLabelList = arrayListOf<String>()
             data.forEach { data ->
-                data.shopOrders.forEach { shopOrders ->
-                    shopOrders.bundle.forEach { bundle ->
-                        bundle.productData.forEach { product ->
-                            if (product.isProtectionAvailable) {
-                                val eventLabel = if (product.isPpp) {
-                                    ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
-                                } else {
-                                    ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP
+                data.groupOrders.forEach { groupOrder ->
+                    groupOrder.shopOrders.forEach { shopOrders ->
+                        shopOrders.bundle.forEach { bundle ->
+                            bundle.productData.forEach { product ->
+                                if (product.isProtectionAvailable) {
+                                    val eventLabel = if (product.isPpp) {
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
+                                    } else {
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP
+                                    }
+                                    pppLabelList.add(
+                                        "${product.protectionTitle} - $eventLabel - ${product.productCategoryId} - ${product.protectionPricePerProduct} - ${product.cartId}"
+                                    )
                                 }
-                                pppLabelList.add(
-                                    "${product.protectionTitle} - $eventLabel - ${product.productCategoryId} - ${product.protectionPricePerProduct} - ${product.cartId}"
-                                )
                             }
                         }
                     }
@@ -86,35 +87,44 @@ data class Data(
     @SuppressLint("Invalid Data Type")
     @SerializedName("address_id")
     var addressId: Long = 0,
+    @SerializedName("group_orders")
+    var groupOrders: List<GroupOrder> = emptyList()
+)
+
+data class GroupOrder(
+    @SerializedName("group_type")
+    var groupType: Int = 0,
+    @SerializedName("cart_string_group")
+    var cartStringGroup: String = "",
     @SerializedName("shop_orders")
-    var shopOrders: List<ShopOrder> = emptyList()
+    var shopOrders: List<ShopOrder> = emptyList(),
+    @SerializedName("shipping_info")
+    var shippingInfo: ShippingInfo = ShippingInfo(),
+    @SerializedName("dropship_data")
+    var dropship: Dropship = Dropship(),
+    @SerializedName("group_order_metadata")
+    var orderMetadata: List<OrderMetadata> = emptyList(),
+    @SerializedName("addon_items")
+    var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
 )
 
 data class ShopOrder(
     @SerializedName("bundle")
     var bundle: List<Bundle> = emptyList(),
-    @SerializedName("cartstring")
-    var cartstring: String = "",
-    @SerializedName("dropship_data")
-    var dropship: Dropship = Dropship(),
+    @SerializedName("cart_string_order")
+    var cartStringOrder: String = "",
     @SerializedName("is_preorder")
     var isPreorder: Int = 0,
     @SerializedName("order_feature")
     var orderFeature: OrderFeature = OrderFeature(),
     @SerializedName("promos")
     var promos: List<Promo> = emptyList(),
-    @SerializedName("shipping_info")
-    var shippingInfo: ShippingInfo = ShippingInfo(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("shop_id")
     var shopId: Long = 0,
     @SuppressLint("Invalid Data Type")
     @SerializedName("warehouse_id")
     var warehouseId: Long = 0,
-    @SerializedName("items")
-    var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
-    @SerializedName("order_metadata")
-    var orderMetadata: List<OrderMetadata> = emptyList(),
     @Transient
     var isTokoNow: Boolean = false
 )

@@ -86,12 +86,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
-        val shipmentCartItemModel2 = ShipmentCartItemModel().apply {
-            this.cartString = cartString + "2"
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
+        val shipmentCartItemModel2 = ShipmentCartItemModel(
+            cartString = cartString + "2"
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
 
         // When
@@ -138,9 +138,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
@@ -191,9 +191,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When

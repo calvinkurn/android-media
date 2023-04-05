@@ -10,5 +10,5 @@ data class CartDetail(
     @SerializedName("products")
     val products: List<Product> = emptyList(),
     @SerializedName("origin_warehouse_ids")
-    val originWarehouseIds: List<String> = emptyList()
+    val originWarehouseIds: List<Long> = emptyList()
 )

@@ -6,6 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.DividerModel
+import com.tokopedia.logisticcart.shipping.model.GroupProduct
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
@@ -69,7 +70,9 @@ class ShippingDurationPresenter @Inject constructor(
         cartData: String,
         isOcc: Boolean,
         isDisableCourierPromo: Boolean,
-        warehouseId: String
+        warehouseId: String,
+        cartStringGroup: String,
+        groupProducts: List<GroupProduct>
     ) {
         view?.let {
             it.showLoading()
@@ -78,7 +81,9 @@ class ShippingDurationPresenter @Inject constructor(
                 products,
                 cartString,
                 isTradeInDropOff,
-                recipientAddressModel
+                recipientAddressModel,
+                cartStringGroup,
+                groupProducts
             )
             var selectedSpId = 0
             shipmentDetailData.selectedCourier?.let { selectedCourier ->
@@ -207,7 +212,9 @@ class ShippingDurationPresenter @Inject constructor(
         products: List<Product>,
         cartString: String,
         isTradeInDropOff: Boolean,
-        recipientAddressModel: RecipientAddressModel?
+        recipientAddressModel: RecipientAddressModel?,
+        cartStringGroup: String,
+        groupProducts: List<GroupProduct>
     ): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = shipmentDetailData.shipmentCartData!!.originDistrictId
@@ -250,6 +257,8 @@ class ShippingDurationPresenter @Inject constructor(
             shippingParam.destinationLongitude =
                 shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
+        shippingParam.cartStringGroup = cartStringGroup
+        shippingParam.groupProducts = groupProducts
         return shippingParam
     }
 

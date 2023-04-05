@@ -53,6 +53,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -91,7 +92,7 @@ class ShipmentAdapter @Inject constructor(
         const val SECOND_HEADER_POSITION = 1
     }
 
-    private val shipmentDataList: ArrayList<Any> = ArrayList()
+    val shipmentDataList: ArrayList<Any> = ArrayList()
     private var tickerAnnouncementHolderData: TickerAnnouncementHolderData? = null
     private var uploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
     var shipmentCartItemModelList: List<ShipmentCartItemModel>? = null
@@ -459,10 +460,10 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItemModel>) {
+    fun addCartItemDataList1(shipmentCartItems: List<ShipmentCartItemModel>) {
         this.shipmentCartItemModelList = shipmentCartItems
         shipmentCartItems.forEach { shipmentCartItem ->
-            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
+//            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
                 shipmentCartItem.cartItemModels.forEach {
                     shipmentDataList.add(it)
@@ -483,6 +484,31 @@ class ShipmentAdapter @Inject constructor(
         checkDataForCheckout()
     }
 
+    fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItem>) {
+        this.shipmentCartItemModelList = shipmentCartItems.filterIsInstance(ShipmentCartItemModel::class.java)
+//        shipmentCartItems.forEach { shipmentCartItem ->
+//            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
+//            if (shipmentCartItem.isStateAllItemViewExpanded) {
+//                shipmentCartItem.cartItemModels.forEach {
+//                    shipmentDataList.add(it)
+//                }
+//            } else {
+//                shipmentDataList.add(shipmentCartItem.cartItemModels.first())
+//            }
+//            if (shipmentCartItem.cartItemModels.size > 1) {
+//                shipmentDataList.add(
+//                    CartItemExpandModel(
+//                        cartString = shipmentCartItem.cartString,
+//                        cartSize = shipmentCartItem.cartItemModels.size
+//                    )
+//                )
+//            }
+//            shipmentDataList.add(shipmentCartItem)
+//        }
+        shipmentDataList.addAll(shipmentCartItems)
+        checkDataForCheckout()
+    }
+
     fun addLastApplyUiDataModel(lastApplyUiModel: LastApplyUiModel) {
         shipmentDataList.add(lastApplyUiModel)
     }
@@ -495,11 +521,8 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun addShipmentCostData(shipmentCostModel: ShipmentCostModel) {
-//        if (shipmentCostModel != null) {
         this.shipmentCostModel = shipmentCostModel
         shipmentDataList.add(shipmentCostModel)
-//            updateShipmentCostModel()
-//        }
     }
 
     fun addEgoldAttributeData(egoldAttributeModel: EgoldAttributeModel?) {
@@ -517,9 +540,7 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun addShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel) {
-//        if (shipmentButtonPaymentModel != null) {
         shipmentDataList.add(shipmentButtonPaymentModel)
-//        }
     }
 
     fun updateShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel): Boolean {
@@ -654,7 +675,6 @@ class ShipmentAdapter @Inject constructor(
         if (shipmentDonationModel != null) {
             shipmentDonationModel!!.isChecked = checked
             shipmentAdapterActionListener.updateShipmentCostModel()
-//            notifyItemChanged(shipmentCostPosition)
         }
     }
 
@@ -671,7 +691,6 @@ class ShipmentAdapter @Inject constructor(
                 if (shipmentCrossSellModel.crossSellModel.id == crossSellModel.id) {
                     shipmentCrossSellModel.isChecked = checked
                     shipmentAdapterActionListener.updateShipmentCostModel()
-//                        notifyItemChanged(shipmentCostPosition)
                     break
                 }
             }
@@ -682,7 +701,6 @@ class ShipmentAdapter @Inject constructor(
         if (egoldAttributeModel != null) {
             egoldAttributeModel!!.isChecked = checked
             shipmentAdapterActionListener.updateShipmentCostModel()
-//            notifyItemChanged(shipmentCostPosition)
         }
     }
 
@@ -838,7 +856,6 @@ class ShipmentAdapter @Inject constructor(
             }
         }
         if (index > 0) {
-//            notifyItemChanged(shipmentCostPosition)
             notifyItemChanged(index)
             checkHasSelectAllCourier(false, index, shipmentCartItemModel!!.cartString, false, false)
             if (shipmentCartItemModel.isEligibleNewShippingExperience) {
@@ -899,7 +916,6 @@ class ShipmentAdapter @Inject constructor(
             shipmentAdapterActionListener.updateShipmentCostModel()
             checkDataForCheckout()
         }
-//        notifyItemChanged(shipmentCostPosition)
         notifyItemChanged(position)
         val tmpPosition = if (isForceReload) position else -1
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience) {
@@ -1070,8 +1086,8 @@ class ShipmentAdapter @Inject constructor(
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is ShipmentCartItemModel) {
                 val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
-                if (shipmentCartItemModel.cartString == cartString && shipmentCartItemModel.addOnsOrderLevelModel != null) {
-                    if (shipmentCartItemModel.addOnsOrderLevelModel!!.addOnsButtonModel.title.isNotEmpty()) {
+                if (shipmentCartItemModel.cartString == cartString) {
+                    if (shipmentCartItemModel.addOnsOrderLevelModel.addOnsButtonModel.title.isNotEmpty()) {
                         return i
                     }
                 }
@@ -1125,10 +1141,8 @@ class ShipmentAdapter @Inject constructor(
                 addressShipmentData!!.longitude = longitude
             }
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
-                if (shipmentCartItemModel.shipmentCartData != null) {
-                    shipmentCartItemModel.shipmentCartData!!.destinationLatitude = latitude
-                    shipmentCartItemModel.shipmentCartData!!.destinationLongitude = longitude
-                }
+                shipmentCartItemModel.shipmentCartData.destinationLatitude = latitude
+                shipmentCartItemModel.shipmentCartData.destinationLongitude = longitude
             }
         }
     }
@@ -1153,6 +1167,23 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
+    fun getShipmentCartItemGroupByCartString(cartString: String): Pair<Int, List<ShipmentCartItem>> {
+        val cartGroupList = arrayListOf<ShipmentCartItem>()
+        var startingIndex = RecyclerView.NO_POSITION
+        for ((index, data) in shipmentDataList.withIndex()) {
+            if (data is ShipmentCartItemTopModel && data.cartString == cartString) {
+                startingIndex = index
+                cartGroupList.add(data)
+            } else if (data is ShipmentCartItemModel && data.cartString == cartString) {
+                cartGroupList.add(data)
+                break
+            } else if (data is ShipmentCartItem && data.cartString == cartString) {
+                cartGroupList.add(data)
+            }
+        }
+        return Pair(startingIndex, cartGroupList)
+    }
+
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
         return if (shipmentDataList.isNotEmpty() && index >= 0 && index < shipmentDataList.size) {
             if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
@@ -1167,16 +1198,29 @@ class ShipmentAdapter @Inject constructor(
 
     private fun getShipmentCartItemTopByCartString(cartString: String): Pair<Int, ShipmentCartItemTopModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemTopModel && data.shipmentCartItemModel.cartString == cartString
+            data is ShipmentCartItemTopModel && data.cartString == cartString
         }
         return Pair(index, shipmentDataList[index] as ShipmentCartItemTopModel)
     }
 
-    private fun updateShipmentCartItemTop(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, data) = getShipmentCartItemTopByCartString(shipmentCartItemModel.cartString)
-        val updatedData = data.copy(shipmentCartItemModel = shipmentCartItemModel)
-        shipmentDataList[position] = updatedData
-        notifyItemChanged(position)
+    private fun updateShipmentCartItemTop(
+        topIndex: Int,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        shipmentCartItemTopModel: ShipmentCartItemTopModel
+    ) {
+        val updatedData = shipmentCartItemTopModel.copy(
+            isError = shipmentCartItemModel.isError,
+            errorTitle = shipmentCartItemModel.errorTitle,
+            errorDescription = shipmentCartItemModel.errorDescription,
+            isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
+            unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage,
+            firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
+            isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
+            shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
+            shopTicker = shipmentCartItemModel.shopTicker
+        )
+        shipmentDataList[topIndex] = updatedData
+        notifyItemChanged(topIndex)
     }
 
     private fun getFirstCartItemByCartString(cartString: String): Pair<Int, CartItemModel> {
@@ -1186,32 +1230,37 @@ class ShipmentAdapter @Inject constructor(
         return Pair(index, shipmentDataList[index] as CartItemModel)
     }
 
-    private fun updateCartItems(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (firstItemPosition, _) = getFirstCartItemByCartString(shipmentCartItemModel.cartString)
-        val (expandPosition, expandData) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
-
-        if (expandPosition != RecyclerView.NO_POSITION && expandData != null) {
-            if (expandData.isExpanded) {
-                shipmentCartItemModel.cartItemModels.forEachIndexed { index, cartItemModel ->
-                    val position = firstItemPosition + index
-                    shipmentDataList[position] = cartItemModel
-                }
-                notifyItemRangeChanged(firstItemPosition, shipmentCartItemModel.cartItemModels.size)
-            } else {
-                shipmentDataList[firstItemPosition] = shipmentCartItemModel.cartItemModels.first()
-                notifyItemChanged(firstItemPosition)
+    private fun updateCartItems(
+        topIndex: Int,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        shipmentCartItems: List<ShipmentCartItem>
+    ) {
+        var changeCount = 0
+        for ((index, item) in shipmentCartItems.withIndex()) {
+            if (item is CartItemModel) {
+                shipmentDataList[topIndex + index] = shipmentCartItemModel.cartItemModels[index - 1]
+                changeCount += 1
             }
-        } else {
-            shipmentDataList[firstItemPosition] = shipmentCartItemModel.cartItemModels.first()
-            notifyItemChanged(firstItemPosition)
         }
-    }
-
-    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, CartItemModel> {
-        val index = shipmentDataList.indexOfFirst { data ->
-            data is CartItemModel && data.cartString == cartString && data.isError
-        }
-        return Pair(index, shipmentDataList[index] as CartItemModel)
+        notifyItemRangeChanged(topIndex + 1, changeCount)
+//        val (firstItemPosition, _) = getFirstCartItemByCartString(topProductIndex.cartString)
+//        val (expandPosition, expandData) = getCartItemExpandByCartString(topProductIndex.cartString)
+//
+//        if (expandPosition != RecyclerView.NO_POSITION && expandData != null) {
+//            if (expandData.isExpanded) {
+//                topProductIndex.cartItemModels.forEachIndexed { index, cartItemModel ->
+//                    val position = firstItemPosition + index
+//                    shipmentDataList[position] = cartItemModel
+//                }
+//                notifyItemRangeChanged(firstItemPosition, topProductIndex.cartItemModels.size)
+//            } else {
+//                shipmentDataList[firstItemPosition] = topProductIndex.cartItemModels.first()
+//                notifyItemChanged(firstItemPosition)
+//            }
+//        } else {
+//            shipmentDataList[firstItemPosition] = topProductIndex.cartItemModels.first()
+//            notifyItemChanged(firstItemPosition)
+//        }
     }
 
     private fun getCartItemExpandByCartString(cartString: String): Pair<Int, CartItemExpandModel?> {
@@ -1243,37 +1292,30 @@ class ShipmentAdapter @Inject constructor(
         return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun updateShipmenCartItem(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, data) = getShipmentCartItemByCartString(shipmentCartItemModel.cartString)
-        shipmentDataList[position] = data
+    private fun updateShipmenCartItem(
+        position: Int,
+        shipmentCartItemModel: ShipmentCartItemModel
+    ) {
+        shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
     }
 
     fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel) {
-        updateShipmentCartItemTop(shipmentCartItemModel)
-        updateCartItems(shipmentCartItemModel)
-        updateCartItemExpand(shipmentCartItemModel)
-        updateShipmenCartItem(shipmentCartItemModel)
+        // todo: should refactor to update each model separately
+        val (topIndex, shipmentCartItems) = getShipmentCartItemGroupByCartString(shipmentCartItemModel.cartString)
+        if (topIndex != RecyclerView.NO_POSITION) {
+            updateShipmentCartItemTop(topIndex, shipmentCartItemModel, shipmentCartItems.first() as ShipmentCartItemTopModel)
+            updateCartItems(topIndex, shipmentCartItemModel, shipmentCartItems)
+            updateShipmenCartItem(topIndex + shipmentCartItems.lastIndex, shipmentCartItemModel)
+        }
     }
 
     override fun onViewFreeShippingPlusBadge() {
         shipmentAdapterActionListener.onViewFreeShippingPlusBadge()
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String) {
-        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
-    }
-
-    override fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, data) = getCartItemExpandByCartString(shipmentCartItemModel.cartString)
-        if (data != null) {
-            onClickExpandGroupProduct(position, data)
-        }
-    }
-
-    override fun onErrorShouldScrollToProduct(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, _) = getFirstErrorCartItemByCartString(shipmentCartItemModel.cartString)
-        shipmentAdapterActionListener.scrollToPositionWithOffset(position)
+    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String, shipmentCartItemTopModel: ShipmentCartItemTopModel) {
+        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage, shipmentCartItemTopModel)
     }
 
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
@@ -1334,14 +1376,16 @@ class ShipmentAdapter @Inject constructor(
         cartItemExpandModel: CartItemExpandModel
     ) {
         if (position != RecyclerView.NO_POSITION) {
-            shipmentDataList[position] = cartItemExpandModel
-            notifyItemChanged(position)
+            val (topPosition, shipmentCartItems) = getShipmentCartItemGroupByCartString(cartItemExpandModel.cartString)
+            if (topPosition != RecyclerView.NO_POSITION) {
+                shipmentDataList[position] = cartItemExpandModel
+                notifyItemChanged(position)
 
-            val (_, shipmentCartItem) = getShipmentCartItemByCartString(cartItemExpandModel.cartString)
-            val (firstCartItemPosition, _) = getFirstCartItemByCartString(cartItemExpandModel.cartString)
-            val newCartItems = shipmentCartItem.cartItemModels.drop(1)
-            shipmentDataList.addAll(firstCartItemPosition + 1, newCartItems)
-            notifyItemRangeInserted(firstCartItemPosition + 1, newCartItems.size)
+                val shipmentCartItemModel = shipmentCartItems.last() as ShipmentCartItemModel
+                val newCartItems = shipmentCartItemModel.cartItemModels.drop(1)
+                shipmentDataList.addAll(topPosition + 2, newCartItems)
+                notifyItemRangeInserted(topPosition + 2, newCartItems.size)
+            }
         }
     }
 
@@ -1350,6 +1394,11 @@ class ShipmentAdapter @Inject constructor(
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
         shipmentDataList[position] = shipmentCartItemModel
+        notifyItemChanged(position)
+    }
+
+    fun updateItem(item: Any, position: Int) {
+        shipmentDataList[position] = item
         notifyItemChanged(position)
     }
 }
