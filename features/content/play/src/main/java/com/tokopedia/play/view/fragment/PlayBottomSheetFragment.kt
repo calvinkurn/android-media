@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -86,7 +85,6 @@ import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -406,7 +404,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         observeUiState()
         observeUiEvent()
-        observeAtcBottomSheet()
     }
 
     private fun closeProductSheet() {
@@ -965,21 +962,6 @@ class PlayBottomSheetFragment @Inject constructor(
             } else {
                 0
             }
-        }
-    }
-
-    private fun observeAtcBottomSheet() {
-        atcVariantViewModel.activityResult.observe(this) {
-            val cacheManager = SaveInstanceCacheManager(requireContext(), true)
-            val resultIntent = Intent().apply {
-                putExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID, cacheManager.id)
-            }
-            cacheManager.put(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, it)
-            /**
-             * dismissing bottom sheet parsing intent
-             */
-            //  activity?.setResult(Activity.RESULT_OK, resultIntent)
-            //  activity?.finish()
         }
     }
 }
