@@ -26,23 +26,39 @@ fun NestLabel(
     nestLabelType: NestLabelType
 ) {
     val backgroundColor = when (nestLabelType) {
-        NestLabelType.HIGHLIGHT_GREEN -> NestTheme.colors.GN._100
-        NestLabelType.HIGHLIGHT_ORANGE -> NestTheme.colors.YN._100
-        NestLabelType.HIGHLIGHT_GREY -> NestTheme.colors.NN._100
-        NestLabelType.HIGHLIGHT_RED -> NestTheme.colors.RN._100
-        NestLabelType.HIGHLIGHT_BLUE -> NestTheme.colors.BN._100
-        NestLabelType.HIGHLIGHT_TEAL -> NestTheme.colors.TN._100
-        NestLabelType.HIGHLIGHT_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN._100
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN._100
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN._100
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN._100
+        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> NestTheme.colors.BN._100
+        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> NestTheme.colors.TN._100
+
+        NestLabelType.HIGHLIGHT_DARK_GREEN -> NestTheme.colors.GN._100
+        NestLabelType.HIGHLIGHT_DARK_BLUE -> NestTheme.colors.BN._100
+        NestLabelType.HIGHLIGHT_DARK_ORANGE -> NestTheme.colors.YN._100
+        NestLabelType.HIGHLIGHT_DARK_RED -> NestTheme.colors.RN._100
+        NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._100
+        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
+
+        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
     }
 
     val textColor = when (nestLabelType) {
-        NestLabelType.HIGHLIGHT_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._500 else NestTheme.colors.GN._800
-        NestLabelType.HIGHLIGHT_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._500 else NestTheme.colors.YN._800
-        NestLabelType.HIGHLIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._600 else NestTheme.colors.NN._800
-        NestLabelType.HIGHLIGHT_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._500 else NestTheme.colors.RN._800
-        NestLabelType.HIGHLIGHT_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._500 else NestTheme.colors.BN._800
-        NestLabelType.HIGHLIGHT_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._500 else NestTheme.colors.TN._800
-        NestLabelType.HIGHLIGHT_IMAGE_LABEL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._0 else NestTheme.colors.NN._1000
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._800 else NestTheme.colors.GN._500
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._800 else NestTheme.colors.YN._500
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._500
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._800 else NestTheme.colors.RN._500
+        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._800 else NestTheme.colors.BN._500
+        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._800 else NestTheme.colors.TN._500
+
+        NestLabelType.HIGHLIGHT_DARK_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_RED -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+
+        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
     }
 
     Surface(
@@ -61,13 +77,21 @@ fun NestLabel(
 }
 
 enum class NestLabelType {
-    HIGHLIGHT_GREEN,
-    HIGHLIGHT_BLUE,
-    HIGHLIGHT_ORANGE,
-    HIGHLIGHT_RED,
-    HIGHLIGHT_TEAL,
-    HIGHLIGHT_GREY,
-    HIGHLIGHT_IMAGE_LABEL,
+    HIGHLIGHT_LIGHT_GREEN,
+    HIGHLIGHT_LIGHT_BLUE,
+    HIGHLIGHT_LIGHT_ORANGE,
+    HIGHLIGHT_LIGHT_RED,
+    HIGHLIGHT_LIGHT_TEAL,
+    HIGHLIGHT_LIGHT_GREY,
+
+    HIGHLIGHT_DARK_GREEN,
+    HIGHLIGHT_DARK_BLUE,
+    HIGHLIGHT_DARK_ORANGE,
+    HIGHLIGHT_DARK_RED,
+    HIGHLIGHT_DARK_TEAL,
+    HIGHLIGHT_DARK_GREY,
+
+    HIGHLIGHT_DARK_IMAGE_LABEL,
 }
 
 //region Preview
@@ -78,7 +102,7 @@ private fun NestLabelGreenPreview() {
     NestTheme {
         NestLabel(
             labelText = "Green",
-            nestLabelType = NestLabelType.HIGHLIGHT_GREEN
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
         )
     }
 }
@@ -89,7 +113,7 @@ private fun NestLabelOrangePreview() {
     NestTheme {
         NestLabel(
             labelText = "Orange",
-            nestLabelType = NestLabelType.HIGHLIGHT_ORANGE
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_ORANGE
         )
     }
 }
@@ -101,7 +125,7 @@ private fun NestLabelGreyPreview() {
     NestTheme {
         NestLabel(
             labelText = "Grey",
-            nestLabelType = NestLabelType.HIGHLIGHT_GREY
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY
         )
     }
 }
@@ -113,7 +137,7 @@ private fun NestLabelRedPreview() {
     NestTheme {
         NestLabel(
             labelText = "Red",
-            nestLabelType = NestLabelType.HIGHLIGHT_RED
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
         )
     }
 }
@@ -124,7 +148,7 @@ private fun NestLabelBluePreview() {
     NestTheme {
         NestLabel(
             labelText = "Blue",
-            nestLabelType = NestLabelType.HIGHLIGHT_BLUE
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_BLUE
         )
     }
 }
@@ -136,7 +160,7 @@ private fun NestLabelTealPreview() {
     NestTheme {
         NestLabel(
             labelText = "Teal",
-            nestLabelType = NestLabelType.HIGHLIGHT_TEAL
+            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL
         )
     }
 }
@@ -148,7 +172,7 @@ private fun NestLabelOnImagePreview() {
     NestTheme {
         NestLabel(
             labelText = "Label on Image",
-            nestLabelType = NestLabelType.HIGHLIGHT_IMAGE_LABEL
+            nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
         )
     }
 }
@@ -172,21 +196,21 @@ private fun NestLabelOnDevicesPreview() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Green", nestLabelType = NestLabelType.HIGHLIGHT_GREEN)
+                NestLabel(labelText = "Green", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN)
                 NestLabel(
                     labelText = "Orange",
-                    nestLabelType = NestLabelType.HIGHLIGHT_ORANGE
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_ORANGE
                 )
-                NestLabel(labelText = "Grey", nestLabelType = NestLabelType.HIGHLIGHT_GREY)
+                NestLabel(labelText = "Grey", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY)
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Red", nestLabelType = NestLabelType.HIGHLIGHT_RED)
-                NestLabel(labelText = "Blue", nestLabelType = NestLabelType.HIGHLIGHT_BLUE)
-                NestLabel(labelText = "Teal", nestLabelType = NestLabelType.HIGHLIGHT_TEAL)
+                NestLabel(labelText = "Red", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED)
+                NestLabel(labelText = "Blue", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_BLUE)
+                NestLabel(labelText = "Teal", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL)
             }
 
             Row(
@@ -195,7 +219,7 @@ private fun NestLabelOnDevicesPreview() {
             ) {
                 NestLabel(
                     labelText = "Label on Image",
-                    nestLabelType = NestLabelType.HIGHLIGHT_IMAGE_LABEL
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
                 )
             }
         }
