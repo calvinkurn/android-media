@@ -25,6 +25,7 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
             try {
                 ContextCompat.getDrawable(it, resId)
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         } ?: run {
