@@ -6,10 +6,8 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
