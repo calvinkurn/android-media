@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
@@ -258,7 +259,11 @@ open class GalleryFragment @Inject constructor(
             val totalItemCount = layoutManager.itemCount
             val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
 
-            if (viewModel.isFetchMediaLoading.value == false && lastVisibleItemPosition == totalItemCount - 1) {
+            if (viewModel.isFetchMediaLoading.value == false
+                && lastVisibleItemPosition == totalItemCount - 1
+                && dy > 0
+                && viewModel.isMediaListLessThanThreshold.not()
+            ) {
                 // indicates the pagination isn't album changed
                 uiModel.hasChangeAlbum = false
 

@@ -44,6 +44,6 @@ class MediaFileRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private const val LIMIT_MEDIA_OFFSET = 100
+        const val LIMIT_MEDIA_OFFSET = 100
     }
 }

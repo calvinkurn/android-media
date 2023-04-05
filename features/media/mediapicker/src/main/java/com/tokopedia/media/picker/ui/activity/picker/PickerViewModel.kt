@@ -8,6 +8,7 @@ import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
+import com.tokopedia.media.picker.data.repository.MediaFileRepositoryImpl.Companion.LIMIT_MEDIA_OFFSET
 import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.utils.flattenFilter
@@ -64,6 +65,9 @@ class PickerViewModel @Inject constructor(
 
     private var _connectionIssue = MediatorLiveData<String>()
     val connectionIssue: LiveData<String> get() = _connectionIssue
+
+    var isMediaListLessThanThreshold = false
+        private set
 
     val uiEvent: Flow<EventState>
         get() {
@@ -136,6 +140,7 @@ class PickerViewModel @Inject constructor(
             mediaFiles(bucketId, start)
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
+                .onEach { isMediaListLessThanThreshold = it.size < LIMIT_MEDIA_OFFSET }
                 .onCompletion { _isFetchMediaLoading.value = false }
                 .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
