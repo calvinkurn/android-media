@@ -130,17 +130,18 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpgFileName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    tools:text="NIB.jpg"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/iconClose"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/imgFile"
                     app:layout_constraintTop_toTopOf="@+id/iconClose"
                     app:typographyType="display_2"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="NIB.jpg" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpgFileSize"

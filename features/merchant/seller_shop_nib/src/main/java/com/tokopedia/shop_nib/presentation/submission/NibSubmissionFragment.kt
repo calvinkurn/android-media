@@ -109,7 +109,6 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
         val fileName = fileHelper.getFileName(fileUri)
         val fileExtension = fileHelper.getFileExtension(fileUri)
-
         val fileSizeInMb = fileHelper.getFileSizeInBytes(fileUri).toMb()
 
         val isPdf = fileExtension == "pdf"
