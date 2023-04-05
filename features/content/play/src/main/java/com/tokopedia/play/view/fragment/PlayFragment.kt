@@ -282,8 +282,8 @@ class PlayFragment @Inject constructor(
                 object : LifecycleObserver {
                     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                     fun onResume() {
-                        variantSheet?.dialog?.window?.setBackgroundDrawable(null)
-                        variantSheet.view?.updateLayoutParams {
+                        variantSheet.dialog?.window?.setBackgroundDrawable(null)
+                        variantSheet.bottomSheetWrapper.updateLayoutParams {
                             height = sheetMaxHeight
                         }
                     }
