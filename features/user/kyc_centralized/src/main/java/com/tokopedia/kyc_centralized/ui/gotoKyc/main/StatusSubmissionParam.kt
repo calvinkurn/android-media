@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class StatusSubmissionParam(
+    val projectId: String,
     /*
     * status submission is a number that you can see at com.tokopedia.kyc_centralized.common.KycStatus
     * Goto KYC Android only possible get several code, that are:
@@ -32,8 +33,5 @@ data class StatusSubmissionParam(
     * */
     val gotoKycType: String = "",
 
-    /*
-    * The purpose of this field is to know how long user has to wait
-    * */
-    val waitTimeInSeconds: Int = 0
+    val waitMessage: String = ""
 ): Parcelable

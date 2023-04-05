@@ -23,8 +23,8 @@ data class KycProjectInfo(
     @SerializedName("StatusName")
 	val statusName: String = "",
 
-    @SerializedName("IsGoToKyc")
-	val isGoToKyc: Boolean = false,
+    @SerializedName("IsGotoKyc")
+	val isGotoKyc: Boolean = false,
 
     @SerializedName("IsAllowToRegister")
 	val isAllowToRegister: Boolean = false,

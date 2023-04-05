@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -49,11 +48,12 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         when (sourcePage) {
             PAGE_STATUS_SUBMISSION -> {
                 val parameter = StatusSubmissionParam(
+                    projectId = data?.projectId.orEmpty(),
                     gotoKycType = data?.gotoKycType.orEmpty(),
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
                     listReason = data?.listReason.orEmpty(),
-                    waitTimeInSeconds = data?.waitTimeInSeconds.orZero()
+                    waitMessage = data?.waitMessage.orEmpty()
                 )
                 gotoStatusSubmission(parameter)
             }

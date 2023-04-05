@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.ProjectInfoResponse
 import javax.inject.Inject
 
@@ -42,7 +41,7 @@ class ProjectInfoUseCase @Inject constructor(
         val parameter = mapOf(PROJECT_ID to params)
         val response: ProjectInfoResponse = repository.request(graphqlQuery(), parameter)
         response.kycProjectInfo.apply {
-            return if (!isGoToKyc) {
+            return if (!isGotoKyc) {
                 ProjectInfoResult.TokoKyc()
             } else {
                 if (status == NOT_VERIFIED) {
@@ -53,7 +52,7 @@ class ProjectInfoUseCase @Inject constructor(
                     ProjectInfoResult.StatusSubmission(
                         status = status,
                         listReason = reason,
-                        waitTimeInSeconds = waitMessage.toIntOrZero()
+                        waitMessage = waitMessage
                     )
                 }
             }

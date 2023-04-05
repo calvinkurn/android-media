@@ -71,10 +71,6 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE
         )
-
-        onBoardProgressiveBottomSheet.setOnDismissListener {
-            activity?.finish()
-        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
@@ -90,10 +86,6 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
-
-        onBoardNonProgressiveBottomSheet.setOnDismissListener {
-            activity?.finish()
-        }
     }
 
     override fun initInjector() {

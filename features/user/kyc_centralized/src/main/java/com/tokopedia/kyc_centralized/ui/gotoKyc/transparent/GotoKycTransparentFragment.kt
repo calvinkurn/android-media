@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
@@ -71,7 +72,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setSource(source.orEmpty())
 
             // please, make sure project id already set in viewModel
-            viewModel.getProjectInfo(viewModel.projectId.toInt())
+            viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
         }
     }
 
@@ -89,7 +90,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         sourcePage = viewModel.source,
                         status = it.status,
                         listReason = it.listReason,
-                        waitTimeInSeconds = it.waitTimeInSeconds
+                        waitMessage = it.waitMessage
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -124,8 +125,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun handleProgressiveFlow(encryptedName: String) {
-        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
             val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                 encryptedName = encryptedName,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
@@ -141,8 +143,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun handleNonProgressiveFlow() {
-        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
             val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
                 isKtpTaken = true,

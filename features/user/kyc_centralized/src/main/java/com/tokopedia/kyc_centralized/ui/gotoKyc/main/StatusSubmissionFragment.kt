@@ -41,7 +41,9 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var status: String = ""
     private var listReason: List<String> = emptyList()
     private var isAccountPage: Boolean = false
+    //TODO: check are this code unused
     private var waitTimeInSeconds: Int = 0
+    private var waitMessage: String = ""
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
 
@@ -56,8 +58,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
         listReason = args.parameter.listReason
-        isAccountPage = args.parameter.sourcePage == KYCConstant.GotoKycSourceAccountPage
-        waitTimeInSeconds = args.parameter.waitTimeInSeconds
+        isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
+        waitMessage = args.parameter.waitMessage
 
         return binding?.root
     }
@@ -273,10 +275,16 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_pending_title)
-            tvDescription.text = HtmlCompat.fromHtml(
-                    getString(R.string.goto_kyc_status_pending_subtitle, convertTimePending(waitTimeInSeconds)),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
+            tvDescription.text =
+                waitMessage.ifEmpty {
+                    HtmlCompat.fromHtml(
+                        getString(
+                            R.string.goto_kyc_status_pending_subtitle,
+                            convertTimePending(waitTimeInSeconds)
+                        ),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                }
             btnPrimary.text = getString(R.string.goto_kyc_status_pending_button, sourcePage)
             btnSecondary.hide()
             tvTimer.hide()

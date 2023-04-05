@@ -82,6 +82,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     ): View? {
         binding = LayoutGotoKycOnboardProgressiveBinding.inflate(inflater, container, false)
         setChild(binding?.root)
+        clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -101,11 +102,16 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 KYCConstant.consentGotoKycProgressiveStaging
             }
         )
+
         binding?.consentGotoKycProgressive?.load(
             lifecycleOwner = viewLifecycleOwner,
             viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
+
+        binding?.consentGotoKycProgressive?.setOnCheckedChangeListener { isChecked ->
+            binding?.btnSubmit?.isEnabled = isChecked
+        }
     }
 
     private fun initView() {
@@ -120,6 +126,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
+            binding?.consentGotoKycProgressive?.submitConsent()
             viewModel.registerProgressiveUseCase(projectId)
         }
     }

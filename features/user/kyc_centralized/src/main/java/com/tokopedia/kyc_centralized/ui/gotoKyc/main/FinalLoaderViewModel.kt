@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
@@ -30,7 +31,7 @@ class FinalLoaderViewModel @Inject constructor(
 
         val parameter = RegisterProgressiveParam(
             param = RegisterProgressiveData(
-                projectID = projectId.toInt(),
+                projectID = projectId.toIntSafely(),
                 challengeID = challengeId
             )
         )
@@ -46,7 +47,7 @@ class FinalLoaderViewModel @Inject constructor(
         _kycStatus.value = KycStatusResult.Loading()
 
         launchCatchError(block = {
-            _kycStatus.value = kycStatusUseCase(projectId.toInt())
+            _kycStatus.value = kycStatusUseCase(projectId.toIntSafely())
         }, onError = {
             _kycStatus.value = KycStatusResult.Failed(it)
         })

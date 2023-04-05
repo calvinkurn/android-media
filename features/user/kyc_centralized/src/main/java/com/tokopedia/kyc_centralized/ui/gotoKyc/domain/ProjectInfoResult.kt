@@ -4,14 +4,14 @@ sealed class ProjectInfoResult(
     val status: String = "",
     val listReason: List<String> = emptyList(),
     val isAccountLinked: Boolean = false,
-    val waitTimeInSeconds: Int = 0,
+    val waitMessage: String = "",
     val throwable: Throwable? = null
 ) {
     class TokoKyc() : ProjectInfoResult()
-    class StatusSubmission(status: String, listReason: List<String>, waitTimeInSeconds: Int) : ProjectInfoResult(
+    class StatusSubmission(status: String, listReason: List<String>, waitMessage: String) : ProjectInfoResult(
         status = status,
         listReason = listReason,
-        waitTimeInSeconds = waitTimeInSeconds
+        waitMessage = waitMessage
     )
     class NotVerified(isAccountLinked: Boolean) : ProjectInfoResult(
         isAccountLinked = isAccountLinked

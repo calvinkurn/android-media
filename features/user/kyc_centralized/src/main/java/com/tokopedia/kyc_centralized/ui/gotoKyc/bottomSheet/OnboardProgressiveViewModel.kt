@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
@@ -24,7 +25,7 @@ class OnboardProgressiveViewModel @Inject constructor(
 
         val parameter = RegisterProgressiveParam(
             param = RegisterProgressiveData(
-                projectID = projectId.toInt()
+                projectID = projectId.toIntSafely()
             )
         )
         launchCatchError(block = {

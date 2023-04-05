@@ -18,7 +18,6 @@ class RegisterProgressiveUseCase @Inject constructor(
         """
             mutation kycRegisterProgressive(${'$'}param: kycRegisterProgressiveRequest!) {
               kycRegisterProgressive(param: ${'$'}param) {
-                isSuccess
                 errorMessages
                 data {
                   challengeID
@@ -37,7 +36,7 @@ class RegisterProgressiveUseCase @Inject constructor(
                 params
             ).registerProgressiveKYC
 
-        return if (!response.isSuccess) {
+        return if (response.errorMessages.isNotEmpty()) {
             RegisterProgressiveResult.Failed(throwable = MessageErrorException(response.errorMessages.first()))
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
