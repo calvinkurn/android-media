@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
@@ -55,9 +54,8 @@ fun NestLabel(
             text = labelText.toString(),
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
             color = textColor,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1
+            maxLines = 1,
+            style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
         )
     }
 }
@@ -72,6 +70,7 @@ enum class NestLabelType {
     HIGHLIGHT_LIGHT_IMAGE_LABEL,
 }
 
+//region Preview
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -153,17 +152,6 @@ private fun NestLabelOnImagePreview() {
         )
     }
 }
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestLabelGreenEllipsisPreview() {
-    NestTheme {
-        NestLabel(
-            labelText = "Green label with ellipsis",
-            nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
-        )
-    }
-}
 @Preview(
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
@@ -213,8 +201,14 @@ private fun NestLabelOnDevicesPreview() {
         }
     }
 }
+//endregion
+
+//region Custom colors for NestLabel
+
 //NN100 70%
-val ImageLabelColorDark = Color(0xFF2E2F36)
+private val ImageLabelColorDark = Color(0xFF2E2F36)
 
 //NN900 70%
-val ImageLabelColorLight = Color(0xB32E3137)
+private val ImageLabelColorLight = Color(0xB32E3137)
+
+//endregion
