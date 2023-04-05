@@ -277,25 +277,11 @@ class PlayAnalytic(
                            sectionInfo: ProductSectionUiModel.Section,
                            cartId: String,
                            productAction: ProductAction,
-                           bottomInsetsType: BottomInsetsType,
                            shopInfo: PlayPartnerInfo) {
         when(productAction) {
-            ProductAction.AddToCart ->
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> {
-                        if(sectionInfo.config.type != ProductSectionType.Active) clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
-                    }
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
-                }
+            ProductAction.AddToCart -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
             ProductAction.Buy, ProductAction.OCC -> {
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> {
-                        if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
-                    }
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, action = productAction, shopInfo)
-                }
+                clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, action = productAction, shopInfo)
             }
         }
     }

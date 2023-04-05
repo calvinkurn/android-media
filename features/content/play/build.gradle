@@ -63,14 +63,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
-    implementation projectOrAar(rootProject.ext.features.shopCommon) //atcVariant should have included this one
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

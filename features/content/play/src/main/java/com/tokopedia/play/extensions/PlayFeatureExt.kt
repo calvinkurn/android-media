@@ -15,8 +15,7 @@ val Map<BottomInsetsType, BottomInsetsState>.isKeyboardShown: Boolean
     get() = this[BottomInsetsType.Keyboard]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
-    get() = this[BottomInsetsType.VariantSheet]?.isShown == true ||
-            this[BottomInsetsType.ProductSheet]?.isShown == true ||
+    get() = this[BottomInsetsType.ProductSheet]?.isShown == true ||
             this[BottomInsetsType.LeaderboardSheet]?.isShown == true ||
             this[BottomInsetsType.CouponSheet]?.isShown == true
 

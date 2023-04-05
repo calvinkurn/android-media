@@ -46,8 +46,10 @@ class FragmentBottomSheetViewComponent(
     }
 
     fun openVariantBottomSheet(button: ProductButtonUiModel) {
-        getOrCreateFragment()
-            .showVariantSheet(button)
+        /**
+         * Call GVBS from PlayFragment
+         */
+        //getOrCreateFragment().showVariantSheet(button)
     }
 
     private fun getFragment(): PlayBottomSheetFragment? {

@@ -14,8 +14,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
  * Created by jegul on 28/06/21
@@ -33,7 +31,6 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
-    val selectedVariant: NetworkResult<VariantUiModel>,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
     val engagement: EngagementUiState,
@@ -63,7 +60,6 @@ data class PlayViewerNewUiState(
                 tagItems = TagItemUiModel.Empty,
                 status = PlayStatusUiModel.Empty,
                 quickReply = PlayQuickReplyInfoUiModel.Empty,
-                selectedVariant = NetworkResult.Loading,
                 address = AddressWidgetUiState(
                     shouldShow = false,
                     warehouseInfo = WarehouseInfoUiModel.Empty,

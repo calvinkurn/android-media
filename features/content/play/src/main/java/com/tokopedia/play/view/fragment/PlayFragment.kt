@@ -247,7 +247,8 @@ class PlayFragment @Inject constructor(
 
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
         val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
-        fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
+    //TODO() open variant bottomSheet from PlayFragment
+    // fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
     }
 
     fun onFirstTopBoundsCalculated() {

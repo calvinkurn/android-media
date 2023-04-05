@@ -1526,7 +1526,6 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (channelType.isLive &&
             bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-            bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false
         ) {
@@ -1867,6 +1866,12 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 // TODO("Temporary, maybe best to combine bottom sheet into this fragment")
+
+                /**
+                 * TODO()
+                 * Call GVBS from PlayFragment
+                 */
+
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
                         event.action,
