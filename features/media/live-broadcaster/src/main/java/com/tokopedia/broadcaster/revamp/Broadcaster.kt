@@ -23,6 +23,8 @@ interface Broadcaster {
         handler: Handler?,
     )
 
+    fun setupThread(withByteplus: Boolean)
+
     fun create(
         holder: SurfaceHolder,
         surfaceSize: Size,

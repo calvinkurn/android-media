@@ -803,6 +803,7 @@ class PlayBroadcastActivity : BaseActivity(),
         withByteplus: Boolean,
     ) {
         lifecycleScope.launch(dispatcher.main) {
+            broadcaster.setupThread(withByteplus)
             delay(INIT_BROADCASTER_DELAY)
             broadcaster.create(holder, surfaceSize, withByteplus)
             rebindEffect()

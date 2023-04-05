@@ -129,8 +129,11 @@ class BroadcastManager @Inject constructor(
     ) {
         mContext = activityContext
         mHandler = handler
+    }
 
-        effectManager.startRenderThread()
+    override fun setupThread(withByteplus: Boolean) {
+        if (withByteplus) effectManager.startRenderThread()
+        else effectManager.stopRenderThread()
     }
 
     override fun create(
