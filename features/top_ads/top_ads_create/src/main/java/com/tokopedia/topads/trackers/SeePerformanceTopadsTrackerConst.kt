@@ -80,7 +80,7 @@ object SeePerformanceTopadsTrackerConst {
         CLICK_IKLAN_OTOMATIS to "41258",
         CLICK_DATE_RANGE to "41259",
         VIEW_ERROR_FETCHING to "41260",
-        CLICK_MUAT_ULANG to "412561",
+        CLICK_MUAT_ULANG to "41261",
         CLICK_CREDIT_TOPADS to "41262",
         CLICK_EXPAND_GROUP_SETTINGS to "41263",
         CLICK_PENEMPATAN_IKLAN to "41264",

@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CURRENT_SITE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
@@ -39,6 +39,7 @@ import com.tokopedia.topads.view.fragment.ListBottomSheet
 import com.tokopedia.topads.view.model.SeePerformanceTopAdsViewModel
 import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.htmltags.HtmlUtil
 import java.text.DateFormat
@@ -210,6 +211,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.INVISIBLE
                 }
             }
+            seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
             mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.VISIBLE
         }
@@ -311,7 +313,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             )
                         )
                 }
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(60,true)
             } else {
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
                     getString(R.string.topads_ads_performance_top_frequently)
@@ -337,6 +338,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         convertToCurrency(it.data.dailyUsage.toLong()),
                         convertToCurrency(it.data.dailyBudget.toLong())
                     )
+                if(it.data.dailyBudget.isMoreThanZero())
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(it.data.dailyUsage / it.data.dailyBudget)
+                else
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(0)
             }
         }
 
@@ -355,6 +360,21 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     getString(R.string.topads_ads_performance_in_recommendation_filter_title)
                 }
                 else -> ""
+            }
+        }
+    }
+
+    /** ProgressBar unify needs to be updated when rendered on screen */
+    private fun updateManualGrupIklanProgressBar(){
+        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupPriceDaily.let {
+            if(it != null && it > 0) {
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.VISIBLE
+                val dailySpent = convertMoneyToValue(seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupPriceDailySpentFmt ?: "")
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpent/it.toInt())
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
+                    4.toPx().toFloat()
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
+                    4.toPx().toFloat()
             }
         }
     }
@@ -522,6 +542,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility =
                 if (mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
+            updateManualGrupIklanProgressBar()
+
             if (mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.rotation == ROTATION_0) {
                 mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.animate()
                     .rotation(ROTATION_180).duration = 100L
@@ -617,7 +639,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.GONE
         mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
         mainBottomSheetBinding.includeTips.root.visibility = View.VISIBLE
-        seePerformanceTopAdsViewModel?.getGroupInfo()
     }
 
     fun getProductStatistics(goalId: Int) {
@@ -635,43 +656,47 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         )
     }
 
-    /**
-     * title is used as key to check for date filter option user has opted for
-     */
+    /** title is used as key to check for date filter option user has opted for*/
     fun updateDateFilter(title: String) {
         when (title) {
             getString(R.string.topads_common_date_today) -> {
                 startDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
+                endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 dateFilterType = 1
             }
             getString(R.string.topads_common_date_yesterday) -> {
+                endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 dateFilterType = 2
             }
             String.format(getString(R.string.topads_common_date_x_last_days), 3) -> {
+                endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(3, REQUEST_DATE_FORMAT)
                 dateFilterType = 3
             }
             String.format(getString(R.string.topads_common_date_x_last_days), 7) -> {
-                startDate = getDaysAgo(7, REQUEST_DATE_FORMAT)
+                endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
+                startDate = getDaysAgo(8, REQUEST_DATE_FORMAT)
                 dateFilterType = 4
             }
             String.format(getString(R.string.topads_common_date_x_last_days), 30) -> {
-                startDate = getDaysAgo(30, REQUEST_DATE_FORMAT)
+                endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
+                startDate = getDaysAgo(31, REQUEST_DATE_FORMAT)
                 dateFilterType = 5
             }
             getString(R.string.topads_common_date_this_month) -> {
+                endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 startDate = getFirstDateOfMonth(REQUEST_DATE_FORMAT)
                 dateFilterType = 6
             }
             else -> openCalendar()
         }
         if (title != getString(R.string.topads_common_custom)) {
-            endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
             mainBottomSheetBinding.dateFilter.chipText = title
             getProductStatistics(
                 seePerformanceTopAdsViewModel?.goalId?.value ?: 1
             )
+            seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
             selectedDateFrom = null
             selectedDateTo = null
         }
@@ -688,6 +713,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         getProductStatistics(
             seePerformanceTopAdsViewModel?.goalId?.value ?: 1
         )
+        seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
     }
 
     private fun setProductStatistics(dataItem: WithoutGroupDataItem) {
@@ -884,8 +910,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         val today = getDaysAgo(0, DATE_FORMAT_DD_MMM_YYYY)
         val yesterday = getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)
         val daysAgo3 = getDaysAgo(3, DATE_FORMAT_DD_MMM_YYYY)
-        val daysAgo7 = getDaysAgo(7, DATE_FORMAT_DD_MMM_YYYY)
-        val daysAgo30 = getDaysAgo(30, DATE_FORMAT_DD_MMM_YYYY)
+        val daysAgo7 = getDaysAgo(8, DATE_FORMAT_DD_MMM_YYYY) /** for past 7 days excluding today */
+        val daysAgo30 = getDaysAgo(31, DATE_FORMAT_DD_MMM_YYYY) /** for past 30 days excluding today */
         val firstDateOfMonth = getFirstDateOfMonth(DATE_FORMAT_DD_MMM_YYYY)
 
         val dateFilterList = arrayListOf(
@@ -906,12 +932,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             ),
             ItemListUiModel(
                 String.format(getString(R.string.topads_common_date_x_last_days), 7),
-                "$daysAgo7 - $today",
+                "$daysAgo7 - ${getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)}",
                 dateFilterType == 4
             ),
             ItemListUiModel(
                 String.format(getString(R.string.topads_common_date_x_last_days), 30),
-                "$daysAgo30 - $today",
+                "$daysAgo30 - ${getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)}",
                 dateFilterType == 5
             ),
             ItemListUiModel(

@@ -163,12 +163,13 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             })
     }
 
-    fun getGroupInfo() {
+    fun getGroupInfo(startDate: String) {
         topAdsGetGroupInfoUseCase.setRequestParams(
             mapOf(
                 PARAM_KEY to AdGroupsParams(
                     shopId = userSession.shopId,
-                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: ""
+                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: "",
+                    startDate = startDate
                 )
             )
         )
