@@ -58,6 +58,6 @@ object TokoChatAnalyticsConstants {
     const val IMPRESSION_ON_IMAGE_PREVIEW = "impression on image preview"
     const val TRACKER_ID_39079 = "39079"
 
-    const val CLICK_CLOSE_ON_CHAT_WITH_DRIVER_CONSENT_TICKER = "click close on chat with driver consent ticker"
+    const val CLICK_CLOSE_ON_CHAT_WITH_DRIVER_CONSENT_TICKER = "click close on chat with driver consent bottomsheet"
     const val TRACKER_ID_42872 = "42872"
 }
