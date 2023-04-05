@@ -37,7 +37,6 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Comp
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -94,7 +93,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -1015,9 +1013,7 @@ class DigitalPDPPulsaFragment :
         viewModel.setAddToCartLoading()
         viewModel.addToCart(
             DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId,
-            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            userSession.userId
         )
     }
 
