@@ -28,7 +28,7 @@ class DeprecatedAPISwitcherToasterViewHolder (
 
             cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
                 setIsEnableDeprecatedAPISwitcherToaster(state)
-                Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Switcher Value Changed: "+ state, Toast.LENGTH_SHORT).show()
             }
         }
     }
