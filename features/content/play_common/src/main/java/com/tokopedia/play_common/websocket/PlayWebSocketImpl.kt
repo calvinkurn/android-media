@@ -76,7 +76,7 @@ class PlayWebSocketImpl(
             webSocketFlow.tryEmit(newMessage)
             webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
 
-            Log.d("SUKSES MESSAGE", text)
+            Log.d("SUKSES MESSAGE", newMessage.message.tracking.toString())
 
             /**
              * Send tracking Id
@@ -149,12 +149,12 @@ class PlayWebSocketImpl(
 
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
-                .header("Origin", TokopediaUrl.getInstance().WEB)
-                .header("Accounts-Authorization", "Bearer $accessToken")
-                .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
-                .header("x_app_name", GlobalConfig.getPackageApplicationName())
-                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
-                .build()
+            .header("Origin", TokopediaUrl.getInstance().WEB)
+            .header("Accounts-Authorization", "Bearer $accessToken")
+            .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
+            .header("x_app_name", GlobalConfig.getPackageApplicationName())
+            .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
+            .build()
     }
 
     private fun sendTracking(trackingId: String): String {
