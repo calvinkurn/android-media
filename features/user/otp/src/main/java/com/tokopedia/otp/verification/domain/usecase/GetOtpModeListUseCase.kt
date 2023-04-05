@@ -11,7 +11,7 @@ import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import javax.inject.Inject
 
-class GetOtpModeListUseCase @Inject constructor(
+class   GetOtpModeListUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetOtpModeListParam, OtpModeListData>(dispatcher.io) {

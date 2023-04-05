@@ -15,6 +15,8 @@ import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_THREE
 import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT
 import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_OTHER_METHODS
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_SMS_METHOD
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.*
@@ -127,7 +129,7 @@ open class VerificationViewModel @Inject constructor(
         var action = { }
 
         if(otpModeListData.modeList.size > 1) {
-            footerSpan = "Gunakan metode lain"
+            footerSpan = SPAN_USE_OTHER_METHODS
             footerText = OTHER_METHOD_FOOTER_TEXT
             action = { showAllMethod() }
         }
@@ -152,7 +154,7 @@ open class VerificationViewModel @Inject constructor(
         if (smsOtp != null && otpModeListData.modeList.size > 1) {
             if (isSmsHidden(otpModeListData.defaultBehaviorMode)) {
                 newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
-                footerSpan = "Pakai metode SMS"
+                footerSpan = SPAN_USE_SMS_METHOD
                 footerText = SMS_FOOTER_TEXT
                 action = { goToInputOtp(smsOtp) }
             }

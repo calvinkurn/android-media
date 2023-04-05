@@ -62,8 +62,13 @@ object OtpConstant {
     }
 
     object StaticText {
-        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\nGunakan metode lain"
-        const val SMS_FOOTER_TEXT = "Berkendala dengan metode di atas?\nPakai metode SMS"
+        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+            " Lihat metode lain atau nomor HP sudah berubah"
+        const val SMS_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+            " Gunakan metode SMS atau nomor HP sudah berubah"
+
+        const val SPAN_USE_OTHER_METHODS = "Lihat metode lain"
+        const val SPAN_USE_SMS_METHOD = "Gunakan metode SMS"
     }
 
     // Default OTP = off / using old otp flow

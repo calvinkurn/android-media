@@ -49,6 +49,7 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.activity.VerificationActivity.Companion.REQUEST_SILENT_VERIF
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
+import com.tokopedia.otp.verification.view.uimodel.FooterUiModel
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -61,7 +62,9 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
@@ -298,7 +301,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableDefaultOtp(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_DEFAULT_OTP_ROLLENCE, "").isNotEmpty()
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_DEFAULT_OTP_ROLLENCE, "").isNotEmpty()
+        return true
     }
 
     private fun initObserver() {
@@ -359,9 +363,33 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun renderDefaultOtpFooter(footerText: String, clickableMessage: String, onClick: () -> Unit) {
         if (footerText.isNotEmpty() && clickableMessage.isNotEmpty()) {
-            setFooterSpannable(footerText, clickableMessage) {
-                onClick()
-            }
+            val inactivePhoneSpan = getString(R.string.cellphone_number_has_changed_lowercase)
+            val footerUiModel = FooterUiModel(
+                footerText,
+                listOf(
+                    FooterUiModel.SpannableUiModel(clickableMessage) {
+                        onClick()
+                        if (footerText == OtpConstant.StaticText.SMS_FOOTER_TEXT) {
+                            analytics.trackClickUseWithOtpSms()
+                        } else if (footerText == OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT) {
+                            analytics.trackClickUseWithOthersMethod()
+                        }
+                    },
+                    FooterUiModel.SpannableUiModel(inactivePhoneSpan) {
+                        onGoToInactivePhoneNumber()
+                    }
+                )
+            )
+            setFooterSpannable(footerUiModel)
+//            setFooterSpannable(footerText, clickableMessage) {
+//
+//                onClick()
+//                if (footerText == OtpConstant.StaticText.SMS_FOOTER_TEXT) {
+//                    analytics.trackClickUseWithOtpSms()
+//                } else if (footerText == OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT) {
+//                    analytics.trackClickUseWithOthersMethod()
+//                }
+//            }
         } else {
             hideDefaultOtpFooter()
         }
@@ -471,6 +499,27 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     message.indexOf(clickableMessage) + clickableMessage.length,
                     0
                 )
+            }
+            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+            viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.phoneInactive?.visible()
+        }
+    }
+
+    private fun setFooterSpannable(footerUiModel: FooterUiModel) {
+        context?.let {
+            val spannable = SpannableString(footerUiModel.message).apply {
+                footerUiModel.spannableUiModel.forEach { spannableModel ->
+                    setSpan(clickableSpan {
+                        spannableModel.action.invoke()
+                    },
+                        footerUiModel.message.indexOf(spannableModel.clickableMessage),
+                        footerUiModel.message.indexOf(spannableModel.clickableMessage) + spannableModel.clickableMessage.length,
+                        0
+                    )
+                }
+
             }
             viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
