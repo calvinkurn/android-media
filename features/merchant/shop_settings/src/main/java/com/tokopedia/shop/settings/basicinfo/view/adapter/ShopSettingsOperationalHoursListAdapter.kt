@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.util.OperationalHoursUtil
-import com.tokopedia.shop.common.util.OperationalHoursUtil.ALL_DAY
 import com.tokopedia.shop.common.util.OperationalHoursUtil.CANNOT_ATC_TEXT
 import com.tokopedia.shop.common.util.OperationalHoursUtil.CAN_ATC_STATUS
 import com.tokopedia.shop.common.util.OperationalHoursUtil.CAN_ATC_TEXT
@@ -19,7 +18,7 @@ import com.tokopedia.shop.settings.basicinfo.view.model.ShopOperationalHourUiMod
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopSettingsOperationalHoursListAdapter(
-        private val opsHourList: MutableList<ShopOperationalHourUiModel> = mutableListOf()
+    private val opsHourList: MutableList<ShopOperationalHourUiModel> = mutableListOf()
 ) : RecyclerView.Adapter<ShopSettingsOperationalHoursListAdapter.ViewHolder>() {
 
     companion object {
@@ -74,11 +73,13 @@ class ShopSettingsOperationalHoursListAdapter(
                 else -> operationalHours
             }
 
-            opsHourListUiModel.add(ShopOperationalHourUiModel(
+            opsHourListUiModel.add(
+                ShopOperationalHourUiModel(
                     dayName = currentDayName,
                     shopOperationalHours = operationalHoursTextFormatted,
                     shopOperationalHoursDescription = operationalHoursDescription
-            ))
+                )
+            )
         }
 
         groupedOpsHourListUiModel.add(opsHourListUiModel[total])
@@ -87,19 +88,18 @@ class ShopSettingsOperationalHoursListAdapter(
         // grouping operational hours schedule
         opsHourListUiModel.forEachIndexed { idx, shopOperationalHourUiModel ->
             if (idx > INITIAL_SIZE) {
-                val groupedOpsTime = "${groupedOpsHourListUiModel[total-1].shopOperationalHours} - ${groupedOpsHourListUiModel[total-1].shopOperationalHoursDescription}"
+                val groupedOpsTime = "${groupedOpsHourListUiModel[total - 1].shopOperationalHours} - ${groupedOpsHourListUiModel[total - 1].shopOperationalHoursDescription}"
                 val currentOpsTime = "${shopOperationalHourUiModel.shopOperationalHours} - ${shopOperationalHourUiModel.shopOperationalHoursDescription}"
 
                 if (groupedOpsTime == currentOpsTime) {
                     val currentDayName = shopOperationalHourUiModel.dayName
-                    var existingDayName = groupedOpsHourListUiModel[total-1].dayName
+                    var existingDayName = groupedOpsHourListUiModel[total - 1].dayName
                     existingDayName = if (existingDayName.contains(DASH_DELIMITER)) {
                         existingDayName.replaceAfter(AFTER_DASH_DELIMITER, currentDayName)
-                    }
-                    else {
+                    } else {
                         "$existingDayName - $currentDayName"
                     }
-                    groupedOpsHourListUiModel[total-1].dayName = existingDayName
+                    groupedOpsHourListUiModel[total - 1].dayName = existingDayName
                 } else {
                     groupedOpsHourListUiModel.add(shopOperationalHourUiModel)
                     total++
@@ -133,5 +133,4 @@ class ShopSettingsOperationalHoursListAdapter(
             return hoursText == HOLIDAY
         }
     }
-
 }
