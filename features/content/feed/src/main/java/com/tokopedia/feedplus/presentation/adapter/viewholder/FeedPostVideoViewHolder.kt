@@ -21,6 +21,7 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationCompo
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -194,10 +195,12 @@ class FeedPostVideoViewHolder(
                 videoPlayer.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showLoading()
+                        binding.iconPlay.hide()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideLoading()
+                        binding.iconPlay.showWithCondition(!isPlaying)
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {

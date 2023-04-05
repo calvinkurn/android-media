@@ -36,10 +36,10 @@ class FeedExoPlayer(val context: Context) {
 
                 when {
                     isPlaying || playbackState == Player.STATE_ENDED -> {
-                        videoStateListener?.onVideoReadyToPlay()
+                        videoStateListener?.onVideoReadyToPlay(playWhenReady)
                     }
                     isReadyToPlay -> {
-                        videoStateListener?.onVideoReadyToPlay()
+                        videoStateListener?.onVideoReadyToPlay(false)
                     }
                     isInitialLoad -> {
                         videoStateListener?.onInitialStateLoading()
@@ -136,6 +136,6 @@ class FeedExoPlayer(val context: Context) {
 
 interface VideoStateListener {
     fun onInitialStateLoading()
-    fun onVideoReadyToPlay()
+    fun onVideoReadyToPlay(isPlaying: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long) //Tracker Purpose
 }

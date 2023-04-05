@@ -159,7 +159,7 @@ class CarouselVideoViewHolder(
                 showVideoLoading()
             }
 
-            override fun onVideoReadyToPlay() {
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideVideoLoading()
                 timerView.visible()
                 var time = videoPlayer?.getExoPlayer()?.duration.orZero() / TIME_SECOND

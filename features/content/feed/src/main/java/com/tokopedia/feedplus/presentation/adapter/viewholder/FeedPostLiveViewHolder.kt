@@ -77,7 +77,7 @@ class FeedPostLiveViewHolder(
                         showLoading()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideLoading()
                     }
 

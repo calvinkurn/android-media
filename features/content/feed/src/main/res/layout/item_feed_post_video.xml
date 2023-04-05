@@ -219,5 +219,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:show_timeout="-1" />
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_play"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="PLAY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
