@@ -134,6 +134,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         activity?.window?.let { WindowCompat.setDecorFitsSystemWindows(it, false) }
         initUiState(savedInstanceState)
         collectBulkReviewPageUiState()
+        collectScrollRequest()
         collectToasterQueue()
         collectBulkReviewRemoveReviewItemDialogUiState()
         collectBulkReviewCancelReviewSubmissionDialogUiState()
@@ -307,9 +308,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     Int.ZERO,
                     bottom.coerceAtLeast(Int.ZERO)
                 )
-                viewModel.findFocusedReviewItemVisitable()?.let { (index, _) ->
-                    binding?.rvBulkReviewItems?.smoothSnapToPosition(index, SNAP_TO_START)
-                }
+                viewModel.scrollToFocusedReviewItemVisitable()
                 clearFocusOnHideKeyboard(imeInsets.bottom)
                 insets
             }
@@ -353,6 +352,14 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 is BulkReviewPageUiState.Cancelled -> onBulkReviewPageCancelled()
                 is BulkReviewPageUiState.Submitted -> onBulkReviewPageSubmitted(it.userName)
             }
+        }
+    }
+
+    private fun collectScrollRequest() {
+        collectLatestWhenResumed(viewModel.reviewItemScrollRequest) { reviewItem ->
+            val rvItemPosition = viewModel.getReviewItemVisitablePosition(reviewItem)
+            if (rvItemPosition == RecyclerView.NO_POSITION) return@collectLatestWhenResumed
+            binding?.rvBulkReviewItems?.smoothSnapToPosition(rvItemPosition, SNAP_TO_START)
         }
     }
 

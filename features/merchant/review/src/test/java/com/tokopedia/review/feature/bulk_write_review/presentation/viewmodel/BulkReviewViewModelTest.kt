@@ -2080,7 +2080,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `findFocusedReviewItemVisitable should return null when there's no focused review item`() =
         runCollectingBulkReviewPageUiState {
             doSuccessGetInitialData()
-            assertNull(viewModel.findFocusedReviewItemVisitable())
+            assertNull(viewModel.scrollToFocusedReviewItemVisitable())
         }
 
     @Test
@@ -2091,7 +2091,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doSuccessGetInitialData()
             viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
 
-            val focusedReviewItem = viewModel.findFocusedReviewItemVisitable()
+            val focusedReviewItem = viewModel.scrollToFocusedReviewItemVisitable()
             assertEquals(Int.ONE, focusedReviewItem?.first)
             assertNotNull(focusedReviewItem?.second)
         }

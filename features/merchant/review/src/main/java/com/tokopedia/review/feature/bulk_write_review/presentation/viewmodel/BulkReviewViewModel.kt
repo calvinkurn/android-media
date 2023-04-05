@@ -307,6 +307,9 @@ class BulkReviewViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
         initialValue = BulkReviewPageUiState.Loading
     )
+    private val _reviewItemScrollRequest = MutableSharedFlow<BulkReviewItemUiModel>()
+    val reviewItemScrollRequest: Flow<BulkReviewItemUiModel>
+        get() = _reviewItemScrollRequest
 
     init {
         observeMediaUrisForUpload()
@@ -397,12 +400,10 @@ class BulkReviewViewModel @Inject constructor(
             it.copyAndReplace(matcher = { reviewItemTestimony ->
                 reviewItemTestimony.inboxID == inboxID
             }, copier = { reviewItemTestimony ->
-                    reviewItemTestimony.copy(
-                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
-                            focused = true
-                        )
-                    )
-                })
+                reviewItemTestimony.copy(
+                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(focused = true)
+                )
+            })
         }
     }
 
@@ -720,10 +721,22 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    fun findFocusedReviewItemVisitable(): Pair<Int, BulkReviewItemUiModel>? {
-        return bulkReviewVisitableList.value.find {
-            it is BulkReviewItemUiModel && it.uiState is BulkReviewItemUiState.Focused
-        }?.let { bulkReviewVisitableList.value.indexOf(it) to it as BulkReviewItemUiModel }
+    fun scrollToFocusedReviewItemVisitable() {
+        bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .find {
+                it.uiState is BulkReviewItemUiState.Focused
+            }?.let {
+                viewModelScope.launch {
+                    _reviewItemScrollRequest.emit(it)
+                }
+            }
+    }
+
+    fun getReviewItemVisitablePosition(reviewItem: BulkReviewItemUiModel): Int {
+        val pageUiState = bulkReviewPageUiState.value as? BulkReviewPageUiState.Showing ?: return -1
+        return pageUiState.items.indexOf(reviewItem)
     }
 
     fun getAndUpdateActiveMediaPickerInboxID(inboxID: String): String {
