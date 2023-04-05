@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -1090,6 +1091,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
+                showToast(cartTokoFoodData.message)
             }
         }
     }
