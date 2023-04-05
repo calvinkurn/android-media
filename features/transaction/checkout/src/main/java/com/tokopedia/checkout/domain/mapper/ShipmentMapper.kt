@@ -476,19 +476,19 @@ class ShipmentMapper @Inject constructor() {
             val shop = mapShopData(it.shop)
             val mapProducts = mapProducts(groupShop2, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
             val products = mapProducts.first
-            if (mapProducts.second > -1) {
-                if (!hasErrorProduct) {
+            if (!hasErrorProduct) {
+                if (mapProducts.second > -1) {
                     hasErrorProduct = true
                     if (firstProductErrorIndex == -1) {
                         firstProductErrorIndex = mapProducts.second
                     } else {
                         firstProductErrorIndex += mapProducts.second
                     }
+                } else if (firstProductErrorIndex == -1) {
+                    firstProductErrorIndex = products.size
+                } else {
+                    firstProductErrorIndex += products.size
                 }
-            } else if (firstProductErrorIndex == -1) {
-                firstProductErrorIndex = products.size
-            } else {
-                firstProductErrorIndex += products.size
             }
             com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2(
                 it.cartStringOrder,
