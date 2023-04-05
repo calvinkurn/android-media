@@ -208,5 +208,6 @@ class RotateFilterRepositoryImpl @Inject constructor(
 
     companion object {
         private const val CROP_VIEW_ZOOM_DELAY = 500L
+        private const val TOLERANCE_SIZE_VALUE = 5 // in pixel
     }
 }
