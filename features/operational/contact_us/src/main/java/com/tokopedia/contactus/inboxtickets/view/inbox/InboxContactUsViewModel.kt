@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.GetTicketListParam
+import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
@@ -77,7 +79,7 @@ class InboxContactUsViewModel @Inject constructor(
     fun getTopBotStatus() {
         launchCatchError(
             block = {
-                val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
+                val topBotStatusResponse = topBotStatusUseCase(Unit)
                 if (topBotStatusResponse.getTopBotStatusInbox()
                     .getTopBotStatusData().isActive
                 ) {
@@ -108,7 +110,6 @@ class InboxContactUsViewModel @Inject constructor(
                 InboxUiState(
                     showChatBotWidget = false
                 )
-                it.printStackTrace()
             }
         )
     }
@@ -159,10 +160,10 @@ class InboxContactUsViewModel @Inject constructor(
         }
     }
 
-    private fun getTicketList(requestParams: RequestParams) {
+    private fun getTicketList(requestParams: GetTicketListParam) {
         launchCatchError(
             block = {
-                val ticketListResponse = getTickets.getTicketListResponse(requestParams)
+                val ticketListResponse = getTickets(requestParams)
                 val ticketData = ticketListResponse.getTicketOnInbox().getTicket()
                 when {
                     ticketData.getTicketList().isNotEmpty() -> {

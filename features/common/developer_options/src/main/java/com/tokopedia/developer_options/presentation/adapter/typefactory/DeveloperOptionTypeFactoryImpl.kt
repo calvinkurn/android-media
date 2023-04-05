@@ -17,7 +17,8 @@ class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
-    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
+    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
+    private val loginHelperListener: LoginHelperListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
@@ -68,6 +69,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
+    override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -119,6 +121,7 @@ class DeveloperOptionTypeFactoryImpl(
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
+            LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view, loginHelperListener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -49,5 +49,7 @@ data class CartShopGroupTickerAggregatorBundleBottomSheet(
     @SerializedName("description")
     val description: String = "",
     @SerializedName("bottom_ticker")
-    val bottomTicker: String = ""
+    val bottomTicker: String = "",
+    @SerializedName("bundle_ids")
+    val bundleIds: List<String> = emptyList()
 )

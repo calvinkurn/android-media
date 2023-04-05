@@ -178,6 +178,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
+    public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
