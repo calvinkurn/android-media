@@ -24,8 +24,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -2077,23 +2075,16 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
-    fun `findFocusedReviewItemVisitable should return null when there's no focused review item`() =
+    fun `scrollToFocusedReviewItemVisitable should update reviewItemScrollRequest`() =
         runCollectingBulkReviewPageUiState {
-            doSuccessGetInitialData()
-            assertNull(viewModel.scrollToFocusedReviewItemVisitable())
-        }
+            runCollectingReviewItemScrollRequest { reviewItemsToScroll ->
+                val reviewItem = getFirstReviewItem()
 
-    @Test
-    fun `findFocusedReviewItemVisitable should return non-null when there's focused review item`() =
-        runCollectingBulkReviewPageUiState {
-            val reviewItem = getFirstReviewItem()
-
-            doSuccessGetInitialData()
-            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
-
-            val focusedReviewItem = viewModel.scrollToFocusedReviewItemVisitable()
-            assertEquals(Int.ONE, focusedReviewItem?.first)
-            assertNotNull(focusedReviewItem?.second)
+                doSuccessGetInitialData()
+                viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+                viewModel.scrollToFocusedReviewItemVisitable()
+                assertEquals(reviewItem.inboxID, reviewItemsToScroll.last().inboxID)
+            }
         }
 
     @Test
