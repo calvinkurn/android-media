@@ -110,8 +110,8 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-        })
+                _getVerificationMethodResult.value = Fail(it)
+            })
     }
 
     fun isSmsHidden(defaultBehaviorMode: Int): Boolean {
@@ -121,14 +121,14 @@ open class VerificationViewModel @Inject constructor(
     fun renderInitialDefaultOtp(otpModeListData: OtpModeListData) {
         val newItems = ArrayList(otpModeListData.modeList)
 
-        if(otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
+        if (otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
             newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
         }
         var footerSpan = ""
         var footerText = ""
         var action = { }
 
-        if(otpModeListData.modeList.size > 1) {
+        if (otpModeListData.modeList.size > 1) {
             footerSpan = SPAN_USE_OTHER_METHODS
             footerText = OTHER_METHOD_FOOTER_TEXT
             action = { showAllMethod() }
@@ -211,7 +211,7 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launch {
             try {
-                if(cache != null) {
+                if (cache != null) {
                     showAllMethod(cache)
                 } else {
                     val param = GetOtpModeListParam(otpType, userId, msisdn, email, timeUnix, authenticity)
@@ -232,7 +232,7 @@ open class VerificationViewModel @Inject constructor(
 
     fun showAllMethod(cache: DefaultOtpUiModel? = null) {
         val previousData = cache ?: _defaultOtpUiModel.value
-        if(previousData != null) {
+        if (previousData != null) {
             val newItems = ArrayList(previousData.originalOtpModeList)
             val smsOtp = previousData.originalOtpModeList.find { it.modeText == OtpConstant.OtpMode.SMS }
             var footerSpan = ""
@@ -242,7 +242,7 @@ open class VerificationViewModel @Inject constructor(
             if (smsOtp != null) {
                 if (isSmsHidden(previousData.defaultBehaviorMode)) {
                     newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
-                    footerSpan = "Pakai metode SMS"
+                    footerSpan = SPAN_USE_SMS_METHOD
                     footerText = SMS_FOOTER_TEXT
                     action = { goToInputOtp(smsOtp) }
                 }
@@ -299,9 +299,9 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-            TkpdIdlingResource.decrement()
-        })
+                _getVerificationMethodResult.value = Fail(it)
+                TkpdIdlingResource.decrement()
+            })
     }
 
     fun getVerificationMethodInactive(
@@ -341,9 +341,9 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-            TkpdIdlingResource.decrement()
-        })
+                _getVerificationMethodResult.value = Fail(it)
+                TkpdIdlingResource.decrement()
+            })
     }
 
     fun sendOtpPhoneRegisterMandatory(
@@ -475,7 +475,8 @@ open class VerificationViewModel @Inject constructor(
             )
 
             if (mode == OtpConstant.OtpMode.PIN &&
-                isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, ""))) {
+                isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, ""))
+            ) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
@@ -590,13 +591,13 @@ open class VerificationViewModel @Inject constructor(
     fun createCheckPinV2Param(userId: String, msisdn: String, email: String): PinStatusParam {
         var id = ""
         var type = ""
-        if(userId.isNotEmpty() && userId != "0") {
+        if (userId.isNotEmpty() && userId != "0") {
             id = userId
             type = SessionConstants.CheckPinType.USER_ID.value
-        } else if(msisdn.isNotEmpty()) {
+        } else if (msisdn.isNotEmpty()) {
             id = msisdn
             type = SessionConstants.CheckPinType.PHONE.value
-        } else if(email.isNotEmpty()) {
+        } else if (email.isNotEmpty()) {
             id = email
             type = SessionConstants.CheckPinType.EMAIL.value
         }
@@ -617,7 +618,7 @@ open class VerificationViewModel @Inject constructor(
     public override fun onCleared() {
         val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if (clear) {
-            //if user interrupted login / register otp flow (not done), delete the token
+            // if user interrupted login / register otp flow (not done), delete the token
             if (!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
                 ServerLogger.log(
@@ -629,5 +630,4 @@ open class VerificationViewModel @Inject constructor(
         }
         super.onCleared()
     }
-
 }
