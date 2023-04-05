@@ -25,7 +25,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shop_nib.R
+import com.tokopedia.shop_nib.presentation.datepicker.NibDatePicker
 import com.tokopedia.shop_nib.util.extension.toMb
+import java.util.*
 
 class NibSubmissionFragment : BaseDaggerFragment() {
 
@@ -89,6 +91,9 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
             }
         )
+        binding?.tauNibPublishedDate?.editText?.setOnClickListener {
+            showDatePickerBottomSheet()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,5 +160,17 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showDatePickerBottomSheet() {
+        val param = NibDatePicker.Param(
+            defaultDate = Date(),
+            title = context?.getString(R.string.ssn_nib_publish_date).orEmpty(),
+            buttonWording = context?.getString(R.string.ssn_select).orEmpty()
+        )
+        val datePicker = NibDatePicker(param)
+        val onDateSelected : (Date) -> Unit = { selectedDate ->
+
+        }
+        datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
+    }
 
 }

@@ -161,6 +161,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifycomponents.TextAreaUnify2
+                android:id="@+id/tauNibPublishedDate"
                 android:layout_width="match_parent"
                 android:layout_marginTop="16dp"
                 app:unify_text_field_label="@string/ssn_nib_publish_date"

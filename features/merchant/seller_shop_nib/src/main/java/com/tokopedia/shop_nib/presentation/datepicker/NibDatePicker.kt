@@ -11,13 +11,10 @@ import com.tokopedia.shop_nib.util.extension.extractMinute
 import java.util.*
 import javax.inject.Inject
 
-class NibDatePickerBottomSheet @Inject constructor(private val param: Param) {
+class NibDatePicker @Inject constructor(private val param: Param) {
 
     data class Param(
-        val selectedDateFromCalendar: Date,
         val defaultDate: Date,
-        val minimumDate: Date,
-        val maximumDate: Date,
         val title: String,
         val buttonWording: String,
     )
@@ -28,7 +25,7 @@ class NibDatePickerBottomSheet @Inject constructor(private val param: Param) {
         onDateSelected: (Date) -> Unit
     ) {
         val minTime = Date(1970, 1, 1).toCalendar()
-        val defaultTime = buildDefaultTime()
+        val defaultTime = buildDefaultDate()
         val maxTime = Date().toCalendar()
 
         val dateTimePicker = DateTimePickerUnify(
@@ -37,7 +34,7 @@ class NibDatePickerBottomSheet @Inject constructor(private val param: Param) {
             defaultTime,
             maxTime,
             null,
-            DateTimePickerUnify.TYPE_TIMEPICKER
+            DateTimePickerUnify.TYPE_DATEPICKER
         )
 
         dateTimePicker.apply {
@@ -48,7 +45,7 @@ class NibDatePickerBottomSheet @Inject constructor(private val param: Param) {
                 val selectedDate = getDate().time
                 val hour = selectedDate.extractHour()
                 val minute = selectedDate.extractMinute()
-                val dateTime = buildSelectedDateInstance(param.selectedDateFromCalendar, hour, minute)
+                val dateTime = buildSelectedDateInstance(param.defaultDate, hour, minute)
                 onDateSelected(dateTime)
                 dismiss()
             }
@@ -66,7 +63,7 @@ class NibDatePickerBottomSheet @Inject constructor(private val param: Param) {
     }
 
 
-    private fun buildDefaultTime(): GregorianCalendar {
+    private fun buildDefaultDate(): GregorianCalendar {
         val hour = param.defaultDate.extractHour()
         val minute = param.defaultDate.extractMinute()
         return GregorianCalendar(LocaleConstant.INDONESIA).apply {
