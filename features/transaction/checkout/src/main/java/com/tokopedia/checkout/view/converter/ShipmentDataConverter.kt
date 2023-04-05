@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.converter
 
-import android.text.TextUtils
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -193,57 +192,117 @@ class ShipmentDataConverter @Inject constructor() {
         val groupShopList = cartShipmentAddressFormData.groupAddress[0].groupShop
         var isFirstPlusProductHasPassed = false
         for ((groupShopIndex, groupShop) in groupShopList.withIndex()) {
+            var orderIndex = 0
+            if (groupShopList.size > 1) {
+                orderIndex = groupShopIndex + 1
+            }
+            val shipmentInformationData = groupShop.shipmentInformationData
+            val shop = groupShop.groupShopData.first().shop
+            var receiverName = ""
+            if (userAddress.status == ACTIVE_ADDRESS) {
+                receiverName = userAddress.receiverName
+            }
+            val addOnWordingModel = convertFromAddOnWordingData(cartShipmentAddressFormData.addOnWording)
+            val cartItemModels = arrayListOf<CartItemModel>()
+            var cartItemIndex = 0
+            groupShop.groupShopData.forEach {
+                val productList = convertFromProductList(
+                    cartItemIndex,
+                    it,
+                    groupShop,
+                    username,
+                    receiverName,
+                    addOnWordingModel
+                )
+                cartItemModels.addAll(productList)
+                cartItemIndex += productList.size
+            }
+            val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
             val shipmentCartItemModel = ShipmentCartItemModel(
                 cartString = groupShop.cartString,
                 groupType = groupShop.groupType,
                 uiGroupType = groupShop.uiGroupType,
                 groupInfoName = groupShop.groupInfoName,
-                groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl
+                groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
+                isDropshipperDisable = cartShipmentAddressFormData.isDropshipperDisable,
+                isOrderPrioritasDisable = cartShipmentAddressFormData.isOrderPrioritasDisable,
+                isBlackbox = cartShipmentAddressFormData.isBlackbox,
+                isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
+                addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,
+                isFulfillment = groupShop.isFulfillment,
+                fulfillmentId = groupShop.fulfillmentId,
+                fulfillmentBadgeUrl = groupShop.fulfillmentBadgeUrl,
+                shopShipmentList = groupShop.shopShipments,
+                isError = groupShop.isError,
+                isAllItemError = groupShop.isError,
+                isHasUnblockingError = groupShop.hasUnblockingError,
+                unblockingErrorMessage = groupShop.unblockingErrorMessage,
+                errorTitle = groupShop.errorMessage,
+                firstProductErrorIndex = groupShop.firstProductErrorIndex,
+                orderNumber = if (orderIndex > 0) orderIndex else 0,
+                preOrderInfo = if (shipmentInformationData.preorder.isPreorder) shipmentInformationData.preorder.duration else "",
+                freeShippingBadgeUrl = shipmentInformationData.freeShippingGeneral.badgeUrl,
+                isFreeShippingPlus = shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
+                shopLocation = shipmentInformationData.shopLocation,
+                shopId = shop.shopId,
+                shopName = shop.shopName,
+                shopAlertMessage = shop.shopAlertMessage,
+                shopTypeInfoData = shop.shopTypeInfoData,
+                shippingId = groupShop.shippingId,
+                spId = groupShop.spId,
+                boCode = groupShop.boCode,
+                dropshiperName = groupShop.dropshipperName,
+                dropshiperPhone = groupShop.dropshipperPhone,
+                isInsurance = groupShop.isUseInsurance,
+                hasPromoList = groupShop.isHasPromoList,
+                isSaveStateFlag = groupShop.isSaveStateFlag,
+                isLeasingProduct = groupShop.isLeasingProduct,
+                bookingFee = groupShop.bookingFee,
+                listPromoCodes = groupShop.listPromoCodes,
+                isHasSetDropOffLocation = hasTradeInDropOffAddress,
+                addOnsOrderLevelModel = groupShop.addOns,
+                addOnWordingModel = addOnWordingModel,
+                addOnDefaultFrom = username,
+                timeslotId = groupShop.scheduleDelivery.timeslotId,
+                scheduleDate = groupShop.scheduleDelivery.scheduleDate,
+                validationMetadata = groupShop.scheduleDelivery.validationMetadata,
+                ratesValidationFlow = groupShop.ratesValidationFlow,
+                addOnDefaultTo = receiverName,
+                isProductFcancelPartial = fobject.isFcancelPartial == 1,
+                cartItemModels = cartItemModels,
+                isProductIsPreorder = fobject.isPreOrder == 1,
+                isTokoNow = shop.isTokoNow,
+                shopTickerTitle = shop.shopTickerTitle,
+                shopTicker = shop.shopTicker,
+                enablerLabel = shop.enablerLabel,
+
+                isEligibleNewShippingExperience = cartShipmentAddressFormData.isEligibleNewShippingExperience,
+                isDisableChangeCourier = groupShop.isDisableChangeCourier,
+                isAutoCourierSelection = groupShop.autoCourierSelection,
+                hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
+                courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
+                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description
             )
-            shipmentCartItemModel.isDropshipperDisable =
-                cartShipmentAddressFormData.isDropshipperDisable
-            shipmentCartItemModel.isOrderPrioritasDisable =
-                cartShipmentAddressFormData.isOrderPrioritasDisable
-            shipmentCartItemModel.isBlackbox = cartShipmentAddressFormData.isBlackbox
-            shipmentCartItemModel.isHidingCourier = cartShipmentAddressFormData.isHidingCourier
-            shipmentCartItemModel.addressId =
-                cartShipmentAddressFormData.groupAddress[0].userAddress.addressId
-            var orderIndex = 0
-            if (groupShopList.size > 1) {
-                orderIndex = groupShopIndex + 1
+            for (cartItemModel in cartItemModels) {
+                if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
+                    shipmentCartItemModel.hasEthicalProducts = true
+                } else if (!cartItemModel.isError) {
+                    shipmentCartItemModel.hasNonEthicalProducts = true
+                }
             }
-            shipmentCartItemModel.isFulfillment = groupShop.isFulfillment
-            shipmentCartItemModel.fulfillmentId = groupShop.fulfillmentId
-            shipmentCartItemModel.fulfillmentBadgeUrl = groupShop.fulfillmentBadgeUrl
-            getShipmentItem(
-                shipmentCartItemModel,
-                userAddress,
-                groupShop,
-                cartShipmentAddressFormData.keroToken,
-                cartShipmentAddressFormData.keroUnixTime.toString(),
-                hasTradeInDropOffAddress,
-                orderIndex,
-                cartShipmentAddressFormData.addOnWording,
-                username
-            )
+            shipmentCartItemModel.shipmentCartData = RatesDataConverter()
+                .getShipmentCartData(
+                    userAddress,
+                    groupShop,
+                    shipmentCartItemModel,
+                    cartShipmentAddressFormData.keroToken,
+                    cartShipmentAddressFormData.keroUnixTime.toString()
+                )
             if (groupShop.isFulfillment) {
                 shipmentCartItemModel.shopLocation = groupShop.fulfillmentName
             }
             setCartItemModelError(shipmentCartItemModel)
-            shipmentCartItemModel.isEligibleNewShippingExperience =
-                cartShipmentAddressFormData.isEligibleNewShippingExperience
-            shipmentCartItemModel.isDisableChangeCourier = groupShop.isDisableChangeCourier
-            shipmentCartItemModel.isAutoCourierSelection = groupShop.autoCourierSelection
-            shipmentCartItemModel.hasGeolocation =
-                !TextUtils.isEmpty(userAddress.longitude) && !TextUtils.isEmpty(userAddress.latitude)
-            shipmentCartItemModel.courierSelectionErrorTitle =
-                groupShop.courierSelectionErrorData.title
-            shipmentCartItemModel.courierSelectionErrorDescription =
-                groupShop.courierSelectionErrorData.description
             // todo: fix group shop
-            shipmentCartItemModel.isTokoNow = groupShop.groupShopData.first().shop.isTokoNow
-            shipmentCartItemModel.shopTickerTitle = groupShop.groupShopData.first().shop.shopTickerTitle
-            shipmentCartItemModel.shopTicker = groupShop.groupShopData.first().shop.shopTicker
             if (shipmentCartItemModel.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,
@@ -255,38 +314,36 @@ class ShipmentDataConverter @Inject constructor() {
             } else {
                 shipmentCartItemModel.coachmarkPlus = CoachmarkPlusData()
             }
-            shipmentCartItemModel.enablerLabel = groupShop.groupShopData.first().shop.enablerLabel
 
             // top
             val shipmentCartItemTopModel =
                 ShipmentCartItemTopModel(
                     cartString = groupShop.cartString,
                     isError = shipmentCartItemModel.isError,
-                    errorTitle = shipmentCartItemModel.errorTitle ?: "",
-                    errorDescription = shipmentCartItemModel.errorDescription ?: "",
+                    errorTitle = shipmentCartItemModel.errorTitle,
+                    errorDescription = shipmentCartItemModel.errorDescription,
                     isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
-                    unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage ?: "",
+                    unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage,
                     firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
                     isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
                     shopId = shipmentCartItemModel.shopId,
                     shopName = shipmentCartItemModel.groupInfoName,
                     orderNumber = shipmentCartItemModel.orderNumber,
-                    preOrderInfo = shipmentCartItemModel.preOrderInfo ?: "",
-                    freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl ?: "",
+                    preOrderInfo = shipmentCartItemModel.preOrderInfo,
+                    freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl,
                     isFreeShippingPlus = shipmentCartItemModel.isFreeShippingPlus,
-                    shopLocation = shipmentCartItemModel.shopLocation ?: "",
-                    shopAlertMessage = shipmentCartItemModel.shopAlertMessage ?: "",
+                    shopLocation = shipmentCartItemModel.shopLocation,
+                    shopAlertMessage = shipmentCartItemModel.shopAlertMessage,
                     shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData,
                     shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
                     shopTicker = shipmentCartItemModel.shopTicker,
                     enablerLabel = shipmentCartItemModel.enablerLabel,
                     hasTradeInItem = shipmentCartItemModel.cartItemModels.firstOrNull { it.isValidTradeIn } != null,
                     isFulfillment = shipmentCartItemModel.isFulfillment,
-                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl ?: "",
+                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl,
                     uiGroupType = shipmentCartItemModel.uiGroupType,
                     groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl
                 )
-
             shipmentCartItemModels.add(shipmentCartItemTopModel)
             if (shipmentCartItemModel.isStateAllItemViewExpanded) {
                 shipmentCartItemModel.cartItemModels.forEach {
@@ -317,106 +374,106 @@ class ShipmentDataConverter @Inject constructor() {
         }
     }
 
-    private fun getShipmentItem(
-        shipmentCartItemModel: ShipmentCartItemModel,
-        userAddress: UserAddress,
-        groupShop: GroupShop,
-        keroToken: String,
-        keroUnixTime: String,
-        hasTradeInDropOffAddress: Boolean,
-        orderIndex: Int,
-        addOnWording: AddOnWordingData,
-        username: String
-    ) {
-        shipmentCartItemModel.shopShipmentList = groupShop.shopShipments
-        shipmentCartItemModel.isError = groupShop.isError
-        if (shipmentCartItemModel.isError) {
-            shipmentCartItemModel.isAllItemError = true
-        }
-        shipmentCartItemModel.isHasUnblockingError = groupShop.hasUnblockingError
-        shipmentCartItemModel.unblockingErrorMessage = groupShop.unblockingErrorMessage
-        shipmentCartItemModel.errorTitle = groupShop.errorMessage
-        shipmentCartItemModel.firstProductErrorIndex = groupShop.firstProductErrorIndex
-        if (orderIndex > 0) {
-            shipmentCartItemModel.orderNumber = orderIndex
-        }
-        val shipmentInformationData = groupShop.shipmentInformationData
-        if (shipmentInformationData.preorder.isPreorder) {
-            shipmentCartItemModel.preOrderInfo = shipmentInformationData.preorder.duration
-        }
-        shipmentCartItemModel.freeShippingBadgeUrl =
-            shipmentInformationData.freeShippingGeneral.badgeUrl
-        shipmentCartItemModel.isFreeShippingPlus =
-            shipmentInformationData.freeShippingGeneral.isBoTypePlus()
-        shipmentCartItemModel.shopLocation = shipmentInformationData.shopLocation
-        val shop = groupShop.groupShopData.first().shop
-        shipmentCartItemModel.shopId = shop.shopId
-        shipmentCartItemModel.shopName = shop.shopName
-        shipmentCartItemModel.shopAlertMessage = shop.shopAlertMessage
-        shipmentCartItemModel.shopTypeInfoData = shop.shopTypeInfoData
+//    private fun getShipmentItem(
+//        shipmentCartItemModel: ShipmentCartItemModel,
+//        userAddress: UserAddress,
+//        groupShop: GroupShop,
+//        keroToken: String,
+//        keroUnixTime: String,
+//        hasTradeInDropOffAddress: Boolean,
+//        orderIndex: Int,
+//        addOnWording: AddOnWordingData,
+//        username: String
+//    ) {
+//        shipmentCartItemModel.shopShipmentList = groupShop.shopShipments
+//        shipmentCartItemModel.isError = groupShop.isError
+//        if (shipmentCartItemModel.isError) {
+//            shipmentCartItemModel.isAllItemError = true
+//        }
+//        shipmentCartItemModel.isHasUnblockingError = groupShop.hasUnblockingError
+//        shipmentCartItemModel.unblockingErrorMessage = groupShop.unblockingErrorMessage
+//        shipmentCartItemModel.errorTitle = groupShop.errorMessage
+//        shipmentCartItemModel.firstProductErrorIndex = groupShop.firstProductErrorIndex
+//        if (orderIndex > 0) {
+//            shipmentCartItemModel.orderNumber = orderIndex
+//        }
+//        val shipmentInformationData = groupShop.shipmentInformationData
+//        if (shipmentInformationData.preorder.isPreorder) {
+//            shipmentCartItemModel.preOrderInfo = shipmentInformationData.preorder.duration
+//        }
+//        shipmentCartItemModel.freeShippingBadgeUrl =
+//            shipmentInformationData.freeShippingGeneral.badgeUrl
+//        shipmentCartItemModel.isFreeShippingPlus =
+//            shipmentInformationData.freeShippingGeneral.isBoTypePlus()
+//        shipmentCartItemModel.shopLocation = shipmentInformationData.shopLocation
+//        val shop = groupShop.groupShopData.first().shop
+//        shipmentCartItemModel.shopId = shop.shopId
+//        shipmentCartItemModel.shopName = shop.shopName
+//        shipmentCartItemModel.shopAlertMessage = shop.shopAlertMessage
+//        shipmentCartItemModel.shopTypeInfoData = shop.shopTypeInfoData
 //        shipmentCartItemModel.cartString = groupShop.cartString
-        shipmentCartItemModel.shippingId = groupShop.shippingId
-        shipmentCartItemModel.spId = groupShop.spId
-        shipmentCartItemModel.boCode = groupShop.boCode
-        shipmentCartItemModel.dropshiperName = groupShop.dropshipperName
-        shipmentCartItemModel.dropshiperPhone = groupShop.dropshipperPhone
-        shipmentCartItemModel.isInsurance = groupShop.isUseInsurance
-        shipmentCartItemModel.hasPromoList = groupShop.isHasPromoList
-        shipmentCartItemModel.isSaveStateFlag = groupShop.isSaveStateFlag
-        shipmentCartItemModel.isLeasingProduct = groupShop.isLeasingProduct
-        shipmentCartItemModel.bookingFee = groupShop.bookingFee
-        shipmentCartItemModel.listPromoCodes = groupShop.listPromoCodes
-        shipmentCartItemModel.isHasSetDropOffLocation = hasTradeInDropOffAddress
-        shipmentCartItemModel.addOnsOrderLevelModel = groupShop.addOns
-        shipmentCartItemModel.addOnWordingModel = convertFromAddOnWordingData(addOnWording)
-        shipmentCartItemModel.addOnDefaultFrom = username
-        shipmentCartItemModel.timeslotId = groupShop.scheduleDelivery.timeslotId
-        shipmentCartItemModel.scheduleDate = groupShop.scheduleDelivery.scheduleDate
-        shipmentCartItemModel.validationMetadata = groupShop.scheduleDelivery.validationMetadata
-        shipmentCartItemModel.ratesValidationFlow = groupShop.ratesValidationFlow
-        var receiverName = ""
-        if (userAddress.status == ACTIVE_ADDRESS) {
-            receiverName = userAddress.receiverName
-        }
-        shipmentCartItemModel.addOnDefaultTo = receiverName
-        val cartItemModels = arrayListOf<CartItemModel>()
-        var cartItemIndex = 0
-        groupShop.groupShopData.forEach {
-            val productList = convertFromProductList(
-                cartItemIndex,
-                it,
-                groupShop,
-                username,
-                receiverName,
-                shipmentCartItemModel.addOnWordingModel
-            )
-            cartItemModels.addAll(productList)
-            cartItemIndex += productList.size
-        }
+//        shipmentCartItemModel.shippingId = groupShop.shippingId,
+//        shipmentCartItemModel.spId = groupShop.spId,
+//        shipmentCartItemModel.boCode = groupShop.boCode,
+//        shipmentCartItemModel.dropshiperName = groupShop.dropshipperName,
+//        shipmentCartItemModel.dropshiperPhone = groupShop.dropshipperPhone,
+//        shipmentCartItemModel.isInsurance = groupShop.isUseInsurance,
+//        shipmentCartItemModel.hasPromoList = groupShop.isHasPromoList,
+//        shipmentCartItemModel.isSaveStateFlag = groupShop.isSaveStateFlag,
+//        shipmentCartItemModel.isLeasingProduct = groupShop.isLeasingProduct,
+//        shipmentCartItemModel.bookingFee = groupShop.bookingFee,
+//        shipmentCartItemModel.listPromoCodes = groupShop.listPromoCodes,
+//        shipmentCartItemModel.isHasSetDropOffLocation = hasTradeInDropOffAddress,
+//        shipmentCartItemModel.addOnsOrderLevelModel = groupShop.addOns,
+//        shipmentCartItemModel.addOnWordingModel = convertFromAddOnWordingData(addOnWording),
+//        shipmentCartItemModel.addOnDefaultFrom = username,
+//        shipmentCartItemModel.timeslotId = groupShop.scheduleDelivery.timeslotId,
+//        shipmentCartItemModel.scheduleDate = groupShop.scheduleDelivery.scheduleDate,
+//        shipmentCartItemModel.validationMetadata = groupShop.scheduleDelivery.validationMetadata,
+//        shipmentCartItemModel.ratesValidationFlow = groupShop.ratesValidationFlow,
+//        var receiverName = ""
+//        if (userAddress.status == ACTIVE_ADDRESS) {
+//            receiverName = userAddress.receiverName
+//        }
+//        shipmentCartItemModel.addOnDefaultTo = receiverName
+//        val cartItemModels = arrayListOf<CartItemModel>()
+//        var cartItemIndex = 0
+//        groupShop.groupShopData.forEach {
+//            val productList = convertFromProductList(
+//                cartItemIndex,
+//                it,
+//                groupShop,
+//                username,
+//                receiverName,
+//                shipmentCartItemModel.addOnWordingModel
+//            )
+//            cartItemModels.addAll(productList)
+//            cartItemIndex += productList.size
+//        }
 //        val products = groupShop.groupShopData
 //        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
 
-        // This is something that not well planned
-        val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
-        shipmentCartItemModel.isProductFcancelPartial = fobject.isFcancelPartial == 1
-        shipmentCartItemModel.cartItemModels = cartItemModels
-        shipmentCartItemModel.isProductIsPreorder = fobject.isPreOrder == 1
-        for (cartItemModel in cartItemModels) {
-            if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
-                shipmentCartItemModel.hasEthicalProducts = true
-            } else if (!cartItemModel.isError) {
-                shipmentCartItemModel.hasNonEthicalProducts = true
-            }
-        }
-        shipmentCartItemModel.shipmentCartData = RatesDataConverter()
-            .getShipmentCartData(
-                userAddress,
-                groupShop,
-                shipmentCartItemModel,
-                keroToken,
-                keroUnixTime
-            )
-    }
+    // This is something that not well planned
+//        val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
+//        shipmentCartItemModel.isProductFcancelPartial = fobject.isFcancelPartial == 1
+//        shipmentCartItemModel.cartItemModels = cartItemModels
+//        shipmentCartItemModel.isProductIsPreorder = fobject.isPreOrder == 1
+//        for (cartItemModel in cartItemModels) {
+//            if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
+//                shipmentCartItemModel.hasEthicalProducts = true
+//            } else if (!cartItemModel.isError) {
+//                shipmentCartItemModel.hasNonEthicalProducts = true
+//            }
+//        }
+//        shipmentCartItemModel.shipmentCartData = RatesDataConverter()
+//            .getShipmentCartData(
+//                userAddress,
+//                groupShop,
+//                shipmentCartItemModel,
+//                keroToken,
+//                keroUnixTime
+//            )
+//    }
 
     private fun convertFromProductList(
         index: Int,
