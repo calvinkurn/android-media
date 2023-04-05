@@ -9,6 +9,7 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.Analytics
 import javax.inject.Inject
 
 class LastFilterListenerDelegate @Inject constructor(
@@ -25,12 +26,15 @@ class LastFilterListenerDelegate @Inject constructor(
     ProductListParameterListener by productListParameterListener,
     SearchParameterProvider by searchParameterProvider {
 
+    private val analytics: Analytics
+        get() = TrackApp.getInstance().gtm
+
     override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
         lastFilterDataView.impress(iris)
     }
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        lastFilterDataView.click(TrackApp.getInstance().gtm)
+        lastFilterDataView.click(analytics)
 
         filterController.setFilter(lastFilterDataView.filterOptions())
 
@@ -41,6 +45,7 @@ class LastFilterListenerDelegate @Inject constructor(
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
+        lastFilterDataView.clickOtherAction(analytics)
         val searchParameterMap = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
 
         recyclerViewUpdater.productListAdapter?.removeLastFilterWidget()
