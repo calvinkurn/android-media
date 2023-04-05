@@ -44,11 +44,13 @@ class WidgetBulkReviewTextArea(
                     binding.root.editText.setText(uiState.text)
                 }
                 binding.root.setPlaceholder(uiState.hint.getStringValue(context))
+                binding.root.setMessage(uiState.message.getStringValue(context))
+                binding.root.isInputError = uiState.isError
                 animateShow(animate = animate, onAnimationStart = {
                     show()
                 }, onAnimationEnd = {
-                        if (uiState.focused) binding.root.requestFocus()
-                    })
+                    if (uiState.focused) binding.root.requestFocus()
+                })
             }
         }
     }

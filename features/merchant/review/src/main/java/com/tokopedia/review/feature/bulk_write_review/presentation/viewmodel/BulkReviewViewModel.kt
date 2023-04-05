@@ -416,7 +416,7 @@ class BulkReviewViewModel @Inject constructor(
                     inboxID = inboxID,
                     testimonyUiModel = ReviewTestimonyUiModel(
                         text = text,
-                        showTextArea = text.isNotBlank(),
+                        shouldShowTextArea = text.isNotBlank(),
                         focused = false
                     )
                 )
@@ -1472,7 +1472,7 @@ class BulkReviewViewModel @Inject constructor(
                             inboxID = uiState.inboxID,
                             testimonyUiModel = ReviewTestimonyUiModel(
                                 text = text,
-                                showTextArea = text.isNotBlank(),
+                                shouldShowTextArea = text.isNotBlank(),
                                 focused = false
                             )
                         )
@@ -1494,7 +1494,7 @@ class BulkReviewViewModel @Inject constructor(
                     inboxID = inboxID,
                     testimonyUiModel = ReviewTestimonyUiModel(
                         text = String.EMPTY,
-                        showTextArea = true,
+                        shouldShowTextArea = true,
                         focused = true
                     )
                 )

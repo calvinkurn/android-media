@@ -15,6 +15,8 @@ sealed interface BulkReviewTextAreaUiState {
     data class Showing(
         val text: String,
         val hint: StringRes,
+        val message: StringRes,
+        val isError: Boolean,
         val focused: Boolean
     ) : BulkReviewTextAreaUiState {
         override fun areContentsTheSame(other: BulkReviewTextAreaUiState): Boolean {
