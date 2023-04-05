@@ -63,7 +63,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
             val educationEventCards = educationArticleCardsUseCase.getEducationArticleCards(
                 TYPE_EVENT,
-                limit = 4,
+                limit = 3,
                 filter = FILTER_HIGHLIGHTED
             )
             val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(
