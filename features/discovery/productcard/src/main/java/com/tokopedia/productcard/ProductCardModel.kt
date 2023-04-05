@@ -1,10 +1,8 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.fashion.FashionStrategy
-import com.tokopedia.productcard.fashion.FashionStrategyControl
-import com.tokopedia.productcard.fashion.FashionStrategyLongImage
-import com.tokopedia.productcard.fashion.FashionStrategyReposition
+import com.tokopedia.productcard.layout.LayoutStrategy
+import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
 import com.tokopedia.productcard.utils.LABEL_CATEGORY
@@ -15,6 +13,7 @@ import com.tokopedia.productcard.utils.LABEL_ETA
 import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_OVERLAY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
@@ -82,6 +81,7 @@ data class ProductCardModel (
         val customVideoURL : String = "",
         val cardInteraction: Boolean = false,
         val productListType: ProductListType = ProductListType.CONTROL,
+        val isPortrait: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -90,11 +90,7 @@ data class ProductCardModel (
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
 
-    internal val fashionStrategy: FashionStrategy = when (productListType) {
-        ProductListType.CONTROL -> FashionStrategyControl()
-        ProductListType.REPOSITION -> FashionStrategyReposition()
-        ProductListType.LONG_IMAGE -> FashionStrategyLongImage()
-    }
+    internal val layoutStrategy: LayoutStrategy = LayoutStrategyFactory.create(productListType)
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
 
@@ -225,6 +221,10 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_COST_PER_UNIT)
     }
 
+    fun getLabelOverlay(): LabelGroup? {
+        return findLabelGroup(LABEL_OVERLAY)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -266,6 +266,14 @@ data class ProductCardModel (
                 && labelCampaign.imageUrl.isNotEmpty()
     }
 
+    fun isShowLabelOverlay(): Boolean {
+        val labelOverlay = getLabelOverlay()
+
+        return labelOverlay != null
+                && labelOverlay.title.isNotEmpty()
+                && (labelOverlay.imageUrl.isNotEmpty() || labelOverlay.type.isNotEmpty())
+    }
+
     fun isShowLabelGimmick() =
             !isShowLabelBestSeller()
                     && !isShowLabelCampaign()
@@ -294,15 +302,20 @@ data class ProductCardModel (
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
+    fun willShowBigImage() : Boolean {
+        return productListType == ProductListType.LONG_IMAGE
+            || (productListType == ProductListType.PORTRAIT && isPortrait)
+    }
+
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
-        val colorVariantTaken = fashionStrategy.getLabelVariantColorCount(colorVariant)
+        val colorVariantTaken = layoutStrategy.getLabelVariantColorCount(colorVariant)
         val sizeVariantTaken =
-            fashionStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
+            layoutStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
                 sizeVariant.take(sizeVariantTaken) +
@@ -330,9 +343,9 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + fashionStrategy.extraCharSpace
+                    val additionalSize = element.title.length + layoutStrategy.extraCharSpace
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= fashionStrategy.sizeCharLimit
+                            (sizeVariantCount + additionalSize) <= layoutStrategy.sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
@@ -376,6 +389,11 @@ data class ProductCardModel (
     }
 
     enum class ProductListType {
-        CONTROL, REPOSITION, LONG_IMAGE
+        CONTROL,
+        REPOSITION,
+        LONG_IMAGE,
+        GIMMICK,
+        PORTRAIT,
+        ETA,
     }
 }
