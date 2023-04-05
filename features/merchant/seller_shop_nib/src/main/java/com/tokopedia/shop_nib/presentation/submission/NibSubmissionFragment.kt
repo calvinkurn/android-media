@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,6 +83,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     private fun setupView() {
         binding?.run {
+            header.setNavigationOnClickListener { activity?.finish() }
             layoutFilePickerDefault.setOnClickListener { showFilePicker() }
             iconClose.setOnClickListener { removeSelectedFile() }
             tpgNibBenefit.setHyperlinkText(
@@ -91,7 +93,11 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
                 }
             )
+
             tauNibPublishedDate.editText.setOnClickListener { showDatePickerBottomSheet() }
+            tauNibPublishedDate.editText.inputType = InputType.TYPE_NULL
+            tauNibPublishedDate.editText.isFocusable = false
+
             btnFinish.setOnClickListener { NibSubmissionSuccessActivity.start(activity ?: return@setOnClickListener) }
         }
     }

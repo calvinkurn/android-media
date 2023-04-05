@@ -14,6 +14,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/btnFinish"
         android:layout_below="@id/header"
         android:scrollbars="vertical">
 
@@ -167,6 +168,8 @@
                 app:unify_text_field_label="@string/ssn_nib_publish_date"
                 app:unify_text_field_append_drawable_icon_1="@drawable/ssn_ic_calendar"
                 app:unify_text_field_label_static="false"
+                app:unify_text_field_maxline="1"
+                app:unify_text_field_placeholder="@string/ssn_nib_publish_date"
                 android:layout_height="wrap_content"/>
 
             <com.tokopedia.unifyprinciples.Typography
