@@ -10,17 +10,20 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tkpd.atcvariant.util.roundToIntOrZero
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -51,15 +54,18 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -115,6 +121,30 @@ class PlayFragment @Inject constructor(
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     private var isFirstTopBoundsCalculated = false
+
+    /**
+     * Global Variant Bottom Sheet
+     */
+
+    private val atcVariantViewModel by lazy {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
+    private val variantSheet by lazyThreadSafetyNone {
+        AtcVariantBottomSheet()
+    }
+
+    private val variantObserver by lazyThreadSafetyNone {
+        object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun onResume() {
+                variantSheet.dialog?.window?.setBackgroundDrawable(null)
+                variantSheet.view?.updateLayoutParams {
+                    height = (getScreenHeight() * 0.6).roundToIntOrZero()
+                }
+            }
+        }
+    }
 
     override fun getScreenName(): String = "Play"
 
@@ -245,10 +275,21 @@ class PlayFragment @Inject constructor(
         else null
     }
 
-    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
-        val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
-    //TODO() open variant bottomSheet from PlayFragment
-    // fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
+    fun openVariantBottomSheet(product: PlayProductUiModel.Product) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                isTokoNow = product.isTokoNow,
+                pageSource = VariantPageSource.PLAY_PAGESOURCE.source,
+                productId = product.id,
+                shopId = product.shopId,
+                dismissAfterTransaction = false,
+                showQtyEditor = false,
+            )
+        )
+
+        showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+            variantSheet
+        }
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -399,6 +440,8 @@ class PlayFragment @Inject constructor(
 
         invalidateVideoTopBounds()
         hideAllInsets()
+
+        variantSheet.lifecycle.addObserver(variantObserver)
     }
 
     private fun setupInsets(view: View) {
@@ -651,6 +694,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
 
         const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L

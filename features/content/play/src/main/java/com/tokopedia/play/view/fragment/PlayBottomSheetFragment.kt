@@ -11,15 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.*
-import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
-import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -56,11 +53,7 @@ import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
-import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
-import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -87,8 +80,6 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-
-        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
     }
 
     private val productSheetView by viewComponent {
@@ -112,29 +103,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val openLoginForCart = registerForActivityResult(OpenLogin(), resultRegistry) { success ->
         if (success) router.route(context, ApplinkConst.CART)
-    }
-
-    /**
-     * ViewModel for Global Variant BottomSheet
-     */
-    private val atcVariantViewModel by lazy {
-        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
-    }
-
-    private val variantSheet by lazyThreadSafetyNone {
-        AtcVariantBottomSheet()
-    }
-
-    private val variantObserver by lazyThreadSafetyNone {
-        object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-            fun onResume() {
-                variantSheet.dialog?.window?.setBackgroundDrawable(null)
-                variantSheet.view?.updateLayoutParams {
-                    height = variantSheetMaxHeight
-                }
-            }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -332,8 +300,6 @@ class PlayBottomSheetFragment @Inject constructor(
         productSheetView.hide()
         couponSheetView.hide()
         leaderboardSheetView.hide()
-
-        variantSheet.lifecycle.addObserver(variantObserver)
     }
 
     private fun setupObserve() {
@@ -350,20 +316,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            atcVariantViewModel.setAtcBottomSheetParams(
-                ProductVariantBottomSheetParams(
-                    isTokoNow = product.isTokoNow,
-                    pageSource = VariantPageSource.PLAY_PAGESOURCE.source,
-                    productId = product.id,
-                    shopId = product.shopId,
-                    dismissAfterTransaction = false,
-                    showQtyEditor = false,
-                )
-            )
-
-            showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
-                variantSheet
-            }
+            playFragment.openVariantBottomSheet(product)
             analytic.clickActionProductWithVariant(product.id, action)
         }
 

@@ -1865,16 +1865,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
-                // TODO("Temporary, maybe best to combine bottom sheet into this fragment")
-
-                /**
-                 * TODO()
-                 * Call GVBS from PlayFragment
-                 */
-
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        event.action,
                         event.product
                     )
                 }
