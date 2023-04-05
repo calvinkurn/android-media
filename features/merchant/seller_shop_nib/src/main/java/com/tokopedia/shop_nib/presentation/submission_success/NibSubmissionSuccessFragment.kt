@@ -17,7 +17,6 @@ class NibSubmissionSuccessFragment : Fragment() {
         fun newInstance(): NibSubmissionSuccessFragment {
             return NibSubmissionSuccessFragment()
         }
-        private const val IMAGE_URL_ALREADY_SUBMITTED = "https://images.tokopedia.net/img/android/campaign/shop-nib/already_submitted.png"
         private const val IMAGE_URL_SUBMISSION_SUCCESS = "https://images.tokopedia.net/img/android/campaign/shop-nib/submission_success.png"
     }
 
