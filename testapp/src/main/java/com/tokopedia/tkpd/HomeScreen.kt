@@ -63,12 +63,14 @@ fun HomeScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                NestButton(
-                    text = "Logout",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                if (model.isLoggedIn) {
+                    NestButton(
+                        text = "Logout",
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
                 NestButton(
                     text = "Developer Option",
                     modifier = Modifier.fillMaxWidth(),
