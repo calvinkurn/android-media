@@ -111,7 +111,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
     //Merchant
-    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
