@@ -284,8 +284,16 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.value.channel.channelInfo
                 )
+
+                renderPerformanceDashboardEntryPoint(it.prevValue?.partner?.id, it.value.partner.id)
             }
         }
+    }
+
+    private fun renderPerformanceDashboardEntryPoint(prevId: Long?, currentId: Long) {
+        if (prevId == currentId || currentId.toString() != playViewModel.shopId) return
+
+        buildListAction(action = performanceDashboardAction)
     }
 
     private fun renderPiPView(
@@ -402,7 +410,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
 
     private fun setupListAction() {
-        buildListAction(action = performanceDashboardAction)
         buildListAction(action = reportAction)
 
         if(playViewModel.performanceSummaryPageLink.isNotEmpty())
