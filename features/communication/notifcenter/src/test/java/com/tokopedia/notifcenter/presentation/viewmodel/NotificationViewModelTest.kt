@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
@@ -73,6 +74,7 @@ import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class NotificationViewModelTest {
 
@@ -264,6 +266,53 @@ class NotificationViewModelTest {
             notificationItemsObserver.onChanged(Success(expectedValue))
             topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView))
         }
+    }
+
+    @Test
+    fun `loadFirstPageNotification as affiliate should return data properly`() {
+        // given
+        val cardsItem = AffiliateEducationArticleResponse.CardsArticle.Data.CardsItem()
+        val eduResponse = AffiliateEducationArticleResponse(
+            AffiliateEducationArticleResponse.CardsArticle(
+                AffiliateEducationArticleResponse.CardsArticle.Data(
+                    listOf(
+                        cardsItem
+                    )
+                )
+            )
+        )
+        val notifResponse = NotifcenterDetailMapper().mapFirstPage(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
+        )
+        val flow = flow { emit(Resource.success(eduResponse)) }
+
+        val role = RoleType.AFFILIATE
+        viewModel.reset() // filter id
+
+        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } returns flow
+
+        every {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
+            )
+        } answers {
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(notifResponse)
+        }
+
+        // when
+        viewModel.loadFirstPageNotification(role)
+
+        // then
+        verify {
+            notificationItemsObserver.onChanged(Success(notifResponse))
+        }
+        assertNotNull(viewModel.affiliateEducationArticle.value)
     }
 
     @Test
