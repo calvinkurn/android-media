@@ -7,6 +7,6 @@ object CheckDynamicAttachmentValidity {
         if (contentCode == null) {
             return false
         }
-        return ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+        return ChatbotConstant.DynamicAttachment.ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
     }
 }

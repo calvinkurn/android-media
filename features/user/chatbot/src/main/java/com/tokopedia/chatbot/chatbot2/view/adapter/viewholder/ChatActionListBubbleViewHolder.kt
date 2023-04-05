@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -61,7 +61,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     }
 
     override fun bind(viewModel: ChatActionSelectionBubbleUiModel) {
-        if (viewModel.status == RENDER_INVOICE_LIST_AND_BUTTON_ACTION) {
+        if (viewModel.status == RENDER_TO_UI_BASED_ON_STATUS) {
             super.bind(viewModel)
             bindActionBubbleBackground()
             ChatbotMessageViewHolderBinder.bindChatMessage(

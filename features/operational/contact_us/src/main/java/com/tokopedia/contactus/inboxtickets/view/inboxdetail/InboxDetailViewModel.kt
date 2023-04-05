@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -15,11 +14,12 @@ import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.CloseTicketByUserUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ContactUsUploadImageUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxOptionUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxDetailUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SecureUploadUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SubmitRatingUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Param
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_HIT_API
@@ -34,15 +34,6 @@ import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.view.utils.NEW
 import com.tokopedia.contactus.inboxtickets.view.utils.OPEN
 import com.tokopedia.contactus.inboxtickets.view.utils.SOLVED
-import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.CloseTicketByUserUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.ContactUsUploadImageUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxDetailUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
-import com.tokopedia.contactus.inboxtickets.domain.usecase.SecureUploadUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.SubmitRatingUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Param
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
@@ -454,14 +445,10 @@ class InboxDetailViewModel @Inject constructor(
                 val replyTicketResponse = postMessageUseCase(requestParam)
 
                 if (replyTicketResponse.getTicketReplay()
-                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                    .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                 ) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
-
-                } else if (!errorResponse.isNullOrEmpty()) {
-                    val errorMessage = errorResponse[INDEX_ZERO].message
-                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(messageError = errorMessage))
                 } else {
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
@@ -510,7 +497,7 @@ class InboxDetailViewModel @Inject constructor(
                         postMessageUseCase(requestParam)
 
                     if (createTicketResponse.getTicketReplay()
-                            .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                     ) {
                         val ticketReplyData =
                             createTicketResponse.getTicketReplay().getTicketReplayData()
@@ -632,7 +619,8 @@ class InboxDetailViewModel @Inject constructor(
             },
             onError = {
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
-            })
+            }
+        )
     }
 
     private fun addNewLocalComment(

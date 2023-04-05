@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.chatbot2.view.uimodel.invoice
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotTypeFactory
 
 /**
@@ -20,7 +20,7 @@ class AttachInvoiceSelectionUiModel(
     var list: List<AttachInvoiceSingleUiModel>?,
     message: String,
     source: String,
-    var status: Int = RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+    var status: Int = RENDER_TO_UI_BASED_ON_STATUS
 ) : BaseChatUiModel(
     messageId, fromUid,
     from, fromRole, attachmentId, attachmentType, replyTime, message, source

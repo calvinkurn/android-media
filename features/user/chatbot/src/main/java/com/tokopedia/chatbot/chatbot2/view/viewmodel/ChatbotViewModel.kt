@@ -25,8 +25,8 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_UPDATE_TOOLBAR
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
@@ -1165,10 +1165,10 @@ class ChatbotViewModel @Inject constructor(
             == Attachment34RenderType.RenderAttachment34
         ) {
             when (replyBoxAttribute?.contentCode) {
-                ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX -> {
+                ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX -> {
                     convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
-                ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE -> {
+                ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE -> {
                     convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
                 else -> {
@@ -1227,11 +1227,11 @@ class ChatbotViewModel @Inject constructor(
 
         if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
             when (replyBoxAttribute.contentCode) {
-                ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX -> {
+                ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX -> {
                     convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
                     return true
                 }
-                ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE -> {
+                ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE -> {
                     convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                     return true
                 }
