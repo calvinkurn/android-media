@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OWOCSectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -44,6 +45,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.model.OWOCSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -113,6 +115,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
+            OWOCSectionViewHolder.LAYOUT -> OWOCSectionViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -221,5 +224,9 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
         return PofRefundInfoViewHolder.LAYOUT
+    }
+
+    fun type(owocSectionUiModel: OWOCSectionUiModel): Int {
+        return OWOCSectionViewHolder.LAYOUT
     }
 }
