@@ -3,7 +3,12 @@ package com.tokopedia.product.addedit.common.util
 import android.R
 import android.content.res.ColorStateList
 import android.graphics.drawable.ScaleDrawable
-import android.text.*
+import android.text.Editable
+import android.text.InputFilter
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
@@ -18,14 +23,22 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.TextAreaUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.Exception
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
@@ -116,18 +129,20 @@ fun TextFieldUnify2?.setHtmlMessage(text: String) {
 // Action listener for edittext inside the recyclerView
 // https://stackoverflow.com/questions/13614101/fatal-crash-focus-search-returned-a-view-that-wasnt-able-to-take-focus/49433332
 fun TextFieldUnify?.setRecyclerViewEditorActionListener() {
-    this?.textFieldInput?.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, event ->
-        if (actionId == EditorInfo.IME_ACTION_NEXT) {
-            val view = textView.focusSearch(View.FOCUS_RIGHT)
-            if (view != null) {
-                if (!view.requestFocus(View.FOCUS_RIGHT)) {
-                    return@OnEditorActionListener true
+    this?.textFieldInput?.setOnEditorActionListener(
+        TextView.OnEditorActionListener { textView, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                val view = textView.focusSearch(View.FOCUS_RIGHT)
+                if (view != null) {
+                    if (!view.requestFocus(View.FOCUS_RIGHT)) {
+                        return@OnEditorActionListener true
+                    }
                 }
+                return@OnEditorActionListener false
             }
-            return@OnEditorActionListener false
+            false
         }
-        false
-    })
+    )
 }
 
 fun RadioButtonUnify?.setTitle(title: String) {
@@ -195,7 +210,8 @@ fun Typography.activateHighlight(isActive: Boolean = true) {
         arrayOf(
             intArrayOf(R.attr.state_enabled),
             intArrayOf(-R.attr.state_enabled)
-        ), intArrayOf(
+        ),
+        intArrayOf(
             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500),
             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
@@ -253,8 +269,12 @@ fun CoachMark2.hideCoachmarkWhenTouchOutside(anchorView: View) {
 
 fun Fragment.setFragmentToUnifyBgColor() {
     if (activity != null && context != null) {
-        activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
-                context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        activity!!.window.decorView.setBackgroundColor(
+            ContextCompat.getColor(
+                context!!,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
     }
 }
 
