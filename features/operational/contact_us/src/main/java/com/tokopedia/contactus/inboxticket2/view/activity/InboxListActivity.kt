@@ -211,7 +211,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
             contactUsHome.putExtra(KEY_TITLE, getString(R.string.contact_us_title_home))
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
-            ContactUsTracking.sendGTMInboxTicket(this, "",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.InboxEmpty)
