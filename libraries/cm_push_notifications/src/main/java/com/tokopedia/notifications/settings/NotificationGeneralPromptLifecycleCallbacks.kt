@@ -73,7 +73,9 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         object : NotificationGeneralPromptView {
             override fun show(isReminderPrompt: Boolean) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    NotificationGeneralPromptBottomSheet(isReminderPrompt, pageName).show(
+                    val generalPromptBottomSheet = NotificationGeneralPromptBottomSheet()
+                    generalPromptBottomSheet.initVariables(isReminderPrompt, pageName)
+                    generalPromptBottomSheet.show(
                         activity.supportFragmentManager,
                         NotificationGeneralPromptBottomSheet.TAG
                     )

@@ -19,10 +19,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class NotificationGeneralPromptBottomSheet(
-    private val isReminderPrompt: Boolean,
-    private val pageName: String
-    ) : BottomSheetUnify() {
+class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
 
@@ -35,6 +32,8 @@ class NotificationGeneralPromptBottomSheet(
 
     private var lastTimeClicked: Long = 0
     private val defaultInterval = 10000
+    private var isReminderPrompt: Boolean = false
+    private var pageName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +50,11 @@ class NotificationGeneralPromptBottomSheet(
         sendEventImpression()
 
         setCloseClickListener(::onCloseClick)
+    }
+
+    fun initVariables(isReminderPrompt: Boolean, pageName: String) {
+        this.isReminderPrompt = isReminderPrompt
+        this.pageName = pageName
     }
 
     private fun initView(activity: FragmentActivity?) {
