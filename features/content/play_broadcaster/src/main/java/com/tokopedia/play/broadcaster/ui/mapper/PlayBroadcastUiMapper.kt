@@ -161,7 +161,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override suspend fun mapConfiguration(config: Config, authorType: String): ConfigurationUiModel {
+    override suspend fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelStatus.getChannelType(
             config.activeLiveChannel,
             config.pausedChannel,

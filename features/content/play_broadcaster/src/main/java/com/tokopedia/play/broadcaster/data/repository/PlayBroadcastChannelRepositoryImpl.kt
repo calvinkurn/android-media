@@ -78,8 +78,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
                 shortVideoAllowed = response.authorConfig.shortVideoAllowed,
                 tnc = response.authorConfig.tnc,
                 beautificationConfig = mapBeautificationConfig(response.authorConfig.beautificationConfig),
-            ),
-            authorType = authorType,
+            )
         )
     }
 

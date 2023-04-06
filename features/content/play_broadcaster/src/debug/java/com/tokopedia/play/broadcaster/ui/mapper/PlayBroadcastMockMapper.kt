@@ -131,7 +131,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     }
 
     @Suppress("MagicNumber")
-    override suspend fun mapConfiguration(config: Config, authorType: String): ConfigurationUiModel {
+    override suspend fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
             shortVideoAllowed = true,
