@@ -28,6 +28,10 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs),
     TokoNowProductCardCarouseBasicListener, ChipListener {
 
+    companion object {
+        private const val FIRST_POSITION_INDEX = 0
+    }
+
     private var channelId = ""
     private var headerName = ""
     private var chipList = emptyList<TokoNowChipUiModel>()
@@ -89,6 +93,8 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         val loaded = TokoNowProductRecommendationState.LOADED
 
         binding.productCardCarousel.bindItems(items = carouselItemList)
+        binding.productCardCarousel.scrollToPosition(FIRST_POSITION_INDEX)
+
         binding.productCardCarousel.showWithCondition(state == loaded)
         binding.productCardShimmering.root.showWithCondition(state == loading)
 
