@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.show
@@ -69,11 +68,29 @@ open class GalleryFragment @Inject constructor(
         )
     }
 
+    private val layoutManager by lazy {
+        GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
+    }
+
     private val featureAdapter by lazy {
         MediaGalleryAdapter(this)
     }
 
     private var uiModel = GalleryUiModel()
+
+    private val endlessScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                // indicates the pagination isn't album changed
+                uiModel.hasChangeAlbum = false
+                hasNextPage = true
+
+                if (viewModel.isMediaListLessThanThreshold.not()) {
+                    viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -185,6 +202,7 @@ open class GalleryFragment @Inject constructor(
                 binding?.lstMedia?.smoothScrollToPosition(0)
             } else {
                 featureAdapter.addItemsAndAnimateChanges(it)
+                endlessScrollListener.updateStateAfterGetData()
             }
         }
 
@@ -236,8 +254,6 @@ open class GalleryFragment @Inject constructor(
     }
 
     private fun setupRecyclerView() {
-        val layoutManager = GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
-
         binding?.lstMedia?.let {
             // item decoration
             it.addItemDecoration(GridItemDecoration(requireContext(), SPAN_COUNT_SIZE))
@@ -249,27 +265,7 @@ open class GalleryFragment @Inject constructor(
             it.adapter = featureAdapter
 
             // scroll listener
-            it.addOnScrollListener(onRecyclerViewScrollListener(layoutManager))
-        }
-    }
-
-    private fun onRecyclerViewScrollListener(layoutManager: GridLayoutManager) = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            val totalItemCount = layoutManager.itemCount
-            val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-
-            if (viewModel.isFetchMediaLoading.value == false
-                && lastVisibleItemPosition == totalItemCount - 1
-                && dy > 0
-                && viewModel.isMediaListLessThanThreshold.not()
-            ) {
-                // indicates the pagination isn't album changed
-                uiModel.hasChangeAlbum = false
-
-                val pageIndex = layoutManager.findLastCompletelyVisibleItemPosition() + 1
-                viewModel.loadMedia(uiModel.bucketId, pageIndex)
-            }
+            it.addOnScrollListener(endlessScrollListener)
         }
     }
 

@@ -139,10 +139,10 @@ class PickerViewModel @Inject constructor(
             mediaFiles(bucketId, start)
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
-                .onEach { isMediaListLessThanThreshold = it.size < mediaFiles.maxLimitSize() }
                 .onCompletion { _isFetchMediaLoading.value = false }
                 .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
+                    isMediaListLessThanThreshold = data.size < mediaFiles.maxLimitSize()
                     _medias.value = mediaToUiModel(data)
 
                     // check if the data is exist or not,

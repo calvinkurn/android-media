@@ -24,19 +24,21 @@ class MediaFileRepositoryImpl @Inject constructor(
         val result = mutableListOf<Media>()
 
         return flow {
-            while (cursor?.moveToNext() == true) {
-                val media = createMedia(cursor) ?: continue
-                if (media.file.exists().not()) continue
+            if (cursor?.moveToFirst() == true) {
+                do {
+                    val media = createMedia(cursor) ?: continue
+                    if (media.file.exists().not()) continue
 
-                if (media.file.isVideo()) {
-                    media.duration = getVideoDuration(media.file)
-                }
+                    if (media.file.isVideo()) {
+                        media.duration = getVideoDuration(media.file)
+                    }
 
-                result.add(media)
+                    result.add(media)
+                } while (cursor.moveToNext())
             }
 
-            cursor?.close()
             emit(result)
+            cursor?.close()
         }
     }
 
