@@ -1405,6 +1405,9 @@ open class HomeRevampFragment :
             }
 
     private fun initAdapter() {
+        if (!this::homePrefController.isInitialized) {
+            initInjectorHome()
+        }
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
