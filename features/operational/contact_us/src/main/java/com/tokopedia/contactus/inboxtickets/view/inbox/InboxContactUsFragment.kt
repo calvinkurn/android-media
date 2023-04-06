@@ -40,6 +40,7 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.mapToSelectionFilterObject
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -49,6 +50,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import kotlinx.coroutines.flow.collect
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class InboxContactUsFragment :
@@ -121,9 +125,9 @@ class InboxContactUsFragment :
         super.onResume()
         showProgressBar()
         resetPaging()
-        viewModel.getTopBotStatus()
         viewModel.restartPageOfList()
         viewModel.getTicketItems()
+        viewModel.getTopBotStatus()
     }
 
     private fun initView() {
@@ -131,6 +135,7 @@ class InboxContactUsFragment :
         setupPaging()
         setOptionsFilter()
         settingOnClickListener()
+        settingClickListenerOfErrorPage()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(
             MethodChecker.getDrawable(
                 context ?: return,
@@ -169,6 +174,7 @@ class InboxContactUsFragment :
     }
 
     private fun handleEffect(uiEffect: InboxUiEffect) {
+        hideErrorPage()
         when (uiEffect) {
             is InboxUiEffect.EmptyTicket -> {
                 hideList()
@@ -189,6 +195,7 @@ class InboxContactUsFragment :
                     }
                     uiEffect.isFirstPage -> {
                         loadDataIntoRecyclerView(uiEffect)
+                        notifyLoadResult(uiEffect.isHasNext)
                     }
                     else -> {
                         notifyLoadResult(uiEffect.isHasNext)
@@ -197,13 +204,48 @@ class InboxContactUsFragment :
                 }
             }
             is InboxUiEffect.FetchInboxError -> {
-                val errorMessage = ErrorHandler.getErrorMessage(context, uiEffect.throwable)
-                binding?.rvEmailList.showToasterErrorWithCta(
-                    errorMessage,
-                    context?.getString(R.string.contact_us_ok).orEmpty()
-                )
+                hideProgressBar()
+                showErrorPage(uiEffect.throwable)
+                showToastWhenNeeded(uiEffect.throwable)
             }
         }
+    }
+
+    private fun showToastWhenNeeded(throwable: Throwable) {
+        if(!throwable.isInternetException() || !mAdapter.isEmpty) {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            binding?.rvEmailList.showToasterErrorWithCta(
+                errorMessage,
+                context?.getString(R.string.contact_us_ok).orEmpty()
+            )
+        }
+    }
+
+    private fun showErrorPage(throwable: Throwable) {
+        if(mAdapter.isEmpty) {
+            binding?.viewOfContent?.hide()
+            binding?.layoutErrorGlobal?.show()
+            binding?.homeGlobalError?.run {
+                setType(getTypeOfErrorGlobal(throwable))
+            }
+        }
+    }
+
+    private fun getTypeOfErrorGlobal(throwable: Throwable): Int {
+        return if(throwable.isInternetException()){
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun Throwable.isInternetException() : Boolean {
+        return  this is SocketException || this is SocketTimeoutException || this is UnknownHostException
+    }
+
+    private fun hideErrorPage(){
+        binding?.viewOfContent?.show()
+        binding?.layoutErrorGlobal?.hide()
     }
 
     private fun loadDataIntoRecyclerView(data : InboxUiEffect.LoadNextPageSuccess){
@@ -242,6 +284,7 @@ class InboxContactUsFragment :
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             mAdapter.setListener(object : TicketListAdapter.TicketAdapterListener {
                 override fun scrollList() {
+                    rvEmailList?.scrollBy(0, 0)
                 }
 
                 override fun showSerVicePriorityBottomSheet() {
@@ -303,6 +346,19 @@ class InboxContactUsFragment :
         }
         btnFilter?.setOnClickListener {
             showBottomFragment(viewModel.getOptionsFilter())
+        }
+    }
+
+    private fun settingClickListenerOfErrorPage(){
+        binding?.layoutErrorGlobal?.run {
+            binding?.homeGlobalError?.run {
+                errorSecondaryAction.hide()
+                setActionClickListener {
+                    showProgressBar()
+                    viewModel.getTopBotStatus()
+                    viewModel.getTicketItems()
+                }
+            }
         }
     }
 

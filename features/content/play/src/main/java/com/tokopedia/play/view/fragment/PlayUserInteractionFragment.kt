@@ -591,6 +591,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     // TODO("Find better logic to improve this code")
     fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        if (view == null) return
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
@@ -905,6 +906,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(cachedState)
+                handleAutoSwipe(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
                 if (cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
 
@@ -1165,11 +1167,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun enterFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+        orientationListener.changeOrientation(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun doLeaveRoom() {
@@ -1765,7 +1767,30 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoViewOnStateChanged(event = status)
-        if (isAllowAutoSwipe(!status.channelStatus.statusType.isActive)) doAutoSwipe()
+    }
+
+    private fun handleAutoSwipe(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged(
+                { it.combinedState.videoProperty },
+                { it.status },
+                { it.channel.channelInfo.channelType.isLive }
+            )
+        ) return
+
+        val isLive = state.value.channel.channelInfo.channelType.isLive
+
+        if (isAllowAutoSwipe(
+                if (isLive) {
+                    !state.value.status.channelStatus.statusType.isActive
+                }
+                else {
+                    !state.value.status.channelStatus.statusType.isActive ||
+                        state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
+                }
+            )
+        ) {
+            doAutoSwipe()
+        }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {

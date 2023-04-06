@@ -28,13 +28,15 @@ class BucketAlbumRepositoryImpl @Inject constructor(
             if (cursor?.moveToFirst() == true) {
                 do {
                     val media = createMedia(cursor)?: continue
-
                     val bucketName = getOrSetBucketName(cursor, media)
                     val bucketId = getBucketId(cursor)
 
                     val album = albumMap[bucketId]
 
                     if (album == null) {
+                        if (media.file.exists().not()) continue
+                        if (isFileValidFromParam(media).not()) continue
+
                         albumMap[bucketId] = Album(
                             bucketId,
                             bucketName,

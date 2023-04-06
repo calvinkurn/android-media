@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.play.domain.GetCartCountUseCase
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetChatHistoryUseCase
@@ -26,6 +27,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
+    private val getCartCountUseCase: GetCartCountUseCase,
     private val getCountComment: GetCountCommentsUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
@@ -80,10 +82,17 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         uiMapper.mapHistoryChat(response)
     }
 
+    override suspend fun getCartCount(): Int = withContext(dispatchers.io) {
+        return@withContext getCartCountUseCase.executeOnBackground()
+    }
+
     override suspend fun getCountComment(channelId: String): PlayCommentUiModel = withContext(dispatchers.io) {
         val result = getCountComment.apply {
             setRequestParams(GetCountCommentsUseCase.setParam(PageSource.Play(channelId)))
         }.executeOnBackground()
-        return@withContext PlayCommentUiModel(shouldShow = result.parent.child.data.firstOrNull()?.shouldShow.orFalse(), total = result.parent.child.data.firstOrNull()?.countFmt.orEmpty())
+        return@withContext PlayCommentUiModel(
+            shouldShow = result.parent.child.data.firstOrNull()?.shouldShow.orFalse(),
+            total = result.parent.child.data.firstOrNull()?.countFmt.orEmpty()
+        )
     }
 }

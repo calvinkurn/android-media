@@ -192,16 +192,17 @@ object ViewUtil {
     }
 
     fun getShadowColorViewHolder(context: Context): Int {
-            return try {
-                if (context.isDarkMode()) {
-                    R.color.topchat_dms_message_shadow
-                } else {
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                }
-            } catch (ignored: Throwable) {
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        return try {
+            if (context.isDarkMode()) {
+                R.color.topchat_dms_message_shadow
+            } else {
+                // Do not change this to nest color (NN600)
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20
             }
+        } catch (ignored: Throwable) {
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
         }
+    }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
         if (context == null) return false

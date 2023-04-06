@@ -35,6 +35,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -121,7 +122,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length >= MAX_CHAR.minus(1)) {
+                if (p0.length > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
                         CommentException.SendCommentFailed.message,
@@ -129,11 +130,21 @@ class ContentCommentBottomSheet @Inject constructor(
                     )
                 }
 
+                val prevLength = binding.newComment.length()
+                val selEnd = binding.newComment.selectionEnd
+                val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
+
                 val newText =
                     TagMentionBuilder.spanText(p0.toSpanned(), textLength = p0.length.orZero())
                 binding.newComment.setText(newText)
 
-                binding.newComment.setSelection(binding.newComment.length())
+                val currentLength = binding.newComment.length()
+                if (distanceFromEnd > 0 && distanceFromEnd < currentLength) {
+                    binding.newComment.setSelection(selEnd)
+                } else {
+                    binding.newComment.setSelection(currentLength)
+                }
+
                 binding.newComment.addTextChangedListener(this)
             }
         }
@@ -150,6 +161,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private var analytics: IContentCommentAnalytics? = null
+    private var isFromChild: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -272,12 +284,16 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message)
+                                    .orFalse()
+                            ) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
-                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
+                                    .orFalse()
+                            ) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
@@ -297,16 +313,18 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
-                    CommentEvent.ReplySuccess -> {
+                    is CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
-                        binding.rvComment.scrollToPosition(0)
+                        binding.rvComment.scrollToPosition(event.position)
+                        isFromChild = false
                     }
                     is CommentEvent.AutoType -> {
                         binding.newComment.setText("")
                         val mention = TagMentionBuilder.createNewMentionTag(
                             event.parentItem
                         )
-                        binding.newComment.tag = event.parentItem.id
+                        binding.newComment.tag = if (event.parentItem.commentType.isParent)
+                            event.parentItem.id else event.parentItem.commentType.parentId
                         binding.newComment.setText(mention)
                         binding.newComment.requestFocus()
                         showKeyboard(true)
@@ -351,6 +369,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
+        isFromChild = true
         viewModel.submitAction(CommentAction.EditTextClicked(item))
         analytics?.clickReplyChild()
     }
@@ -407,7 +426,9 @@ class ContentCommentBottomSheet @Inject constructor(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
-        binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
+        val avatar =
+            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.ivUserPhoto.loadImage(avatar)
         viewModel.submitAction(CommentAction.RefreshComment)
     }
 
@@ -477,7 +498,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
-        if (item.isReportAllowed && !item.isOwner) {
+        if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(
@@ -496,7 +517,8 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun handleSendComment() {
-        if (binding.newComment.length() >= MAX_CHAR) {
+        showKeyboard(false)
+        if (binding.newComment.length() > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
                 CommentException.SendCommentFailed.message,
@@ -524,12 +546,10 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun requireInternet(action: (isAvailable: Boolean) -> Unit) {
-        val isInetAvailable = ConnectionHelper.isInternetAvailable(
-            requireContext(),
-            checkWifi = true,
-            checkCellular = true,
-            checkEthernet = true
-        )
+        val isInetAvailable =
+            ConnectionHelper.isConnectWifi(requireContext()) || ConnectionHelper.isConnectCellular(
+                requireContext()
+            )
         if (isInetAvailable) {
             action(true)
         } else {
@@ -539,7 +559,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 Toaster.LENGTH_LONG,
                 getString(R.string.feed_content_coba_lagi_text)
             ) {
-                action(isInetAvailable)
+                action(false)
             }
         }
     }
