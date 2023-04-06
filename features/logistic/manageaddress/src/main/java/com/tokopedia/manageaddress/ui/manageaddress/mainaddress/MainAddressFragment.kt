@@ -248,7 +248,11 @@ class MainAddressFragment :
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
-                            putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
+                            if (viewModel.isFromMoneyIn) {
+                                putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                            } else {
+                                putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
+                            }
                         }
                         activity?.setResult(
                             CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS,
@@ -293,6 +297,7 @@ class MainAddressFragment :
                                 longitude = data.longitude
                                 destinationDistrictId = data.districtId.toString()
                                 postalCode = data.postalCode
+                                cityId = data.cityId.toString()
                             }
                             _selectedAddressItem = newRecipientAddressModel
                             if (isFromEditChosenAddress == true) {

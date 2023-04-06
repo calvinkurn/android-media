@@ -81,6 +81,8 @@ class ManageAddressViewModel @Inject constructor(
     var source = ""
     private val isTokonow: Boolean
         get() = source == ManageAddressSource.TOKONOW.source
+    val isFromMoneyIn: Boolean
+        get() = source == ManageAddressSource.MONEY_IN.source
 
     val isEligibleShareAddress: Boolean
         get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(

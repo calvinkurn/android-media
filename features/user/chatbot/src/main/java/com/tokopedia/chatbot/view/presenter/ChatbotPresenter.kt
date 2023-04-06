@@ -47,6 +47,11 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
@@ -56,11 +61,6 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.MEDIA_BUTTON_TOGGLE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -118,7 +118,11 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.*
+import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.websocket.ChatbotWebSocket
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -346,12 +350,15 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        if (attachmentType != DYNAMIC_ATTACHMENT) {
+            return false
+        }
         val dynamicAttachment = GsonBuilder().create().fromJson(
             pojo.attachment?.attributes,
             DynamicAttachment::class.java
         )
         val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
-        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+        return !PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -1468,6 +1475,23 @@ class ChatbotPresenter @Inject constructor(
                     pageSource = pageSourceAccess
                 )
             }
+        )
+    }
+
+    override fun sendDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        opponentId: String
+    ) {
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                messageId,
+                bubbleUiModel,
+                startTime,
+                opponentId
+            ),
+            listInterceptor
         )
     }
 

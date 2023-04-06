@@ -281,7 +281,6 @@ class InboxDetailAdapter(
 
         private fun sendGTMEvent(eventLabel: String) {
             ContactUsTracking.sendGTMInboxTicket(
-                view.context,
                 InboxTicketTracking.Event.EventName,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 InboxTicketTracking.Action.EventClickCsatPerReply,
