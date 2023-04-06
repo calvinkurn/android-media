@@ -20,7 +20,6 @@ import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULiteralExpression
 import org.w3c.dom.Attr
 import org.w3c.dom.Element
-import javax.print.attribute.standard.Severity
 
 class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     companion object {
@@ -104,12 +103,13 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     }
 
     private fun reportXmlError(context: XmlContext, node: Element, attribute: Attr) {
-        val attrValue = StringBuilder(attribute.value).toString()
-        val suggestion = UnifyComponentsList.unifyToNestColor[attrValue]
-            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER)
+        val attrValue = StringBuilder(attribute.value)
+        val sAttrValue = attrValue.toString()
+        val suggestion = UnifyComponentsList.unifyToNestColor[sAttrValue]
+            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER).toString()
         val quickFix = LintFix.create()
             .replace()
-            .text(attrValue)
+            .text(sAttrValue)
             .with(suggestion)
             .build()
 
