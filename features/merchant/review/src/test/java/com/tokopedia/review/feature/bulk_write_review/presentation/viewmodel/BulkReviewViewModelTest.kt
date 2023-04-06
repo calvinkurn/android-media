@@ -1015,6 +1015,26 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onReviewItemTextAreaTextChanged should update review item text area ui state`() =
+        runCollectingBulkReviewPageUiState { pageUiStates ->
+            val reviewItem = getFirstReviewItem()
+            val textToType = "Bagus sekali barangnya"
+
+            doSuccessGetInitialData()
+
+            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+            viewModel.onReviewItemTextAreaGainFocus(reviewItem.inboxID)
+            viewModel.onReviewItemTextAreaTextChanged(reviewItem.inboxID, textToType)
+
+            val pageShowingUiState = pageUiStates.last() as BulkReviewPageUiState.Showing
+            val textAreaUiState = (pageShowingUiState.items.find {
+                it is BulkReviewItemUiModel && it.inboxID == reviewItem.inboxID
+            } as BulkReviewItemUiModel).uiState.textAreaUiState as BulkReviewTextAreaUiState.Showing
+            assertEquals(textToType, textAreaUiState.text)
+            assertFalse(textAreaUiState.shouldApplyText)
+        }
+
+    @Test
     fun `onConfirmRemoveReviewItem should execute BulkWriteReviewTracker#trackRemoveReviewItemDialogRemoveButtonClick once`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewRemoveReviewItemDialogUiState {
@@ -1703,6 +1723,36 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onSubmitReviews should request scroll to review item with empty testimony and other bad rating category`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingReviewItemScrollRequest { scrollRequests ->
+                val reviewItem = getFirstReviewItem()
+                val otherBadRatingCategory = getOtherBadRatingCategory()
+
+                doSuccessGetInitialData()
+                mockAllSuccessSubmitBulkReview()
+
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
+                viewModel.onBadRatingCategorySelectionChanged(
+                    position = Int.ZERO,
+                    badRatingCategoryID = otherBadRatingCategory.id,
+                    reason = otherBadRatingCategory.description,
+                    selected = true
+                )
+                viewModel.onDismissExpandedTextAreaBottomSheet("Saya tidak puas")
+                viewModel.onReviewItemTextAreaGainFocus(reviewItem.inboxID)
+                viewModel.onReviewItemTextAreaTextChanged(reviewItem.inboxID, "")
+                viewModel.onReviewItemTextAreaLostFocus(reviewItem.inboxID, "")
+                viewModel.onSubmitReviews()
+
+                coVerify(inverse = true) {
+                    submitUseCase(any())
+                }
+                assertEquals(reviewItem.inboxID, scrollRequests.last().inboxID)
+            }
+        }
+
+    @Test
     fun `onSubmitReviews should execute submitUseCase exactly once`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
@@ -2088,6 +2138,28 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `getReviewItemVisitablePosition should return the position of supplied review item inbox ID`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+
+            doSuccessGetInitialData()
+            val position = viewModel.getReviewItemVisitablePosition(reviewItem.inboxID)
+
+            assertEquals(1, position)
+        }
+
+    @Test
+    fun `getReviewItemVisitablePosition should return -1 when cannot find the supplied review item inbox ID`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+
+            doSuccessGetInitialData()
+            val position = viewModel.getReviewItemVisitablePosition("")
+
+            assertEquals(-1, position)
+        }
+
+    @Test
     fun `getAndUpdateActiveMediaPickerInboxID should update activeMediaPickerInboxID then return it's prior value`() {
         val initialValue = viewModel.getAndUpdateActiveMediaPickerInboxID("123")
         val priorValue = viewModel.getAndUpdateActiveMediaPickerInboxID("321")
@@ -2095,6 +2167,32 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         assertEquals("", initialValue)
         assertEquals("123", priorValue)
     }
+
+    @Test
+    fun `getReviewItemMedia should return media paths`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+            val pickedMedia = listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg")
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(pickedMedia)
+            val reviewItemMedia = viewModel.getReviewItemMedia(reviewItem.inboxID)
+            assertEquals(pickedMedia, reviewItemMedia)
+        }
+
+    @Test
+    fun `getReviewItemMedia should return empty when supplied review item inbox id is not found`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+            val pickedMedia = listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg")
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(pickedMedia)
+            val reviewItemMedia = viewModel.getReviewItemMedia("")
+            assertEquals(listOf<String>(), reviewItemMedia)
+        }
 
     @Test
     fun `enqueueToasterDisabledAddMoreMedia should enqueue expected toaster`() =

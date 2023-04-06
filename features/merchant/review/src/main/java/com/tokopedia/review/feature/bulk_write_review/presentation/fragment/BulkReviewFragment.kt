@@ -357,7 +357,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     private fun collectScrollRequest() {
         collectLatestWhenResumed(viewModel.reviewItemScrollRequest) { reviewItem ->
-            val rvItemPosition = viewModel.getReviewItemVisitablePosition(reviewItem)
+            val rvItemPosition = viewModel.getReviewItemVisitablePosition(reviewItem.inboxID)
             if (rvItemPosition == RecyclerView.NO_POSITION) return@collectLatestWhenResumed
             binding?.rvBulkReviewItems?.smoothSnapToPosition(rvItemPosition, SNAP_TO_START)
         }

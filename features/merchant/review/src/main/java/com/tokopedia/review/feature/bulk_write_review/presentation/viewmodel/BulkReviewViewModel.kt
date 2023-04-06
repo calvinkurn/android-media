@@ -727,9 +727,9 @@ class BulkReviewViewModel @Inject constructor(
             ?.let(::scrollToReviewItemVisitable)
     }
 
-    fun getReviewItemVisitablePosition(reviewItem: BulkReviewItemUiModel): Int {
+    fun getReviewItemVisitablePosition(inboxID: String): Int {
         val pageUiState = bulkReviewPageUiState.value as? BulkReviewPageUiState.Showing ?: return -1
-        return pageUiState.items.indexOf(reviewItem)
+        return pageUiState.items.indexOfFirst { it is BulkReviewItemUiModel && it.inboxID == inboxID }
     }
 
     fun getAndUpdateActiveMediaPickerInboxID(inboxID: String): String {
