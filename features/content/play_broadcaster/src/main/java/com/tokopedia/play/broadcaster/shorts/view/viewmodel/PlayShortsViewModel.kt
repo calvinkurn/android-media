@@ -334,7 +334,6 @@ class PlayShortsViewModel @Inject constructor(
             )
             mDataStore.getSetupDataStore().setProductTag(productSectionList)
             _productSectionList.update { productSectionList }
-            _productSectionList.value = productSectionList
         }) {}
     }
 
