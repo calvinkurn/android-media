@@ -13,10 +13,10 @@ import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_THREE
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_AND_CHANGE_PN_FOOTER_TEXT
 import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_OTHER_METHODS
 import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_SMS_METHOD
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.spanFactory
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.*
@@ -139,30 +139,31 @@ open class VerificationViewModel @Inject constructor(
             }
             if (smsOtp != null) {
                 footerSpan = SPAN_USE_SMS_METHOD
-                footerText = SMS_FOOTER_TEXT
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
                 action = { goToInputOtp(smsOtp) }
             }
         }
 
         /**
          * if otp mode list only has 2 options that contains sms but the behaviour mode is sms hidden
-         * then use [SMS_FOOTER_TEXT] instead for footerText.
+         * then use [SMS_AND_CHANGE_PN_FOOTER_TEXT] instead for footerText.
          */
         else if (otpModeListData.modeList.size == 2 && otpModeListData.modeList.contains(smsOtp) && isSmsHidden(otpModeListData.defaultBehaviorMode)) {
             if (smsOtp != null) {
                 footerSpan = SPAN_USE_SMS_METHOD
-                footerText = SMS_FOOTER_TEXT
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
                 action = { goToInputOtp(smsOtp) }
             }
-        } else if (otpModeListData.modeList.size > 1) {
+        } else if (otpModeListData.modeList.size > 1 && newItems.size < otpModeListData.modeList.size) {
             footerSpan = SPAN_USE_OTHER_METHODS
-            footerText = OTHER_METHOD_FOOTER_TEXT
+            footerText = spanFactory(SPAN_USE_OTHER_METHODS, otpModeListData.linkType)
             action = { showAllMethod() }
         }
 
         _defaultOtpUiModel.value = DefaultOtpUiModel(
             footerText,
             footerSpan,
+            otpModeListData.linkType,
             action,
             displayedModeList = newItems,
             originalOtpModeList = otpModeListData.modeList,
@@ -181,13 +182,14 @@ open class VerificationViewModel @Inject constructor(
             if (isSmsHidden(otpModeListData.defaultBehaviorMode)) {
                 newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
                 footerSpan = SPAN_USE_SMS_METHOD
-                footerText = SMS_FOOTER_TEXT
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
                 action = { goToInputOtp(smsOtp) }
             }
         }
         _defaultOtpUiModel.value = DefaultOtpUiModel(
             footerText,
             footerSpan,
+            otpModeListData.linkType,
             action,
             displayedModeList = newItems,
             originalOtpModeList = otpModeListData.modeList,
@@ -269,7 +271,7 @@ open class VerificationViewModel @Inject constructor(
                 if (isSmsHidden(previousData.defaultBehaviorMode)) {
                     newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
                     footerSpan = SPAN_USE_SMS_METHOD
-                    footerText = SMS_FOOTER_TEXT
+                    footerText = SMS_AND_CHANGE_PN_FOOTER_TEXT
                     action = { goToInputOtp(smsOtp) }
                 }
             }
@@ -277,6 +279,7 @@ open class VerificationViewModel @Inject constructor(
             _defaultOtpUiModel.value = DefaultOtpUiModel(
                 footerText,
                 footerSpan,
+                previousData.linkType,
                 action,
                 displayedModeList = newItems,
                 originalOtpModeList = previousData.originalOtpModeList,

@@ -62,7 +62,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -359,44 +358,39 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
             hideLoading()
             renderOtpModeList(defaultOtpUiModel.displayedModeList)
             if (defaultOtpUiModel.originalOtpModeList.size > 1) {
-                renderDefaultOtpFooter(defaultOtpUiModel.footerText, defaultOtpUiModel.footerClickableSpan, defaultOtpUiModel.footerAction)
+                renderDefaultOtpFooter(defaultOtpUiModel.linkType, defaultOtpUiModel.footerText, defaultOtpUiModel.footerClickableSpan, defaultOtpUiModel.footerAction)
             } else {
                 hideDefaultOtpFooter()
             }
         }
     }
 
-    private fun renderDefaultOtpFooter(footerText: String, clickableMessage: String, onClick: () -> Unit) {
+    private fun renderDefaultOtpFooter(linkType: Int, footerText: String, clickableMessage: String, onClick: () -> Unit) {
         if (footerText.isNotEmpty() && clickableMessage.isNotEmpty()) {
             val inactivePhoneSpan = getString(R.string.cellphone_number_has_changed_lowercase)
-            val footerUiModel = FooterUiModel(
-                footerText,
-                listOf(
-                    FooterUiModel.SpannableUiModel(clickableMessage) {
-                        onClick()
-                        if (footerText == OtpConstant.StaticText.SMS_FOOTER_TEXT) {
-                            analytics.trackClickUseWithOtpSms()
-                        } else if (footerText == OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT) {
-                            analytics.trackClickUseWithOthersMethod()
+            if (linkType > 0) {
+                val footerUiModel = FooterUiModel(
+                    footerText,
+                    listOf(
+                        FooterUiModel.SpannableUiModel(clickableMessage) {
+                            onClick()
+                            if (footerText == OtpConstant.StaticText.SMS_AND_CHANGE_PN_FOOTER_TEXT) {
+                                analytics.trackClickUseWithOtpSms()
+                            } else if (footerText == OtpConstant.StaticText.OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT) {
+                                analytics.trackClickUseWithOthersMethod()
+                            }
+                        },
+                        FooterUiModel.SpannableUiModel(inactivePhoneSpan) {
+                            onGoToInactivePhoneNumber()
                         }
-                    },
-                    FooterUiModel.SpannableUiModel(inactivePhoneSpan) {
-                        onGoToInactivePhoneNumber()
-                    }
+                    )
                 )
-            )
-            setFooterSpannable(footerUiModel)
-//            setFooterSpannable(footerText, clickableMessage) {
-//
-//                onClick()
-//                if (footerText == OtpConstant.StaticText.SMS_FOOTER_TEXT) {
-//                    analytics.trackClickUseWithOtpSms()
-//                } else if (footerText == OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT) {
-//                    analytics.trackClickUseWithOthersMethod()
-//                }
-//            }
+                setFooterSpannable(footerUiModel)
+            } else {
+                setFooterSpannable(footerText, clickableMessage, onClick)
+            }
         } else {
-            hideDefaultOtpFooter()
+            setFooter(linkType)
         }
     }
 
@@ -467,7 +461,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
             throwable.printStackTrace()
             hideLoading()
             val message = ErrorHandler.getErrorMessage(
-                context, throwable,
+                context,
+                throwable,
                 ErrorHandler.Builder().apply {
                     className = VerificationMethodFragment::class.java.name
                 }.build()

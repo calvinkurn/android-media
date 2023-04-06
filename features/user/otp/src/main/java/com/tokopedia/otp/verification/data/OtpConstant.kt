@@ -67,13 +67,34 @@ object OtpConstant {
     }
 
     object StaticText {
-        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+        const val OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
             " Lihat metode lain atau nomor HP sudah berubah"
-        const val SMS_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n Lihat metode lain"
+        const val SMS_AND_CHANGE_PN_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
             " Gunakan metode SMS atau nomor HP sudah berubah"
+        const val SMS_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n Gunakan metode SMS"
 
         const val SPAN_USE_OTHER_METHODS = "Lihat metode lain"
         const val SPAN_USE_SMS_METHOD = "Gunakan metode SMS"
+
+        fun spanFactory(spanMethods: String, linkType: Int): String {
+            return when (spanMethods) {
+                SPAN_USE_SMS_METHOD -> {
+                    return if (linkType > 0) {
+                        SMS_AND_CHANGE_PN_FOOTER_TEXT
+                    } else {
+                        SMS_METHOD_FOOTER_TEXT
+                    }
+                }
+                SPAN_USE_OTHER_METHODS -> {
+                    return if (linkType > 0) {
+                        OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT
+                    } else {
+                        OTHER_METHOD_FOOTER_TEXT
+                    }
+                } else -> ""
+            }
+        }
     }
 
     // Default OTP = off / using old otp flow

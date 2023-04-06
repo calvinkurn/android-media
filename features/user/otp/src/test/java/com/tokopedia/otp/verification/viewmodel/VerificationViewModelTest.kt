@@ -6,8 +6,8 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_TWO
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_AND_CHANGE_PN_FOOTER_TEXT
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
@@ -102,7 +102,6 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
-
 
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
@@ -362,7 +361,7 @@ class VerificationViewModelTest {
         successGetVerificationMethodResponse.data.errorMessage = ""
 
         // When
-        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) }returns
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
             successGetVerificationMethodResponse
         viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
 
@@ -966,6 +965,7 @@ class VerificationViewModelTest {
     fun `isSmshidden return false`() {
         assert(!viewmodel.isSmsHidden(DEFAULT_OTP_BEHAVIOR_TWO))
     }
+
     @Test
     fun `renderInitialDefaultOtp more than 1 methods`() {
         val modeCode = 1
@@ -978,7 +978,7 @@ class VerificationViewModelTest {
         viewmodel.renderInitialDefaultOtp(mockData)
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "Gunakan metode lain")
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == OTHER_METHOD_FOOTER_TEXT)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.size == 1)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 2)
     }
@@ -987,7 +987,7 @@ class VerificationViewModelTest {
     fun `renderInitialDefaultOtp 1 methods`() {
         val modeCode = 1
         val modeList = arrayListOf(
-            ModeListData(modeCode = modeCode),
+            ModeListData(modeCode = modeCode)
         )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 1)
@@ -1011,8 +1011,8 @@ class VerificationViewModelTest {
         viewmodel.renderInitialDefaultOtpOff(mockData)
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "Pakai metode SMS")
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_FOOTER_TEXT)
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.find { it.modeText ==  OtpConstant.OtpMode.SMS } == null)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_AND_CHANGE_PN_FOOTER_TEXT)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.find { it.modeText == OtpConstant.OtpMode.SMS } == null)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 2)
     }
 
@@ -1036,7 +1036,7 @@ class VerificationViewModelTest {
     fun `renderInitialDefaultOtpOff has 1 method only`() {
         val modeCode = 1
         val modeList = arrayListOf(
-            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS)
         )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 3)
@@ -1053,7 +1053,7 @@ class VerificationViewModelTest {
         val modeList = arrayListOf(
             ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
             ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
-            )
+        )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 3)
         coEvery { getOtpModeList(any()) } returns mockData
@@ -1061,7 +1061,7 @@ class VerificationViewModelTest {
         viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "Gunakan metode lain")
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == OTHER_METHOD_FOOTER_TEXT)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == modeList.size)
     }
 
@@ -1079,7 +1079,7 @@ class VerificationViewModelTest {
         viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "Pakai metode SMS")
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_FOOTER_TEXT)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_AND_CHANGE_PN_FOOTER_TEXT)
     }
 
     @Test
@@ -1128,7 +1128,7 @@ class VerificationViewModelTest {
         viewmodel.showAllMethod(mockData)
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "Pakai metode SMS")
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_FOOTER_TEXT)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == SMS_AND_CHANGE_PN_FOOTER_TEXT)
     }
 
     @Test
