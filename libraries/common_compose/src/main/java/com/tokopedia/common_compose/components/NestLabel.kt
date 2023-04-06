@@ -1,18 +1,23 @@
 package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -360,10 +365,16 @@ private fun NestLabelOnDevicesPreview() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(
-                    labelText = "Dark - Label on Image",
-                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
-                )
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Box(modifier = Modifier.size(170.dp).background(NestTheme.colors.NN._600), contentAlignment = Alignment.Center, ) {
+                        NestTypography(text = "Sample image", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                    }
+                    NestLabel(
+                        modifier = Modifier.offset(y = (-8).dp, x = (-8).dp),
+                        labelText = "Dark - Label on Image",
+                        nestLabelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
+                    )
+                }
             }
         }
     }
@@ -374,7 +385,7 @@ private fun NestLabelOnDevicesPreview() {
 //region Custom colors for NestLabel
 
 //NN100 70%
-private val ImageLabelColorDark = Color(0xFF2E2F36)
+private val ImageLabelColorDark = Color(0xB3E4EBF5)
 
 //NN900 70%
 private val ImageLabelColorLight = Color(0xB32E3137)
