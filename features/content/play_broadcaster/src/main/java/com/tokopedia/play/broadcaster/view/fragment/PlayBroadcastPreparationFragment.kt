@@ -524,7 +524,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun setupCoachMarkSwitchAccount(): CoachMark2Item? {
+    private fun getCoachMarkSwitchAccountPoint(): CoachMark2Item? {
         val isSwitchAccountCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)
         if (!isSwitchAccountCoachMarkShown) return null
 
@@ -539,7 +539,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return coachMarkSwitchAccount
     }
 
-    private fun setupCoachMarkShortsEntryPoint(): CoachMark2Item? {
+    private fun getCoachMarkShortsEntryPoint(): CoachMark2Item? {
         isShortsEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
         if (!isShortsEntryPointCoachMarkShown) return null
 
@@ -554,7 +554,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return coachMarkShortsEntryPoint
     }
 
-    private fun setupCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
+    private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
         isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
         if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
 
@@ -797,7 +797,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         if (parentViewModel.isAllowChangeAccount) {
-            val coachMark = setupCoachMarkSwitchAccount()
+            val coachMark = getCoachMarkSwitchAccountPoint()
             if (coachMark != null) setupCoachMark(coachMark)
         }
     }
@@ -913,12 +913,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         val containsDashboard = curr.find { it.type == TYPE_DASHBOARD } != null
 
         if (containsShorts) {
-            val coachMark = setupCoachMarkShortsEntryPoint()
+            val coachMark = getCoachMarkShortsEntryPoint()
             if (coachMark != null) setupCoachMark(coachMark)
         }
 
         if (containsDashboard) {
-            val coachMark = setupCoachMarkPerformanceDashboardEntryPoint()
+            val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
             if (coachMark != null) setupCoachMark(coachMark)
         }
     }

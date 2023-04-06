@@ -320,7 +320,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
-    private fun setupCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
+    private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
         isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
         if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
 
@@ -557,7 +557,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         val containsDashboard = curr.find { it.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD } != null
 
         if (containsDashboard) {
-            val coachMark = setupCoachMarkPerformanceDashboardEntryPoint()
+            val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
             if (coachMark != null) setupCoachMark(coachMark)
         }
     }
