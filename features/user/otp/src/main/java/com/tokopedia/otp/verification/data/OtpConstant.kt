@@ -64,6 +64,8 @@ object OtpConstant {
         * this OTP type was implemented in Redefine Register Email
         * */
         const val PHONE_REGISTER_MANDATORY = 168
+
+        const val ADD_BANK_ACCOUNT = 12
     }
 
     object StaticText {

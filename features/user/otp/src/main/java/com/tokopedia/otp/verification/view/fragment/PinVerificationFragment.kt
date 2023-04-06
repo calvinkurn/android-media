@@ -21,7 +21,10 @@ open class PinVerificationFragment : VerificationFragment() {
         viewBound.pin?.type = PinUnify.TYPE_HIDDEN
 
         /* track otp pin when used as 1FA or 2FA */
-        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE || otpData.otpType == OtpConstant.OtpType.OTP_LOGIN_PHONE_NUMBER) {
+        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE ||
+            otpData.otpType == OtpConstant.OtpType.OTP_LOGIN_PHONE_NUMBER ||
+            otpData.otpType == OtpConstant.OtpType.ADD_BANK_ACCOUNT
+        ) {
             analytics.trackGenerateOtp(otpData, modeListData, true)
         }
     }
