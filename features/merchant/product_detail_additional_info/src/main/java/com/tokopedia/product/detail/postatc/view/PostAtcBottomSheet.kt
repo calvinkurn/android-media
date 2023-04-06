@@ -270,7 +270,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
             )
         }
         commonTracker?.let {
-            RecommendationTracking.onClickProductCard(it, recommendationItem)
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
         }
         goToProduct(productId)
     }

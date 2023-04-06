@@ -35,6 +35,9 @@ class CommonTracker(
     var shopId: String = ""
         private set
 
+    var isLoggedIn: Boolean = false
+        private set
+
     fun get(): CommonTracker {
         userId = userSession.userId
         productId = postAtcInfo.productId
@@ -45,6 +48,7 @@ class CommonTracker(
         categoryId = postAtcInfo.categoryId
         categoryName = postAtcInfo.categoryName
         shopId = postAtcInfo.shopId
+        isLoggedIn = userSession.isLoggedIn
 
         return this
     }
