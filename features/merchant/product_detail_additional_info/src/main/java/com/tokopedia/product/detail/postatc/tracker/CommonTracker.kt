@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.base
+package com.tokopedia.product.detail.postatc.tracker
 
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.user.session.UserSessionInterface
