@@ -24,5 +24,7 @@ interface PlayViewerChannelRepository {
         cursor: String = "",
     ): PlayChatHistoryUiModel
 
+    suspend fun getCartCount(): Int
+
     suspend fun getCountComment(channelId: String) : PlayCommentUiModel
 }
