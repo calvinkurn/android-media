@@ -6,13 +6,12 @@ import com.gojek.conversations.extensions.ConversationsExtensionProvider
 import com.tokopedia.tokochat.util.TokoChatValueUtil
 import javax.inject.Inject
 
-class TokoChatImageAttachmentExtensionProvider @Inject constructor(): ConversationsExtensionProvider {
+class TokoChatImageAttachmentExtensionProvider @Inject constructor() : ConversationsExtensionProvider {
     override fun getConversationsExtensionInstance(
         context: ConversationsContext
     ): ConversationsExtension {
-        return TokoChatImageAttachmentExtension()
+        return TokoChatImageAttachmentExtension(context)
     }
 
     override fun getExtensionId(): String = TokoChatValueUtil.PICTURE
-
 }

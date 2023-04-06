@@ -7,11 +7,9 @@ import com.gojek.conversations.extensions.ConversationsExtension
 import com.gojek.conversations.extensions.ConversationsExtensionWidget
 import com.gojek.conversations.extensions.ExtensionMessage
 
-class TokoChatImageAttachmentExtension : ConversationsExtension {
+class TokoChatImageAttachmentExtension(val context: ConversationsContext) : ConversationsExtension {
 
-    override var conversationsContext: ConversationsContext
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override var conversationsContext: ConversationsContext = context
 
     // No need for this, we create our own view
     override fun getExtensionMessageView(
