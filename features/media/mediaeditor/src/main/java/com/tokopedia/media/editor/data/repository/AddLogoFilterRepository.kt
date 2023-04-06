@@ -100,7 +100,7 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
             val canvas = Canvas(resultBitmap)
 
             val logoBitmap = if (isCircular) {
-                roundedBitmap(context, bitmap, isCircular = true)
+                roundedBitmap(context, bitmap.toSquare(), isCircular = true)
             } else {
                 roundedBitmap(context, bitmap, CORNER_RADIUS.toPx())
             }
@@ -140,6 +140,18 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
             LOGO_Y_POS * pair.second,
             Paint()
         )
+    }
+
+    private fun Bitmap.toSquare(): Bitmap {
+        return if (width != height) {
+            val size = width.coerceAtMost(height)
+            val xOffset = (width - size) / 2
+            val yOffset = (height - size) / 2
+
+            Bitmap.createBitmap(this, xOffset, yOffset, size, size)
+        } else {
+            this
+        }
     }
 
     companion object {
