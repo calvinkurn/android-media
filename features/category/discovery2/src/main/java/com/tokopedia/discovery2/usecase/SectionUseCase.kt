@@ -99,6 +99,15 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 creativeName
                             )
                         }
+                        ComponentNames.ContentCard.componentName -> {
+                            DiscoveryDataMapper().mapListToComponentList(
+                                comp.data,
+                                ComponentNames.ContentCardItem.componentName,
+                                comp.properties,
+                                creativeName,
+                                parentSectionId = comp.parentSectionId
+                            )
+                        }
                         else -> {
                             isProductComponent = false
                             null

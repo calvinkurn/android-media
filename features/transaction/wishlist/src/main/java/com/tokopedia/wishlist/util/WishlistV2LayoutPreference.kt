@@ -7,7 +7,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import javax.inject.Inject
 
-class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
+class WishlistV2LayoutPreference @Inject constructor(val context: Context) {
     companion object {
         const val USER_LAYOUT_WISHLIST_V2 = "user_layout_wishlist_v2"
         const val USER_LAYOUT_WISHLIST_V2_TYPE = "user_layout_wishlist_v2_type"

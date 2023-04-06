@@ -38,9 +38,6 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
         rotateSlider.listener = this
 
         flipBtn.apply {
-            setImageDrawable(
-                ContextCompat.getDrawable(context, R.drawable.editor_icon_rotate_flip)
-            )
             setOnClickListener {
                 listener.onImageMirror()
             }

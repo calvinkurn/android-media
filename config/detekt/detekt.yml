@@ -239,6 +239,7 @@ exceptions:
     active: false
   PrintStackTrace:
     active: true
+    severity: error
   RethrowCaughtException:
     active: true
   ReturnFromFinally:
@@ -246,11 +247,13 @@ exceptions:
     ignoreLabeled: false
   SwallowedException:
     active: true
+    severity: error
     ignoredExceptionTypes:
       - 'InterruptedException'
       - 'MalformedURLException'
       - 'NumberFormatException'
       - 'ParseException'
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
     allowedExceptionNameRegex: '_|(ignore|expected).*'
   ThrowingExceptionFromFinally:
     active: true

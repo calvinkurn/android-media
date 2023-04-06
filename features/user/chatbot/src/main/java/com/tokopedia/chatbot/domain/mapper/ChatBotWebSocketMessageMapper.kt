@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.domain.mapper
 
 import android.text.TextUtils
 import androidx.annotation.NonNull
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
@@ -21,11 +22,17 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -38,7 +45,10 @@ import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyButton
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -48,7 +58,8 @@ import javax.inject.Inject
  * @author by nisie on 10/12/18.
  */
 
-class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
+class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) :
+    WebsocketMessageMapper() {
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
         return if (pojo.showRating || pojo.ratingStatus != 0) {
@@ -58,11 +69,17 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         }
     }
 
-    override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+    override fun mapAttachmentMessage(
+        pojo: ChatSocketPojo,
+        jsonAttributes: JsonObject
+    ): Visitable<*> {
         return when (pojo.attachment?.type) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
-            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
+            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(
+                pojo,
+                jsonAttributes
+            )
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
@@ -71,12 +88,95 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo, jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(pojo, jsonAttributes)
+            DYNAMIC_ATTACHMENT -> {
+                val dynamicAttachment = gson.fromJson(
+                    pojo.attachment?.attributes,
+                    DynamicAttachment::class.java
+                )
+                val contentCode =
+                    dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+                if (PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
+                    when (contentCode) {
+                        DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(
+                            pojo,
+                            dynamicAttachment
+                        )
+                        DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(
+                            pojo,
+                            dynamicAttachment
+                        )
+                        else -> convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
+                    }
+                } else {
+                    convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
+                }
+            }
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
 
-    private fun convertToSendInvoice(pojo: ChatSocketPojo, jsonAttributes: JsonObject): AttachInvoiceSentUiModel {
-        val invoiceSentPojo = GsonBuilder().create().fromJson(
+    private fun convertToDynamicAttachmentwithContentCode105(
+        pojo: ChatSocketPojo,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicStickyButtonUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicStickyButton::class.java
+        )
+        return DynamicStickyButtonUiModel(
+            messageId = pojo.msgId,
+            fromUid = pojo.fromUid,
+            from = pojo.from,
+            fromRole = pojo.fromRole,
+            attachmentId = pojo.attachment?.id ?: "",
+            attachmentType = pojo.attachment?.type ?: "",
+            actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
+            contentText = dynamicStickyButton.textMessage,
+            replyTime = pojo.message.timeStampUnixNano
+        )
+    }
+
+    private fun convertToDynamicAttachment105withContentCode106(
+        pojo: ChatSocketPojo,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            ChatActionPojo::class.java
+        )
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsgContent(dynamicStickyButton.text)
+            .build()
+    }
+
+    private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {
+        return ChatActionBubbleUiModel(
+            pojo.text,
+            pojo.value,
+            pojo.action
+        )
+    }
+
+    private fun convertToDynamicAttachmentFallback(
+        pojo: ChatSocketPojo,
+        dynamicAttachment: DynamicAttachment
+    ): Visitable<*> {
+        var fallbackMessage = ""
+        dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.fallbackMessage?.let {
+            fallbackMessage = it
+        }
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsg(fallbackMessage)
+            .build()
+    }
+
+    private fun convertToSendInvoice(
+        pojo: ChatSocketPojo,
+        jsonAttributes: JsonObject
+    ): AttachInvoiceSentUiModel {
+        val invoiceSentPojo = gson.fromJson(
             jsonAttributes,
             InvoiceSentPojo::class.java
         )
@@ -89,7 +189,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
         ImageUploadUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatbotImageUploadAttributes>(
+        val pojoAttribute = gson.fromJson(
             jsonAttribute,
             ChatbotImageUploadAttributes::class.java
         )
@@ -103,7 +203,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
     private fun convertToVideoUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
         VideoUploadUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatbotVideoUploadAttributes>(
+        val pojoAttribute = gson.fromJson(
             jsonAttribute,
             ChatbotVideoUploadAttributes::class.java
         )
@@ -115,13 +215,13 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToStickedButtonActionsViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        val stickyActionButtonPojo = GsonBuilder().create()
-            .fromJson<StickyActionButtonPojo>(
+        val stickyActionButtonPojo = gson
+            .fromJson(
                 pojo.attachment?.attributes,
                 StickyActionButtonPojo::class.java
             )
         return StickyActionButtonUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -135,13 +235,13 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToHelpQuestionViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        val helpFullQuestionPojo = GsonBuilder().create()
-            .fromJson<HelpFullQuestionPojo>(
+        val helpFullQuestionPojo = gson
+            .fromJson(
                 pojo.attachment?.attributes,
                 HelpFullQuestionPojo::class.java
             )
         return HelpFullQuestionsUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -155,13 +255,13 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToCsatOptionsViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        val csatAttributesPojo = GsonBuilder().create()
-            .fromJson<CsatAttributesPojo>(
+        val csatAttributesPojo = gson
+            .fromJson(
                 pojo.attachment?.attributes,
                 CsatAttributesPojo::class.java
             )
         return CsatOptionsUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -175,13 +275,13 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToChatRating(pojo: ChatSocketPojo): Visitable<*> {
-        val quickReplyPojo = GsonBuilder().create()
-            .fromJson<QuickReplyAttachmentAttributes>(
+        val quickReplyPojo = gson
+            .fromJson(
                 pojo.attachment?.attributes,
                 QuickReplyAttachmentAttributes::class.java
             )
         return ChatRatingUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -202,7 +302,10 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         val invoiceListKey = "invoice_list"
         val jsonObject = jsonAttribute.getAsJsonObject(invoiceListKey)
 
-        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(jsonObject, InvoicesSelectionPojo::class.java)
+        val invoicesSelectionPojo = gson.fromJson(
+            jsonObject,
+            InvoicesSelectionPojo::class.java
+        )
         val invoiceList = invoicesSelectionPojo.invoices
 
         val list = ArrayList<AttachInvoiceSingleUiModel>()
@@ -228,7 +331,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         }
 
         return AttachInvoiceSelectionUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -241,15 +344,21 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         )
     }
 
-    private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
-        val quickReplyPojo = GsonBuilder().create()
-            .fromJson<QuickReplyAttachmentAttributes>(
+    private fun convertToChatActionSelectionBubbleModel(
+        pojo: ChatSocketPojo,
+        jsonAttribute: JsonObject
+    ): ChatActionSelectionBubbleUiModel {
+        val pojoAttribute = gson.fromJson(
+            jsonAttribute,
+            ChatActionBalloonSelectionAttachmentAttributes::class.java
+        )
+        val quickReplyPojo = gson
+            .fromJson(
                 jsonAttribute,
                 QuickReplyAttachmentAttributes::class.java
             )
         return ChatActionSelectionBubbleUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -267,19 +376,30 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     ): List<ChatActionBubbleUiModel> {
         val result = ArrayList<ChatActionBubbleUiModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleUiModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
+            result.add(
+                ChatActionBubbleUiModel(
+                    item.text,
+                    item.value,
+                    item.action,
+                    hexColor = item.hexColor,
+                    iconUrl = item.iconUrl
+                )
+            )
         }
         return result
     }
 
-    private fun convertToQuickReplyModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): QuickReplyListUiModel {
-        val pojoAttribute = GsonBuilder().create()
-            .fromJson<QuickReplyAttachmentAttributes>(
+    private fun convertToQuickReplyModel(
+        pojo: ChatSocketPojo,
+        jsonAttribute: JsonObject
+    ): QuickReplyListUiModel {
+        val pojoAttribute = gson
+            .fromJson(
                 jsonAttribute,
                 QuickReplyAttachmentAttributes::class.java
             )
         return QuickReplyListUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -304,8 +424,11 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         return list
     }
 
-    private fun convertToReplyBubble(pojo: ChatSocketPojo, jsonAttributes: JsonObject): MessageUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatSocketPojo>(
+    private fun convertToReplyBubble(
+        pojo: ChatSocketPojo,
+        jsonAttributes: JsonObject
+    ): MessageUiModel {
+        val pojoAttribute = gson.fromJson(
             jsonAttributes,
             ChatSocketPojo::class.java
         )

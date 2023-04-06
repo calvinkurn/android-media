@@ -6,6 +6,12 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +29,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -31,7 +40,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -59,6 +67,7 @@ import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.bottomsheet.PlayWidgetActionMenuBottomSheet
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
@@ -74,8 +83,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPageHomeTrackingMapper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -122,16 +131,15 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -142,6 +150,7 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -203,6 +212,11 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
+        private const val DEVICE_WIDTH_540 = 540
+        private const val DEVICE_WIDTH_1080 = 1080
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE = 0.5f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE = 0.75f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE = 1f
 
         fun createInstance(
             shopId: String,
@@ -284,6 +298,15 @@ open class ShopPageHomeFragment :
     private val shopHomeAdapter: ShopHomeAdapter
         get() = adapter as ShopHomeAdapter
     private val shopHomeWidgetCarouselPositionSavedState = SparseIntArray()
+    private var listHomeTabBackgroundColor: List<String> = listOf()
+    private var homeTabBackgroundPatternImage: String = ""
+    private var homeTabLottieUrl: String = ""
+    private var topView: View? = null
+    private var centerView: View? = null
+    private var bottomView: View? = null
+    private val imageBackgroundPattern: ImageUnify? by lazy {
+        viewBinding?.imageBackgroundPattern
+    }
 
     private val shopHomeAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
@@ -323,7 +346,6 @@ open class ShopPageHomeFragment :
     private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
 
     lateinit var playWidgetCoordinator: PlayWidgetCoordinator
-    private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
 
     private val viewJob = SupervisorJob()
 
@@ -374,7 +396,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
@@ -382,7 +404,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
@@ -390,7 +412,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startCustomMetric(it, tag)
             }
@@ -398,7 +420,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopCustomMetric(it, tag)
             }
@@ -406,7 +428,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.invalidateMonitoringPlt(it)
             }
@@ -414,7 +436,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageActivity)?.stopShopHomeTabPerformanceMonitoring()
+        (activity as? ShopPageHeaderActivity)?.stopShopHomeTabPerformanceMonitoring()
     }
 
     override fun onCreateView(
@@ -434,6 +456,9 @@ open class ShopPageHomeFragment :
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
+            context?.let { ctx ->
+                it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
+            }
         }
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
@@ -441,12 +466,13 @@ open class ShopPageHomeFragment :
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
         observeLatestShopHomeWidgetLayoutData()
+        observeShowHomeTabConfetti()
         isLoadInitialData = true
     }
 
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     getRecyclerView(view)?.visible()
                     setShopHomeWidgetLayoutData(it.data)
@@ -473,8 +499,23 @@ open class ShopPageHomeFragment :
         getRecyclerView(view)?.hide()
     }
 
+    private fun observeShowHomeTabConfetti() {
+        viewModel?.isShowHomeTabConfettiLiveData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it) {
+                    setConfettiAlreadyShown()
+                    showConfetti()
+                }
+            }
+        )
+    }
+
     open fun initView() {
         globalErrorShopPage = viewBinding?.globalErrorShopPage
+        topView = viewBinding?.topView
+        centerView = viewBinding?.centerView
+        bottomView = viewBinding?.bottomView
     }
 
     private fun observeShopHomeWidgetContentData() {
@@ -486,6 +527,9 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopHomeWidgetContentData(it.data)
+                        checkShowConfetti()
+                        setHomeTabBackgroundGradient()
+                        setHomeTabBackgroundPattern()
                     }
                     is Fail -> {
                         val throwable = it.throwable
@@ -540,6 +584,72 @@ open class ShopPageHomeFragment :
         }
     }
 
+    private fun setHomeTabBackgroundPattern() {
+        imageBackgroundPattern?.apply {
+            if (homeTabBackgroundPatternImage.isNotEmpty()) {
+                show()
+                loadBackgroundPatternImage()
+            } else {
+                hide()
+            }
+        }
+    }
+
+    private fun loadBackgroundPatternImage() {
+        context?.let {
+            Glide.with(this)
+                .asBitmap()
+                .load(homeTabBackgroundPatternImage)
+                .into(object : CustomTarget<Bitmap?>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap?>?
+                    ) {
+                        val sizeMultiplier = getBgPatternSizeMultiplier()
+                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
+                        setBgPatternImage(resizeBgPattern)
+                    }
+                })
+        }
+    }
+
+    private fun setBgPatternImage(resizeBgPattern: Bitmap?) {
+        context?.let {
+            val bitmapDrawable = BitmapDrawable(
+                it.resources,
+                resizeBgPattern
+            )
+            bitmapDrawable.setTileModeXY(
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.REPEAT
+            )
+            imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+        }
+    }
+
+    private fun getBgPatternSizeMultiplier(): Float {
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        return if (screenWidth <= DEVICE_WIDTH_540) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE
+        } else if (screenWidth < DEVICE_WIDTH_1080) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE
+        } else {
+            BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE
+        }
+    }
+
+    private fun getResizeBgPattern(sizeMultiplier: Float, resource: Bitmap): Bitmap? {
+        val resourceWidth = resource.width
+        val resourceHeight = resource.height
+        return Bitmap.createScaledBitmap(
+            resource,
+            (resourceWidth * sizeMultiplier).toInt(),
+            (resourceHeight * sizeMultiplier).toInt(),
+            true
+        )
+    }
+
     open fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         shopHomeAdapter.updateShopHomeWidgetContentData(mapWidgetContentData)
         checkProductWidgetWishListStatus(mapWidgetContentData.values.toList())
@@ -590,7 +700,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
+        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onResume() {
@@ -1444,7 +1554,7 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -1728,8 +1838,9 @@ open class ShopPageHomeFragment :
             bundleId = selectedMultipleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-            bundlePrice = selectedMultipleBundle.displayPriceRaw,
-            bundlePosition = bundlePosition
+            bundlePrice = selectedMultipleBundle.displayPrice,
+            bundlePosition = bundlePosition,
+            isFestivity = selectedMultipleBundle.isFestivity
         )
     }
 
@@ -1741,7 +1852,16 @@ open class ShopPageHomeFragment :
         widgetTitle: String,
         widgetName: String,
         productItemPosition: Int
-    ) {}
+    ) {
+        sendShopHomeWidgetImpressionTracker(
+            widgetTitle,
+            widgetName,
+            selectedMultipleBundle.widgetId,
+            bundlePosition,
+            selectedMultipleBundle.widgetMasterId,
+            selectedMultipleBundle.isFestivity
+        )
+    }
 
     override fun onMultipleBundleProductClicked(
         shopId: String,
@@ -1761,9 +1881,10 @@ open class ShopPageHomeFragment :
             bundleId = selectedMultipleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-            bundlePrice = selectedMultipleBundle.displayPriceRaw,
+            bundlePrice = selectedMultipleBundle.displayPrice,
             bundlePosition = bundlePosition,
-            clickedProduct = selectedProduct
+            clickedProduct = selectedProduct,
+            isFestivity = selectedMultipleBundle.isFestivity
         )
     }
 
@@ -1775,7 +1896,8 @@ open class ShopPageHomeFragment :
             bundleName = bundleName,
             bundleId = selectedSingleBundle.bundleId,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            selectedPackage = selectedSingleBundle.minOrderWording
+            selectedPackage = selectedSingleBundle.minOrderWording,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -1790,6 +1912,14 @@ open class ShopPageHomeFragment :
         widgetName: String,
         bundleType: String
     ) {
+        sendShopHomeWidgetImpressionTracker(
+            widgetTitle,
+            widgetName,
+            selectedSingleBundle.widgetId,
+            bundlePosition,
+            selectedSingleBundle.widgetMasterId,
+            selectedSingleBundle.isFestivity
+        )
         shopPageHomeTracking.impressionSingleBundleWidget(
             shopId = shopId,
             userId = userId,
@@ -1797,8 +1927,9 @@ open class ShopPageHomeFragment :
             bundleId = selectedSingleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            bundlePrice = selectedSingleBundle.displayPriceRaw,
-            bundlePosition = bundlePosition
+            bundlePrice = selectedSingleBundle.displayPrice,
+            bundlePosition = bundlePosition,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -1820,10 +1951,11 @@ open class ShopPageHomeFragment :
             bundleId = selectedSingleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            bundlePrice = selectedSingleBundle.displayPriceRaw,
+            bundlePrice = selectedSingleBundle.displayPrice,
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct,
-            selectedPackage = selectedSingleBundle.minOrderWording
+            selectedPackage = selectedSingleBundle.minOrderWording,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -1967,27 +2099,29 @@ open class ShopPageHomeFragment :
                 atcBundleModel = atcBundleModel,
                 bundleName = bundleName,
                 bundleId = shopHomeProductBundleDetailUiModel.bundleId,
-                bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
-                quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
-                shopName = shopName,
-                shopType = customDimensionShopPage.shopType.orEmpty(),
-                bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
-                shopId = shopId,
-                userId = userId
-            )
-        } else if (bundleType == ShopPageConstant.BundleType.SINGLE_BUNDLE) {
-            shopPageHomeTracking.clickAtcProductBundleSingle(
-                atcBundleModel = atcBundleModel,
-                bundleName = bundleName,
-                bundleId = shopHomeProductBundleDetailUiModel.bundleId,
-                bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                bundlePrice = shopHomeProductBundleDetailUiModel.displayPrice,
                 quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
                 shopName = shopName,
                 shopType = customDimensionShopPage.shopType.orEmpty(),
                 bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
                 shopId = shopId,
                 userId = userId,
-                selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording
+                isFestivity = shopHomeProductBundleDetailUiModel.isFestivity
+            )
+        } else if (bundleType == ShopPageConstant.BundleType.SINGLE_BUNDLE) {
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                atcBundleModel = atcBundleModel,
+                bundleName = bundleName,
+                bundleId = shopHomeProductBundleDetailUiModel.bundleId,
+                bundlePrice = shopHomeProductBundleDetailUiModel.displayPrice,
+                quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
+                shopName = shopName,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
+                bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
+                shopId = shopId,
+                userId = userId,
+                selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording,
+                isFestivity = shopHomeProductBundleDetailUiModel.isFestivity
             )
         }
     }
@@ -2032,7 +2166,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -2046,7 +2182,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
             shopHomeShowcaseListSliderUiModel.name,
             shopHomeShowcaseListSliderUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeShowcaseListSliderUiModel.widgetMasterId,
+            shopHomeShowcaseListSliderUiModel.isFestivity
         )
         shopPageHomeTracking.clickShowcaseListWidgetItem(
             showcaseItem,
@@ -2142,7 +2280,9 @@ open class ShopPageHomeFragment :
             segmentName,
             displayWidgetUiModel?.name.orEmpty(),
             displayWidgetUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            displayWidgetUiModel?.widgetMasterId.orEmpty(),
+            displayWidgetUiModel?.isFestivity.orFalse()
         )
         shopPageHomeTracking.clickDisplayWidget(
             false,
@@ -2183,7 +2323,9 @@ open class ShopPageHomeFragment :
             segmentName,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -2191,7 +2333,9 @@ open class ShopPageHomeFragment :
         segmentName: String,
         widgetName: String,
         widgetId: String,
-        position: Int
+        position: Int,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onImpressionShopHomeWidget(
@@ -2200,7 +2344,9 @@ open class ShopPageHomeFragment :
                 widgetId,
                 position,
                 shopId,
-                userId
+                userId,
+                widgetMasterId,
+                isFestivity
             )
         }
     }
@@ -2209,7 +2355,9 @@ open class ShopPageHomeFragment :
         segmentName: String,
         widgetName: String,
         widgetId: String,
-        position: Int
+        position: Int,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onClickedShopHomeWidget(
@@ -2218,7 +2366,9 @@ open class ShopPageHomeFragment :
                 widgetId,
                 position,
                 shopId,
-                userId
+                userId,
+                widgetMasterId,
+                isFestivity
             )
         }
     }
@@ -2232,7 +2382,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
             model.name,
             model.widgetId,
-            position
+            position,
+            model.widgetMasterId,
+            model.isFestivity
         )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel?.userId)
     }
@@ -2245,7 +2397,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
             model.name,
             model.widgetId,
-            position
+            position,
+            model.widgetMasterId,
+            model.isFestivity
         )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(
             shopId
@@ -2258,30 +2412,29 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.clickProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
-                ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
-                "",
-                "",
-                0,
-                CustomDimensionShopPageAttribution.create(
+            if (!isOwner) {
+                shopPageHomeTracking.clickProduct(
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
+                    CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel.id,
+                        shopAttribution,
+                        shopRef,
+                        shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                        shopHomeProductViewModel.isShowFreeOngkir
+                    ),
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                     shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
+                    getSelectedTabName()
                 )
-            )
+            }
             goToPDP(it.productUrl)
         }
     }
@@ -2292,30 +2445,29 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
-                ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
-                "",
-                "",
-                0,
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
+            if (!isOwner) {
+                shopPageHomeTracking.impressionProduct(
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
+                    CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel.id,
+                        shopAttribution,
+                        shopRef,
+                        shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                        shopHomeProductViewModel.isShowFreeOngkir
+                    ),
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                    userId,
+                    getSelectedTabName()
                 )
-            )
+            }
         }
     }
 
@@ -2430,7 +2582,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
@@ -2460,7 +2614,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
             shopHomeCarousellProductUiModel?.name.orEmpty(),
             shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+            shopHomeCarousellProductUiModel?.isFestivity.orFalse()
         )
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProductPersonalizationReminder(
@@ -2491,7 +2647,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
             shopHomeCarousellProductUiModel.name,
             shopHomeCarousellProductUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeCarousellProductUiModel.widgetMasterId,
+            shopHomeCarousellProductUiModel.isFestivity
         )
         shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
             itemPosition,
@@ -2692,32 +2850,27 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
-            )
-            shopPageHomeTracking.clickProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
                 ShopUtil.getActualPositionFromIndex(parentPosition),
-                ShopUtil.getActualPositionFromIndex(itemPosition),
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
-                )
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
+            if (!isOwner) {
+                shopPageHomeTracking.clickProductShopDecoration(
+                    ShopPageHomeTrackingMapper.mapToProductShopDecorationTrackerDataModel(
+                        shopId,
+                        userId,
+                        it.name,
+                        it.id,
+                        it.displayedPrice,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeCarousellProductUiModel?.name.orEmpty(),
+                        shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
+                        shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                    )
+                )
+            }
             goToPDP(it.productUrl)
         }
     }
@@ -2729,30 +2882,23 @@ open class ShopPageHomeFragment :
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                ShopUtil.getActualPositionFromIndex(itemPosition),
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id.orEmpty(),
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
+            if (!isOwner) {
+                shopPageHomeTracking.impressionProductShopDecoration(
+                    ShopPageHomeTrackingMapper.mapToProductShopDecorationTrackerDataModel(
+                        shopId,
+                        userId,
+                        it.name,
+                        it.id,
+                        it.displayedPrice,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeCarousellProductUiModel?.name.orEmpty(),
+                        shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
+                        shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -2783,7 +2929,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                 isOwner,
@@ -2930,19 +3078,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        shopPageHomeTracking.clickCtaCarouselProductShowcase(
-            etalaseId = shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
-            appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
-            shopId = shopId,
-            shopType = customDimensionShopPage.shopType.orEmpty(),
-            isOwner = isOwner
-        )
-        context?.let {
-            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
-        }
-    }
-
     override fun onCarouselProductWidgetImpression(
         adapterPosition: Int,
         model: ShopHomeCarousellProductUiModel
@@ -2952,7 +3087,9 @@ open class ShopPageHomeFragment :
             segmentName,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(adapterPosition)
+            ShopUtil.getActualPositionFromIndex(adapterPosition),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -2985,15 +3122,16 @@ open class ShopPageHomeFragment :
     }
 
     override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        shopPageHomeTracking.clickCta(
-            layoutId = shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            widgetName = shopHomeCarouselProductUiModel?.header?.title.toString(),
-            widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
-            appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
-            shopId = shopId,
-            shopType = customDimensionShopPage.shopType.orEmpty(),
-            isOwner = isOwner
-        )
+        if (!isOwner) {
+            shopPageHomeTracking.clickCta(
+                ShopPageHomeTrackingMapper.mapToShopHomeCarouselProductWidgetClickCtaTrackerModel(
+                    shopId,
+                    userId,
+                    shopHomeCarouselProductUiModel?.widgetMasterId.orEmpty(),
+                    shopHomeCarouselProductUiModel?.isFestivity.orFalse()
+                )
+            )
+        }
 
         context?.let {
             RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
@@ -3279,22 +3417,29 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
             shopHomeNewProductLaunchCampaignUiModel.name,
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                HOME_TAB
-            )
+            if (!isOwner) {
+                shopPageHomeTracking.clickCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopHomeProductViewModel?.name.orEmpty(),
+                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                    )
+                )
+            }
         }
         shopHomeProductViewModel?.let {
             goToPDP(it.productUrl)
@@ -3308,19 +3453,24 @@ open class ShopPageHomeFragment :
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.impressionCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                HOME_TAB
-            )
+            if (!isOwner) {
+                shopPageHomeTracking.onImpressionCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopHomeProductViewModel?.name.orEmpty(),
+                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                    )
+                )
+            }
         }
     }
 
@@ -3351,12 +3501,19 @@ open class ShopPageHomeFragment :
         context?.run {
             if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
                 model.data?.firstOrNull()?.let { flashSaleItem ->
-                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
-                        statusCampaign = flashSaleItem.statusCampaign,
-                        shopId = shopId,
-                        userId = userId,
-                        isOwner = isOwner
-                    )
+                    if (!isOwner) {
+                        shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
+                            ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+                                shopId,
+                                userId,
+                                flashSaleItem.campaignId,
+                                flashSaleItem.name,
+                                flashSaleItem.statusCampaign,
+                                model.widgetMasterId,
+                                model.isFestivity
+                            )
+                        )
+                    }
                 }
                 RouteManager.route(this, model.header.ctaLink)
             }
@@ -3391,6 +3548,21 @@ open class ShopPageHomeFragment :
                 shopHomeAdapter.showNplRemindMeLoading(campaignId)
                 handleClickRemindMe(model)
             } else {
+                model.data?.firstOrNull()?.let {
+                    if (!isOwner) {
+                        shopPageHomeTracking.clickReminderCampaignWidget(
+                            ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
+                                shopId,
+                                userId,
+                                it.campaignId,
+                                it.name,
+                                it.statusCampaign,
+                                model.widgetMasterId,
+                                model.isFestivity
+                            )
+                        )
+                    }
+                }
                 setNplRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
@@ -3406,24 +3578,75 @@ open class ShopPageHomeFragment :
                 setFlashSaleRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
-            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
+            model.data?.firstOrNull()?.let {
+                if (!isOwner) {
+                    shopPageHomeTracking.clickReminderCampaignWidget(
+                        ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
+                            shopId,
+                            userId,
+                            it.campaignId,
+                            it.name,
+                            it.statusCampaign,
+                            model.widgetMasterId,
+                            model.isFestivity
+                        )
+                    )
+                }
+            }
         }
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
+        widgetModel.data?.firstOrNull()?.let {
+            if (!isOwner) {
+                shopPageHomeTracking.clickCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        position,
+                        widgetModel.widgetMasterId,
+                        widgetModel.isFestivity,
+                        model.id,
+                        model.name,
+                        model.displayedPrice
+                    )
+                )
+            }
+        }
         goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
-    ) {}
+        position: Int,
+        parentPosition: Int
+    ) {
+        flashSaleUiModel?.data?.firstOrNull()?.let {
+            if (!isOwner) {
+                shopPageHomeTracking.onImpressionCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        position,
+                        flashSaleUiModel.widgetMasterId,
+                        flashSaleUiModel.isFestivity,
+                        shopHomeProductUiModel.id,
+                        shopHomeProductUiModel.name,
+                        shopHomeProductUiModel.displayedPrice
+                    )
+                )
+            }
+        }
+    }
 
     override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
         context?.run {
@@ -3457,11 +3680,19 @@ open class ShopPageHomeFragment :
 
     override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCtaCampaignNplWidget(
-                isOwner,
-                it.statusCampaign,
-                customDimensionShopPage
-            )
+            if (!isOwner) {
+                shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        model.widgetMasterId,
+                        model.isFestivity
+                    )
+                )
+            }
             context?.let { context ->
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
@@ -3475,9 +3706,24 @@ open class ShopPageHomeFragment :
 
     override fun onClickCampaignBannerAreaNplWidget(
         model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int
+        widgetPosition: Int,
+        position: Int
     ) {
         model.data?.firstOrNull()?.let {
+            if (!isOwner) {
+                shopPageHomeTracking.clickBannerWidgetCampaign(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickBannerTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        model.widgetMasterId,
+                        model.isFestivity,
+                        position
+                    )
+                )
+            }
             context?.let { context ->
                 val appLink = model.header.ctaLink
                 if (appLink.isNotEmpty()) {
@@ -3493,52 +3739,52 @@ open class ShopPageHomeFragment :
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             val statusCampaign = it.statusCampaign
-            val selectedBannerType = when (statusCampaign.toLowerCase()) {
-                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
-                else -> ""
-            }
-            val selectedBanner = it.bannerList.firstOrNull {
-                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
-            }
-            val isSeeCampaign =
-                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-                    it.totalNotifyWording.isNotEmpty()
-                } else {
-                    null
-                }
+            val campaignId = it.campaignId
+            val campaignName = it.name
             sendShopHomeWidgetImpressionTracker(
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
                 shopHomeNewProductLaunchCampaignUiModel.name,
                 shopHomeNewProductLaunchCampaignUiModel.widgetId,
-                ShopUtil.getActualPositionFromIndex(position)
-            )
-            shopPageHomeTracking.impressionCampaignNplWidget(
-                it.statusCampaign,
-                shopId,
                 ShopUtil.getActualPositionFromIndex(position),
-                isSeeCampaign,
-                selectedBanner?.imageId.orEmpty(),
-                selectedBanner?.imageUrl ?: "",
-                customDimensionShopPage,
-                isOwner
+                shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                shopHomeNewProductLaunchCampaignUiModel.isFestivity
             )
+            if (!isOwner) {
+                shopPageHomeTracking.impressionShopHomeCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
+                        shopId,
+                        userId,
+                        campaignId,
+                        campaignName,
+                        statusCampaign,
+                        position,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity
+                    )
+                )
+            }
         }
     }
 
     override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
         model.data?.firstOrNull()?.let { itemFlashSale ->
             val campaignId = itemFlashSale.campaignId
+            val campaignName = itemFlashSale.name
             val statusCampaign = itemFlashSale.statusCampaign
-            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
-                campaignId = campaignId,
-                statusCampaign = statusCampaign,
-                shopId = shopId,
-                userId = userId,
-                position = position,
-                isOwner = isOwner
-            )
+            if (!isOwner) {
+                shopPageHomeTracking.impressionShopHomeCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
+                        shopId,
+                        userId,
+                        campaignId,
+                        campaignName,
+                        statusCampaign,
+                        position,
+                        model.widgetMasterId,
+                        model.isFestivity
+                    )
+                )
+            }
         }
     }
 
@@ -3556,7 +3802,7 @@ open class ShopPageHomeFragment :
         getLatestShopHomeWidgetLayoutData()
     }
 
-    private fun getLatestShopHomeWidgetLayoutData(){
+    private fun getLatestShopHomeWidgetLayoutData() {
         globalErrorShopPage?.hide()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -3700,19 +3946,68 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
     private fun getSelectedTabName(): String {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
+        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
         return shopHomeWidgetCarouselPositionSavedState
+    }
+
+    private fun checkShowConfetti() {
+        viewModel?.checkShowConfetti(shopHomeAdapter.getShopHomeWidgetData(), isShowConfetti())
+    }
+
+    private fun showConfetti() {
+        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+    }
+
+    private fun isShowConfetti(): Boolean {
+        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
+    }
+
+    private fun setConfettiAlreadyShown() {
+        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
+    }
+
+    fun setHomeTabListBackgroundColor(listBackgroundColor: List<String>) {
+        this.listHomeTabBackgroundColor = listBackgroundColor
+    }
+
+    fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
+        this.homeTabBackgroundPatternImage = backgroundPatternImage
+    }
+
+    fun setHomeTabLottieUrl(lottieUrl: String) {
+        this.homeTabLottieUrl = lottieUrl
+    }
+
+    private fun setHomeTabBackgroundGradient() {
+        if (listHomeTabBackgroundColor.isNotEmpty()) {
+            topView?.show()
+            centerView?.show()
+            bottomView?.show()
+            val colors = IntArray(listHomeTabBackgroundColor.size)
+            for (i in listHomeTabBackgroundColor.indices) {
+                colors[i] = ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.getOrNull(i).orEmpty())
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            topView?.setBackgroundColor(ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.firstOrNull().orEmpty()))
+            centerView?.background = gradient
+            bottomView?.setBackgroundColor(ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.lastOrNull().orEmpty()))
+        } else {
+            topView?.hide()
+            centerView?.hide()
+            bottomView?.hide()
+        }
     }
 
     //region play widget
@@ -3945,7 +4240,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? NewShopPageFragment)?.updateMiniCartWidget()
+        (parentFragment as? ShopPageHeaderFragment)?.updateMiniCartWidget()
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
@@ -3953,62 +4248,32 @@ open class ShopPageHomeFragment :
         getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetSellerActionBottomSheet {
-        if (!::playWidgetActionBottomSheet.isInitialized) {
-            playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
-        }
-
-        val bottomSheetActionList = mutableListOf<PlayWidgetSellerActionBottomSheet.Action>()
-        if (channelUiModel.share.isShow) {
-            bottomSheetActionList.add(
-                PlayWidgetSellerActionBottomSheet.Action(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                    MethodChecker.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                    ),
-                    getString(R.string.shop_page_play_widget_sgc_copy_link)
-                ) {
-                    shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
-                    copyToClipboard(channelUiModel.share.fullShareContent)
-                    showLinkCopiedToaster()
-                    playWidgetActionBottomSheet.dismiss()
-                }
-            )
-        }
-        if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
-            bottomSheetActionList.add(
-                PlayWidgetSellerActionBottomSheet.Action(
-                    R.drawable.ic_play_widget_sgc_performance,
-                    MethodChecker.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                    ),
-                    context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()
-                ) {
-                    shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
-                    RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
-                    playWidgetActionBottomSheet.dismiss()
-                }
-            )
-        }
-        bottomSheetActionList.add(
-            PlayWidgetSellerActionBottomSheet.Action(
-                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                MethodChecker.getColor(
-                    requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
-                ),
-                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()
-            ) {
-                shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
-                showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
-                playWidgetActionBottomSheet.dismiss()
-            }
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetActionMenuBottomSheet {
+        val playWidgetActionMenuBottomSheet = PlayWidgetActionMenuBottomSheet.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader
         )
 
-        playWidgetActionBottomSheet.setActionList(bottomSheetActionList)
-        return playWidgetActionBottomSheet
+        playWidgetActionMenuBottomSheet.setChannel(channelUiModel)
+        playWidgetActionMenuBottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+            override fun onClickShare(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
+                copyToClipboard(channelUiModel.share.fullShareContent)
+                showLinkCopiedToaster()
+            }
+
+            override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
+                RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
+            }
+
+            override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
+                showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
+            }
+        })
+
+        return playWidgetActionMenuBottomSheet
     }
 
     private fun deleteChannel(channelId: String) {
@@ -4097,7 +4362,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PLAY,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -4120,40 +4387,39 @@ open class ShopPageHomeFragment :
                 campaignId = model.campaignId,
                 shopId = shopId,
                 userId = userId,
-                position = position
+                position = position,
+                isFestivity = model.isFestivity
             )
         }
 
         override fun onProductCardThematicWidgetImpressListener(
             products: List<ProductCardUiModel>,
             position: Int,
-            campaignId: String,
-            campaignName: String,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?
         ) {
             shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
+                campaignName = thematicWidgetUiModel?.name.orEmpty(),
+                campaignId = thematicWidgetUiModel?.campaignId.orEmpty(),
                 shopId = shopId,
                 userId = userId,
-                products = products
+                products = products,
+                isFestivity = thematicWidgetUiModel?.isFestivity.orFalse()
             )
         }
 
         override fun onProductCardThematicWidgetClickListener(
             product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?,
+            position: Int
         ) {
             shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
+                campaignName = thematicWidgetUiModel?.name.orEmpty(),
+                campaignId = thematicWidgetUiModel?.campaignId.orEmpty(),
                 shopId = shopId,
                 userId = userId,
                 product = product,
-                position = position
+                position = position,
+                isFestivity = thematicWidgetUiModel?.isFestivity.orFalse()
             )
             goToPDP(product.productUrl.orEmpty())
         }
