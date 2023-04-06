@@ -18,5 +18,17 @@ data class CreateShopData (
         val message : String = "",
         @SerializedName("createdId")
         @Expose
-        val createdId : String = ""
-)
+        val createdId : String = "",
+        @SerializedName("cta")
+        @Expose
+        val cta : Cta = Cta()
+){
+    data class Cta(
+            @SerializedName("title")
+            @Expose
+            val title : String = "",
+            @SerializedName("url")
+            @Expose
+            val url : String = ""
+    )
+}

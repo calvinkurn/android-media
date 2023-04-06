@@ -63,10 +63,10 @@
             android:id="@+id/group_anchor_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="header_comp_holder" />
+            app:constraint_referenced_ids="rv_anchor_tab" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/header_comp_holder"
+            android:id="@+id/rv_anchor_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="2dp"
@@ -86,7 +86,7 @@
             android:descendantFocusability="beforeDescendants"
             android:elevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_comp_holder" />
+            app:layout_constraintTop_toBottomOf="@id/rv_anchor_tab" />
 
         <View
             android:id="@+id/dtHomeStatusBarBackground"

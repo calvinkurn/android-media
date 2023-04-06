@@ -394,6 +394,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameterMap)
             }
         }
@@ -575,10 +576,12 @@ class ProductListFragment: BaseDaggerFragment(),
     //region adding visitable list to recycler view adapter
     override fun addProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.appendItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.setItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun addLoading() {
@@ -602,6 +605,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun showNetworkError(throwable: Throwable?) {
         val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
 
+        SearchIdlingResource.decrement()
         if (productListAdapter.isListEmpty())
             showNetworkErrorOnEmptyList(throwable)
         else
@@ -634,11 +638,13 @@ class ProductListFragment: BaseDaggerFragment(),
         if (throwable!= null) {
             NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }.showRetrySnackbar()
         }
@@ -1085,6 +1091,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         hideSearchSortFilter()
 
+        SearchIdlingResource.increment()
         presenter?.loadData(searchParameter.getSearchParameterMap())
     }
 
