@@ -49,6 +49,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
@@ -569,7 +570,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
-                    getSetupTitleBottomSheet().failSubmit(content.error.message)
+                    val errorMessage = if (content.error.isNetworkError) getString(R.string.play_bro_default_error_message)
+                    else content.error.message
+                    getSetupTitleBottomSheet().failSubmit(errorMessage)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) getSetupTitleBottomSheet().successSubmit()
