@@ -44,6 +44,12 @@ class PlayWebSocketImpl(
         }
     }
 
+    private val deviceVersion: String
+        get() = "android-${GlobalConfig.VERSION_NAME}"
+
+    private val appName: String
+        get() = GlobalConfig.getPackageApplicationName()
+
     init {
         clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
         client = clientBuilder
@@ -69,12 +75,16 @@ class PlayWebSocketImpl(
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
             webSocketLogger.send("Web Socket Open")
+
+            Log.d("sukses url", webSocket.request().url.toString())
+            Log.d("sukses header", webSocket.request().headers.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
             webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
+            Log.d("sukses raw", text)
 
             Log.d("SUKSES MESSAGE", newMessage.message.tracking.toString())
 
@@ -133,7 +143,7 @@ class PlayWebSocketImpl(
         )
 
         return buildString {
-            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId")
+            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId$PLAY_WEB_SOCKET_X_DEVICE$deviceVersion$PLAY_WEB_SOCKET_X_APP_NAME$appName")
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
     }
@@ -151,8 +161,6 @@ class PlayWebSocketImpl(
         return Request.Builder().get().url(url)
             .header("Origin", TokopediaUrl.getInstance().WEB)
             .header("Accounts-Authorization", "Bearer $accessToken")
-            .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
-            .header("x_app_name", GlobalConfig.getPackageApplicationName())
             .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
             .build()
     }
@@ -171,6 +179,8 @@ class PlayWebSocketImpl(
     companion object {
         private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
         private const val PLAY_WEB_SOCKET_GROUP_CHAT_WH = "&warehouse_id="
+        private const val PLAY_WEB_SOCKET_X_DEVICE = "&x_device="
+        private const val PLAY_WEB_SOCKET_X_APP_NAME = "&x_app_name="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
