@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -44,6 +45,10 @@ class MPSShopWidgetViewHolder(
 
         shopBadgeImageView?.shouldShowWithAction(shouldShowBadge) {
             shopBadgeImageView.loadIcon(badgeToShow?.imageUrl)
+        }
+
+        shopBadgeImageView?.addOnImpressionListener(dataView) {
+            listener.onShopImpressed(dataView)
         }
     }
 

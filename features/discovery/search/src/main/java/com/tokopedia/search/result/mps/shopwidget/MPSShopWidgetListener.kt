@@ -2,6 +2,8 @@ package com.tokopedia.search.result.mps.shopwidget
 
 interface MPSShopWidgetListener {
 
+    fun onShopImpressed(mpsShopWidgetDataView: MPSShopWidgetDataView)
+
     fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView)
 
     fun onSeeAllCardClicked(mpsShopWidgetDataView: MPSShopWidgetDataView)

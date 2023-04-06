@@ -18,6 +18,10 @@ class MPSShopWidgetListenerDelegate(
     private val keywords
         get() = mpsViewModel?.stateFlow?.value?.parameter?.keywords() ?: ""
 
+    override fun onShopImpressed(mpsShopWidgetDataView: MPSShopWidgetDataView) {
+        mpsShopWidgetDataView.click(TrackApp.getInstance().gtm)
+    }
+
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
         mpsShopWidgetDataView.buttonList.first().click(TrackApp.getInstance().gtm)
 

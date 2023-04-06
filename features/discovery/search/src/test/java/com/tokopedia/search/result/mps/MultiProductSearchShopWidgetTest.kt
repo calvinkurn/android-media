@@ -78,6 +78,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         assertThat(mpsShopWidgetDataView.applink, `is`(shopItemModel.applink))
         assertThat(mpsShopWidgetDataView.componentId, `is`(shopItemModel.componentId))
         assertThat(mpsShopWidgetDataView.trackingOption, `is`(shopItemModel.trackingOption))
+        assertThat(mpsShopWidgetDataView.keywords, `is`(parameter.keywords()))
 
         assertThat(mpsShopWidgetDataView.ticker.type, `is`(shopItemModel.ticker.type))
         assertThat(mpsShopWidgetDataView.ticker.message, `is`(shopItemModel.ticker.message))
@@ -110,6 +111,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
                 mpsShopWidgetProductDataView,
                 shopItemModel,
                 shopItemModel.productCardList[index],
+                index + 1,
             )
         }
 
@@ -145,6 +147,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView,
         shopItem: Shop,
         shopItemProduct: Shop.Product,
+        position: Int,
     ) {
         assertThat(mpsShopWidgetProductDataView.id, `is`(shopItemProduct.id))
         assertThat(mpsShopWidgetProductDataView.imageUrl, `is`(shopItemProduct.imageUrl))
@@ -160,6 +163,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         assertThat(mpsShopWidgetProductDataView.minOrder, `is`(shopItemProduct.minOrder))
         assertThat(mpsShopWidgetProductDataView.componentId, `is`(shopItemProduct.componentId))
         assertThat(mpsShopWidgetProductDataView.trackingOption, `is`(shopItemProduct.trackingOption))
+        assertThat(mpsShopWidgetProductDataView.position, `is`(position))
 
         assertButtonDataViewList(
             mpsShopWidgetProductDataView.buttonList,

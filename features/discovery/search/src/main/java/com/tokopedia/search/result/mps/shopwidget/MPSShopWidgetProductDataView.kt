@@ -1,9 +1,13 @@
 package com.tokopedia.search.result.mps.shopwidget
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Product
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
+import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.search.utils.orNone
 
 data class MPSShopWidgetProductDataView(
     val id: String = "",
@@ -20,6 +24,7 @@ data class MPSShopWidgetProductDataView(
     val minOrder: Int = 0,
     val componentId: String = "",
     val trackingOption: Int = 0,
+    val position: Int = 0,
     val buttonList: List<MPSButtonDataView> = listOf(),
     val labelGroupList: List<MPSProductLabelGroupDataView> = listOf(),
     val impressHolder: ImpressHolder = ImpressHolder(),
@@ -29,13 +34,24 @@ data class MPSShopWidgetProductDataView(
 
     fun secondaryButton(): MPSButtonDataView? = buttonList.find(MPSButtonDataView::isSecondary)
 
-    fun asObjectDataLayer(): Any = mapOf<String, String>()
+    fun asObjectDataLayer(): Any =
+        DataLayer.mapOf(
+            "name", name,
+            "id", id,
+            "price", price,
+            "brand", "none / other",
+            "category", "none / other",
+            "variant", "none / other",
+            "list", "/searchmps - organic - component: {component_id}",
+            "position", position,
+        )
 
     companion object {
         fun create(
             shop: Shop,
             product: Product,
             keywords: String,
+            position: Int,
         ) = MPSShopWidgetProductDataView(
             id = product.id,
             imageUrl = product.imageUrl,
@@ -51,6 +67,7 @@ data class MPSShopWidgetProductDataView(
             minOrder = product.minOrder,
             componentId = product.componentId,
             trackingOption = product.trackingOption,
+            position = position,
             buttonList = product.buttonList
                 .map {
                     MPSButtonDataView.create(it, keywords, shop.id, "")
