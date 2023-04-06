@@ -1,7 +1,10 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +15,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.listener.Listener;
 import com.tokopedia.baselist.R;
-import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.unifycomponents.SearchBarUnify;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +26,11 @@ import java.util.concurrent.TimeUnit;
  * @author normansyahputa on 5/17/17.
  */
 
-public abstract class BaseSearchListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListFragment<T, F> implements SearchInputView.Listener {
+public abstract class BaseSearchListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListFragment<T, F> implements Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
 
-    protected SearchInputView searchInputView;
+    protected SearchBarUnify searchInputView;
 
     protected long getDelayTextChanged() {
         return DEFAULT_DELAY_TEXT_CHANGED;
@@ -35,9 +39,23 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         searchInputView = getSearchInputView(view);
-        searchInputView.setDelayTextChanged(getDelayTextChanged());
-        searchInputView.setListener(this);
+        searchInputView.getSearchBarTextField().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                new Handler().postDelayed(() -> updateListener(s.toString()), getDelayTextChanged());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void updateListener(String s) {
+        this.onSearchTextChanged(s);
     }
 
     @Nullable
@@ -47,8 +65,8 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     @NonNull
-    protected SearchInputView getSearchInputView(View view) {
-        return (SearchInputView) view.findViewById(getSearchInputViewResourceId());
+    protected SearchBarUnify getSearchInputView(View view) {
+        return (SearchBarUnify) view.findViewById(getSearchInputViewResourceId());
     }
 
     public int getSearchInputViewResourceId(){
@@ -75,7 +93,7 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
 
     protected void showSearchViewWithDataSizeCheck() {
         if (getAdapter().getDataSize() > 0 ||
-                !TextUtils.isEmpty(searchInputView.getSearchText())) {
+                !TextUtils.isEmpty(searchInputView.getSearchBarTextField().getText())) {
             showSearchView(true);
         } else {
             showSearchView(false);
@@ -96,5 +114,13 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
 
     protected void showSearchInputView(){
         searchInputView.setVisibility(View.VISIBLE);
+    }
+
+    public String getSearchText() {
+        return searchInputView.getSearchBarTextField().getText().toString();
+    }
+
+    public void setSearchText(String text) {
+        searchInputView.getSearchBarTextField().setText(text);
     }
 }

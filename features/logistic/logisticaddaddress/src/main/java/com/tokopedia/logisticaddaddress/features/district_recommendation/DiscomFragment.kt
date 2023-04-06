@@ -110,13 +110,13 @@ class DiscomFragment :
         return binding.root
     }
 
+    override fun getDelayTextChanged() = DEBOUNCE_DELAY_IN_MILIS
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showInitialLoadMessage()
-        searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search))
-        searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS)
-        searchInputView.closeImageButton.setOnClickListener {
-            searchInputView.searchText = ""
+        searchInputView.searchBarPlaceholder = getString(R.string.hint_district_recommendation_search)
+        searchInputView.clearListener = {
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
         binding.swipeRefreshLayout.isEnabled = false
@@ -124,7 +124,7 @@ class DiscomFragment :
         if (isLocalization == true) {
             setCurrentLocationView()
             binding.llDiscomPopularCity.visibility = View.VISIBLE
-            searchInputView.searchTextView.apply {
+            searchInputView.searchBarTextField.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
                 }
@@ -190,11 +190,11 @@ class DiscomFragment :
 
     override fun loadData(page: Int) {
         if (isAdded) {
-            if (!TextUtils.isEmpty(searchInputView.searchText) && searchInputView.searchText.length >= MINIMUM_SEARCH_KEYWORD_CHAR) {
+            if (!TextUtils.isEmpty(searchText) && searchText.length >= MINIMUM_SEARCH_KEYWORD_CHAR) {
                 if (mToken != null) {
-                    presenter.loadData(searchInputView.searchText, page, mToken!!)
+                    presenter.loadData(searchText, page, mToken!!)
                 } else {
-                    presenter.loadData(searchInputView.searchText, page)
+                    presenter.loadData(searchText, page)
                 }
             } else {
                 showInitialLoadMessage()
@@ -415,7 +415,7 @@ class DiscomFragment :
 
     override fun onCityChipClicked(city: String) {
         ChooseAddressTracking.onClickChipsKotaPopuler(userSession.userId)
-        searchInputView.searchText = city
+        searchText = city
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {

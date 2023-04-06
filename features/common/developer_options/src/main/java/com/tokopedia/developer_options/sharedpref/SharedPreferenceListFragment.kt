@@ -32,9 +32,9 @@ class SharedPreferenceListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
-            search(searchInputView.searchText)
+            search(searchInputView.searchBarTextField.text.toString())
         }
-        searchInputView.setSearchHint("Cari")
+        searchInputView.searchBarPlaceholder = "Cari"
     }
 
     override fun getScreenName(): String = ""
