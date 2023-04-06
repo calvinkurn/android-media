@@ -40,6 +40,8 @@ class ShipmentNewUpsellImprovementViewHolder(
         itemView.findViewById(R.id.checkout_upsell_outer_container)
     private val checkoutUpsellCard: CardUnify2 =
         itemView.findViewById(R.id.checkout_upsell_card)
+    private val checkoutUpsellCardOverlay: CardUnify2 =
+        itemView.findViewById(R.id.checkout_upsell_card_border)
     private val checkoutUpsellBackgroundImage: ImageUnify =
         itemView.findViewById(R.id.checkout_upsell_background_image)
     private val checkoutUpsellLogoContainer: CardUnify2 =
@@ -80,8 +82,7 @@ class ShipmentNewUpsellImprovementViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
-        checkoutUpsellLogoContainer.setOnClickListener(null)
-        checkoutUpsellCard.setOnClickListener(null)
+        checkoutUpsellCardOverlay.setOnClickListener(null)
         checkoutUpsellContentGroup.gone()
         checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
         checkoutUpsellBackgroundImage.invisible()
@@ -110,11 +111,9 @@ class ShipmentNewUpsellImprovementViewHolder(
             checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_short_background)
             checkoutUpsellDescription.gone()
             checkoutUpsellIcon.loadImage(R.drawable.checkout_module_upsell_opt_out)
-            val onClickCancelUpsell = OnClickListener {
+            checkoutUpsellCardOverlay.setOnClickListener {
                 actionListener?.onClickCancelNewUpsellCard(data)
             }
-            checkoutUpsellLogoContainer.setOnClickListener(onClickCancelUpsell)
-            checkoutUpsellCard.setOnClickListener(onClickCancelUpsell)
             checkoutUpsellContentGroup.visible()
         } else {
             checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
@@ -131,11 +130,9 @@ class ShipmentNewUpsellImprovementViewHolder(
                     IconUnify.CHEVRON_RIGHT
                 )
             )
-            val onClickApplyUpsell = OnClickListener {
+            checkoutUpsellCardOverlay.setOnClickListener {
                 actionListener?.onClickApplyNewUpsellCard(data)
             }
-            checkoutUpsellLogoContainer.setOnClickListener(onClickApplyUpsell)
-            checkoutUpsellCard.setOnClickListener(onClickApplyUpsell)
             checkoutUpsellContentGroup.visible()
         }
         checkoutUpsellIcon.visible()
