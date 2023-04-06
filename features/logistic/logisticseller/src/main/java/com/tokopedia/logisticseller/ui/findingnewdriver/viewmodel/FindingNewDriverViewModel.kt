@@ -2,15 +2,16 @@ package com.tokopedia.logisticseller.ui.findingnewdriver.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticseller.data.param.NewDriverParam
 import com.tokopedia.logisticseller.domain.mapper.FindingNewDriverMapper
 import com.tokopedia.logisticseller.domain.usecase.NewDriverAvailabilityUseCase
 import com.tokopedia.logisticseller.domain.usecase.NewDriverBookingUseCase
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverAvailabilityState
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverBookingState
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FindingNewDriverViewModel @Inject constructor(
@@ -30,8 +31,8 @@ class FindingNewDriverViewModel @Inject constructor(
         get() = _newDriverBooking
 
     fun getNewDriverAvailability(orderId: String) {
-        launchCatchError(
-            block = {
+        viewModelScope.launch {
+            try {
                 _newDriverAvailability.value =
                     NewDriverAvailabilityState.Loading
                 val response = newDriverAvailabilityUseCase(
@@ -47,16 +48,15 @@ class FindingNewDriverViewModel @Inject constructor(
                 } ?: run {
                     _newDriverAvailability.value = NewDriverAvailabilityState.Fail(null)
                 }
-            },
-            onError = {
-                _newDriverAvailability.value = NewDriverAvailabilityState.Fail(it.message)
+            } catch (e: Exception) {
+                _newDriverAvailability.value = NewDriverAvailabilityState.Fail(e.message)
             }
-        )
+        }
     }
 
     fun getNewDriverBooking(orderId: String) {
-        launchCatchError(
-            block = {
+        viewModelScope.launch {
+            try {
                 _newDriverBooking.value = NewDriverBookingState.Loading(isShowLoading = true)
                 val response = newDriverBookingUseCase(
                     NewDriverParam(
@@ -71,11 +71,10 @@ class FindingNewDriverViewModel @Inject constructor(
                 } ?: run {
                     _newDriverBooking.value = NewDriverBookingState.Fail(null)
                 }
-            },
-            onError = {
+            } catch (e: Exception) {
                 _newDriverBooking.value = NewDriverBookingState.Loading(isShowLoading = false)
-                _newDriverBooking.value = NewDriverBookingState.Fail(it.message)
+                _newDriverBooking.value = NewDriverBookingState.Fail(e.message)
             }
-        )
+        }
     }
 }

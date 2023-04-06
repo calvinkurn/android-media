@@ -32,7 +32,7 @@ class FindingNewDriverViewModelTest {
 
     lateinit var viewModel: FindingNewDriverViewModel
 
-    private val mockThrowable = mockk<Throwable>(relaxed = true)
+    private val mockThrowable = mockk<Exception>(relaxed = true)
 
     @Before
     fun setup() {

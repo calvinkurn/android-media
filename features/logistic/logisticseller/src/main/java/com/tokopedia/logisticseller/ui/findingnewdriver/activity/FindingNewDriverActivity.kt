@@ -16,10 +16,6 @@ class FindingNewDriverActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hideActionBar()
-    }
-
-    private fun hideActionBar() {
         supportActionBar?.hide()
     }
 }
