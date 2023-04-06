@@ -38,8 +38,9 @@ class HomeProductCarouselChipsViewHolder(
 
     override fun bind(uiModel: HomeProductCarouselChipsUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && uiModel != null) {
-            binding?.productCarouselChipView?.bindCarouselItemList(
+            binding?.productCarouselChipView?.bind(
                 carouselItemList = uiModel.carouselItemList,
+                chipList = uiModel.chipList,
                 state = uiModel.state
             )
         }

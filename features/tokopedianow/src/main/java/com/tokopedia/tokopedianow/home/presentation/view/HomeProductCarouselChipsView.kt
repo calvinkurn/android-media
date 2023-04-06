@@ -80,8 +80,9 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         submitChipList(chipList)
     }
 
-    fun bindCarouselItemList(
+    fun bind(
         carouselItemList: List<Visitable<*>>,
+        chipList: List<TokoNowChipUiModel>,
         state: TokoNowProductRecommendationState
     ) {
         val loading = TokoNowProductRecommendationState.LOADING
@@ -90,6 +91,8 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         binding.productCardCarousel.bindItems(items = carouselItemList)
         binding.productCardCarousel.showWithCondition(state == loaded)
         binding.productCardShimmering.root.showWithCondition(state == loading)
+
+        submitChipList(chipList)
     }
 
     fun setListener(listener: HomeProductCarouselChipsViewListener?) {
