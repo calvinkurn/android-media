@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
@@ -85,7 +86,13 @@ open class GalleryFragment @Inject constructor(
                 uiModel.hasChangeAlbum = false
                 hasNextPage = true
 
-                if (viewModel.isMediaListLessThanThreshold.not()) {
+                val isAbleLoadMore = if (uiModel.bucketCount.isMoreThanZero()) {
+                    featureAdapter.itemCount <= uiModel.bucketCount
+                } else {
+                    true
+                }
+
+                if (viewModel.isMediaListLessThanThreshold.not() && isAbleLoadMore) {
                     viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
                 }
             }
@@ -138,9 +145,11 @@ open class GalleryFragment @Inject constructor(
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            val (id, name) = AlbumActivity.getIntentResult(data)
+            val (id, name, count) = AlbumActivity.getIntentResult(data)
             albumSelector.setAlbumName(name)
+
             uiModel.hasChangeAlbum = true
+            uiModel.bucketCount = count
             uiModel.bucketId = id
 
             viewModel.loadMedia(uiModel.bucketId)
@@ -195,14 +204,16 @@ open class GalleryFragment @Inject constructor(
 
     private fun initObservable() {
         viewModel.medias.observe(viewLifecycleOwner) {
-            if (uiModel.hasChangeAlbum) {
-                featureAdapter.setItemsAndAnimateChanges(it)
+            if (it.isNotEmpty()) {
+                if (uiModel.hasChangeAlbum) {
+                    featureAdapter.setItemsAndAnimateChanges(it)
 
-                // force move to top every single bucketId has changed
-                binding?.lstMedia?.smoothScrollToPosition(0)
-            } else {
-                featureAdapter.addItemsAndAnimateChanges(it)
-                endlessScrollListener.updateStateAfterGetData()
+                    // force move to top every single bucketId has changed
+                    binding?.lstMedia?.smoothScrollToPosition(0)
+                } else {
+                    featureAdapter.addItemsAndAnimateChanges(it)
+                    endlessScrollListener.updateStateAfterGetData()
+                }
             }
         }
 
