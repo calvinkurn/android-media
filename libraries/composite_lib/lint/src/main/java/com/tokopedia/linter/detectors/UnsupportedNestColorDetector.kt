@@ -15,10 +15,12 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
 import com.tokopedia.linter.Priority
+import com.tokopedia.linter.unify.UnifyComponentsList
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULiteralExpression
 import org.w3c.dom.Attr
 import org.w3c.dom.Element
+import javax.print.attribute.standard.Severity
 
 class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     companion object {
@@ -102,11 +104,12 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     }
 
     private fun reportXmlError(context: XmlContext, node: Element, attribute: Attr) {
-        val attrValue = StringBuilder(attribute.value)
-        val suggestion = attrValue.insert(NEST_INDEX, NEST_CHARACTER).toString()
+        val attrValue = StringBuilder(attribute.value).toString()
+        val suggestion = UnifyComponentsList.unifyToNestColor[attrValue]
+            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER)
         val quickFix = LintFix.create()
             .replace()
-            .text(attrValue.toString())
+            .text(attrValue)
             .with(suggestion)
             .build()
 
