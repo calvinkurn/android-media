@@ -32,8 +32,6 @@ class FindingNewDriverViewModelTest {
 
     lateinit var viewModel: FindingNewDriverViewModel
 
-    private val mockThrowable = mockk<Exception>(relaxed = true)
-
     @Before
     fun setup() {
         viewModel = FindingNewDriverViewModel(
@@ -98,9 +96,8 @@ class FindingNewDriverViewModelTest {
         val errorMessage = "error"
         coEvery {
             newDriverAvailabilityUseCase.invoke(any())
-        } throws mockThrowable
+        } throws Exception(errorMessage)
 
-        coEvery { mockThrowable.message } returns errorMessage
         viewModel.getNewDriverAvailability(orderId)
 
         verify {
@@ -115,9 +112,8 @@ class FindingNewDriverViewModelTest {
         val orderId = "12345"
         coEvery {
             newDriverAvailabilityUseCase.invoke(any())
-        } throws mockThrowable
+        } throws Exception()
 
-        coEvery { mockThrowable.message } returns null
         viewModel.getNewDriverAvailability(orderId)
 
         verify {
@@ -174,16 +170,18 @@ class FindingNewDriverViewModelTest {
 
     @Test
     fun `verify when new driver booking detect exception`() {
+        val errorMessage = "error"
         val orderId = "12345"
+
         coEvery {
             newDriverBookingUseCase.invoke(any())
-        } throws mockThrowable
+        } throws Exception(errorMessage)
 
         viewModel.getNewDriverBooking(orderId)
 
         verify {
             newDriverBookingObserver.onChanged(
-                NewDriverBookingState.Fail(mockThrowable.message)
+                NewDriverBookingState.Fail(errorMessage)
             )
         }
     }
