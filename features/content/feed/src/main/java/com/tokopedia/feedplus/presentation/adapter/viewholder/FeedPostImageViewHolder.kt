@@ -31,8 +31,14 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -44,8 +50,11 @@ class FeedPostImageViewHolder(
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
+    private val scope = CoroutineScope(Dispatchers.Main)
+
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+    private var adapter: FeedPostImageAdapter? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
@@ -57,6 +66,10 @@ class FeedPostImageViewHolder(
         binding.root
     )
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+
+    private var firstX = 0f
+    private var secondX = 0f
+    private var isAutoSwipeOn = true
 
     init {
         with(binding) {
@@ -146,6 +159,18 @@ class FeedPostImageViewHolder(
                 }
 
                 rvFeedPostImageContent.setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            firstX = event.x
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            secondX = event.x
+                            val deltaX = secondX - firstX
+                            if (abs(deltaX) > MINIMUM_DISTANCE_SWIPE) {
+                                isAutoSwipeOn = false
+                            }
+                        }
+                    }
                     postGestureDetector.onTouchEvent(event)
                 }
                 rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
@@ -174,10 +199,15 @@ class FeedPostImageViewHolder(
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
                 updateProductTagText(it)
+
+                isAutoSwipeOn = true
+                runAutoSwipe()
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 campaignView.resetView()
                 hideClearView()
+
+                isAutoSwipeOn = false
             }
         }
     }
@@ -302,7 +332,7 @@ class FeedPostImageViewHolder(
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {
         with(binding) {
-            val adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
+            adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
             rvFeedPostImageContent.adapter = adapter
         }
     }
@@ -358,9 +388,27 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun runAutoSwipe() {
+        scope.launch {
+            while (isAutoSwipeOn) {
+                delay(THREE_SECONDS)
+                val index = layoutManager.findFirstVisibleItemPosition()
+                if ((index + PRODUCT_COUNT_ONE) < adapter?.data?.size.orZero()) {
+                    binding.rvFeedPostImageContent.smoothScrollToPosition(index + PRODUCT_COUNT_ONE)
+                } else {
+                    binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
+                }
+            }
+        }
+    }
+
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
+
+        private const val MINIMUM_DISTANCE_SWIPE = 100
+
+        private const val THREE_SECONDS = 3000L
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
