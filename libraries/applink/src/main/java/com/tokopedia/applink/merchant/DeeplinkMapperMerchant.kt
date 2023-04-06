@@ -364,6 +364,11 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
     }
 
+    fun getRegisteredNavigationForCreateShopVoucher(): String {
+        val voucherType = "shop"
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
+    }
+
     fun getRegisteredNavigationForCreateVoucherProduct(): String {
         val voucherType = "product"
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
@@ -379,12 +384,20 @@ object DeeplinkMapperMerchant {
         return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
     }
 
+    fun isCreateShopVoucherApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)
+    }
+
     fun isCreateVoucherProductApplink(deeplink: String): Boolean {
         return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
     }
 
     fun isVoucherProductListApplink(deeplink: String): Boolean {
         return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_LIST)
+    }
+
+    fun isShopVoucherDetailApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_DETAIL)
     }
 
     fun isVoucherProductDetailApplink(deeplink: String): Boolean {
@@ -434,6 +447,11 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_LIST, lastSegment)
+    }
+
+    fun getRegisteredNavigationForShopVoucherDetail(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL, lastSegment)
     }
 
     fun getRegisteredNavigationForVoucherProductDetail(deeplink: String): String {

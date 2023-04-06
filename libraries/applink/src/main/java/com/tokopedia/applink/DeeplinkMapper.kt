@@ -738,11 +738,9 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(context)
             ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE -> ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
-            ApplinkConst.SellerApp.CREATE_VOUCHER -> ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
             ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
             ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
             ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
-            ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL
             ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
@@ -773,7 +771,9 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)
                 DeeplinkMapperMerchant.isCreateShowcaseApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShowcase(deeplink)
                 DeeplinkMapperMerchant.isCreateVoucherProductApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct()
+                DeeplinkMapperMerchant.isCreateShopVoucherApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShopVoucher()
                 DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(deeplink)
+                DeeplinkMapperMerchant.isShopVoucherDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForShopVoucherDetail(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale(deeplink)
