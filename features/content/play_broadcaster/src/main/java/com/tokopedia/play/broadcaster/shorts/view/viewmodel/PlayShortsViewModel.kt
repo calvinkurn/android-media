@@ -95,7 +95,6 @@ class PlayShortsViewModel @Inject constructor(
 
     val mDataStore = dataStore
 
-    private val bannerPreparationList = mutableListOf<PlayBroadcastPreparationBannerModel>()
     private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _globalLoader = MutableStateFlow(false)
@@ -228,16 +227,18 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            if (bannerPreparationList.contains(data)) return@launchCatchError
-            bannerPreparationList.add(data)
-            _bannerPreparation.update { bannerPreparationList }
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it + data }
         }, onError = {})
     }
 
     private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            bannerPreparationList.remove(data)
-            _bannerPreparation.update { bannerPreparationList }
+            _bannerPreparation.update { list ->
+                list.filter { banner ->
+                    banner != data
+                }
+            }
         }, onError = {})
     }
 
