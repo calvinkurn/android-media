@@ -531,7 +531,7 @@ class ChatbotPresenterTest {
         val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -558,7 +558,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -582,7 +582,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -601,7 +601,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -616,7 +616,7 @@ class ChatbotPresenterTest {
     @Test
     fun `submitChatCsat failure`() {
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any())
         } coAnswers {
             secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -631,7 +631,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -644,7 +644,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure with model not null`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -664,7 +664,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseChatId  null`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -684,7 +684,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseId  null`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -704,7 +704,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel messageId  null`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -724,7 +724,7 @@ class ChatbotPresenterTest {
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel is  null`() {
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
             firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -816,7 +816,7 @@ class ChatbotPresenterTest {
         val response = mockk<TickerDataResponse>(relaxed = true)
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -838,7 +838,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -857,7 +857,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -872,7 +872,7 @@ class ChatbotPresenterTest {
     @Test
     fun `showTickerData failure`() {
         coEvery {
-            getTickerDataUseCase.getTickerData(any(), captureLambda(), any())
+            getTickerDataUseCase.getTickerData(any(), captureLambda())
         } coAnswers {
             secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
@@ -1324,13 +1324,13 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         presenter.getBottomChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1400,14 +1400,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         // When
         presenter.getTopChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1490,14 +1490,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         // When
         presenter.getExistingChat("123456", { }, { _, _ -> }, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1536,8 +1536,7 @@ class ChatbotPresenterTest {
         } returns ratingListResponse
 
         presenter.getChatRatingList(
-            ChipGetChatRatingListInput(),
-            "123456"
+            ChipGetChatRatingListInput()
         ) { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
@@ -1555,7 +1554,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123") {}
+        presenter.getChatRatingList(ChipGetChatRatingListInput()) {}
 
         verify {
             exception.printStackTrace()
