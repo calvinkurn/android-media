@@ -310,10 +310,9 @@ open class TokoChatFragment :
                     type = Toaster.TYPE_ERROR
                 ).show()
             }
-            adapter.getImageAttachmentPairWithId(it.first)?.let { pair ->
-                val element = pair.second
+            adapter.getImageAttachmentPairWithId(it.first)?.let { (position, element) ->
                 element.updateImageState(TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD)
-                notifyWhenAllowed(pair.first)
+                notifyWhenAllowed(position)
             }
         }
     }
@@ -1055,7 +1054,7 @@ open class TokoChatFragment :
                         onSuccessImageAttachment(element.imageId)
                     }, onError = {
                             onErrorLoadImage(element)
-                    })
+                        })
                     this.transforms(listOf(CenterCrop(), RoundedCorners(EIGHT_DP.toPx())))
                     this.setRoundedRadius(EIGHT_DP.toFloat())
                 })
@@ -1244,13 +1243,12 @@ open class TokoChatFragment :
 
     private fun processImagePathToUpload(imagePathList: List<String>): String? {
         imagePathList.firstOrNull()?.let { imagePath ->
-            if (imagePath.isNotEmpty() && context != null) {
+            if (imagePath.isNotEmpty()) {
                 viewModel.uploadImage(filePath = imagePath) {
-                    adapter.getImageAttachmentPairWithId(it)?.let { pair ->
-                        val position = pair.first
-                        val element = pair.second
+                    adapter.getImageAttachmentPairWithId(it)?.let { (position, element) ->
                         element.updateImageState(
-                            TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD)
+                            TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD
+                        )
                         // notify
                         notifyWhenAllowed(position)
                     }

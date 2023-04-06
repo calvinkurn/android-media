@@ -7,19 +7,18 @@ import com.gojek.conversations.extensions.ConversationsExtension
 import com.gojek.conversations.extensions.ConversationsExtensionWidget
 import com.gojek.conversations.extensions.ExtensionMessage
 
-class TokoChatImageAttachmentExtension(): ConversationsExtension {
+class TokoChatImageAttachmentExtension : ConversationsExtension {
 
     override var conversationsContext: ConversationsContext
         get() = TODO("Not yet implemented")
         set(value) {}
 
-
-    // Layout we create
+    // No need for this, we create our own view
     override fun getExtensionMessageView(
         extensionMessage: ExtensionMessage,
         context: Context
     ): View? {
-        TODO("Not yet implemented")
+        return null
     }
 
     // Dummy view in here
@@ -49,7 +48,7 @@ class TokoChatImageAttachmentExtension(): ConversationsExtension {
         conversationsContext: ConversationsContext,
         extensionMessage: ExtensionMessage
     ): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     // No need

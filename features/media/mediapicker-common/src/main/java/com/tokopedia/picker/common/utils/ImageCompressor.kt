@@ -32,7 +32,7 @@ object ImageCompressor {
     fun compress(
         context: Context,
         imagePath: String,
-        customSubDirectory: String? = null
+        subDirectory: String? = null
     ): Uri? {
         val file = File(imagePath)
         val fileAsUri = Uri.fromFile(file)
@@ -49,7 +49,7 @@ object ImageCompressor {
             QUALITY,
             MIN_WIDTH,
             MIN_HEIGHT,
-            customSubDirectory
+            subDirectory
         )
     }
 

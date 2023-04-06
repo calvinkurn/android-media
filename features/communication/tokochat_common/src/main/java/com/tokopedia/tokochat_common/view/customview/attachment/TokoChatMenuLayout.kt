@@ -3,10 +3,11 @@ package com.tokopedia.tokochat_common.view.customview.attachment
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showKeyboard
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 
@@ -54,18 +55,18 @@ class TokoChatMenuLayout : ConstraintLayout {
         view: View?
     ) {
         // If selected menu clicked again, hide the menu view
-        if (previousSelectedMenu == menuType) {
-            showKeyboard(view)
+        previousSelectedMenu = if (previousSelectedMenu == menuType) {
+            view?.showKeyboard()
             hideMenu()
 
             // Reset previous selected menu
-            previousSelectedMenu = null
+            null
         } else {
-            hideKeyboard() // Hide keyboard
+            view?.hideKeyboard() // Hide keyboard
             showMenu() // Show Menu
 
             // Save to previous selected menu
-            previousSelectedMenu = menuType
+            menuType
         }
     }
 
@@ -81,23 +82,12 @@ class TokoChatMenuLayout : ConstraintLayout {
         listener?.onAttachmentShowed()
     }
 
-    private fun hideKeyboard() {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
-    }
-
-    private fun showKeyboard(view: View?) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
-
     enum class ChatMenuType {
         ATTACHMENT_MENU,
-        STICKER_MENU //Reserved for future use
+        STICKER_MENU // Reserved for future use
     }
 
     companion object {
         private val LAYOUT = R.layout.tokochat_partial_chat_menu
     }
-
 }

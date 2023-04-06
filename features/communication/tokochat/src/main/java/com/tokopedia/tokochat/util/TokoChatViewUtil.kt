@@ -164,7 +164,7 @@ class TokoChatViewUtil @Inject constructor(
         return ImageCompressor.compress(
             context = context,
             imagePath = originalFilePath,
-            customSubDirectory = TOKOCHAT_RELATIVE_PATH
+            subDirectory = TOKOCHAT_RELATIVE_PATH
         )
     }
 
