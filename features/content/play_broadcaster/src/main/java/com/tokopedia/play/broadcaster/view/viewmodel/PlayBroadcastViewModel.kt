@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
@@ -250,6 +251,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val isShortVideoAllowed: Boolean
         get() = _configInfo.value?.shortVideoAllowed.orFalse()
+
+    val broadcastingConfig: BroadcastingConfigUiModel
+        get() = hydraConfigStore.getBroadcastingConfig()
 
     private val _channelUiState = _configInfo
         .filterNotNull()
