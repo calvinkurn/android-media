@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
@@ -34,11 +35,11 @@ fun NestLabel(
         NestLabelType.HIGHLIGHT_LIGHT_BLUE -> NestTheme.colors.BN._100
         NestLabelType.HIGHLIGHT_LIGHT_TEAL -> NestTheme.colors.TN._100
 
-        NestLabelType.HIGHLIGHT_DARK_GREEN -> NestTheme.colors.GN._100
-        NestLabelType.HIGHLIGHT_DARK_BLUE -> NestTheme.colors.BN._100
-        NestLabelType.HIGHLIGHT_DARK_ORANGE -> NestTheme.colors.YN._100
-        NestLabelType.HIGHLIGHT_DARK_RED -> NestTheme.colors.RN._100
-        NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._100
+        NestLabelType.HIGHLIGHT_DARK_GREEN -> NestTheme.colors.GN._500
+        NestLabelType.HIGHLIGHT_DARK_BLUE -> NestTheme.colors.BN._500
+        NestLabelType.HIGHLIGHT_DARK_ORANGE -> NestTheme.colors.YN._500
+        NestLabelType.HIGHLIGHT_DARK_RED -> NestTheme.colors.RN._500
+        NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._500
         NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
 
         NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
@@ -69,7 +70,7 @@ fun NestLabel(
     ) {
         Text(
             text = labelText,
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
             color = textColor,
             maxLines = 1,
             style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
@@ -269,49 +270,88 @@ private fun NestLightLabelOnImagePreview() {
 @Composable
 private fun NestLabelOnDevicesPreview() {
     NestTheme {
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            NestTypography(text = "Light Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Green", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN)
                 NestLabel(
-                    labelText = "Orange",
+                    labelText = "Light - Green",
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
+                )
+                NestLabel(
+                    labelText = "Light - Orange",
                     nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_ORANGE
                 )
-                NestLabel(labelText = "Grey", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY)
+                NestLabel(
+                    labelText = "Light - Grey",
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY
+                )
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Red", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED)
-                NestLabel(labelText = "Blue", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_BLUE)
-                NestLabel(labelText = "Teal", nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL)
+                NestLabel(
+                    labelText = "Light - Red",
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
+                )
+                NestLabel(
+                    labelText = "Light - Blue",
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_BLUE
+                )
+                NestLabel(
+                    labelText = "Light -Teal",
+                    nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_TEAL
+                )
             }
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            NestTypography(text = "Dark Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Dark - Green", nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREEN)
+                NestLabel(
+                    labelText = "Dark - Green",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREEN
+                )
                 NestLabel(
                     labelText = "Dark - Orange",
                     nestLabelType = NestLabelType.HIGHLIGHT_DARK_ORANGE
                 )
-                NestLabel(labelText = "Dark - Grey", nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREY)
+                NestLabel(
+                    labelText = "Dark - Grey",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_GREY
+                )
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NestLabel(labelText = "Dark - Red", nestLabelType = NestLabelType.HIGHLIGHT_DARK_RED)
-                NestLabel(labelText = "Dark - Blue", nestLabelType = NestLabelType.HIGHLIGHT_DARK_BLUE)
-                NestLabel(labelText = "Dark - Teal", nestLabelType = NestLabelType.HIGHLIGHT_DARK_TEAL)
+                NestLabel(
+                    labelText = "Dark - Red",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_RED
+                )
+                NestLabel(
+                    labelText = "Dark - Blue",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_BLUE
+                )
+                NestLabel(
+                    labelText = "Dark - Teal",
+                    nestLabelType = NestLabelType.HIGHLIGHT_DARK_TEAL
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
