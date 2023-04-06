@@ -367,7 +367,7 @@ class FeedXHomeUseCase @Inject constructor(
     fun createParams(
         source: String,
         cursor: String,
-        limit: Int = 10,
+        limit: Int = 0,
         detailId: String = ""
     ): Map<String, Any> {
         val params = mutableMapOf(
