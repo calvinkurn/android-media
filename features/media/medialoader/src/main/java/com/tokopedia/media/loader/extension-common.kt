@@ -6,17 +6,31 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
-import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
-fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
+fun ImageView.loadAsGif(
+    url: String
+) = loadGifImage(
+    this,
+    url,
+    Properties()
+        .isGif(true)
+)
 
 fun ImageView.loadAsGif(
     url: String,
     properties: Properties.() -> Unit
-) = loadGifImage(this, url, Properties().apply(properties))
+) = loadGifImage(
+    this,
+    url,
+    Properties()
+        .apply(properties)
+        .isGif(true)
+)
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
@@ -46,6 +60,12 @@ fun ImageView.loadImage(uri: Uri) {
 
 inline fun ImageView.loadImage(
     url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties))
+
+inline fun ImageView.loadImage(
+    url: Uri?,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
     .apply(properties))
@@ -121,7 +141,7 @@ inline fun ImageView.loadIcon(
 ) {
     call(url, Properties()
         .apply(properties)
-        .overrideSize(Resize(300, 300))
+        .overrideSize(Resize(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE))
         .isIcon(true)
     )
 }

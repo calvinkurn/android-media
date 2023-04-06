@@ -11,7 +11,7 @@ import com.tokopedia.home_account.account_settings.presentation.adapter.setting.
 import com.tokopedia.home_account.account_settings.presentation.listener.ImageQualitySettingListener
 import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQualityUIModel.Companion.settingsMenu
 import com.tokopedia.home_account.databinding.FragmentImageQualitySettingBinding
-import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.utils.lifecycle.autoClearedNullable

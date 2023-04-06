@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -53,6 +52,7 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.AfterTextWatcher
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -275,7 +275,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun initListener() {
         // set listener for showcase search
         searchBarShowcasePicker?.searchBarTextField?.addTextChangedListener(object: AfterTextWatcher() {
-            override fun afterTextChanged(keyword: Editable?) {
+            override fun afterTextChanged(keyword: Editable) {
                 if(showcaseList.size.isMoreThanZero()) {
                     val filteredList = showcaseList.filter {
                         it.name.toLowerCase(Locale.ROOT).contains(keyword.toString().toLowerCase(Locale.ROOT))
@@ -344,10 +344,10 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
             // set text change listener for add showcase name textfield
             textFieldAddShowcaseBottomSheet?.textFieldInput?.addTextChangedListener(object : AfterTextWatcher() {
-                override fun afterTextChanged(name: Editable?) {
+                override fun afterTextChanged(name: Editable) {
                     textFieldAddShowcaseBottomSheet?.setError(false)
                     textFieldAddShowcaseBottomSheet?.setMessage(ctx.getString(R.string.bottomsheet_add_showcase_textfield_hint_text))
-                    buttonAddShowcaseBottomSheet?.isEnabled = !name?.length.isZero()
+                    buttonAddShowcaseBottomSheet?.isEnabled = !name.length.isZero()
                 }
             })
 
