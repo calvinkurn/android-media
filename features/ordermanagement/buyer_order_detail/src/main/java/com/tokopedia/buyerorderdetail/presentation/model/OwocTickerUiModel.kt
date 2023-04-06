@@ -1,0 +1,4 @@
+package com.tokopedia.buyerorderdetail.presentation.model
+
+class OwocTickerUiModel {
+}

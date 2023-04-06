@@ -13,7 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OWOCSectionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocSectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -24,7 +24,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateBottomSheetViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
@@ -115,7 +114,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
-            OWOCSectionViewHolder.LAYOUT -> OWOCSectionViewHolder(parent)
+            OwocSectionViewHolder.LAYOUT -> OwocSectionViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -227,6 +226,6 @@ open class BuyerOrderDetailTypeFactory(
     }
 
     fun type(owocSectionUiModel: OWOCSectionUiModel): Int {
-        return OWOCSectionViewHolder.LAYOUT
+        return OwocSectionViewHolder.LAYOUT
     }
 }

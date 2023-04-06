@@ -7,7 +7,7 @@ import com.tokopedia.buyerorderdetail.databinding.ItemOwocSectionBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OWOCSectionUiModel
 import com.tokopedia.media.loader.loadImage
 
-class OWOCSectionViewHolder(
+class OwocSectionViewHolder(
     view: View
 ): AbstractViewHolder<OWOCSectionUiModel>(view) {
 

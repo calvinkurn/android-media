@@ -43,17 +43,13 @@
                     android:id="@+id/buyer_ticker_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_13"
-                    android:layout_marginLeft="@dimen/dp_13"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="@dimen/dp_13"
-                    android:layout_marginRight="@dimen/dp_13"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     app:closeButtonVisibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tickerShapeType="loose"
+                    app:tickerShapeType="full"
                     app:tickerType="announcement" />
 
                 <com.tokopedia.unifyprinciples.Typography
