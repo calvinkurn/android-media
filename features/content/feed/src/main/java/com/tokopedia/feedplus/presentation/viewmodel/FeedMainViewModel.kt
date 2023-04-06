@@ -61,9 +61,8 @@ class FeedMainViewModel @Inject constructor(
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
 
-    private val _metaData = MutableLiveData<Result<MetaModel>>()
-    val metaData: LiveData<Result<MetaModel>>
-        get() = _metaData
+    private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
+    val metaData get() = _metaData.asStateFlow()
 
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
