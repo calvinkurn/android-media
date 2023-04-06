@@ -41,7 +41,7 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         )
     }
 
-    fun setTransientMessageFailed(messageId: String) {
+    open fun setTransientMessageFailed(messageId: String) {
         repository.getConversationRepository().setTransientMessageFailed(
             messageId = messageId
         )
