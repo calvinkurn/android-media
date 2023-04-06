@@ -73,6 +73,7 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
 
     override fun visitElement(context: XmlContext, element: Element) {
         val attribute = element.getAttributeNode("name")
+
         if (attribute.value.matches(Regex(REGEX_OLD_COLOR))) {
             reportXmlError(context, element, attribute)
         }
