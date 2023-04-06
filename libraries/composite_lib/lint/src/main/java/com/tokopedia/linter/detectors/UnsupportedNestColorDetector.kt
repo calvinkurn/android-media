@@ -22,49 +22,44 @@ import org.w3c.dom.Element
 
 class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     companion object {
-        val JAVA_ISSUE = Issue.create(
-            id = "UnsupportedNestModeColor",
-            briefDescription = "Deprecated color should not be used.",
-            explanation = "This color has deprecated, please use color with token contain 'N' before color number. Example:" +
-                "\n❌ : Unify_N100 " +
-                "\n✅ : Unify_NN100" +
-                "\n❌ : Unify_G500 " +
-                "\n✅ : Unify_GN500",
-            category = Category.CORRECTNESS,
-            priority = Priority.Medium.value,
-            severity = Severity.WARNING,
-            implementation = Implementation(
-                UnsupportedNestColorDetector::class.java,
-                Scope.JAVA_FILE_SCOPE
-            )
-        )
-
-        val XML_ISSUE = Issue.create(
-            id = "UnsupportedNestModeColor",
-            briefDescription = "Deprecated color should not be used.",
-            explanation = "This color has deprecated, please use color with token contain 'N' before color number. Example:" +
-                "\n❌ : Unify_N100 " +
-                "\n✅ : Unify_NN100" +
-                "\n❌ : Unify_G500 " +
-                "\n✅ : Unify_GN500",
-            category = Category.CORRECTNESS,
-            priority = Priority.Medium.value,
-            severity = Severity.WARNING,
-            implementation = Implementation(
-                UnsupportedNestColorDetector::class.java,
-                Scope.RESOURCE_FILE_SCOPE
-            )
-        )
-
-        private const val NEST_INDEX = 7
-        private const val NEST_CHARACTER = "N"
-        private const val REGEX_OLD_COLOR = "^Unify_(?:[A-Z]){1}(?:[0-9]){2,4}"
+        private const val ISSUE_ID = "UnsupportedNestModeColor"
         private const val ERROR_MESSAGE = "Color has deprecated. " +
             "Please use color with token contain 'N' before color number. Example:" +
             "\n❌ : Unify_N100 " +
             "\n✅ : Unify_NN100" +
             "\n❌ : Unify_G500 " +
             "\n✅ : Unify_GN500"
+        private val ISSUE_PRIORITY = Priority.Medium
+        private val ISSUE_SEVERITY = Severity.WARNING
+        private val ISSUE_CATEGORY = Category.CORRECTNESS
+        private const val NEST_INDEX = 7
+        private const val NEST_CHARACTER = "N"
+        private const val REGEX_OLD_COLOR = "^Unify_[A-Z]\\d{2,4}"
+
+        val JAVA_ISSUE = Issue.create(
+            id = ISSUE_ID,
+            briefDescription = "Deprecated color should not be used.",
+            explanation = ERROR_MESSAGE,
+            category = ISSUE_CATEGORY,
+            priority = ISSUE_PRIORITY.value,
+            severity = ISSUE_SEVERITY,
+            implementation = Implementation(
+                UnsupportedNestColorDetector::class.java,
+                Scope.JAVA_FILE_SCOPE
+            )
+        )
+        val XML_ISSUE = Issue.create(
+            id = ISSUE_ID,
+            briefDescription = "Deprecated color should not be used.",
+            explanation = ERROR_MESSAGE,
+            category = ISSUE_CATEGORY,
+            priority = ISSUE_PRIORITY.value,
+            severity = ISSUE_SEVERITY,
+            implementation = Implementation(
+                UnsupportedNestColorDetector::class.java,
+                Scope.RESOURCE_FILE_SCOPE
+            )
+        )
     }
 
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
@@ -90,7 +85,7 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         return object : UElementHandler() {
             override fun visitLiteralExpression(node: ULiteralExpression) {
                 val value = node.value.toString()
-                if(value.matches(Regex(REGEX_OLD_COLOR))) {
+                if (value.matches(Regex(REGEX_OLD_COLOR))) {
                     reportJavaError(context, node)
                 }
             }
