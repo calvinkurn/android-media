@@ -1,0 +1,174 @@
+{
+  "readme": "Play Broadcaster - Performance Dashboard Entry Point",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - bottom sheet content card",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41736|41752)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - report page entry point shop page",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41737|41753)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point native",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "41738",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - bottom sheet content card shop page channel",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41739|41755)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - report page entry point",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41740|41756)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point shop page channel",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41741|41757)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point channel page",
+      "eventCategory": "groupchat room",
+      "eventLabel": ".* - (seller|user) - .*",
+      "trackerId": "(41742|41758)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - report page entry point",
+      "eventCategory": "groupchat room",
+      "eventLabel": ".* - (seller|user) - .*",
+      "trackerId": "(41743|41759)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point report page",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41744|41760)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point shop page",
+      "eventCategory": "shop page - seller",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41745|41754)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - performance dashboard entry point prep page",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41746|41762)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - coachmark performance dashboard prep page",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41747|41763)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - close coachmark performance dashboard prep page",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41748|41764)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - performance dashboard entry point prep page",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(41749|41765)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*"
+        },
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
