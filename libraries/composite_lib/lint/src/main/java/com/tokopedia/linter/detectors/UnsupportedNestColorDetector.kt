@@ -23,7 +23,7 @@ import org.w3c.dom.Element
 
 class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     companion object {
-        private const val ISSUE_ID = "UnsupportedNestModeColor"
+        private const val ISSUE_ID = "UnsupportedNestColor"
         private const val ERROR_MESSAGE = "Color has deprecated. " +
             "Please use color with token contain 'N' before color number. Example:" +
             "\n❌ : Unify_N100 " +
