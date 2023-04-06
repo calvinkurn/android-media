@@ -494,30 +494,4 @@ object DeeplinkMapperMerchant {
         }
         return deeplink
     }
-
-    fun getRegisteredNavigationForOldMvcSellerCreate(context: Context): String {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
-            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
-            true
-        )
-        return if (isEnableNewSellerMvcRouting) {
-            ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
-        } else {
-            ApplinkConstInternalSellerapp.CREATE_VOUCHER
-        }
-    }
-
-    fun getRegisteredNavigationForOldMvcSellerList(context: Context): String {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
-            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
-            true
-        )
-        return if (isEnableNewSellerMvcRouting) {
-            ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
-        } else {
-            ApplinkConstInternalSellerapp.VOUCHER_LIST
-        }
-    }
 }
