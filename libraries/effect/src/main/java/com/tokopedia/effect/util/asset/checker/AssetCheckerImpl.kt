@@ -11,19 +11,19 @@ class AssetCheckerImpl @Inject constructor(
     private val assetHelper: AssetHelper,
 ) : AssetChecker {
 
-    override suspend fun isLicenseAvailable(licenseName: String): Boolean {
+    override fun isLicenseAvailable(licenseName: String): Boolean {
         return File(assetHelper.licenseDir).listFiles()?.any { it.name == licenseName } ?: false
     }
 
-    override suspend fun isModelAvailable(): Boolean {
+    override fun isModelAvailable(): Boolean {
         return File(assetHelper.modelDir).exists()
     }
 
-    override suspend fun isCustomFaceAvailable(): Boolean {
+    override fun isCustomFaceAvailable(): Boolean {
         return File(assetHelper.customFaceDir).exists()
     }
 
-    override suspend fun isPresetFileAvailable(presetName: String): Boolean {
+    override fun isPresetFileAvailable(presetName: String): Boolean {
         val file = File(assetHelper.getPresetFilePath(presetName))
         return file.exists()
     }

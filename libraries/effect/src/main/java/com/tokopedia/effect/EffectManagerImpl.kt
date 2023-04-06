@@ -181,7 +181,7 @@ class EffectManagerImpl @Inject constructor(
             transition
         ) ?: 0
 
-        if(isEffectApplied()) {
+        if (isEffectApplied()) {
             val timestamp = System.nanoTime()
             val ret = mRenderManager?.processTexture(texture2D, destinationTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
             if(ret == false) {
@@ -228,7 +228,8 @@ class EffectManagerImpl @Inject constructor(
     override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
         return mRenderManager?.let { renderManager ->
             val faceFilterType = FaceFilterType.getById(faceFilterId)
-            if(faceFilterType.isUnknown) return@let false
+            if (faceFilterType.isUnknown) return@let false
+            if (!assetChecker.isCustomFaceAvailable()) return@let false
 
             if (!mSavedComposeNode.faceFilterComposeNodeApplied) {
                 val isSuccessAppendNodes = mRenderManager?.appendComposerNodes(arrayOf(assetHelper.customFaceDir)) == BEF_RESULT_SUC
@@ -249,7 +250,7 @@ class EffectManagerImpl @Inject constructor(
                 value
             ) == BEF_RESULT_SUC
 
-            if(isSuccess) {
+            if (isSuccess) {
                 mSavedComposeNode.update {
                     val isFound = mSavedComposeNode.faceFilters.any { it.type == faceFilterType }
                     if (isFound) {
@@ -278,7 +279,8 @@ class EffectManagerImpl @Inject constructor(
 
     override fun setPreset(presetId: String, value: Float): Boolean {
         return mRenderManager?.let { renderManager ->
-            if(presetId == mSavedComposeNode.preset.key && value == mSavedComposeNode.preset.value) return@let true
+            if (presetId == mSavedComposeNode.preset.key && value == mSavedComposeNode.preset.value) return@let true
+            if (!assetChecker.isPresetFileAvailable(presetId)) return@let false
 
             removePreset()
 
@@ -288,7 +290,7 @@ class EffectManagerImpl @Inject constructor(
                     renderManager.updateComposerNodes(presetFilePath, PRESET_MAKEUP_KEY, value) == BEF_RESULT_SUC &&
                     renderManager.updateComposerNodes(presetFilePath, PRESET_FILTER_KEY, value) == BEF_RESULT_SUC
 
-            if(isSuccess) {
+            if (isSuccess) {
                 mSavedComposeNode.update {
                     copy(preset = preset.copy(key = presetId, value = value))
                 }

@@ -5,11 +5,11 @@ package com.tokopedia.effect.util.asset.checker
  */
 interface AssetChecker {
 
-    suspend fun isLicenseAvailable(licenseName: String): Boolean
+    fun isLicenseAvailable(licenseName: String): Boolean
 
-    suspend fun isModelAvailable(): Boolean
+    fun isModelAvailable(): Boolean
 
-    suspend fun isCustomFaceAvailable(): Boolean
+    fun isCustomFaceAvailable(): Boolean
 
-    suspend fun isPresetFileAvailable(fileName: String): Boolean
+    fun isPresetFileAvailable(fileName: String): Boolean
 }
