@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -25,6 +26,9 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapt
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.Env
@@ -82,6 +86,8 @@ class DeveloperOptionActivity : BaseActivity() {
     private var userSession: UserSession? = null
     private var rvDeveloperOption: RecyclerView? = null
     private var sbDeveloperOption: SearchBarUnify? = null
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
+    private val loginSession by lazy { DevOptLoginSession(this) }
 
     private val adapter by lazy {
         DeveloperOptionAdapter(
@@ -90,7 +96,8 @@ class DeveloperOptionActivity : BaseActivity() {
                 resetOnBoardingListener = clickResetOnBoarding(),
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
-                loginHelperListener = loginHelperListener()
+                loginHelperListener = loginHelperListener(),
+                authorizeListener = checkAuthorize()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -160,6 +167,12 @@ class DeveloperOptionActivity : BaseActivity() {
             layoutManager = LinearLayoutManager(context)
             setItemViewCacheSize(RV_CACHE_SIZE)
         }
+
+        val loggedIn = loginSession.isLoggedIn()
+        clearSessionIfNotLoggedIn(loggedIn)
+
+        adapter.setValueIsAuthorized(loggedIn)
+        adapter.initializeList()
         adapter.setDefaultItem()
     }
 
@@ -274,6 +287,32 @@ class DeveloperOptionActivity : BaseActivity() {
                 this.finish()
             }
         }
+    }
+
+    private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+        return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+            override fun onSubmitDevOptsPassword(password: String) {
+                val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+                if (password == serverPassword) {
+                    loginSession.setLoginSession(password)
+                    adapter.setValueIsAuthorized(true)
+                    adapter.initializeList()
+                    adapter.setDefaultItem()
+                    showToaster("You are authorized !!")
+                } else {
+                    showToaster("Wrong password !! Please ask Android representative")
+                }
+            }
+        }
+    }
+
+    private fun clearSessionIfNotLoggedIn(loggedIn: Boolean) {
+        if (!loggedIn) loginSession.clear()
+    }
+
+    private fun showToaster(message: String) {
+        KeyboardHandler.hideSoftKeyboard(this)
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)
