@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -50,7 +49,6 @@ class FeedCampaignRibbonView(
     private var mCampaign: FeedCardCampaignModel? = null
     private var mCta: FeedCardCtaModel? = null
     private var mHasVoucher: Boolean = false
-    private var itemPosition: Int = RecyclerView.NO_POSITION
 
     fun bindData(
         modelType: String,
@@ -59,7 +57,6 @@ class FeedCampaignRibbonView(
         product: FeedCardProductModel?,
         hasVoucher: Boolean,
         isTypeHighlight: Boolean,
-        adapterPosition: Int
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
@@ -67,7 +64,6 @@ class FeedCampaignRibbonView(
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
-            itemPosition = adapterPosition
 
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
@@ -259,8 +255,7 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         listener.onReminderClicked(
                             mCampaign?.id.toLongOrZero(),
-                            !(mCampaign?.isReminderActive ?: false),
-                            itemPosition
+                            !(mCampaign?.isReminderActive ?: false)
                         )
                     }
                 }

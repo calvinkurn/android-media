@@ -177,8 +177,7 @@ class FeedPostViewModel @Inject constructor(
 
     fun setUnsetReminder(
         campaignId: Long,
-        setReminder: Boolean,
-        itemPosition: Int
+        setReminder: Boolean
     ) {
         viewModelScope.launch {
             try {
@@ -192,41 +191,27 @@ class FeedPostViewModel @Inject constructor(
                 if (response.success && response.errorMessage.isEmpty()) {
                     _feedHome.value?.let {
                         if (it is Success) {
-                            val prevDataItems = if (itemPosition > 0) {
-                                it.data.items.subList(
-                                    0,
-                                    itemPosition
-                                )
-                            } else {
-                                listOf()
-                            }
-                            val nextDataItems =
-                                if (itemPosition < it.data.items.size - 1) {
-                                    it.data.items.subList(
-                                        itemPosition + 1,
-                                        it.data.items.size
-                                    )
-                                } else {
-                                    listOf()
+                            val newData = it.data.items.map { item ->
+                                when {
+                                    item is FeedCardImageContentModel && item.campaign.id == campaignId.toString() ->
+                                        item.copy(
+                                            campaign = item.campaign.copy(
+                                                isReminderActive = setReminder
+                                            )
+                                        )
+                                    item is FeedCardVideoContentModel && item.campaign.id == campaignId.toString() ->
+                                        item.copy(
+                                            campaign = item.campaign.copy(
+                                                isReminderActive = setReminder
+                                            )
+                                        )
+                                    else -> item
                                 }
-
-                            val data = it.data.items[itemPosition]
-                            when (data) {
-                                is FeedCardImageContentModel ->
-                                    data.campaign.isReminderActive =
-                                        setReminder
-                                is FeedCardVideoContentModel ->
-                                    data.campaign.isReminderActive =
-                                        setReminder
                             }
 
                             _feedHome.value = it.copy(
                                 data = it.data.copy(
-                                    items = mutableListOf<Visitable<FeedAdapterTypeFactory>>().also { list ->
-                                        list.addAll(prevDataItems)
-                                        list.add(data)
-                                        list.addAll(nextDataItems)
-                                    }
+                                    items = newData
                                 )
                             )
                         }

@@ -410,8 +410,8 @@ class FeedFragment :
         dissmisByGreyArea = false
     }
 
-    override fun onReminderClicked(campaignId: Long, setReminder: Boolean, itemPosition: Int) {
-        feedPostViewModel.setUnsetReminder(campaignId, setReminder, itemPosition)
+    override fun onReminderClicked(campaignId: Long, setReminder: Boolean) {
+        feedPostViewModel.setUnsetReminder(campaignId, setReminder)
     }
 
     override fun onTimerFinishUpcoming() {
