@@ -84,6 +84,8 @@ open class NotificationAffiliateFragment :
         ViewModelProvider(this, viewModelFactory)[NotificationViewModel::class.java]
     }
 
+    private var isEmptyState = false
+
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
@@ -172,12 +174,8 @@ open class NotificationAffiliateFragment :
             title = getString(R.string.affiliate_notification_empty_title)
             msg = getString(R.string.affiliate_notification_empty_msg)
         }
+        isEmptyState = true
         return EmptyNotificationUiModel(viewModel.hasFilter(), title, msg)
-    }
-
-    override fun isListEmpty(): Boolean {
-        return super.isListEmpty() ||
-            (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -225,7 +223,7 @@ open class NotificationAffiliateFragment :
                     if (!viewModel.hasFilter() && isVisible) {
                         viewModel.clearNotifCounter(RoleType.AFFILIATE)
                     }
-                    if (viewModel.hasFilter()) {
+                    if (viewModel.hasFilter() && !isListEmpty && !isEmptyState) {
                         rvAdapter?.removeAffiliateBanner()
                         rvAdapter?.reAddAffiliateBanner()
                     }
@@ -241,12 +239,15 @@ open class NotificationAffiliateFragment :
         }
 
         viewModel.affiliateEducationArticle.observe(viewLifecycleOwner) {
-            rvAdapter?.addAffiliateEducationArticles(it)
+            if (!isListEmpty && !isEmptyState) {
+                rvAdapter?.addAffiliateEducationArticles(it)
+            }
         }
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
         val hasNext = isInfiniteNotificationScroll(data)
+        isEmptyState = isLoadingInitialData && data.items.isEmpty()
         renderList(data.items, hasNext)
         if (hasNext) {
             showLoading()
@@ -299,6 +300,7 @@ open class NotificationAffiliateFragment :
     }
 
     override fun onSwipeRefresh() {
+        rvAdapter?.affiliateBannerPair = null
         viewModel.cancelAllUseCase()
         super.onSwipeRefresh()
     }
