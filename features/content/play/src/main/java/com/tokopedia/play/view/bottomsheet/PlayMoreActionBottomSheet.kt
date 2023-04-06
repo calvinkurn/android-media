@@ -86,6 +86,28 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     var mListener: Listener? = null
 
+    private val seePerformanceAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.SeePerformance,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.GRAPH,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = R.string.play_kebab_see_performance,
+            onClick = {
+                mListener?.onSeePerformanceClicked(this)
+            },
+            priority = 1,
+            onImpress = {
+
+            }
+        )
+    }
+
     private val performanceDashboardAction by lazy {
         PlayMoreActionUiModel(
             type = PlayMoreActionType.PerformanceDashboard,
@@ -106,26 +128,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
             },
             priority = 2,
             onImpress = { }
-        )
-    }
-
-    private val reportAction by lazy {
-        PlayMoreActionUiModel(
-            type = PlayMoreActionType.Report,
-            icon = getIconUnifyDrawable(
-                requireContext(),
-                IconUnify.WARNING,
-                MethodChecker.getColor(
-                    requireContext(),
-                    com.tokopedia.unifycomponents.R.color.Unify_NN900
-                )
-            ),
-            subtitleRes = R.string.play_kebab_report_title,
-            onClick = {
-                shouldOpenUserReport()
-            },
-            priority = 5,
-            onImpress = { analytic2?.impressUserReport() }
         )
     }
 
@@ -164,25 +166,23 @@ class PlayMoreActionBottomSheet @Inject constructor(
         )
     }
 
-    private val seePerformanceAction by lazy {
+    private val reportAction by lazy {
         PlayMoreActionUiModel(
-            type = PlayMoreActionType.SeePerformance,
+            type = PlayMoreActionType.Report,
             icon = getIconUnifyDrawable(
                 requireContext(),
-                IconUnify.GRAPH,
+                IconUnify.WARNING,
                 MethodChecker.getColor(
                     requireContext(),
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = R.string.play_kebab_see_performance,
+            subtitleRes = R.string.play_kebab_report_title,
             onClick = {
-                mListener?.onSeePerformanceClicked(this)
+                shouldOpenUserReport()
             },
-            priority = 1,
-            onImpress = {
-
-            }
+            priority = 5,
+            onImpress = { analytic2?.impressUserReport() }
         )
     }
 
