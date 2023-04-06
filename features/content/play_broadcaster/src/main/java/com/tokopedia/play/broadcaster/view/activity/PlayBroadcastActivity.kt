@@ -383,11 +383,10 @@ class PlayBroadcastActivity : BaseActivity(),
         value: FaceFilterUiModel?,
     ) {
         if (prev == value) return
+        if(!::broadcaster.isInitialized) return
 
-        if (::broadcaster.isInitialized) {
-            val selectedFaceFilter = value ?: return
-            applyFaceFilter(selectedFaceFilter)
-        }
+        val selectedFaceFilter = value ?: return
+        applyFaceFilter(selectedFaceFilter)
     }
 
     private fun renderPreset(
@@ -395,11 +394,10 @@ class PlayBroadcastActivity : BaseActivity(),
         value: PresetFilterUiModel?,
     ) {
         if (prev == value) return
+        if(!::broadcaster.isInitialized) return
 
-        if (::broadcaster.isInitialized) {
-            val selectedPreset = value ?: return
-            applyPreset(selectedPreset)
-        }
+        val selectedPreset = value ?: return
+        applyPreset(selectedPreset)
     }
 
     private fun applyFaceFilter(vararg faceFilters: FaceFilterUiModel): Boolean {
@@ -500,8 +498,6 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun initBroadcaster(config: BroadcastingConfigUiModel) {
-        if(::broadcaster.isInitialized) return
-
         val handler = Handler(Looper.getMainLooper())
         broadcaster = broadcasterFactory.create(
             activityContext = this,
