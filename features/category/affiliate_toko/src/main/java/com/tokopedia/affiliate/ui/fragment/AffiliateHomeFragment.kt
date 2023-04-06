@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,12 +16,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
-import com.tokopedia.affiliate.LINK_HISTORY_BUTTON_CLICKED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TIME_EIGHTEEN
@@ -115,6 +114,23 @@ class AffiliateHomeFragment :
     private var swipeRefresh: SwipeToRefresh? = null
     private var navToolbar: NavToolbar? = null
     private var loader: LoaderUnify? = null
+    private val loginRequest = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setUserDetails()
+            affiliateHomeViewModel.getAffiliateValidateUser()
+        } else {
+            activity?.finish()
+        }
+    }
+    private val linkHistory = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            bottomNavBarClickListener?.selectItem(
+                AffiliateActivity.PROMO_MENU,
+                R.id.menu_promo_affiliate,
+                true
+            )
+        }
+    }
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -184,10 +200,7 @@ class AffiliateHomeFragment :
         navToolbar = view?.findViewById(R.id.home_navToolbar)
         loader = view?.findViewById(R.id.affiliate_progress_bar)
         if (!affiliateHomeViewModel.isUserLoggedIn()) {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                AFFILIATE_LOGIN_REQUEST_CODE
-            )
+            loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         } else {
             affiliateHomeViewModel.getAffiliateValidateUser()
         }
@@ -252,7 +265,7 @@ class AffiliateHomeFragment :
         )
         val intent = Intent(context, AffiliateComponentActivity::class.java)
         intent.putExtra("isUserBlackListed", isUserBlackListed)
-        startActivityForResult(intent, LINK_HISTORY_BUTTON_CLICKED)
+        linkHistory.launch(intent)
     }
 
     private fun setUserDetails() {
@@ -467,29 +480,6 @@ class AffiliateHomeFragment :
         affiliateHomeViewModel = viewModel as AffiliateHomeViewModel
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            AFFILIATE_LOGIN_REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    setUserDetails()
-                    affiliateHomeViewModel.getAffiliateValidateUser()
-                } else {
-                    activity?.finish()
-                }
-            }
-            LINK_HISTORY_BUTTON_CLICKED -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    bottomNavBarClickListener?.selectItem(
-                        AffiliateActivity.PROMO_MENU,
-                        R.id.menu_promo_affiliate,
-                        true
-                    )
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     override fun onProductClick(
         productId: String,
         productName: String,
@@ -558,7 +548,13 @@ class AffiliateHomeFragment :
     override fun onInfoClick(
         title: String?,
         desc: String?,
-        metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?,
+        metrics: List<AffiliateUserPerformaListItemData
+            .GetAffiliatePerformance
+            .Data
+            .UserData
+            .Metrics
+            .Tooltip
+            .SubMetrics?>?,
         type: String?,
         tickerInfo: String?
     ) {
