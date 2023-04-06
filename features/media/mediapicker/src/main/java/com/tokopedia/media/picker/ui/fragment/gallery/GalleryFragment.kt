@@ -84,15 +84,14 @@ open class GalleryFragment @Inject constructor(
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 // indicates the pagination isn't album changed
                 uiModel.hasChangeAlbum = false
-                hasNextPage = true
 
-                val isAbleLoadMore = if (uiModel.bucketCount.isMoreThanZero()) {
-                    featureAdapter.itemCount <= uiModel.bucketCount
+                hasNextPage = if (uiModel.bucketCount.isMoreThanZero()) {
+                    featureAdapter.itemCount < uiModel.bucketCount
                 } else {
-                    true
+                    true // force as true for recent media
                 }
 
-                if (viewModel.isMediaListLessThanThreshold.not() && isAbleLoadMore) {
+                if (viewModel.isMediaListLessThanThreshold.not()) {
                     viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
                 }
             }
