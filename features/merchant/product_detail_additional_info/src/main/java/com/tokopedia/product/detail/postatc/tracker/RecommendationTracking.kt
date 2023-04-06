@@ -127,10 +127,6 @@ object RecommendationTracking {
     }
 
     private fun removeCurrencyPrice(priceFormatted: String): String {
-        return try {
-            priceFormatted.replace("\\D".toRegex(), "")
-        } catch (t: Throwable) {
-            "0"
-        }
+        return priceFormatted.replace("\\D".toRegex(), "")
     }
 }
