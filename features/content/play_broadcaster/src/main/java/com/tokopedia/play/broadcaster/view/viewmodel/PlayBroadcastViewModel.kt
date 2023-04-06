@@ -1747,6 +1747,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     faceFilters = it.faceFilters.map { item ->
                         item.copy(
                             isSelected = item.id == faceFilter.id,
+                            value = if(faceFilter.isRemoveEffect) 0.0 else item.value
                         )
                     }
                 )
