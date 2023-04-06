@@ -50,6 +50,7 @@ abstract class ProductItemViewHolder(
             cardInteraction = true,
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
+            isPortrait = isPortrait,
         )
     }
 

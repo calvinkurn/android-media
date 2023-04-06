@@ -252,8 +252,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent">
+                            android:layout_marginBottom="8dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -318,6 +317,56 @@
                         </com.tokopedia.unifycomponents.CardUnify2>
 
                     </LinearLayout>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/disco_inspiration_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/affiliate_disco_inspiration_title"
+                        app:layout_constraintEnd_toStartOf="@id/disco_inspiration_lihat_semua"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ssa_container"
+                        app:typographyType="display_1"
+                        app:typographyWeight="bold" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/disco_inspiration_lihat_semua"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/affiliate_lihat_semua"
+                        android:textColor="@color/Unify_GN500"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ssa_container"
+                        app:typographyType="display_3"
+                        app:typographyWeight="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_disco_promotion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/disco_inspiration_title" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/disco_promotion_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:constraint_referenced_ids="disco_inspiration_title, disco_inspiration_lihat_semua, rv_disco_promotion"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_goneMarginBottom="16dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>

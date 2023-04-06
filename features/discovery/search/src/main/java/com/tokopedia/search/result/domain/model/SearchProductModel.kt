@@ -520,6 +520,10 @@ data class SearchProductModel(
             @SerializedName("parentId")
             @Expose
             val parentId: String = "",
+
+            @SerializedName("isPortrait")
+            @Expose
+            val isPortrait: Boolean = false,
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -1083,14 +1087,16 @@ data class SearchProductModel(
             else Filter(options = inspirationWidgetAsFilterOption())
         }
 
-        private fun isPriceRangeWidget() =
-            inspirationWidgetOptions.any { it.filters.key.contains(KEY_PRICE_RANGE) }
+        private fun isPriceRangeWidget() = inspirationWidgetOptions
+            .flatMap { it.multiFilters.orEmpty() }
+            .any { it.key.contains(KEY_PRICE_RANGE) }
 
         private fun priceRangeOptions() =
             listOf(Option(key = PMIN), Option(key = PMAX))
 
-        private fun inspirationWidgetAsFilterOption() =
-            inspirationWidgetOptions.map { it.asOption() }
+        private fun inspirationWidgetAsFilterOption() = inspirationWidgetOptions.flatMap {
+            it.asOptionList()
+        }
     }
 
     data class InspirationWidgetOption (
@@ -1114,21 +1120,26 @@ data class SearchProductModel(
         @Expose
         val applink: String = "",
 
-        @SerializedName("filters")
+        @SerializedName("multi_filters")
         @Expose
-        val filters: InspirationWidgetFilter,
+        val multiFilters: List<InspirationWidgetFilter>? = emptyList(),
 
         @SerializedName("component_id")
         @Expose
         val componentId: String,
     ) {
-        fun asOption() = Option(
-            key = filters.key,
-            value = filters.value,
-            name = filters.name,
-            valMin = filters.valMin,
-            valMax = filters.valMax,
-        )
+
+        private fun asOption(filter: InspirationWidgetFilter): Option {
+            return Option(
+                key = filter.key,
+                value = filter.value,
+                name = filter.name,
+                valMin = filter.valMin,
+                valMax = filter.valMax,
+            )
+        }
+
+        fun asOptionList() = multiFilters.orEmpty().map { asOption(it) }
     }
 
     data class InspirationWidgetFilter (
