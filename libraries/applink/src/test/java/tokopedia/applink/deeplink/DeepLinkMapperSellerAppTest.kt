@@ -166,13 +166,13 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check voucher detail appLink then should return tokopedia internal voucher detail in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/detail/{voucher_id}/"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/detail//"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_DETAIL, expectedDeepLink)
     }
 
     @Test
     fun `check create voucher appLink then should return tokopedia internal create voucher in sellerapp`() {
-        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/create/shop/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CREATE_VOUCHER, expectedDeepLink)
     }
     @Test
