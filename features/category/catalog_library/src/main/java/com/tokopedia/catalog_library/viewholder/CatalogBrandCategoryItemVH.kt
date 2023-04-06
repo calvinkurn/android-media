@@ -54,14 +54,20 @@ class CatalogBrandCategoryItemVH(
                 if (isSelected) selectedIndex = categoryItems.size - 1
             }
         }
+        setSelectedTab(selectedIndex)
+        setArrowClickListener()
+    }
 
-        Handler().postDelayed({
-            tabs?.tabLayout?.getTabAt(selectedIndex)?.select()
-        }, 100)
-
+    private fun setArrowClickListener() {
         tabs?.arrowView?.setOnClickListener {
             catalogLibraryListener.onBrandCategoryArrowClick()
         }
+    }
+
+    private fun setSelectedTab(selectedIndex: Int) {
+        Handler().postDelayed({
+            tabs?.tabLayout?.getTabAt(selectedIndex)?.select()
+        }, 100)
     }
 
     override fun onViewAttachedToWindow() {
@@ -70,10 +76,14 @@ class CatalogBrandCategoryItemVH(
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
+        onClickTabAt(tab?.position ?: 0)
+    }
+
+    private fun onClickTabAt(index: Int) {
         catalogLibraryListener.onBrandCategoryTabSelected(
-            categoryItems[tab?.position ?: 0].categoryName ?: "",
-            categoryItems[tab?.position ?: 0].categoryId ?: "",
-            tab?.position ?: 0
+            categoryItems[index].categoryName ?: "",
+            categoryItems[index].categoryId ?: "",
+            index
         )
     }
 
