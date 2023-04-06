@@ -23,7 +23,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
+@Module(includes = [ViewModelModule::class])
 class ProductManageListModule(private val context: Context) {
 
     @Provides

@@ -1,0 +1,75 @@
+{
+  "data": [
+    {
+      "title": "Produk avanza apa yang kamu cari?",
+      "header_title": "",
+      "header_subtitle": "",
+      "layout": "filter",
+      "type": "automotive_filter",
+      "position": 0,
+      "options": [
+        {
+          "text": "Mobil",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "04.09.01.00",
+          "filters": {
+            "title": "",
+            "key": "sc",
+            "name": "Mobil",
+            "value": "2344",
+            "val_min": "",
+            "val_max": ""
+          },
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "sc",
+              "name": "Mobil",
+              "value": "2344",
+              "val_min": "",
+              "val_max": ""
+            },
+            {
+              "title": "",
+              "key": "pmin",
+              "name": "Price Min",
+              "value": "5000000",
+              "val_min": "",
+              "val_max": ""
+            }
+          ]
+        },
+        {
+          "text": "Spare Part Mobil",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "04.09.02.00",
+          "filters": {
+            "title": "",
+            "key": "sc",
+            "name": "Spare Part Mobil",
+            "value": "38",
+            "val_min": "",
+            "val_max": ""
+          },
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "sc",
+              "name": "Spare Part Mobil",
+              "value": "38",
+              "val_min": "",
+              "val_max": ""
+            }
+          ]
+        }
+      ],
+      "tracking_option": "2"
+    }
+  ]
+}

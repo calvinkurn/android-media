@@ -115,5 +115,4 @@ class ChatbotModule {
     fun provideChatbotWebSocketStateHandler(): ChatbotWebSocketStateHandler {
         return ChatbotDefaultWebSocketStateHandler()
     }
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }
