@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.sellerapp.login">
+    package="com.tokopedia.df.shop.settings.sellerapp">
 
-    <dist:module dist:title="@string/title_module_sellerapp_login">
+    <dist:module dist:title="@string/title_module_shop_settings_sellerapp">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>

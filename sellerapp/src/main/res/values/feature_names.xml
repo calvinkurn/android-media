@@ -74,6 +74,6 @@
     <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
     <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
 
-    <string name="title_module_sellerapp_login">Fitur Seller App Login</string>
+    <string name="title_module_shop_settings_sellerapp">Shop Settings</string>
 
 </resources>

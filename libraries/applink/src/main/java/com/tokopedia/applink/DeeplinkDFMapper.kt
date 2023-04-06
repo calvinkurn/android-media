@@ -221,6 +221,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
+    const val DF_SHOP_SETTINGS_SELLER_APP = "df_shop_settings_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
@@ -698,7 +699,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
     val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_BASE_SELLER_APP, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_SHOP_SETTINGS_SELLER_APP, R.string.shop_settings_title))
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_settings_title))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE_SELLER_APP, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_title_auto_withdraw))
