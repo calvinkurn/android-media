@@ -77,6 +77,12 @@ object OtpConstant {
         const val SPAN_USE_OTHER_METHODS = "Lihat metode lain"
         const val SPAN_USE_SMS_METHOD = "Gunakan metode SMS"
 
+        /**
+         * @return [SMS_AND_CHANGE_PN_FOOTER_TEXT] if [linkType] == 0 && [spanMethods] == [SPAN_USE_SMS_METHOD]
+         * @return else [SMS_METHOD_FOOTER_TEXT]
+         * @return [OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT] if [linkType] == 0 && [spanMethods] == [SPAN_USE_OTHER_METHODS]
+         * @return else [OTHER_METHOD_FOOTER_TEXT]
+         */
         fun spanFactory(spanMethods: String, linkType: Int): String {
             return when (spanMethods) {
                 SPAN_USE_SMS_METHOD -> {
