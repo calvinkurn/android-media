@@ -88,23 +88,30 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val feedPostsDeferred = async {
-                    getFeedPosts(
-                        source = source,
-                        cursor = _feedHome.value?.cursor.orEmpty()
-                    )
+                    try {
+                        Success(
+                            getFeedPosts(
+                                source = source,
+                                cursor = _feedHome.value?.cursor.orEmpty()
+                            )
+                        )
+                    } catch (e: Throwable) {
+                        Fail(e)
+                    }
                 }
 
-                _feedHome.value = try {
-                    val feedPosts = feedPostsDeferred.await()
-                    Success(
-                        feedPosts.copy(
-                            items = relevantPostsDeferred.await() +
-                                _feedHome.value?.items.orEmpty() +
-                                feedPosts.items
+                val feedPosts = feedPostsDeferred.await()
+                _feedHome.value = when (feedPosts) {
+                    is Success -> {
+                        Success(
+                            data = feedPosts.data.copy(
+                                items = relevantPostsDeferred.await() +
+                                    _feedHome.value?.items.orEmpty() +
+                                    feedPosts.items
+                            )
                         )
-                    )
-                } catch (e: Throwable) {
-                    Fail(e)
+                    }
+                    else -> feedPosts
                 }
             }
         }
