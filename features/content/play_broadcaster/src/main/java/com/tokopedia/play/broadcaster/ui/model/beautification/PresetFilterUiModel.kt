@@ -46,5 +46,7 @@ data class PresetFilterUiModel(
 
     companion object {
         private const val OPTION_NONE = "none"
+
+        fun isNone(id: String) = id == OPTION_NONE
     }
 }

@@ -230,7 +230,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = preset.value,
                         iconUrl = preset.urlIcon,
                         assetLink = preset.assetLink,
-                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                        assetStatus = if (PresetFilterUiModel.isNone(preset.id) || assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
                         isSelected = false,
                     )
                 }
