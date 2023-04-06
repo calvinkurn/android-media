@@ -70,15 +70,20 @@ class FeedCaptionView(private val textView: AppCompatTextView) {
 
                 val maxLine = textView.maxLines
                 val actionText =
-                    if (isCollapsed) textView.context.getString(R.string.feed_selengkapnya_label)
-                    else textView.context.getString(R.string.label_close)
+                    if (isCollapsed) {
+                        textView.context.getString(R.string.feed_selengkapnya_label)
+                    } else {
+                        textView.context.getString(R.string.label_close)
+                    }
                 val spannedActionText = getSpannedActionText(actionText)
 
                 if (textView.lineCount >= maxLine && isCollapsed) {
                     val lineEndIndex = textView.layout.getLineEnd(maxLine - 1)
                     val newText =
-                        fullText.subSequence(0, lineEndIndex - actionText.length - ELLIPSIS.length)
-                            .toString()
+                        fullText.subSequence(
+                            0,
+                            lineEndIndex - actionText.length - ELLIPSIS.length - 1
+                        ).toString()
 
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     textView.text = "$newText$ELLIPSIS $spannedActionText"
@@ -95,5 +100,4 @@ class FeedCaptionView(private val textView: AppCompatTextView) {
 
         private const val ELLIPSIS = "..."
     }
-
 }
