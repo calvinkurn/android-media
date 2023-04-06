@@ -19,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -276,7 +277,9 @@ private fun NestLightLabelOnImagePreview() {
 private fun NestLabelOnDevicesPreview() {
     NestTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
@@ -366,7 +369,13 @@ private fun NestLabelOnDevicesPreview() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(contentAlignment = Alignment.BottomEnd) {
-                    Box(modifier = Modifier.size(170.dp).background(NestTheme.colors.NN._600), contentAlignment = Alignment.Center, ) {
+                    Box(
+                        modifier = Modifier
+                            .size(170.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(NestTheme.colors.NN._600),
+                        contentAlignment = Alignment.Center,
+                    ) {
                         NestTypography(text = "Sample image", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
                     }
                     NestLabel(
