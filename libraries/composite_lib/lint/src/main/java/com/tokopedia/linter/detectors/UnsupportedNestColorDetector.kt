@@ -36,7 +36,7 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         private val ISSUE_CATEGORY = Category.CORRECTNESS
         private const val NEST_INDEX = 7
         private const val NEST_CHARACTER = "N"
-        private const val REGEX_OLD_COLOR = "^Unify_[A-Z]\\d{2,4}"
+        private const val REGEX_OLD_COLOR = "^Unify_[A-Z]\\d{1,4}"
 
         val JAVA_ISSUE = Issue.create(
             id = ISSUE_ID,
