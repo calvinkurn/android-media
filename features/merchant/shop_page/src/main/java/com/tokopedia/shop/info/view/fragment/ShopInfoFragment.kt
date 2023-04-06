@@ -138,11 +138,6 @@ class ShopInfoFragment :
         initView()
     }
 
-    override fun onPause() {
-        super.onPause()
-        shopPageTracking?.sendAllTrackingQueue()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentShopInfoBinding = null

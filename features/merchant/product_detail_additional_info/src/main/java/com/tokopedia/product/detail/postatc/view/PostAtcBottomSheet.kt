@@ -193,11 +193,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         activity?.finish()
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         adapter.stop()

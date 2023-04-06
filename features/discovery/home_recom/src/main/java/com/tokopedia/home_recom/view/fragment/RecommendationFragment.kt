@@ -235,11 +235,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         loadData()
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue?.sendAll()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {

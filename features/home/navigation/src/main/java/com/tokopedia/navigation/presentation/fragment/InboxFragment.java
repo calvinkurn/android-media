@@ -148,7 +148,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         super.onPause();
         TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue);
         InboxGtmTracker.getInstance().eventInboxProductView(trackingQueue);
-        trackingQueue.sendAll();
     }
 
     @Override

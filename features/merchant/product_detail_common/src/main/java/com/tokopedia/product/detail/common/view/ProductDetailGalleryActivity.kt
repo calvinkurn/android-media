@@ -41,11 +41,6 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         data?.let { processData(it) }
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue?.sendAll()
-    }
-
     private fun processData(data: ProductDetailGallery) {
         val isAutoPlay = DeviceConnectionInfo.isConnectWifi(this)
 

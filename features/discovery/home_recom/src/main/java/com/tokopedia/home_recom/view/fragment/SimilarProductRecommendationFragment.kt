@@ -343,15 +343,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         outState.putString(SAVED_REF, ref)
     }
 
-    /**
-     * [onPause] is override from [BaseListFragment]
-     * this void override with added extra sendAllTracking
-     */
-    override fun onPause() {
-        super.onPause()
-        trackingQueue?.sendAll()
-    }
-
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
 
     override fun createAdapterInstance(): BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl> {

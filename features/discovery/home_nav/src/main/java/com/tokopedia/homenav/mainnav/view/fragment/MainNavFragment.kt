@@ -209,12 +209,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        getTrackingQueueObj()?.sendAll()
-    }
-
     override fun onRefresh() {
     }
 

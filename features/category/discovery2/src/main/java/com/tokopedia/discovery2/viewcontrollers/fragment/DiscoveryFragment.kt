@@ -1387,7 +1387,6 @@ class DiscoveryFragment :
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
 

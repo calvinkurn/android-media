@@ -106,13 +106,6 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         super.onDismiss(dialog)
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
-    }
-
     private fun observeData() {
         viewModel.educationalData.observe(viewLifecycleOwner) {
             btnError?.isClickable = true

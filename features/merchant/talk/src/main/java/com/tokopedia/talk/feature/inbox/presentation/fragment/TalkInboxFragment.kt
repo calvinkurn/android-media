@@ -267,13 +267,6 @@ open class TalkInboxFragment :
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
-    }
-
     override fun getRecyclerView(view: View?): RecyclerView? {
         return binding?.talkInboxRecyclerView
     }
