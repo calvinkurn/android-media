@@ -43,14 +43,13 @@ class BitmapCreationRepositoryImpl @Inject constructor(
         processedBitmapData.apply {
             val originalWidth = originalBitmap.width
             val originalHeight = originalBitmap.height
-
             val matrix = Matrix()
 
             matrix.preScale(scaleX, scaleY)
             matrix.postRotate(
                 finalRotationDegree,
-                (offsetX + (imageWidth / 2f)),
-                (offsetY + (imageHeight / 2f))
+                (offsetX + (imageWidth / HALF_DIVIDER)),
+                (offsetY + (imageHeight / HALF_DIVIDER))
             )
 
             val rotatedBitmap = mediaCreateCropBitmap(
@@ -68,12 +67,12 @@ class BitmapCreationRepositoryImpl @Inject constructor(
             var normalizeX = offsetX
             var normalizeY = offsetY
 
-            if (scaleX == -1f) {
+            if (scaleX == SCALE_MIRROR_VALUE) {
                 normalizeX = rotatedBitmap.width - (offsetX + imageWidth)
             }
 
             // used only on ucrop result re-cropped for get mirror effect
-            if (scaleY == -1f && isNormalizeY) {
+            if (scaleY == SCALE_MIRROR_VALUE && isNormalizeY) {
                 normalizeY = rotatedBitmap.height - (offsetY + imageHeight)
             }
 
@@ -138,17 +137,17 @@ class BitmapCreationRepositoryImpl @Inject constructor(
 
         bitmapCreationModel.apply {
             source?.let { bitmap ->
-                position?.let { pos -> // first => xPos || second => yPos
+                position?.let { (x, y) ->
                     try {
                         return if (matrix != null && filter != null) {
-                            Bitmap.createBitmap(bitmap, pos.first, pos.second, width, height, matrix, filter)
+                            Bitmap.createBitmap(bitmap, x, y, width, height, matrix, filter)
                         } else {
-                            Bitmap.createBitmap(bitmap, pos.first, pos.second, width, height)
+                            Bitmap.createBitmap(bitmap, x, y, width, height)
                         }
                     } catch (e: Exception) {
                         val sourceSize = Pair(bitmap.width, bitmap.height)
                         val targetSize = Pair(width, height)
-                        val targetCor = Pair(pos.first, pos.second)
+                        val targetCor = Pair(x, y)
                         newRelicLog(
                             mapOf(
                                 FAILED_CREATE_BITMAP to "{$sourceSize} | {$targetSize} | {$targetCor} /n ${e.message}"
@@ -190,9 +189,9 @@ class BitmapCreationRepositoryImpl @Inject constructor(
         return isBitmapOverflow(bitmapCreationModel.width, bitmapCreationModel.height)
     }
 
-    private
-
     companion object {
-        private val BITMAP_PIXEL_SIZE = 4
+        private const val BITMAP_PIXEL_SIZE = 4
+        private const val HALF_DIVIDER = 2f
+        private const val SCALE_MIRROR_VALUE = -1f
     }
 }

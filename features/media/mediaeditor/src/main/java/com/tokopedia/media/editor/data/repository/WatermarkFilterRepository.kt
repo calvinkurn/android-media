@@ -114,7 +114,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
             logoDrawableWidth = if (!isThumbnail)
                 (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
             else
-                min(sourceWidth, sourceHeight) / 3f
+                min(sourceWidth, sourceHeight) / THUMBNAIL_SIZE_DIVIDER
 
             val canvas = Canvas(result)
             canvas.drawBitmap(source, 0f, 0f, null)
@@ -258,6 +258,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         private const val ELLIPSIS_CONST = "..."
         private const val PADDING_DIVIDER = 6
         private const val IMAGE_SIZE_DIVIDER = 6
+        private const val THUMBNAIL_SIZE_DIVIDER = 3f
     }
 }
 

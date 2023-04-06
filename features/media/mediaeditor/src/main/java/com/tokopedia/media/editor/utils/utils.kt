@@ -1,14 +1,11 @@
 package com.tokopedia.media.editor.utils
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import android.view.View

@@ -102,7 +102,7 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
             val logoBitmap = if (isCircular) {
                 roundedBitmap(context, bitmap, isCircular = true)
             } else {
-                roundedBitmap(context, bitmap, 8f.toPx())
+                roundedBitmap(context, bitmap, CORNER_RADIUS.toPx())
             }
 
             getDrawLogo(logoBitmap, originalImageWidth)?.let {
@@ -143,12 +143,14 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        const val XY_FLATTEN_COORDINATE = 0f
+        private const val XY_FLATTEN_COORDINATE = 0f
 
         // logo size 1/6 from base image
         private const val LOGO_SIZE_DIVIDER = 6
 
-        private var LOGO_X_POS = 0.03f
-        private var LOGO_Y_POS = 0.03f
+        private const val LOGO_X_POS = 0.03f
+        private const val LOGO_Y_POS = 0.03f
+
+        private const val CORNER_RADIUS = 8f
     }
 }

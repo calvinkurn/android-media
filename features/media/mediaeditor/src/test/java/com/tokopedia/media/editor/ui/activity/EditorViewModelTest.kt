@@ -311,7 +311,7 @@ class EditorViewModelTest {
     }
 
     @Test
-    fun `check memory is overflow`() {
+    fun `check memory is overflow true`() {
         // Given
         val width = 100
         val height = 100
@@ -323,6 +323,21 @@ class EditorViewModelTest {
 
         // Then
         assertEquals(true, isMemoryOverflow)
+    }
+
+    @Test
+    fun `check memory is overflow false`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns false
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(false, isMemoryOverflow)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {

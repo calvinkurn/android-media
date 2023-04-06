@@ -182,7 +182,7 @@ class DetailEditorFragment @Inject constructor(
                     } else {
                         finishPage()
                     }
-                } ?: kotlin.run {
+                } ?: run {
                     showErrorGeneralToaster(context)
                     activity?.finish()
                 }
@@ -836,15 +836,7 @@ class DetailEditorFragment @Inject constructor(
                     imageHeight,
                     finalRotationDegree,
                     cropRotateData.rotateDegree,
-                    cropRotateData.orientationChangeNumber,
-                    null,
-                    0f,
-                    0f,
-                    0f,
-                    isRotate = false,
-                    isCrop = false,
-                    1f,
-                    1f
+                    cropRotateData.orientationChangeNumber
                 )
             )
 
