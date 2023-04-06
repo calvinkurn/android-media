@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -48,6 +49,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -94,8 +96,8 @@ import com.tokopedia.chatbot.chatbot2.attachinvoice.view.TransactionInvoiceBotto
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.chatbot2.data.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.di.ChatbotModule
 import com.tokopedia.chatbot.chatbot2.di.DaggerChatbotComponent
@@ -111,10 +113,10 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActio
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
-import com.tokopedia.chatbot.chatbot2.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
@@ -155,6 +157,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatRatingListState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotArticleEntryState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
@@ -190,6 +193,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -232,7 +236,8 @@ class ChatbotFragment2 :
     ReplyBoxClickListener,
     ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener,
-    com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener {
+    com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
+    DynamicStickyButtonListener {
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -280,7 +285,6 @@ class ChatbotFragment2 :
     private var chatbotAdapter: ChatbotAdapter? = null
     private var isEligibleForVideoUpload: Boolean = false
     private var guideline: Guideline? = null
-    var xForReplyBubbleOnboarding: Int = 0
     var yForReplyBubbleOnboarding: Int = 0
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
@@ -314,6 +318,9 @@ class ChatbotFragment2 :
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
 
     private var pageSource: String = ""
+    private var showAddAttachmentMenu: Boolean = false
+    private var showUploadImageButton: Boolean = true
+    private var showUploadVideoButton: Boolean = false
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -630,12 +637,16 @@ class ChatbotFragment2 :
             this,
             this,
             this,
+            this,
             getUserSession()
         )
     }
 
     fun setDateIndicator(): (String) -> Unit = {
-        if (it.isNotEmpty() && it != context?.resources?.getString(R.string.chatbot_placeholder_date).toBlankOrString()) {
+        if (it.isNotEmpty() && it != context?.resources?.getString(
+                R.string.chatbot_placeholder_date
+            ).toBlankOrString()
+        ) {
             getBindingView().dateIndicator.text = it
             getBindingView().dateIndicatorContainer.show()
         }
@@ -643,7 +654,9 @@ class ChatbotFragment2 :
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         if (adapterTypeFactory !is ChatbotTypeFactoryImpl) {
-            throw IllegalStateException("getAdapterTypeFactory() must return ChatbotTypeFactoryImpl")
+            throw IllegalStateException(
+                "getAdapterTypeFactory() must return ChatbotTypeFactoryImpl"
+            )
         }
         val typeFactory = adapterTypeFactory as ChatbotTypeFactoryImpl
         return ChatbotAdapter(typeFactory)
@@ -694,6 +707,7 @@ class ChatbotFragment2 :
 
         initRecyclerViewListener()
         setupBeforeReplyTime()
+        createAttachmentMenus()
 
         if (savedInstanceState != null) {
             this.attribute = savedInstanceState.getParcelable(CSAT_ATTRIBUTES) ?: Attributes()
@@ -966,16 +980,68 @@ class ChatbotFragment2 :
                 }
             }
         }
+
+        viewModel.dynamicAttachmentMediaUploadState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ChatbotDynamicAttachmentMediaButtonState.OnReceiveMediaButtonAttachment -> {
+                    handleAddAttachmentButtonViewState(it.toShowAddAttachmentButton)
+                    handleImageUploadButtonViewState(it.toShowImageUploadButton)
+                    handleVideoUploadButtonViewState(it.toShowVideoUploadButton)
+                }
+            }
+        }
+    }
+
+    fun handleAddAttachmentButtonViewState(toShow: Boolean) {
+        showAddAttachmentMenu = toShow
+        getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
+            showAddAttachmentMenu
+        )
+        if (showAddAttachmentMenu) {
+            getBindingView().smallReplyBox.getMessageView()?.apply {
+                if (!isConnectedToAgent) {
+                    setImageUploadDataInReplyBox()
+                } else {
+                    setDefaultDataInReplyBox()
+                }
+            }
+        }
+    }
+
+    fun handleImageUploadButtonViewState(toShow: Boolean) {
+        showUploadImageButton = toShow
+    }
+
+    fun handleVideoUploadButtonViewState(toShow: Boolean) {
+        showUploadVideoButton = toShow
+        createAttachmentMenus()
+    }
+
+    private fun EditText.setImageUploadDataInReplyBox() {
+        this.apply {
+            hint = context?.resources?.getString(R.string.chatbot_edit_text_hint)
+                .toBlankOrString()
+            isEnabled = false
+        }
+    }
+
+    private fun EditText.setDefaultDataInReplyBox() {
+        this.apply {
+            hint =
+                context?.resources?.getString(R.string.cb_bot_reply_text).toBlankOrString()
+            isEnabled = true
+        }
     }
 
     private fun handleCheckUploadSecureSuccess() {
-        if (imageData == null) {
-            return
+        imageData?.let {
+            uploadUsingSecureUpload(it)
         }
-        uploadUsingSecureUpload(imageData!!)
     }
 
-    private fun handleTopBotNewSessionSuccess(topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession) {
+    private fun handleTopBotNewSessionSuccess(
+        topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession
+    ) {
         val isNewSession = topBotResponse.isNewSession
         val isTypingBlocked = topBotResponse.isTypingBlocked
         handleNewSession(isNewSession)
@@ -1089,7 +1155,9 @@ class ChatbotFragment2 :
         }
     }
 
-    override fun onSuccessGetTickerData(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
+    override fun onSuccessGetTickerData(
+        tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData
+    ) {
         if (!tickerData.items.isNullOrEmpty()) {
             getBindingView().chatbotTicker.show()
             if (tickerData.items.size > 1) {
@@ -1100,7 +1168,9 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun showSingleTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
+    private fun showSingleTicker(
+        tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData
+    ) {
         getBindingView().chatbotTicker.let {
             it.tickerTitle = tickerData.items?.get(0)?.title
             it.setHtmlDescription(tickerData.items?.get(0)?.text ?: "")
@@ -1116,7 +1186,9 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun showMultiTicker(tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData) {
+    private fun showMultiTicker(
+        tickerData: com.tokopedia.chatbot.chatbot2.data.tickerData.TickerData
+    ) {
         val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
 
         tickerData.items?.forEach {
@@ -1229,7 +1301,7 @@ class ChatbotFragment2 :
                         Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
 
                     val replyBoxAttribute =
-                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
                     val state = viewModel.validateHistoryForAttachment34(replyBoxAttribute)
 
@@ -1267,7 +1339,7 @@ class ChatbotFragment2 :
                         Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
 
                     val replyBoxAttribute =
-                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
                     var state = false
                     if (replyBoxAttribute?.contentCode == REPLY_BOX_TOGGLE_VALUE) {
@@ -1365,7 +1437,9 @@ class ChatbotFragment2 :
             is ChatActionSelectionBubbleUiModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(
                 visitable
             )
-            is ChatRatingUiModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(visitable)
+            is ChatRatingUiModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(
+                visitable
+            )
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -1538,7 +1612,14 @@ class ChatbotFragment2 :
             val list = mutableListOf<VideoUploadData>()
             paths.originalPaths.forEach {
                 processVideoPathToUpload(it)?.let { videoUploadUiModel ->
-                    list.add(VideoUploadData(it, messageId, SendableUiModel.generateStartTime(), videoUploadUiModel))
+                    list.add(
+                        VideoUploadData(
+                            it,
+                            messageId,
+                            SendableUiModel.generateStartTime(),
+                            videoUploadUiModel
+                        )
+                    )
                     getViewState()?.onVideoUpload(videoUploadUiModel)
                 }
                 sendAnalyticsForVideoUpload(it)
@@ -1554,6 +1635,7 @@ class ChatbotFragment2 :
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
         bigReplyBox?.setText(text)
+        bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
     }
@@ -1603,10 +1685,15 @@ class ChatbotFragment2 :
                 )
             }
         }
+        getBindingView().smallReplyBox.getMessageView()?.apply {
+            setDefaultDataInReplyBox()
+        }
     }
 
     private fun onErrorImageUpload(imageUploadUiModel: ImageUploadUiModel, throwable: Throwable) {
-        getBindingView().footer.showToasterError(ErrorHandler.getErrorMessage(requireView().context, throwable))
+        getBindingView().footer.showToasterError(
+            ErrorHandler.getErrorMessage(requireView().context, throwable)
+        )
         getViewState()?.showRetryUploadImages(imageUploadUiModel, true)
     }
 
@@ -1773,7 +1860,9 @@ class ChatbotFragment2 :
         }
     }
 
-    private fun onSuccessSendRating(rating: Int, element: ChatRatingUiModel): (com.tokopedia.chatbot.chatbot2.data.chatrating.SendRatingPojo) ->
+    private fun onSuccessSendRating(rating: Int, element: ChatRatingUiModel): (
+        com.tokopedia.chatbot.chatbot2.data.chatrating.SendRatingPojo
+    ) ->
     Unit {
         return {
             (activity as Activity).run {
@@ -1802,7 +1891,12 @@ class ChatbotFragment2 :
                     session.userId
                 )
                 val applinkWebview =
-                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                    String.format(
+                        Locale.getDefault(),
+                        "%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        urlWithSession
+                    )
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
                 } else {
@@ -1866,10 +1960,17 @@ class ChatbotFragment2 :
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         var list = mutableListOf<AttachmentMenu>()
-        if (isConnectedToAgent && isEligibleForVideoUpload) {
-            attachmentMenuRecyclerView?.addVideoAttachmentMenu()
-        } else {
-            list.add(ChatbotImageMenu())
+        attachmentMenuRecyclerView?.apply {
+            removeChatbotImageAttachmentMenu()
+            removeVideoAttachmentMenu()
+            if (showUploadImageButton) {
+                list.add(com.tokopedia.chat_common.domain.pojo.attachmentmenu.ChatbotImageMenu())
+                addChatbotImageAttachmentMenu()
+            }
+            if (showUploadVideoButton) {
+                list.add(VideoMenu())
+                addVideoAttachmentMenu()
+            }
         }
         return list
     }
@@ -2072,7 +2173,8 @@ class ChatbotFragment2 :
 
     override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
         activity?.let {
-            replyBubbleBottomSheet = ChatbotReplyBottomSheet(messageUiModel, this, replyBubbleEnabled)
+            replyBubbleBottomSheet =
+                ChatbotReplyBottomSheet(messageUiModel, this, replyBubbleEnabled)
             replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
                 onClickReplyMenuListener(menu, messageUiModel, messageBubble)
             }
@@ -2137,7 +2239,9 @@ class ChatbotFragment2 :
             }
         } else {
             resetData()
-            setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE).toString())
+            setupBeforeReplyTime(
+                ((parentReply.replyTimeMillisOffset).toLongOrZero() + ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE).toString()
+            )
             isGetChatFromOnClick = true
             replyTime = parentReply.replyTime
             loadDataOnClick()
@@ -2303,7 +2407,7 @@ class ChatbotFragment2 :
                     Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
 
                 val replyBoxAttribute =
-                    dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+                    dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
                 if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
                     return false
@@ -2471,7 +2575,7 @@ class ChatbotFragment2 :
         replyBubbleEnabled = state
         if (state) {
             checkCoachMarkStatus()
-            createAttachmentMenus()
+            handleAddAttachmentButtonViewState(showAddAttachmentMenu)
         }
     }
 
@@ -2502,7 +2606,12 @@ class ChatbotFragment2 :
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet
-                .newInstance(it, replyBoxBottomSheetPlaceHolder, replyBoxBottomSheetTitle)
+                .newInstance(
+                    it,
+                    replyBoxBottomSheetPlaceHolder,
+                    replyBoxBottomSheetTitle,
+                    showAddAttachmentMenu
+                )
             BigReplyBoxBottomSheet.replyBoxClickListener = this
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
@@ -2645,5 +2754,17 @@ class ChatbotFragment2 :
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
+        val startTime = SendableUiModel.generateStartTime()
+        viewModel.sendDynamicAttachmentText(
+            messageId,
+            bubble,
+            startTime,
+            opponentId
+        )
+        getViewState()?.removeDynamicStickyButton()
+        getViewState()?.scrollToBottom()
     }
 }

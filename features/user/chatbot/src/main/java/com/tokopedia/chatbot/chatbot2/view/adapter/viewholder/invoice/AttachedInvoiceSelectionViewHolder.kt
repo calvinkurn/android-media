@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
+package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
@@ -37,7 +37,7 @@ class AttachedInvoiceSelectionViewHolder(
 ) :
     AbstractViewHolder<AttachInvoiceSelectionUiModel>(itemView) {
     private val view = ItemChatbotInvoiceAttachSelectionBinding.bind(itemView)
-    private val singleItemAdapter: AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter
+    private val singleItemAdapter: AttachedInvoicesItemsAdapter
     private val invoiceSelection: RecyclerView = view.attachInvoiceChatInvoiceSelection
 
     init {

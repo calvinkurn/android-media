@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
+package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice
 
 import android.view.Gravity
 import android.view.View

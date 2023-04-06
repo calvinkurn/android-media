@@ -4,6 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -80,7 +81,7 @@ object ChatbotMessageViewHolderBinder {
         }
     }
 
-    fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
+    fun bindChatReadStatus(element: SendableUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {
@@ -91,6 +92,12 @@ object ChatbotMessageViewHolderBinder {
             checkMark.setImageDrawable(drawable)
         } else {
             checkMark.gone()
+        }
+    }
+
+    fun bindChatReadStatus(element: SendableUiModel, messageBubble: MessageBubbleLayout?) {
+        messageBubble?.fxChat?.checkMark?.let {
+            bindChatReadStatus(element, it)
         }
     }
 }

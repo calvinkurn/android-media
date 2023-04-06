@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyListUiModel
@@ -415,6 +416,20 @@ class ChatbotViewStateImpl(
         } else {
             action.hide()
             notifier.hide()
+        }
+    }
+
+    override fun removeDynamicStickyButton() {
+        var item: DynamicStickyButtonUiModel? = null
+        for (it in adapter.list) {
+            if (it is DynamicStickyButtonUiModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
         }
     }
 

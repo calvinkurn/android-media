@@ -29,6 +29,10 @@ import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMEN
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.BigReplyBoxAttribute
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachmentBodyAttributes
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.chatbot2.data.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
@@ -36,10 +40,6 @@ import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttrib
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
-import com.tokopedia.chatbot.chatbot2.data.replyBox.BigReplyBoxAttribute
-import com.tokopedia.chatbot.chatbot2.data.replyBox.DynamicAttachment
-import com.tokopedia.chatbot.chatbot2.data.replyBox.ReplyBoxAttribute
-import com.tokopedia.chatbot.chatbot2.data.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
@@ -48,6 +48,7 @@ import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureRespons
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipGetChatRatingListUseCase
@@ -79,6 +80,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatRatingListState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotArticleEntryState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
@@ -99,6 +101,7 @@ import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.MediaButtonAttribute
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
@@ -218,6 +221,9 @@ class ChatbotViewModel @Inject constructor(
     private val _smallReplyBoxDisabled = MutableLiveData<Boolean>()
     val smallReplyBoxDisabled: LiveData<Boolean>
         get() = _smallReplyBoxDisabled
+    private val _dynamicAttachmentMediaUploadState = MutableLiveData<ChatbotDynamicAttachmentMediaButtonState>()
+    val dynamicAttachmentMediaUploadState: LiveData<ChatbotDynamicAttachmentMediaButtonState>
+        get() = _dynamicAttachmentMediaUploadState
 
     // Video Upload Related
     @VisibleForTesting
@@ -1049,7 +1055,7 @@ class ChatbotViewModel @Inject constructor(
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
                     attachmentType == TYPE_UPDATE_TOOLBAR ||
-                    attachmentType == DYNAMIC_ATTACHMENT
+                    checkForDynamicAttachment(pojo, attachmentType)
                 ) {
                     return
                 }
@@ -1062,6 +1068,18 @@ class ChatbotViewModel @Inject constructor(
                 sendReadEventWebSocket(messageId)
             }
         }
+    }
+
+    private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        if (attachmentType != DYNAMIC_ATTACHMENT) {
+            return false
+        }
+        val dynamicAttachment = GsonBuilder().create().fromJson(
+            pojo.attachment?.attributes,
+            DynamicAttachment::class.java
+        )
+        val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+        return !ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)
     }
 
     private fun updateLiveDataOnMainThread(value: ChatbotSocketReceiveEvent) {
@@ -1158,18 +1176,21 @@ class ChatbotViewModel @Inject constructor(
         val dynamicAttachmentContents =
             Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
 
-        val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+        val dynamicAttachmentAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
-        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget)
+        if (Attachment34RenderType.mapTypeToDeviceType(dynamicAttachmentAttribute?.renderTarget)
             == Attachment34RenderType.RenderAttachment34
         ) {
-            when (replyBoxAttribute?.contentCode) {
+            when (dynamicAttachmentAttribute?.contentCode) {
                 ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentAttribute.dynamicContent)
                 }
                 ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentAttribute.dynamicContent)
+                }
+                ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE -> {
+                    convertToMediaButtonToggleData(dynamicAttachmentAttribute.dynamicContent)
                 }
                 else -> {
                     // TODO need to show fallback message
@@ -1201,6 +1222,39 @@ class ChatbotViewModel @Inject constructor(
         handleSmallReplyBoxWS(smallReplyBoxContent)
     }
 
+    private fun convertToMediaButtonToggleData(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val mediaButtonToggleContent = Gson().fromJson(
+            dynamicContent,
+            MediaButtonAttribute::class.java
+        )
+
+        handleMediaButtonWS(mediaButtonToggleContent)
+    }
+
+    private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
+        if (mediaButtonToggleContent.isMediaButtonEnabled) {
+            _dynamicAttachmentMediaUploadState.postValue(
+                ChatbotDynamicAttachmentMediaButtonState.OnReceiveMediaButtonAttachment(
+                    toShowAddAttachmentButton = true,
+                    toShowImageUploadButton = mediaButtonToggleContent.buttons?.isUploadImageEnabled ?: false,
+                    toShowVideoUploadButton = mediaButtonToggleContent.buttons?.isUploadVideoEnabled ?: false
+                )
+            )
+        } else {
+            _dynamicAttachmentMediaUploadState.postValue(
+                ChatbotDynamicAttachmentMediaButtonState.OnReceiveMediaButtonAttachment(
+                    toShowAddAttachmentButton = false,
+                    toShowImageUploadButton = false,
+                    toShowVideoUploadButton = false
+                )
+            )
+        }
+    }
+
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
             _bigReplyBoxState.postValue(
@@ -1220,19 +1274,19 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
-        if (replyBoxAttribute == null) {
+    fun validateHistoryForAttachment34(dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?): Boolean {
+        if (dynamicAttachmentBodyAttributes == null) {
             return false
         }
 
-        if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
-            when (replyBoxAttribute.contentCode) {
+        if (CheckDynamicAttachmentValidity.checkValidity(dynamicAttachmentBodyAttributes.contentCode)) {
+            when (dynamicAttachmentBodyAttributes.contentCode) {
                 ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
                 ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
             }
@@ -1371,6 +1425,23 @@ class ChatbotViewModel @Inject constructor(
             ChatbotSendableWebSocketParam.generateParamSendMessage(
                 messageId,
                 sendMessage,
+                startTime,
+                opponentId
+            ),
+            listInterceptor
+        )
+    }
+
+    fun sendDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        opponentId: String
+    ) {
+        chatbotWebSocket.send(
+            generateParamDynamicAttachmentText(
+                messageId,
+                bubbleUiModel,
                 startTime,
                 opponentId
             ),

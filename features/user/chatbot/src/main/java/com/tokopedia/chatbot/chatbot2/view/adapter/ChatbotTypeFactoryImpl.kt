@@ -16,8 +16,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.AttachedInvoiceSelectionViewHolder
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.AttachedInvoiceSentViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.ChatActionListBubbleViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.ChatBotTypingChatViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.ChatHelpfullQuestionViewHolder
@@ -32,16 +30,23 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.StickyActionButton
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.LeftChatMessageUnifyViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.RightChatMessageUnifyViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicAttachmentTextViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicStickyButtonViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSelectionViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSentViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyListUiModel
@@ -70,6 +75,7 @@ open class ChatbotTypeFactoryImpl(
     private val actionButtonClickListener: StickyActionButtonClickListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val videoUploadListener: VideoUploadListener,
+    private val dynamicStickyButtonListener: DynamicStickyButtonListener,
     private val userSession: UserSessionInterface
 ) :
     BaseChatTypeFactoryImpl(
@@ -133,6 +139,14 @@ open class ChatbotTypeFactoryImpl(
 
     override fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceSentViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicStickyButtonUiModel: DynamicStickyButtonUiModel): Int {
+        return DynamicStickyButtonViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicAttachmentTextUiModel: DynamicAttachmentTextUiModel): Int {
+        return DynamicAttachmentTextViewHolder.LAYOUT
     }
 
     override fun type(chatSepratorUiModel: ChatSepratorUiModel): Int {
