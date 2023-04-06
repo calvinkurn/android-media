@@ -450,7 +450,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     id = "1",
                     text = "Sayur-sayuran",
                     param = "page_name1",
-                    selected = true
+                    selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "2",
@@ -462,7 +462,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     id = "3",
                     text = "Bumbu Dapur",
                     param = "page_name3",
-                    selected = false
+                    selected = true
                 )
             )
 
@@ -820,6 +820,91 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.homeAddToCartTracker
                 .verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given chipId same with current selected chipId when switchProductCarouselChipTab should NOT call get getRecommendationUseCase`() {
+        coroutineTestRule.runBlockingTest {
+            val chipId = "1"
+            val currentSelectedChipId = "1"
+
+            val channelId = "1001"
+            val layout = "chip_carousel"
+
+            val productCarouselItemList = listOf(
+                RecommendationItem(
+                    productId = 5,
+                    parentID = 1,
+                    shopId = 5,
+                    name = "Tahu Bulat",
+                    appUrl = "tokopedia://product/detail/1"
+                )
+            )
+
+            val productCarouselResponse = listOf(
+                RecommendationWidget(recommendationItemList = productCarouselItemList),
+                RecommendationWidget(recommendationItemList = emptyList())
+            )
+
+            val homeLayoutResponse = listOf(
+                HomeLayoutResponse(
+                    id = channelId,
+                    layout = layout,
+                    header = Header(
+                        id = "5",
+                        name = "Lagi Diskon",
+                        serverTimeUnix = 0
+                    ),
+                    grids = listOf(
+                        Grid(
+                            id = currentSelectedChipId,
+                            name = "Sayur-sayuran",
+                            param = "?pagename=page_name1"
+                        ),
+                        Grid(
+                            id = "2",
+                            name = "Buah-buahan",
+                            param = "?pagename=page_name2"
+                        ),
+                        Grid(
+                            id = "3",
+                            name = "Bumbu Dapur",
+                            param = "?pagename=page_name3"
+                        )
+                    )
+                )
+            )
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+            onGetRecommendation_thenReturn(productCarouselResponse)
+
+            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
+            advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
+
+            verifyGetHomeLayoutDataUseCaseCalled()
+            verifyGetCarouselChipsRecomNotCalled(
+                pageName = "page_name1"
+            )
+        }
+    }
+
+    @Test
+    fun `given chip carousel not found when switchProductCarouselChipTab should NOT call get getRecommendationUseCase`() {
+        coroutineTestRule.runBlockingTest {
+            val chipId = "1"
+            val channelId = "1001"
+            val homeLayoutResponse = emptyList<HomeLayoutResponse>()
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+
+            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
+            advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
+
+            verifyGetHomeLayoutDataUseCaseCalled()
+            verifyGetCarouselChipsRecomNotCalled()
         }
     }
 }

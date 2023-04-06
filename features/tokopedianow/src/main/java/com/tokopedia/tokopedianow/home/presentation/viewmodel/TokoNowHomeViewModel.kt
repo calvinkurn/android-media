@@ -71,6 +71,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getCurrentSelectedChipId
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getProductCarouselChipByProductId
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.getProductCarouselChipsItem
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
@@ -722,14 +723,16 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun switchProductCarouselChipTab(channelId: String, chipId: String) {
+        val carouselModel = homeLayoutItemList.getProductCarouselChipsItem(channelId)
+        val currentSelectedChipId = getCurrentSelectedChipId(carouselModel)
+        if(carouselModel == null || currentSelectedChipId == chipId) return
         switchProductCarouselChipJob?.cancel()
 
         launchCatchError(block = {
-            val carouselModel = homeLayoutItemList.getProductCarouselChipsItem(channelId)
-            setProductCarouselChipsLoading(carouselModel)
+            val selectedChip = carouselModel.chipList.first { it.id == chipId }
+            setProductCarouselChipsLoading(carouselModel, selectedChip)
             delay(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
 
-            val selectedChip = carouselModel.chipList.first { it.id == chipId }
             getCarouselChipsProductList(carouselModel, selectedChip)
 
             val data = HomeLayoutListUiModel(
@@ -745,8 +748,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private fun setProductCarouselChipsLoading(carouselModel: HomeProductCarouselChipsUiModel) {
-        homeLayoutItemList.setProductCarouselChipsLoading(carouselModel)
+    private fun setProductCarouselChipsLoading(
+        carouselModel: HomeProductCarouselChipsUiModel,
+        selectedChip: TokoNowChipUiModel
+    ) {
+        homeLayoutItemList.setProductCarouselChipsLoading(
+            carouselModel,
+            selectedChip
+        )
 
         val data = HomeLayoutListUiModel(
             getHomeVisitableList(),

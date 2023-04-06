@@ -83,19 +83,32 @@ object ProductCarouselChipsMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.setProductCarouselChipsLoading(
-        item: HomeProductCarouselChipsUiModel
+        item: HomeProductCarouselChipsUiModel,
+        selectedChip: TokoNowChipUiModel
     ) {
         updateItemById(item.id) {
-            val newItem = item.copy(state = TokoNowProductRecommendationState.LOADING)
+            val chipList = item.chipList.toMutableList()
+            val selectedChipIndex = chipList.indexOf(selectedChip)
+
+            chipList.forEachIndexed { index, chipItem ->
+                val selected = index == selectedChipIndex
+                chipList[index] = chipItem.copy(selected = selected)
+            }
+
+            val newItem = item.copy(
+                chipList = chipList,
+                state = TokoNowProductRecommendationState.LOADING
+            )
+
             HomeLayoutItemUiModel(newItem, HomeLayoutItemState.LOADED)
         }
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.getProductCarouselChipsItem(
         id: String
-    ): HomeProductCarouselChipsUiModel {
-        val visitableItem = first { it?.layout?.getVisitableId() == id }
-        return visitableItem?.layout as HomeProductCarouselChipsUiModel
+    ): HomeProductCarouselChipsUiModel? {
+        val visitableItem = firstOrNull { it?.layout?.getVisitableId() == id }
+        return visitableItem?.layout as? HomeProductCarouselChipsUiModel
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.getProductCarouselChipByProductId(
@@ -108,5 +121,11 @@ object ProductCarouselChipsMapper {
         }.let {
             return it?.layout as? HomeProductCarouselChipsUiModel
         }
+    }
+
+    fun getCurrentSelectedChipId(
+        carouselModel: HomeProductCarouselChipsUiModel?
+    ): String {
+        return carouselModel?.chipList?.firstOrNull { it.selected }?.id.orEmpty()
     }
 }
