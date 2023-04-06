@@ -67,9 +67,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -109,6 +111,10 @@ class AffiliateHomeFragment :
     private var isUserBlackListed = false
     private var isNoPromoItem = false
     private var isNoMoreData = false
+    private var productRV: RecyclerView? = null
+    private var swipeRefresh: SwipeToRefresh? = null
+    private var navToolbar: NavToolbar? = null
+    private var loader: LoaderUnify? = null
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -173,7 +179,10 @@ class AffiliateHomeFragment :
     }
 
     private fun afterViewCreated() {
-        val productRV = view?.findViewById<RecyclerView>(R.id.products_rv)
+        productRV = view?.findViewById(R.id.products_rv)
+        swipeRefresh = view?.findViewById(R.id.swipe_refresh_layout)
+        navToolbar = view?.findViewById(R.id.home_navToolbar)
+        loader = view?.findViewById(R.id.affiliate_progress_bar)
         if (!affiliateHomeViewModel.isUserLoggedIn()) {
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
@@ -186,14 +195,14 @@ class AffiliateHomeFragment :
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         productRV?.layoutManager = layoutManager
-        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+        swipeRefresh?.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         productRV?.adapter = adapter
         loadMoreTriggerListener?.let { productRV?.addOnScrollListener(it) }
-        view?.findViewById<NavToolbar>(R.id.home_navToolbar)?.run {
+        navToolbar?.run {
             setIcon(
                 IconBuilder()
                     .addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
@@ -293,14 +302,14 @@ class AffiliateHomeFragment :
             if (changed) resetItems()
         }
         affiliateHomeViewModel.progressBar().observe(this) { visibility ->
-            setProgressBar(visibility)
+            loader?.isVisible = visibility.orFalse()
         }
         affiliateHomeViewModel.getErrorMessage().observe(this) { error ->
             onGetError(error)
         }
         affiliateHomeViewModel.getValidateUserdata().observe(this) { validateUserdata ->
-            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+            loader?.gone()
+            swipeRefresh?.show()
             onGetValidateUserData(validateUserdata)
         }
 
@@ -350,7 +359,7 @@ class AffiliateHomeFragment :
             isNoMoreData = noDataAvailable
         }
         affiliateHomeViewModel.getUnreadNotificationCount().observe(this) { count ->
-            view?.findViewById<NavToolbar>(R.id.home_navToolbar)?.apply {
+            navToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
         }
@@ -374,7 +383,7 @@ class AffiliateHomeFragment :
     private fun onGetAffiliateDataItems(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         adapter.removeShimmer(listSize)
         if (isSwipeRefresh) {
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing = false
+            swipeRefresh?.isRefreshing = false
             isSwipeRefresh = !isSwipeRefresh
         }
         if (dataList.isNotEmpty()) {
@@ -398,21 +407,11 @@ class AffiliateHomeFragment :
                     setType(GlobalError.SERVER_ERROR)
                 }
             }
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+            swipeRefresh?.hide()
             show()
             setActionClickListener {
                 hide()
                 affiliateHomeViewModel.getAffiliateValidateUser()
-            }
-        }
-    }
-
-    private fun setProgressBar(visibility: Boolean?) {
-        if (visibility != null) {
-            if (visibility) {
-                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
-            } else {
-                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
             }
         }
     }
@@ -593,11 +592,7 @@ class AffiliateHomeFragment :
 
     override fun onSystemDown() {
         affiliateHomeViewModel.getAnnouncementInformation()
-        hideViews()
-    }
-
-    private fun hideViews() {
-        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+        swipeRefresh?.hide()
     }
 
     override fun onReviewed() {
