@@ -120,15 +120,41 @@ open class VerificationViewModel @Inject constructor(
 
     fun renderInitialDefaultOtp(otpModeListData: OtpModeListData) {
         val newItems = ArrayList(otpModeListData.modeList)
-
-        if (otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
-            newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
-        }
+        val smsOtp = otpModeListData.modeList.find { it.modeText == OtpConstant.OtpMode.SMS }
         var footerSpan = ""
         var footerText = ""
         var action = { }
 
-        if (otpModeListData.modeList.size > 1) {
+        if (otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
+            newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
+        }
+
+        /**
+         * if defaultMode code is not exists on the otp mode list
+         * make it as default method is off
+         */
+        if (isSmsHidden(otpModeListData.defaultBehaviorMode) && newItems.size != 1) {
+            newItems.removeAll {
+                it.modeText == OtpConstant.OtpMode.SMS
+            }
+            if (smsOtp != null) {
+                footerSpan = SPAN_USE_SMS_METHOD
+                footerText = SMS_FOOTER_TEXT
+                action = { goToInputOtp(smsOtp) }
+            }
+        }
+
+        /**
+         * if otp mode list only has 2 options that contains sms but the behaviour mode is sms hidden
+         * then use [SMS_FOOTER_TEXT] instead for footerText.
+         */
+        else if (otpModeListData.modeList.size == 2 && otpModeListData.modeList.contains(smsOtp) && isSmsHidden(otpModeListData.defaultBehaviorMode)) {
+            if (smsOtp != null) {
+                footerSpan = SPAN_USE_SMS_METHOD
+                footerText = SMS_FOOTER_TEXT
+                action = { goToInputOtp(smsOtp) }
+            }
+        } else if (otpModeListData.modeList.size > 1) {
             footerSpan = SPAN_USE_OTHER_METHODS
             footerText = OTHER_METHOD_FOOTER_TEXT
             action = { showAllMethod() }

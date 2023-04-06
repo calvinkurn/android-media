@@ -46,7 +46,12 @@ object OtpConstant {
         const val REGISTER_PHONE_NUMBER = 116
         const val REGISTER_EMAIL = 126
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
+
+        /* for 2FA flows */
         const val AFTER_LOGIN_PHONE = 148
+
+        /* for 1FA flows */
+        const val OTP_LOGIN_PHONE_NUMBER = 112
         const val RESET_PIN = 149
 
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
@@ -82,5 +87,4 @@ object OtpConstant {
 
     // Default OTP on and hide SMS otp, including direct request
     const val DEFAULT_OTP_BEHAVIOR_THREE = 3
-
 }
