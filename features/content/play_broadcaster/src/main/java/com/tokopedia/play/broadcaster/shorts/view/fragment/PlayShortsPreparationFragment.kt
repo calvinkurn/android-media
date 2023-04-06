@@ -303,7 +303,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             coachMarkSharedPref.setHasBeenShown(Key.PlayShortsPreparation, userSession.userId)
         }
 
-        if (viewModel.isAllowChangeAccount && coachMarkSharedPref.hasBeenShown(
+        if (viewModel.isAllowChangeAccount && !coachMarkSharedPref.hasBeenShown(
                 Key.SwitchAccount,
                 userSession.userId
             )
