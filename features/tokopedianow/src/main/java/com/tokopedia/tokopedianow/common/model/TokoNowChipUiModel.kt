@@ -16,4 +16,8 @@ data class TokoNowChipUiModel(
     override fun type(typeFactory: TokoNowChipTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getChangePayload(newItem: TokoNowChipUiModel): Any? {
+        return selected != newItem.selected
+    }
 }

@@ -29,6 +29,12 @@ class TokoNowChipViewHolder(
         setOnClickListener(chip)
     }
 
+    override fun bind(chip: TokoNowChipUiModel, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true) {
+            renderChipType(chip)
+        }
+    }
+
     fun setChipType(type: String) {
         binding?.root?.chipType = type
     }
