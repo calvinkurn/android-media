@@ -1,12 +1,14 @@
 package com.tokopedia.content.common.comment.adapter
 
 import android.text.method.LinkMovementMethod
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.content.common.comment.MentionedSpanned
 import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isChild
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
@@ -14,6 +16,7 @@ import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.content.common.R as contentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -52,8 +55,14 @@ class CommentViewHolder {
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
+                val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
+                val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+                ivCommentPhoto.updateLayoutParams {
+                    width = if (item.commentType.isChild) layout24 else layout32
+                    height = if (item.commentType.isChild) layout24 else layout32
+                }
                 root.setPadding(
-                    if (item.commentType is CommentType.Child) 100 else 8,
+                    if (item.commentType.isChild) 48.toPx() else 8.toPx(),
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom
@@ -65,7 +74,14 @@ class CommentViewHolder {
                 }
 
                 tvCommentContent.text = TagMentionBuilder
-                    .getMentionTag(item = item, mentionColor, parentColor, mentionListener, parentListener)
+                    .getMentionTag(
+                        item = item,
+                        mentionColor,
+                        parentColor,
+                        mentionListener,
+                        parentListener,
+                        context = itemView.context
+                    )
                 tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 
@@ -74,6 +90,18 @@ class CommentViewHolder {
                 }
 
                 root.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                tvCommentReply.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                ivCommentPhoto.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                tvCommentContent.setOnLongClickListener {
                     listener.onLongClicked(item)
                     true
                 }
@@ -90,16 +118,16 @@ class CommentViewHolder {
     }
 
     internal class Empty(
-        binding: ItemCommentEmptyBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentEmptyBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Shimmering(
-        binding: ItemCommentShimmeringBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentShimmeringBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Expandable(
         private val binding: ItemCommentExpandableBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
         fun bind(item: CommentUiModel.Expandable) {
             if (item.isExpanded) {

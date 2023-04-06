@@ -36,6 +36,9 @@ class ContentCommentViewModel @AssistedInject constructor(
     val userInfo: UserSessionInterface
         get() = userSession
 
+    val isCreator: Boolean
+        get() = _comments.value.commenterType == UserType.Shop
+
     @AssistedFactory
     interface Factory {
         fun create(@Assisted source: PageSource): ContentCommentViewModel
@@ -64,13 +67,16 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result = repo.getComments(
                     source,
                     commentType = param.commentType,
-                    cursor = param.lastParentCursor
+                    cursor = param.lastParentCursor,
                 )
                 _comments.update {
+                    val contentSame =
+                        it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = it.list + result.list
+                        list = if (contentSame) it.list else it.list + result.list,
+                        commenterType = result.commenterType,
                     )
                 }
                 _query.update {
@@ -98,14 +104,14 @@ class ContentCommentViewModel @AssistedInject constructor(
                     commentType = param.commentType,
                     cursor = param.lastChildCursor
                 )
-                _comments.getAndUpdate {
-                    val selected = it.list
+                _comments.update { curr ->
+                    val selected = curr.list
                         .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
                     val parent =
-                        it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
+                        curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
                         addAll(
-                            it.list.mapIndexed { index, model ->
+                            curr.list.mapIndexed { index, model ->
                                 if (index == selected && model is CommentUiModel.Expandable) {
                                     model.copy(
                                         isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
@@ -117,16 +123,16 @@ class ContentCommentViewModel @AssistedInject constructor(
                             }
                         )
                     }
-                    newChild.addAll(selected, result.list)
-                    it.copy(
+                    newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
+                    curr.copy(
                         cursor = result.cursor,
-                        list = newChild
+                        list = newChild,
                     )
                 }
                 _query.update {
                     it.copy(
                         lastChildCursor = result.cursor,
-                        needToRefresh = false
+                        needToRefresh = false,
                     )
                 }
             }) { error ->
@@ -157,7 +163,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
-            CommentAction.RequestReportAction ->  handleOpenReport()
+            CommentAction.RequestReportAction -> handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
@@ -216,7 +222,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun deleteComment(isFromToaster: Boolean) {
         fun removeComment() {
             _comments.update {
-                it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
+                it.copy(list = it.list.filterNot { item -> (item is CommentUiModel.Item && (item.id == _selectedComment.value.first.id || item.commentType.parentId == _selectedComment.value.first.id)) || item is CommentUiModel.Expandable && item.commentType.parentId == _selectedComment.value.first.id })
             }
         }
 
@@ -236,8 +242,9 @@ class ContentCommentViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             repo.deleteComment(_selectedComment.value.first.id)
         }) {
+            undoComment()
             _event.emit(
-                CommentEvent.ShowErrorToaster(message = it) {
+                CommentEvent.ShowErrorToaster(message = MessageErrorException(CommentException.FailedDelete.message)) {
                     deleteComment(isFromToaster = false)
                 }
             )
@@ -281,21 +288,29 @@ class ContentCommentViewModel @AssistedInject constructor(
             val regex = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))""".toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
-                if(regex.findAll(comment).count() > 0) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
-                val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
-                if(commentType is CommentType.Child) return@launchCatchError
+                if (regex.findAll(comment)
+                        .count() > 0 && !comment.contains("tokopedia")
+                ) throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                val result =
+                    repo.replyComment(source, commentType, comment, _comments.value.commenterType)
+                var index = 0
                 _comments.getAndUpdate {
+                    index = if (result.commentType.isChild) {
+                        val selected = it.list
+                            .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
+                        selected
+                    } else 0
                     val newList = it.list.toMutableList().apply {
-                        add(0, result)
+                        add(index, result)
                     }
                     it.copy(list = newList)
                 }
-                _event.emit(CommentEvent.ReplySuccess)
+                _event.emit(CommentEvent.ReplySuccess(index))
 
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
-                        message = it,
+                        message = MessageErrorException(CommentException.SendCommentFailed.message),
                         onClick = { sendReply(comment, commentType) })
                 )
             }

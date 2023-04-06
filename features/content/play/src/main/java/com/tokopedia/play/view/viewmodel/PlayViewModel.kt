@@ -1097,6 +1097,13 @@ class PlayViewModel @AssistedInject constructor(
             }
             EmptyPageWidget -> handleEmptyExplore()
             is SelectReason -> handleSelectedReason(action.reasonId)
+            is CommentVisibilityAction -> {
+                _isBottomSheetsShown.update { action.isOpen }
+                viewModelScope.launch {
+                    _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
+                }
+                updateCommentConfig()
+            }
         }
     }
 

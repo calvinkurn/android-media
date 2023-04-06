@@ -1,7 +1,7 @@
 package com.tokopedia.content.common.comment
 
+import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
@@ -26,7 +26,8 @@ class MentionedSpanned(
     private val appLink: String = "",
     val userName: String,
     val id: String,
-    val listener: Listener
+    val listener: Listener,
+    val ctx: Context
 ) : ClickableSpan() {
 
     private val newAppLink: String
@@ -50,7 +51,11 @@ class MentionedSpanned(
     override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
         ds.color = color
-        ds.typeface = Typeface.DEFAULT_BOLD
+        ds.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
+            ctx,
+            appLink.isNotBlank(),
+            com.tokopedia.unifyprinciples.Typography.PARAGRAPH_2
+        )
         ds.isUnderlineText = false
     }
 
@@ -59,7 +64,8 @@ class MentionedSpanned(
     }
 }
 
-class BaseSpan(val fullText: String, val content: String, val shortName: String) : ForegroundColorSpan(Color.BLACK) {
+class BaseSpan(val fullText: String, val content: String, val shortName: String) :
+    ForegroundColorSpan(Color.BLACK) {
     val sentText: String get() = fullText + content
 }
 
@@ -75,10 +81,11 @@ object TagMentionBuilder {
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
         if (text == null) return CommentType.Parent
         val find = text.getSpans<BaseSpan>(0, text.length)
-        return if (find.isNotEmpty()) {
-            CommentType.Child(commentId)
-        } else {
+        val isAvailable = find.joinToString { item -> if (text.contains(item.shortName)) text.toString() else "" }
+        return if (isAvailable.isBlank()) {
             CommentType.Parent
+        } else {
+            CommentType.Child(commentId)
         }
     }
 
@@ -109,10 +116,13 @@ object TagMentionBuilder {
         if (text.isNullOrBlank()) return ""
         val convert = text.getSpans<BaseSpan>(0, text.length)
         return try {
-            convert.joinToString { txt -> txt.sentText + text.toString().substring(txt.shortName.length, text.length) }.ifBlank {
+            convert.joinToString { txt ->
+                if (!text.contains(txt.shortName)) text.toString()
+                else txt.sentText + text.toString().substring(txt.shortName.length, text.length)
+            }.ifBlank {
                 text.toString()
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             text.toString()
         }
     }
@@ -122,14 +132,17 @@ object TagMentionBuilder {
         @ColorInt mentionColor: Int,
         @ColorInt parentColor: Int,
         mentionListener: MentionedSpanned.Listener,
-        parentListener: MentionedSpanned.Listener
+        parentListener: MentionedSpanned.Listener,
+        context: Context
     ): SpannedString {
         val parentSpanned = MentionedSpanned(
             color = parentColor,
             id = item.id,
             userName = item.username,
             appLink = item.appLink,
-            listener = parentListener
+            listener = parentListener,
+            userType = item.userType,
+            ctx = context
         )
         return try {
             var (id, type, name) = Triple("", "", "")
@@ -145,7 +158,8 @@ object TagMentionBuilder {
                     id = id,
                     userName = name,
                     userType = UserType.getByValue(type),
-                    listener = mentionListener
+                    listener = mentionListener,
+                    ctx = context
                 )
 
                 val content = item.content.substring(length, item.content.length)
