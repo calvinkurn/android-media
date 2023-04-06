@@ -169,7 +169,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifycomponents.CardUnify2
-                android:id="@+id/checkout_upsell_card_border"
+                android:id="@+id/checkout_upsell_card_overlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:card_type="border" />

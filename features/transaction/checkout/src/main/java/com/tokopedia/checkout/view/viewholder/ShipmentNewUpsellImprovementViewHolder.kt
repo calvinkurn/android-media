@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.viewholder
 
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -41,7 +40,7 @@ class ShipmentNewUpsellImprovementViewHolder(
     private val checkoutUpsellCard: CardUnify2 =
         itemView.findViewById(R.id.checkout_upsell_card)
     private val checkoutUpsellCardOverlay: CardUnify2 =
-        itemView.findViewById(R.id.checkout_upsell_card_border)
+        itemView.findViewById(R.id.checkout_upsell_card_overlay)
     private val checkoutUpsellBackgroundImage: ImageUnify =
         itemView.findViewById(R.id.checkout_upsell_background_image)
     private val checkoutUpsellLogoContainer: CardUnify2 =
