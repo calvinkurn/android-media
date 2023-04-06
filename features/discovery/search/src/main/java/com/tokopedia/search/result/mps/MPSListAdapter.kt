@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.search.utils.ComparableId
 
 class MPSListAdapter(
     private val mpsTypeFactory: MPSTypeFactory,
@@ -43,14 +44,14 @@ class MPSListAdapter(
 }
 
 private class MPSDiffUtil: DiffUtil.ItemCallback<Visitable<*>>() {
-    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return oldItem::class.java == newItem::class.java
-    }
+    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean =
+        if (oldItem is ComparableId && newItem is ComparableId)
+            oldItem.compare(newItem)
+        else
+            oldItem::class.java == newItem::class.java
 
     @SuppressLint("DiffUtilEquals")
-    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return true
-    }
+    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean = true
 }
 
 interface ListListener {

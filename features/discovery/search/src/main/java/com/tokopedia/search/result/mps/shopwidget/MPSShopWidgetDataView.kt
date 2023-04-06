@@ -3,9 +3,10 @@ package com.tokopedia.search.result.mps.shopwidget
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.mps.MPSTypeFactory
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
+import com.tokopedia.search.utils.ComparableId
 
 class MPSShopWidgetDataView(
-    val id: String = "",
+    override val id: String = "",
     val name: String = "",
     val imageUrl: String = "",
     val location: String = "",
@@ -18,7 +19,7 @@ class MPSShopWidgetDataView(
     val buttonList: List<MPSButtonDataView> = listOf(),
     val productList: List<MPSShopWidgetProductDataView> = listOf(),
     val viewAllCard: MPSShopWidgetViewAllCardDataView = MPSShopWidgetViewAllCardDataView(),
-): Visitable<MPSTypeFactory> {
+): Visitable<MPSTypeFactory>, ComparableId {
 
     fun willShowFreeOngkir() =
         shopFreeOngkir.isActive && shopFreeOngkir.imageUrl.isNotEmpty()
