@@ -37,7 +37,9 @@ class GetChallengeUseCase @Inject constructor(
             .request<Map<String, String>, GetChallengeResponse>(graphqlQuery(), parameter)
             .getOneKYCChallenge
 
-        return if (!response.isSuccess) {
+        val dobChallenge = response.data.find { it.questionType == QUESTION_TYPE_DOB }
+
+        return if (!response.isSuccess && dobChallenge?.id?.isEmpty() == true) {
             val message = if (response.errorMessages.isNotEmpty()) {
                 response.errorMessages.first()
             } else {
@@ -45,11 +47,12 @@ class GetChallengeUseCase @Inject constructor(
             }
             GetChallengeResult.Failed(MessageErrorException(message))
         } else {
-            GetChallengeResult.Success(questionId = response.data.first().id)
+            GetChallengeResult.Success(questionId = dobChallenge?.id.orEmpty())
         }
     }
 
     companion object {
+        private const val QUESTION_TYPE_DOB = "Date of Birth"
         private const val KEY_CHALLENGE_ID = "challengeID"
     }
 }

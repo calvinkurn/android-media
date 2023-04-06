@@ -8,12 +8,18 @@ data class SubmitChallengeResponse(
 )
 
 data class SubmitKYCChallenge(
-	@SerializedName("errorMessages")
-	val errorMessages: List<String>,
+    @SerializedName("cooldownTimeInSeconds")
+    val cooldownTimeInSeconds: String = "",
 
-	@SerializedName("isSuccess")
-	val isSuccess: Int = 0,
+    @SerializedName("attemptsRemaining")
+    val attemptsRemaining: String = "",
 
-    //TODO: this is fake field, please change it when BE ready
-    var submitStatus: String = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
+    @SerializedName("maximumAttemptsAllowed")
+    val maximumAttemptsAllowed: String = "",
+
+    @SerializedName("message")
+    val message: String = "",
+
+    @SerializedName("errorMessages")
+	val errorMessages: List<String> = emptyList()
 )

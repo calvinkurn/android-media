@@ -22,7 +22,10 @@ class SubmitChallengeUseCase @Inject constructor(
             kycSubmitGoToChallenge(
               param: ${'$'}param
             ) {
-              isSuccess
+              cooldownTimeInSeconds
+              attemptsRemaining
+              maximumAttemptsAllowed
+              message
               errorMessages
             }
           }
@@ -33,21 +36,18 @@ class SubmitChallengeUseCase @Inject constructor(
             .request<SubmitChallengeParam, SubmitChallengeResponse>(graphqlQuery(), params)
             .submitKYCChallenge
 
-        return if (response.isSuccess != VALUE_SUCCESS) {
-            val message = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
-            SubmitChallengeResult.Failed(MessageErrorException(message))
+        return if (response.errorMessages.isNotEmpty()) {
+            SubmitChallengeResult.Failed(MessageErrorException(response.errorMessages.first()))
         } else {
-            when (response.submitStatus) {
+            when (response.message) {
                 KEY_WRONG_ANSWER -> {
-                    //TODO: change this value when BE was ready
-                    SubmitChallengeResult.WrongAnswer("Tanggal lahir nggak cocok. Sisa 2 kali coba lagi, ya.")
+                    SubmitChallengeResult.WrongAnswer(attemptsRemaining = response.attemptsRemaining)
                 }
                 KEY_EXHAUSTED -> {
-                    SubmitChallengeResult.Exhausted()
+                    SubmitChallengeResult.Exhausted(
+                        cooldownTimeInSeconds = response.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = response.maximumAttemptsAllowed
+                    )
                 }
                 else -> {
                     SubmitChallengeResult.Success()
@@ -57,7 +57,6 @@ class SubmitChallengeUseCase @Inject constructor(
     }
 
     companion object {
-        private const val VALUE_SUCCESS = 1
         private const val KEY_WRONG_ANSWER = "KYC_CHALLENGE_SUBMITTED_WRONG_ANSWERS"
         private const val KEY_EXHAUSTED = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
     }

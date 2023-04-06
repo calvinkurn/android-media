@@ -12,6 +12,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class DobChallengeViewModel @Inject constructor(
@@ -23,8 +24,8 @@ class DobChallengeViewModel @Inject constructor(
     private val _getChallenge = MutableLiveData<GetChallengeResult>()
     val getChallenge : LiveData<GetChallengeResult> get() = _getChallenge
 
-    private val _submitChallenge = MutableLiveData<SubmitChallengeResult>()
-    val submitChallenge : LiveData<SubmitChallengeResult> get() = _submitChallenge
+    private val _submitChallenge = SingleLiveEvent<SubmitChallengeResult>()
+    val submitChallenge : SingleLiveEvent<SubmitChallengeResult> get() = _submitChallenge
 
     fun getChallenge(challengeId: String) {
         _getChallenge.value = GetChallengeResult.Loading()
