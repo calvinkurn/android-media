@@ -145,15 +145,19 @@ open class VerificationViewModel @Inject constructor(
         }
 
         /**
-         * if otp mode list only has 2 options that contains sms but the behaviour mode is sms hidden
+         * if otp mode list only has 2 options that contains sms but the behaviour mode is hide sms
          * then use [SMS_AND_CHANGE_PN_FOOTER_TEXT] instead for footerText.
          */
-        else if (otpModeListData.modeList.size == 2 && otpModeListData.modeList.contains(smsOtp) && isSmsHidden(otpModeListData.defaultBehaviorMode)) {
+        else if (otpModeListData.modeList.size == 2 && otpModeListData.modeList.contains(smsOtp) &&
+            isSmsHidden(otpModeListData.defaultBehaviorMode)
+        ) {
             if (smsOtp != null) {
                 footerSpan = SPAN_USE_SMS_METHOD
                 footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
                 action = { goToInputOtp(smsOtp) }
             }
+
+            /* if newItems has less size than original mode list then shows CTA 'Gunakan metode lain' */
         } else if (otpModeListData.modeList.size > 1 && newItems.size < otpModeListData.modeList.size) {
             footerSpan = SPAN_USE_OTHER_METHODS
             footerText = spanFactory(SPAN_USE_OTHER_METHODS, otpModeListData.linkType)
