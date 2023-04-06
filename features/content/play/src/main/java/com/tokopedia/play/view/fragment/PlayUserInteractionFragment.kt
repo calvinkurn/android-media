@@ -8,9 +8,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -565,6 +564,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     // TODO("Find better logic to improve this code")
     fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        if (view == null) return
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
@@ -870,6 +870,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(cachedState)
+                handleAutoSwipe(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
                 if (cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
 
@@ -1744,7 +1745,30 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoViewOnStateChanged(event = status)
-        if (isAllowAutoSwipe(!status.channelStatus.statusType.isActive)) doAutoSwipe()
+    }
+
+    private fun handleAutoSwipe(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged(
+                { it.combinedState.videoProperty },
+                { it.status },
+                { it.channel.channelInfo.channelType.isLive }
+            )
+        ) return
+
+        val isLive = state.value.channel.channelInfo.channelType.isLive
+
+        if (isAllowAutoSwipe(
+                if (isLive) {
+                    !state.value.status.channelStatus.statusType.isActive
+                }
+                else {
+                    !state.value.status.channelStatus.statusType.isActive ||
+                        state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
+                }
+            )
+        ) {
+            doAutoSwipe()
+        }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {

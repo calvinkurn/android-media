@@ -408,7 +408,8 @@ class DetailEditorFragment @Inject constructor(
     private fun observeBrightness() {
         viewModel.brightnessFilter.observe(viewLifecycleOwner) { colorFilter ->
             getImageView()?.let {
-                val bitmap = implementedBaseBitmap ?: it.drawable.toBitmap()
+                val bitmap = (implementedBaseBitmap ?: it.drawable?.toBitmap()) ?: return@let
+
                 val fastBitmapDrawable = FastBitmapDrawable(validateImageSize(bitmap))
                 fastBitmapDrawable.colorFilter = colorFilter
 
