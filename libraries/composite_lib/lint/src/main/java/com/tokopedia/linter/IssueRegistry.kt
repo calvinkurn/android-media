@@ -16,6 +16,7 @@ import com.tokopedia.linter.detectors.DeprecatedMethodDetector
 import com.tokopedia.linter.detectors.GradientVectorDetector
 import com.tokopedia.linter.detectors.DimenUsageDetector
 import com.tokopedia.linter.detectors.UnsafeFragmentConstructorDetector
+import com.tokopedia.linter.detectors.UnsupportedNestColorDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
 import com.tokopedia.linter.detectors.gradle.HANSEL_REQUIRED
@@ -51,7 +52,9 @@ class IssueRegistry : IssueRegistry() {
                 ResourceFragmentDetector.ISSUE,
                 DimenUsageDetector.XML_ISSUE,
                 UnsafeFragmentConstructorDetector.ISSUE,
-                HANSEL_REQUIRED
+                HANSEL_REQUIRED,
+                UnsupportedNestColorDetector.JAVA_ISSUE,
+                UnsupportedNestColorDetector.XML_ISSUE
         )
 
     override val minApi: Int
