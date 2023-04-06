@@ -942,7 +942,7 @@ open class ProductManageFragment :
                     )
                     .build().toString()
             } else {
-                ApplinkConst.SellerApp.SELLER_MVC_PRODUCT_CREATE
+                ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER
             }
         context?.let {
             RouteManager.route(it, firstTimeLink)

@@ -280,7 +280,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                 if (appLink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)) {
                     val appLinks = ArrayList<String>().apply {
                         add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                        add(ApplinkConst.SellerApp.SELLER_MVC_SHOP_CREATE)
+                        add(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)
                     }
                     goToSellerMigrationPage(context = context, appLinks)
                 } else {

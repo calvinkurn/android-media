@@ -726,6 +726,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWithPattern(SELLER_MVC_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_detail))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))

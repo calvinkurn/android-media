@@ -88,6 +88,9 @@ object ApplinkConstInternalSellerapp {
 
     const val SELLER_MVC_DETAIL = "$INTERNAL_SELLERAPP/seller-mvc/detail/{voucher_id}/"
 
+    const val SELLER_MVC_CREATE_PRODUCT_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/product/"
+    const val SELLER_MVC_CREATE_SHOP_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/shop/"
+
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 
