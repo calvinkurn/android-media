@@ -298,7 +298,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     vodLihatProdukBtn.showWithCondition(mProducts.isNotEmpty())
 
                 }
-                override fun onVideoReadyToPlay() {
+                override fun onVideoReadyToPlay(isPlaying: Boolean) {
                     hideVODLoading()
 
                     if (!isPaused) {
