@@ -26,12 +26,13 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
-class OptInConfirmationBottomSheet: BottomSheetUnify() {
+class OptInConfirmationBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomSheetOptOutConfirmationBinding>()
 
     private var listener: OptInConfirmationListener? = null
+
+    private var isPmPro: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -76,7 +77,7 @@ class OptInConfirmationBottomSheet: BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        if(!isVisible) {
+        if (!isVisible) {
             show(fm, TAG)
         }
     }
@@ -90,7 +91,7 @@ class OptInConfirmationBottomSheet: BottomSheetUnify() {
             hideLoadingState()
             when (it) {
                 is Success -> {
-                    listener?.setOptInConfirmationSuccess(it.data)
+                    listener?.setOptInConfirmationSuccess(it.data, isPmPro)
                     dismiss()
                 }
                 is Fail -> {
@@ -102,7 +103,7 @@ class OptInConfirmationBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupViews() {
-        val isPmPro = arguments?.getBoolean(ARGS_IS_PM_PRO).orFalse()
+        isPmPro = arguments?.getBoolean(ARGS_IS_PM_PRO).orFalse()
         val (title, desc, btnTitle) = if (isPmPro) {
             Triple(
                 getString(com.tokopedia.power_merchant.subscribe.R.string.opt_out_confirmation_pm_pro_title),
@@ -158,8 +159,11 @@ class OptInConfirmationBottomSheet: BottomSheetUnify() {
             Toaster.toasterCustomBottomHeight =
                 context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
             Toaster.build(
-                this, message, Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR, actionText
+                this,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                actionText
             ).show()
         }
     }
@@ -184,6 +188,6 @@ class OptInConfirmationBottomSheet: BottomSheetUnify() {
     }
 
     interface OptInConfirmationListener {
-        fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel)
+        fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel, isPmPro: Boolean)
     }
 }

@@ -54,7 +54,8 @@ import javax.inject.Inject
  */
 
 open class PowerMerchantSubscriptionFragment :
-    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener,
+    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(),
+    PMWidgetListener,
     OptInConfirmationBottomSheet.OptInConfirmationListener {
 
     companion object {
@@ -189,8 +190,7 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    override fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel) {
-        val isPmPro = pmActivationStatusUiModel.currentShopTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+    override fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel, isPmPro: Boolean) {
         val successMessage = if (isPmPro) {
             getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_pro_activation_success_message)
         } else {
@@ -234,8 +234,11 @@ open class PowerMerchantSubscriptionFragment :
                 context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
             view?.rootView?.let {
                 Toaster.build(
-                    it, message, Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, actionText
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText
                 )
                     .show()
             }
@@ -255,13 +258,17 @@ open class PowerMerchantSubscriptionFragment :
             illustrationUrl,
             onPrimaryCtaClicked = {
                 powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
-            })
+            }
+        )
 
         powerMerchantTracking.sendEventPopupUnableToRegisterShopModeration()
     }
 
     protected fun showNotificationBottomSheet(
-        title: String, description: String, primaryCtaText: String, imgUrl: String,
+        title: String,
+        description: String,
+        primaryCtaText: String,
+        imgUrl: String,
         secondaryCtaText: String? = null,
         onPrimaryCtaClicked: (() -> Unit)? = null,
         onSecondaryCtaClicked: (() -> Unit)? = null,
@@ -335,16 +342,16 @@ open class PowerMerchantSubscriptionFragment :
         val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(isPmPro)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.setListener(object :
-            PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
-            override fun onClickCancelButton() {
-                showDeactivationQuestionnaire()
-                bottomSheet.dismiss()
-            }
+                PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
+                override fun onClickCancelButton() {
+                    showDeactivationQuestionnaire()
+                    bottomSheet.dismiss()
+                }
 
-            override fun onClickBackButton() {
-                bottomSheet.dismiss()
-            }
-        })
+                override fun onClickBackButton() {
+                    bottomSheet.dismiss()
+                }
+            })
         bottomSheet.show(childFragmentManager)
     }
 
@@ -463,7 +470,9 @@ open class PowerMerchantSubscriptionFragment :
                 context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).orZero()
             val message = context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
             Toaster.build(
-                rootView, message, Toaster.LENGTH_LONG,
+                rootView,
+                message,
+                Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             ).show()
         }
@@ -543,7 +552,9 @@ open class PowerMerchantSubscriptionFragment :
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl5
                 )
                 Toaster.build(
-                    it, message, Toaster.LENGTH_LONG,
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL
                 ).show()
             }
@@ -614,7 +625,7 @@ open class PowerMerchantSubscriptionFragment :
         val tickerList = pmBasicInfo?.tickers
         val isRegularMerchant =
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
-                    pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
+                pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isPmActive = isPm && isActive
         val deactivatedStatusName = if (pmBasicInfo?.pmStatus?.subscriptionType.isZero()) {
             context?.getString(R.string.pm_regular_merchant)
@@ -637,8 +648,8 @@ open class PowerMerchantSubscriptionFragment :
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
-                && isPmActive
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro &&
+            isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget(getShopGradeWidgetData(data), data)?.let {
@@ -671,9 +682,9 @@ open class PowerMerchantSubscriptionFragment :
     private fun showUpgradePmProStickyView() {
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val isNewSeller30FirstMonday = pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
-        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
-                && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
-                && isNewSeller30FirstMonday && isAutoExtendEnabled
+        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+            pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE &&
+            isNewSeller30FirstMonday && isAutoExtendEnabled
         binding?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
