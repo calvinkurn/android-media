@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.seeallcategory.persentation.fragment
 
 import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater

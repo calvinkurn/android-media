@@ -89,7 +89,6 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -313,7 +312,6 @@ class ChatbotFragment :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
-    private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
 
     private var pageSource: String = ""
@@ -375,7 +373,7 @@ class ChatbotFragment :
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        if (csatRemoteConfig) {
+        if (csatResponse.attachment?.attributes?.isSimplifyCsat.orFalse()) {
             openCsatNewFlow(csatResponse)
         } else {
             openCsatOldFlow(csatResponse)
@@ -667,7 +665,6 @@ class ChatbotFragment :
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
-        remoteConfigForCsatExperiment()
         showTicker()
 
         initRecyclerViewListener()
@@ -2514,10 +2511,6 @@ class ChatbotFragment :
             replyBubbleContainer?.referredMsg,
             onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
         )
-    }
-
-    private fun remoteConfigForCsatExperiment() {
-        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
     }
 
     override fun onDestroyView() {
