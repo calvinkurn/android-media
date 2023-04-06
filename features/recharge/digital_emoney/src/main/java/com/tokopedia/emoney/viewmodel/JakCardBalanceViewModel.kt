@@ -21,7 +21,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class JakCardBalanceViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatcher,
+    dispatcher: CoroutineDispatcher,
     private val jakCardUseCase: GetJakCardUseCase
 ) : BaseViewModel(dispatcher) {
 
@@ -47,13 +47,12 @@ class JakCardBalanceViewModel @Inject constructor(
                     val selectResponse = isoDep.transceive(selectRequest)
                     val selectResponseString = NFCUtils.toHex(selectResponse)
                     if (NFCUtils.isCommandFailed(selectResponse)) {
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD+selectResponseString))
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val checkBalanceRequest = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
                         val checkBalanceResponse = isoDep.transceive(checkBalanceRequest)
-                        val checkBalanceResponseString = NFCUtils.toHex(checkBalanceResponse)
                         if (NFCUtils.isCommandFailed(checkBalanceResponse)) {
-                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD+checkBalanceResponseString))
+                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val cardNumber = getCardNumberFromSelectResponse(selectResponseString)
                             val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
@@ -101,7 +100,7 @@ class JakCardBalanceViewModel @Inject constructor(
                 val initLoadResponseString = NFCUtils.toHex(initLoadResponse)
 
                 if (NFCUtils.isCommandFailed(initLoadResponse)) {
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD+initLoadResponseString))
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
                     val topUpCardData = getCardDataTopUp(
                         separateWithSuccessCode(initLoadResponseString),
@@ -146,7 +145,7 @@ class JakCardBalanceViewModel @Inject constructor(
                 val loadResponseString = NFCUtils.toHex(loadResponse)
 
                 if (NFCUtils.isCommandFailed(loadResponse)) {
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD+loadResponseString))
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
                     val checkBalanceAfterLoadRequest = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
                     val checkBalanceAfterLoadResponse = isoDep.transceive(checkBalanceAfterLoadRequest)
@@ -201,7 +200,6 @@ class JakCardBalanceViewModel @Inject constructor(
         val size = response.length
         val maxResponseLength = size - CODE_RESPONSE_SIZE
         val separatedResponse = response.substring(Int.ZERO, maxResponseLength)
-        Log.d("SEPARATED", response+" "+separatedResponse)
         return separatedResponse
     }
 
