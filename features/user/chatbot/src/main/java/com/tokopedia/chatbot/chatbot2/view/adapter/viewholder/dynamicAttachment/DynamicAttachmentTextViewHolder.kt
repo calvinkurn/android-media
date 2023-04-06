@@ -8,14 +8,13 @@ import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
-import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.toMessageUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.ChatBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode106Binding
-
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
 

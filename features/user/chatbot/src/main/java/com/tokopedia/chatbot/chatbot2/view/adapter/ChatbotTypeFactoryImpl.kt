@@ -125,6 +125,11 @@ open class ChatbotTypeFactoryImpl(
             ChatbotFallbackAttachmentViewHolder.LAYOUT -> ChatbotFallbackAttachmentViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, actionButtonClickListener)
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, chatRatingListener)
+            DynamicStickyButtonViewHolder.LAYOUT -> DynamicStickyButtonViewHolder(
+                parent,
+                chatLinkHandlerListener,
+                dynamicStickyButtonListener
+            )
             else -> createViewHolder(parent, type)
         }
     }
@@ -204,6 +209,12 @@ open class ChatbotTypeFactoryImpl(
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             ChatbotVideoUploadViewHolder.LAYOUT -> ChatbotVideoUploadViewHolder(parent, videoUploadListener)
+            DynamicAttachmentTextViewHolder.LAYOUT -> DynamicAttachmentTextViewHolder(
+                parent,
+                chatLinkHandlerListener,
+                replyBubbleListener
+            )
+
             else -> super.createViewHolder(parent, type)
         }
     }
