@@ -16,7 +16,6 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
-
     fun bindData(
         postId: String,
         author: FeedAuthorModel,

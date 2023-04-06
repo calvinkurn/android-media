@@ -40,7 +40,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 @SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
-    private val parentToBeDisabled: ViewParent?,
+    parentToBeDisabled: ViewParent?,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
@@ -61,12 +61,10 @@ class FeedPostImageViewHolder(
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
-                binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
-                binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -84,8 +82,7 @@ class FeedPostImageViewHolder(
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let { data ->
             with(binding) {
-                val postGestureDetector = GestureDetector(
-                    root.context,
+                val postGestureDetector = GestureDetector(root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                             return true
@@ -94,9 +91,7 @@ class FeedPostImageViewHolder(
                         override fun onDoubleTap(e: MotionEvent): Boolean {
                             if (element.like.isLiked.not()) {
                                 listener.onLikePostCLicked(
-                                    element.id,
-                                    element.like.isLiked,
-                                    absoluteAdapterPosition
+                                    element.id, element.like.isLiked, absoluteAdapterPosition
                                 )
                             }
                             return true
@@ -108,8 +103,7 @@ class FeedPostImageViewHolder(
 
                         override fun onLongPress(e: MotionEvent) {
                         }
-                    }
-                )
+                    })
 
                 bindAuthor(data)
                 bindCaption(data)
@@ -135,9 +129,7 @@ class FeedPostImageViewHolder(
                 }
                 postLikeButton.likeButton.setOnClickListener {
                     listener.onLikePostCLicked(
-                        element.id,
-                        element.like.isLiked,
-                        absoluteAdapterPosition
+                        element.id, element.like.isLiked, absoluteAdapterPosition
                     )
                 }
 
@@ -148,6 +140,13 @@ class FeedPostImageViewHolder(
                 rvFeedPostImageContent.setOnTouchListener { _, event ->
                     postGestureDetector.onTouchEvent(event)
                 }
+                rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            updateProductTagText(element)
+                        }
+                    }
+                })
             }
         }
     }
@@ -158,18 +157,52 @@ class FeedPostImageViewHolder(
             if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
                 setLikeUnlike(it.like)
             }
-        }
 
-        if (payloads.contains(FEED_POST_CLEAR_MODE)) {
-            showClearView()
+            if (payloads.contains(FEED_POST_CLEAR_MODE)) {
+                showClearView()
+            }
+            if (payloads.contains(FEED_POST_SELECTED)) {
+                campaignView.startAnimation()
+                sendImpressionTracker(it)
+                updateProductTagText(it)
+            }
+            if (payloads.contains(FEED_POST_NOT_SELECTED)) {
+                campaignView.resetView()
+                hideClearView()
+            }
         }
-        if (payloads.contains(FEED_POST_SELECTED)) {
-            campaignView.startAnimation()
+    }
+
+    private fun updateProductTagText(element: FeedCardImageContentModel) {
+        val index = layoutManager.findFirstVisibleItemPosition()
+        if (index in PRODUCT_COUNT_ZERO until element.media.size) {
+            element.media[index].let {
+                if (it.tagging.isNotEmpty()) {
+                    if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
+                        productTagView.bindText(
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            PRODUCT_COUNT_ONE
+                        )
+                    } else {
+                        productTagView.bindText(
+                            element.products,
+                            element.totalProducts
+                        )
+                    }
+                }
+            }
         }
-        if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-            campaignView.resetView()
-            hideClearView()
-        }
+    }
+
+    private fun sendImpressionTracker(element: FeedCardImageContentModel) {
+        listener.onTopAdsImpression(
+            adViewUrl = element.adViewUrl,
+            id = element.id,
+            shopId = element.author.id,
+            uri = element.adViewUri,
+            fullEcs = element.author.logoUrl,
+            position = absoluteAdapterPosition
+        )
     }
 
     private fun renderLikeView(
@@ -218,7 +251,6 @@ class FeedPostImageViewHolder(
             products = model.products,
             totalProducts = model.totalProducts
         )
-
         productButtonView.bindData(
             postId = model.id,
             author = model.author,

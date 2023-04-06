@@ -90,6 +90,7 @@ class FeedPostViewModel @Inject constructor(
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private var cursor = ""
     private var currentTopAdsPage = 0
+    private var shouldFetchTopAds = true
 
     fun fetchFeedPosts(
         source: String,
@@ -100,6 +101,7 @@ class FeedPostViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
+                shouldFetchTopAds = true
                 cursor = _feedHome.value?.cursor.orEmpty()
 
                 val relevantPostsDeferred = async {
@@ -225,7 +227,9 @@ class FeedPostViewModel @Inject constructor(
     fun fetchTopAdsData() {
         viewModelScope.launch {
             feedHome.value?.let {
-                if (it is Success) {
+                if (it is Success && shouldFetchTopAds) {
+                    shouldFetchTopAds = false
+
                     val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
                     val topAdsAddressData = topAdsAddressHelper.getAddressData()
                     val indexToRemove = mutableListOf<Int>()

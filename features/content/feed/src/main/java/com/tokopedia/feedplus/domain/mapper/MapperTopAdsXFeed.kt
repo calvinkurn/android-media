@@ -62,7 +62,7 @@ object MapperTopAdsXFeed {
 
         return currentModel.copy(
             isFetched = true,
-            id = data?.id ?: currentModel.id,
+            id = data?.id ?: "",
             author = feedAuthor,
             title = data?.cpm?.name.orEmpty(),
             subtitle = data?.cpm?.decription.orEmpty(),
@@ -73,7 +73,9 @@ object MapperTopAdsXFeed {
             totalProducts = productList?.size.orZero(),
             media = mediaList.orEmpty(),
             followers = followers,
-            reportable = true
+            reportable = true,
+            adViewUri = data?.cpm?.uri.orEmpty(),
+            adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty()
         )
     }
 

@@ -44,6 +44,8 @@ data class FeedCardImageContentModel(
     val publishedAt: String,
     val maxDiscountPercentage: Int,
     val maxDiscountPercentageFmt: String,
+    val adViewUri: String = "",  // use only for topads
+    val adViewUrl: String = "",  // use only for topads
     val isFetched: Boolean = false // use only for topads
 ) : Visitable<FeedAdapterTypeFactory> {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)

@@ -422,6 +422,17 @@ class FeedFragment :
 //        TODO("Not yet implemented")
     }
 
+    override fun onTopAdsImpression(
+        adViewUrl: String,
+        id: String,
+        shopId: String,
+        uri: String,
+        fullEcs: String?,
+        position: Int
+    ) {
+//        TODO("Not yet implemented")
+    }
+
     private fun observeAddToCart() {
         feedPostViewModel.atcRespData.observe(
             viewLifecycleOwner
