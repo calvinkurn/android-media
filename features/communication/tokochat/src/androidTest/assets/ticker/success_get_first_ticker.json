@@ -1,0 +1,7 @@
+{
+  "tokochatRoomTicker": {
+    "message": "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput \u0026 antar pesanan ke kamu.",
+    "enable": true,
+    "tickerType": 0
+  }
+}

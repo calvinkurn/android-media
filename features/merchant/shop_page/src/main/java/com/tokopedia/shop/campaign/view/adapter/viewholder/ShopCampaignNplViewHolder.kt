@@ -9,14 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isValidGlideContext
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
@@ -93,7 +86,6 @@ class ShopCampaignNplViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_campaign_new_product_launch
-        private const val TITLE_MARGIN_FIRST_ITEM = 16
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
         private const val PADDING_LEFT_PERCENTAGE = 0.47f
     }
@@ -131,7 +123,7 @@ class ShopCampaignNplViewHolder(
             if (productList.isNotEmpty()) {
                 layoutParams?.width = clickableBannerAreaWidth
                 setOnClickListener {
-                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model, adapterPosition)
+                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model, adapterPosition, Int.ONE)
                 }
                 show()
             } else {

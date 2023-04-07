@@ -7,7 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -22,7 +22,7 @@ class HomeProductRecomCallback(
 ) : HomeProductRecomListener {
 
     override fun onProductRecomClicked(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         channelId: String,
         headerName: String,
         position: Int
@@ -38,7 +38,7 @@ class HomeProductRecomCallback(
     }
 
     override fun onProductRecomImpressed(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         channelId: String,
         headerName: String,
         position: Int
@@ -74,12 +74,12 @@ class HomeProductRecomCallback(
     }
 
     override fun onProductRecomQuantityChanged(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         channelId: String
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 channelId = channelId,
                 productId = product.productCardModel.productId,
                 quantity = quantity,
@@ -92,7 +92,7 @@ class HomeProductRecomCallback(
     }
 
     override fun onProductCardAddVariantClicked(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         context?.apply {

@@ -6,7 +6,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
-import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.wishlist_common.R
@@ -43,11 +42,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) {
             if (result.button.action == OPEN_WISHLIST) {
-                if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionDetailAll(context)
-                } else {
-                    goToWishlistPage(context)
-                }
+                goToWishlistCollectionDetailAll(context)
             }
         }.show()
     }
@@ -80,11 +75,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) {
             if (result.ctaActionV2 == OPEN_WISHLIST) {
-                if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionDetailAll(context)
-                } else {
-                    goToWishlistPage(context)
-                }
+                goToWishlistCollectionDetailAll(context)
             }
         }.show()
     }
@@ -117,11 +108,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) {
             if (result.button.action == OPEN_WISHLIST) {
-                if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionDetailAll(context)
-                } else {
-                    goToWishlistPage(context)
-                }
+                goToWishlistCollectionDetailAll(context)
             }
         }.show()
     }
@@ -154,11 +141,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) {
             if (result.ctaActionV2 == OPEN_WISHLIST) {
-                if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionDetailAll(context)
-                } else {
-                    goToWishlistPage(context)
-                }
+                goToWishlistCollectionDetailAll(context)
             }
         }.show()
     }
@@ -170,21 +153,13 @@ object AddRemoveWishlistV2Handler {
     fun showWishlistV2ErrorToasterWithCta(errorMsg: String, ctaText: String, ctaAction: String, view: View, context: Context) {
         Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
             if (ctaAction == OPEN_WISHLIST) {
-                if (isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionDetailAll(context)
-                } else {
-                    goToWishlistPage(context)
-                }
+                goToWishlistCollectionDetailAll(context)
             }
         }.show()
     }
 
     private fun goToWishlistPage(context: Context) {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
-    private fun isUsingWishlistCollection(context: Context): Boolean {
-        return DeeplinkMapperWishlist.isUsingWishlistCollection(context)
     }
 
     private fun goToWishlistCollectionPage(context: Context) {

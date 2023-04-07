@@ -7,8 +7,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowSeeMoreCardCarouselViewHolder
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
@@ -23,7 +23,7 @@ class HomeLeftCarouselAtcCallback(
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-    TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
     HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
     override fun onProductCardAddVariantClicked(
@@ -46,7 +46,7 @@ class HomeLeftCarouselAtcCallback(
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 channelId = product.channelId,
                 productId = product.id.orEmpty(),
                 quantity = quantity,
@@ -120,7 +120,7 @@ class HomeLeftCarouselAtcCallback(
         viewModel.removeLeftCarouselAtc(channelId)
     }
 
-    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
         openAppLink(seeMoreUiModel.appLink)
 
         analytics.trackClickViewAllLeftCarousel(

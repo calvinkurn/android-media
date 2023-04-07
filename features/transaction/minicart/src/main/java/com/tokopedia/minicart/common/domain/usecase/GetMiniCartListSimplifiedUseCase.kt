@@ -14,9 +14,9 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetMiniCartListSimplifiedUseCase @Inject constructor(
-        @ApplicationContext private val graphqlRepository: GraphqlRepository,
-        private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
-        private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) : UseCase<MiniCartSimplifiedData>() {
 
     private var params: Map<String, Any>? = null
@@ -25,13 +25,13 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
 
     fun setParams(shopIds: List<String>, source: MiniCartSource, isShopDirectPurchase: Boolean = false, delay: Long = 0) {
         params = mapOf(
-                GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
-                GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
-                        GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
-                        GetMiniCartListUseCase.PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
-                )
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+            )
         )
         this.shopIds = shopIds
         this.delay = delay
@@ -39,16 +39,16 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
 
     fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource, delay: Long = 0) {
         params = mapOf(
-                GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
-                GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
-                        GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
-                        GetMiniCartListUseCase.PARAM_KEY_PROMO to mapOf(
-                                GetMiniCartListUseCase.PARAM_KEY_PROMO_ID to promoId,
-                                GetMiniCartListUseCase.PARAM_KEY_PROMO_CODE to promoCode
-                        ),
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
-                )
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                GetMiniCartListUseCase.PARAM_KEY_PROMO to mapOf(
+                    GetMiniCartListUseCase.PARAM_KEY_PROMO_ID to promoId,
+                    GetMiniCartListUseCase.PARAM_KEY_PROMO_CODE to promoCode
+                ),
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
+            )
         )
         this.delay = delay
     }
@@ -242,5 +242,4 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
         }
         """.trimIndent()
     }
-
 }

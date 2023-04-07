@@ -7,6 +7,12 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
         tenure
         text
         small_text
+        promo_name
+        label {
+          text
+          text_color
+          bg_color
+        }
         sections {
           title
           is_collapsible
@@ -41,6 +47,11 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               status
               header
             }
+            ticker {
+              is_shown
+              type
+              content
+            }
             cta {
               name
               android_url
@@ -64,6 +75,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
                 type
               }
             }
+            promo_name
           }
         }
       } 
@@ -109,6 +121,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       data {
       gateway_id
       payment_gateway_code
+      gateway_code
       gateway_name
       subtitle
       subtitle2
@@ -121,6 +134,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       user_state
       user_balance_amt
       detail {
+        promo_name
         tenure
         tenure_disable
         label

@@ -117,6 +117,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/add_product_shipment_step_layout" />
 
             <include
+                android:id="@+id/aep_product_no_variant_layout"
                 layout="@layout/add_edit_product_no_variant_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -25,7 +25,8 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
                     name = "Title",
                     url = "https://tokopedia.com",
                     appLinks = "tokopedia://now",
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -61,7 +62,8 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
                     name = "Title",
                     url = "https://tokopedia.com",
                     appLinks = "tokopedia://now",
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 )
             )
         )

@@ -5,8 +5,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
-import com.tokopedia.design.touchhelper.OnStartDragListener
+import com.tokopedia.shop_showcase.common.touchhelper.ItemTouchHelperAdapter
+import com.tokopedia.shop_showcase.common.touchhelper.OnStartDragListener
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -16,7 +16,8 @@ import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
 class ShopShowcaseListReorderAdapter(
         val listener: ShopShowcaseReorderListener,
         val onStartDragListener: OnStartDragListener?
-) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(),
+    ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
     private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()

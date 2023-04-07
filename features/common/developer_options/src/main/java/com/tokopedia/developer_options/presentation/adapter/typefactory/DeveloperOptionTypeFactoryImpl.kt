@@ -17,8 +17,10 @@ class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
-    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
-):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
+    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
+    private val loginHelperListener: LoginHelperListener,
+    private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener
+) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -60,7 +62,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
     override fun type(uiModel: TranslatorUiModel): Int = TranslatorSettingViewHolder.LAYOUT
-    override fun type(uiModel: AppAuthSecretUiModel): Int = AppAuthSecretViewHolder.LAYOUT
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
@@ -68,9 +69,12 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
+    override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
+    override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
+    override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
@@ -112,15 +116,16 @@ class DeveloperOptionTypeFactoryImpl(
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
             TranslatorSettingViewHolder.LAYOUT -> TranslatorSettingViewHolder(view)
-            AppAuthSecretViewHolder.LAYOUT -> AppAuthSecretViewHolder(view)
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
+            TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
+            LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view, loginHelperListener)
+            DevOptsAuthorizationViewHolder.LAYOUT -> DevOptsAuthorizationViewHolder(view, authorizeListener)
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

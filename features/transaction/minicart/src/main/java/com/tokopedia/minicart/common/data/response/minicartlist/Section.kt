@@ -10,5 +10,5 @@ data class Section(
     @SerializedName("icon_url")
     val iconUrl: String = "",
     @SerializedName("details")
-    val details: List<SectionDetail> = emptyList(),
+    val details: List<SectionDetail> = emptyList()
 )

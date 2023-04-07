@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class UsageSummariesUiModel(
-        var desc: String = "",
-        var type: String = "",
-        var amountStr: String = "",
-        var amount: Int = -1,
-        var currencyDetailStr: String = ""
+    var desc: String = "",
+    var type: String = "",
+    var amountStr: String = "",
+    var amount: Int = -1,
+    var currencyDetailStr: String = ""
 ) : Parcelable

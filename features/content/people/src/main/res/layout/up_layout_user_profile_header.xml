@@ -220,7 +220,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user_name"
                     app:typographyType="body_2"
-                    tools:text="Bio apa aja"/>
+                    tools:text="Bio apa aja" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_see_more"
@@ -232,7 +232,6 @@
                     android:maxLines="3"
                     android:text="@string/up_link_see_more"
                     android:textColor="@color/Unify_GN500"
-                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_bio"
                     app:typographyType="body_2"
@@ -264,8 +263,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        >
+                        android:layout_marginEnd="16dp">
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/btn_action"
@@ -274,8 +272,7 @@
                             android:layout_marginEnd="8dp"
                             android:layout_toStartOf="@id/btn_kebab_option"
                             app:unifyButtonSize="small"
-                            app:unifyButtonVariant="text"
-                            />
+                            app:unifyButtonVariant="text" />
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/btn_kebab_option"
@@ -284,8 +281,7 @@
                             android:layout_alignParentEnd="true"
                             app:unifyButtonSize="small"
                             app:unifyButtonType="alternate"
-                            app:unifyButtonVariant="ghost"
-                            />
+                            app:unifyButtonVariant="ghost" />
 
                     </RelativeLayout>
 
@@ -310,6 +306,25 @@
                     app:layout_constraintTop_toBottomOf="@+id/linear_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/header_profile"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:visibility="gone"
+                android:background="@color/Unify_NN600"
+                android:elevation="@dimen/unify_space_4"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:elevation="@dimen/unify_space_4"
+                app:layout_collapseMode="pin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="true"
+                app:unify_header_transparent_mode="false" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -350,8 +365,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:backgroundTint="@color/Unify_GN500"
-        app:srcCompat="@drawable/ic_feed_post_plus"
-        app:fbType="circle" />
+        app:fbType="circle"
+        app:srcCompat="@drawable/ic_feed_post_plus" />
 
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/fab_user_profile"

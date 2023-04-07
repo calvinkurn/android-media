@@ -13,4 +13,6 @@ data class PlayChannelDetailUiModel(
     val emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel = PlayEmptyBottomSheetInfoUiModel(),
     val bottomSheetTitle: String = "",
     val popupConfig: PlayPopUpConfigUiModel = PlayPopUpConfigUiModel(),
+    val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+    val showCart: Boolean = false,
 )

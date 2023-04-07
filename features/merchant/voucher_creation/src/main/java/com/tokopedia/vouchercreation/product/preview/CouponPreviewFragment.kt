@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.preview
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -65,7 +67,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
         const val COUPON_ID_NOT_YET_CREATED : Long = -1
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
+        private const val EMPTY_STATE_REMOTE_IMAGE_URL = TokopediaImageUrl.EMPTY_STATE_REMOTE_IMAGE_URL
         private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
         private const val MARGIN_BUTTON = 24
 

@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.datamapper
 
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
@@ -227,10 +226,12 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun getFiltersFromQuery(searchParameter: SearchParameter) {
+    private fun getFiltersFromQuery(component: ComponentsItem) {
         for ((key, v) in queryParameterMapWithRpc) {
             v?.let { value ->
-                searchParameter.set(key, value)
+                val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
+                if(adjustedValue.isNotEmpty())
+                    component.searchParameter.set(key, adjustedValue)
             }
         }
     }
@@ -327,20 +328,22 @@ class DiscoveryPageDataMapper(
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
+                                            it.tabPosition = index
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
-                                                    position + compIndex + 1
+                                                    position + listComponents.size
                                                 )
                                             )
                                         }
                                     } else {
                                         handleAvailableComponents(componentId, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
+                                            it.tabPosition = index
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
-                                                    position + compIndex + 1
+                                                    position + listComponents.size
                                                 )
                                             )
                                         }
@@ -473,6 +476,11 @@ class DiscoveryPageDataMapper(
                             }
                         }
                     )
+                    if(component.name == ComponentNames.ContentCard.componentName ){
+                        if((component.data?.size?.rem(2) ?: 0) != 0){
+                            listComponents.addAll(handleProductState(component,ComponentNames.ContentCardEmptyState.componentName, queryParameterMap))
+                        }
+                    }
                 }
                 if (component.properties?.index != null &&
                     component.properties?.index!! > Int.ZERO &&
@@ -591,7 +599,7 @@ class DiscoveryPageDataMapper(
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
-                component.searchParameter
+                component
             )
         }
         Utils.getTargetComponentOfFilter(component)?.let {

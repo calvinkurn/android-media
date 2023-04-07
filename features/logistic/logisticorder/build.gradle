@@ -29,8 +29,10 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -45,7 +47,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.network)
-    
+
+
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
@@ -69,6 +72,10 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.okHttp
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//
