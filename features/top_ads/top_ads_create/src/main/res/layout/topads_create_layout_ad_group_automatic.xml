@@ -115,7 +115,8 @@
         app:unify_progress_bar_track_color="@color/Unify_N75"
         app:unify_progress_bar_from_color="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="@id/daily_budget_desc2"
-        app:layout_constraintTop_toBottomOf="@id/daily_budget_desc2" />
+        app:layout_constraintTop_toBottomOf="@id/daily_budget_desc2"
+        android:layout_marginTop="4dp" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/automatic_btn_submit"
