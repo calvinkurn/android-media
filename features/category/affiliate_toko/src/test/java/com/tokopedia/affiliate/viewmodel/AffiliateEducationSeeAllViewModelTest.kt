@@ -1,8 +1,12 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
-import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -10,6 +14,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
+import io.mockk.verifyOrder
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -31,6 +36,11 @@ class AffiliateEducationSeeAllViewModelTest {
         AffiliateEducationSeeAllViewModel(educationCategoryUseCase, educationArticleCardsUseCase)
     )
 
+    private val hasMoreDataObserver: Observer<Boolean> = mockk(relaxed = true)
+    private val totalCount: Observer<Int> = mockk(relaxed = true)
+    private val educationCategoryChipObserver: Observer<List<Visitable<AffiliateAdapterTypeFactory>>> =
+        mockk(relaxed = true)
+
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
@@ -39,6 +49,10 @@ class AffiliateEducationSeeAllViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+        affiliateEducationSeeAllViewModel.hasMoreData().observeForever(hasMoreDataObserver)
+        affiliateEducationSeeAllViewModel.getTotalCount().observeForever(totalCount)
+        affiliateEducationSeeAllViewModel.getEducationCategoryChip()
+            .observeForever(educationCategoryChipObserver)
     }
 
     @After
@@ -48,7 +62,7 @@ class AffiliateEducationSeeAllViewModelTest {
     }
 
     @Test
-    fun `fetches cards upon success`() {
+    fun `should fetch cards upon success`() {
         val articleCards =
             AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
 
@@ -69,24 +83,32 @@ class AffiliateEducationSeeAllViewModelTest {
                 )
             )
 
-        val educationCategoryTreeResponse: AffiliateEducationCategoryResponse = spyk()
-
         coEvery {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
+        val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
+
         coEvery {
-            educationCategoryUseCase.getEducationCategoryTree()
-        } returns educationCategoryTreeResponse
+            educationCategoryUseCase.getEducationFilterChips(
+                any(),
+                any()
+            )
+        } returns expectedList
 
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
-
+        verifyOrder {
+            educationCategoryChipObserver.onChanged(expectedList)
+            hasMoreDataObserver.onChanged(cardItem.hasMore)
+            totalCount.onChanged(cardItem.totalCount)
+        }
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
         assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
         assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
         assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
     }
 
     @Test
-    fun `empty cards upon empty response`() {
+    fun `cards should be empty upon empty response`() {
         val educationArticleResponse =
             AffiliateEducationArticleCardsResponse(
                 AffiliateEducationArticleCardsResponse.CardsArticle(
@@ -94,14 +116,13 @@ class AffiliateEducationSeeAllViewModelTest {
                 )
             )
 
-        val educationCategoryTreeResponse: AffiliateEducationCategoryResponse = spyk()
-
         coEvery {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
+        val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
         coEvery {
-            educationCategoryUseCase.getEducationCategoryTree()
-        } returns educationCategoryTreeResponse
+            educationCategoryUseCase.getEducationFilterChips(any(), any())
+        } returns expectedList
 
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
 
@@ -111,110 +132,34 @@ class AffiliateEducationSeeAllViewModelTest {
     }
 
     @Test
-    fun `fetches event category list if it is empty`() {
-        val categoryChildren =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
-        val eventCategory =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
-                listOf(categoryChildren),
-                id = 382
-            )
-        val educationEventCategoryTreeResponse = AffiliateEducationCategoryResponse(
-            AffiliateEducationCategoryResponse.CategoryTree(
-                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
-                    listOf(eventCategory)
-                )
-            )
-        )
+    fun `should fetch category list`() {
+        val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
         val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-
-        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationEventCategoryTreeResponse
-        if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
-            coEvery {
-                educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
-            } returns educationArticleResponse
-        }
-        affiliateEducationSeeAllViewModel.fetchSeeAllData("education_event", "")
+        coEvery {
+            educationCategoryUseCase.getEducationFilterChips(
+                any(),
+                any()
+            )
+        } returns expectedList
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+        affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
         assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
     }
 
     @Test
-    fun `fetches article category list if it is empty`() {
-        val categoryChildren =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
-        val articleCategory =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
-                listOf(categoryChildren),
-                id = 381
-            )
-        val educationArticleCategoryTreeResponse = AffiliateEducationCategoryResponse(
-            AffiliateEducationCategoryResponse.CategoryTree(
-                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
-                    listOf(articleCategory)
-                )
-            )
-        )
+    fun `reset list and should fetch category list`() {
+        affiliateEducationSeeAllViewModel.resetList(PAGE_EDUCATION_EVENT, "")
         val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationArticleCategoryTreeResponse
-        if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
-            coEvery {
-                educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
-            } returns educationArticleResponse
-        }
+        val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
 
-        affiliateEducationSeeAllViewModel.fetchSeeAllData("education_article", "")
-
-        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
-    }
-
-    @Test
-    fun `fetches tutorial category list if it is empty`() {
-        val categoryChildren =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
-        val tutorialCategory =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
-                listOf(categoryChildren),
-                id = 383
+        coEvery {
+            educationCategoryUseCase.getEducationFilterChips(
+                any(),
+                any()
             )
-        val educationTutorialCategoryTreeResponse = AffiliateEducationCategoryResponse(
-            AffiliateEducationCategoryResponse.CategoryTree(
-                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
-                    listOf(tutorialCategory)
-                )
-            )
-        )
-        val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-
-        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationTutorialCategoryTreeResponse
-        if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
-            coEvery {
-                educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
-            } returns educationArticleResponse
-        }
-
-        affiliateEducationSeeAllViewModel.fetchSeeAllData("education_tutorial", "")
-
-        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
-    }
-
-    @Test
-    fun `empty category list on invalid category`() {
-        val categoryChildren =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
-        val invalidCategory =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
-                listOf(categoryChildren)
-            )
-        val educationInvalidCategoryTreeResponse = AffiliateEducationCategoryResponse(
-            AffiliateEducationCategoryResponse.CategoryTree(
-                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
-                    listOf(invalidCategory)
-                )
-            )
-        )
-        val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-
-        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationInvalidCategoryTreeResponse
+        } returns expectedList
         if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
             coEvery {
                 educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
@@ -222,37 +167,6 @@ class AffiliateEducationSeeAllViewModelTest {
         }
 
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
-
-        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
-    }
-
-    @Test
-    fun `reset list and fetches event list`() {
-        affiliateEducationSeeAllViewModel.resetList("education_event", "")
-        val categoryChildren =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
-        val eventCategory =
-            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
-                listOf(categoryChildren),
-                id = 382
-            )
-        val educationEventCategoryTreeResponse = AffiliateEducationCategoryResponse(
-            AffiliateEducationCategoryResponse.CategoryTree(
-                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
-                    listOf(eventCategory)
-                )
-            )
-        )
-        val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-
-        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationEventCategoryTreeResponse
-        if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
-            coEvery {
-                educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
-            } returns educationArticleResponse
-        }
-
-        affiliateEducationSeeAllViewModel.fetchSeeAllData("education_event", "")
         assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
     }
 }
