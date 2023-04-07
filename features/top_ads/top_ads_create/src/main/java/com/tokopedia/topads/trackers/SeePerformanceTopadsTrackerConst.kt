@@ -25,7 +25,7 @@ object SeePerformanceTopadsTrackerConst {
     const val EVENT_CLICK = "clickTopAds"
     const val EVENT_VIEW = "viewTopAdsIris"
     const val EVENT_CATEGORY_MP = "product list page"
-    const val EVENT_CATEGORY_PDP = "product list page"
+    const val EVENT_CATEGORY_PDP = "product detail page"
     const val EVENT_LABEL = ""
     const val BUSINESS_UNIT = "ads solution"
     const val CURRENT_SITE_MANAGE_PRODUCT_PAGE = "tokopediaseller"

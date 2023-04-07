@@ -68,9 +68,9 @@ class ListBottomSheet(private val title: String, private val itemList: List<Item
         when(title){
             getString(R.string.ads_active) -> (activity as SeePerformanceTopadsActivity).updateStatusIklan("2")
             getString(R.string.topads_non_active) -> (activity as SeePerformanceTopadsActivity).updateStatusIklan("3")
-            getString(R.string.topads_ads_performance_all_placements_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(1)
-            getString(R.string.topads_ads_performance_in_search_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(2)
-            getString(R.string.topads_ads_performance_in_recommendation_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(3)
+            getString(R.string.topads_ads_performance_all_placements_filter_title) -> (activity as SeePerformanceTopadsActivity).updateAdsPlacingFilter(1)
+            getString(R.string.topads_ads_performance_in_search_filter_title) -> (activity as SeePerformanceTopadsActivity).updateAdsPlacingFilter(2)
+            getString(R.string.topads_ads_performance_in_recommendation_filter_title) -> (activity as SeePerformanceTopadsActivity).updateAdsPlacingFilter(3)
             else -> (activity as SeePerformanceTopadsActivity).updateDateFilter(title)
         }
         this.dismiss()

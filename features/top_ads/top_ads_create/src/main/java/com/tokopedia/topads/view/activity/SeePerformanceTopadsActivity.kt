@@ -321,18 +321,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         seePerformanceTopAdsViewModel?.goalId?.observe(this) {
             mainBottomSheetBinding.adPlacementFilter.chipText = when (it) {
-                1 -> {
-                    SeePerformanceTopadsTracker.clickIklanSemuaPenempatan(currentSite)
-                    getString(R.string.topads_ads_performance_all_placements_filter_title)
-                }
-                2 -> {
-                    SeePerformanceTopadsTracker.clickIklanPencarian(currentSite)
-                    getString(R.string.topads_ads_performance_in_search_filter_title)
-                }
-                3 -> {
-                    SeePerformanceTopadsTracker.clickIklanRekomendasi(currentSite)
-                    getString(R.string.topads_ads_performance_in_recommendation_filter_title)
-                }
+                1 -> getString(R.string.topads_ads_performance_all_placements_filter_title)
+                2 -> getString(R.string.topads_ads_performance_in_search_filter_title)
+                3 -> getString(R.string.topads_ads_performance_in_recommendation_filter_title)
                 else -> ""
             }
         }
@@ -618,7 +609,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeTips.root.visibility = View.VISIBLE
     }
 
-    fun getProductStatistics(goalId: Int) {
+    private fun getProductStatistics(goalId: Int) {
 
         mainBottomSheetBinding.includeCardStatistics.productStatisticsGroup.visibility =
             View.INVISIBLE
@@ -906,6 +897,15 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             getString(R.string.topads_ads_performance_ad_placement),
             adPlacementFilterList
         )
+    }
+
+    fun updateAdsPlacingFilter(goalId: Int){
+        when(goalId){
+            1 -> SeePerformanceTopadsTracker.clickIklanSemuaPenempatan(currentSite)
+            2 -> SeePerformanceTopadsTracker.clickIklanPencarian(currentSite)
+            3 -> SeePerformanceTopadsTracker.clickIklanRekomendasi(currentSite)
+        }
+        getProductStatistics(goalId)
     }
 
     @SuppressLint("SimpleDateFormat")
