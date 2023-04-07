@@ -376,6 +376,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
                     4.toPx().toFloat()
             }
+            else {
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
+            }
         }
     }
 
@@ -676,12 +679,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             }
             String.format(getString(R.string.topads_common_date_x_last_days), 7) -> {
                 endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
-                startDate = getDaysAgo(8, REQUEST_DATE_FORMAT)
+                startDate = getDaysAgo(7, REQUEST_DATE_FORMAT)
                 dateFilterType = 4
             }
             String.format(getString(R.string.topads_common_date_x_last_days), 30) -> {
                 endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
-                startDate = getDaysAgo(31, REQUEST_DATE_FORMAT)
+                startDate = getDaysAgo(30, REQUEST_DATE_FORMAT)
                 dateFilterType = 5
             }
             getString(R.string.topads_common_date_this_month) -> {
@@ -910,8 +913,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         val today = getDaysAgo(0, DATE_FORMAT_DD_MMM_YYYY)
         val yesterday = getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)
         val daysAgo3 = getDaysAgo(3, DATE_FORMAT_DD_MMM_YYYY)
-        val daysAgo7 = getDaysAgo(8, DATE_FORMAT_DD_MMM_YYYY) /** for past 7 days excluding today */
-        val daysAgo30 = getDaysAgo(31, DATE_FORMAT_DD_MMM_YYYY) /** for past 30 days excluding today */
+        val daysAgo7 = getDaysAgo(7, DATE_FORMAT_DD_MMM_YYYY)
+        val daysAgo30 = getDaysAgo(30, DATE_FORMAT_DD_MMM_YYYY)
         val firstDateOfMonth = getFirstDateOfMonth(DATE_FORMAT_DD_MMM_YYYY)
 
         val dateFilterList = arrayListOf(

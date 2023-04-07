@@ -117,8 +117,9 @@
                 android:id="@+id/include_performa_tampil"
                 layout="@layout/topads_create_layout_performa_tampil"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 app:layout_constraintStart_toEndOf="@id/include_status_iklan_barrier"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/product_image"
                 android:layout_marginTop="24dp"/>
 
