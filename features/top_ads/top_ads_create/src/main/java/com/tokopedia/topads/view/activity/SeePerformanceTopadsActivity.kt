@@ -22,6 +22,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_DEACTIVATE
+import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.constants.MpTopadsConst
@@ -31,6 +32,7 @@ import com.tokopedia.topads.create.databinding.TopadsCreateBottomsheetSeePerform
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.Utils.convertMoneyToValue
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.trackers.SeePerformanceTopadsTracker
@@ -64,6 +66,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var dateFilterType: Int = 3
     private var startDate: String = getDaysAgo(3, REQUEST_DATE_FORMAT)
     private var endDate: String = getDaysAgo(0, REQUEST_DATE_FORMAT)
+    private var showAutoTopUpOldFlow = true
 
     private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
 
@@ -139,6 +142,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             }
         }
 
+        seePerformanceTopAdsViewModel?.isUserWhitelisted?.observe(this) {
+            if (it is Success) {
+                showAutoTopUpOldFlow = !it.data
+            }
+        }
+
         seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
             when (it) {
                 is Success -> {
@@ -148,10 +157,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
                         View.VISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = HtmlCompat.fromHtml(
-                        it.data.topadsDashboardDeposits.data.amountHtml.replace(" ",""),
-                        HtmlCompat.FROM_HTML_MODE_LEGACY
-                    ).trim()
+                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = it.data.topadsDashboardDeposits.data.amountFmt
                 }
                 else -> {}
             }
@@ -161,6 +167,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             when (it) {
                 is Success -> {
                     setProductStatistics(it.data.getDashboardProductStatistics.data[0])
+                    setPerformaTampil(it.data.getDashboardProductStatistics.data[0])
                 }
                 else -> {}
             }
@@ -211,7 +218,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.INVISIBLE
                 }
             }
-            seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
+            seePerformanceTopAdsViewModel?.getGroupInfo()
             mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.VISIBLE
         }
@@ -239,35 +246,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.observe(this) {
             if (it != null && it.response?.errors.isNullOrEmpty()) {
-
-                val adPerformance =
-                    if (it.response?.data?.get(0)?.statTotalImpression == "0") 0 else {
-                        100 * convertMoneyToValue(
-                            it.response?.data?.get(0)?.statTotalTopSlotImpression ?: ""
-                        ) / convertMoneyToValue(
-                            it.response?.data?.get(
-                                0
-                            )?.statTotalImpression ?: ""
-                        )
-                    }
-                mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
-                    adPerformance > 20 -> {
-                        setGreenCondition()
-                        getString(R.string.topads_ads_performance_top_frequently)
-                    }
-                    adPerformance > 5 -> {
-                        setYellowCondition()
-                        getString(R.string.topads_ads_performance_top_rarity)
-                    }
-                    adPerformance > 0 -> {
-                        setRedCondition()
-                        getString(R.string.topads_ads_performance_lose_competition)
-                    }
-                    else -> {
-                        setGreyCondition()
-                        getString(R.string.topads_ads_performance_not_rated)
-                    }
-                }
 
                 mainBottomSheetBinding.includeAdGroupManual.groupName.text =
                     it.response?.data?.get(0)?.groupName
@@ -313,10 +291,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             )
                         )
                 }
-            } else {
-                mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
-                    getString(R.string.topads_ads_performance_top_frequently)
-                setGreyCondition()
             }
         }
 
@@ -429,82 +403,63 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includePerformaTampil.adPerformanceInfo.setOnClickListener {
-            val adPerformanceCount =
-                if (seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                        0
-                    )?.statTotalImpression == "0"
-                ) 0 else {
-                    100 * convertMoneyToValue(
-                        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                            0
-                        )?.statTotalTopSlotImpression ?: ""
-                    ) / convertMoneyToValue(
-                        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                            0
-                        )?.statTotalImpression ?: ""
-                    )
-                }
-            when {
-                adPerformanceCount > 20 -> {
-                    showDescriptionBottomSheet(
-                        getString(R.string.topads_ads_performance_performa_tampil),
-                        "$adPerformanceCount%",
-                        getString(R.string.topads_ads_performance_top_keyword),
-                        String.format(
-                            getString(R.string.topads_ads_performance_count),
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalTopSlotImpression,
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalImpression
-                        ),
-                        R.color.Unify_GN500
-                    )
-                }
-                adPerformanceCount > 5 -> {
-                    showDescriptionBottomSheet(
-                        getString(R.string.topads_ads_performance_performa_tampil),
-                        "$adPerformanceCount%",
-                        getString(R.string.topads_ads_performance_top_keyword),
-                        String.format(
-                            getString(R.string.topads_ads_performance_count),
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalTopSlotImpression,
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalImpression
-                        ),
-                        R.color.Unify_YN500
-                    )
-                }
-                adPerformanceCount > 0 -> {
-                    showDescriptionBottomSheet(
-                        getString(R.string.topads_ads_performance_performa_tampil),
-                        "$adPerformanceCount%",
-                        getString(R.string.topads_ads_performance_top_keyword),
-                        String.format(
-                            getString(R.string.topads_ads_performance_count),
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalTopSlotImpression,
-                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                                0
-                            )?.statTotalImpression
-                        ),
-                        R.color.Unify_RN500
-                    )
-                }
-                else -> {
-                    showDescriptionBottomSheet(
-                        getString(R.string.topads_ads_performance_performa_tampil),
-                        "",
-                        getString(R.string.topads_ads_performance_not_rated),
-                        "",
-                        0,
-                        R.color.Unify_NN600
-                    )
+            val statTotalTopSlotImpression = (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.get(0)?.statTotalTopSlotImpression
+            val statTotalImpression = (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.get(0)?.statTotalImpression
+
+            if(statTotalImpression == null || statTotalImpression == "0"){
+                showDescriptionBottomSheet(
+                    getString(R.string.topads_ads_performance_performa_tampil),
+                    "",
+                    getString(R.string.topads_ads_performance_not_rated),
+                    "",
+                    0,
+                    R.color.Unify_NN600
+                )
+            }
+            else {
+                val adPerformanceCount = 100 * convertMoneyToValue(
+                    statTotalTopSlotImpression ?: ""
+                ) / convertMoneyToValue(statTotalImpression ?: "").toFloat()
+                when {
+                    adPerformanceCount > 20 -> {
+                        showDescriptionBottomSheet(
+                            getString(R.string.topads_ads_performance_performa_tampil),
+                            String.format("%.2f%%",adPerformanceCount),
+                            getString(R.string.topads_ads_performance_top_keyword),
+                            String.format(
+                                getString(R.string.topads_ads_performance_count),
+                                statTotalTopSlotImpression,
+                                statTotalImpression
+                            ),
+                            R.color.Unify_GN500
+                        )
+                    }
+                    adPerformanceCount > 5 -> {
+                        showDescriptionBottomSheet(
+                            getString(R.string.topads_ads_performance_performa_tampil),
+                            String.format("%.2f%%",adPerformanceCount),
+                            getString(R.string.topads_ads_performance_top_keyword),
+                            String.format(
+                                getString(R.string.topads_ads_performance_count),
+                                statTotalTopSlotImpression,
+                                statTotalImpression
+                            ),
+                            R.color.Unify_YN500
+                        )
+                    }
+                    else -> {
+                        showDescriptionBottomSheet(
+                            getString(R.string.topads_ads_performance_performa_tampil),
+                            String.format("%.2f%%",adPerformanceCount),
+                            getString(R.string.topads_ads_performance_top_keyword),
+                            String.format(
+                                getString(R.string.topads_ads_performance_count),
+                                statTotalTopSlotImpression,
+                                statTotalImpression
+                            ),
+                            R.color.Unify_RN500
+                        )
+                    }
                 }
             }
         }
@@ -592,11 +547,29 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         mainBottomSheetBinding.includeTambahKredit.addCredit.setOnClickListener {
             SeePerformanceTopadsTracker.clickTambahKredit(currentSite)
-            val intent = Intent(this, TopAdsAddCreditActivity::class.java)
-            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-            startActivityForResult(intent, REQUEST_CODE)
+            if (showAutoTopUpOldFlow) {
+                openOldAutoTopUpBottomSheet()
+            } else {
+                openNewAutoTopUpBottomSheet()
+            }
             SeePerformanceTopadsTracker.viewKreditPage(currentSite)
         }
+    }
+
+    private fun openNewAutoTopUpBottomSheet() {
+        val intent = Intent(this, TopAdsCreditTopUpActivity::class.java)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, "")
+        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, 0)
+        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, 0.0)
+        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
+    }
+
+    private fun openOldAutoTopUpBottomSheet() {
+        val intent = Intent(this, TopAdsAddCreditActivity::class.java)
+        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT)
     }
 
     private fun hideMainBottomSheetContent() {
@@ -625,6 +598,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         seePerformanceTopAdsViewModel?.getProductManage(productId)
         seePerformanceTopAdsViewModel?.getTopAdsDeposit()
         seePerformanceTopAdsViewModel?.getShopInfo()
+        seePerformanceTopAdsViewModel?.getWhiteListedUser()
     }
 
     private fun setAutoAdsUser() {
@@ -699,7 +673,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             getProductStatistics(
                 seePerformanceTopAdsViewModel?.goalId?.value ?: 1
             )
-            seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
             selectedDateFrom = null
             selectedDateTo = null
         }
@@ -716,7 +689,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         getProductStatistics(
             seePerformanceTopAdsViewModel?.goalId?.value ?: 1
         )
-        seePerformanceTopAdsViewModel?.getGroupInfo(startDate)
     }
 
     private fun setProductStatistics(dataItem: WithoutGroupDataItem) {
@@ -733,6 +705,34 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem.statTotalSpent.replace(" ","")
         mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text =
             dataItem.statTotalRoas
+    }
+
+    private fun setPerformaTampil(dataItem: WithoutGroupDataItem) {
+        if (dataItem.statTotalImpression == "0") {
+            mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
+                getString(R.string.topads_ads_performance_not_rated)
+            setGreyCondition()
+        } else {
+            val adPerformance =
+                100 * convertMoneyToValue(dataItem.statTotalTopSlotImpression) / convertMoneyToValue(
+                    dataItem.statTotalImpression
+                )
+
+            mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
+                adPerformance > 20 -> {
+                    setGreenCondition()
+                    getString(R.string.topads_ads_performance_top_frequently)
+                }
+                adPerformance > 5 -> {
+                    setYellowCondition()
+                    getString(R.string.topads_ads_performance_top_rarity)
+                }
+                else -> {
+                    setRedCondition()
+                    getString(R.string.topads_ads_performance_lose_competition)
+                }
+            }
+        }
     }
 
     private fun setGreenCondition() {

@@ -23,6 +23,8 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,6 +43,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
     private val topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>,
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
 
@@ -76,6 +79,9 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     private val _topAdsGetGroupInfo: MutableLiveData<TopAdsGroupsResponse> = MutableLiveData()
     val topAdsGetGroupInfo: LiveData<TopAdsGroupsResponse> = _topAdsGetGroupInfo
+
+    private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
+    val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
 
     fun getTopAdsDeposit() {
         topAdsGetDepositUseCase.execute({
@@ -163,13 +169,12 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             })
     }
 
-    fun getGroupInfo(startDate: String) {
+    fun getGroupInfo() {
         topAdsGetGroupInfoUseCase.setRequestParams(
             mapOf(
                 PARAM_KEY to AdGroupsParams(
                     shopId = userSession.shopId,
-                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: "",
-                    startDate = startDate
+                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: ""
                 )
             )
         )
@@ -200,6 +205,25 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         }) {
             _topAdsGetAutoAds.postValue(null)
         }
+    }
+
+    fun getWhiteListedUser() {
+        whiteListedUserUseCase.setParams()
+        whiteListedUserUseCase.executeQuerySafeMode(
+            onSuccess = {
+                it.data.forEach { data ->
+                    if (data.featureName.equals(
+                            TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI,
+                            true
+                        )
+                    ) _isUserWhitelisted.value =
+                        Success(true)
+                }
+            },
+            onError = {
+                _isUserWhitelisted.value = Fail(it)
+            }
+        )
     }
 
     companion object {
