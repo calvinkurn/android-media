@@ -13,8 +13,10 @@ import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
 import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_THREE
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.OTHER_METHOD_FOOTER_TEXT
-import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SMS_AND_CHANGE_PN_FOOTER_TEXT
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_OTHER_METHODS
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_SMS_METHOD
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.spanFactory
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.*
@@ -108,8 +110,8 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-        })
+                _getVerificationMethodResult.value = Fail(it)
+            })
     }
 
     fun isSmsHidden(defaultBehaviorMode: Int): Boolean {
@@ -118,23 +120,54 @@ open class VerificationViewModel @Inject constructor(
 
     fun renderInitialDefaultOtp(otpModeListData: OtpModeListData) {
         val newItems = ArrayList(otpModeListData.modeList)
-
-        if(otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
-            newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
-        }
+        val smsOtp = otpModeListData.modeList.find { it.modeText == OtpConstant.OtpMode.SMS }
         var footerSpan = ""
         var footerText = ""
         var action = { }
 
-        if(otpModeListData.modeList.size > 1) {
-            footerSpan = "Gunakan metode lain"
-            footerText = OTHER_METHOD_FOOTER_TEXT
+        if (otpModeListData.modeList.find { it.modeCode == otpModeListData.defaultMode } != null) {
+            newItems.removeAll { it.modeCode != otpModeListData.defaultMode }
+        }
+
+        /**
+         * if defaultMode code is not exists on the otp mode list
+         * make it as default method is off
+         */
+        if (isSmsHidden(otpModeListData.defaultBehaviorMode) && newItems.size != 1) {
+            newItems.removeAll {
+                it.modeText == OtpConstant.OtpMode.SMS
+            }
+            if (smsOtp != null) {
+                footerSpan = SPAN_USE_SMS_METHOD
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
+                action = { goToInputOtp(smsOtp) }
+            }
+        }
+
+        /**
+         * if otp mode list only has 2 options that contains sms but the behaviour mode is hide sms
+         * then use [SMS_AND_CHANGE_PN_FOOTER_TEXT] instead for footerText.
+         */
+        else if (otpModeListData.modeList.size == 2 && otpModeListData.modeList.contains(smsOtp) &&
+            isSmsHidden(otpModeListData.defaultBehaviorMode)
+        ) {
+            if (smsOtp != null) {
+                footerSpan = SPAN_USE_SMS_METHOD
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
+                action = { goToInputOtp(smsOtp) }
+            }
+
+            /* if newItems has less size than original mode list then shows CTA 'Gunakan metode lain' */
+        } else if (otpModeListData.modeList.size > 1 && newItems.size < otpModeListData.modeList.size) {
+            footerSpan = SPAN_USE_OTHER_METHODS
+            footerText = spanFactory(SPAN_USE_OTHER_METHODS, otpModeListData.linkType)
             action = { showAllMethod() }
         }
 
         _defaultOtpUiModel.value = DefaultOtpUiModel(
             footerText,
             footerSpan,
+            otpModeListData.linkType,
             action,
             displayedModeList = newItems,
             originalOtpModeList = otpModeListData.modeList,
@@ -152,14 +185,15 @@ open class VerificationViewModel @Inject constructor(
         if (smsOtp != null && otpModeListData.modeList.size > 1) {
             if (isSmsHidden(otpModeListData.defaultBehaviorMode)) {
                 newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
-                footerSpan = "Pakai metode SMS"
-                footerText = SMS_FOOTER_TEXT
+                footerSpan = SPAN_USE_SMS_METHOD
+                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
                 action = { goToInputOtp(smsOtp) }
             }
         }
         _defaultOtpUiModel.value = DefaultOtpUiModel(
             footerText,
             footerSpan,
+            otpModeListData.linkType,
             action,
             displayedModeList = newItems,
             originalOtpModeList = otpModeListData.modeList,
@@ -209,7 +243,7 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launch {
             try {
-                if(cache != null) {
+                if (cache != null) {
                     showAllMethod(cache)
                 } else {
                     val param = GetOtpModeListParam(otpType, userId, msisdn, email, timeUnix, authenticity)
@@ -230,7 +264,7 @@ open class VerificationViewModel @Inject constructor(
 
     fun showAllMethod(cache: DefaultOtpUiModel? = null) {
         val previousData = cache ?: _defaultOtpUiModel.value
-        if(previousData != null) {
+        if (previousData != null) {
             val newItems = ArrayList(previousData.originalOtpModeList)
             val smsOtp = previousData.originalOtpModeList.find { it.modeText == OtpConstant.OtpMode.SMS }
             var footerSpan = ""
@@ -240,8 +274,8 @@ open class VerificationViewModel @Inject constructor(
             if (smsOtp != null) {
                 if (isSmsHidden(previousData.defaultBehaviorMode)) {
                     newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
-                    footerSpan = "Pakai metode SMS"
-                    footerText = SMS_FOOTER_TEXT
+                    footerSpan = SPAN_USE_SMS_METHOD
+                    footerText = SMS_AND_CHANGE_PN_FOOTER_TEXT
                     action = { goToInputOtp(smsOtp) }
                 }
             }
@@ -249,6 +283,7 @@ open class VerificationViewModel @Inject constructor(
             _defaultOtpUiModel.value = DefaultOtpUiModel(
                 footerText,
                 footerSpan,
+                previousData.linkType,
                 action,
                 displayedModeList = newItems,
                 originalOtpModeList = previousData.originalOtpModeList,
@@ -297,9 +332,9 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-            TkpdIdlingResource.decrement()
-        })
+                _getVerificationMethodResult.value = Fail(it)
+                TkpdIdlingResource.decrement()
+            })
     }
 
     fun getVerificationMethodInactive(
@@ -339,9 +374,9 @@ open class VerificationViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _getVerificationMethodResult.value = Fail(it)
-            TkpdIdlingResource.decrement()
-        })
+                _getVerificationMethodResult.value = Fail(it)
+                TkpdIdlingResource.decrement()
+            })
     }
 
     fun sendOtpPhoneRegisterMandatory(
@@ -473,7 +508,8 @@ open class VerificationViewModel @Inject constructor(
             )
 
             if (mode == OtpConstant.OtpMode.PIN &&
-                isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, ""))) {
+                isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, ""))
+            ) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
@@ -588,13 +624,13 @@ open class VerificationViewModel @Inject constructor(
     fun createCheckPinV2Param(userId: String, msisdn: String, email: String): PinStatusParam {
         var id = ""
         var type = ""
-        if(userId.isNotEmpty() && userId != "0") {
+        if (userId.isNotEmpty() && userId != "0") {
             id = userId
             type = SessionConstants.CheckPinType.USER_ID.value
-        } else if(msisdn.isNotEmpty()) {
+        } else if (msisdn.isNotEmpty()) {
             id = msisdn
             type = SessionConstants.CheckPinType.PHONE.value
-        } else if(email.isNotEmpty()) {
+        } else if (email.isNotEmpty()) {
             id = email
             type = SessionConstants.CheckPinType.EMAIL.value
         }
@@ -615,7 +651,7 @@ open class VerificationViewModel @Inject constructor(
     public override fun onCleared() {
         val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if (clear) {
-            //if user interrupted login / register otp flow (not done), delete the token
+            // if user interrupted login / register otp flow (not done), delete the token
             if (!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
                 ServerLogger.log(
@@ -627,5 +663,4 @@ open class VerificationViewModel @Inject constructor(
         }
         super.onCleared()
     }
-
 }

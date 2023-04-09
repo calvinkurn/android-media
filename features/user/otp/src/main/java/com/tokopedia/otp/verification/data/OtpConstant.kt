@@ -46,7 +46,12 @@ object OtpConstant {
         const val REGISTER_PHONE_NUMBER = 116
         const val REGISTER_EMAIL = 126
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
+
+        /* for 2FA flows */
         const val AFTER_LOGIN_PHONE = 148
+
+        /* for 1FA flows */
+        const val OTP_LOGIN_PHONE_NUMBER = 112
         const val RESET_PIN = 149
 
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
@@ -59,11 +64,45 @@ object OtpConstant {
         * this OTP type was implemented in Redefine Register Email
         * */
         const val PHONE_REGISTER_MANDATORY = 168
+
+        const val ADD_BANK_ACCOUNT = 12
     }
 
     object StaticText {
-        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\nGunakan metode lain"
-        const val SMS_FOOTER_TEXT = "Berkendala dengan metode di atas?\nPakai metode SMS"
+        const val OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+            " Lihat metode lain atau nomor HP sudah berubah"
+        const val OTHER_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n Lihat metode lain"
+        const val SMS_AND_CHANGE_PN_FOOTER_TEXT = "Berkendala dengan metode di atas?\n" +
+            " Gunakan metode SMS atau nomor HP sudah berubah"
+        const val SMS_METHOD_FOOTER_TEXT = "Berkendala dengan metode di atas?\n Gunakan metode SMS"
+
+        const val SPAN_USE_OTHER_METHODS = "Lihat metode lain"
+        const val SPAN_USE_SMS_METHOD = "Gunakan metode SMS"
+
+        /**
+         * @return [SMS_AND_CHANGE_PN_FOOTER_TEXT] if [linkType] == 0 && [spanMethods] == [SPAN_USE_SMS_METHOD]
+         * @return else [SMS_METHOD_FOOTER_TEXT]
+         * @return [OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT] if [linkType] == 0 && [spanMethods] == [SPAN_USE_OTHER_METHODS]
+         * @return else [OTHER_METHOD_FOOTER_TEXT]
+         */
+        fun spanFactory(spanMethods: String, linkType: Int): String {
+            return when (spanMethods) {
+                SPAN_USE_SMS_METHOD -> {
+                    return if (linkType > 0) {
+                        SMS_AND_CHANGE_PN_FOOTER_TEXT
+                    } else {
+                        SMS_METHOD_FOOTER_TEXT
+                    }
+                }
+                SPAN_USE_OTHER_METHODS -> {
+                    return if (linkType > 0) {
+                        OTHER_METHOD_AND_CHANGE_PN_FOOTER_TEXT
+                    } else {
+                        OTHER_METHOD_FOOTER_TEXT
+                    }
+                } else -> ""
+            }
+        }
     }
 
     // Default OTP = off / using old otp flow
@@ -77,5 +116,4 @@ object OtpConstant {
 
     // Default OTP on and hide SMS otp, including direct request
     const val DEFAULT_OTP_BEHAVIOR_THREE = 3
-
 }
