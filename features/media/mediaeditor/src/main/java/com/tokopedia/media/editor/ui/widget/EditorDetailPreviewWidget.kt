@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Matrix
 import android.net.Uri
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
