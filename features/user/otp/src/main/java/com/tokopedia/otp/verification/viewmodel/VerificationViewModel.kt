@@ -182,14 +182,13 @@ open class VerificationViewModel @Inject constructor(
         var footerSpan = ""
         var footerText = ""
         var action = {}
-        if (smsOtp != null && otpModeListData.modeList.size > 1) {
-            if (isSmsHidden(otpModeListData.defaultBehaviorMode)) {
-                newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
-                footerSpan = SPAN_USE_SMS_METHOD
-                footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
-                action = { goToInputOtp(smsOtp) }
-            }
+        if (smsOtp != null && otpModeListData.modeList.size > 1 && isSmsHidden(otpModeListData.defaultBehaviorMode)) {
+            newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
+            footerSpan = SPAN_USE_SMS_METHOD
+            footerText = spanFactory(SPAN_USE_SMS_METHOD, otpModeListData.linkType)
+            action = { goToInputOtp(smsOtp) }
         }
+
         _defaultOtpUiModel.value = DefaultOtpUiModel(
             footerText,
             footerSpan,
@@ -250,7 +249,7 @@ open class VerificationViewModel @Inject constructor(
                     val result = getOtpModeListUseCase(param)
                     if (result.defaultBehaviorMode > DEFAULT_OTP_BEHAVIOR_ONE && result.defaultMode > 0) {
                         renderInitialDefaultOtp(result)
-                    } else if (result.defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE) {
+                    } else if (result.defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE && result.defaultMode <= 0) {
                         renderInitialDefaultOtpOff(result)
                     } else {
                         _getVerificationMethodResult.value = Success(result)
