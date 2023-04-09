@@ -249,7 +249,7 @@ open class VerificationViewModel @Inject constructor(
                     val result = getOtpModeListUseCase(param)
                     if (result.defaultBehaviorMode > DEFAULT_OTP_BEHAVIOR_ONE && result.defaultMode > 0) {
                         renderInitialDefaultOtp(result)
-                    } else if (result.defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE && result.defaultMode <= 0) {
+                    } else if (result.defaultBehaviorMode == DEFAULT_OTP_BEHAVIOR_ONE) {
                         renderInitialDefaultOtpOff(result)
                     } else {
                         _getVerificationMethodResult.value = Success(result)
