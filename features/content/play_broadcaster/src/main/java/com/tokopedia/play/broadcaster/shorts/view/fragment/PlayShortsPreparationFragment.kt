@@ -32,7 +32,6 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationB
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
-import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
@@ -394,7 +393,6 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
-                renderPerformanceDashboardEntryPoint(it.prevValue?.config, it.value.config)
                 renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
             }
         }
@@ -519,31 +517,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (prev?.menuList == curr.menuList) return
 
         binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
-    }
-
-    private fun renderPerformanceDashboardEntryPoint(
-        prev: PlayShortsConfigUiModel?,
-        curr: PlayShortsConfigUiModel,
-    ) {
-        if (prev?.hasContent == curr.hasContent) return
-
-        if (curr.hasContent && viewModel.isAllowToSeePerformanceDashboard) {
-            viewModel.submitAction(
-                PlayShortsAction.AddBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(
-                        requireContext()
-                    )
-                )
-            )
-        } else {
-            viewModel.submitAction(
-                PlayShortsAction.RemoveBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(
-                        requireContext()
-                    )
-                )
-            )
-        }
     }
 
     private fun renderBannerPreparationPage(

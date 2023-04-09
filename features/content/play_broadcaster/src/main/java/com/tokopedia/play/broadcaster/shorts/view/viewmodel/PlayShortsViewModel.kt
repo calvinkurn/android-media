@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -455,8 +456,19 @@ class PlayShortsViewModel @Inject constructor(
                 config
             }
 
+            renderPerformanceDashboardEntryPoint(finalConfig)
+
             _config.update { finalConfig }
             setSelectedAccount(account)
+        }
+    }
+
+    private fun renderPerformanceDashboardEntryPoint(config: PlayShortsConfigUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
+        if (isAllowToSeePerformanceDashboard && config.hasContent) {
+            submitAction(PlayShortsAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayShortsAction.RemoveBannerPreparation(banner))
         }
     }
 

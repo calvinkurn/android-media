@@ -33,7 +33,6 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -54,10 +53,8 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
-import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.bannerPerformanceEntryPoint
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
@@ -106,7 +103,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -671,8 +667,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
-                renderShortsEntryPoint(prevState?.channel, state.channel)
-                renderPerformanceDashboardEntryPoint(prevState?.channel, state.channel)
                 renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
             }
         }
@@ -860,44 +854,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 showTermsAndConditionBottomSheet()
             }
             AccountStateInfoType.Unknown -> return
-        }
-    }
-
-    private fun renderShortsEntryPoint(
-        prev: PlayChannelUiState?,
-        curr: PlayChannelUiState,
-    ) {
-        if (prev == null || prev.shortVideoAllowed == curr.shortVideoAllowed) return
-
-        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.AddBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
-                )
-            )
-        } else {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.RemoveBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
-                )
-            )
-        }
-    }
-
-    private fun renderPerformanceDashboardEntryPoint(
-        prev: PlayChannelUiState?,
-        curr: PlayChannelUiState,
-    ) {
-        if (prev == null || prev.hasContent == curr.hasContent) return
-
-        if (curr.hasContent && parentViewModel.isAllowToSeePerformanceDashboard) {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.AddBannerPreparation(bannerPerformanceEntryPoint(requireContext()))
-            )
-        } else {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.RemoveBannerPreparation(bannerPerformanceEntryPoint(requireContext()))
-            )
         }
     }
 
