@@ -176,7 +176,6 @@ class OptInConfirmationBottomSheet : BottomSheetUnify() {
 
         private const val ARGS_IS_PM_PRO = "arg_is_pm_pro"
         private const val TAG = "OptInConfirmationBottomSheet"
-        private const val PEAK_HEIGHT = 1.75
 
         fun newInstance(isPmPro: Boolean): OptInConfirmationBottomSheet {
             return OptInConfirmationBottomSheet().apply {
