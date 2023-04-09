@@ -275,7 +275,7 @@ open class VerificationViewModel @Inject constructor(
                 if (isSmsHidden(previousData.defaultBehaviorMode)) {
                     newItems.removeAll { it.modeText == OtpConstant.OtpMode.SMS }
                     footerSpan = SPAN_USE_SMS_METHOD
-                    footerText = SMS_AND_CHANGE_PN_FOOTER_TEXT
+                    footerText = spanFactory(SPAN_USE_SMS_METHOD, previousData.linkType)
                     action = { goToInputOtp(smsOtp) }
                 }
             }
