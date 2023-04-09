@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -19,6 +20,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
@@ -96,11 +98,10 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToCallingPage(phoneNumber: String) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = composeCallIntentData(phoneNumber)
-        }
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
-        applyTransition()
+        KeyboardHandler.DropKeyboard(activity, fragment.view)
+        val bottomSheetMaskingPhoneNumber =
+            MaskingPhoneNumberBottomSheet.newInstance(phoneNumber)
+        bottomSheetMaskingPhoneNumber.show(fragment.childFragmentManager)
     }
 
     fun goToRequestCancellationPage(
