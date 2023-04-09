@@ -45,6 +45,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -244,7 +245,7 @@ class DetailEditorFragment @Inject constructor(
                 data.removeBackgroundColor = removeBgType
 
                 if (removeBgType == REMOVE_BG_TYPE_DEFAULT) {
-                    loadImageWithEmptyTarget(requireContext(),
+                    loadUrlImage(
                         it,
                         {},
                         mediaTarget = MediaBitmapEmptyTarget(
@@ -428,7 +429,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             it?.let {
-                loadImageWithEmptyTarget(requireContext(),
+                loadUrlImage(
                     it.path,
                     {},
                     mediaTarget = MediaBitmapEmptyTarget(
@@ -734,7 +735,11 @@ class DetailEditorFragment @Inject constructor(
 
     // neutralize rotate value on watermark result
     private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap? {
-        watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)?.let { neutralizeBitmap ->
+        watermarkRotateBitmap(
+            data.cropRotateValue,
+            watermarkBitmap,
+            isInverse = true
+        )?.let { neutralizeBitmap ->
             val cropX = (neutralizeBitmap.width - globalWidth) / 2
             val cropY = (neutralizeBitmap.height - globalHeight) / 2
 
@@ -966,7 +971,7 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgViewPreview?.visible()
 
         context?.let {
-            loadImageWithEmptyTarget(it,
+            loadUrlImage(
                 url,
                 properties = {
                     listener(
@@ -1132,7 +1137,7 @@ class DetailEditorFragment @Inject constructor(
         newSize: Pair<Int, Int>,
         onFinish: (filePath: String) -> Unit
     ) {
-        loadImageWithEmptyTarget(requireContext(),
+        loadUrlImage(
             data.addLogoValue.logoUrl,
             {},
             MediaBitmapEmptyTarget(
@@ -1229,6 +1234,18 @@ class DetailEditorFragment @Inject constructor(
     private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
         data.cropRotateValue.cropRatio = newRatioPair
         isEdited = true
+    }
+
+    private fun loadUrlImage(
+        url: String,
+        properties: Properties.() -> Unit = {},
+        mediaTarget: MediaBitmapEmptyTarget<Bitmap>
+    ) {
+        if (!viewModel.isImageOverFlow(url)) {
+            context?.let {
+                loadImageWithEmptyTarget(it, url, properties, mediaTarget)
+            }
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME

@@ -13,6 +13,7 @@ import com.tokopedia.media.editor.domain.param.WatermarkUseCaseParam
 import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.ResourceProvider
+import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -33,7 +34,8 @@ class DetailEditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val getWatermarkUseCase: GetWatermarkUseCase,
     private val bitmapCreationRepository: BitmapCreationRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository
+    private val addLogoFilterRepository: AddLogoFilterRepository,
+    private val bitmapConverterRepository: BitmapConverterRepository,
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -216,6 +218,14 @@ class DetailEditorViewModel @Inject constructor(
 
     fun getProcessedBitmap(data: ProcessedBitmapModel): Bitmap? {
         return bitmapCreationRepository.getProcessedBitmap(data)
+    }
+
+    fun isImageOverFlow(
+        url: String
+    ): Boolean {
+        return getImageSize(url).let { (width, height) ->
+            bitmapCreationRepository.isBitmapOverflow(width, height)
+        }
     }
 
     private fun initializeWatermarkAsset() {

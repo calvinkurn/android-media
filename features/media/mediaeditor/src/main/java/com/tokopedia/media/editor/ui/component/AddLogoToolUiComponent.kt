@@ -1,8 +1,6 @@
 package com.tokopedia.media.editor.ui.component
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
@@ -11,14 +9,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
