@@ -6,7 +6,7 @@ import com.tokopedia.otp.verification.domain.pojo.ModeListData
 data class DefaultOtpUiModel(
     val footerText: String,
     val footerClickableSpan: String,
-    val linkType: Int,
+    val linkType: Int = 0,
     val footerAction: () -> Unit = {},
     @SerializedName("defaultMode")
     var defaultMode: Int = 0,
