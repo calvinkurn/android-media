@@ -1003,7 +1003,7 @@ class VerificationViewModelTest {
     }
 
     @Test
-    fun `render initial default otp when default otp is not exists and sms is hidden`() {
+    fun `render initial default otp when mode code is not exists and sms is hidden`() {
         val modeCode = 11
         val linkType = 1
         val defaultBehaviourMode = 3
@@ -1015,7 +1015,7 @@ class VerificationViewModelTest {
         )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = defaultBehaviourMode, linkType = linkType)
-        viewmodel.renderInitialDefaultOtpOff(mockData)
+        viewmodel.renderInitialDefaultOtp(mockData)
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
@@ -1034,7 +1034,7 @@ class VerificationViewModelTest {
         )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = defaultBehaviourMode, linkType = linkType)
-        viewmodel.renderInitialDefaultOtpOff(mockData)
+        viewmodel.renderInitialDefaultOtp(mockData)
 
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
         assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
