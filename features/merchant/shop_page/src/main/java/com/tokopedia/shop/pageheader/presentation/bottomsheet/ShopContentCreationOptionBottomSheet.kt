@@ -58,9 +58,9 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        shortsEntryPoint(mBroadcasterConfig.shortVideoAllowed)
-        broadcasterEntryPoint(mBroadcasterConfig.streamAllowed)
-        performanceDashboardEntryPoint(mBroadcasterConfig.hasContent)
+        isShowShortsEntryPoint(mBroadcasterConfig.shortVideoAllowed)
+        isShowBroadcasterEntryPoint(mBroadcasterConfig.streamAllowed)
+        isShowPerformanceDashboardEntryPoint(mBroadcasterConfig.hasContent)
     }
 
     private fun setupListener() {
@@ -92,17 +92,17 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
         mBroadcasterConfig = broadcasterConfig
     }
 
-    private fun shortsEntryPoint(show: Boolean) {
+    private fun isShowShortsEntryPoint(show: Boolean) {
         binding.llShorts.showWithCondition(show)
         binding.divider1.showWithCondition(show)
     }
 
-    private fun broadcasterEntryPoint(show: Boolean) {
+    private fun isShowBroadcasterEntryPoint(show: Boolean) {
         binding.llBroadcaster.showWithCondition(show)
         binding.divider2.showWithCondition(show)
     }
 
-    private fun performanceDashboardEntryPoint(show: Boolean) {
+    private fun isShowPerformanceDashboardEntryPoint(show: Boolean) {
         binding.llPerformanceDashboard.showWithCondition(show)
     }
 
