@@ -1111,7 +1111,7 @@ class VerificationViewModelTest {
 
     @Test
     fun `getOtpModeListForDefaultOtp behavior 1`() {
-        val modeCode = 1
+        val modeCode = 0
         val modeList = arrayListOf(
             ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
             ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
