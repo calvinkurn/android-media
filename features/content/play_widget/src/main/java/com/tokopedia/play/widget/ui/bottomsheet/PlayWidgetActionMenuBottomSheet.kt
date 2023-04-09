@@ -196,9 +196,8 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
 
         fun bind(action: Action) {
             ivIcon?.setImage(newIconId = action.icon)
-            action.tintColor?.let { color ->
-                ivIcon?.let { ImageViewCompat.setImageTintList(it, ColorStateList.valueOf(color)) }
-            }
+            if (ivIcon != null && action.tintColor != null)
+                ImageViewCompat.setImageTintList(ivIcon, ColorStateList.valueOf(action.tintColor))
             tvSubtitle?.text = action.subtitle
             itemView.setOnClickListener { action.onClick() }
         }
