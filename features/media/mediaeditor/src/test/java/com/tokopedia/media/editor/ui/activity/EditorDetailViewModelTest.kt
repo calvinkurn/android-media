@@ -15,6 +15,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.ResourceProvider
+import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Runs
@@ -554,6 +555,26 @@ class EditorDetailViewModelTest {
 
         // Then
         assertEquals(createdBitmap, null)
+    }
+
+    @Test
+    fun `check image overflow true`() {
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns true
+        val isOverflow = viewModel.isImageOverFlow(localLogoUrl)
+
+        // Then
+        assertEquals(true, isOverflow)
+    }
+
+    @Test
+    fun `check image overflow false`() {
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns false
+        val isOverflow = viewModel.isImageOverFlow(localLogoUrl)
+
+        // Then
+        assertEquals(false, isOverflow)
     }
 
     companion object {

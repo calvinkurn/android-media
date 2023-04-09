@@ -34,8 +34,7 @@ class DetailEditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val getWatermarkUseCase: GetWatermarkUseCase,
     private val bitmapCreationRepository: BitmapCreationRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository,
-    private val bitmapConverterRepository: BitmapConverterRepository,
+    private val addLogoFilterRepository: AddLogoFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
