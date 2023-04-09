@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailCourierDriverName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp"
@@ -30,18 +30,19 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailCourierDriverPlateNumber"
-        app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailCallCourierDriver"
+        app:layout_constraintEnd_toStartOf="@id/rv_courier_driver_btn"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailCourierDriverPhoto"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        app:layout_constraintHorizontal_weight="7"
         tools:text="Smitty WerbenJagerManJensen LXXIII" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailCourierDriverPlateNumber"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp"
@@ -50,23 +51,24 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailCallCourierDriver"
+        app:layout_constraintEnd_toStartOf="@id/rv_courier_driver_btn"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailCourierDriverPhoto"
         app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailCourierDriverName"
         app:typographyType="body_3"
+        app:layout_constraintHorizontal_weight="7"
         tools:text="B 1408 TMB" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnBuyerOrderDetailCallCourierDriver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_call"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_courier_driver_btn"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:unifyButtonSize="micro"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailCourierDriverPlateNumber"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,13 +2,14 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.CourierActionButtonAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 open class CourierDriverInfoViewHolder(
@@ -21,16 +22,12 @@ open class CourierDriverInfoViewHolder(
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val btnBuyerOrderDetailCallCourierDriver = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailCallCourierDriver)
     private val ivBuyerOrderDetailCourierDriverPhoto = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailCourierDriverPhoto)
     private val tvBuyerOrderDetailCourierDriverName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverName)
     private val tvBuyerOrderDetailCourierDriverPlateNumber = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverPlateNumber)
+    private val rvBuyerOrderDetailCourierDriverButton = itemView?.findViewById<RecyclerView>(R.id.rv_courier_driver_btn)
 
     private var element: ShipmentInfoUiModel.CourierDriverInfoUiModel? = null
-
-    init {
-        setupClickListeners()
-    }
 
     override fun bind(element: ShipmentInfoUiModel.CourierDriverInfoUiModel?) {
         element?.let {
@@ -38,22 +35,12 @@ open class CourierDriverInfoViewHolder(
             setupDriverPhoto(it.photoUrl)
             setupDriverName(it.name)
             setupDriverPlateNumber(it.plateNumber)
-            setupCallingButton(it.phoneNumber)
+            setupActionButtons(element)
         }
     }
 
     override fun bind(element: ShipmentInfoUiModel.CourierDriverInfoUiModel?, payloads: MutableList<Any>) {
         bind(element)
-    }
-
-    private fun setupClickListeners() {
-        btnBuyerOrderDetailCallCourierDriver?.setOnClickListener {
-            callDriver()
-        }
-    }
-
-    private fun callDriver() {
-        element?.let { navigator.goToCallingPage(it.phoneNumber) }
     }
 
     protected open fun setupDriverPhoto(photoUrl: String) {
@@ -74,7 +61,10 @@ open class CourierDriverInfoViewHolder(
         }
     }
 
-    private fun setupCallingButton(phoneNumber: String) {
-        btnBuyerOrderDetailCallCourierDriver?.showWithCondition(phoneNumber.isNotBlank())
+    private fun setupActionButtons(element: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
+        CourierActionButtonAdapter(element, navigator).apply {
+            this.driverActionButtonList = element.buttonList
+            rvBuyerOrderDetailCourierDriverButton?.adapter = this
+        }
     }
 }
