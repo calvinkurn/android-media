@@ -22,7 +22,7 @@ dependencies {
 project.ext {
     artifactId = 'lint'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.55-dev"
+    versionName = "0.0.56-dev-6"
     artifactName = "lint"
 }
 

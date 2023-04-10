@@ -4,6 +4,7 @@ import com.android.SdkConstants
 import com.android.resources.ResourceFolderType
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.Category
+import com.android.tools.lint.detector.api.Context
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
@@ -14,12 +15,14 @@ import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
+import com.android.tools.lint.detector.api.getBaseName
+import com.google.common.collect.Sets
 import com.tokopedia.linter.Priority
 import com.tokopedia.linter.unify.UnifyComponentsList
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULiteralExpression
 import org.w3c.dom.Attr
-import org.w3c.dom.Element
+import java.io.File
 
 class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
     companion object {
@@ -63,19 +66,114 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         )
     }
 
+    private val deprecatedResourceIds = Sets.newHashSet<String>()
+
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
-        return folderType == ResourceFolderType.VALUES
+        return folderType == ResourceFolderType.LAYOUT ||
+            folderType == ResourceFolderType.VALUES ||
+            folderType == ResourceFolderType.DRAWABLE ||
+            folderType == ResourceFolderType.COLOR
+    }
+
+    /*override fun beforeCheckEachProject(context: Context) {
+        context.project.resourceFolders.forEach { resFolder ->
+            findDeprecatedResourceIds(resFolder = resFolder)
+        }
+    }*/
+
+    private fun findDeprecatedResourceIds(resFolder: File?) {
+        val layoutDirs = resFolder?.listFiles()
+            ?.filter { it.name.contains(SdkConstants.FD_RES_LAYOUT) }
+
+        val drawableDirs = resFolder?.listFiles()
+            ?.filter { it.name.contains(SdkConstants.FD_RES_DRAWABLE) }
+
+        val valueDirs = resFolder?.listFiles()
+            ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
+
+        layoutDirs?.forEach { file ->
+            val files = file.listFiles().orEmpty()
+            val drawable = files.map { getBaseName(it.name) }
+            deprecatedResourceIds.addAll(drawable)
+        }
+
+        drawableDirs?.forEach { file ->
+            val files = file.listFiles().orEmpty()
+            val drawable = files.map { getBaseName(it.name) }
+            deprecatedResourceIds.addAll(drawable)
+        }
+
+        valueDirs?.forEach {
+            val files = it.listFiles()
+            findValueResources(files)
+        }
+    }
+
+    private fun findValueResources(files: Array<File>?) {
+        files?.forEach { file ->
+            val valueIds = file.readLines().filter {
+                it.contains(SdkConstants.ATTR_NAME) && !it.contains(SdkConstants.TAG_ITEM)
+            }.map {
+                it.substringAfter("=\"").substringBefore("\"")
+            }.filter { it.isNotEmpty() }
+            deprecatedResourceIds.addAll(valueIds)
+        }
     }
 
     override fun getApplicableElements(): Collection<String> {
-        return listOf(SdkConstants.TAG_COLOR)
+        return listOf(
+            SdkConstants.COLOR_RESOURCE_PREFIX,
+            SdkConstants.ATTR_COLOR,
+            SdkConstants.ATTR_TEXT_COLOR,
+            SdkConstants.ATTR_AM_PM_BACKGROUND_COLOR,
+            SdkConstants.ATTR_AM_PM_TEXT_COLOR,
+            SdkConstants.ATTR_CHIP_SURFACE_COLOR,
+            SdkConstants.ATTR_CHIP_STROKE_COLOR,
+            SdkConstants.ATTR_BOX_STROKE_COLOR,
+            SdkConstants.ATTR_BOX_BACKGROUND_COLOR,
+            SdkConstants.ATTR_CALENDAR_TEXT_COLOR,
+            SdkConstants.ATTR_CARD_BACKGROUND_COLOR,
+            SdkConstants.ATTR_CHIP_BACKGROUND_COLOR,
+            SdkConstants.ATTR_ERROR_TEXT_COLOR,
+            SdkConstants.ATTR_FILL_COLOR,
+            SdkConstants.ATTR_HELPER_TEXT_TEXT_COLOR,
+            SdkConstants.ATTR_HINT_TEXT_COLOR,
+            SdkConstants.ATTR_ITEM_RIPPLE_COLOR,
+            SdkConstants.ATTR_ITEM_SHAPE_FILL_COLOR,
+            SdkConstants.ATTR_ITEM_TEXT_COLOR,
+            SdkConstants.ATTR_NUMBERS_BACKGROUND_COLOR,
+            SdkConstants.ATTR_NUMBERS_INNER_TEXT_COLOR,
+            SdkConstants.ATTR_NUMBERS_SELECTOR_COLOR,
+            SdkConstants.ATTR_NUMBERS_TEXT_COLOR,
+            SdkConstants.ATTR_RIPPLE_COLOR,
+            SdkConstants.ATTR_SHADOW_COLOR,
+            SdkConstants.ATTR_STOP_COLOR,
+            SdkConstants.ATTR_STROKE_COLOR,
+            SdkConstants.ATTR_SUBTITLE_TEXT_COLOR,
+            SdkConstants.ATTR_TAB_INDICATOR_COLOR,
+            SdkConstants.ATTR_TAB_RIPPLE_COLOR,
+            SdkConstants.ATTR_TAB_SELECTED_TEXT_COLOR,
+            SdkConstants.ATTR_TAB_TEXT_COLOR,
+            SdkConstants.ATTR_TITLE_TEXT_COLOR,
+            SdkConstants.ATTR_YEAR_LIST_SELECTOR_COLOR,
+            SdkConstants.FD_RES_COLOR,
+            SdkConstants.RESOURCE_CLZ_COLOR,
+            SdkConstants.TAG_COLOR,
+            SdkConstants.TRANSPARENT_COLOR,
+            SdkConstants.ATTR_TEXT_COLOR_LINK,
+            SdkConstants.ANDROID_COLOR_RESOURCE_PREFIX,
+            SdkConstants.ATTR_CACHE_COLOR_HINT,
+            SdkConstants.ATTR_TEXT_COLOR_HIGHLIGHT,
+            SdkConstants.ATTR_TEXT_COLOR_HINT
+        )
     }
 
-    override fun visitElement(context: XmlContext, element: Element) {
-        val attribute = element.getAttributeNode("name")
-
-        if (attribute.value.matches(Regex(REGEX_OLD_COLOR))) {
-            reportXmlError(context, element, attribute)
+    override fun visitAttribute(context: XmlContext, attribute: Attr) {
+        runCatching {
+            val resId = attribute.value.substringAfter("/")
+            if (resId.contains(Regex(REGEX_OLD_COLOR))) {
+                reportXmlError(context, attribute)
+            }
         }
     }
 
@@ -103,11 +201,11 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         )
     }
 
-    private fun reportXmlError(context: XmlContext, node: Element, attribute: Attr) {
+    private fun reportXmlError(context: XmlContext, attribute: Attr) {
         val attrValue = StringBuilder(attribute.value)
         val sAttrValue = attrValue.toString()
         val suggestion = UnifyComponentsList.unifyToNestColor[sAttrValue]
-            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER).toString()
+            ?: sAttrValue
         val quickFix = LintFix.create()
             .replace()
             .text(sAttrValue)
@@ -116,7 +214,7 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
 
         context.report(
             XML_ISSUE,
-            node,
+            attribute,
             context.getValueLocation(attribute),
             ERROR_MESSAGE,
             quickFix

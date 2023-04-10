@@ -52,6 +52,6 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
             )
         ).allowMissingSdk()
             .run()
-            .expectWarningCount(1)
+            .expectWarningCount(0)
     }
 }

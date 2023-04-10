@@ -17,4 +17,5 @@
     <color name="product_detail_dms_toolbar_gradient_start">#00000000</color>
     <color name="product_detail_dms_toolbar_gradient_end">#66000000</color>
     <color name="product_detail_dms_divider_decorator_color">@color/Unify_NN50</color>
+    <color name="product_detail_dms_divider_decorator_color2">@color/Unify_N50</color>
 </resources>
