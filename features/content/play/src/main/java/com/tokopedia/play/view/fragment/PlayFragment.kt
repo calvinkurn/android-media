@@ -23,7 +23,9 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -54,7 +56,6 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
-import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -124,6 +125,8 @@ class PlayFragment @Inject constructor(
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     private var isFirstTopBoundsCalculated = false
+
+    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5).orZero() }
 
     /**
      * Global Variant Bottom Sheet
@@ -284,8 +287,9 @@ class PlayFragment @Inject constructor(
                     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                     fun onResume() {
                         variantSheet.dialog?.window?.setDimAmount(0f)
-                        variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.updateLayoutParams {
-                            height = sheetMaxHeight
+                        view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
+                            variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
+                                sheetMaxHeight - insets.systemWindowInsetBottom - offset24
                         }
                     }
                 }
