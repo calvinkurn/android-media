@@ -7,7 +7,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 
 class BigReplyBox (context: Context, attributeSet: AttributeSet) :
@@ -60,6 +62,10 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
 
     fun setText(text: String) {
         replyBoxText?.text = text
+    }
+
+    fun shouldShowAddAttachmentButton(showAddAttachmentMenu: Boolean) {
+        addAttachmentMenu?.showWithCondition(showAddAttachmentMenu)
     }
 
     companion object {

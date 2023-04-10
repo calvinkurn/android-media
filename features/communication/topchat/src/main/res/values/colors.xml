@@ -44,7 +44,6 @@
     <color name="topchat_dms_right_button_pressed">#CFDFD6</color>
     <color name="topchat_dms_left_button_pressed">#E0E0E0</color>
     <color name="topchat_bg_dms_left_bubble">#FFFFFF</color>
-    <color name="topchat_bg_dms_right_bubble">#ECFEF4</color>
     <color name="topchat_bg_dms_right_bubble_reply">#C9FDE0</color>
     <color name="topchat_bg_dms_right_bubble_reply_text">#6D7588</color>
 </resources>

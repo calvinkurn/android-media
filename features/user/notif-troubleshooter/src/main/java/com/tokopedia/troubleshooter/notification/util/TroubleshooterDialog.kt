@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.util
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.tokopedia.settingnotif.usersetting.util.inflateView
@@ -8,7 +10,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 object TroubleshooterDialog {
-    private const val URL_IMG_NOTIF_SAMPLE = "https://images.tokopedia.net/img/android/user/notif-troubleshooter/ic_ts_notif_sample.png"
+    private const val URL_IMG_NOTIF_SAMPLE = TokopediaImageUrl.URL_IMG_NOTIF_SAMPLE
 
     fun Fragment.showInformationDialog(screenName: String) {
         val layoutRes = R.layout.dialog_troubleshooter_info

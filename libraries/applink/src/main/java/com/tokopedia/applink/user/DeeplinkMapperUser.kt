@@ -13,7 +13,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
-    const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_2"
+    const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)

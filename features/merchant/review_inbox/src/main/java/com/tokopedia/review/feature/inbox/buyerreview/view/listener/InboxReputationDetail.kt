@@ -36,8 +36,6 @@ interface InboxReputationDetail {
         fun getErrorMessage(throwable: Throwable = Throwable()): String
         fun onGoToReportReview(shopId: String, reviewId: String?)
         fun onSuccessSendSmiley(score: Int)
-        fun onErrorFavoriteShop(errorMessage: String?)
-        fun onSuccessFavoriteShop()
         fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel)
         fun onSendReplyReview(element: InboxReputationDetailItemUiModel, replyReview: String)
         fun onShareReview(

@@ -42,8 +42,7 @@ import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
@@ -165,7 +164,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
 
-        Loader.init(this);
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 

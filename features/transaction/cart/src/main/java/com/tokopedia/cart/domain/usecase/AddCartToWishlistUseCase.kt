@@ -11,8 +11,10 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class AddCartToWishlistUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                   private val schedulers: ExecutorSchedulers) : UseCase<AddCartToWishlistData>() {
+class AddCartToWishlistUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<AddCartToWishlistData>() {
 
     companion object {
         const val PARAM_ADD_CART_TO_WISHLIST_REQUEST = "PARAM_ADD_CART_TO_WISHLIST_REQUEST"
@@ -32,22 +34,21 @@ class AddCartToWishlistUseCase @Inject constructor(private val graphqlUseCase: G
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val addCartToWishlistGqlResponse = it.getData<AddCartToWishlistGqlResponse>(AddCartToWishlistGqlResponse::class.java)
-                    val addCartToWishlistData = AddCartToWishlistData()
-                    if (addCartToWishlistGqlResponse != null) {
-                        val response = addCartToWishlistGqlResponse.addCartToWishlistDataResponse
-                        addCartToWishlistData.status = response.status
-                        addCartToWishlistData.success = response.data.success
+            .map {
+                val addCartToWishlistGqlResponse = it.getData<AddCartToWishlistGqlResponse>(AddCartToWishlistGqlResponse::class.java)
+                val addCartToWishlistData = AddCartToWishlistData()
+                if (addCartToWishlistGqlResponse != null) {
+                    val response = addCartToWishlistGqlResponse.addCartToWishlistDataResponse
+                    addCartToWishlistData.status = response.status
+                    addCartToWishlistData.success = response.data.success
 
-                        if (response.data.message.isNotEmpty()) {
-                            addCartToWishlistData.message = response.data.message[0]
-                        }
+                    if (response.data.message.isNotEmpty()) {
+                        addCartToWishlistData.message = response.data.message[0]
                     }
-                    addCartToWishlistData
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+                addCartToWishlistData
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

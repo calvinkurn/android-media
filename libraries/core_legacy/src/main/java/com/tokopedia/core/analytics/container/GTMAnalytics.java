@@ -30,7 +30,6 @@ import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -108,7 +107,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Iris iris;
     private final RemoteConfig remoteConfig;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
-    private TetraDebugger tetraDebugger;
     private String clientIdString = "";
     private final UserSessionInterface userSession;
     private final SharedPreferences sharedPreferences;
@@ -131,23 +129,20 @@ public class GTMAnalytics extends ContextAnalytics {
     private static String UTM_MEDIUM_HOLDER = "";
     private static String UTM_CAMPAIGN_HOLDER = "";
 
-    public static void setUTMParamsForSession(Map<String, Object> maps){
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
+    public static void setUTMParamsForSession(Map<String, Object> maps) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
             UTM_SOURCE_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_SOURCE)).toString();
         }
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
             UTM_MEDIUM_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_MEDIUM)).toString();
         }
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
             UTM_CAMPAIGN_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)).toString();
         }
     }
 
     public GTMAnalytics(Context context) {
         super(context);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-        }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
@@ -935,9 +930,6 @@ public class GTMAnalytics extends ContextAnalytics {
             Cassava.save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
-            if (tetraDebugger != null) {
-                tetraDebugger.send(values);
-            }
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -1046,6 +1038,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
         switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
+                String itemListString = bundle.getString(FirebaseAnalytics.Param.ITEM_LIST);
+                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))){
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, itemListString);
+                }
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
                 break;
             case PROMOCLICK:
@@ -1203,27 +1199,29 @@ public class GTMAnalytics extends ContextAnalytics {
         try {
             switch (eventName) {
                 // https://tokopedia.atlassian.net/browse/AN-36119
+                // view_item -> view_promotion
                 case FirebaseAnalytics.Event.VIEW_ITEM:
                     Bundle bundleGA4 = createBundleGA4BundleViewPromotion(bundle);
                     if (bundleGA4 != null) {
                         fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundleGA4);
                     }
                     break;
+                // select_content -> select_promotion / select_item
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
                     sendBundleGA4BundleClick(fa, bundle);
                     break;
+                // checkout_progress -> begin_checkout
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
                     // https://tokopedia.atlassian.net/browse/AN-36179
                     // https://tokopedia.atlassian.net/browse/AN-36180
                     fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
                     break;
+                // view_search_results -> view_item_list
                 case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
                     // https://tokopedia.atlassian.net/browse/AN-36125
-                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
-                        fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
-                    }
+                    createBundleGA4BundleViewItemList(fa, bundle);
                     break;
+                // ecommerce_purchase -> purchase
                 case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
                     // https://tokopedia.atlassian.net/browse/AN-36181
                     fa.logEvent(FirebaseAnalytics.Event.PURCHASE, bundle);
@@ -1232,6 +1230,12 @@ public class GTMAnalytics extends ContextAnalytics {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createBundleGA4BundleViewItemList(FirebaseAnalytics fa, Bundle oriBundle) {
+        Bundle ecommerceBundleGA4 = new Bundle();
+        copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
+        fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, ecommerceBundleGA4);
     }
 
     private void sendBundleGA4BundleClick(FirebaseAnalytics fa, Bundle oriBundle) {
@@ -1261,15 +1265,38 @@ public class GTMAnalytics extends ContextAnalytics {
                 if (oriBundle.get(key) instanceof String) {
                     targetBundle.putString(key, oriBundle.get(key).toString());
                 }
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
     }
 
+    private void copyBundleStringRoot(Bundle oriBundle, Bundle targetBundle) {
+        // copy all key in original bundle to gav4 bundle, except for promotions
+        // and if there is item_list, will be converted to item_list_name in GAv4
+        for (String key : oriBundle.keySet()) {
+            try {
+                String targetkey;
+                if (key.equals(ITEM_LIST)) {
+                    targetkey = FirebaseAnalytics.Param.ITEM_LIST_NAME;
+                } else {
+                    targetkey = key;
+                }
+                Object value = oriBundle.get(key);
+                if (value instanceof String) {
+                    targetBundle.putString(targetkey, value.toString());
+                }
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
     private Bundle createBundleGA4BundleViewPromotion(Bundle oriBundle) {
         Object promotions = oriBundle.get(KEY_PROMOTIONS);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
+            String firstItemList = "";
             for (int i = 0, size = promotionList.size(); i < size; i++) {
                 Bundle bundlePromotion = ((Bundle) promotionList.get(i));
                 String itemId = bundlePromotion.getString(ITEM_ID);
@@ -1281,12 +1308,18 @@ public class GTMAnalytics extends ContextAnalytics {
                 String itemName = bundlePromotion.getString(ITEM_NAME);
                 if (itemName != null) {
                     newBundle.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                    if (TextUtils.isEmpty(firstItemList)) {
+                        firstItemList = itemName;
+                    }
                 }
                 promotionsGA4.add(newBundle);
             }
             Bundle ecommerceBundleGA4 = new Bundle();
-            copyBundleString(oriBundle, ecommerceBundleGA4);
+            copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
+            if (TextUtils.isEmpty(ecommerceBundleGA4.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))) {
+                ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, firstItemList);
+            }
             return ecommerceBundleGA4;
         } else {
             return null;
@@ -1316,7 +1349,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (creativeSlot != null) {
                 ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
             }
-            copyBundleString(oriBundle, ecommerceBundleGA4);
+            copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
         }
         return ecommerceBundleGA4;
     }
@@ -1324,7 +1357,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private Bundle createBundleGA4BundleProductClick(Bundle oriBundle) {
         Object promotions = oriBundle.get(KEY_PROMOTIONS);
         Bundle ecommerceBundleGA4 = new Bundle();
-        copyBundleString(oriBundle, ecommerceBundleGA4);
+        copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
@@ -1341,12 +1374,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 promotionsGA4.add(bundlePromotion);
             }
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             return ecommerceBundleGA4;
         } else {
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             ArrayList item = (ArrayList) oriBundle.get(ITEMS);
             if (item != null) {
                 ecommerceBundleGA4.putParcelableArrayList(ITEMS, item);
