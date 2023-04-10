@@ -38,13 +38,14 @@ fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
     val constraints = remember { mutableStateOf(Constraints()) }
-    val bringIntoViewRequester =  BringIntoViewRequester()
+    val bringIntoViewRequester = BringIntoViewRequester()
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .onMeasureConstraints { constraints.value = it }
-            .verticalScroll(scrollState)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .onMeasureConstraints { constraints.value = it }
+                .verticalScroll(scrollState)
         ) {
             NestHeader(title = "Tokopedia Test App", showBackIcon = false)
             val urlBgColor = if (model.urlState.contains("live", true)) {
@@ -94,13 +95,6 @@ fun HomeScreen(
                     text = "Developer Option",
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                NestButton(
-                    text = "Login Helper",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGINHELPER) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 

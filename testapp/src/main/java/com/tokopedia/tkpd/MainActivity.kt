@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                             HomeDestination.LOGOUT -> handleNavigationLogout()
                             HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
                             HomeDestination.APPLINK -> goTo()
-                            HomeDestination.LOGINHELPER -> goToLoginHelper()
                         }
                     }
                 )
@@ -183,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         val urlState: String = "LIVE",
         val isDarkModeChecked: Boolean = false,
         val loginText: String = "Login",
-        val isLoggedIn: Boolean = false,
+        val isLoggedIn: Boolean = false
     )
 
     sealed interface HomeDestination {
@@ -191,7 +190,5 @@ class MainActivity : AppCompatActivity() {
         object LOGOUT : HomeDestination
         object DEVELOPER_OPTION : HomeDestination
         object APPLINK : HomeDestination
-
-        object LOGINHELPER : HomeDestination
     }
 }
