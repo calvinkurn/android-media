@@ -36,6 +36,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     private var headerName = ""
     private var chipList = emptyList<TokoNowChipUiModel>()
 
+    private var previousState: TokoNowProductRecommendationState? = null
     private var listener: HomeProductCarouselChipsViewListener? = null
 
     private val chipAdapter by lazy {
@@ -82,6 +83,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         binding.productCardShimmering.root.showWithCondition(state == loading)
 
         submitChipList(chipList)
+        previousState = state
     }
 
     fun bind(
@@ -93,12 +95,16 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         val loaded = TokoNowProductRecommendationState.LOADED
 
         binding.productCardCarousel.bindItems(items = carouselItemList)
-        binding.productCardCarousel.scrollToPosition(FIRST_POSITION_INDEX)
+
+        if(previousState == TokoNowProductRecommendationState.LOADING) {
+            binding.productCardCarousel.scrollToPosition(FIRST_POSITION_INDEX)
+        }
 
         binding.productCardCarousel.showWithCondition(state == loaded)
         binding.productCardShimmering.root.showWithCondition(state == loading)
 
         submitChipList(chipList)
+        previousState = state
     }
 
     fun setListener(listener: HomeProductCarouselChipsViewListener?) {
