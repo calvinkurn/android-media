@@ -9,18 +9,17 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -283,7 +282,7 @@ class PlayFragment @Inject constructor(
                     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                     fun onResume() {
                         variantSheet.dialog?.window?.setDimAmount(0f)
-                        variantSheet.bottomSheetWrapper.updateLayoutParams {
+                        variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.updateLayoutParams {
                             height = sheetMaxHeight
                         }
                     }
