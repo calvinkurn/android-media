@@ -1,7 +1,6 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
 import com.google.gson.Gson
-import com.tokopedia.applink.teleporter.Teleporter
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,43 +14,16 @@ import javax.inject.Inject
 
 @GqlQuery("GyroRecommendationQuery", GQL_GYRO_RECOMMENDATION)
 class GyroEngineRequestUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository,
+    val userSession: UserSessionInterface,
     val gson: Gson
 ) : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
     fun getFeatureEngineData(
-        thanksPageData: ThanksPageData, walletBalance: WalletBalance?,
+        thanksPageData: ThanksPageData,
+        walletBalance: WalletBalance?,
         onSuccess: (ValidateEngineResponse) -> Unit
     ) {
-//        onSuccess(
-//            Teleporter.gson.fromJson("{\n" +
-//                "    \"validateEngineRequest\": {\n" +
-//                "      \"success\": true,\n" +
-//                "      \"error_code\": \"\",\n" +
-//                "      \"message\": \"\",\n" +
-//                "      \"data\": {\n" +
-//                "        \"title\": \"Fitur spesial buat kamu\",\n" +
-//                "        \"description\": \"Cobain fitur ini yuk\",\n" +
-//                "        \"items\": [\n" +
-//                "          {\n" +
-//                "            \"id\": 136,\n" +
-//                "            \"detail\": \"{\\\"type\\\":\\\"config\\\",\\\"widget_order\\\":\\\"banner, feature, tdn, pg, shopads, dg\\\"}\"\n" +
-//                "          },\n" +
-//                "          {\n" +
-//                "            \"id\": 134,\n" +
-//                "            \"detail\": \"{\\\"type\\\":\\\"list\\\",\\\"title\\\":\\\"Cek keuntungan PLUS lainnya\\\",\\\"desc\\\":\\\"Masih ada keuntungan selain pengiriman cepat & Bebas Ongkir tanpa batas, lho~\\\",\\\"image\\\":\\\"https://images.tokopedia.net/img/plus/logo/default_logo.png\\\",\\\"url\\\":\\\"https://staging.tokopedia.com/gotoplus\\\",\\\"url_android\\\":\\\"tokopedia://webview?url=https://staging.tokopedia.com/gotoplus\\\",\\\"url_ios\\\":\\\"tokopedia://webview?url=https://staging.tokopedia.com/gotoplus\\\"}\"\n" +
-//                "          },\n" +
-//                "          {\n" +
-//                "            \"id\": 168,\n" +
-//                "            \"detail\": \"{\\\"type\\\":\\\"banner\\\",\\\"section_title\\\":\\\"Biar belanjamu makin #PraktisAbis\\\",\\\"banner_data\\\":\\\"[{\\\\\\\"asset_url\\\\\\\":\\\\\\\"https://images.tokopedia.net/img/cache/900/QBrNqa/2023/3/3/4f9ffabb-e2cc-4aea-b374-76d534f0f519.png.webp?ect=4g&height=300&width=900\\\\\\\",\\\\\\\"url\\\\\\\":\\\\\\\"https://www.tokopedia.com/tokopedia-cobrand\\\\\\\",\\\\\\\"applink\\\\\\\":\\\\\\\"tokopedia://webview?url=https://www.tokopedia.com/tokopedia-cobrand\\\\\\\"},{\\\\\\\"asset_url\\\\\\\":\\\\\\\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2023/3/14/dbe4cfd0-0c4f-4f47-94ec-6436928dc814.jpg.webp?ect=4g\\\\\\\",\\\\\\\"url\\\\\\\":\\\\\\\"https://www.tokopedia.com/discovery/serbu-official-store?source=homepage.slider_banner.0.42009\\\\\\\",\\\\\\\"applink\\\\\\\":\\\\\\\"tokopedia://buyer/payment\\\\\\\"}]\\\"}\"\n" +
-//                "          }\n" +
-//                "        ]\n" +
-//                "      }\n" +
-//                "    }\n" +
-//                "  }",
-//                FeatureEngineResponse::class.java
-//            ).validateEngineResponse
-//        )
         try {
             this.setTypeClass(FeatureEngineResponse::class.java)
             this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
@@ -59,7 +31,8 @@ class GyroEngineRequestUseCase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result.validateEngineResponse)
-                }, {
+                },
+                {
                     it.printStackTrace()
                 }
             )
@@ -72,7 +45,6 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData: ThanksPageData,
         walletBalance: WalletBalance?
     ): Map<String, Any> {
-
         val mainGatewayCode = thanksPageData.paymentDetails?.find {
             it.gatewayName.equals(thanksPageData.gatewayName, true)
         }?.gatewayCode ?: ""
@@ -87,8 +59,11 @@ class GyroEngineRequestUseCase @Inject constructor(
     private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
         gson.toJson(
             FeatureEngineRequest(
-                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                concatMap(thanksPageData,mainGatewayCode),
+                thanksPageData.merchantCode,
+                thanksPageData.profileCode,
+                1,
+                5,
+                concatMap(thanksPageData, mainGatewayCode),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )
@@ -107,7 +82,6 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData.gyroData?.put(IS_ENJOY_PLUS_BENEFIT, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
         thanksPageData.gyroData?.put(IS_PLUS_TRANSACTION, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
         return thanksPageData.gyroData
-
     }
 
     private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
@@ -116,8 +90,9 @@ class GyroEngineRequestUseCase @Inject constructor(
             try {
                 val parameterObj = (jsonObj[PARAM_WALLET_PARAMETERS] as JSONObject)
                 walletBalance.balanceList.forEach { item ->
-                    if (item.whitelisted == true)
+                    if (item.whitelisted == true) {
                         parameterObj.put(item.walletCode, item.isActive.toString())
+                    }
                 }
                 if (walletBalance.balanceList.isEmpty()) {
                     parameterObj.put(GATEWAY_CODE_PEMUDA, VALUE_FALSE)
@@ -176,6 +151,5 @@ class GyroEngineRequestUseCase @Inject constructor(
         const val IS_PLUS_TRANSACTION = "is_plus_transaction"
         const val GATEWAY_CODE_PEMUDA = "PEMUDA"
         const val VALUE_FALSE = "false"
-
     }
 }
