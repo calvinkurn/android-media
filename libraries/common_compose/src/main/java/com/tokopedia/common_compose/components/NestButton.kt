@@ -76,7 +76,7 @@ fun NestButton(
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = Color.White,
+            progressBarColor = NestTheme.colors.GN._500,
             progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
@@ -93,7 +93,7 @@ fun NestButton(
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = Color.White,
+            progressBarColor = NestTheme.colors.NN._300,
             progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
@@ -110,7 +110,7 @@ fun NestButton(
                 disabledBackgroundColor = Color.Transparent
             ),
             buttonHeight = size.toHeightDp(),
-            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._0),
+            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._100),
             enabled = isEnabled,
             isLoading = isLoading,
             progressBarColor = Color.White,
