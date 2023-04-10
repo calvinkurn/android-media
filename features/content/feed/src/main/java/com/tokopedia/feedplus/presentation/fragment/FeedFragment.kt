@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -45,6 +46,7 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -91,6 +93,8 @@ class FeedFragment :
     private var adapter: FeedPostAdapter? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
+
+    private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,6 +166,8 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
+
+        videoPlayerManager.releaseAll()
     }
 
     override fun initInjector() {
@@ -266,6 +272,15 @@ class FeedFragment :
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
         showLoading()
+        adapter?.showLoading()
+    }
+
+    override fun getVideoPlayer(): FeedExoPlayer {
+        return videoPlayerManager.occupy()
+    }
+
+    override fun detachPlayer(player: FeedExoPlayer) {
+        videoPlayerManager.detach(player)
     }
 
     override fun onProductTagButtonClicked(
@@ -510,7 +525,7 @@ class FeedFragment :
                     if (it.data.items.isEmpty()) {
                         adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
-                        adapter?.setElements(it.data.items)
+                        adapter?.updateList(it.data.items)
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
