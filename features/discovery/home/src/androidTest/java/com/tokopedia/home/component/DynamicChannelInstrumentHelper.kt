@@ -2,7 +2,6 @@ package com.tokopedia.home.component
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -78,7 +77,6 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_i
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
-private const val TAG = "HomeDCCassavaTest"
 
 /**
  * Created by yfsx on 2/9/21.
@@ -301,7 +299,7 @@ fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
-fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder) {
     clickAndCloseOnEachTodoWidget(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_todo_widget_rv, 0)
 }
 
