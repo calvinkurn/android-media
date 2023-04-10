@@ -513,6 +513,7 @@ class ShipmentPresenter @Inject constructor(
         isPlusSelected: Boolean
     ) {
         if (isReloadData) {
+            view?.setShipmentNewUpsellLoading(true)
             view?.setHasRunningApiCall(true)
             view?.showLoading()
         } else {
@@ -532,6 +533,7 @@ class ShipmentPresenter @Inject constructor(
                 if (view != null) {
                     view?.stopEmbraceTrace()
                     if (isReloadData) {
+                        view?.setShipmentNewUpsellLoading(false)
                         view?.setHasRunningApiCall(false)
                         view?.resetPromoBenefit()
                         view?.clearTotalBenefitPromoStacking()
@@ -554,6 +556,7 @@ class ShipmentPresenter @Inject constructor(
             if (view != null) {
                 view?.stopEmbraceTrace()
                 if (isReloadData) {
+                    view?.setShipmentNewUpsellLoading(false)
                     view?.setHasRunningApiCall(false)
                     view?.hideLoading()
                 } else {
