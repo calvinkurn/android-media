@@ -44,7 +44,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.model.OWOCSectionUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -225,7 +225,7 @@ open class BuyerOrderDetailTypeFactory(
         return PofRefundInfoViewHolder.LAYOUT
     }
 
-    fun type(owocSectionUiModel: OWOCSectionUiModel): Int {
+    fun type(owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel): Int {
         return OwocSectionViewHolder.LAYOUT
     }
 }

@@ -3,24 +3,17 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocTypeFactoryImpl
 
-data class OwocTickerUiModel(
-    val actionKey: String,
-    val actionText: String,
-    val actionUrl: String,
-    val description: String,
-    val type: String
+data class OwocAddonsListUiModel(
+    val addonsLogoUrl: String,
+    val addonsTitle: String,
+    val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>,
 ) : BaseOwocVisitableUiModel {
-
-    var marginBottom: Int? = null
-
-    var marginTop: Int? = null
 
     override fun type(typeFactory: OwocTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 
     override fun shouldShow(context: Context?): Boolean {
-        return description.isNotBlank() || actionText.isNotBlank()
+        return addonsLogoUrl.isNotBlank() && addonsTitle.isNotBlank()
     }
 }
-

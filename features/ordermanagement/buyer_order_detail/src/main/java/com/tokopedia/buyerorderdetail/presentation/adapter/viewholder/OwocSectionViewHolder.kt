@@ -4,12 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocSectionBinding
-import com.tokopedia.buyerorderdetail.presentation.model.OWOCSectionUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.media.loader.loadImage
 
 class OwocSectionViewHolder(
     view: View
-): AbstractViewHolder<OWOCSectionUiModel>(view) {
+): AbstractViewHolder<OwocBomDetailSectionUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_section
@@ -17,7 +17,7 @@ class OwocSectionViewHolder(
 
     private val binding = ItemOwocSectionBinding.bind(itemView)
 
-    override fun bind(element: OWOCSectionUiModel) {
+    override fun bind(element: OwocBomDetailSectionUiModel) {
         with(binding) {
             setOWOCSectionImage(element.imageUrl)
             setOWOCSectionTitle(element.sectionTitle)

@@ -21,7 +21,7 @@ data class OwocProductListUiModel(
         val orderStatusId: String
     ) : BaseOwocVisitableUiModel {
 
-        override fun shouldShow(context: Context): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return shopName.isNotBlank()
         }
 
@@ -46,7 +46,7 @@ data class OwocProductListUiModel(
         val isPof: Boolean = false
     ) : BaseOwocVisitableUiModel {
 
-        override fun shouldShow(context: Context): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return productName.isNotBlank()
         }
 
@@ -64,7 +64,7 @@ data class OwocProductListUiModel(
         val bundleItemList: List<ProductUiModel>
     ) : BaseOwocVisitableUiModel {
 
-        override fun shouldShow(context: Context): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return bundleItemList.isNotEmpty()
         }
 
@@ -75,11 +75,12 @@ data class OwocProductListUiModel(
 
     data class ProductListToggleUiModel(
         val collapsed: Boolean,
-        val text: StringRes
+        val text: StringRes,
+        val shopId: String,
     ) : BaseOwocVisitableUiModel {
 
-        override fun shouldShow(context: Context): Boolean {
-            return context.getString(text.id).isNotBlank()
+        override fun shouldShow(context: Context?): Boolean {
+            return context?.getString(text.id)?.isNotBlank() == true
         }
 
         override fun type(typeFactory: OwocTypeFactoryImpl): Int {
