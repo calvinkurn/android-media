@@ -47,6 +47,7 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
+import com.tokopedia.play.view.uimodel.event.ShowVariantSheet
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -65,6 +66,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -268,7 +270,7 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    fun openVariantBottomSheet(product: PlayProductUiModel.Product, forceTop: Boolean = false) {
+    private fun openVariantBottomSheet(product: PlayProductUiModel.Product, forceTop: Boolean) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
                 isTokoNow = product.isTokoNow,
@@ -476,6 +478,7 @@ class PlayFragment @Inject constructor(
         observePiPEvent()
 
         observeUiState()
+        observeUiEvent()
     }
 
     //region observe
@@ -552,6 +555,16 @@ class PlayFragment @Inject constructor(
                 val state = cachedState.value
 
                 if (cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect {
+                when (val event = it) {
+                    is ShowVariantSheet -> openVariantBottomSheet(event.product, event.forcePushTop)
+                }
             }
         }
     }

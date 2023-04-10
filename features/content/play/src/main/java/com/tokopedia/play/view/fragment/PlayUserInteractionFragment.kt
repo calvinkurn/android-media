@@ -1866,9 +1866,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        product = event.product, forceTop = true
-                    )
+                    playViewModel.submitAction(ShowVariantAction(event.product, true))
                 }
 
                 playViewModel.submitAction(

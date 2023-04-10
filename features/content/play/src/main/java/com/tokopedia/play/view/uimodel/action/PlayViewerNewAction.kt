@@ -113,3 +113,6 @@ object RefreshWidget : PlayViewerNewAction()
 data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
 object DismissExploreWidget : PlayViewerNewAction()
 object EmptyPageWidget : PlayViewerNewAction()
+
+//Atc Variant
+data class ShowVariantAction(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewAction()

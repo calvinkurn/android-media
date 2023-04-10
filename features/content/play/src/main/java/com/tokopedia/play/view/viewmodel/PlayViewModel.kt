@@ -1060,6 +1060,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             EmptyPageWidget -> handleEmptyExplore()
             is SelectReason -> handleSelectedReason(action.reasonId)
+            is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
         }
     }
 
@@ -2529,6 +2530,14 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _uiEvent.emit(ShowErrorEvent(err))
             _combinedState.update { it.copy(isLoadingBuy = false) }
+        }
+    }
+
+    private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
+        needLogin {
+            viewModelScope.launch {
+                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
+            }
         }
     }
 

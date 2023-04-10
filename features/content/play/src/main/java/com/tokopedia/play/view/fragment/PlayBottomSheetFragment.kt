@@ -316,7 +316,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            playFragment.openVariantBottomSheet(product = product)
+            playViewModel.submitAction(ShowVariantAction(product, false))
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
