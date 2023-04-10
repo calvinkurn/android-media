@@ -1867,7 +1867,7 @@ class PlayUserInteractionFragment @Inject constructor(
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        event.product
+                        product = event.product, forceTop = true
                     )
                 }
 

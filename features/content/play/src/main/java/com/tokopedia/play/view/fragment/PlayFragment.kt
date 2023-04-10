@@ -268,7 +268,7 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    fun openVariantBottomSheet(product: PlayProductUiModel.Product) {
+    fun openVariantBottomSheet(product: PlayProductUiModel.Product, forceTop: Boolean = false) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
                 isTokoNow = product.isTokoNow,
@@ -294,8 +294,17 @@ class PlayFragment @Inject constructor(
                     }
                 }
             )
+            if (forceTop)
+                variantSheet.setOnDismissListener {
+                    onBottomInsetsViewHidden()
+                }
             variantSheet
         }
+
+        if (!forceTop) return
+
+        val height = 769 // temp hard-coded
+        onBottomInsetsViewShown(height)
     }
 
     fun onFirstTopBoundsCalculated() {
