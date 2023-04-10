@@ -66,7 +66,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
     open fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {}
-    open fun trackEventClickCoupon(coupon: DataItem?, position: Int, isDouble: Boolean) {}
+    open fun trackEventClickCoupon(componentsItems: ComponentsItem, position: Int, isDouble: Boolean) {}
     open fun trackQuickCouponImpression(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponClick(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponApply(clickCouponData: ClickCouponData) {}

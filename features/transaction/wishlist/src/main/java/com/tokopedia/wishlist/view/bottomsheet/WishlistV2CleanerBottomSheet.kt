@@ -10,7 +10,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistStorageCleanerBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 
-class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
+class WishlistV2CleanerBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistStorageCleanerBinding>()
     private var adapterOptionBottomSheet: WishlistV2CleanerBottomSheetAdapter? = null
     private var listener: BottomsheetCleanerListener? = null
@@ -22,7 +22,8 @@ class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
         private const val BUTTON_TEXT = "button_text"
 
         @JvmStatic
-        fun newInstance(title: String, desc: String, buttonText: String): WishlistV2CleanerBottomSheet { return WishlistV2CleanerBottomSheet().apply {
+        fun newInstance(title: String, desc: String, buttonText: String): WishlistV2CleanerBottomSheet {
+            return WishlistV2CleanerBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(TITLE_BOTTOMSHEET, title)
                 bundle.putString(DESC_BOTTOMSHEET, desc)
