@@ -118,7 +118,7 @@ object PromoRequestMapper {
             }
         }
 
-        if (cartPromoHolderData.needToAddBoCodeManually) {
+        if (cartPromoHolderData.needToAdjustPromoData) {
             promoCodes.add(cartPromoHolderData.boCode)
         }
         
@@ -142,7 +142,7 @@ object PromoRequestMapper {
             }
         }
         
-        if (cartPromoHolderData.needToAddBoCodeManually) {
+        if (cartPromoHolderData.needToAdjustPromoData) {
             promoCodes.add(cartPromoHolderData.boCode)
         }
         
@@ -159,32 +159,29 @@ object PromoRequestMapper {
         selectedCartGroupHolderDataList.forEach { cartGroupHolderData ->
             val isOrderWithBoStillExist = cartGroupHolderData.productUiModelList
                 .any { it.cartStringOrder == cartGroupHolderData.boUniqueId }
-            var firstOrder = true
-            cartGroupHolderData.productUiModelList.forEach {
-                val cartStringOrder = it.cartStringOrder
+            cartGroupHolderData.productUiModelList.forEachIndexed { productIndex, product ->
+                val cartStringOrder = product.cartStringOrder
                 if (!groupPromoHolderDataMap.containsKey(cartStringOrder)) {
                     groupPromoHolderDataMap[cartStringOrder] = CartPromoHolderData(
                         promoCodes = cartGroupHolderData.promoCodes,
                         warehouseId = cartGroupHolderData.warehouseId,
                         boMetadata = cartGroupHolderData.boMetadata,
                         isPo = cartGroupHolderData.isPo,
-                        cartStringOrder = it.cartStringOrder,
-                        cartStringGroup = it.cartString,
-                        poDuration = it.shopHolderData.poDuration,
-                        shopId = it.shopHolderData.shopId,
+                        cartStringOrder = product.cartStringOrder,
+                        cartStringGroup = cartGroupHolderData.cartString,
+                        poDuration = product.shopHolderData.poDuration,
+                        shopId = product.shopHolderData.shopId,
                         boCode = cartGroupHolderData.boCode,
-                        needToAddBoCodeManually = cartGroupHolderData.boCode.isNotEmpty() && !isOrderWithBoStillExist && firstOrder
+                        boUniqueId = cartGroupHolderData.boUniqueId,
+                        needToAdjustPromoData = cartGroupHolderData.boCode.isNotEmpty() && !isOrderWithBoStillExist && productIndex == 0
                     )
                 }
                 val selectedPromoHolderData = groupPromoHolderDataMap[cartStringOrder]
                 selectedPromoHolderData?.apply {
-                    if (it.isSelected) {
+                    if (product.isSelected) {
                         hasSelectedProduct = true
                     }
-                    productUiModelList.add(it)
-                }
-                if (firstOrder) {
-                    firstOrder = false
+                    productUiModelList.add(product)
                 }
             }
         }
@@ -195,6 +192,24 @@ object PromoRequestMapper {
         lastApplyPromo: LastApplyPromo,
         cartPromoHolderData: CartPromoHolderData,
     ): PromoRequestBoShipmentData {
+        if (cartPromoHolderData.needToAdjustPromoData) {
+            val voucherOrder = lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
+                it.uniqueId == cartPromoHolderData.boUniqueId
+            }
+            if (voucherOrder != null) {
+                return PromoRequestBoShipmentData(
+                    voucherOrder.shippingId,
+                    voucherOrder.spId,
+                    voucherOrder.boCampaignId,
+                    voucherOrder.shippingSubsidy,
+                    voucherOrder.benefitClass,
+                    voucherOrder.shippingPrice,
+                    voucherOrder.etaText,
+                    voucherOrder.shippingMetadata
+                )
+            }
+        }
+        
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder &&
                 voucherOrder.shippingId > 0 &&
@@ -213,6 +228,7 @@ object PromoRequestMapper {
                 )
             }
         }
+        
         return PromoRequestBoShipmentData()
     }
 
@@ -221,6 +237,25 @@ object PromoRequestMapper {
         cartPromoHolderData: CartPromoHolderData,
         lastValidateUsePromoRequest: ValidateUsePromoRequest?
     ): PromoRequestBoShipmentData {
+        if (cartPromoHolderData.needToAdjustPromoData) {
+            val voucherOrder = promoUiModel.voucherOrderUiModels.firstOrNull {
+                it.uniqueId == cartPromoHolderData.boUniqueId
+            }
+            val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartPromoHolderData.boUniqueId }
+            if (voucherOrder != null && validateOrderRequest != null) {
+                return PromoRequestBoShipmentData(
+                    voucherOrder.shippingId,
+                    voucherOrder.spId,
+                    validateOrderRequest.boCampaignId.toString(),
+                    validateOrderRequest.shippingSubsidy,
+                    validateOrderRequest.benefitClass,
+                    validateOrderRequest.shippingPrice,
+                    validateOrderRequest.etaText,
+                    validateOrderRequest.shippingMetadata
+                )
+            }
+        }
+        
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder &&
                 voucherOrder.shippingId > 0 &&
