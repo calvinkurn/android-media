@@ -14,7 +14,8 @@ class FreeShippingDataModel(
     override fun uniqueId() = 0L
 
     override fun isEqual(newData: ProductShippingVisitable): Boolean {
-        return newData is FreeShippingDataModel
+        return newData is FreeShippingDataModel &&
+            this == newData
     }
 
     override fun type(typeFactory: ProductShippingFactory): Int {
@@ -24,7 +25,7 @@ class FreeShippingDataModel(
     data class Eta(
         val description: String = "",
         val finalPrice: String = "",
-        private val rawShippingRate: Double = 0.0,
+        private val rawShippingRate: Double = 0.0
     ) {
         val originalPrice: String = if (rawShippingRate > 0) rawShippingRate.getCurrencyFormatted() else ""
     }

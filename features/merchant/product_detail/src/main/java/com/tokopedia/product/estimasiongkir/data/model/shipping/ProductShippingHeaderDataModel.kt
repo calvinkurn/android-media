@@ -31,15 +31,23 @@ data class ProductShippingHeaderDataModel(
     val tokoCabangContent: String = "",
     val uspTokoCabangImgUrl: String = "",
 
-    val remoteHideOldBO: Boolean = true
+    val remoteHideOldBO: Boolean = true // true -> hide free_shipping UI
 ) : ProductShippingVisitable {
 
     fun shouldShowTxtTokoNow(): Boolean {
-        return !remoteHideOldBO && (boType == BO_TOKONOW || boType == BO_TOKONOW_15) && freeOngkirTokoNowText.isNotEmpty()
+        return if (remoteHideOldBO) {
+            false
+        } // Existing Logic vvv
+        else {
+            (boType == BO_TOKONOW || boType == BO_TOKONOW_15) && freeOngkirTokoNowText.isNotEmpty()
+        }
     }
 
     fun shouldShowFreeOngkir(): Boolean {
-        return if (!remoteHideOldBO && boType == NO_BEBAS_ONGKIR) {
+        return if (remoteHideOldBO) {
+            false
+        } // Existing Logic vvv
+        else if (boType == NO_BEBAS_ONGKIR) {
             false
         } else {
             freeOngkirImageUrl.isNotEmpty()
