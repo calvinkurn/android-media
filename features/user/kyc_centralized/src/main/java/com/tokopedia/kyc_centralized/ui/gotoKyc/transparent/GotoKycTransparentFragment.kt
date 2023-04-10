@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
@@ -98,8 +99,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is ProjectInfoResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -115,8 +115,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
