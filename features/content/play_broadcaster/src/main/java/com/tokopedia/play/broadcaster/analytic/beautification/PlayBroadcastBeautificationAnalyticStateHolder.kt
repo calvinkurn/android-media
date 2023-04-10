@@ -10,7 +10,7 @@ import javax.inject.Inject
 @ActivityRetainedScope
 class PlayBroadcastBeautificationAnalyticStateHolder @Inject constructor() {
 
-    var isBeautificationMenuShownOnPreparationPage = false
+    var isBeautificationMenuHasBeenShownOnPreparationPage = false
     var pageSource = BeautificationSetupFragment.PageSource.Unknown
 
     fun getPageSourceForAnalytic(): PlayBroadcastBeautificationAnalytic.Page = pageSource.mapToAnalytic()
