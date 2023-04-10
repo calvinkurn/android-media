@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.common.view
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -16,7 +18,7 @@ class ProductFeedbackView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs,defStyleAttr) {
 
     companion object{
-        private const val FEEDBACK_WIDGET_IMAGE = "https://images.tokopedia.net/img/tokopedianow/feedback_loop_illustration.png"
+        private const val FEEDBACK_WIDGET_IMAGE = TokopediaImageUrl.FEEDBACK_WIDGET_IMAGE
     }
 
     var headerTitle:String?=""

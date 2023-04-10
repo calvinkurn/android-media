@@ -74,16 +74,23 @@ interface ChatbotContract {
 
         fun sessionChangeStateHandler(state: Boolean)
 
-        fun videoUploadEligibilityHandler(state: Boolean)
-
         fun onVideoUploadChangeView(uiModel: VideoUploadUiModel)
 
         fun setBigReplyBoxTitle(text: String, placeholder: String)
 
         fun hideReplyBox()
+
+        fun handleAddAttachmentButtonViewState(toShow: Boolean)
+
+        fun handleImageUploadButtonViewState(toShow: Boolean)
+
+        fun handleVideoUploadButtonViewState(toShow: Boolean)
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
+
+        fun setPageSource(pageSource: String)
 
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
@@ -159,8 +166,6 @@ interface ChatbotContract {
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 
         fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
-
-        fun checkUploadVideoEligibility(msgId: String)
 
         fun sendMessage(
             messageId: String,
