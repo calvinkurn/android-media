@@ -3,6 +3,9 @@ package com.tokopedia.checkout.view.presenter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
@@ -17,18 +20,24 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
             minEgoldRange = 50
             maxEgoldRange = 1000
         }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartString = "",
+                        quantity = 1,
+                        price = 99750.0
+                    )
+                )
+            )
+        )
 
         // When
-        presenter.shipmentCostModel.value =
-            ShipmentCostModel().apply {
-                totalPrice = 99750.0
-            }
+        presenter.updateShipmentCostModel()
 
         // Then
-//        verify {
-//            view.renderDataChanged()
-//        }
-        assert(presenter.egoldAttributeModel.value!!.buyEgoldValue == expectedEgoldValue)
+        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
@@ -41,53 +50,74 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
             minEgoldRange = 50
             maxEgoldRange = 1000
         }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartString = "",
+                        quantity = 1,
+                        price = 99750.0
+                    )
+                )
+            )
+        )
 
         // When
-        presenter.shipmentCostModel.value =
-            ShipmentCostModel().apply {
-                totalPrice = 99750.0
-            }
+        presenter.updateShipmentCostModel()
 
         // Then
-//        verify(inverse = true) {
-//            view.renderDataChanged()
-//        }
-        assert(presenter.egoldAttributeModel.value!!.buyEgoldValue == expectedEgoldValue)
+        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value without tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 250L
-        presenter.shipmentCostModel.value =
-            ShipmentCostModel().apply {
-                totalPrice = 99750.0
-            }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartString = "",
+                        quantity = 1,
+                        price = 99750.0
+                    )
+                )
+            )
+        )
         presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+            isEligible = true
             isTiering = false
             minEgoldRange = 50
             maxEgoldRange = 1000
         }
 
         // When
-//        presenter.updateEgoldBuyValue()
+        presenter.updateShipmentCostModel()
 
         // Then
-//        verify {
-//            view.renderDataChanged()
-//        }
-        assert(presenter.egoldAttributeModel.value!!.buyEgoldValue == expectedEgoldValue)
+        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value with tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 5700L
-        presenter.shipmentCostModel.value =
-            ShipmentCostModel().apply {
-                totalPrice = 50300.0
-            }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartString = "",
+                        quantity = 1,
+                        price = 50300.0
+                    )
+                )
+            )
+        )
         presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+            isEligible = true
             isTiering = true
             minEgoldRange = 50
             maxEgoldRange = 1000
@@ -120,13 +150,10 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
 
         // When
-//        presenter.updateEgoldBuyValue()
+        presenter.updateShipmentCostModel()
 
         // Then
-//        verify {
-//            view.renderDataChanged()
-//        }
-        assert(presenter.egoldAttributeModel.value!!.buyEgoldValue == expectedEgoldValue)
+        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
@@ -138,6 +165,7 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
                 totalPrice = 300.0
             }
         presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+            isEligible = true
             isTiering = true
             minEgoldRange = 50
             maxEgoldRange = 1000
@@ -170,12 +198,9 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
 
         // When
-//        presenter.updateEgoldBuyValue()
+        presenter.updateShipmentCostModel()
 
         // Then
-//        verify {
-//            view.renderDataChanged()
-//        }
-        assert(presenter.egoldAttributeModel.value!!.buyEgoldValue == expectedEgoldValue)
+        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
     }
 }

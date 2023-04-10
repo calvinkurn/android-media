@@ -40,12 +40,6 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -81,12 +75,6 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -122,18 +110,12 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
         presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
-        assertNull(presenter.egoldAttributeModel)
+        assertNull(presenter.egoldAttributeModel.value)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
@@ -163,12 +145,6 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -204,12 +180,6 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -245,18 +215,12 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
         presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel)assertEquals(true, isOrderPrioritasDisable) }
-        assertNull(presenter.egoldAttributeModel)
+        assertNull(presenter.egoldAttributeModel.value)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
