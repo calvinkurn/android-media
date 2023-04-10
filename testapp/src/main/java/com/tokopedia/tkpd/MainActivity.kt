@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.url.TokopediaUrl
@@ -61,17 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoDeveloperOptions() {
         RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
-    }
-
-    private fun goToLoginHelper() {
-        val loginHelperIntent = RouteManager.getIntent(
-            this@MainActivity,
-            ApplinkConstInternalGlobal.LOGIN_HELPER
-        )
-        startActivityForResult(
-            loginHelperIntent,
-            REQUEST_CODE_DEVELOPER_OPTIONS
-        )
     }
 
     private fun setDarkModeAndRecreate(active: Boolean) {
