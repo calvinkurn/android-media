@@ -14,6 +14,7 @@ import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -35,6 +36,8 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -122,7 +125,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
-    private val broadcastTimer: PlayBroadcastTimer
+    private val broadcastTimer: PlayBroadcastTimer,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -565,6 +569,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setDurationConfig(configUiModel.durationConfig)
             setScheduleConfig(configUiModel.scheduleConfig)
 
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
+
             broadcastTimer.setupDuration(
                 configUiModel.durationConfig.remainingDuration,
                 configUiModel.durationConfig.maxDuration
@@ -896,6 +903,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 ),
                 canSchedule = repo.canSchedule()
             )
+        }
+    }
+
+    private fun setupShortEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
+        if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
+            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+        }
+    }
+
+    private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
+        if (isAllowToSeePerformanceDashboard && config.hasContent) {
+            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
         }
     }
 

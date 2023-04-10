@@ -17,6 +17,8 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormU
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -27,7 +29,11 @@ import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -68,6 +74,9 @@ class PlayShortsViewModel @Inject constructor(
     val accountList: List<ContentAccountUiModel>
         get() = _accountList.value
 
+    val isAllowToSeePerformanceDashboard: Boolean
+        get() = selectedAccount.isShop
+
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
@@ -86,6 +95,8 @@ class PlayShortsViewModel @Inject constructor(
         get() = sharedPref.getUploadedCoverSource(selectedAccount.id, SOURCE)
 
     val mDataStore = dataStore
+
+    private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
@@ -138,8 +149,20 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm,
         _productSectionList,
         _tags,
-        _uploadState
-    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, productSectionList, tags, uploadState ->
+        _uploadState,
+        _bannerPreparation
+    ) { globalLoader,
+        config,
+        media,
+        accountList,
+        selectedAccount,
+        menuListUiState,
+        titleForm,
+        coverForm,
+        productSectionList,
+        tags,
+        uploadState,
+        bannerPreparation ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -151,7 +174,8 @@ class PlayShortsViewModel @Inject constructor(
             coverForm = coverForm,
             productSectionList = productSectionList,
             tags = tags,
-            uploadState = uploadState
+            uploadState = uploadState,
+            bannerPreparation = bannerPreparation,
         )
     }
 
@@ -197,7 +221,26 @@ class PlayShortsViewModel @Inject constructor(
             /** Others */
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
+            is PlayShortsAction.AddBannerPreparation -> handleAddBannerPreparation(action.data)
+            is PlayShortsAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(action.data)
         }
+    }
+
+    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it + data }
+        }, onError = {})
+    }
+
+    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            _bannerPreparation.update { list ->
+                list.filter { banner ->
+                    banner != data
+                }
+            }
+        }, onError = {})
     }
 
     private fun handleCloseCoverForm() {
@@ -413,8 +456,19 @@ class PlayShortsViewModel @Inject constructor(
                 config
             }
 
+            setupPerformanceDashboardEntryPoint(finalConfig)
+
             _config.update { finalConfig }
             setSelectedAccount(account)
+        }
+    }
+
+    private fun setupPerformanceDashboardEntryPoint(config: PlayShortsConfigUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
+        if (isAllowToSeePerformanceDashboard && config.hasContent) {
+            submitAction(PlayShortsAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayShortsAction.RemoveBannerPreparation(banner))
         }
     }
 

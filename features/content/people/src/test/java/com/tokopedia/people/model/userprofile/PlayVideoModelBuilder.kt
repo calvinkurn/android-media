@@ -1,12 +1,15 @@
 package com.tokopedia.people.model.userprofile
 
-import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
+import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
-import com.tokopedia.play_common.types.PlayChannelStatusType
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
@@ -31,7 +34,7 @@ class PlayVideoModelBuilder {
                     totalView = PlayWidgetTotalView("33.1 rb", true),
                     promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
                     reminderType = reminderType,
-                    partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
+                    partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", "shop"),
                     video = PlayWidgetVideoUiModel(
                         id = "123",
                         coverUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
@@ -39,6 +42,7 @@ class PlayVideoModelBuilder {
                         isLive = false
                     ),
                     hasAction = true,
+                    shouldShowPerformanceDashboard = false,
                     share = PlayWidgetShareUiModel(
                         "Udah pada nonton \\\"BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D\\\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\\nhttps://www.tokopedia.com/play/channel/272686?titlebar=false",
                         isShow = true

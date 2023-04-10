@@ -17,7 +17,7 @@ class PlayBroadcastPreparationBannerAdapter(
         oldItem: PlayBroadcastPreparationBannerModel,
         newItem: PlayBroadcastPreparationBannerModel
     ): Boolean {
-        return oldItem.icon == newItem.icon
+        return oldItem.type == newItem.type
     }
 
     override fun areContentsTheSame(

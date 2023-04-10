@@ -4,7 +4,7 @@
     android:layout_height="@dimen/play_widget_action_height"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
