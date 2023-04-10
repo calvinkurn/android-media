@@ -17,13 +17,6 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBroadcasterAnalyticSender {
 
-    private val currentSite: String
-        get() = if (GlobalConfig.isSellerApp()) {
-            Value.BROADCASTER_CURRENT_SITE_SELLER
-        } else {
-            Value.BROADCASTER_CURRENT_SITE_MAIN
-        }
-
     private val sessionIris: String
         get() = TrackApp.getInstance().gtm.irisSessionId
 
@@ -36,7 +29,7 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
             mapOf(
                 Label.TRACKER_ID_LABEL to trackerId,
                 Label.BUSINESS_UNIT_LABEL to Value.BROADCASTER_BUSINESS_UNIT,
-                Label.CURRENT_SITE_LABEL to currentSite,
+                Label.CURRENT_SITE_LABEL to PlayBroadcasterAnalyticHelper.currentSite,
                 Label.SESSION_IRIS_LABEL to sessionIris,
             )
         )
@@ -103,7 +96,7 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
     ) {
         trackerBuilder
             .setBusinessUnit(Value.BROADCASTER_BUSINESS_UNIT)
-            .setCurrentSite(currentSite)
+            .setCurrentSite(PlayBroadcasterAnalyticHelper.currentSite)
             .setUserId(userSession.userId)
             .setCustomProperty(Label.SESSION_IRIS_LABEL, sessionIris)
             .build()

@@ -10,6 +10,13 @@ import com.tokopedia.play.broadcaster.analytic.const.Value
  */
 object PlayBroadcasterAnalyticHelper {
 
+    val currentSite: String
+        get() = if (GlobalConfig.isSellerApp()) {
+            Value.BROADCASTER_CURRENT_SITE_SELLER
+        } else {
+            Value.BROADCASTER_CURRENT_SITE_MAIN
+        }
+
     fun getEventLabelByAccount(account: ContentAccountUiModel): String {
         return "${account.id} - ${getAccountType(account)}"
     }
