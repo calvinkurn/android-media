@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
+import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
@@ -93,7 +94,7 @@ open class BaseShipmentPresenterTest {
     lateinit var releaseBookingUseCase: ReleaseBookingUseCase
 
     @MockK(relaxed = true)
-    lateinit var view: ShipmentContract.View
+    lateinit var view: ShipmentFragment
 
     @MockK(relaxed = true)
     lateinit var getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase

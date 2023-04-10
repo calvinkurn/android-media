@@ -61,12 +61,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -77,20 +71,20 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
     }
 
-//    @Test
-//    fun firstLoadCheckoutPage_ShouldShipmentAddressFormEmpty() {
-//        // Given
-//        coEvery { getShipmentAddressFormV4UseCase(any()) } returns null
-//        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
-//
-//        // When
-//        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
-//
-//        // Then
-//        verifyOrder {
-//            view.onShipmentAddressFormEmpty()
-//        }
-//    }
+    @Test
+    fun firstLoadCheckoutPageWithNoAddress_ShouldShipmentAddressFormEmpty() {
+        // Given
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData(groupAddress = emptyList())
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(false, false, false)
+
+        // Then
+        verifyOrder {
+            view.onShipmentAddressFormEmpty()
+        }
+    }
 
     @Test
     fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
@@ -108,12 +102,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -140,12 +128,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -166,12 +148,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -193,12 +169,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -223,12 +193,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -258,12 +222,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -294,12 +252,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -332,12 +284,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -374,12 +320,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -408,12 +348,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -452,12 +386,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -495,12 +423,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -534,16 +456,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
-        assertEquals(lastApplyUiModel, presenter.lastApplyData)
+        assertEquals(lastApplyUiModel, presenter.lastApplyData.value)
     }
 
     @Test
@@ -567,12 +483,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -597,12 +507,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -627,12 +531,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -660,12 +558,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -695,12 +587,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -730,12 +616,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -762,12 +642,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -795,12 +669,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -844,12 +712,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -865,16 +727,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
     }
 
-//    @Test
-//    fun `GIVEN null shipment button data WHEN get shipment button data THEN should return new shipment button data`() {
-//        // Given
-//        presenter.setShipmentButtonPaymentModel(null)
-//
-//        // Then
-// //        assertEquals(0, presenter.shipmentButtonPayment.value)
-//        assertEquals("-", presenter.shipmentButtonPayment.value.totalPrice)
-//    }
-
     @Test
     fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
         // Given
@@ -888,15 +740,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
 //        assertEquals(1, presenter.shipmentButtonPayment.value.quantity)
         assertEquals("Rp1.000", presenter.shipmentButtonPayment.value.totalPrice)
     }
-
-//    @Test
-//    fun `GIVEN null shipment cost data WHEN get shipment cost data THEN should return new shipment cost data`() {
-//        // Given
-//        presenter.setShipmentCostModel(null)
-//
-//        // Then
-//        assertEquals(ShipmentCostModel(), presenter.getShipmentCostModel())
-//    }
 
     @Test
     fun `GIVEN not null shipment cost data WHEN get shipment cost data THEN should return shipment cost data`() {
@@ -946,12 +789,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -974,12 +811,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1002,12 +833,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1037,12 +862,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1076,12 +895,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1102,12 +915,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1143,12 +950,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -1187,18 +988,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         // When
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         // Then
@@ -1231,7 +1027,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
 
         // Then
         verify {
-//            getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }
