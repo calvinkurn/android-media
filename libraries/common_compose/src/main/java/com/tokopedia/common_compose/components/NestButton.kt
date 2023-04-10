@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -95,17 +96,22 @@ fun NestButton(
     }
 
     if (variant == Variant.GHOST_INVERTED) {
+        val buttonColors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Transparent,
+            disabledBackgroundColor = Color.Transparent
+        )
+
         NestDefaultButton(
             modifier = modifier,
             text = text,
             textStyle = createTextStyle(variant, isEnabled, size),
             buttonCornerRadius = size.toCornerRadius(),
-            buttonColors = ButtonDefaults.outlinedButtonColors(),
+            buttonColors = buttonColors,
             buttonHeight = size.toHeightDp(),
-            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
+            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._0),
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = NestTheme.colors.GN._500,
+            progressBarColor = Color.White,
             onClick = onClick,
         )
     }
@@ -150,7 +156,7 @@ private fun NestDefaultButton(
             }
 
             if (isLoading) {
-                CircularProgressIndicator(color = progressBarColor)
+                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = progressBarColor)
             }
         }
     }
@@ -240,7 +246,7 @@ private fun createTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : 
     )
 
     val ghostInvertedTextStyle = NestTheme.typography.display1.copy(
-        color = NestTheme.colors.NN._0,
+        color = Color.White,
         fontWeight = FontWeight.ExtraBold,
         fontSize = size.toFontSize()
     )
