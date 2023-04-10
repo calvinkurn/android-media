@@ -80,6 +80,7 @@ val channelResponse = GetChannelResponse.Channel(
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
     shortVideoAllowed: Boolean = false,
+    hasContent: Boolean = false,
     channelId: String = "12345",
     channelStatus: ChannelStatus = ChannelStatus.Draft,
     durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -99,6 +100,7 @@ fun buildConfigurationUiModel(
     countDown = countDown,
     scheduleConfig = scheduleConfig,
     tnc = tnc,
+    hasContent = hasContent,
 )
 
 private fun buildDurationConfigUiModel(

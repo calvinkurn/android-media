@@ -26,6 +26,7 @@ import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingS
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -62,6 +63,7 @@ class SwitchAccountRobot(
     channelUseCase: GetChannelUseCase,
     addedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     sharedPreferences: HydraSharedPreferences,
+    playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) {
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -75,6 +77,7 @@ class SwitchAccountRobot(
             getChannelUseCase = channelUseCase,
             getAddedChannelTagsUseCase = addedChannelTagsUseCase,
             sharedPref = sharedPreferences,
+            playShortsEntryPointRemoteConfig = playShortsEntryPointRemoteConfig,
         ).apply {
             submitAction(PlayBroadcastAction.GetConfiguration())
         }
