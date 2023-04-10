@@ -35,7 +35,9 @@ class NotificationAffiliateEducationViewHolder(
         private const val DD_MMM = "dd MMM"
         private const val DD_MMM_YY = "dd MMM yy"
         private const val ITEM_HORIZONTAL_PADDING = 12
-        private const val PATH_EDU = "edu/"
+        private const val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
+            "https://affiliate-staging.tokopedia.com/edu/"
+        private const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
@@ -114,7 +116,11 @@ class NotificationAffiliateEducationViewHolder(
             Locale.getDefault(),
             "%s?url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
-            TokopediaUrl.getInstance().AFFILIATE + PATH_EDU,
+            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+                EDUCATION_ARTICLE_DETAIL_STAGING_URL
+            } else {
+                EDUCATION_ARTICLE_DETAIL_PROD_URL
+            },
             slug
         )
     }
