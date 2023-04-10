@@ -156,14 +156,12 @@ class JakCardBalanceViewModel @Inject constructor(
                         topUpCardData
                     )
                     val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterLoadResponse))
-
-                    val lastBalanceAfterUpdate = if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
-                        lastBalance
+                    val lastBalanceAfterUpdate = convertHexBalanceToIntBalance(separatedCheckBalanceString)
+                    if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
-                         convertHexBalanceToIntBalance(separatedCheckBalanceString)
+                        getTopUpConfirmationProcess(topUpJakCardResponse, topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                     }
-
-                    getTopUpConfirmationProcess(topUpJakCardResponse, topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                 }
             } catch (e: IOException) {
                 errorCardMessageMutable.postValue(e)
@@ -179,6 +177,10 @@ class JakCardBalanceViewModel @Inject constructor(
                 cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
 
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
+            if (result.data.status == JakCardStatus.ERROR.status ||
+                result.data.status == JakCardStatus.WRITE.status) {
+                result.data.status = JakCardStatus.DONE.status
+            }
             jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
         }){
             jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(
