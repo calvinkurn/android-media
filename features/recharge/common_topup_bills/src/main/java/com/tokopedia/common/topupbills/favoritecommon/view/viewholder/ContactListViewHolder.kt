@@ -24,7 +24,7 @@ class ContactListViewHolder(
                 commonTopupBillsContainerContactNumber.setOnClickListener {
                     listener.onContactNumberClick(contact.name, contact.number)
                 }
-            } else {
+            } else if (contact.number.isNotEmpty()) {
                 commonTopupBillsContactNumber.hide()
                 commonTopupBillsContactName.text = contact.number
                 commonTopupBillsInitial.text = contact.number[0].toString()
