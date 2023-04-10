@@ -456,14 +456,14 @@ class PlayShortsViewModel @Inject constructor(
                 config
             }
 
-            renderPerformanceDashboardEntryPoint(finalConfig)
+            setupPerformanceDashboardEntryPoint(finalConfig)
 
             _config.update { finalConfig }
             setSelectedAccount(account)
         }
     }
 
-    private fun renderPerformanceDashboardEntryPoint(config: PlayShortsConfigUiModel) {
+    private fun setupPerformanceDashboardEntryPoint(config: PlayShortsConfigUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
         if (isAllowToSeePerformanceDashboard && config.hasContent) {
             submitAction(PlayShortsAction.AddBannerPreparation(banner))

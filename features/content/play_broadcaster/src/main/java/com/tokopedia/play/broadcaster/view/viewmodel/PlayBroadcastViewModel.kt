@@ -569,8 +569,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setDurationConfig(configUiModel.durationConfig)
             setScheduleConfig(configUiModel.scheduleConfig)
 
-            renderShortEntryPoint(configUiModel)
-            renderPerformanceDashboardEntryPoint(configUiModel)
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
 
             broadcastTimer.setupDuration(
                 configUiModel.durationConfig.remainingDuration,
@@ -906,7 +906,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun renderShortEntryPoint(config: ConfigurationUiModel) {
+    private fun setupShortEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
         if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
             submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
@@ -915,7 +915,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun renderPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
+    private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
         if (isAllowToSeePerformanceDashboard && config.hasContent) {
             submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
