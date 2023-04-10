@@ -9,18 +9,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.components.NestChip
 import com.tokopedia.common_compose.components.Size
-import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -35,7 +35,7 @@ fun NestSortFilter(
 ) {
     // Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
     LazyRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (showClearFilterIcon) item { ClearSortFilterItem(onClearFilter) }
+        if (showClearFilterIcon) item { ClearSortFilterItem(onClick = onClearFilter) }
         items(items) {
             NestChip(
                 text = it.title,
@@ -49,7 +49,11 @@ fun NestSortFilter(
 }
 
 @Composable
-private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
+private fun ClearSortFilterItem(
+    iconVector: ImageVector = Icons.Outlined.Close,
+    text: String? = null,
+    onClick: () -> Unit = {}
+) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
     val backgroundColor = NestTheme.colors.NN._0
     val borderColor = NestTheme.colors.NN._200
@@ -59,15 +63,27 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
         border = BorderStroke(1.dp, borderColor),
         modifier = Modifier
             .height(32.dp)
+            .clickable { onClick() }
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Close,
-            modifier = Modifier
-                .clickable { onClearFilter() }
-                .padding(horizontal = 12.dp),
-            contentDescription = "Clear Filter Icon",
-            tint = LocalNestColor.current.NN._500
-        )
+        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier.padding(end = 4.dp),
+                imageVector = iconVector,
+                contentDescription = "Clear Filter Icon",
+                tint = LocalNestColor.current.NN._500
+            )
+            if (text != null) {
+                Text(text = text)
+            }
+        }
+    }
+}
+
+@Preview(name = "Prefix Sortfilter")
+@Composable
+fun PrefixSortFilterPreview() {
+    NestTheme {
+        ClearSortFilterItem(iconVector = Icons.Default.Settings, text = "Filter")
     }
 }
 
