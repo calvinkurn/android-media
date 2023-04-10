@@ -8,13 +8,13 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailCourierDriverIconBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CourierActionButtonAdapter(
     private val driver: ShipmentInfoUiModel.CourierDriverInfoUiModel,
     private val navigator: BuyerOrderDetailNavigator
-): RecyclerView.Adapter<CourierActionButtonAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<CourierActionButtonAdapter.ViewHolder>() {
 
     var driverActionButtonList: List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> =
         emptyList()
@@ -50,7 +50,7 @@ class CourierActionButtonAdapter(
         }
 
         private fun setButtonIcon(button: ShipmentInfoUiModel.CourierDriverInfoUiModel.Button?) {
-            binding?.btnIconActionDriver?.setImage(IconUnify.CALL)
+            binding?.btnIconActionDriver?.setImage(button?.icon.toIntOrZero())
         }
 
         private fun setupListener(button: ShipmentInfoUiModel.CourierDriverInfoUiModel.Button?) {
@@ -73,7 +73,7 @@ class CourierActionButtonAdapter(
             }
         }
 
-        enum class Action (val value: String) {
+        enum class Action(val value: String) {
             URL("URL"),
             APPLINK("APPLINK"),
             ACTION("ACTION")

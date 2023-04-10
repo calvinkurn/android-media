@@ -120,7 +120,7 @@ data class GetBuyerOrderDetailResponse(
                     val consultationPatientName: String = String.EMPTY,
                     @SerializedName("consultation_prescription_number")
                     @Expose
-                    val consultationPrescriptionNumber: String = String.EMPTY,
+                    val consultationPrescriptionNumber: String = String.EMPTY
                 )
             }
 
@@ -389,7 +389,7 @@ data class GetBuyerOrderDetailResponse(
                 data class Button(
                     @SerializedName("key")
                     val key: String = "",
-                    @SerializedName("icon")
+                    @SerializedName("icon_key")
                     val icon: String = "",
                     @SerializedName("action_type")
                     val actionType: String = "",
