@@ -1,6 +1,9 @@
 package com.tokopedia.graphql.util
 
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+
 
 object RemoteConfigHelper {
     //need to define remote config key here, since we can't include remote_config module inside graphql module, because of circular dependency
@@ -11,6 +14,7 @@ object RemoteConfigHelper {
                 KEY_ENABLE_GQL_PARSE_ERROR_LOGGING_IMPROVEMENT
             )
         } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
             false
         }
     }

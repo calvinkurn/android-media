@@ -60,6 +60,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     /*
     1. ContraintLayout is required, because fakeresponse is has impl of constraintLayout
     And without adding ContraintLayout, we will get error in assembleRelease of Graphql
