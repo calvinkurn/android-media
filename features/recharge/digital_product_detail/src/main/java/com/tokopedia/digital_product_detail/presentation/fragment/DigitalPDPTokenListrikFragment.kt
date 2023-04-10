@@ -40,7 +40,6 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
@@ -62,7 +61,6 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTok
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -573,10 +571,8 @@ class DigitalPDPTokenListrikFragment :
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else {
-                setupDynamicScrollViewPadding()
             }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -795,10 +791,11 @@ class DigitalPDPTokenListrikFragment :
                             this
                         )
                         binding?.run {
-                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
+                            val defaultPadding: Int = rechargePdpTokenListrikClientNumberWidget.height
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
                             } ?: 0
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }
