@@ -37,7 +37,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
-            val (productListData,nextPage) = productCardsRepository.getProducts(
+            val (productListData,additionalInfo) = productCardsRepository.getProducts(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(PAGE_START,
@@ -56,7 +56,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
             it.noOfPagesLoaded = 1
-            it.nextPageKey = nextPage
+            it.nextPageKey = additionalInfo?.nextPage
+            it.compAdditionalInfo = additionalInfo
             if (productListData.isEmpty()) return true
             if(it.properties?.tokonowATCActive == true)
                 Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
@@ -74,7 +75,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
-            val (productListData,nextPage) = productCardsRepository.getProducts(
+            val (productListData,additionalInfo) = productCardsRepository.getProducts(
                     if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
                         component1.dynamicOriginalId!! else component1.id,
                     getQueryParameterMap(component1.pageLoadedCounter,
@@ -91,7 +92,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             component.userAddressData),
                     pageEndPoint,
                     component1.name)
-            component1.nextPageKey = nextPage
+            component1.nextPageKey = additionalInfo?.nextPage
             if (productListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
@@ -117,7 +118,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             }
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
-            val (productListData,nextPage) = productCardsRepository.getProducts(
+            val (productListData,additionalInfo) = productCardsRepository.getProducts(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(it.pageLoadedCounter,
                             parentComponentsItem?.chipSelectionData,
@@ -133,7 +134,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.userAddressData),
                     pageEndPoint,
                     it.name)
-            component.nextPageKey = nextPage
+            component.nextPageKey = additionalInfo?.nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
             updatePaginatedData(productListData, it)
             if (it.properties?.tokonowATCActive == true) {

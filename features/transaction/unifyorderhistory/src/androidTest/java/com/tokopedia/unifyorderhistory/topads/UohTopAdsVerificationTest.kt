@@ -32,13 +32,13 @@ class UohTopAdsVerificationTest {
 
     @get:Rule
     var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
-            Manifest.permission.INTERNET,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.INTERNET,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<UohListActivity>(UohListActivity::class.java) {
+    var activityRule = object : ActivityTestRule<UohListActivity>(UohListActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
@@ -87,7 +87,7 @@ class UohTopAdsVerificationTest {
     private fun clickProductRecommItem(uohRecyclerView: RecyclerView, i: Int) {
         try {
             onView(withId(uohRecyclerView.id))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
         } catch (e: PerformException) {
             e.printStackTrace()
         }

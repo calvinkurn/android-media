@@ -1,8 +1,9 @@
 package com.tokopedia.purchase_platform.common.feature.bottomsheet
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.view.LayoutInflater
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
@@ -12,7 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class InsuranceBottomSheet {
 
     companion object {
-        private const val IMAGE_URL  = "https://images.tokopedia.net/img/logistic/assets/shipping-insurance.png"
+        private const val IMAGE_URL  = TokopediaImageUrl.IMAGE_URL_SHIPPING_INSURANCE
     }
 
     private var desc: String = ""
@@ -38,7 +39,6 @@ class InsuranceBottomSheet {
             setChild(binding.root)
         }
         bottomSheet?.show(fragmentManager, "")
-
     }
 
     private fun setupChildView(binding: LayoutInsuranceBottomSheetBinding) {

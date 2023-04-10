@@ -14,10 +14,13 @@ import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatLoadingViewHolder
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatSeparatorViewHolder
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
-import com.tokopedia.minicart.databinding.*
+import com.tokopedia.minicart.databinding.ItemMiniCartChatLoadingBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartChatProductBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartChatSeparatorBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartChatUnavailableReasonBinding
 
-class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProductViewHolder.ChatProductListener? = null)
-    : BaseAdapterTypeFactory(), MiniCartChatListTypeFactory {
+class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProductViewHolder.ChatProductListener? = null) :
+    BaseAdapterTypeFactory(), MiniCartChatListTypeFactory {
 
     override fun type(uiModel: LoadingModel): Int {
         return MiniCartChatLoadingViewHolder.LAYOUT
@@ -55,6 +58,5 @@ class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProdu
             }
             else -> super.createViewHolder(parent, viewType)
         }
-
     }
 }
