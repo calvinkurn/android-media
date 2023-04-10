@@ -135,10 +135,11 @@ class ShopHomeCarousellProductViewHolder(
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {
             ShopPageHomeMapper.mapToProductCardModel(
-                isHasAtc(),
-                false,
-                it,
-                false
+                isHasAddToCartButton = isHasAtc(),
+                hasThreeDots = false,
+                shopHomeProductViewModel = it,
+                isWideContent = false,
+                productRating = if (it.rating != 0.0) it.rating.toString() else ""
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

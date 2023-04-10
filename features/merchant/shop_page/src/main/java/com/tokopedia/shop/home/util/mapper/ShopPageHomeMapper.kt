@@ -204,7 +204,8 @@ object ShopPageHomeMapper {
         isHasAddToCartButton: Boolean,
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        isWideContent: Boolean
+        isWideContent: Boolean,
+        productRating: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -226,7 +227,7 @@ object ShopPageHomeMapper {
             discountPercentage = discountPercentage,
             slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
             formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-            countSoldRating = shopHomeProductViewModel.averageRating,
+            countSoldRating = productRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                 mapToProductCardLabelGroup(it)
