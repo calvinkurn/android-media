@@ -348,13 +348,15 @@ class MainAddressFragment :
                     }
                     if (viewModel.isClearData) clearData()
 
-                    mainAddressListener?.setupTicker(
-                        firstTicker = if (it.data.listAddress.isNotEmpty() && viewModel.page == 1) {
-                            it.data.pageInfo?.ticker
-                        } else {
-                            null
-                        }
-                    )
+                    if (viewModel.page == 1) {
+                        mainAddressListener?.setupTicker(
+                            firstTicker = if (it.data.listAddress.isNotEmpty()) {
+                                it.data.pageInfo?.ticker
+                            } else {
+                                null
+                            }
+                        )
+                    }
 
                     if (it.data.listAddress.isNotEmpty()) {
                         updateStateForCheckoutSnippet(it.data.listAddress)
@@ -975,7 +977,9 @@ class MainAddressFragment :
         return try {
             val userConsent = UserConsentWidget(requireContext())
             userConsent.load(
-                viewLifecycleOwner, this, ConsentCollectionParam(
+                viewLifecycleOwner,
+                this,
+                ConsentCollectionParam(
                     collectionId = viewModel.deleteCollectionId
                 )
             )
