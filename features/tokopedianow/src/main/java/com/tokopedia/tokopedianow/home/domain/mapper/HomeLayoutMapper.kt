@@ -97,6 +97,7 @@ object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
+    private const val SUCCESS_CODE = "200"
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -263,19 +264,24 @@ object HomeLayoutMapper {
                 slugList = slugList
             )
 
-            val layout = it.layout.copy(
-                claimCouponList = couponList,
-                state = state,
-                slugs = slugList
-            )
-            val newItem = HomeLayoutItemUiModel(
-                layout = layout,
-                state = HomeLayoutItemState.LOADED
-            )
-            val index = indexOf(it)
-
-            removeAt(index)
-            add(index, newItem)
+            if (response?.resultStatus?.code == SUCCESS_CODE && couponList.isEmpty()) {
+                removeItem(widgetId)
+            } else {
+                updateItemById(
+                    id = widgetId,
+                    block = {
+                        val layout = it.layout.copy(
+                            claimCouponList = couponList,
+                            state = state,
+                            slugs = slugList
+                        )
+                        HomeLayoutItemUiModel(
+                            layout = layout,
+                            state = HomeLayoutItemState.LOADED
+                        )
+                    }
+                )
+            }
         }
     }
 

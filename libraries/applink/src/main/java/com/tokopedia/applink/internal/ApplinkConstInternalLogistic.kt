@@ -39,4 +39,8 @@ object ApplinkConstInternalLogistic {
     const val MANAGE_ADDRESS_FROM_ACCOUNT = "$MANAGE_ADDRESS?$PARAM_SOURCE=account"
 
     const val RETURN_TO_SHIPPER = "$INTERNAL_LOGISTIC/returntoshipper?order_id={order_id}"
+
+    const val PINPOINT = "$INTERNAL_LOGISTIC/pinpoint"
+
+    const val FIND_NEW_DRIVER = "$INTERNAL_LOGISTIC/findnewdriver"
 }

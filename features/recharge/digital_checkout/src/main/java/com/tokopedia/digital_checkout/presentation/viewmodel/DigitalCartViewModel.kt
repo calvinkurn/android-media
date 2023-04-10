@@ -330,6 +330,13 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
+    fun updateSubscriptionMetadata(additionalMetadata: String) {
+        val subscriptionProduct = requestCheckoutParam.crossSellProducts.values.firstOrNull {
+            it.isSubscription
+        }
+        subscriptionProduct?.additionalMetadata = additionalMetadata
+    }
+
     fun onFintechProductChecked(
         fintechProduct: FintechProduct,
         isChecked: Boolean,
@@ -346,12 +353,13 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean
     ) {
         val fintechProduct = digitalCrossSellData.product
-        if (requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && !isChecked) {
+        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
+        if (requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && !isChecked) {
             // remove
-            requestCheckoutParam.crossSellProducts.remove(fintechProduct.tierId)
-        } else if (!requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && isChecked) {
+            requestCheckoutParam.crossSellProducts.remove(uniqueKey)
+        } else if (!requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && isChecked) {
             // add
-            requestCheckoutParam.crossSellProducts[fintechProduct.tierId] = digitalCrossSellData
+            requestCheckoutParam.crossSellProducts[uniqueKey] = digitalCrossSellData
         }
     }
 
@@ -402,7 +410,7 @@ class DigitalCartViewModel @Inject constructor(
         _payment.postValue(paymentSummary)
     }
 
-    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier, isUseGql: Boolean) {
+    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
         val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
@@ -417,9 +425,7 @@ class DigitalCartViewModel @Inject constructor(
                     val checkoutData = withContext(dispatcher) {
                         digitalCheckoutUseCase.execute(
                             requestCheckoutParams = requestCheckoutParam,
-                            digitalIdentifierParams = digitalIdentifierParam,
-                            fintechProduct = it.attributes.fintechProduct.getOrNull(0),
-                            isUseGql = isUseGql
+                            digitalIdentifierParams = digitalIdentifierParam
                         )
                     }
 
