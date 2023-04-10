@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -20,8 +22,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -88,7 +90,7 @@ class ProductMediaRecomBottomSheetManager(
         RecommendationCarouselTokonowListener {
 
         companion object {
-            private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager.BottomSheet"
+            private const val HEADER_MARGIN = 16
         }
 
         private var binding by viewBinding(BsProductMediaRecomBinding::bind)
@@ -108,7 +110,9 @@ class ProductMediaRecomBottomSheetManager(
                 false
             ).apply { binding = this }.root
             setChild(view)
-            return super.onCreateView(inflater, container, savedInstanceState)
+            return super.onCreateView(inflater, container, savedInstanceState).also {
+                setupBottomSheet()
+            }
         }
 
         override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {}
@@ -124,9 +128,7 @@ class ProductMediaRecomBottomSheetManager(
             recomItem: RecommendationItem,
             itemPosition: Int,
             adapterPosition: Int
-        ) {
-            if (recomItem.isTopAds) onTopAdsProductCardImpressed(recomItem)
-        }
+        ) {}
 
         override fun onRecomProductCardClicked(
             data: RecommendationCarouselData,
@@ -135,7 +137,6 @@ class ProductMediaRecomBottomSheetManager(
             itemPosition: Int,
             adapterPosition: Int
         ) {
-            if (recomItem.isTopAds) onTopAdsProductCardClicked(recomItem)
             RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -214,6 +215,12 @@ class ProductMediaRecomBottomSheetManager(
             )
         }
 
+        private fun setupBottomSheet() {
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(
+                HEADER_MARGIN.toPx(), Int.ZERO, HEADER_MARGIN.toPx(), Int.ZERO
+            )
+        }
+
         private fun setupErrorState(error: Throwable) {
             val errorMessage = ErrorHandler.getErrorMessage(context, error)
             binding?.globalErrorProductMedia?.setType(
@@ -227,29 +234,6 @@ class ProductMediaRecomBottomSheetManager(
                 }
             )
             binding?.globalErrorProductMedia?.errorDescription?.text = errorMessage
-        }
-
-        private fun onTopAdsProductCardClicked(recomItem: RecommendationItem) {
-            val productId = recomItem.productId.toString()
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitClickUrl(
-                TOPADS_CLASS_NAME,
-                recomItem.clickUrl,
-                productId,
-                recomItem.name,
-                recomItem.imageUrl
-            )
-        }
-
-        private fun onTopAdsProductCardImpressed(recomItem: RecommendationItem) {
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitImpressionUrl(
-                TOPADS_CLASS_NAME,
-                recomItem.trackerImageUrl,
-                recomItem.productId.toString(),
-                recomItem.name,
-                recomItem.imageUrl
-            )
         }
     }
 }
