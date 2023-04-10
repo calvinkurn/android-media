@@ -13,6 +13,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,10 +48,10 @@ fun NestTextField(
                 }
             },
             textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-            modifier = modifier.defaultMinSize(minHeight = 48.dp).fillMaxWidth(),
+            modifier = modifier.defaultMinSize(minHeight = 48.dp, minWidth = 75.dp).fillMaxWidth(),
             placeholder = placeholder?.let { { NestTypography(text = it) } },
-            leadingIcon = generatePrefix(prefix),
-            trailingIcon = generateLeadingIcon(icon1, icon2, suffix),
+            leadingIcon = generatePrefix(prefix, enabled),
+            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
             label = label?.let {
                 {
                     NestTypography(text = it)
@@ -62,7 +63,10 @@ fun NestTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = NestTheme.colors.NN._300,
                 focusedBorderColor = NestTheme.colors.GN._500,
-                errorBorderColor = NestTheme.colors.RN._500
+                errorBorderColor = NestTheme.colors.RN._500,
+                disabledBorderColor = NestTheme.colors.NN._200,
+                disabledTextColor = NestTheme.colors.NN._400,
+                textColor = NestTheme.colors.NN._950
             ),
             shape = RoundedCornerShape(8.dp)
         )
@@ -73,7 +77,12 @@ fun NestTextField(
                     modifier = Modifier
                         .weight(1F)
                         .padding(horizontal = 16.dp),
-                    textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._600)
+                    textStyle = NestTheme.typography.paragraph3.copy(
+                        color = generateHelperColor(
+                            enabled = enabled,
+                            error = !error.isNullOrEmpty()
+                        )
+                    )
                 )
             }
             error?.let {
@@ -103,13 +112,24 @@ fun NestTextField(
 }
 
 @Composable
-private fun generatePrefix(prefix: String? = null): @Composable (() -> Unit)? {
+private fun generateHelperColor(enabled: Boolean, error: Boolean): Color {
+    if (!enabled) {
+        return NestTheme.colors.NN._400
+    } else if (error) {
+        return NestTheme.colors.RN._500
+    } else {
+        return NestTheme.colors.NN._600
+    }
+}
+
+@Composable
+private fun generatePrefix(prefix: String? = null, enabled: Boolean): @Composable (() -> Unit)? {
     if (prefix != null) {
         return {
             NestTypography(
                 text = prefix,
                 textStyle = NestTheme.typography.display2.copy(
-                    color = NestTheme.colors.NN._600,
+                    color = if (enabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400,
                     fontWeight = FontWeight.Bold
                 )
             )
@@ -123,7 +143,8 @@ private fun generatePrefix(prefix: String? = null): @Composable (() -> Unit)? {
 private fun generateLeadingIcon(
     icon1: @Composable (() -> Unit)? = null,
     icon2: @Composable (() -> Unit)? = null,
-    suffix: String? = null
+    suffix: String? = null,
+    enabled: Boolean
 ): @Composable (() -> Unit)? {
     if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty()) {
         return {
@@ -132,7 +153,7 @@ private fun generateLeadingIcon(
                     NestTypography(
                         text = it,
                         textStyle = NestTheme.typography.display2.copy(
-                            color = NestTheme.colors.NN._600,
+                            color = if (enabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400,
                             fontWeight = FontWeight.Bold
                         )
                     )
