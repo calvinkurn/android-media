@@ -65,9 +65,6 @@ class PickerViewModel @Inject constructor(
     private var _connectionIssue = MediatorLiveData<String>()
     val connectionIssue: LiveData<String> get() = _connectionIssue
 
-    var isMediaListLessThanThreshold = false
-        private set
-
     val uiEvent: Flow<EventState>
         get() {
             return eventBus
@@ -142,7 +139,6 @@ class PickerViewModel @Inject constructor(
                 .onCompletion { _isFetchMediaLoading.value = false }
                 .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
-                    isMediaListLessThanThreshold = data.size < mediaFiles.maxLimitSize()
                     _medias.value = mediaToUiModel(data)
 
                     // check if the data is exist or not,

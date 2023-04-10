@@ -237,7 +237,6 @@ class PickerViewModelTest {
         assert(viewModel.medias.value?.size == mediaList.size)
         assert(viewModel.isFetchMediaLoading.value != null)
         assert(viewModel.isMediaEmpty.value != null)
-        assert(viewModel.isMediaListLessThanThreshold.not())
     }
 
     @Test
@@ -255,7 +254,6 @@ class PickerViewModelTest {
         assert(viewModel.medias.value?.size == mediaList.size)
         assert(viewModel.isFetchMediaLoading.value != null)
         assert(viewModel.isMediaEmpty.value != null)
-        assert(viewModel.isMediaListLessThanThreshold)
     }
 
     @Test
@@ -268,7 +266,6 @@ class PickerViewModelTest {
 
         // Then
         assertEquals(false, viewModel.isFetchMediaLoading.value)
-        assertEquals(false, viewModel.isMediaListLessThanThreshold)
     }
 
     @Test

@@ -69,7 +69,7 @@ open class GalleryFragment @Inject constructor(
         )
     }
 
-    private val layoutManager by lazy {
+    private val mLayoutManager by lazy {
         GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
     }
 
@@ -80,18 +80,18 @@ open class GalleryFragment @Inject constructor(
     private var uiModel = GalleryUiModel()
 
     private val endlessScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        object : EndlessRecyclerViewScrollListener(layoutManager) {
+        object : EndlessRecyclerViewScrollListener(mLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 // indicates the pagination isn't album changed
                 uiModel.hasChangeAlbum = false
 
-                hasNextPage = if (uiModel.bucketCount.isMoreThanZero()) {
+                val hasNextPage = if (uiModel.bucketCount.isMoreThanZero()) {
                     featureAdapter.itemCount < uiModel.bucketCount
                 } else {
                     true // force as true for recent media
                 }
 
-                if (viewModel.isMediaListLessThanThreshold.not() && hasNextPage) {
+                if (hasNextPage) {
                     viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
                 }
             }
@@ -151,6 +151,7 @@ open class GalleryFragment @Inject constructor(
             uiModel.bucketCount = count
             uiModel.bucketId = id
 
+            endlessScrollListener.resetState()
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -271,7 +272,7 @@ open class GalleryFragment @Inject constructor(
             // common config
             it.setHasFixedSize(true)
             it.isNestedScrollingEnabled = false
-            it.layoutManager = layoutManager
+            it.layoutManager = mLayoutManager
             it.adapter = featureAdapter
 
             // scroll listener
