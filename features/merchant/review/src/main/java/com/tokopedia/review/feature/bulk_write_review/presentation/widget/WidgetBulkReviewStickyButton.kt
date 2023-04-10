@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetBulkReviewStickyButtonBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewStickyButtonUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class WidgetBulkReviewStickyButton(
@@ -25,10 +26,10 @@ class WidgetBulkReviewStickyButton(
                 gone()
             }
             is BulkReviewStickyButtonUiState.Showing -> {
-                binding.btnBulkReviewSend.text = uiState.text.getStringValueWithDefaultParam(context)
-                binding.cbBulkReviewAnonymous.setOnCheckedChangeListener(null)
-                binding.cbBulkReviewAnonymous.isChecked = uiState.anonymous
-                show()
+                bind(uiState.text, uiState.anonymous, false)
+            }
+            is BulkReviewStickyButtonUiState.Submitting -> {
+                bind(uiState.text, uiState.anonymous, true)
             }
         }
     }
@@ -40,6 +41,14 @@ class WidgetBulkReviewStickyButton(
         binding.btnBulkReviewSend.setOnClickListener {
             listener.onClickSubmitReview()
         }
+    }
+
+    private fun bind(buttonText: StringRes, isAnonymous: Boolean, submitting: Boolean) {
+        binding.btnBulkReviewSend.text = buttonText.getStringValueWithDefaultParam(context)
+        binding.cbBulkReviewAnonymous.setOnCheckedChangeListener(null)
+        binding.cbBulkReviewAnonymous.isChecked = isAnonymous
+        binding.btnBulkReviewSend.isLoading = submitting
+        show()
     }
 
     interface Listener {

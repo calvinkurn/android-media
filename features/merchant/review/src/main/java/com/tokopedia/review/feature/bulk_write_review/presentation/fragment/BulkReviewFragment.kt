@@ -348,7 +348,6 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     it.items,
                     it.stickyButtonUiState
                 )
-                is BulkReviewPageUiState.Submitting -> onBulkReviewPageSubmitting()
                 is BulkReviewPageUiState.Cancelled -> onBulkReviewPageCancelled()
                 is BulkReviewPageUiState.Submitted -> onBulkReviewPageSubmitted(it.userName)
             }
@@ -459,13 +458,11 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     rvBulkReviewItemsAlphaTarget = 0F,
                     loaderBulkReviewAlphaTarget = 0F,
                     widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
                     globalErrorBulkReviewAlphaTarget = 1F
                 ) {
                     rvBulkReviewItems.gone()
                     loaderBulkReview.gone()
                     widgetBulkReviewStickyButton.gone()
-                    widgetBulkReviewSubmitLoader.gone()
                     continuation.resume(Unit)
                 }
             }
@@ -485,13 +482,11 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     rvBulkReviewItemsAlphaTarget = 0F,
                     loaderBulkReviewAlphaTarget = 1F,
                     widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
                     globalErrorBulkReviewAlphaTarget = 0F
                 ) {
                     rvBulkReviewItems.gone()
                     widgetBulkReviewStickyButton.gone()
                     globalErrorBulkReview.gone()
-                    widgetBulkReviewSubmitLoader.gone()
                     continuation.resume(Unit)
                 }
             }
@@ -521,47 +516,21 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         rvBulkReviewItems.show()
                         widgetBulkReviewStickyButton.updateUiState(stickyButtonUiState)
                         widgetBulkReviewStickyButton.setListener(stickyButtonListener)
+                        if (stickyButtonUiState is BulkReviewStickyButtonUiState.Submitting) {
+                            coachMarkHandler.tryDismissCoachMark()
+                        }
                         animatePageUiStateChange(
                             rvBulkReviewItemsAlphaTarget = 1F,
                             loaderBulkReviewAlphaTarget = 0F,
                             widgetBulkReviewStickyButtonAlphaTarget = 1F,
-                            widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
                             globalErrorBulkReviewAlphaTarget = 0F
                         ) {
                             loaderBulkReview.gone()
                             globalErrorBulkReview.gone()
-                            widgetBulkReviewSubmitLoader.gone()
                             coachMarkHandler.tryShowCoachMark()
                             continuation.resume(Unit)
                         }
                     }
-                }
-            }
-        }
-    }
-
-    /**
-     * Handle showing the submitting state UI. We use suspendCoroutine to make this function a suspend
-     * function. This is necessary because we want to make sure that the next emitted value will
-     * be collected only after the animation/transition to the submitting state UI is finished.
-     */
-    private suspend fun onBulkReviewPageSubmitting() {
-        suspendCoroutine<Unit> { continuation ->
-            binding?.run {
-                widgetBulkReviewSubmitLoader.show()
-                coachMarkHandler.tryDismissCoachMark()
-                animatePageUiStateChange(
-                    rvBulkReviewItemsAlphaTarget = 0F,
-                    loaderBulkReviewAlphaTarget = 0F,
-                    widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 1F,
-                    globalErrorBulkReviewAlphaTarget = 0F
-                ) {
-                    rvBulkReviewItems.gone()
-                    widgetBulkReviewStickyButton.gone()
-                    globalErrorBulkReview.gone()
-                    loaderBulkReview.gone()
-                    continuation.resume(Unit)
                 }
             }
         }
@@ -651,7 +620,6 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         rvBulkReviewItemsAlphaTarget: Float,
         loaderBulkReviewAlphaTarget: Float,
         widgetBulkReviewStickyButtonAlphaTarget: Float,
-        widgetBulkReviewSubmitLoaderAlphaTarget: Float,
         globalErrorBulkReviewAlphaTarget: Float,
         onAnimationEnd: () -> Unit
     ) {
@@ -659,12 +627,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             val currentRvBulkReviewItemsAlpha = rvBulkReviewItems.alpha
             val currentLoaderBulkReviewAlpha = loaderBulkReview.alpha
             val currentWidgetBulkReviewStickyButtonAlpha = widgetBulkReviewStickyButton.alpha
-            val currentWidgetBulkReviewSubmitLoaderAlpha = widgetBulkReviewSubmitLoader.alpha
             val currentGlobalErrorBulkReviewAlpha = globalErrorBulkReview.alpha
             val needToAnimate = currentRvBulkReviewItemsAlpha != rvBulkReviewItemsAlphaTarget ||
                 currentLoaderBulkReviewAlpha != loaderBulkReviewAlphaTarget ||
                 currentWidgetBulkReviewStickyButtonAlpha != widgetBulkReviewStickyButtonAlphaTarget ||
-                currentWidgetBulkReviewSubmitLoaderAlpha != widgetBulkReviewSubmitLoaderAlphaTarget ||
                 currentGlobalErrorBulkReviewAlpha != globalErrorBulkReviewAlphaTarget
             if (needToAnimate) {
                 val animatorSet = AnimatorSet()
@@ -686,12 +652,6 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         View.ALPHA,
                         currentWidgetBulkReviewStickyButtonAlpha,
                         widgetBulkReviewStickyButtonAlphaTarget
-                    ),
-                    ObjectAnimator.ofFloat(
-                        widgetBulkReviewSubmitLoader,
-                        View.ALPHA,
-                        currentWidgetBulkReviewSubmitLoaderAlpha,
-                        widgetBulkReviewSubmitLoaderAlphaTarget
                     ),
                     ObjectAnimator.ofFloat(
                         globalErrorBulkReview,

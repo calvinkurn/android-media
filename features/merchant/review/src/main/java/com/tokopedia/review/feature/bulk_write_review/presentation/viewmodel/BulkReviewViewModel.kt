@@ -264,6 +264,8 @@ class BulkReviewViewModel @Inject constructor(
         initialValue = emptyList()
     )
     private val bulkReviewStickyButtonUiState = combine(
+        shouldSubmitReview,
+        submitBulkReviewRequestState,
         bulkReviewVisitableList,
         anonymous,
         bulkReviewStickyButtonMapper::map
@@ -295,7 +297,6 @@ class BulkReviewViewModel @Inject constructor(
         get() = _badRatingCategoryBottomSheetToasterQueue
     val bulkReviewPageUiState = combine(
         shouldCancelBulkReview,
-        shouldSubmitReview,
         submitBulkReviewRequestState,
         bulkReviewVisitableList,
         bulkReviewStickyButtonUiState,

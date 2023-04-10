@@ -5,7 +5,6 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkR
 
 sealed interface BulkReviewPageUiState {
     object Loading : BulkReviewPageUiState
-    object Submitting : BulkReviewPageUiState
     object Cancelled: BulkReviewPageUiState
     data class Submitted(
         val userName: String

@@ -56,11 +56,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewSubmitLoader
-        android:id="@+id/widget_bulk_review_submit_loader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:visibility="gone" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
