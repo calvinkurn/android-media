@@ -2,10 +2,7 @@ package com.tokopedia.tokopedianow.recipedetail.analytics
 
 import android.os.Bundle
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_NAME_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
@@ -127,7 +124,7 @@ class RecipeSimilarProductAnalytics(
         }
 
         sendEnhanceEcommerceEvent(
-            eventName = EVENT_PRODUCT_VIEW,
+            eventName = EVENT_VIEW_ITEM_LIST,
             dataLayer = dataLayer
         )
     }
@@ -163,7 +160,7 @@ class RecipeSimilarProductAnalytics(
         }
 
         sendEnhanceEcommerceEvent(
-            eventName = EVENT_PRODUCT_CLICK,
+            eventName = EVENT_SELECT_CONTENT,
             dataLayer = dataLayer
         )
     }
@@ -190,7 +187,7 @@ class RecipeSimilarProductAnalytics(
         }
 
         sendEnhanceEcommerceEvent(
-            eventName = EVENT_NAME_ADD_TO_CART,
+            eventName = EVENT_ADD_TO_CART,
             dataLayer = dataLayer
         )
     }
@@ -291,7 +288,7 @@ class RecipeSimilarProductAnalytics(
         }
 
         sendEnhanceEcommerceEvent(
-            eventName = EVENT_PRODUCT_VIEW,
+            eventName = EVENT_VIEW_ITEM_LIST,
             dataLayer = dataLayer
         )
     }

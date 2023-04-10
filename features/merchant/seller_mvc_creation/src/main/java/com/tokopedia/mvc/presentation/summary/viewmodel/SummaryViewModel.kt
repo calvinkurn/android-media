@@ -56,7 +56,8 @@ class SummaryViewModel @Inject constructor(
             it.copy(
                 voucherId = ADDING_VOUCHER_ID,
                 startPeriod = Date(),
-                endPeriod = Date()
+                endPeriod = Date(),
+                duplicatedVoucherId = it.voucherId
             )
         } else {
             it
@@ -129,7 +130,6 @@ class SummaryViewModel @Inject constructor(
     }
 
     fun previewImage(
-        isCreateMode: Boolean,
         voucherConfiguration: VoucherConfiguration,
         parentProductIds : List<Long>,
         imageRatio: ImageRatio
@@ -138,7 +138,7 @@ class SummaryViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getCouponImagePreviewUseCase.execute(
-                        isCreateMode,
+                        checkIsAdding(voucherConfiguration),
                         voucherConfiguration,
                         parentProductIds,
                         imageRatio

@@ -40,7 +40,6 @@ import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -52,6 +51,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
@@ -86,7 +86,6 @@ class PlayVideoFragment @Inject constructor(
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -202,8 +201,8 @@ class PlayVideoFragment @Inject constructor(
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -272,7 +271,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
+        val orientation = ScreenOrientation2.get(requireActivity())
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
@@ -323,7 +322,10 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
-        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+        videoView.setOrientation(
+            orientation,
+            playViewModel.videoOrientation,
+        )
     }
 
     private fun setupObserve() {
@@ -331,7 +333,6 @@ class PlayVideoFragment @Inject constructor(
         observeVideoProperty()
         observeBottomInsetsState()
         observePiPEvent()
-        observeOnboarding()
         observeCastState()
 
         observeUiState()
@@ -358,7 +359,10 @@ class PlayVideoFragment @Inject constructor(
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
-            videoView.setOrientation(orientation, meta.videoStream.orientation)
+            videoView.setOrientation(
+                orientation,
+                meta.videoStream.orientation,
+            )
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
@@ -397,18 +401,6 @@ class PlayVideoFragment @Inject constructor(
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
         }
-    }
-
-    private fun observeOnboarding() {
-        val startingChannel = activity?.intent?.data?.lastPathSegment.orEmpty()
-        val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
-
-        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            analytic.screenWithSwipeCoachMark(isShown = isShown)
-            if (!orientation.isLandscape && isShown) {
-                onboardingView?.showAnimated()
-            }
-        })
     }
 
     private fun observeCastState() {

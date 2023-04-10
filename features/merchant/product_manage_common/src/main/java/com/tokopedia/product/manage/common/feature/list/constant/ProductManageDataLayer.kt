@@ -22,7 +22,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_MULTIPLE = "click multiple select"
     const val EVENT_ACTION_CLICK_EDIT_PRICE = "click edit price"
     const val EVENT_ACTION_CLICK_EDIT_STOCK = "click edit stock"
-    const val EVENT_ACTION_CLICK_COMPLETE = "click complete product draft"
     const val EVENT_ACTION_CLICK_INVENTORY = "click inventory list tab"
     const val EVENT_ACTION_CLICK_CONTACT_CS = "click contact cs"
     const val EVENT_ACTION_CLICK_OOS_NOTIFY_ME = "click oos notify me icon"
