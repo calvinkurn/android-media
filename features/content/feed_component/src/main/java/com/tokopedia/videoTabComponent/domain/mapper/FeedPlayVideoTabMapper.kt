@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -225,6 +226,6 @@ object FeedPlayVideoTabMapper {
     }
 
     private fun shouldShowPerformanceDashboard(partnerType: String, partnerId: String, shopId: String): Boolean {
-        return partnerType == "shop" && partnerId == shopId
+        return partnerType == PartnerType.Shop.value && partnerId == shopId
     }
 }

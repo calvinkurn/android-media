@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -163,7 +164,7 @@ class PlayWidgetUiMapper @Inject constructor(
     }
 
     private fun shouldShowPerformanceDashboard(partnerType: String, partnerId: String): Boolean {
-        return partnerType == "shop" && partnerId == userSession.shopId
+        return partnerType == PartnerType.Shop.value && partnerId == userSession.shopId
     }
 
     companion object {

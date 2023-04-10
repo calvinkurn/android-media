@@ -85,4 +85,7 @@ data class PlayWidgetTotalView(
     val isVisible: Boolean,
 )
 
-object PlayCardShimmering: PlayWidgetItemUiModel()
+enum class PartnerType(val value: String) {
+    Shop("shop"),
+    User("user")
+}
