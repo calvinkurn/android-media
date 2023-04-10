@@ -63,8 +63,6 @@ class ThankYouPageActivity :
         DialogController(GratificationPresenter(this))
     }
 
-    private val remoteConfig = FirebaseRemoteConfigImpl(this)
-
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
@@ -337,6 +335,7 @@ class ThankYouPageActivity :
 
     private fun isGratifDisabled(): Boolean {
         return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(REMOTE_GRATIF_DISABLED, false)
         } catch (e: Exception) {
             false
@@ -345,10 +344,8 @@ class ThankYouPageActivity :
 
     private fun isWidgetOrderingEnabled(): Boolean {
         return try {
-            return RemoteConfigInstance
-                .getInstance()
-                .abTestPlatform
-                .getBoolean(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, true)
+            return getAbTestPlatform()
+                ?.getBoolean(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, true) ?: false
         } catch (e: Exception) {
             true
         }

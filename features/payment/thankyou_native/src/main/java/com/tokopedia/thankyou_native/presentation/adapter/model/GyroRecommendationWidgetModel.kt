@@ -9,8 +9,8 @@ import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 data class GyroRecommendationWidgetModel(
     val gyroRecommendation: GyroRecommendation,
     val thanksPageData: ThanksPageData,
-    val gyroRecommendationAnalytics: GyroRecommendationAnalytics,
-): Visitable<BottomContentFactory>, WidgetTag {
+    val gyroRecommendationAnalytics: GyroRecommendationAnalytics
+) : Visitable<BottomContentFactory>, WidgetTag {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -19,6 +19,6 @@ data class GyroRecommendationWidgetModel(
     override val tag: String = TAG
 
     companion object {
-        private const val TAG = "feature"
+        const val TAG = "feature"
     }
 }

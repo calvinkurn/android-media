@@ -8,8 +8,8 @@ import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 
 data class MarketplaceRecommendationWidgetModel(
     val thanksPageData: ThanksPageData,
-    val fragment: BaseDaggerFragment,
-): Visitable<BottomContentFactory>, WidgetTag {
+    val fragment: BaseDaggerFragment
+) : Visitable<BottomContentFactory>, WidgetTag {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -18,7 +18,6 @@ data class MarketplaceRecommendationWidgetModel(
     override val tag: String = TAG
 
     companion object {
-        private const val TAG = "pg"
+        const val TAG = "pg"
     }
 }
-

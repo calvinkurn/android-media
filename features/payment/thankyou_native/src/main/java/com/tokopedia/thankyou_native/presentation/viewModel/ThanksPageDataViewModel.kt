@@ -13,10 +13,7 @@ import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
-import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
-import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
-import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
@@ -69,7 +66,11 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _bannerLiveData = MutableLiveData<BannerWidgetModel>()
     val bannerLiveData: LiveData<BannerWidgetModel> = _bannerLiveData
 
-    private var widgetOrder = listOf<String>()
+    var widgetOrder = listOf<String>()
+        set(value) {
+            field = value
+            orderWidget(_bottomContentVisitableList.value.orEmpty())
+        }
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -100,12 +101,11 @@ class ThanksPageDataViewModel @Inject constructor(
                 it.engineData?.let { featureEngineData ->
                     _gyroResponseLiveData.value = featureEngineData
 
+                    widgetOrder = getWidgetOrder(featureEngineData)
+
                     getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
                         _bannerLiveData.value = bannerModel
                     }
-
-                    widgetOrder = getWidgetOrder(featureEngineData)
-                    orderWidget(_bottomContentVisitableList.value.orEmpty())
 
                     val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
                     if (topAdsRequestParams != null) {
@@ -153,7 +153,19 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun getWidgetOrder(featureEngineData: FeatureEngineData?): List<String> {
-        return FeatureRecommendationMapper.getWidgetOrder(featureEngineData).replace(" ", "").split(",")
+        val featureEngineWidgetOrder = FeatureRecommendationMapper.getWidgetOrder(featureEngineData)
+        return if (featureEngineWidgetOrder.isNotEmpty()) {
+            featureEngineWidgetOrder.replace(" ", "").split(",")
+        } else {
+            arrayListOf(
+                TopAdsRequestParams.TAG,
+                GyroRecommendationWidgetModel.TAG,
+                HeadlineAdsWidgetModel.TAG,
+                MarketplaceRecommendationWidgetModel.TAG,
+                DigitalRecommendationWidgetModel.TAG,
+                BannerWidgetModel.TAG
+            )
+        }
     }
 
     private fun getFeatureEngineBanner(featureEngineData: FeatureEngineData?): BannerWidgetModel? {

@@ -62,7 +62,6 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.BottomContentAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.BannerItemViewHolder
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -91,9 +90,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
-
-abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener,
-    RegisterMemberShipListener, MarketplaceRecommendationListener {
+abstract class ThankYouBaseFragment :
+    BaseDaggerFragment(),
+    OnDialogRedirectListener,
+    RegisterMemberShipListener,
+    MarketplaceRecommendationListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -148,7 +149,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this),
+            BottomContentFactory(this, this)
         )
     }
 
@@ -169,7 +170,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.apply {
             digitalRecomTrackingQueue = TrackingQueue(this)
         }
-
     }
 
     override fun onPause() {
@@ -177,13 +177,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         digitalRecomTrackingQueue?.sendAll()
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFeatureListingContainer()?.gone()
-        if (!::thanksPageData.isInitialized)
+        if (!::thanksPageData.isInitialized) {
             activity?.finish()
-        else {
+        } else {
             getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
 
@@ -203,8 +202,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
-            if (isThanksWidgetEnabled && shouldHideFeatureRecom == false)
+            if (isThanksWidgetEnabled && shouldHideFeatureRecom == false) {
                 thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
+            }
         }
     }
 
@@ -224,14 +224,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 addDigitalRecommendation(
                     containerView,
                     pgCategoryIds,
-                    DigitalRecommendationPage.PG_THANK_YOU_PAGE,
+                    DigitalRecommendationPage.PG_THANK_YOU_PAGE
                 )
             }
             is DigitalThankPage -> {
                 addDigitalRecommendation(
                     containerView,
                     pgCategoryIds,
-                    DigitalRecommendationPage.DG_THANK_YOU_PAGE,
+                    DigitalRecommendationPage.DG_THANK_YOU_PAGE
                 )
                 addMarketPlaceRecommendation(containerView)
             }
@@ -240,29 +240,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun addMarketPlaceRecommendation(containerView: LinearLayout?) {
         if (::thanksPageData.isInitialized) {
+            if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
             if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     MarketplaceRecommendationWidgetModel(
                         thanksPageData,
-                        this,
+                        this
                     )
                 )
-
                 return
             }
-
-            if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
             iRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(marketRecommendationPlaceLayout)
 
-                //container 1 to display top ads recommendation view
+                // container 1 to display top ads recommendation view
                 container.addContainer(TOP_ADS_HEADLINE_ABOVE_RECOM)
 
                 container.addView(view)
 
-                //container 2 to display top ads recommendation view
+                // container 2 to display top ads recommendation view
                 container.addContainer(TOP_ADS_HEADLINE_BELOW_RECOM)
 
                 view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
@@ -277,17 +275,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
-
             if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     DigitalRecommendationWidgetModel(
                         thanksPageData,
                         pgCategoryIds,
                         pageType,
-                        this,
+                        this
                     )
                 )
-
                 return
             }
 
@@ -300,7 +296,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
 
             iDigitalRecommendationView?.loadRecommendation(
-                this, pgCategoryIds, pageType
+                this,
+                pgCategoryIds,
+                pageType
             )
         }
     }
@@ -325,38 +323,49 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageDataViewModel.getThanksPageTicker(thanksPageData.configList)
     }
 
-
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onThankYouPageDataReLoaded(it.data)
-                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onThankYouPageDataReLoaded(it.data)
+                    is Fail -> onThankYouPageDataLoadingFail(it.throwable)
+                }
             }
-        })
-        thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-            gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
-            addDataToGyroRecommendationView(it)
-        })
+        )
+        thanksPageDataViewModel.gyroRecommendationLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
+                addDataToGyroRecommendationView(it)
+            }
+        )
 
-        thanksPageDataViewModel.topTickerLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    setTopTickerData(it.data)
+        thanksPageDataViewModel.topTickerLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        setTopTickerData(it.data)
+                    }
+                    is Fail -> getTopTickerView()?.gone()
                 }
-                is Fail -> getTopTickerView()?.gone()
             }
-        })
+        )
 
-        thanksPageDataViewModel.defaultAddressLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    updateLocalizingAddressData(it.data)
-                }
-                is Fail -> {
-                    //do nothing
+        thanksPageDataViewModel.defaultAddressLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        updateLocalizingAddressData(it.data)
+                    }
+                    is Fail -> {
+                        // do nothing
+                    }
                 }
             }
-        })
+        )
 
         thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner) {
             addDataToTopAdsView(it)
@@ -428,7 +437,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 )
             }
         }
-
     }
 
     private fun setTopTickerData(tickerData: List<TickerData>) {
@@ -442,8 +450,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                         if (itemData is ThankPageTopTickerData) {
                             if (itemData.isAppLink()) {
                                 openAppLink(linkUrl.toString())
-                            } else
+                            } else {
                                 openWebLink(linkUrl.toString())
+                            }
                         }
                     }
                 })
@@ -458,10 +467,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     GyroRecommendationWidgetModel(
                         gyroRecommendation,
                         thanksPageData,
-                        gyroRecommendationAnalytics.get(),
+                        gyroRecommendationAnalytics.get()
                     )
                 )
-
                 return
             }
 
@@ -469,7 +477,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 getFeatureListingContainer()?.visible()
                 getFeatureListingContainer()?.listener = this
                 getFeatureListingContainer()?.addData(
-                    gyroRecommendation, thanksPageData,
+                    gyroRecommendation,
+                    thanksPageData,
                     gyroRecommendationAnalytics.get()
                 )
             } else {
@@ -513,12 +522,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         var paymentStatus = PaymentStatusMapper
             .getPaymentStatusByInt(thanksPageData.paymentStatus)
 
-        if (isTimerFinished && !isPaymentVerified(paymentStatus))
+        if (isTimerFinished && !isPaymentVerified(paymentStatus)) {
             paymentStatus = PaymentExpired
+        }
 
         context?.let {
-            if (!::dialogHelper.isInitialized)
+            if (!::dialogHelper.isInitialized) {
                 dialogHelper = DialogHelper(it, this)
+            }
             dialogHelper.showPaymentStatusDialog(paymentStatus)
         }
     }
@@ -535,17 +546,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             homeButton?.let {
                 thanksPageData.customDataMessage?.let {
                     it.titleHomeButton?.apply {
-                        if (isNotBlank())
+                        if (isNotBlank()) {
                             homeButton.text = this
+                        }
                     }
                 }
 
                 homeButton.setOnClickListener {
                     thanksPageData.customDataAppLink?.let {
-                        if (it.home.isNullOrBlank())
+                        if (it.home.isNullOrBlank()) {
                             gotoHomePage()
-                        else
+                        } else {
                             launchApplink(it.home)
+                        }
                     } ?: run {
                         gotoHomePage()
                     }
@@ -596,7 +609,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
     override fun launchApplink(applink: String) {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
         val intent = RouteManager.getIntent(context, applink, "")
@@ -613,7 +625,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         )
         activity?.finish()
     }
-
 
     override fun gotoPaymentWaitingPage() {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
@@ -671,7 +682,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
     private fun getOrderListPageIntent(): Intent? {
         return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
@@ -697,9 +707,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun showErrorOnUI(errorMessage: String, retry: (() -> Unit)?) {
         view?.let { view ->
             retry?.let {
-                Toaster.make(view, errorMessage,
-                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                    getString(R.string.thank_coba_lagi), View.OnClickListener { retry.invoke() })
+                Toaster.make(
+                    view,
+                    errorMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.thank_coba_lagi),
+                    View.OnClickListener { retry.invoke() }
+                )
             }
         }
     }
@@ -715,7 +730,31 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun showTopAdsHeadlineView(cpmModel: CpmModel) {
         topadsHeadlineView.hideShimmerView()
+
+        val isAboveRecomm = cpmModel.data[0].cpm.position == 1
+
         if (isWidgetOrderingEnabled) {
+            if (!isAboveRecomm) {
+                val newList = thanksPageDataViewModel.widgetOrder.toMutableList()
+
+                val digitalIndex = newList.indexOf(DigitalRecommendationWidgetModel.TAG)
+                val marketplaceIndex = newList.indexOf(MarketplaceRecommendationWidgetModel.TAG)
+                val headlineIndex = newList.indexOf(HeadlineAdsWidgetModel.TAG)
+
+                if (headlineIndex != -1) {
+                    if (digitalIndex != -1 || marketplaceIndex != -1) {
+                        newList.removeAt(headlineIndex)
+
+                        newList.add(
+                            maxOf(marketplaceIndex, digitalIndex) + 1,
+                            HeadlineAdsWidgetModel.TAG
+                        )
+                    }
+                }
+
+                thanksPageDataViewModel.widgetOrder = newList
+            }
+
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }
@@ -723,7 +762,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         topadsHeadlineView.displayAds(cpmModel)
 
         getRecommendationContainer()?.attachTopAdsHeadlinesView(
-            cpmModel.data[0].cpm.position == 1,
+            isAboveRecomm,
             topadsHeadlineView
         )
     }
@@ -840,7 +879,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun addBanner(banner: BannerWidgetModel) {
         if (isWidgetOrderingEnabled) {
             thanksPageDataViewModel.addBottomContentWidget(banner)
-
             return
         }
 
@@ -854,13 +892,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 val imageView = ImageView(context).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
                     )
                     setMargin(
                         if (index == Int.ZERO) IMAGE_MARGIN else IMAGE_GAP,
                         0,
                         if (index == banner.items.size - 1) IMAGE_MARGIN else IMAGE_GAP,
-                        0,
+                        0
                     )
                     adjustViewBounds = true
                     loadImageWithoutPlaceholder(bannerItem.assetUrl)

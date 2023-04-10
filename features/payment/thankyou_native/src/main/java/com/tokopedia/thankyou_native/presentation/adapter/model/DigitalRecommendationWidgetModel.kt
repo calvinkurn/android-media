@@ -11,8 +11,8 @@ data class DigitalRecommendationWidgetModel(
     val thanksPageData: ThanksPageData,
     val pgCategoryIds: List<Int> = listOf(),
     val pageType: DigitalRecommendationPage,
-    val fragment: BaseDaggerFragment,
-): Visitable<BottomContentFactory>, WidgetTag {
+    val fragment: BaseDaggerFragment
+) : Visitable<BottomContentFactory>, WidgetTag {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -21,6 +21,6 @@ data class DigitalRecommendationWidgetModel(
     override val tag: String = TAG
 
     companion object {
-        private const val TAG = "dg"
+        const val TAG = "dg"
     }
 }

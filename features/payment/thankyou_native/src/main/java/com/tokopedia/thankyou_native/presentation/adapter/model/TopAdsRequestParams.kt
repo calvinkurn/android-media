@@ -26,8 +26,8 @@ data class TopAdsRequestParams(
     @SerializedName("dimen_id_mobile")
     var dimen: String,
     @SerializedName("data")
-    var topAdsUIModelList: List<TopAdsUIModel>?,
-): Visitable<BottomContentFactory>, WidgetTag {
+    var topAdsUIModelList: List<TopAdsUIModel>?
+) : Visitable<BottomContentFactory>, WidgetTag {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -36,6 +36,6 @@ data class TopAdsRequestParams(
     override val tag: String = TAG
 
     companion object {
-        private const val TAG = "tdn"
+        const val TAG = "tdn"
     }
 }
