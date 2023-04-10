@@ -45,18 +45,12 @@ class ShippingDurationConverter @Inject constructor() {
             ) {
                 // Setting up for Logistic Promo
                 shippingRecommendationData.logisticPromo = convertToPromoModel(
-                    ratesData.ratesDetailData.listPromoStacking.firstOrNull(),
-                    true
+                    ratesData.ratesDetailData.listPromoStacking.firstOrNull()
                 )
 
                 // Setting up for List of Logistic Promo
                 shippingRecommendationData.listLogisticPromo =
-                    ratesData.ratesDetailData.listPromoStacking.mapIndexedNotNull { index, promo ->
-                        convertToPromoModel(
-                            promo,
-                            index == 0
-                        )
-                    }
+                    ratesData.ratesDetailData.listPromoStacking.mapNotNull { convertToPromoModel(it) }
 
                 // Setting up for Logistic Pre Order
                 shippingRecommendationData.preOrderModel =
@@ -181,12 +175,10 @@ class ShippingDurationConverter @Inject constructor() {
     }
 
     private fun convertToPromoModel(
-        promo: PromoStacking?,
-        showPromoBadge: Boolean
+        promo: PromoStacking?
     ): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
-        val promoBadge = if (showPromoBadge) promo.imageUrl else ""
         val gson = Gson()
         return LogisticPromoUiModel(
             promo.promoCode,
@@ -200,7 +192,7 @@ class ShippingDurationConverter @Inject constructor() {
             promo.shipperDisableText,
             promo.promoTncHtml,
             applied,
-            promoBadge,
+            promo.imageUrl,
             promo.discontedRate,
             promo.shippingRate,
             promo.benefitAmount,
