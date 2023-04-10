@@ -1,8 +1,8 @@
 package com.tokopedia.chatbot.chatbot2.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.chatbot2.util.ChatbotNewRelicLogger
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
@@ -42,12 +42,7 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
             ] =
                 reqImgFile
         } catch (e: UnsupportedEncodingException) {
-            ChatbotNewRelicLogger.logNewRelic(
-                false,
-                messageId,
-                ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
-                e
-            )
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         requestBodyMap[MSG_ID] = messageId.toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())

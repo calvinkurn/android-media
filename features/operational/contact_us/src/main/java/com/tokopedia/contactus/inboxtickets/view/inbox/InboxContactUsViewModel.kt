@@ -9,7 +9,6 @@ import com.tokopedia.contactus.inboxtickets.domain.usecase.param.GetTicketListPa
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -102,7 +101,8 @@ class InboxContactUsViewModel @Inject constructor(
                 } else {
                     InboxUiState(
                         showChatBotWidget = false,
-                        errorMessageChatBotWidget = topBotStatusInbox.messageError?.firstOrNull().orEmpty()
+                        errorMessageChatBotWidget = topBotStatusResponse.getTopBotStatusInbox().messageError?.firstOrNull()
+                            .orEmpty()
                     )
                 }
             },
