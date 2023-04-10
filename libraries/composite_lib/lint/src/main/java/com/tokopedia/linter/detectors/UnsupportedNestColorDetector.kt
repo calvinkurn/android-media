@@ -170,8 +170,7 @@ class UnsupportedNestColorDetector : Detector(), SourceCodeScanner, XmlScanner {
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         runCatching {
-            val resId = attribute.value.substringAfter("/")
-            if (resId.contains(Regex(REGEX_OLD_COLOR))) {
+            if (attribute.value.contains(Regex(REGEX_OLD_COLOR))) {
                 reportXmlError(context, attribute)
             }
         }
