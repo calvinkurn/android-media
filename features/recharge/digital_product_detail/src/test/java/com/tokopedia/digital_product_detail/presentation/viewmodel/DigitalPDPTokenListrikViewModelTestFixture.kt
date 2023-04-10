@@ -98,13 +98,13 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any())
         } returns response
     }
 
     protected fun onGetAddToCart_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any())
         } throws errorThrowable
     }
 
@@ -149,7 +149,7 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
-        coVerify { repo.addToCart(any(), any(), any(), any(), any()) }
+        coVerify { repo.addToCart(any(), any(), any()) }
     }
 
     protected fun verifyGetOperatorSelectGroupRepoGetCalled() {

@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -127,7 +126,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     protected CacheManager cacheManager;
 
     private OmsComponent omsComponent;
-    private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
@@ -191,7 +189,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
         initRefreshProfileWorker();
@@ -265,20 +262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         mIris.initialize();
         return true;
     }
-
-    private void initTetraDebugger() {
-        if (com.tokopedia.config.GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
-    }
-
 
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {

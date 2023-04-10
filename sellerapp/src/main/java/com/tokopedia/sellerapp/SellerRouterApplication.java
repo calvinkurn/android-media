@@ -19,7 +19,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -28,7 +27,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -107,8 +105,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         SellerHomeRouter,
         LoginRouter {
 
-    private TetraDebugger tetraDebugger;
-
     protected RemoteConfig remoteConfig;
     protected CacheManager cacheManager;
 
@@ -147,7 +143,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initSeamlessLoginWorker();
         initRefreshProfileWorker();
         return true;
@@ -202,19 +197,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void refreshFCMFromInstantIdService(String token) {
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
-    }
-
-    private void initTetraDebugger() {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(this);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
     }
 
     @Override

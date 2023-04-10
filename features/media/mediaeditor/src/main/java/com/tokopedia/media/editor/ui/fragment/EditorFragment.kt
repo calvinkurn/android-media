@@ -27,7 +27,7 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -121,9 +121,23 @@ class EditorFragment @Inject constructor(
         val data = listData[currentProcess]
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
+            val filePath = data.getOriginalUrl()
+
             loadImageWithEmptyTarget(requireContext(),
-                data.getImageUrl(),
-                properties = {},
+                filePath,
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                loader?.dismiss()
+                                viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
+                                }
+
+                            }
+                        }
+                    )
+                },
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
                         imageCrop(bitmap, data.getOriginalUrl())
@@ -133,10 +147,7 @@ class EditorFragment @Inject constructor(
                         )
                         iterateCrop(listData, currentProcess + 1)
                     },
-                    onCleared = {},
-                    onFailed = {
-                        iterateCrop(listData, currentProcess + 1)
-                    }
+                    onCleared = {}
                 ))
         } else {
             iterateCrop(listData, currentProcess + 1)
@@ -151,6 +162,9 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
+        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
+            activity?.finish()
+        }
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,
@@ -420,6 +434,7 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
+        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }

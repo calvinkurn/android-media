@@ -5,11 +5,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
-import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.GetTicketListParam
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,10 +77,10 @@ class InboxContactUsViewModel @Inject constructor(
     fun getTopBotStatus() {
         launchCatchError(
             block = {
-                val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
-                if (topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isSuccess == SUCCESS_HIT_API && topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isActive
+                val topBotStatusResponse = topBotStatusUseCase(Unit)
+                val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
+                if (topBotStatusInbox.getTopBotStatusData().isActive &&
+                    topBotStatusInbox.messageError.isNullOrEmpty()
                 ) {
                     val messageId =
                         topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
@@ -102,7 +101,8 @@ class InboxContactUsViewModel @Inject constructor(
                     }
                 } else {
                     InboxUiState(
-                        showChatBotWidget = false
+                        showChatBotWidget = false,
+                        errorMessageChatBotWidget = topBotStatusInbox.messageError?.firstOrNull().orEmpty()
                     )
                 }
             },
@@ -110,7 +110,6 @@ class InboxContactUsViewModel @Inject constructor(
                 InboxUiState(
                     showChatBotWidget = false
                 )
-                it.printStackTrace()
             }
         )
     }
@@ -161,10 +160,10 @@ class InboxContactUsViewModel @Inject constructor(
         }
     }
 
-    private fun getTicketList(requestParams: RequestParams) {
+    private fun getTicketList(requestParams: GetTicketListParam) {
         launchCatchError(
             block = {
-                val ticketListResponse = getTickets.getTicketListResponse(requestParams)
+                val ticketListResponse = getTickets(requestParams)
                 val ticketData = ticketListResponse.getTicketOnInbox().getTicket()
                 when {
                     ticketData.getTicketList().isNotEmpty() -> {

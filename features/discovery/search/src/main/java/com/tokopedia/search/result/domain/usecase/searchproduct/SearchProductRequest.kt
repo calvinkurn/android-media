@@ -212,6 +212,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     applink
                     customVideoURL
                     parentId
+                    isPortrait
                 }
                 violation {
                     headerText
@@ -402,6 +403,11 @@ private const val HEADLINE_ADS_QUERY = """
                             campaign {
                                 original_price
                                 discount_percentage
+                            }
+                            stock_info {
+                                sold_stock_percentage
+                                stock_wording
+                                stock_colour
                             }
                         }
                         image_shop {
