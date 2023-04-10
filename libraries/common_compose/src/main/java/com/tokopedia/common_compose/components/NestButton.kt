@@ -64,7 +64,7 @@ fun NestButton(
             onClick = onClick,
         )
     }
-    
+
     if (variant == Variant.GHOST) {
         NestDefaultButton(
             modifier = modifier,
@@ -221,6 +221,18 @@ private fun toBackgroundColor(variant: Variant, isEnabled: Boolean): Color {
         Variant.FLOATING_BUTTON -> NestTheme.colors.GN._500
     }
 }
+
+@Composable
+private fun Variant.toBorderStroke(): BorderStroke? {
+    return when(this) {
+        Variant.FILLED -> null
+        Variant.GHOST -> BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500)
+        Variant.GHOST_ALTERNATE -> BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300)
+        Variant.GHOST_INVERTED -> BorderStroke(width = 1.dp, color = NestTheme.colors.NN._0)
+        Variant.TEXT_ONLY -> null
+        Variant.FLOATING_BUTTON -> null
+    }
+}
 @Composable
 private fun createTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : TextStyle {
     val filledTextStyle = if (isEnabled) {
@@ -255,8 +267,9 @@ private fun createTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : 
         fontSize = size.toFontSize()
     )
 
+    val textTextStyleColor = if (isEnabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400
     val textTextStyle = NestTheme.typography.display1.copy(
-        color = NestTheme.colors.NN._600,
+        color = textTextStyleColor,
         fontWeight = FontWeight.ExtraBold,
         fontSize = size.toFontSize()
     )
@@ -353,16 +366,6 @@ private fun NestButtonFilledPreview() {
 
         NestButton(
             modifier = Modifier.weight(0.25f),
-            text = "Active",
-            variant = Variant.FILLED,
-            size = Size.MEDIUM,
-            isEnabled = true,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
             text = "Disabled",
             variant = Variant.FILLED,
             size = Size.MEDIUM,
@@ -398,26 +401,6 @@ private fun NestButtonGhostPreview() {
 
         NestButton(
             modifier = Modifier.weight(0.25f),
-            text = "Active",
-            variant = Variant.GHOST,
-            size = Size.MEDIUM,
-            isEnabled = true,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
-            text = "Disabled",
-            variant = Variant.GHOST,
-            size = Size.MEDIUM,
-            isEnabled = false,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
             text = "Loading",
             variant = Variant.GHOST,
             size = Size.MEDIUM,
@@ -443,26 +426,6 @@ private fun NestButtonGhostAlternatePreview() {
 
         NestButton(
             modifier = Modifier.weight(0.25f),
-            text = "Active",
-            variant = Variant.GHOST_ALTERNATE,
-            size = Size.MEDIUM,
-            isEnabled = true,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
-            text = "Disabled",
-            variant = Variant.GHOST_ALTERNATE,
-            size = Size.MEDIUM,
-            isEnabled = false,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
             text = "Loading",
             variant = Variant.GHOST_ALTERNATE,
             size = Size.MEDIUM,
@@ -477,7 +440,7 @@ private fun NestButtonGhostAlternatePreview() {
 private fun NestButtonGhostInvertedPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.5f),
             text = "Enabled",
             variant = Variant.GHOST_INVERTED,
             size = Size.MEDIUM,
@@ -486,28 +449,9 @@ private fun NestButtonGhostInvertedPreview() {
             onClick = {},
         )
 
-        NestButton(
-            modifier = Modifier.weight(0.25f),
-            text = "Active",
-            variant = Variant.GHOST_INVERTED,
-            size = Size.MEDIUM,
-            isEnabled = true,
-            isLoading = false,
-            onClick = {},
-        )
 
         NestButton(
-            modifier = Modifier.weight(0.25f),
-            text = "Disabled",
-            variant = Variant.GHOST_INVERTED,
-            size = Size.MEDIUM,
-            isEnabled = false,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.5f),
             text = "Loading",
             variant = Variant.GHOST_INVERTED,
             size = Size.MEDIUM,
