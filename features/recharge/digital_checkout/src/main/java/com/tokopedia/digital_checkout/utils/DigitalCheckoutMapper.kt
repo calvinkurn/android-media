@@ -1,6 +1,7 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.request.CheckoutFintechProduct
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
@@ -58,8 +59,7 @@ object DigitalCheckoutMapper {
     fun mapGetCartToCartDigitalInfoData(
         responseRechargeGetCart: RechargeGetCart.Response,
         isSpecialProduct: Boolean
-    )
-            : CartDigitalInfoData {
+    ): CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
 
@@ -73,10 +73,12 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
                 cartDigitalInfoData.additionalInfos = additionalInfos.map {
-                    CartItemDigitalWithTitle(it.title,
+                    CartItemDigitalWithTitle(
+                        it.title,
                         it.detail.map { detail ->
                             CartItemDigital(detail.label, detail.value)
-                        })
+                        }
+                    )
                 }
             }
 
@@ -92,8 +94,12 @@ object DigitalCheckoutMapper {
                 attributesDigital.price = attributes.priceText
                 attributesDigital.pricePlain = attributes.price
                 attributesDigital.isEnableVoucher = attributes.enableVoucher
-                if (attributes.isCouponActive) attributesDigital.isCouponActive =
-                    1 else attributesDigital.isCouponActive = 0
+                if (attributes.isCouponActive) {
+                    attributesDigital.isCouponActive =
+                        1
+                } else {
+                    attributesDigital.isCouponActive = 0
+                }
                 attributesDigital.voucherAutoCode = attributes.voucher
                 attributesDigital.adminFee = attributes.adminFee
                 attributesDigital.isAdminFeeIncluded = attributes.isAdminFeeIncluded
@@ -159,7 +165,6 @@ object DigitalCheckoutMapper {
                 responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
-
         } catch (e: Exception) {
             throw Throwable(e.message, e)
         }
@@ -190,10 +195,11 @@ object DigitalCheckoutMapper {
     }
 
     fun buildCheckoutData(
-        cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
+        cartDigitalInfoData: CartDigitalInfoData,
+        accessToken: String?,
         requestCheckoutDataParameter: DigitalCheckoutDataParameter
     ): DigitalCheckoutDataParameter {
-        //not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
+        // not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
         requestCheckoutDataParameter.cartId = cartDigitalInfoData.id
         requestCheckoutDataParameter.accessToken = accessToken ?: ""
         requestCheckoutDataParameter.walletRefreshToken = ""
@@ -237,15 +243,15 @@ object DigitalCheckoutMapper {
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
         val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
-        checkoutData.fintechProducts.values.forEach { fintech ->
+        checkoutData.crossSellProducts.values.forEach { crossSell ->
             fintechProductsCheckout.add(
                 RequestBodyCheckout.FintechProductCheckout(
-                    transactionType = fintech.transactionType,
-                    tierId = fintech.tierId.toIntSafely(),
+                    transactionType = crossSell.product.transactionType,
+                    tierId = crossSell.product.tierId.toIntSafely(),
                     userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                    fintechAmount = fintech.fintechAmount.toLong(),
-                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
-                    productName = fintech.info.title
+                    fintechAmount = crossSell.product.fintechAmount.toLong(),
+                    fintechPartnerAmount = crossSell.product.fintechPartnerAmount.toLong(),
+                    productName = crossSell.product.info.title
                 )
             )
         }
@@ -255,11 +261,35 @@ object DigitalCheckoutMapper {
         requestBodyCheckout.relationships = CheckoutRelationships(
             CheckoutRelationships.Cart(
                 CheckoutRelationships.Cart.Data(
-                    checkoutData.relationType, checkoutData.relationId
+                    checkoutData.relationType,
+                    checkoutData.relationId
                 )
             )
         )
         return requestBodyCheckout
     }
 
+    fun mapFintechProductToCheckoutFintechProduct(fintechProduct: FintechProduct): CheckoutFintechProduct {
+        return CheckoutFintechProduct(
+            id = fintechProduct.id.toIntSafely(),
+            transactionType = fintechProduct.transactionType,
+            tierId = fintechProduct.tierId.toIntSafely(),
+            optIn = fintechProduct.optIn,
+            checkBoxDisabled = fintechProduct.checkBoxDisabled,
+            allowOVOPoints = fintechProduct.allowOVOPoints,
+            fintechAmount = fintechProduct.fintechAmount.toInt(),
+            fintechPartnerAmount = fintechProduct.fintechPartnerAmount.toInt(),
+            info = CheckoutFintechProduct.FintechProductInfo(
+                title = fintechProduct.info.title,
+                subtitle = fintechProduct.info.subtitle,
+                checkedSubtitle = fintechProduct.info.checkedSubtitle,
+                textLink = fintechProduct.info.textLink,
+                urlLink = fintechProduct.info.urlLink,
+                tooltipText = fintechProduct.info.tooltipText,
+                iconUrl = fintechProduct.info.iconUrl
+            ),
+            operatorName = fintechProduct.operatorName,
+            crossSellMetadata = fintechProduct.crossSellMetadata
+        )
+    }
 }

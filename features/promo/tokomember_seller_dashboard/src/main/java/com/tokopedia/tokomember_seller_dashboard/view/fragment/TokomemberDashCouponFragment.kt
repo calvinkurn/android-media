@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,11 +48,13 @@ import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.dpToPx
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmShareBottomSheet
@@ -78,6 +81,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     private var shareBottomSheet:TmShareBottomSheet?=null
     private var voucherShareData:VouchersItem?=null
     private var showButton: Boolean = true
+    private var screen: String = ""
     private var filterStatus: SortFilterItem? = null
     private var filterType: SortFilterItem? = null
     private var voucherStatus = "1,2,3,4"
@@ -226,6 +230,21 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
         filterType?.let { filterData.add(it) }
         filter.addItem(filterData)
+        if(screen == PROGRAM_DETAIL_SCREEN){
+            filter.apply {
+                val newLayoutParams = ConstraintLayout.LayoutParams(
+                    ConstraintLayout.LayoutParams.MATCH_PARENT,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+                )
+                newLayoutParams.setMargins(
+                    dpToPx(16).toInt(),
+                    0,
+                    dpToPx(16).toInt(),
+                    0
+                )
+                layoutParams = newLayoutParams
+            }
+        }
         filter.parentListener = {
             TmFilterBottomsheet.show(childFragmentManager, this, voucherStatus, selectedType)
         }
@@ -253,7 +272,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
         }
         else{
-            btn_create_coupon.visibility = View.INVISIBLE
+            btn_create_coupon.hide()
         }
 
         observeViewModel()
@@ -371,8 +390,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     companion object {
-        fun newInstance(bundle: Bundle?, showButton: Boolean = true) = TokomemberDashCouponFragment().apply {
+        fun newInstance(bundle: Bundle?, showButton: Boolean = true,screen: String = "") = TokomemberDashCouponFragment().apply {
             arguments = bundle
+            this.screen = screen
             this.showButton = showButton
         }
     }

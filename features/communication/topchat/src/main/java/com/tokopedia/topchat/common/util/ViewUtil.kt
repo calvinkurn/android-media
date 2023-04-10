@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.topchat.R
+import com.tokopedia.utils.resources.isDarkMode
 
 object ViewUtil {
 
@@ -187,6 +189,19 @@ object ViewUtil {
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         return stateDrawable
+    }
+
+    fun getShadowColorViewHolder(context: Context): Int {
+        return try {
+            if (context.isDarkMode()) {
+                R.color.topchat_dms_message_shadow
+            } else {
+                // Do not change this to nest color (NN600)
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+            }
+        } catch (ignored: Throwable) {
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        }
     }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
