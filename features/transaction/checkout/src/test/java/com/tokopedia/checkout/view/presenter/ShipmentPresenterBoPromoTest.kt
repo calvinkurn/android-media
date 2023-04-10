@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -65,7 +66,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "111-111-111",
             shopShipmentList = listOf(),
-            voucherLogisticItemUiModel = null
+            voucherLogisticItemUiModel = null,
+            cartItemModels = listOf(
+                CartItemModel(cartString = "111-111-111")
+            )
         )
         every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
         every { presenter.processBoPromoCourierRecommendation(any(), any(), any()) } just runs
@@ -95,7 +99,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "111-111-111",
             shopShipmentList = listOf(),
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE")
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE"),
+            cartItemModels = listOf(
+                CartItemModel(cartString = "111-111-111")
+            )
         )
         every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
         every { presenter.processBoPromoCourierRecommendation(any(), any(), any()) } just runs
@@ -386,6 +393,9 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
+            cartItemModels = listOf(
+                CartItemModel(cartString = "111-111-111")
+            )
         }
         presenter.shipmentCartItemModelList = listOf(
             shipmentCartItemModel
@@ -416,6 +426,9 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
+            cartItemModels = listOf(
+                CartItemModel(cartString = "111-111-111")
+            )
         }
         presenter.shipmentCartItemModelList = listOf(
             shipmentCartItemModel
@@ -446,6 +459,9 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
             voucherLogisticItemUiModel = null
+            cartItemModels = listOf(
+                CartItemModel(cartString = "111-111-111")
+            )
         }
         presenter.shipmentCartItemModelList = listOf(
             shipmentCartItemModel
@@ -477,7 +493,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         presenter.setLatValidateUseRequest(null)
 
-        every { presenter.doUnapplyBo(any(), any()) } just runs
+//        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
@@ -1164,7 +1180,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         presenter.initializePresenterData(
             CartShipmentAddressFormData(
-                cod = CodModel(counterCod = 1)
+                cod = CodModel(counterCod = 1),
+                groupAddress = listOf(
+                    GroupAddress()
+                )
             )
         )
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()

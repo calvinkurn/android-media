@@ -520,17 +520,17 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             // Test shipmentCartItemModel == null
 //            null,
             // Test shipmentCartData == null
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "TEST1"),
-//                shipmentCartData = null,
-                cartItemModels = listOf(
-                    CartItemModel(
-                        cartString = "111-111-111",
-                        preOrderDurationDay = 10
-                    )
-                )
-            ),
+//            ShipmentCartItemModel(
+//                cartString = "111-111-111",
+//                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "TEST1"),
+// //                shipmentCartData = null,
+//                cartItemModels = listOf(
+//                    CartItemModel(
+//                        cartString = "111-111-111",
+//                        preOrderDurationDay = 10
+//                    )
+//                )
+//            ),
             // Test voucherLogisticItemUiModel.code == ""
             ShipmentCartItemModel(
                 cartString = "111-111-111",

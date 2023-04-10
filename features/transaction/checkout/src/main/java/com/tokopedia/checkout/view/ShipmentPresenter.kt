@@ -978,7 +978,7 @@ class ShipmentPresenter @Inject constructor(
 
     override fun processCheckout() {
         val checkoutRequest = generateCheckoutRequest()
-        if (checkoutRequest.data.isNotEmpty()) {
+        if (checkoutRequest.data.isNotEmpty() && checkoutRequest.data.first().groupOrders.isNotEmpty()) {
             // Get additional param for trade in analytics
             var deviceModel = ""
             var devicePrice = 0L
@@ -2550,7 +2550,7 @@ class ShipmentPresenter @Inject constructor(
                 clearOrders.add(
                     ClearPromoOrder(
                         shipmentCartItemModel.cartString,
-                        shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
+                        shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                         boCodes,
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
@@ -3504,7 +3504,7 @@ class ShipmentPresenter @Inject constructor(
         clearOrders.add(
             ClearPromoOrder(
                 shipmentCartItemModel.cartString,
-                shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
+                shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                 promoCodes,
                 shipmentCartItemModel.shopId,
                 shipmentCartItemModel.isProductIsPreorder,
