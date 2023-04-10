@@ -557,4 +557,62 @@ class PlayBroadcastBeautificationViewModelTest {
             state.beautificationConfig.presets[mockSelectedPresetPosition].value.assertEqualTo(0.9)
         }
     }
+
+    @Test
+    fun `playBroadcaster_beautification_selectNoneForAllBeautification`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectFaceFilterOption(mockBeautificationConfigAvailable.faceFilters[0]))
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectPresetOption(mockBeautificationConfigAvailable.presets[0]))
+            }
+
+            val faceFilterMenu = state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } ?: fail(Exception("Face Filter menu should exists"))
+
+            faceFilterMenu.isChecked.assertFalse()
+        }
+    }
+
+    @Test
+    fun `playBroadcaster_beautification_updateAllBeautificationValueToZero`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+
+                mockBeautificationConfigAvailable.faceFilters.forEachIndexed { idx, e ->
+                    if (idx != 0) {
+                        it.getViewModel().submitAction(PlayBroadcastAction.SelectFaceFilterOption(mockBeautificationConfigAvailable.faceFilters[idx]))
+                        it.getViewModel().submitAction(PlayBroadcastAction.ChangeFaceFilterValue(0))
+                    }
+                }
+
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectPresetOption(mockBeautificationConfigAvailable.presets[1]))
+                it.getViewModel().submitAction(PlayBroadcastAction.ChangePresetValue(0))
+            }
+
+            val faceFilterMenu = state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } ?: fail(Exception("Face Filter menu should exists"))
+            faceFilterMenu.isChecked.assertFalse()
+        }
+    }
 }
