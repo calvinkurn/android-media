@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -108,6 +109,7 @@ class UiModelBuilder {
         countDown: Long = 0L,
         scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
         tnc: List<TermsAndConditionUiModel> = emptyList(),
+        beautificationConfig: BeautificationConfigUiModel = BeautificationConfigUiModel.Empty,
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
         shortVideoAllowed = shortVideoAllowed,
@@ -119,6 +121,7 @@ class UiModelBuilder {
         countDown = countDown,
         scheduleConfig = scheduleConfig,
         tnc = tnc,
+        beautificationConfig = beautificationConfig,
     )
 
     fun buildDurationConfigUiModel(
