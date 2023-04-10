@@ -1,22 +1,26 @@
 package com.tokopedia.media.editor.utils
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Handler
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.analytics.*
-import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.ImageRatioType
-import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
+import timber.log.Timber
 import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
@@ -144,5 +148,103 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
         if (isAdded) {
             action()
         }
+    }
+}
+
+fun Fragment.delay(action: () -> Unit, delayTime: Long) {
+    Handler().postDelayed(getRunnable {
+        action()
+    }, delayTime)
+}
+
+fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
+    val imagePxDrawThreshold = 25_000_000 // 25 million pixel
+    return (width * height) >= imagePxDrawThreshold
+}
+
+// get image size without load the image
+fun getImageSize(path: String): Pair<Int, Int> {
+    return try {
+        val option = BitmapFactory.Options()
+        option.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(path, option)
+        return Pair(option.outWidth, option.outHeight)
+    } catch (e: Exception) {
+        Timber.d("get image size bound error, ${e.message}")
+        Pair(0, 0)
+    }
+}
+
+// scale down image size (if needed) until canvas draw limit size (25 million pixel)
+fun validateImageSize(source: Bitmap): Bitmap {
+    // used to decide scaled result value for each scaled down iteration
+    // each iteration will reduce image size 10% (100px -> 90px -> 81px -> etc)
+    val scaledFactor = 0.9f
+    return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
+        var newImageHeight = 0f
+        var newImageWidth = source.width.toFloat()
+        val sourceWidth = source.width
+        val sourceHeight = source.height
+        do {
+            newImageWidth *= scaledFactor
+            newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
+        } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
+
+        return Bitmap.createScaledBitmap(
+            source,
+            newImageWidth.toInt(),
+            newImageHeight.toInt(),
+            true
+        )
+    } else {
+        source
+    }
+}
+
+fun Activity.getFreeMemory(): Long {
+    val mi = ActivityManager.MemoryInfo()
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    activityManager.getMemoryInfo(mi)
+    return mi.availMem
+}
+
+fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+    return getFreeMemory() < memoryUsage
+}
+
+fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
+    // format = image width || image height || avail memory
+    newRelicLog(
+        mapOf(
+            "Error" to (msg ?: ""),
+            MEMORY_LIMIT_FIELD to "width: ${imageSize.first} || height: ${imageSize.second} || " +
+                "avail memory: ${getFreeMemory()}"
+        )
+    )
+
+    if (!this.isDestroyed) {
+        Toast.makeText(
+            this,
+            R.string.editor_activity_memory_limit,
+            Toast.LENGTH_LONG
+        ).show()
+        finish()
+    }
+}
+
+fun showErrorLoadToaster(view: View, msg: String) {
+    newRelicLog(
+        mapOf(
+            LOAD_IMAGE_FAILED to msg
+        )
+    )
+
+    if (view.isAttachedToWindow) {
+        Toaster.build(
+            view,
+            view.context.resources.getString(R.string.editor_activity_failed_load_image),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 }

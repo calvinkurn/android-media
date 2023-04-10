@@ -13,6 +13,7 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.picker.data.entity.Media
+import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
@@ -79,22 +80,7 @@ class MediaQueryDataSourceImpl @Inject constructor(
     }
 
     override fun getVideoDuration(file: PickerFile): Int {
-        if (file.isVideo().not()) return 0
-
-        return try {
-            with(MediaMetadataRetriever()) {
-                setDataSource(context, Uri.fromFile(file))
-
-                val durationData = extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_DURATION
-                )
-
-                release()
-                durationData.toIntOrZero()
-            }
-        } catch (e: Throwable) {
-            0
-        }
+        return context.getVideoDuration(file)
     }
 
     private fun setupSortAndLimitQuery(offset: Int?) =

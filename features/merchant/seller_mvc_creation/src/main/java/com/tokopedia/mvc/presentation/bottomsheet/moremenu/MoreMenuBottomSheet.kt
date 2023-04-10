@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.MoreMenuAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.MoreMenuViewModel
@@ -89,11 +90,14 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private fun setupRecyclerView(isDiscountPromoTypeEnabled: Boolean) {
         binding?.recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        val isDiscountPromoType = voucher?.type == PromoType.DISCOUNT.id
+
         val menuItem = viewModel.getMenuList(
             voucher,
             voucherStatus,
             pageSource,
-            isDiscountPromoTypeEnabled
+            isDiscountPromoTypeEnabled,
+            isDiscountPromoType
         )
 
         adapter?.clearAllElements()
