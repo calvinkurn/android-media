@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -74,6 +75,8 @@ import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import com.tokopedia.recharge_credit_card.widget.RechargeCCBankListWidget
 import com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
 import com.tokopedia.recharge_credit_card.widget.util.RechargeCCWidgetMapper
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -106,6 +109,9 @@ class RechargeCCFragment :
 
     @Inject
     lateinit var creditCardAnalytics: CreditCardAnalytics
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var operatorIdSelected: String = ""
     private var productIdSelected: String = ""
@@ -227,10 +233,12 @@ class RechargeCCFragment :
                 when (it) {
                     is RechargeNetworkResult.Success -> {
                         renderTicker(it.data.tickers)
-                        renderPromoAndRecommendation(
-                            it.data.recommendations,
-                            it.data.promos
-                        )
+                        if (isEnablePromoRecomSection()) {
+                            renderPromoAndRecommendation(
+                                it.data.recommendations,
+                                it.data.promos
+                            )
+                        }
                         performanceMonitoring.stopTrace()
                     }
                     is RechargeNetworkResult.Fail -> {
@@ -554,9 +562,19 @@ class RechargeCCFragment :
     private fun dialogConfirmation() {
         if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
             binding?.run {
+                val formattedClientNumber = binding?.ccWidgetClientNumber?.getFormattedInputNumber() ?: ""
+                val dialogDesc = if (formattedClientNumber.isMasked()) {
+                    getString(R.string.cc_desc_dialog)
+                } else {
+                    String.format(
+                        CC_DIALOG_BOX_DESC_FORMAT,
+                        getString(R.string.cc_desc_dialog),
+                        formattedClientNumber
+                    )
+                }
                 val dialog = DialogUnify(root.context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.cc_title_dialog))
-                dialog.setDescription(getString(R.string.cc_desc_dialog))
+                dialog.setDescription(MethodChecker.fromHtml(dialogDesc).trim())
                 dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
                 dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
                 dialog.setPrimaryCTAClickListener {
@@ -940,6 +958,10 @@ class RechargeCCFragment :
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_CC_PAGE_PERFORMANCE)
     }
 
+    private fun isEnablePromoRecomSection(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_CC_PROMO_RECOM, true)
+    }
+
     companion object {
 
         const val EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA"
@@ -956,6 +978,8 @@ class RechargeCCFragment :
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
+
+        const val CC_DIALOG_BOX_DESC_FORMAT = "%s<h3><b>%s</b></h3>"
 
         fun newInstance(
             categoryId: String,

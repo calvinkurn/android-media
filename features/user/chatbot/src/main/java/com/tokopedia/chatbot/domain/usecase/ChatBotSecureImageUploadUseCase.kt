@@ -1,8 +1,7 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import com.tokopedia.chatbot.ChatbotConstant
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.SecureImageUploadUrl
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
@@ -27,28 +26,22 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
     private lateinit var imageFilePath: String
     private lateinit var messageId: String
 
-
     private fun generateRequestParams(): HashMap<String, RequestBody>? {
         val requestBodyMap = HashMap<String, RequestBody>()
-
 
         val reqImgFile: RequestBody = File(imageFilePath)
             .asRequestBody(MEDIA_TYPE_IMAGE.toMediaTypeOrNull())
 
         try {
-            requestBodyMap["file" + "\"; filename=\"" + URLEncoder.encode(
-                imageFilePath,
-                ENCODING_UTF_8
-            )] =
+            requestBodyMap[
+                "file" + "\"; filename=\"" + URLEncoder.encode(
+                    imageFilePath,
+                    ENCODING_UTF_8
+                )
+            ] =
                 reqImgFile
         } catch (e: UnsupportedEncodingException) {
-            ChatbotNewRelicLogger.logNewRelic(
-                false,
-                messageId,
-                ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
-                e
-            )
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         requestBodyMap[MSG_ID] = messageId.toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
@@ -64,14 +57,13 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest: MutableList<RestRequest> = ArrayList()
         val restRequest = RestRequest.Builder(
-                SecureImageUploadUrl.getUploadSecureUrl(),
-                UploadSecureResponse::class.java
+            SecureImageUploadUrl.getUploadSecureUrl(),
+            UploadSecureResponse::class.java
         )
-                .setBody(generateRequestParams())
-                .setRequestType(RequestType.POST_MULTIPART)
-                .build()
+            .setBody(generateRequestParams())
+            .setRequestType(RequestType.POST_MULTIPART)
+            .build()
         tempRequest.add(restRequest)
         return tempRequest
     }
 }
-

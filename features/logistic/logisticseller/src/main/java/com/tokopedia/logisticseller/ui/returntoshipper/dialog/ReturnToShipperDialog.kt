@@ -112,13 +112,9 @@ class ReturnToShipperDialog(private val context: Context) {
             if (imageType == DialogUnify.WITH_ILLUSTRATION) {
                 imageData?.apply {
                     dialogImage.loadImagePod(
-                        context,
                         accessToken = accessToken,
                         url = urlImage,
-                        drawableImageError = MethodChecker.getDrawable(
-                            context,
-                            com.tokopedia.unifycomponents.R.drawable.imagestate_error
-                        ),
+                        drawableImageError = com.tokopedia.unifycomponents.R.drawable.imagestate_error,
                         onReadyListener = {
                             imageDisclaimer?.takeIf { it.isNotBlank() }?.apply {
                                 setImageDescription(
@@ -167,7 +163,7 @@ class ReturnToShipperDialog(private val context: Context) {
                     dialogImageContainer.id,
                     ConstraintSet.BOTTOM,
                     context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
-                        .toDp().toInt(),
+                        .toDp().toInt()
                 )
             }
 
@@ -179,7 +175,7 @@ class ReturnToShipperDialog(private val context: Context) {
                     dialogChild.id,
                     ConstraintSet.BOTTOM,
                     context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
-                        .toDp().toInt(),
+                        .toDp().toInt()
                 )
             }
 

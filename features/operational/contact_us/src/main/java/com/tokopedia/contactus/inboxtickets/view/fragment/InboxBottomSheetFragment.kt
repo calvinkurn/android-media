@@ -55,7 +55,6 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
     private fun closeBottomSheet() {
         if (activity is InboxDetailActivity) {
             ContactUsTracking.sendGTMInboxTicket(
-                context,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickReason,
@@ -63,7 +62,6 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
             )
         } else {
             ContactUsTracking.sendGTMInboxTicket(
-                context,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickFilter,

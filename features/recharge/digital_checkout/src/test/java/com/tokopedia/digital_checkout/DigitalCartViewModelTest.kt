@@ -826,36 +826,6 @@ class DigitalCartViewModelTest {
     }
 
     @Test
-    fun onCheckout_onSuccess() {
-        // given
-        val dummyResponse = PaymentPassData()
-        dummyResponse.queryString = "this is query"
-        dummyResponse.redirectUrl = "www.tokopedia.com"
-        dummyResponse.callbackSuccessUrl = "successurl"
-        dummyResponse.callbackFailedUrl = "failedUrl"
-        dummyResponse.transactionId = "transactionId"
-
-        coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
-        } returns dummyResponse
-        coEvery { userSession.isLoggedIn } returns true
-        coEvery { userSession.userId } returns "123"
-
-        // when
-        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
-
-        // then
-        val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
-        assert(paymentPassDataValue != null)
-        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.callbackFailedUrl)
-        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.callbackSuccessUrl)
-        assert(paymentPassDataValue.redirectUrl == dummyResponse.redirectUrl)
-        assert(paymentPassDataValue.queryString == dummyResponse.queryString)
-        assert(paymentPassDataValue.transactionId == dummyResponse.transactionId)
-    }
-
-    @Test
     fun onCheckout_onSuccessWithGql() {
         // given
         val dummyResponse = PaymentPassData()
@@ -866,7 +836,7 @@ class DigitalCartViewModelTest {
         dummyResponse.transactionId = "transactionId"
 
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -878,7 +848,7 @@ class DigitalCartViewModelTest {
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -897,14 +867,14 @@ class DigitalCartViewModelTest {
     fun onCheckout_onFailed() {
         // given
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -917,7 +887,7 @@ class DigitalCartViewModelTest {
     fun onCheckout_onFailedWithPromoCode() {
         // given
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -925,7 +895,7 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         onApplyDiscountPromoCode_updateCheckoutSummary()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -938,13 +908,13 @@ class DigitalCartViewModelTest {
     fun onCheckout_onPromoCodeEmptyAndCartEmpty_shouldNotCheckout() {
         // given
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         assertNull(digitalCartViewModel.paymentPassData.value)
@@ -965,7 +935,7 @@ class DigitalCartViewModelTest {
             isNeedOtp = true,
             crossSellProducts = generateCrossSellHashMap()
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value != null)
@@ -973,25 +943,6 @@ class DigitalCartViewModelTest {
 
     @Test
     fun onCheckout_withFintechProduct() {
-        // given
-        coEvery { userSession.isLoggedIn } returns true
-        coEvery { userSession.userId } returns "123"
-
-        // when
-        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-
-        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
-            isNeedOtp = false,
-            crossSellProducts = generateCrossSellHashMap()
-        )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
-
-        // then
-        assert(digitalCartViewModel.isNeedOtp.value == null)
-    }
-
-    @Test
-    fun onCheckoutGql_withFintechProduct() {
         // given
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -1004,7 +955,7 @@ class DigitalCartViewModelTest {
             isNeedOtp = false,
             crossSellProducts = generateCrossSellHashMap()
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value == null)
@@ -1020,14 +971,14 @@ class DigitalCartViewModelTest {
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         val errorException = ResponseErrorException()
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = generateCrossSellHashMap()
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         assert(digitalCartViewModel.errorThrowable.value is Fail)
@@ -1045,14 +996,14 @@ class DigitalCartViewModelTest {
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         val errorException = Throwable("dummy error")
         coEvery {
-            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+            digitalCheckoutUseCase.execute(any(), any())
         } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = generateCrossSellHashMap()
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         assert(digitalCartViewModel.errorThrowable.value is Fail)

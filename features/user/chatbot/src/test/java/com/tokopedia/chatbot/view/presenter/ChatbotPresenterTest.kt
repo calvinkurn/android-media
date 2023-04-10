@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -70,6 +71,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.verify
@@ -374,6 +376,23 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `handleReplyBoxWSToggle if content_code=105, render= all`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CONTENT_CODE_105)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val dynamicContentCode =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+
+        presenter.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(dynamicContentCode, 105)
+    }
+
+    @Test
     fun `validateHistoryForAttachment34 if content_code=101, render=android, hidden=false`() {
         val fullResponse =
             SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
@@ -514,7 +533,7 @@ class ChatbotPresenterTest {
         val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -541,7 +560,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -565,7 +584,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -584,7 +603,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
@@ -598,10 +617,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `submitChatCsat failure`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any(), any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any())
         } coAnswers {
-            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
@@ -613,10 +635,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList("123", 1, null)
@@ -626,10 +651,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure with model not null`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList(
@@ -646,10 +674,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseChatId  null`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList(
@@ -666,10 +697,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseId  null`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList(
@@ -686,10 +720,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel messageId  null`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList(
@@ -706,10 +743,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel is  null`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
         } answers {
-            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.hitGqlforOptionList(
@@ -799,7 +839,7 @@ class ChatbotPresenterTest {
         val response = mockk<TickerDataResponse>(relaxed = true)
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -821,7 +861,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -840,7 +880,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -854,10 +894,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `showTickerData failure`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
-            getTickerDataUseCase.getTickerData(any(), captureLambda(), any())
+            getTickerDataUseCase.getTickerData(any(), captureLambda())
         } coAnswers {
-            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.showTickerData("123")
@@ -886,10 +929,13 @@ class ChatbotPresenterTest {
 
     @Test
     fun `submitCsatRating failure`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
         coEvery {
             submitCsatRatingUseCase.submitCsatRating(any(), captureLambda(), any(), any())
         } coAnswers {
-            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.submitCsatRating("123", InputItem(0, "", "", "", "", "", ""))
@@ -1307,13 +1353,13 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         presenter.getBottomChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1383,14 +1429,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         // When
         presenter.getTopChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1473,14 +1519,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any(), any())
+            presenter.getChatRatingList(any(), any())
         }
 
         // When
         presenter.getExistingChat("123456", { }, { _, _ -> }, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any(), any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
     }
 
@@ -1519,8 +1565,7 @@ class ChatbotPresenterTest {
         } returns ratingListResponse
 
         presenter.getChatRatingList(
-            ChipGetChatRatingListInput(),
-            "123456"
+            ChipGetChatRatingListInput()
         ) { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
@@ -1538,7 +1583,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123") {}
+        presenter.getChatRatingList(ChipGetChatRatingListInput()) {}
 
         verify {
             exception.printStackTrace()
@@ -1709,9 +1754,9 @@ class ChatbotPresenterTest {
     @Test
     fun `sendRating throws exception `() {
         coEvery {
-            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
+            sendChatRatingUseCase.sendChatRating(any(), captureLambda(), any(), any(), any())
         } coAnswers {
-            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         presenter.sendRating("123456", 5, ChatRatingUiModel())
@@ -2536,5 +2581,40 @@ class ChatbotPresenterTest {
             ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
             ChatbotConstant.ChatbotUnification.USED_BY to "Article"
         )
+    }
+
+    @Test
+    fun `sendDynamicAttachmentText through socket`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        presenter.sendDynamicAttachmentText("123", ChatActionBubbleUiModel(), "", "")
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
     }
 }
