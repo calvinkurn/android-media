@@ -182,14 +182,6 @@ class PlayViewModelRobot(
         viewModel.onHideProductSheet()
     }
 
-    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
-        viewModel.onShowVariantSheet(bottomSheetHeight)
-    }
-
-    fun hideVariantBottomSheet() {
-        viewModel.onHideVariantSheet()
-    }
-
     fun showLeaderboardBottomSheet(bottomSheetHeight: Int = 50) {
         viewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetHeight))
     }

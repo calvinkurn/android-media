@@ -19,7 +19,6 @@ import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -46,7 +45,6 @@ class PlayViewerTagItemsRepositoryTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
-    private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
     private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
@@ -64,7 +62,6 @@ class PlayViewerTagItemsRepositoryTest {
     fun setUp(){
         tagItemRepo = PlayViewerTagItemRepositoryImpl(
             getProductTagItemsUseCase = mockGetProductTagUseCase,
-            getProductVariantUseCase = mockGetProductVariantUseCase,
             addToCartUseCase = mockAddToCartUseCase,
             checkUpcomingCampaignReminderUseCase = mockCheckUpcomingCampaignReminderUseCase,
             postUpcomingCampaignReminderUseCase = mockPostUpcomingCampaignReminderUseCase,

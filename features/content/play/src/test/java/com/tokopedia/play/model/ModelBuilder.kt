@@ -8,14 +8,10 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 
 /**
@@ -1577,8 +1573,6 @@ class ModelBuilder {
     fun buildNonPublic(): ProductSection.Response =
         gson.fromJson(channelNoPublicVoucher, ProductSection.Response::class.java)
 
-    fun buildProductVariant(): GetProductVariantResponse =
-        gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
@@ -1724,11 +1718,9 @@ class ModelBuilder {
     fun buildBottomInsetsMap(
         keyboardState: BottomInsetsState = buildBottomInsetsState(),
         productSheetState: BottomInsetsState = buildBottomInsetsState(),
-        variantSheetState: BottomInsetsState = buildBottomInsetsState()
     ) = mapOf(
         BottomInsetsType.Keyboard to keyboardState,
         BottomInsetsType.ProductSheet to productSheetState,
-        BottomInsetsType.VariantSheet to variantSheetState
     )
 
     fun buildBottomInsetsState(
