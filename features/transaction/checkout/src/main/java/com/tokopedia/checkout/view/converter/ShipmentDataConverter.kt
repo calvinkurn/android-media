@@ -488,6 +488,7 @@ class ShipmentDataConverter @Inject constructor() {
         shipmentUpsellModel.id = upsellData.id
         shipmentUpsellModel.additionalVerticalId = upsellData.additionalVerticalId
         shipmentUpsellModel.transactionType = upsellData.transactionType
+        shipmentUpsellModel.isLoading = false
         return shipmentUpsellModel
     }
 

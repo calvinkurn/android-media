@@ -56,7 +56,6 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -74,13 +73,13 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
@@ -89,7 +88,6 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -120,12 +118,12 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.util.logNewRelicMessageIdError
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -142,6 +140,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubb
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
@@ -233,7 +232,8 @@ class ChatbotFragment :
     ChatbotSendButtonListener,
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener,
-    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener {
+    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
+    DynamicStickyButtonListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
@@ -311,7 +311,6 @@ class ChatbotFragment :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
-    private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
 
     private var pageSource: String = ""
@@ -373,7 +372,7 @@ class ChatbotFragment :
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        if (csatRemoteConfig) {
+        if (csatResponse.attachment?.attributes?.isSimplifyCsat.orFalse()) {
             openCsatNewFlow(csatResponse)
         } else {
             openCsatOldFlow(csatResponse)
@@ -606,6 +605,7 @@ class ChatbotFragment :
             this,
             this,
             this,
+            this,
             getUserSession()
         )
     }
@@ -664,7 +664,6 @@ class ChatbotFragment :
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
-        remoteConfigForCsatExperiment()
         showTicker()
 
         initRecyclerViewListener()
@@ -1054,12 +1053,9 @@ class ChatbotFragment :
             }
         } catch (e: NumberFormatException) {
             setErrorLayoutForServer()
-            ChatbotNewRelicLogger.logNewRelic(
-                false,
+            logNewRelicMessageIdError(
                 messageId,
-                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
-                e,
-                pageSource = pageSource
+                pageSource
             )
         }
     }
@@ -2513,10 +2509,6 @@ class ChatbotFragment :
         )
     }
 
-    private fun remoteConfigForCsatExperiment() {
-        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
@@ -2636,5 +2628,17 @@ class ChatbotFragment :
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
+        val startTime = SendableUiModel.generateStartTime()
+        presenter.sendDynamicAttachmentText(
+            messageId,
+            bubble,
+            startTime,
+            opponentId
+        )
+        getViewState()?.removeDynamicStickyButton()
+        getViewState()?.scrollToBottom()
     }
 }

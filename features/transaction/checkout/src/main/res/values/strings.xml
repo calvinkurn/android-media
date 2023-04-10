@@ -134,4 +134,5 @@
     <string name="checkout_error_unblocking_message">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
     <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
     <string name="label_protection_product_with_format">Proteksi Produk (%d Barang)</string>
+    <string name="checkout_label_upsell_description">%s/%s</string>
 </resources>
