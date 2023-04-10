@@ -8,5 +8,6 @@ data class VoucherCreationMetadata(
     val shopId: Long,
     val token: String,
     val userId: Long,
-    val discountActive: Boolean
+    val discountActive: Boolean,
+    val message: String?
 )

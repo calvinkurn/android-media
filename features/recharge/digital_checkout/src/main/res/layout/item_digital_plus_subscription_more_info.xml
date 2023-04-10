@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/digital_tg_more_info_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N0"
+        android:background="@drawable/bg_subs_plus_more_info_number"
+        android:gravity="center_horizontal | center_vertical"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="1"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/digital_tg_more_info_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/digital_tg_more_info_number"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Title Langganan"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/digital_tg_more_info_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:typographyType="paragraph_3"
+        app:layout_constraintTop_toBottomOf="@id/digital_tg_more_info_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/digital_tg_more_info_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Desc Langganan"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -76,6 +76,7 @@ fun inputUsername(username: String = "pokemon") {
 }
 
 fun clickAcceptTnc() {
+    Espresso.closeSoftKeyboard()
     click(contentCommonR.id.cbx_tnc)
 }
 
@@ -107,6 +108,7 @@ fun clearTitle() {
 
 fun submitTitle() {
     pressActionSoftKeyboard(unifyR.id.text_field_input)
+    Espresso.closeSoftKeyboard()
 }
 
 fun clickBackTitleForm() {
@@ -128,6 +130,7 @@ fun selectProduct(idx: Int = 0) {
 }
 
 fun clickSubmitProductTag() {
+    Espresso.closeSoftKeyboard()
     click(R.id.btn_next)
 }
 

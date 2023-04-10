@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.builder.BaseTrackerBuilder;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
@@ -99,6 +100,9 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_ON_BANNER_INSIDE_RECOMMENDATION_TAB = "click on banner inside recommendation tab";
     public static final String VALUE_CREATIVE_BANNER_INSIDE_RECOM_TAB = "/ - banner inside recom tab - %s - ";
     public static final String FIELD_PROMO_ID = "promo_id";
+
+    public static final String BUSINESS_UNIT_VALUE = "home & browse";
+    public static final String CURRENT_SITE_VALUE = "tokopediamarketplace";
 
     public static ContextAnalytics getTracker() {
         return TrackApp.getInstance().getGTM();
@@ -291,24 +295,30 @@ public class HomePageTracking {
     public static void eventClickTickerHomePage(String tickerId) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
-            tracker.sendGeneralEvent(
+            BaseTrackerBuilder trackerBuilder = new BaseTrackerBuilder();
+            trackerBuilder.constructBasicGeneralClick(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_TICKER,
                     tickerId
-            );
+            ).appendBusinessUnit(BUSINESS_UNIT_VALUE)
+            .appendCurrentSite(CURRENT_SITE_VALUE);
+            tracker.sendGeneralEvent(trackerBuilder.build());
         }
     }
 
     public static void eventClickOnCloseTickerHomePage(String tickerId) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
-            tracker.sendGeneralEvent(
+            BaseTrackerBuilder trackerBuilder = new BaseTrackerBuilder();
+            trackerBuilder.constructBasicGeneralClick(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
                     tickerId
-            );
+            ).appendBusinessUnit(BUSINESS_UNIT_VALUE)
+            .appendCurrentSite(CURRENT_SITE_VALUE);
+            tracker.sendGeneralEvent(trackerBuilder.build());
         }
     }
 
