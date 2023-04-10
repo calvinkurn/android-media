@@ -1102,6 +1102,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                         showSuccessAddToCartToaster(cartListBusinessData.message)
                     }
             }
+
+            cartTokoFoodData.message.takeIf { it.isNotBlank() }?.let { message ->
+                view?.let { view ->
+                    Toaster.build(
+                        view = view,
+                        text = message,
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_NORMAL
+                    ).show()
+                }
+            }
         }
     }
 
