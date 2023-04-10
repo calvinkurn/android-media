@@ -146,9 +146,9 @@ class MainActivity : AppCompatActivity() {
         if (userSession.isLoggedIn) {
             val identity =
                 if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            model.value = model.value.copy(loginText = "Logged in as:\n$identity")
+            model.value = model.value.copy(isLoggedIn = true, loginText = "Logged in as:\n$identity")
         } else {
-            model.value = model.value.copy(loginText = "Login")
+            model.value = model.value.copy(isLoggedIn = false, loginText = "Login")
         }
     }
 
@@ -182,7 +182,8 @@ class MainActivity : AppCompatActivity() {
         val applink: String = "",
         val urlState: String = "LIVE",
         val isDarkModeChecked: Boolean = false,
-        val loginText: String = "Login"
+        val loginText: String = "Login",
+        val isLoggedIn: Boolean = false,
     )
 
     sealed interface HomeDestination {
