@@ -86,7 +86,7 @@ public class AddressConstants {
 
     // User Consent
     public static final String ADD_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625";
-    public static final String ADD_ADDRESS_COLLECTION_ID_PRODUCTION = ""; // To do, still waiting for collection id
+    public static final String ADD_ADDRESS_COLLECTION_ID_PRODUCTION = "1dd907e3-3e1f-405d-90c5-3db42e19d59d";
     public static final String EDIT_ADDRESS_COLLECTION_ID_STAGING = "e5a06379-2564-4357-8380-d2bf9e694340";
-    public static final String EDIT_ADDRESS_COLLECTION_ID_PRODUCTION = ""; // To do, still waiting for collection id
+    public static final String EDIT_ADDRESS_COLLECTION_ID_PRODUCTION = "011d3e50-a147-41ea-8ea4-eae1dda6701e";
 }

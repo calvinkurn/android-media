@@ -35,5 +35,5 @@ object ManageAddressConstant {
 
     // User Consent
     const val DELETE_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625"
-    const val DELETE_ADDRESS_COLLECTION_ID_PRODUCTION = "" // To do, still waiting for collection id
+    const val DELETE_ADDRESS_COLLECTION_ID_PRODUCTION = "1dd907e3-3e1f-405d-90c5-3db42e19d59d"
 }
