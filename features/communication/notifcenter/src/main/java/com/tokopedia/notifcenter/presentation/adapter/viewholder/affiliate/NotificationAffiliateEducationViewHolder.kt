@@ -21,7 +21,7 @@ import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 
-class NotificationAffiliateEducationVH(
+class NotificationAffiliateEducationViewHolder(
     itemView: View?
 ) :
     AbstractViewHolder<NotificationAffiliateEducationUiModel>(itemView) {

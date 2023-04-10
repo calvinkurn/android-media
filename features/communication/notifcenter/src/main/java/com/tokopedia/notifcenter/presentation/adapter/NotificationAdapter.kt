@@ -52,6 +52,7 @@ class NotificationAdapter constructor(
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
     private var recommendationTitlePosition: Int? = null
     var shopAdsWidgetAdded = false
+    var affiliateBannerPair: Pair<Int, NotificationAffiliateEducationUiModel>? = null
 
     interface Listener {
         fun hasFilter(): Boolean
@@ -205,7 +206,6 @@ class NotificationAdapter constructor(
         }
     }
 
-    var affiliateBannerPair: Pair<Int, NotificationAffiliateEducationUiModel>? = null
     fun addAffiliateEducationArticles(banner: NotificationAffiliateEducationUiModel) {
         if (visitables.add(banner)) {
             affiliateBannerPair = Pair(visitables.size - 1, banner)
@@ -218,6 +218,7 @@ class NotificationAdapter constructor(
             if (visitables[i] is LoadingMoreModel) {
                 visitables.removeAt(i)
                 notifyItemRemoved(i)
+                // updating banner position as now the list size is decreased
                 affiliateBannerPair = affiliateBannerPair?.copy(visitables.size - 1)
                 return
             }

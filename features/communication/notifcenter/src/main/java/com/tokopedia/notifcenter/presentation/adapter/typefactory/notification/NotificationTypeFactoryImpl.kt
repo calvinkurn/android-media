@@ -25,7 +25,7 @@ import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEdu
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationShopAdsViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.affiliate.NotificationAffiliateEducationVH
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.affiliate.NotificationAffiliateEducationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BannerNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BigDividerViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
@@ -111,7 +111,7 @@ class NotificationTypeFactoryImpl constructor(
     }
 
     override fun type(affiliateEducationUiModel: NotificationAffiliateEducationUiModel): Int {
-        return NotificationAffiliateEducationVH.LAYOUT
+        return NotificationAffiliateEducationViewHolder.LAYOUT
     }
 
     @LayoutRes
@@ -201,7 +201,7 @@ class NotificationTypeFactoryImpl constructor(
                 view,
                 notificationListener
             )
-            NotificationAffiliateEducationVH.LAYOUT -> NotificationAffiliateEducationVH(view)
+            NotificationAffiliateEducationViewHolder.LAYOUT -> NotificationAffiliateEducationViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

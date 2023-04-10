@@ -50,6 +50,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 interface INotificationViewModel {
@@ -474,7 +475,7 @@ class NotificationViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
     }

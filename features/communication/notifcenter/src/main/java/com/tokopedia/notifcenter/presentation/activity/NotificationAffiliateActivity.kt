@@ -22,8 +22,6 @@ class NotificationAffiliateActivity : BaseSimpleActivity() {
     @JvmField
     var userSessionInterface: UserSessionInterface? = null
 
-    private var navToolbar: NavToolbar? = null
-
     override fun getLayoutRes(): Int = R.layout.activity_notification_affiliate
     override fun getNewFragment(): Fragment = NotificationAffiliateFragment()
     override fun getParentViewResourceID(): Int = R.id.fragment_container
@@ -31,12 +29,11 @@ class NotificationAffiliateActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        navToolbar = findViewById(R.id.affiliate_nc_nav_toolbar)
         setupToolbar()
     }
 
     private fun setupToolbar() {
-//        setupToolbarLifecycle()
+        val navToolbar = findViewById<NavToolbar>(R.id.affiliate_nc_nav_toolbar)
         navToolbar?.switchToLightToolbar()
         val view = View.inflate(
             this,
