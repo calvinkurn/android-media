@@ -42,15 +42,13 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 any()
             )
         } just Runs
+        presenter.isPlusSelected = false
 
         // When
         presenter.cancelUpsell(
             true,
-            false,
+            true,
             false
-//            true,
-//            false, null, "", "",
-//            false
         )
 
         // Then
@@ -83,17 +81,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
@@ -149,17 +142,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
@@ -213,17 +201,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
@@ -278,17 +261,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
@@ -341,17 +319,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(
@@ -406,17 +379,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
 
         presenter.shipmentCartItemModelList = listOf(

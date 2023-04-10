@@ -72,11 +72,9 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxUnitFun = true)
     lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
 
-    @MockK
-    lateinit var ratesStatesConverter: RatesResponseStateConverter
+    private val ratesStatesConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
-    @MockK
-    lateinit var shippingCourierConverter: ShippingCourierConverter
+    private val shippingCourierConverter: ShippingCourierConverter = ShippingCourierConverter()
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
@@ -84,7 +82,7 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxed = true)
     lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
     @MockK

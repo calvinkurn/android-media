@@ -1821,7 +1821,7 @@ class ShipmentPresenter @Inject constructor(
             }
             if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals("red", ignoreCase = true)) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
-                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
                         if (view != null) {
                             view?.resetCourier(shipmentCartItemModel)
                             view?.logOnErrorApplyBo(
@@ -2123,7 +2123,7 @@ class ShipmentPresenter @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(listOf(shipmentCartItemModel))
-                if (params.requestDataList.isNotEmpty()) {
+                if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
                 }
             } catch (e: Throwable) {
@@ -2136,7 +2136,7 @@ class ShipmentPresenter @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
-                if (params.requestDataList.isNotEmpty()) {
+                if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
                 }
             } catch (e: Throwable) {

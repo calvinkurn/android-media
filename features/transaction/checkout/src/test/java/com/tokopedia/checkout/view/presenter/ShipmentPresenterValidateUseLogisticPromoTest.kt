@@ -67,13 +67,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString + "2",
+                    cartStringGroup = cartString + "2",
                     code = promoCode,
                     messageUiModel = MessageUiModel(state = "green", text = errorMessage)
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "merchant",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     code = promoCode + "m",
                     messageUiModel = MessageUiModel(state = "green", text = errorMessage)
                 )
@@ -125,7 +125,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     code = promoCode,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
                 )
@@ -174,12 +174,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     messageUiModel = MessageUiModel(state = "green")
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "global",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
                 )
             )
@@ -236,6 +236,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
     }
@@ -288,6 +289,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
         }
     }
 
@@ -313,6 +315,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
         }
     }
 
@@ -383,6 +386,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
@@ -456,6 +460,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()

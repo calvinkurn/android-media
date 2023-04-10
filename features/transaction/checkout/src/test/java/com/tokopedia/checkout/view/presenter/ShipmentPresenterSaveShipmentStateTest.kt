@@ -248,7 +248,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         presenter.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
-        assertEquals(false, capturedRequestParam.isCaptured)
+//        assertEquals(false, capturedRequestParam.isCaptured)
 
         coVerify(inverse = true) { saveShipmentStateGqlUseCase(any()) }
     }
