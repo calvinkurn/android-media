@@ -21,6 +21,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestChip(
+    modifier: Modifier = Modifier,
     text: String,
     isSelected: Boolean,
     size: Size = Size.SMALL,
@@ -102,7 +103,7 @@ fun PreviewChip() {
                 Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                 Text("L", fontWeight = FontWeight.Bold)
             }
-            NestChip("Normal", active, size) { active = !active }
+            NestChip(text = "Normal", isSelected = active, size = size) { active = !active }
             NestChip(text = "Chevron", isSelected = false, size = size, showChevron = true)
         }
     }
