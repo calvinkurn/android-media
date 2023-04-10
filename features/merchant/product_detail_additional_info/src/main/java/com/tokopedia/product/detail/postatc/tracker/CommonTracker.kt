@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.base
+package com.tokopedia.product.detail.postatc.tracker
 
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,6 +35,9 @@ class CommonTracker(
     var shopId: String = ""
         private set
 
+    var isLoggedIn: Boolean = false
+        private set
+
     fun get(): CommonTracker {
         userId = userSession.userId
         productId = postAtcInfo.productId
@@ -45,6 +48,7 @@ class CommonTracker(
         categoryId = postAtcInfo.categoryId
         categoryName = postAtcInfo.categoryName
         shopId = postAtcInfo.shopId
+        isLoggedIn = userSession.isLoggedIn
 
         return this
     }
