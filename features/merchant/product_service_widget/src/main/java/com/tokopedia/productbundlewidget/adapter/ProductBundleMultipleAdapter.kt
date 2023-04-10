@@ -70,6 +70,12 @@ class ProductBundleMultipleAdapter(
                 bundleDetail,
                 position
             )
+            listener?.impressionProductItemBundleMultiple(
+                bundle,
+                product,
+                bundleDetail,
+                position
+            )
         }
     }
 

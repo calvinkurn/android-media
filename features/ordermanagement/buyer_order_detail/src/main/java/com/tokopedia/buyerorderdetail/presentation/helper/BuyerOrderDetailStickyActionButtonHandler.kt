@@ -5,7 +5,7 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerCo
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
@@ -114,6 +114,14 @@ class BuyerOrderDetailStickyActionButtonHandler(
                     BuyerOrderDetailTrackerConstant.TRACKER_ID_CHECK_PRESCRIPTION
                 )
             }
+            BuyerOrderDetailActionButtonKey.PARTIAL_ORDER_FULFILLMENT -> {
+                onRespondToPartialOrderFulfillmentClicked()
+                trackClickActionButtonPG(
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_CONFIRMATION_POF,
+                    BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_CONFIRMATION_POF
+                )
+            }
         }
     }
 
@@ -123,6 +131,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onRespondToSubmissionOrderExtensionClicked() {
         navigator.goToOrderExtension(viewModel.getOrderId())
+    }
+
+    private fun onRespondToPartialOrderFulfillmentClicked() {
+        navigator.goToPartialOrderFulfillment(viewModel.getOrderId())
     }
 
     private fun onReUploadPrescriptionClicked(url: String) {
