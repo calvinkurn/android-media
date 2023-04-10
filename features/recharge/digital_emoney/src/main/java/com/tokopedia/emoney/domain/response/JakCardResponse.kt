@@ -9,9 +9,9 @@ data class JakCardResponse (
 
 data class JakCardData(
     @SerializedName("action")
-    val action: Int = 0,
+    var action: Int = 0,
     @SerializedName("status")
-    val status: Int = 0,
+    var status: Int = 0,
     @SerializedName("attributes")
     val attributes: JakCardAttribute = JakCardAttribute(),
 )
@@ -22,7 +22,7 @@ data class JakCardAttribute(
     @SerializedName("cryptogram")
     val cryptogram: String = "",
     @SerializedName("last_balance")
-    val lastBalance: Int = 0,
+    var lastBalance: Int = 0,
     @SerializedName("button_text")
     val buttonText: String = "",
     @SerializedName("image_issuer")

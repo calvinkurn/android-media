@@ -10,6 +10,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.emoney.domain.request.JakCardRequestMapper
 import com.tokopedia.emoney.domain.request.JakCardStatus
+import com.tokopedia.emoney.domain.response.JakCardResponse
 import com.tokopedia.emoney.domain.response.JakCardResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetJakCardUseCase
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -127,7 +128,7 @@ class JakCardBalanceViewModel @Inject constructor(
 
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
             if (result.data.status == JakCardStatus.WRITE.status) {
-                processLoad(topUpCardData, result.data.attributes.cryptogram, result.data.attributes.stan,
+                processLoad(result, topUpCardData, result.data.attributes.cryptogram, result.data.attributes.stan,
                     result.data.attributes.refNo, amount, cardNumber, lastBalance)
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
@@ -137,7 +138,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processLoad(topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String, lastBalance: Int) {
+    private fun processLoad(topUpJakCardResponse: JakCardResponse, topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String, lastBalance: Int) {
         if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val loadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
@@ -162,7 +163,7 @@ class JakCardBalanceViewModel @Inject constructor(
                          convertHexBalanceToIntBalance(separatedCheckBalanceString)
                     }
 
-                    getTopUpConfirmationProcess(topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
+                    getTopUpConfirmationProcess(topUpJakCardResponse, topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                 }
             } catch (e: IOException) {
                 errorCardMessageMutable.postValue(e)
@@ -172,7 +173,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getTopUpConfirmationProcess(topUpConfirmationCardData: String, cardNumber: String, lastBalanceAfterUpdate: Int, amount: Int, stan: String, refNo: String) {
+    private fun getTopUpConfirmationProcess(topUpJakCardResponse: JakCardResponse, topUpConfirmationCardData: String, cardNumber: String, lastBalanceAfterUpdate: Int, amount: Int, stan: String, refNo: String) {
         launchCatchError(block = {
             val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
                 cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
@@ -180,7 +181,9 @@ class JakCardBalanceViewModel @Inject constructor(
             val result = jakCardUseCase.execute(paramGetTopUpQuery)
             jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
         }){
-            errorCardMessageMutable.postValue(it)
+            jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(
+                JakCardResponseMapper.jakCardResponseConfirmationFailed(topUpJakCardResponse, lastBalanceAfterUpdate)
+            ))
         }
     }
 
