@@ -93,6 +93,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
+        const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
     }
 
     /**
@@ -174,6 +175,7 @@ class DeveloperOptionAdapter(
         ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
+        DeprecatedApiSwitcherToasterUiModel(listOf(KEYWORD_DEPRECATED_API_SWITCHER_TOASTER)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         LoggingToServerUiModel(
             listOf(

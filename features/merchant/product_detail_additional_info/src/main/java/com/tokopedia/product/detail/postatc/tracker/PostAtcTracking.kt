@@ -1,5 +1,6 @@
-package com.tokopedia.product.detail.postatc.base
+package com.tokopedia.product.detail.postatc.tracker
 
+import com.tokopedia.product.detail.postatc.base.ComponentTrackData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 

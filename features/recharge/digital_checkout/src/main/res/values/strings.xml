@@ -41,7 +41,7 @@
     <string name="digital_checkout_promo_disabled_description">Tidak bisa digabung dengan promo lain</string>
 
     <string name="subscription_more_info_bottomsheet_title">Langganan itu apa, sih?</string>
-    <string name="subscription_plus_more_info_bottomsheet_title">Perpanjang otomatis PLUS</string>
+    <string name="subscription_plus_more_info_bottomsheet_title">Perpanjang otomatis PLUS, yuk!</string>
     <string-array name="subscription_more_info_bottomsheet_description">
         <item>Dengan fitur Langganan, tagihan akan otomatis dibayar sesuai jadwal yang kamu tentukan.\n</item>
         <item>Jika kamu melakukan transaksi manual untuk produk yang bisa dibayarkan berkali-kali (cth: Pulsa dan BPJS), Langganan kamu akan terus berjalan.\n</item>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/saving_amount_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toStartOf="@id/btn_bundle_atc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_bundle_atc"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_display_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            tools:text="Rp700.000"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="4dp"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_discount_bundle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelType="highlight_light_red"
+            android:layout_marginVertical="2dp"
+            app:labelTitle="0%" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rp.2.000.000"
+            android:gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="small" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_bundle_atc"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/product_bundle_action_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
