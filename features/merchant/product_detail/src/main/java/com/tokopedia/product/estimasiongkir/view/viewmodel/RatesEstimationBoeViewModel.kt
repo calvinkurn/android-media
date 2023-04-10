@@ -46,7 +46,7 @@ class RatesEstimationBoeViewModel @Inject constructor(
             val ratesData = getRatesEstimate(it)
             val scheduledDeliveryData = getScheduledDeliveryRates(it)
 
-            val remoteHideOldBO = remoteConfig.getBoolean(ENABLE_MULTI_BO_BOTTOM_SHEET)
+            val remoteHideOldBO = remoteConfig.getBoolean(ENABLE_MULTI_BO_BOTTOM_SHEET, true)
 
             val ratesDataModel = RatesMapper.mapToVisitable(ratesData, it, remoteHideOldBO)
             val scheduledDeliveryDataModel = RatesMapper.mapToVisitable(scheduledDeliveryData)
