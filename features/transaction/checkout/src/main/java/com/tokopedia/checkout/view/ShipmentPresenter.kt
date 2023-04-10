@@ -1869,7 +1869,7 @@ class ShipmentPresenter @Inject constructor(
                 orderFound = true
                 if (voucherOrder.messageUiModel.state != "red") {
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
-                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
                             if (view != null) {
                                 view?.setSelectedCourier(
                                     cartItemPosition,

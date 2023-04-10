@@ -2265,6 +2265,7 @@ class ShipmentFragment :
         selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     ) {
+        // do not set courier to shipment item before success validate use
         checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode)
         setStateLoadingCourierStateAtIndex(cartPosition, true)
         val courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(
@@ -3256,7 +3257,7 @@ class ShipmentFragment :
         for (voucherOrder in voucherOrdersItemUiModels) {
             if (voucherOrder.success && voucherOrder.type == "logistic") {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
-                    if (shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                    if (shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
                         val log = VoucherLogisticItemUiModel()
                         log.code = voucherOrder.code
                         log.couponDesc = voucherOrder.titleDescription
@@ -3277,7 +3278,7 @@ class ShipmentFragment :
                 }
             } else if (!voucherOrder.success && isNullOrEmpty(voucherOrder.type)) {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
-                    if (shipmentCartItemModel.cartString == voucherOrder.uniqueId && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == voucherOrder.code) {
+                    if (shipmentCartItemModel.cartString == voucherOrder.cartStringGroup && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == voucherOrder.code) {
                         resetCourier(shipmentCartItemModel)
                     }
                 }
