@@ -30,6 +30,10 @@ android {
     }
 }
 dependencies {
+    //TODO: change version to final OneKycSDK and remove aloha
+    implementation("com.gojek.android:asphalt-aloha:0.0.11117")
+    implementation("com.gojek.android:OneKycSdk:0.1.32TK1")
+
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.usercomponents)

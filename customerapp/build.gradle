@@ -284,6 +284,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
+    //TODO: remove when final OneKycSDK ready
+    implementation("com.gojek.android:asphalt-aloha:0.0.11117")
+
     implementation platform(rootProject.ext.firebase.bom)
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
