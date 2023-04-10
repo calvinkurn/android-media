@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -21,6 +23,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
+import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
@@ -28,9 +31,11 @@ import com.tokopedia.notifcenter.data.model.ScrollToBottomState
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.v3.NotificationAffiliateEduEventListener
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
@@ -45,9 +50,11 @@ import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 open class NotificationAffiliateFragment :
@@ -56,7 +63,8 @@ open class NotificationAffiliateFragment :
     LoadMoreViewHolder.Listener,
     NotificationEndlessRecyclerViewScrollListener.Listener,
     NotificationAdapter.Listener,
-    NotificationLongerContentBottomSheet.Listener {
+    NotificationLongerContentBottomSheet.Listener,
+    NotificationAffiliateEduEventListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -111,6 +119,7 @@ open class NotificationAffiliateFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initRemoteConfig()
+        rvTypeFactory?.affiliateEducationListener = this
         viewModel.loadNotificationFilter(RoleType.AFFILIATE)
     }
 
@@ -287,7 +296,7 @@ open class NotificationAffiliateFragment :
                 override fun onFilterChanged(filterType: Long, filterName: String) {
                     viewModel.filter = filterType
                     loadInitialData()
-                    rvAdapter?.affiliateBannerPair = null
+                    rvAdapter?.affiliateBannerPair = null // reset education position on filter change
                     analytic.trackFilterClick(
                         filterType,
                         filterName,
@@ -300,7 +309,7 @@ open class NotificationAffiliateFragment :
     }
 
     override fun onSwipeRefresh() {
-        rvAdapter?.affiliateBannerPair = null
+        rvAdapter?.affiliateBannerPair = null // reset education position on refresh
         viewModel.cancelAllUseCase()
         super.onSwipeRefresh()
     }
@@ -437,5 +446,49 @@ open class NotificationAffiliateFragment :
 
     override fun hasFilter(): Boolean {
         return viewModel.hasFilter()
+    }
+
+    override fun onEducationActiveIndexChanged(
+        currentIndex: Int,
+        notificationAffiliateEducationUiModel: NotificationAffiliateEducationUiModel
+    ) {
+        NotificationAffiliateAnalytics.trackAffiliateEducationImpression(
+            notificationAffiliateEducationUiModel,
+            currentIndex,
+            userSession.userId
+        )
+    }
+
+    override fun onEducationItemClick(
+        data: AffiliateEducationArticleResponse.CardsArticle.Data.CardsItem.Article
+    ) {
+        context?.let { ctx ->
+            NotificationAffiliateAnalytics.trackAffiliateEducationClick(userSession.userId)
+            RouteManager.route(ctx, getArticleEventUrl(data.slug.toString()))
+        }
+    }
+
+    override fun onEducationLihatSemuaClick() {
+        context?.let { ctx ->
+            NotificationAffiliateAnalytics.trackAffiliateEducationSeeMoreClick(userSession.userId)
+            RouteManager.route(ctx, ApplinkConst.AFFILIATE_TOKO_EDU_PAGE)
+        }
+    }
+
+    private fun getArticleEventUrl(slug: String): String {
+        val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
+            "https://affiliate-staging.tokopedia.com/edu/"
+        val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
+        return String.format(
+            Locale.getDefault(),
+            "%s?url=%s%s?navigation=hide",
+            ApplinkConst.WEBVIEW,
+            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+                EDUCATION_ARTICLE_DETAIL_STAGING_URL
+            } else {
+                EDUCATION_ARTICLE_DETAIL_PROD_URL
+            },
+            slug
+        )
     }
 }

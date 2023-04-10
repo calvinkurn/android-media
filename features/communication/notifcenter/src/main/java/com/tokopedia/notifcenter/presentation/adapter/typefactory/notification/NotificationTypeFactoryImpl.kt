@@ -22,6 +22,7 @@ import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
+import com.tokopedia.notifcenter.listener.v3.NotificationAffiliateEduEventListener
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationShopAdsViewHolder
@@ -53,6 +54,7 @@ class NotificationTypeFactoryImpl constructor(
 
     private val notificationListener = viewListener as NotificationItemListener
     private val loadMoreListener = viewListener as LoadMoreViewHolder.Listener
+    var affiliateEducationListener: NotificationAffiliateEduEventListener? = null
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SectionTitleViewHolder.LAYOUT
@@ -201,7 +203,10 @@ class NotificationTypeFactoryImpl constructor(
                 view,
                 notificationListener
             )
-            NotificationAffiliateEducationViewHolder.LAYOUT -> NotificationAffiliateEducationViewHolder(view)
+            NotificationAffiliateEducationViewHolder.LAYOUT -> NotificationAffiliateEducationViewHolder(
+                view,
+                affiliateEducationListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }

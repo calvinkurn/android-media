@@ -4,25 +4,21 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.view.updatePaddingRelative
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
+import com.tokopedia.notifcenter.listener.v3.NotificationAffiliateEduEventListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.toDate
 import timber.log.Timber
 import java.text.ParseException
-import java.util.*
 
 class NotificationAffiliateEducationViewHolder(
-    itemView: View?
+    itemView: View?,
+    private val notificationAffiliateEduEventListener: NotificationAffiliateEduEventListener?
 ) :
     AbstractViewHolder<NotificationAffiliateEducationUiModel>(itemView) {
     companion object {
@@ -35,14 +31,10 @@ class NotificationAffiliateEducationViewHolder(
         private const val DD_MMM = "dd MMM"
         private const val DD_MMM_YY = "dd MMM yy"
         private const val ITEM_HORIZONTAL_PADDING = 12
-        private const val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
-            "https://affiliate-staging.tokopedia.com/edu/"
-        private const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
     private val seeMore = itemView?.findViewById<Typography>(R.id.tv_education_see_more)
-    private val userSession = UserSession(itemView?.context)
 
     override fun bind(element: NotificationAffiliateEducationUiModel?) {
         setData(element)
@@ -72,12 +64,7 @@ class NotificationAffiliateEducationViewHolder(
                                 )
                             )
                         view.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {
-                            itemView.context?.let { ctx ->
-                                NotificationAffiliateAnalytics.trackAffiliateEducationClick(
-                                    userSession.userId
-                                )
-                                RouteManager.route(ctx, getArticleEventUrl(data.slug.toString()))
-                            }
+                            notificationAffiliateEduEventListener?.onEducationItemClick(data)
                         }
                         view.updatePaddingRelative(
                             start = ITEM_HORIZONTAL_PADDING,
@@ -89,10 +76,9 @@ class NotificationAffiliateEducationViewHolder(
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     element?.let {
-                        NotificationAffiliateAnalytics.trackAffiliateEducationImpression(
-                            it,
+                        notificationAffiliateEduEventListener?.onEducationActiveIndexChanged(
                             current,
-                            userSession.userId
+                            it
                         )
                     }
                 }
@@ -103,26 +89,9 @@ class NotificationAffiliateEducationViewHolder(
             infinite = false
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             seeMore?.setOnClickListener {
-                itemView.context?.let { ctx ->
-                    NotificationAffiliateAnalytics.trackAffiliateEducationSeeMoreClick(userSession.userId)
-                    RouteManager.route(ctx, ApplinkConst.AFFILIATE_TOKO_EDU_PAGE)
-                }
+                notificationAffiliateEduEventListener?.onEducationLihatSemuaClick()
             }
         }
-    }
-
-    private fun getArticleEventUrl(slug: String): String {
-        return String.format(
-            Locale.getDefault(),
-            "%s?url=%s%s?navigation=hide",
-            ApplinkConst.WEBVIEW,
-            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-                EDUCATION_ARTICLE_DETAIL_STAGING_URL
-            } else {
-                EDUCATION_ARTICLE_DETAIL_PROD_URL
-            },
-            slug
-        )
     }
 
     private fun getFormattedDate(
