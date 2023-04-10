@@ -71,6 +71,7 @@ public class RemoteConfigKey {
     public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
+    public static final String ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION = "android_customer_flight_cancellation_navigation";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
