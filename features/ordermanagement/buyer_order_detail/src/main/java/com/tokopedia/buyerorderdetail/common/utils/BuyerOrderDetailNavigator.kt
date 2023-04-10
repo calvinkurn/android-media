@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -98,7 +97,6 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToCallingPage(phoneNumber: String) {
-        KeyboardHandler.DropKeyboard(activity, fragment.view)
         val bottomSheetMaskingPhoneNumber =
             MaskingPhoneNumberBottomSheet.newInstance(phoneNumber)
         bottomSheetMaskingPhoneNumber.show(fragment.childFragmentManager)

@@ -178,17 +178,14 @@ object ShipmentInfoUiStateMapper {
     private fun mapDriverButtonUiModel(
         buttons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Button>
     ): List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> {
-        val listButton = mutableListOf<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button>()
-        buttons.forEach { button ->
-            val buttonUiModel = ShipmentInfoUiModel.CourierDriverInfoUiModel.Button(
+        return buttons.map { button ->
+            ShipmentInfoUiModel.CourierDriverInfoUiModel.Button(
                 key = button.key,
                 icon = button.icon,
                 actionValue = button.actionType,
                 value = button.value
             )
-            listButton.add(buttonUiModel)
         }
-        return listButton
     }
 
     private fun mapDriverTippingInfoUiModel(
