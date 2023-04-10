@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -109,6 +110,10 @@ class PlayWidgetUiMapper @Inject constructor(
             poolType = item.widgetSortingMethod,
             recommendationType = item.recommendationType,
             hasAction = shouldHaveActionMenu(widgetType, item.partner.id),
+            shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
+                partnerType = item.partner.type,
+                partnerId = item.partner.id,
+            ),
             channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = widgetType),
         )
     }
@@ -136,7 +141,8 @@ class PlayWidgetUiMapper @Inject constructor(
 
     private fun mapPartnerInfo(partner: PlayWidgetItemPartner) = PlayWidgetPartnerUiModel(
         id = partner.id,
-        name = htmlTextTransformer.transform(partner.name)
+        name = htmlTextTransformer.transform(partner.name),
+        type = partner.type,
     )
 
     private fun mapShare(item: PlayWidgetItemShare): PlayWidgetShareUiModel {
@@ -155,6 +161,10 @@ class PlayWidgetUiMapper @Inject constructor(
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
                 userSession.shopId == partnerId
+    }
+
+    private fun shouldShowPerformanceDashboard(partnerType: String, partnerId: String): Boolean {
+        return partnerType == PartnerType.Shop.value && partnerId == userSession.shopId
     }
 
     companion object {

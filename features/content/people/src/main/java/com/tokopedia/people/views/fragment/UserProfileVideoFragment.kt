@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.people.R
@@ -246,6 +247,10 @@ class UserProfileVideoFragment @Inject constructor(
 
                             override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
                                 submitAction(UserProfileAction.ClickSeePerformancePlayChannel(channel))
+                            }
+
+                            override fun onClickSeePerformanceVideoAnalytics(channel: PlayWidgetChannelUiModel) {
+                                RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
                             }
 
                             override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {

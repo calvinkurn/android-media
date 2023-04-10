@@ -6,5 +6,6 @@ package com.tokopedia.play.widget.ui.model
  */
 data class PlayWidgetPartnerUiModel(
         val id: String,
-        val name: String
+        val name: String,
+        val type: String,
 )

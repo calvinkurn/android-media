@@ -75,6 +75,8 @@ data class Partner(
     val id: String = "",
     @SerializedName("name")
     val name: String = "",
+    @SerializedName("type")
+    val type: String = "",
 )
 
 data class Share(

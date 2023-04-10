@@ -66,6 +66,7 @@ data class PlayWidgetChannelUiModel(
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
+    val shouldShowPerformanceDashboard: Boolean,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
     val gridType: PlayGridType = PlayGridType.Unknown,
 ) : PlayWidgetItemUiModel(), ImpressionableModel {
@@ -84,4 +85,7 @@ data class PlayWidgetTotalView(
     val isVisible: Boolean,
 )
 
-object PlayCardShimmering: PlayWidgetItemUiModel()
+enum class PartnerType(val value: String) {
+    Shop("shop"),
+    User("user")
+}
