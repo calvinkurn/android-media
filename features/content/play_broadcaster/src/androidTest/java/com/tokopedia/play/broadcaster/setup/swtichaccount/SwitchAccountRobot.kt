@@ -12,7 +12,9 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.onboarding.data.UGCOnboardingRepositoryImpl
@@ -24,8 +26,10 @@ import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingS
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -41,8 +45,6 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
@@ -113,6 +115,7 @@ class SwitchAccountRobot(
         pinProductAnalytic = mockk(relaxed = true),
         accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
         shortsEntryPointAnalytic = mockk(relaxed = true),
+        playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
@@ -165,7 +168,6 @@ class SwitchAccountRobot(
                     analyticManager = mockk(relaxed = true),
                     userSession = mockk(relaxed = true),
                     coachMarkSharedPref = mockk(relaxed = true),
-                    playShortsEntryPointRemoteConfig = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

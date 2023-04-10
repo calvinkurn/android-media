@@ -1,14 +1,15 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
-import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
@@ -34,6 +35,7 @@ class PlayBroadcastAnalytic(
     private val pinProductAnalytic: PlayBroadcastPinProductAnalytic,
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+    private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
@@ -43,7 +45,8 @@ class PlayBroadcastAnalytic(
     PlayBroScheduleAnalytic by scheduleAnalytic,
     PlayBroadcastPinProductAnalytic by pinProductAnalytic,
     PlayBroadcastAccountAnalytic by accountAnalytic,
-    PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic {
+    PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
+    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic {
 
     /**
      * View Camera and Microphone Permission Page

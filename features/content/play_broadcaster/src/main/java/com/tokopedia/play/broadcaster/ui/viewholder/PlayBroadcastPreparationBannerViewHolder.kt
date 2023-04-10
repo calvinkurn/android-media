@@ -55,8 +55,6 @@ class PlayBroadcastPreparationBannerViewHolder(
         val displayMetrics = DisplayMetrics()
         (view.cuContainer.context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        Timber.d(displayMetrics.widthPixels.toString())
-        Timber.d((displayMetrics.widthPixels - itemOffset).toString())
         view.cuContainer.layoutParams.width = (displayMetrics.widthPixels - itemOffset)
     }
 

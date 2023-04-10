@@ -2547,6 +2547,7 @@ class NewShopPageFragment :
             valueDisplayed
         )
 
+        //TODO analytic row 1
         showContentCreationOptionBottomSheet()
     }
 

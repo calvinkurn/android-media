@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.analytic.entrypoint
+package com.tokopedia.content.common.analytic.entrypoint
 
 interface PlayPerformanceDashboardEntryPointAnalytic {
 
