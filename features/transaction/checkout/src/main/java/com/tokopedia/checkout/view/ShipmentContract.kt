@@ -257,7 +257,7 @@ interface ShipmentContract {
     }
 
     interface Presenter {
-        fun attachView(view: View)
+        fun attachView(view: ShipmentFragment)
 
         fun detachView()
 

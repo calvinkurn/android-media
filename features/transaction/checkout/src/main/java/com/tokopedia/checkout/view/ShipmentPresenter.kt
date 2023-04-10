@@ -208,7 +208,7 @@ class ShipmentPresenter @Inject constructor(
     private val shipmentDataRequestConverter: ShipmentDataRequestConverter
 ) : ShipmentContract.Presenter, ViewModel() {
 
-    private var view: ShipmentContract.View? = null
+    private var view: ShipmentFragment? = null
 
     override var shipmentUpsellModel = ShipmentUpsellModel()
         private set
@@ -307,7 +307,7 @@ class ShipmentPresenter @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
-    override fun attachView(view: ShipmentContract.View) {
+    override fun attachView(view: ShipmentFragment) {
         this.view = view
     }
 
@@ -1612,6 +1612,141 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
+    fun doValidateUseLogisticPromoNew(
+        cartPosition: Int,
+        cartString: String,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        promoCode: String,
+        showLoading: Boolean,
+        newCourierItemData: CourierItemData
+    ) {
+        if (view != null) {
+            couponStateChanged = true
+            if (showLoading) {
+                view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            }
+            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
+            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                    val validateUsePromoRevampUiModel =
+                        validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                            .executeOnBackground()
+                    if (view != null) {
+                        view?.setStateLoadingCourierStateAtIndex(
+                            cartPosition,
+                            false
+                        )
+                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                            validateUsePromoRevampUiModel
+                        updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                        showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                        validateBBOWithSpecificOrder(
+                            validateUsePromoRevampUiModel,
+                            cartString,
+                            promoCode,
+                            newCourierItemData,
+                            cartPosition
+                        )
+                        val isValidatePromoRevampSuccess =
+                            validateUsePromoRevampUiModel.status.equals(
+                                statusOK,
+                                ignoreCase = true
+                            ) && validateUsePromoRevampUiModel.errorCode == statusCode200
+                        if (isValidatePromoRevampSuccess) {
+                            view?.updateButtonPromoCheckout(
+                                validateUsePromoRevampUiModel.promoUiModel,
+                                true
+                            )
+                        } else {
+                            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                                val errMessage =
+                                    validateUsePromoRevampUiModel.message[0]
+                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
+                                    errMessage
+                                )
+                                eventCheckoutViewPromoMessage(errMessage)
+                                view?.showToastError(errMessage)
+                                view?.resetCourier(cartPosition)
+                                view?.getShipmentCartItemModel(cartPosition)?.let {
+                                    if (it.boCode.isNotEmpty()) {
+                                        clearCacheAutoApply(it, promoCode)
+                                        clearOrderPromoCodeFromLastValidateUseRequest(
+                                            cartString,
+                                            promoCode
+                                        )
+                                        it.boCode = ""
+                                    }
+                                }
+                            } else {
+                                view?.showToastError(
+                                    DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
+                                )
+                                view?.resetCourier(cartPosition)
+                                view?.getShipmentCartItemModel(cartPosition)?.let {
+                                    if (it.boCode.isNotEmpty()) {
+                                        clearCacheAutoApply(it, promoCode)
+                                        clearOrderPromoCodeFromLastValidateUseRequest(
+                                            cartString,
+                                            promoCode
+                                        )
+                                        it.boCode = ""
+                                    }
+                                }
+                            }
+                        }
+                        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
+                    }
+                    logisticDonePublisher?.onCompleted()
+                    logisticPromoDonePublisher?.onCompleted()
+                    val shipmentScheduleDeliveryMapData =
+                        getScheduleDeliveryMapData(cartString)
+                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                        shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                    }
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                    if (view != null) {
+                        view?.setStateLoadingCourierStateAtIndex(
+                            cartPosition,
+                            false
+                        )
+                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
+                        if (e is AkamaiErrorException) {
+                            clearAllPromo()
+                            view?.showToastError(e.message)
+                            view?.resetAllCourier()
+                            view?.cancelAllCourierPromo()
+                            view?.doResetButtonPromoCheckout()
+                        } else {
+                            view?.showToastError(e.message)
+                            view?.resetCourier(cartPosition)
+                            view?.getShipmentCartItemModel(cartPosition)?.let {
+                                if (it.boCode.isNotEmpty()) {
+                                    clearCacheAutoApply(it, promoCode)
+                                    clearOrderPromoCodeFromLastValidateUseRequest(
+                                        cartString,
+                                        promoCode
+                                    )
+                                    it.boCode = ""
+                                }
+                            }
+                        }
+                        view?.logOnErrorApplyBo(e, cartPosition, promoCode)
+                        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
+                        logisticDonePublisher?.onCompleted()
+                        logisticPromoDonePublisher?.onCompleted()
+                        val shipmentScheduleDeliveryMapData =
+                            getScheduleDeliveryMapData(cartString)
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
         var bboCount = 0
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
@@ -1681,21 +1816,74 @@ class ShipmentPresenter @Inject constructor(
     ) {
         var orderFound = false
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-            if (voucherOrder.uniqueId == cartString && voucherOrder.code.equals(
-                    promoCode,
-                    ignoreCase = true
-                )
-            ) {
+            if (voucherOrder.cartStringGroup == cartString && voucherOrder.code.equals(promoCode, ignoreCase = true)) {
                 orderFound = true
             }
-            if (voucherOrder.type.equals(
-                    "logistic",
-                    ignoreCase = true
-                ) && voucherOrder.messageUiModel.state.equals(
-                        "red",
-                        ignoreCase = true
-                    )
-            ) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals("red", ignoreCase = true)) {
+                for (shipmentCartItemModel in shipmentCartItemModelList) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                        if (view != null) {
+                            view?.resetCourier(shipmentCartItemModel)
+                            view?.logOnErrorApplyBo(
+                                MessageErrorException(
+                                    voucherOrder.messageUiModel.text
+                                ),
+                                shipmentCartItemModel,
+                                voucherOrder.code
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (!orderFound) {
+            // if not voucher order found for attempted apply BO order,
+            // then should reset courier and not apply the BO
+            // this should be a rare case
+            for (shipmentCartItemModel in shipmentCartItemModelList) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == cartString) {
+                    if (view != null) {
+                        view?.resetCourier(shipmentCartItemModel)
+                        view?.logOnErrorApplyBo(
+                            MessageErrorException("voucher order not found"),
+                            shipmentCartItemModel,
+                            promoCode
+                        )
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun validateBBOWithSpecificOrder(
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
+        cartString: String?,
+        promoCode: String,
+        recommendedCourier: CourierItemData,
+        cartItemPosition: Int
+    ) {
+        var orderFound = false
+        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+            if (voucherOrder.cartStringGroup == cartString && voucherOrder.code.equals(promoCode, ignoreCase = true)) {
+                orderFound = true
+                if (voucherOrder.messageUiModel.state != "red") {
+                    for (shipmentCartItemModel in shipmentCartItemModelList) {
+                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                            if (view != null) {
+                                view?.setSelectedCourier(
+                                    cartItemPosition,
+                                    recommendedCourier,
+                                    true,
+                                    false
+                                )
+                                processSaveShipmentState(shipmentCartItemModel)
+                            }
+                        }
+                    }
+                }
+            }
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals("red", ignoreCase = true)) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
                         if (view != null) {
