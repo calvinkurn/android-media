@@ -319,11 +319,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             getString(R.string.ads_active)
                         }
                         600 -> {
+                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfo.visibility = View.VISIBLE
+                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfoBtn.visibility = View.VISIBLE
                             ImageViewCompat.setImageTintList(
                                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
                                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_YN300))
                             )
-                            getString(R.string.topads_dash_tidak_tampil)}
+                            getString(R.string.ads_active)
+                        }
                         else -> ""
                     }
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
@@ -539,6 +542,15 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 }
             startActivity(intent)
             finish()
+        }
+
+        mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfoBtn.setOnClickListener {
+            showDescriptionBottomSheet(
+                getString(R.string.topads_ad_status),
+                "",
+                "",
+                getString(R.string.topads_ads_performance_not_active_ads_automatic_info)
+            )
         }
 
         mainBottomSheetBinding.includeAdGroupAutomatic.automaticBtnSubmit.setOnClickListener {

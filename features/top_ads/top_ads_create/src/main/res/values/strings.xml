@@ -230,6 +230,7 @@
     <string name="topads_ads_performance_in_recommendation_filter_title">Di Rekomendasi</string>
     <string name="topads_ads_performance_in_recommendation_filter_desc">Iklan produk yang tampil di bagian rekomendasi</string>
     <string name="topads_ads_performance_view_more">Lihat Selengkapnya</string>
+    <string name="topads_ads_performance_not_active_ads_automatic_info">Iklan tidak tampil karena Kredit TopAds tidak cukup.</string>
     <string name="topads_ads_performance_status_info_description"><![CDATA[
         <ul>
             <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>
