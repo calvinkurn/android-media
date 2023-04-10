@@ -71,6 +71,7 @@ abstract class DarkColorPalette : ColorPalette {
 object NestNN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
+        override val _0: Color = Color(0xFFFFFFFF)
         override val _50: Color = Color(0xFFF0F3F7)
         override val _100: Color = Color(0xFFE4EBF5)
         override val _200: Color = Color(0xFFD6DFEB)
@@ -85,6 +86,7 @@ object NestNN : ColorMode<ColorPalette> {
     }
 
     override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _0: Color = Color(0xFF121212)
         override val _50: Color = Color(0xFF222329)
         override val _100: Color = Color(0xFF2E2F36)
         override val _200: Color = Color(0xFF3B3D45)
