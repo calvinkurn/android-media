@@ -3,13 +3,12 @@ package com.tokopedia.play.broadcaster.util
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.testdouble.MockChannelConfigStore
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
 /**
@@ -29,13 +28,15 @@ class TestDoubleModelBuilder {
         scheduleDataStore: BroadcastScheduleDataStore = buildBroadcastScheduleDataStore(dispatcher),
         titleDataStore: TitleDataStore = buildTitleDataStore(dispatcher),
         tagsDataStore: TagsDataStore = buildTagsDataStore(dispatcher),
-        interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore()
+        interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore(),
+        productTagDataStore: ProductTagDataStore = buildProductTagDataStore(),
     ) = MockSetupDataStore(
         mCoverDataStore = coverDataStore,
         mScheduleDataStore = scheduleDataStore,
         mTitleDataStore = titleDataStore,
         mTagsDataStore = tagsDataStore,
-        mInteractiveDataStore = interactiveDataStore
+        mInteractiveDataStore = interactiveDataStore,
+        mProductTagDataStore = productTagDataStore,
     )
 
     fun buildCoverDataStore(
@@ -68,6 +69,8 @@ class TestDoubleModelBuilder {
 
     fun buildInteractiveDataStore() = InteractiveDataStoreImpl()
 
+    fun buildProductTagDataStore() = ProductTagDataStoreImpl()
+
     /**
      * Config Store
      */
@@ -77,12 +80,14 @@ class TestDoubleModelBuilder {
         titleConfigStore: TitleConfigStore = buildTitleConfigStore(),
         broadcastScheduleConfigStore: BroadcastScheduleConfigStore = buildBroadcastScheduleConfigStore(),
         accountConfigStore: AccountConfigStore = buildAccountConfigStore(),
+        broadcastingConfigStore: BroadcastingConfigStore = buildBroadcastingConfigStore()
     ) = HydraConfigStoreImpl(
         channelConfigStore = channelConfigStore,
         productConfigStore = productConfigStore,
         titleConfigStore = titleConfigStore,
         broadcastScheduleConfigStore = broadcastScheduleConfigStore,
         accountConfigStore = accountConfigStore,
+        broadcastingConfigStore = broadcastingConfigStore,
     )
 
     fun buildChannelConfigStore(
@@ -96,6 +101,8 @@ class TestDoubleModelBuilder {
     fun buildBroadcastScheduleConfigStore() = BroadcastScheduleConfigStoreImpl()
 
     fun buildAccountConfigStore() = AccountConfigStoreImpl()
+
+    fun buildBroadcastingConfigStore() = BroadcastingConfigStoreImpl()
 
     /**
      * Real Impl

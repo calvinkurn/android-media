@@ -7,17 +7,17 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseProductViewHolder(
     itemView: View,
     private val listener: RepurchaseProductCardListener? = null,
-    private val similarProductListener: SimilarProductListener? = null
-): AbstractViewHolder<RepurchaseProductUiModel>(itemView), TokoNowWishlistButtonView.TokoNowWishlistButtonListener {
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
+): AbstractViewHolder<RepurchaseProductUiModel>(itemView), ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
         @LayoutRes
@@ -47,7 +47,7 @@ class RepurchaseProductViewHolder(
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
-            setListeners(similarProductListener)
+            setSimilarProductTrackerListener(productCardCompactSimilarProductTrackerListener)
         }
     }
 

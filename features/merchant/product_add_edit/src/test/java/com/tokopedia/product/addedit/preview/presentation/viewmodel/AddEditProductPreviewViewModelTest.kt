@@ -4,6 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -31,14 +32,21 @@ import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
 import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
+class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFixture() {
 
     private val defaultShopId = "123"
 
@@ -65,11 +73,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When get remote product is success Expect set product input model`() = runBlocking {
+    fun `When get remote product is success Expect set product input model`() = runBlocking {
         val product: Product = Product().copy(
-                productID = "01919",
-                productName = "mainan",
-                price = 1000.toBigInteger()
+            productID = "01919",
+            productName = "mainan",
+            price = 1000.toBigInteger()
         )
         onGetProduct_thenReturn(product)
         onGetIsShopOwner_thenReturn(true)
@@ -132,7 +140,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         detailInputModel.categoryId = ""
         assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
 
-        detailInputModel.imageUrlOrPathList = listOf("one","two","three","four","five","six")
+        detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
         assertEquals(resourceProvider.getInvalidPhotoCountErrorMessage(), viewModel.validateProductInput(detailInputModel))
 
         every {
@@ -157,7 +165,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         detailInputModel.categoryId = ""
         assertEquals("", viewModel.validateProductInput(detailInputModel))
 
-        detailInputModel.imageUrlOrPathList = listOf("one","two","three","four","five","six")
+        detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
         assertEquals("", viewModel.validateProductInput(detailInputModel))
     }
 
@@ -184,7 +192,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When check product id and is adding Expect should return expected result`() {
         assertEquals("", viewModel.getProductId())
-        assertEquals(true , viewModel.isAdding)
+        assertEquals(true, viewModel.isAdding)
 
         viewModel.setProductId("112")
         assertEquals("112", viewModel.getProductId())
@@ -193,10 +201,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When check draft id Expect should return expected result`() {
         viewModel.setDraftId("10")
-        assertEquals(10L , viewModel.getDraftId())
+        assertEquals(10L, viewModel.getDraftId())
 
         viewModel.setDraftId("")
-        assertEquals(0 , viewModel.getDraftId())
+        assertEquals(0, viewModel.getDraftId())
     }
 
     @Test
@@ -205,7 +213,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.isDuplicate = true
 
         val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
-                MediatorLiveData<Result<Product>>>("mGetProductResult")
+            MediatorLiveData<Result<Product>>>("mGetProductResult")
         mGetProductResult?.value = Success(Product())
 
         // assert product Id is reset to 0 when at duplicate product
@@ -217,7 +225,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = ProductInputModel(productId = 123L, isDataChanged = true)
 
         val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
-                MediatorLiveData<Result<Product>>>("mGetProductResult")
+            MediatorLiveData<Result<Product>>>("mGetProductResult")
         mGetProductResult?.value = Success(Product())
         mGetProductResult?.value = Fail(Throwable())
 
@@ -230,7 +238,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = ProductInputModel(productId = 123L, isDataChanged = false)
 
         val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
-                MediatorLiveData<Result<Product>>>("mGetProductResult")
+            MediatorLiveData<Result<Product>>>("mGetProductResult")
         mGetProductResult?.value = Success(Product())
         mGetProductResult?.value = Fail(Throwable())
 
@@ -249,8 +257,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When check product domain Expect should return expected result`() {
         val product = Product(
-                productID = "12312",
-                productName = "Rice"
+            productID = "12312",
+            productName = "Rice"
         )
         viewModel.productDomain = product
         assertEquals(product, viewModel.productDomain)
@@ -293,7 +301,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetIsShopOwner_thenReturn(true)
         onGetIsShopAdmin_thenReturn(false)
         assertFalse(viewModel.shouldShowMultiLocationTicker)
-
     }
 
     @Test
@@ -330,9 +337,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        var imagePickerResult = arrayListOf("pict1.0","pict2","pict3")
-        var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
-        var editted = arrayListOf(false,false,true)
+        var imagePickerResult = arrayListOf("pict1.0", "pict2", "pict3")
+        var originalImageUrl = arrayListOf("www.blank.com", "num2", "www.blank.com")
+        var editted = arrayListOf(false, false, true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -350,9 +357,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        editted = arrayListOf(true,false,true)
+        imagePickerResult = arrayListOf("pict1", "pict2", "pict3")
+        originalImageUrl = arrayListOf("www.blank.com", "num2", "num3")
+        editted = arrayListOf(true, false, true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -371,9 +378,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        editted = arrayListOf(false,false,false)
+        imagePickerResult = arrayListOf("pict1", "pict2", "pict3")
+        originalImageUrl = arrayListOf("www.blank.com", "num2", "num3")
+        editted = arrayListOf(false, false, false)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -391,13 +398,17 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When update product photos Expect updated url path list`() {
         val successImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path", AddEditProductConstants.HTTP_PREFIX + "/")
-        val successPictureList1: List<PictureInputModel> = listOf(PictureInputModel(
-            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
-            urlOriginal = AddEditProductConstants.HTTP_PREFIX + "/"
-        ))
-        val successPictureList2: List<PictureInputModel> = listOf(PictureInputModel(
-            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
-        ))
+        val successPictureList1: List<PictureInputModel> = listOf(
+            PictureInputModel(
+                urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
+                urlOriginal = AddEditProductConstants.HTTP_PREFIX + "/"
+            )
+        )
+        val successPictureList2: List<PictureInputModel> = listOf(
+            PictureInputModel(
+                urlThumbnail = AddEditProductConstants.HTTP_PREFIX
+            )
+        )
         val errorImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path")
         val errorPictureList: List<PictureInputModel> = listOf()
 
@@ -410,9 +421,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When updatePhotos expect not any update photo`(){
+    fun `When updatePhotos expect not any update photo`() {
         val originalImage = arrayListOf("www.blank.com/cache/", "www.blank.com/cache/", "www.blank.com/cache/")
-        val imagePickerResult = arrayListOf("","","")
+        val imagePickerResult = arrayListOf("", "", "")
         val product = inputProductModelDummy()
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
@@ -423,11 +434,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When updatePhotos expect have update photo`(){
-        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3")
-        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","","")
+    fun `When updatePhotos expect have update photo`() {
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "")
         val product = inputProductModelDummy()
-        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/")
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg", "www.blank.com/cache/", "www.blank.com/cache/")
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
@@ -437,11 +448,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When updatePhotos expect have new photo but not edited and edited photo`(){
-        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
-        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+    fun `When updatePhotos expect have new photo but not edited and edited photo`() {
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3", "a/0/tkpd/102013.jpg")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "", "")
         val product = inputProductModelDummy()
-        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/", "a/0/tkpd/102013.jpg")
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg", "www.blank.com/cache/", "www.blank.com/cache/", "a/0/tkpd/102013.jpg")
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
@@ -451,9 +462,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When updatePhotos but productInputModel is null`(){
+    fun `When updatePhotos but productInputModel is null`() {
         val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
-        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "", "")
         viewModel.updateProductPhotos(imagePickerResult, originalImage)
     }
 
@@ -505,8 +516,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop location should be true`() = runBlocking {
-
+    fun `When validate shop location should be true`() = runBlocking {
         onGetShopInfoLocation_thenReturn()
 
         viewModel.validateShopLocation(121313)
@@ -517,7 +527,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When validate shop location should be false`() = runBlocking {
-
         onGetShopInfoLocation_thenReturn_false()
 
         viewModel.validateShopLocation(121313)
@@ -527,7 +536,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop location error, should post error to observer`() = runBlocking {
+    fun `When validate shop location error, should post error to observer`() = runBlocking {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel.validateShopLocation(121313)
@@ -540,7 +549,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When save shop location should be successful`() = runBlocking {
+    fun `When save shop location should be successful`() = runBlocking {
         onSaveShopShipmentLocation_thenReturn()
 
         viewModel.saveShippingLocation(mutableMapOf())
@@ -550,7 +559,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When save shop location error, should post error to observer`() = runBlocking {
+    fun `When save shop location error, should post error to observer`() = runBlocking {
         coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel.saveShippingLocation(mutableMapOf())
@@ -563,13 +572,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate product name and product name unchanged Expect return success result`() = runBlocking {
+    fun `When validate product name and product name unchanged Expect return success result`() = runBlocking {
         val productName = "testing"
 
         viewModel.setProductId("123")
         viewModel.isEditing.getOrAwaitValue()
         viewModel.productInputModel.value = ProductInputModel(
-                detailInputModel = DetailInputModel(currentProductName = productName)
+            detailInputModel = DetailInputModel(currentProductName = productName)
         )
 
         viewModel.validateProductNameInput("not same")
@@ -582,7 +591,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate product name is success Expect get the result`() = runBlocking {
+    fun `When validate product name is success Expect get the result`() = runBlocking {
         viewModel.resetValidateResult()
 
         val response = ValidateProductNameResponse().apply {
@@ -608,7 +617,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate product name if product name equals to current product name Expect get the result`() = runBlocking {
+    fun `When validate product name if product name equals to current product name Expect get the result`() = runBlocking {
         viewModel.resetValidateResult()
 
         val response = ValidateProductNameResponse().apply {
@@ -617,7 +626,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         }
 
         viewModel.productInputModel.value = ProductInputModel(
-                detailInputModel = DetailInputModel(currentProductName = "testing")
+            detailInputModel = DetailInputModel(currentProductName = "testing")
         )
 
         onValidateProductName_thenReturn(response)
@@ -792,24 +801,26 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
         val annotationCategoryData = listOf(
-                AnnotationCategoryData(
-                        variant = "Merek",
-                        data = listOf(
-                                Values("1", "Indomie", true, ""),
-                                Values("1", "Seedap", false, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa",
-                        data = listOf(
-                                Values("1", "Soto", false, ""),
-                                Values("1", "Bawang", true, ""))
+            AnnotationCategoryData(
+                variant = "Merek",
+                data = listOf(
+                    Values("1", "Indomie", true, ""),
+                    Values("1", "Seedap", false, "")
                 )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa",
+                data = listOf(
+                    Values("1", "Soto", false, ""),
+                    Values("1", "Bawang", true, "")
+                )
+            )
         )
 
         coEvery {
             annotationCategoryUseCase.executeOnBackground()
         } returns AnnotationCategoryResponse(
-                DrogonAnnotationCategoryV2(annotationCategoryData)
+            DrogonAnnotationCategoryV2(annotationCategoryData)
         )
 
         viewModel.productInputModel.value = ProductInputModel()
@@ -828,7 +839,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     fun `When getAnnotationCategory is error, should log error to crashlytics`() {
         coEvery { annotationCategoryUseCase.executeOnBackground() } throws MessageErrorException("")
 
-        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        // Mock FirebaseCrashlytics because .getInstance() method is a static method
         mockkStatic(FirebaseCrashlytics::class)
 
         every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
@@ -843,12 +854,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
         val annotationCategoryData = listOf(
-                AnnotationCategoryData(
-                        variant = "Merek",
-                        data = listOf(
-                                Values("1", "Indomie", false, ""),
-                                Values("1", "Seedap", false, ""))
+            AnnotationCategoryData(
+                variant = "Merek",
+                data = listOf(
+                    Values("1", "Indomie", false, ""),
+                    Values("1", "Seedap", false, "")
                 )
+            )
         )
 
         viewModel.productInputModel.value = null
@@ -903,10 +915,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.priceRangeFormatted.getOrAwaitValue()
 
         viewModel.productInputModel.value = ProductInputModel(
-            variantInputModel = VariantInputModel(products = listOf(
-                ProductVariantInputModel(price = 10000.toBigInteger()),
-                ProductVariantInputModel(price = 1000.toBigInteger())
-            )),
+            variantInputModel = VariantInputModel(
+                products = listOf(
+                    ProductVariantInputModel(price = 10000.toBigInteger()),
+                    ProductVariantInputModel(price = 1000.toBigInteger())
+                )
+            ),
             shipmentInputModel = ShipmentInputModel(isUsingParentWeight = true)
         )
         viewModel.priceRangeFormatted.getOrAwaitValue()
@@ -944,12 +958,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop isModerate should be false`() = runBlocking {
+    fun `When validate shop isModerate should be false`() = runBlocking {
         val shopStatus = StatusInfo(
             shopStatus = "1",
-            statusTitle= "Open",
+            statusTitle = "Open",
             statusMessage = "",
-            tickerType ="warning"
+            tickerType = "warning"
         )
         onGetShopStatus_thenReturn(shopStatus)
 
@@ -960,12 +974,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop isModerate should be true`() = runBlocking {
+    fun `When validate shop isModerate should be true`() = runBlocking {
         val shopStatus = StatusInfo(
             shopStatus = "3",
-            statusTitle= "Moderate",
+            statusTitle = "Moderate",
             statusMessage = "Your shope is on moderate status",
-            tickerType ="warning"
+            tickerType = "warning"
         )
         onGetShopStatus_thenReturn(shopStatus)
 
@@ -976,7 +990,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop isModerate error, should post error to observer`() = runBlocking {
+    fun `When validate shop isModerate error, should post error to observer`() = runBlocking {
         coEvery { getStatusShopUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel.validateShopIsOnModerated(121313)
@@ -986,6 +1000,27 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         }
 
         assert(viewModel.isOnModerationMode.value is Fail)
+    }
+
+    @Test
+    fun `when update image list`() {
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        val product = inputProductModelDummy()
+        viewModel.productInputModel.value = product
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(inputAndTarget, imageListActual.detailInputModel.imageUrlOrPathList)
+    }
+
+    @Test
+    fun `when update image list when model is null for the 1st place`() {
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        viewModel.productInputModel.value = null
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(null, imageListActual)
     }
 
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
@@ -1167,12 +1202,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun getAccessId() =
-            when {
-                viewModel.isAdding -> AccessId.PRODUCT_ADD
-                viewModel.isDuplicate -> AccessId.PRODUCT_DUPLICATE
-                viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
-                else -> AccessId.PRODUCT_ADD
-            }
+        when {
+            viewModel.isAdding -> AccessId.PRODUCT_ADD
+            viewModel.isDuplicate -> AccessId.PRODUCT_DUPLICATE
+            viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
+            else -> AccessId.PRODUCT_ADD
+        }
 
     private fun verifyValidateShopIsModerate() {
         assertTrue(viewModel.isOnModerationMode.value == Success(true))
@@ -1182,7 +1217,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertTrue(viewModel.isOnModerationMode.value == Success(false))
     }
 
-    private fun inputProductModelDummy() : ProductInputModel{
+    private fun inputProductModelDummy(): ProductInputModel {
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com/cache/"
             fileName = "apa"
@@ -1195,5 +1230,4 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         return product
     }
-
 }

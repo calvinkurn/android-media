@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -77,6 +79,11 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupObserve()
     }
 
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductSummary()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -109,6 +116,7 @@ class ProductSummaryBottomSheet @Inject constructor(
             handleAddMoreProduct()
         }
         setCloseClickListener {
+            analytic.clickCloseOnProductSummary()
             mListener?.onFinish(this)
         }
 

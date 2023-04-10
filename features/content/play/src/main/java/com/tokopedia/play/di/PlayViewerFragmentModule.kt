@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.dialog.PlayExploreWidgetFragment
 import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
 import com.tokopedia.play.view.fragment.*
 import dagger.Binds
@@ -74,6 +75,11 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayMoreActionBottomSheet::class)
     abstract fun getThreeDotsFragment(fragment: PlayMoreActionBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayExploreWidgetFragment::class)
+    abstract fun getExploreWidget(fragment: PlayExploreWidgetFragment): Fragment
 
     @Binds
     @IntoMap

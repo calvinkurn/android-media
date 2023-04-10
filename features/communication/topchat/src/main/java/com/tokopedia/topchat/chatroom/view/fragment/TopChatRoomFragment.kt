@@ -19,6 +19,7 @@ import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -36,7 +37,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -60,6 +60,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.InvoiceMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -69,11 +70,6 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -118,7 +114,6 @@ import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_ATTACH_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -157,7 +152,6 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
-import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -172,6 +166,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -198,6 +193,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.Stack
@@ -213,7 +209,6 @@ open class TopChatRoomFragment :
     TopChatContract.View,
     TypingListener,
     SendButtonListener,
-    ImagePickerListener,
     ChatTemplateListener,
     HeaderMenuListener,
     DualAnnouncementListener,
@@ -259,6 +254,8 @@ open class TopChatRoomFragment :
 
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
+
+    val webSocketViewModel: TopChatRoomWebSocketViewModel by activityViewModels()
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
@@ -317,9 +314,11 @@ open class TopChatRoomFragment :
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
-    private val newMsgObserver = Observer<Visitable<*>> { uiModel ->
-        onSendAndReceiveMessage()
-        onReceiveMessageEvent(uiModel)
+    private val newMsgObserver = Observer<Visitable<*>?> { uiModel ->
+        uiModel?.let {
+            onSendAndReceiveMessage()
+            onReceiveMessageEvent(it)
+        }
     }
 
     private val srwRemovalObserver = Observer<String?> { productId ->
@@ -330,8 +329,10 @@ open class TopChatRoomFragment :
         }
     }
 
-    private val deleteMsgObserver = Observer<String> { replyTime ->
-        onReceiveWsEventDeleteMsg(replyTime)
+    private val deleteMsgObserver = Observer<String?> { replyTime ->
+        replyTime?.let {
+            onReceiveWsEventDeleteMsg(replyTime)
+        }
     }
 
     /**
@@ -579,14 +580,12 @@ open class TopChatRoomFragment :
         hideLoading()
         setupAnalytic()
         setupBeforeReplyTime()
-        resetWebSocketIfNecessary(savedInstanceState)
         loadInitialData()
         initLoadMoreListener()
         disableSendButton()
         initKeyboardListener(view)
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
-        setupLifecycleObserver()
         initChatTextAreaLayout()
     }
 
@@ -598,19 +597,15 @@ open class TopChatRoomFragment :
 
     private fun markAsReadFromBubble() {
         if (isFromBubble) {
-            viewModel.isFromBubble = isFromBubble
-            val currentUnreadMsg = viewModel.unreadMsg.value.orZero()
+            webSocketViewModel.isFromBubble = isFromBubble
+            val currentUnreadMsg = webSocketViewModel.unreadMsg.value.orZero()
             if (currentUnreadMsg > Int.ZERO) {
-                viewModel.isOnStop = false
-                viewModel.markAsRead()
-                val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+                webSocketViewModel.isOnStop = false
+                webSocketViewModel.markAsRead()
+                val replyId = (webSocketViewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
                 TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
             }
         }
-    }
-
-    private fun setupLifecycleObserver() {
-        viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
 
     private fun setupBackground() {
@@ -721,7 +716,7 @@ open class TopChatRoomFragment :
         return TopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
-            this, this,
+            this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             it.isFromBubble = activity?.isFromBubble() == true
@@ -747,7 +742,7 @@ open class TopChatRoomFragment :
         showLoading()
         if (messageId.isNotEmpty()) {
             viewModel.getExistingChat(messageId, true)
-            viewModel.connectWebSocket()
+            webSocketViewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
             viewModel.getMessageId(toUserId, toShopId, source)
@@ -821,12 +816,16 @@ open class TopChatRoomFragment :
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
-        if (!isFromAnotherChat) {
-            initProductPreview(savedInstanceState)
-            initInvoicePreview(savedInstanceState)
-        }
-        viewModel.initAttachmentPreview()
+        try {
+            if (::viewModel.isInitialized) {
+                val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
+                if (!isFromAnotherChat) {
+                    initProductPreview(savedInstanceState)
+                    initInvoicePreview(savedInstanceState)
+                }
+                viewModel.initAttachmentPreview()
+            }
+        } catch (ignored: Throwable) {}
     }
 
     private fun onSuccessGetMessageId(messageId: String) {
@@ -1070,7 +1069,7 @@ open class TopChatRoomFragment :
         // change the retry value
         element.isRetry = false
         adapter.updatePreviewState(element.localId)
-        viewModel.startUploadImages(element)
+        webSocketViewModel.startUploadImages(element, isUploadImageSecure())
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
@@ -1094,7 +1093,7 @@ open class TopChatRoomFragment :
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
 
-        if (isFromBubble && !viewModel.isOnStop) {
+        if (isFromBubble && !webSocketViewModel.isOnStop) {
             val replyId = chatBubble?.replyId.orEmpty()
             TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
         }
@@ -1185,8 +1184,8 @@ open class TopChatRoomFragment :
     }
 
     private fun onViewReachBottomMostChat() {
-        viewModel.resetUnreadMessage()
-        viewModel.markAsRead()
+        webSocketViewModel.resetUnreadMessage()
+        webSocketViewModel.markAsRead()
         hideUnreadMessage()
     }
 
@@ -1299,7 +1298,7 @@ open class TopChatRoomFragment :
     private fun sendAttachmentPreviews(message: String? = null) {
         if (viewModel.isAttachmentPreviewReady()) {
             val composedMsg = getComposedMessage(message)
-            viewModel.sendAttachments(composedMsg)
+            webSocketViewModel.sendAttachments(composedMsg)
         }
     }
 
@@ -1325,7 +1324,7 @@ open class TopChatRoomFragment :
                 }
             })
         replyBubbleOnBoarding.dismiss()
-        viewModel.sendMsg(message, intention, referredMsg)
+        webSocketViewModel.sendMessage(message, intention, referredMsg)
     }
 
     private fun delaySendMessage() {
@@ -1378,7 +1377,7 @@ open class TopChatRoomFragment :
             })
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
-        viewModel.sendSticker(sticker, referredMsg)
+        webSocketViewModel.sendSticker(sticker, referredMsg)
         clearAttachmentPreviews()
         clearReferredMsg()
     }
@@ -1415,11 +1414,11 @@ open class TopChatRoomFragment :
     }
 
     override fun onStartTyping() {
-        viewModel.sendWsStartTyping()
+        webSocketViewModel.sendWsStartTyping()
     }
 
     override fun onStopTyping() {
-        viewModel.sendWsStopTyping()
+        webSocketViewModel.sendWsStopTyping()
     }
 
     override fun addTemplateString(message: String?) {
@@ -1445,15 +1444,7 @@ open class TopChatRoomFragment :
         topchatViewState?.setTemplate(null)
     }
 
-    override fun pickImageToUpload() {
-        if (isUsingMediaPicker()) {
-            pickImageWithMediaPicker()
-        } else {
-            pickImageWithImagePicker()
-        }
-    }
-
-    private fun pickImageWithMediaPicker() {
+    private fun pickImageToUpload() {
         context?.let {
             val intent = MediaPicker.intent(it) {
                 pageSource(PageSource.TopChat)
@@ -1464,24 +1455,10 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun pickImageWithImagePicker() {
-        context?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-                .withSimpleMultipleSelection(maxPick = 1).apply {
-                    maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
-                }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
-            intent.putParamPageSource(ImagePickerPageSource.TOP_CHAT_PAGE)
-            startActivityForResult(intent, REQUEST_ATTACH_IMAGE)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> onReturnFromSettingTemplate()
-            REQUEST_ATTACH_IMAGE -> onReturnFromChooseImage(resultCode, data)
             REQUEST_CODE_IMAGE_MEDIA_PICKER -> onReturnFromMediaPicker(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
@@ -1635,15 +1612,6 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun onReturnFromChooseImage(resultCode: Int, data: Intent?) {
-        topchatViewState?.hideAttachmentMenu()
-        if (resultCode != RESULT_OK || data == null) {
-            return
-        }
-        val imagePathList = getImagePickerResult(data)
-        handleImageToUpload(imagePathList = imagePathList)
-    }
-
     private fun onReturnFromMediaPicker(resultCode: Int, data: Intent?) {
         topchatViewState?.hideAttachmentMenu()
         if (resultCode != RESULT_OK || data == null) {
@@ -1656,7 +1624,7 @@ open class TopChatRoomFragment :
     private fun handleImageToUpload(imagePathList: List<String>) {
         processImagePathToUpload(imagePathList)?.let { model ->
             onSendAndReceiveMessage()
-            viewModel.startUploadImages(model)
+            webSocketViewModel.startUploadImages(model, isUploadImageSecure())
             topchatViewState?.scrollToBottom()
             sellerReviewHelper.hasRepliedChat = true
         }
@@ -1732,10 +1700,6 @@ open class TopChatRoomFragment :
             })
     }
 
-    private fun getImagePickerResult(data: Intent): List<String> {
-        return ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-    }
-
     private fun processImagePathToUpload(imagePathList: List<String>): ImageUploadUiModel? {
         if (imagePathList.isEmpty()) {
             return null
@@ -1743,16 +1707,21 @@ open class TopChatRoomFragment :
         val imagePath = imagePathList[0]
 
         if (!TextUtils.isEmpty(imagePath)) {
-            val preview = generateChatViewModelWithImage(imagePath)
-            replyCompose?.clearReferredComposedMsg()
-            return preview
+            viewModel.roomMetaData.value?.let {
+                val preview = generateChatViewModelWithImage(imagePath, it)
+                replyCompose?.clearReferredComposedMsg()
+                return preview
+            }
         }
         return null
     }
 
-    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+    private fun generateChatViewModelWithImage(
+        imageUrl: String,
+        roomMetaData: RoomMetaData
+    ): ImageUploadUiModel {
         return ImageUploadUiModel.Builder()
-            .withRoomMetaData(viewModel.roomMetaData)
+            .withRoomMetaData(roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
             .withReplyTime(generateCurrentReplyTime())
             .withStartTime(SendableUiModel.generateStartTime())
@@ -2048,8 +2017,9 @@ open class TopChatRoomFragment :
     }
 
     override fun onBackPressed(): Boolean {
+        if (!isAdded || isDetached) return super.onBackPressed()
         if (super.onBackPressed()) return true
-        if (::viewModel.isInitialized && viewModel.isUploading()) {
+        if (webSocketViewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
             if (isFromBubble) {
@@ -2269,6 +2239,7 @@ open class TopChatRoomFragment :
                                 context,
                                 v
                             )
+                            success()
                         }
                     }
                 }
@@ -2679,7 +2650,7 @@ open class TopChatRoomFragment :
         onSendingMessage(false).invoke()
         replyBubbleOnBoarding.dismiss()
         sendAttachmentPreviews(question.content)
-        viewModel.sendMsg(question.content, question.intent, referredMsg)
+        webSocketViewModel.sendMessage(question.content, question.intent, referredMsg)
         clearAttachmentPreviews()
         clearReferredMsg()
     }
@@ -2688,7 +2659,7 @@ open class TopChatRoomFragment :
         onSendAndReceiveMessage()
         onSendingMessage(false).invoke()
         val question = viewModel.generateSrwQuestionUiModel(attachment)
-        viewModel.sendMsg(
+        webSocketViewModel.sendMessage(
             message = question.content,
             intention = question.intent,
             referredMsg = null,
@@ -2709,7 +2680,7 @@ open class TopChatRoomFragment :
         } else {
             rvSrw?.getStateInfo()
         }
-        val previews2 = viewModel.getAttachmentsPreview().toList()
+        val previews2 = viewModel.attachmentsPreview.value?.toList() ?: arrayListOf()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
 
@@ -2718,7 +2689,7 @@ open class TopChatRoomFragment :
         question: QuestionUiModel
     ) {
         onSendAndReceiveMessage()
-        viewModel.sendMsg(
+        webSocketViewModel.sendMessage(
             message = question.content,
             intention = question.intent,
             products = products,
@@ -2829,14 +2800,9 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun resetWebSocketIfNecessary(savedInstance: Bundle?) {
-        val isNecessary = getBooleanArgument(Constant.CHAT_RESET_WEBSOCKET, savedInstance)
-        if (isNecessary) {
-            viewModel.resetWebSocket()
-        }
-    }
-
     private fun setupObservers() {
+        webSocketViewModel.resetMessageLiveData()
+
         viewModel.messageId.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetMessageId(it.data)
@@ -3056,70 +3022,114 @@ open class TopChatRoomFragment :
             }
         }
 
-        viewModel.isWebsocketError.observe(viewLifecycleOwner) {
-            showErrorWebSocket(it)
-        }
-
-        viewModel.isTyping.observe(viewLifecycleOwner) { isTyping ->
-            if (isTyping) {
-                onReceiveStartTypingEvent()
-            } else {
-                onReceiveStopTypingEvent()
+        webSocketViewModel.isWebsocketError.observe(viewLifecycleOwner) { isError ->
+            isError?.let {
+                showErrorWebSocket(it)
             }
         }
 
-        viewModel.msgDeleted.observeForever(deleteMsgObserver)
-
-        viewModel.msgRead.observe(viewLifecycleOwner) { replyTime ->
-            onReceiveReadEvent()
-        }
-
-        viewModel.unreadMsg.observe(viewLifecycleOwner) { totalUnread ->
-            if (totalUnread > 0) {
-                showUnreadMessage(totalUnread)
-            } else {
-                hideUnreadMessage()
+        webSocketViewModel.isTyping.observe(viewLifecycleOwner) { isTyping ->
+            isTyping?.let {
+                if (it) {
+                    onReceiveStartTypingEvent()
+                } else {
+                    onReceiveStopTypingEvent()
+                }
             }
         }
 
-        viewModel.newMsg.observeForever(newMsgObserver)
-        viewModel.removeSrwBubble.observeForever(srwRemovalObserver)
+        webSocketViewModel.msgDeleted.observeForever(deleteMsgObserver)
 
-        viewModel.previewMsg.observe(viewLifecycleOwner) { preview ->
-            showPreviewMsg(preview)
+        webSocketViewModel.msgRead.observe(viewLifecycleOwner) { replyTime ->
+            replyTime?.let {
+                onReceiveReadEvent()
+            }
+        }
+
+        webSocketViewModel.unreadMsg.observe(viewLifecycleOwner) { totalUnread ->
+            totalUnread?.let {
+                if (totalUnread > 0) {
+                    showUnreadMessage(totalUnread)
+                } else {
+                    hideUnreadMessage()
+                }
+            }
+        }
+
+        webSocketViewModel.newMsg.observeForever(newMsgObserver)
+        webSocketViewModel.removeSrwBubble.observeForever(srwRemovalObserver)
+
+        webSocketViewModel.previewMsg.observe(viewLifecycleOwner) { preview ->
+            preview?.let {
+                showPreviewMsg(it)
+            }
         }
 
         viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner) { attachPreview ->
-            if (attachPreview.isNotEmpty()) {
-                showAttachmentPreview(attachPreview)
-                if (hasProductPreviewShown()) {
-                    focusOnReply()
+            attachPreview?.let {
+                if (it.isNotEmpty()) {
+                    showAttachmentPreview(it)
+                    if (hasProductPreviewShown()) {
+                        focusOnReply()
+                    }
+                } else {
+                    clearAttachmentPreviews()
                 }
-            } else {
-                clearAttachmentPreviews()
             }
         }
 
-        viewModel.attachmentSent.observe(viewLifecycleOwner) { attachment ->
-            sendAnalyticAttachmentSent(attachment)
+        webSocketViewModel.attachmentSent.observe(viewLifecycleOwner) { attachment ->
+            attachment?.let {
+                sendAnalyticAttachmentSent(attachment)
+            }
         }
 
-        viewModel.failUploadImage.observe(viewLifecycleOwner) { image ->
-            topchatViewState?.showRetryUploadImages(image, true)
+        webSocketViewModel.failUploadImage.observe(viewLifecycleOwner) { image ->
+            image?.let {
+                topchatViewState?.showRetryUploadImages(image, true)
+            }
         }
 
-        viewModel.errorSnackbar.observe(viewLifecycleOwner) { error ->
-            showSnackbarError(error)
+        webSocketViewModel.errorSnackbar.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                showSnackbarError(it)
+            }
         }
 
-        viewModel.uploadImageService.observe(viewLifecycleOwner) { image ->
-            uploadImage(image)
+        webSocketViewModel.uploadImageService.observe(viewLifecycleOwner) { image ->
+            image?.let {
+                uploadImage(it)
+            }
         }
 
         viewModel.templateChat.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onErrorGetTemplate()
+            }
+        }
+
+        viewModel.userLocationInfo.observe(viewLifecycleOwner) {
+            it?.let {
+                webSocketViewModel.userLocationInfo = it
+            }
+        }
+
+        viewModel.attachmentsPreview.observe(viewLifecycleOwner) {
+            it?.let {
+                webSocketViewModel.attachmentsPreview = it
+            }
+        }
+
+        viewModel.getMiddlePageLiveData().observe(viewLifecycleOwner) {
+            it?.let {
+                webSocketViewModel.isInTheMiddleOfThePage = it
+            }
+        }
+
+        viewModel.roomMetaData.observe(viewLifecycleOwner) {
+            it?.let {
+                webSocketViewModel.roomMetaData = it
             }
         }
     }
@@ -3137,9 +3147,10 @@ open class TopChatRoomFragment :
     }
 
     override fun onDestroyView() {
-        viewModel.newMsg.removeObserver(newMsgObserver)
-        viewModel.removeSrwBubble.removeObserver(srwRemovalObserver)
-        viewModel.msgDeleted.removeObserver(deleteMsgObserver)
+        webSocketViewModel.newMsg.removeObserver(newMsgObserver)
+        webSocketViewModel.removeSrwBubble.removeObserver(srwRemovalObserver)
+        webSocketViewModel.msgDeleted.removeObserver(deleteMsgObserver)
+        viewModel.cancel()
         super.onDestroyView()
         replyBubbleOnBoarding.flush()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -3149,12 +3160,15 @@ open class TopChatRoomFragment :
     }
 
     protected open fun uploadImage(image: ImageUploadServiceModel) {
-        context?.applicationContext?.let {
-            UploadImageChatService.enqueueWork(
-                it,
-                image,
-                viewModel.roomMetaData.msgId
-            )
+        context?.applicationContext?.let { ctx ->
+            viewModel.roomMetaData.value?.msgId?.let { msgId ->
+                UploadImageChatService.enqueueWork(
+                    context = ctx,
+                    image = image,
+                    messageId = msgId,
+                    isSecure = isUploadImageSecure()
+                )
+            }
         }
     }
 
@@ -3310,7 +3324,9 @@ open class TopChatRoomFragment :
 
     private fun deleteBubble(msg: BaseChatUiModel) {
         val replyTimeNano = msg.replyTime ?: return
-        viewModel.deleteMsg(viewModel.roomMetaData.msgId, replyTimeNano)
+        viewModel.roomMetaData.value?.let {
+            viewModel.deleteMsg(it.msgId, replyTimeNano)
+        }
     }
 
     private fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
@@ -3334,7 +3350,10 @@ open class TopChatRoomFragment :
     }
 
     override fun getUserName(senderId: String): String {
-        return viewModel.roomMetaData.userIdMap[senderId]?.name ?: ""
+        viewModel.roomMetaData.value?.let {
+            return it.userIdMap[senderId]?.name ?: ""
+        }
+        return ""
     }
 
     override fun goToBubble(parentReply: ParentReply) {
@@ -3394,7 +3413,7 @@ open class TopChatRoomFragment :
         TopChatAnalyticsKt.eventViewTicker(
             element.getTickerFeature(),
             isSeller(),
-            viewModel.roomMetaData.msgId,
+            viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
         )
     }
@@ -3403,7 +3422,7 @@ open class TopChatRoomFragment :
         TopChatAnalyticsKt.eventClickLinkTicker(
             element.getTickerFeature(),
             isSeller(),
-            viewModel.roomMetaData.msgId,
+            viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
         )
 
@@ -3416,7 +3435,7 @@ open class TopChatRoomFragment :
         TopChatAnalyticsKt.eventClickCloseTicker(
             element.getTickerFeature(),
             isSeller(),
-            viewModel.roomMetaData.msgId,
+            viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
         )
         viewModel.closeTickerReminder(element, isSeller())
@@ -3533,10 +3552,6 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun isUsingMediaPicker(): Boolean {
-        return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
-    }
-
     private fun initChatTextAreaLayout() {
         handleSrw(onNewDesign = {
             topchatViewState?.chatTextAreaTabLayout?.initReplyBox(
@@ -3570,6 +3585,13 @@ open class TopChatRoomFragment :
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
+    protected fun isUploadImageSecure(): Boolean {
+        return abTestPlatform.getString(
+            key = ROLLENCE_UPLOAD_SECURE,
+            defaultValue = ""
+        ) == ROLLENCE_UPLOAD_SECURE
+    }
+
     override fun onClickSRWTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
@@ -3590,12 +3612,9 @@ open class TopChatRoomFragment :
 
     companion object {
         const val PARAM_RATING = "rating"
-        const val PARAM_UTM_SOURCE = "utmSource"
-        const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val CLIPBOARD_CHAT = "chat message"
-        private const val MAX_SIZE_IMAGE_PICKER = 20360
 
         private const val REQUEST_GO_TO_SHOP = 111
         private const val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -3612,7 +3631,7 @@ open class TopChatRoomFragment :
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
-        const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
+        const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

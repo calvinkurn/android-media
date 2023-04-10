@@ -1,0 +1,17 @@
+{
+  "readme": "Bulk Write Review Trackers - https://mynakama.tokopedia.com/datatracker/requestdetail/view/3658",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPG",
+      "eventAction": "click - hapus on popup message",
+      "eventCategory": "product review detail page - bulk review form",
+      "eventLabel": "title:.{1,};subtitle:.{1,};",
+      "trackerId": "40319",
+      "businessUnit": "product detail page",
+      "currentSite": "tokopediamarketplace",
+      "userId": "\\d{1,}",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

@@ -20,6 +20,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -49,6 +51,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
+
+        private const val MAX_RM_TRANSACTION_THRESHOLD = 100
     }
 
     @Inject
@@ -158,6 +162,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
         viewModel.getShopAccountInfo()
+    }
+
+    override fun onRMTransactionClicked(totalTransaction: Long) {
+        if (totalTransaction < MAX_RM_TRANSACTION_THRESHOLD) {
+            openRmTransactionBottomSheet(totalTransaction)
+        } else {
+            goToNewMembershipScheme()
+        }
     }
 
     private fun initInjector() {
@@ -337,4 +349,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
         }
     }
+
+    private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
+        RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
+    }
+
 }

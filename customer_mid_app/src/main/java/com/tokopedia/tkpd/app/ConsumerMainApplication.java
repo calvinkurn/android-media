@@ -61,6 +61,8 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.journeydebugger.JourneySubscriber;
@@ -69,8 +71,7 @@ import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
@@ -97,6 +98,7 @@ import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,7 +137,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
-    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_v3_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
@@ -191,7 +193,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks();
         checkAppPackageNameAsync();
 
-        Loader.init(this);
         initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
@@ -469,6 +470,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
+
+
             @Override
             public Function1<String, String> getDecrypt() {
                 return new Function1<String, String>() {
@@ -489,6 +494,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 };
             }
 
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
+                    }
+                };
+            }
+
             @NotNull
             @Override
             public String getVersionName() {
@@ -504,6 +520,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getScalyrToken() {
                 return Keys.getAUTH_SCALYR_API_KEY();
+
             }
 
             @NotNull

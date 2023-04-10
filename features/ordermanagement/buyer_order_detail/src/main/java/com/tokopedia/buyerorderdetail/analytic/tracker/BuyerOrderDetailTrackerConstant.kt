@@ -26,6 +26,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_NAME_CLICK_PURCHASE_LIST = "clickPurchaseList"
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
     const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
@@ -49,8 +50,21 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
+    const val EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET = "impression - proteksi transaksi"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
     const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
+    const val EVENT_ACTION_CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk"
+    const val EVENT_ACTION_CLICK_SEE_LESS_PRODUCTS = "click lihat lebih sedikit"
+    const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
+
+    // pof
+    const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
+    const val EVENT_ACTION_CLICK_ESTIMATE_ICON_IN_POPUP_POF = "click icon estimasi dana dikembalikan - popup pof"
+    const val EVENT_ACTION_CLICK_TERMS_AND_CONDITIONS_IN_POPUP_POF = "click lihat syarat dan ketentuan - popup pof"
+    const val EVENT_ACTION_CLICK_REJECT_ORDER_IN_POPUP_POF = "click batalkan pesanan - popup pof"
+    const val EVENT_ACTION_CLICK_CONFIRMATION_IN_POPUP_POF = "click konfirmasi - popup pof"
+    const val EVENT_ACTION_CLICK_BACK_IN_POPUP_POF_CANCEL = "click kembali - popup pof cancel"
+    const val EVENT_ACTION_CLICK_CANCELLATION_IN_POPUP_POF_CANCEL = "click batalkan - popup pof cancel"
 
     // event labels
     const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
@@ -62,7 +76,6 @@ object BuyerOrderDetailTrackerConstant {
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-    const val CURRENT_SITE_MARKETPLACE = "Marketplace"
 
     // separator
     const val SEPARATOR_STRIP = " - "
@@ -83,11 +96,24 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_SEE_POD = "lihat bukti pengiriman"
     const val BUTTON_NAME_RE_UPLOAD_PRESCRIPTION = "upload foto resep"
     const val BUTTON_NAME_CHECK_PRESCRIPTION = "cek resep"
+    const val BUTTON_NAME_CONFIRMATION_POF = "konfirmasi"
 
     // tracker ID
     const val TRACKER_ID_RE_UPLOAD_PRESCRIPTION = "32743"
     const val TRACKER_ID_CHECK_PRESCRIPTION = "32744"
+    const val TRACKER_ID_IMPRESSION_INSURANCE_WIDGET = "40081"
     const val TRACKER_ID_CLICK_INSURANCE_WIDGET = "37322"
+    const val TRACKER_ID_CLICK_CONFIRMATION_POF = "41139"
+    const val TRACKER_ID_41140 = "41140"
+    const val TRACKER_ID_41141 = "41141"
+    const val TRACKER_ID_41142 = "41142"
+    const val TRACKER_ID_41143 = "41143"
+    const val TRACKER_ID_41144 = "41144"
+    const val TRACKER_ID_41151 = "41151"
+    const val TRACKER_ID_41152 = "41152"
+    const val TRACKER_ID_41154 = "41154"
+    const val TRACKER_ID_41155 = "41155"
+    const val TRACKER_ID_41156 = "41156"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"

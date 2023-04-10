@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.domain.socket
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -13,6 +15,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import org.json.JSONException
 
 object ChatbotSendableWebSocketParam {
 
@@ -187,6 +190,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("title", invoiceLinkPojo.attributes.title)
             addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
             addProperty("used_by", usedBy)
+            addProperty("color", invoiceLinkPojo.attributes.color)
         }
 
         payload.addProperty("type", "Undefined")
@@ -310,29 +314,6 @@ object ChatbotSendableWebSocketParam {
         return json
     }
 
-    fun generateParamSendImage(
-        messageId: String,
-        path: String,
-        imageObj: String,
-        startTime: String,
-        toUid: String
-    ): JsonObject {
-        val json = JsonObject()
-        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
-        val data = JsonObject().apply {
-            addProperty("message_id", messageId.convertMessageIdToLong())
-            addProperty("message", "Uploaded Image")
-            addProperty("start_time", startTime)
-            addProperty("to_uid", toUid)
-            addProperty("file_path", path)
-            addProperty("image_obj", imageObj)
-            addProperty("attachment_type", AttachmentType.Companion.TYPE_IMAGE_UPLOAD.toIntOrZero())
-            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
-        }
-        json.add("data", data)
-        return json
-    }
-
     fun getReadMessage(messageId: String): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
@@ -357,7 +338,8 @@ object ChatbotSendableWebSocketParam {
         data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", "Uploaded Video")
         data.addProperty(
-            "attachment_type", (
+            "attachment_type",
+            (
                 ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
                 ).toIntOrZero()
         )
@@ -367,8 +349,61 @@ object ChatbotSendableWebSocketParam {
 
         json.add("data", data)
         return json
-
     }
 
+    fun generateParamDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        toUid: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
+        val dynamicContent = generateDynamicContent(bubbleUiModel)
+
+        val attribute = JsonObject().apply {
+            addProperty(
+                "content_code",
+                ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
+            )
+            addProperty("dynamic_content", dynamicContent)
+            addProperty("user_id", toUid.toLongOrZero())
+        }
+
+        val payload = JsonObject().apply {
+            add("attribute", attribute)
+            addProperty("is_log_history", true)
+        }
+
+        val data = JsonObject().apply {
+            addProperty("message_id", messageId.convertMessageIdToLong())
+            addProperty("message", bubbleUiModel.text)
+            addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
+            add("payload", payload)
+            addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+        }
+
+        json.add("data", data)
+
+        return json
+    }
+
+    private fun generateDynamicContent(bubbleUiModel: ChatActionBubbleUiModel): String {
+        val buttonActionContent = JsonObject().apply {
+            addProperty("action", bubbleUiModel.action)
+            addProperty("text", bubbleUiModel.text)
+            addProperty("value", bubbleUiModel.value)
+        }
+        val content = JsonObject().apply {
+            add("button_action", buttonActionContent)
+        }
+        return try {
+            Gson().toJson(content)
+        } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            ""
+        }
+    }
 }

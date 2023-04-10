@@ -63,7 +63,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
@@ -75,7 +74,6 @@ import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.Erro
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_MORE_ERROR
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
@@ -93,10 +91,11 @@ import com.tokopedia.tokopedianow.repurchase.di.component.DaggerRepurchaseCompon
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapter
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
-import com.tokopedia.tokopedianow.repurchase.presentation.listener.SimilarProductCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
@@ -120,7 +119,6 @@ class TokoNowRepurchaseFragment:
     MiniCartWidgetListener,
     TokoNowView,
     TokoNowChooseAddressWidgetListener,
-    TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
@@ -162,11 +160,11 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
-                similarProductListener = createSimilarProductCallback(),
+                productCardCompactSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
-                tokoNowCategoryGridListener = this,
+                tokoNowCategoryMenuListener = createCategoryMenuCallback(),
                 tokoNowEmptyStateNoResultListener = this,
                 tokoNowRecommendationCarouselListener = this,
                 emptyStateNoHistorylistener = this,
@@ -256,14 +254,6 @@ class TokoNowRepurchaseFragment:
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = refreshLayout()
-
-    override fun onCategoryRetried() { /* noting to do */ }
-
-    override fun onAllCategoryClicked() { /* noting to do */ }
-
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { /* noting to do */ }
-
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)
@@ -549,7 +539,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartAdd) {
+        observe(viewModel.addItemToCart) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -571,7 +561,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartUpdate) {
+        observe(viewModel.updateCartItem) {
             when(it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -586,7 +576,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartRemove) {
+        observe(viewModel.removeCartItem) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -633,7 +623,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartAdd) { result ->
+        observe(productRecommendationViewModel.addItemToCart) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -655,7 +645,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartUpdate) { result ->
+        observe(productRecommendationViewModel.updateCartItem) { result ->
             when (result) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -670,7 +660,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartRemove) { result ->
+        observe(productRecommendationViewModel.removeCartItem) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -1053,7 +1043,14 @@ class TokoNowRepurchaseFragment:
         )
     }
 
-    private fun createSimilarProductCallback(): SimilarProductCallback {
-        return SimilarProductCallback(analytics)
+    private fun createSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(analytics)
+    }
+
+    private fun createCategoryMenuCallback(): CategoryMenuCallback {
+        return CategoryMenuCallback(
+            analytics = analytics,
+            viewModel = viewModel
+        )
     }
 }

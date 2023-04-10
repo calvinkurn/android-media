@@ -14,10 +14,11 @@ import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 
-class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
-    ConstraintLayout(context, attributeSet), ChatbotSendButtonListener {
+class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
+    ConstraintLayout(context, attributeSet) {
 
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
@@ -25,10 +26,10 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     var commentEditText: EditText? = null
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
-    private var sendButton: ImageView? = null
+    var sendButton: ImageView? = null
 
-    private var textWatcher : TextWatcher? = null
-    private var isSendButtonActivated: Boolean = false
+    private var textWatcher: TextWatcher? = null
+    var listener: ChatbotSendButtonListener? = null
 
     init {
         initViewBindings()
@@ -39,12 +40,20 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
         return commentEditText
     }
 
-    fun getGuidelineForReplyBubble() : Guideline? {
+    fun getReplyBubbleContainer(): ReplyBubbleAreaMessage? {
+        return replyBubbleContainer
+    }
+
+    fun getGuidelineForReplyBubble(): Guideline? {
         return guideline
     }
 
     fun getSmallReplyBoxSendButton(): ImageView? {
         return sendButton
+    }
+
+    fun getAddAttachmentMenu(): ImageView? {
+        return addAttachmentMenu
     }
 
     private fun initViewBindings() {
@@ -58,6 +67,13 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
+    }
+
+    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
+        videoUploadOnBoarding.showVideoBubbleOnBoarding(
+            addAttachmentMenu,
+            context
+        )
     }
 
     fun clearChatText() {
@@ -91,42 +107,29 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
         val paddingBottom = context?.resources?.getDimension(R.dimen.dp_chatbot_10)?.toInt() ?: 10
         commentContainer?.background = replyEditTextBg
         commentContainer?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
-
     }
 
-    fun getMessage() : String {
+    fun getMessage(): String {
         return commentEditText?.text.toString() ?: ""
     }
 
-
-    private fun getTextWatcherForMessage() : TextWatcher {
+    private fun getTextWatcherForMessage(): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (getMessage().isNotEmpty()) {
-                    enableSendButton()
+                    listener?.enableSendButton()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (getMessage().isEmpty()) {
-                    disableSendButton()
+                    listener?.disableSendButton()
                 }
             }
         }
-    }
-
-    override fun disableSendButton() {
-        isSendButtonActivated = false
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-    }
-
-    override fun enableSendButton() {
-        isSendButtonActivated = true
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send)
     }
 
     companion object {

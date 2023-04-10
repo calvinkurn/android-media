@@ -17,7 +17,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-
 /**
  * Created by fwidjaja on 2020-02-26.
  */
@@ -95,8 +94,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
     private fun generateChildrenView(lastApplyUiModel: LastApplyUiModel) {
         for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
             val params = LinearLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
             )
             val displayMetrics = itemView.context?.resources?.displayMetrics
             val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
@@ -121,8 +120,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
 
             val labelParams = RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
             )
             labelParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
             label.layoutParams = labelParams
@@ -136,8 +135,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
 
             val valueParams = RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
             )
             valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
             value.layoutParams = valueParams
@@ -159,8 +158,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                 }
 
                 val currencyValueParams = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
                 )
                 currencyValueParams.addRule(RelativeLayout.BELOW, value.id)
                 currencyValueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)

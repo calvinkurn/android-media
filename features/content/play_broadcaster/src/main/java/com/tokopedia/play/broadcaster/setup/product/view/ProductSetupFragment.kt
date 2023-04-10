@@ -6,31 +6,33 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
+@Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
+    private val productSetupProductAnalytic: PlayBroSetupProductAnalytic,
 ) : Fragment(), ViewModelFactoryProvider {
 
     private var mDataSource: DataSource? = null
 
-    private lateinit var productSetupViewModelProviderFactory: ViewModelProvider.Factory
+    private var mListener: Listener? = null
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var productSetupViewModelProviderFactory: ViewModelProvider.Factory
 
     private var chooserSource = ChooserSource.Preparation
 
@@ -56,9 +58,7 @@ class ProductSetupFragment @Inject constructor(
 
     private val productSummaryListener = object : ProductSummaryBottomSheet.Listener {
         override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.SetProduct(productTagSectionList)
-            )
+            mListener?.onProductChanged(productTagSectionList)
         }
 
         override fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet) {
@@ -67,6 +67,7 @@ class ProductSetupFragment @Inject constructor(
         }
 
         override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
+            mListener?.onProductSetupDismissed()
             bottomSheet.dismiss()
             removeFragment()
         }
@@ -90,23 +91,46 @@ class ProductSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity())
-        )[PlayBroadcastViewModel::class.java]
 
         if (savedInstanceState != null) return
 
-        if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
-        else openProductSummary()
+        productSetupProductAnalytic.setSelectedAccount(mDataSource?.getSelectedAccount().orUnknown())
+
+        if (mDataSource?.getProductSectionList()?.isEmpty() == true) {
+            openProductChooser(ChooserSource.Preparation)
+        } else {
+            openProductSummary()
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
-            is ProductSummaryBottomSheet -> childFragment.setListener(productSummaryListener)
-            is ProductPickerUGCBottomSheet -> childFragment.setListener(productPickerUGCListener)
+            is ProductChooserBottomSheet -> {
+                childFragment.setListener(productChooserListener)
+            }
+            is ProductSummaryBottomSheet -> {
+                childFragment.setListener(productSummaryListener)
+            }
+            is ProductPickerUGCBottomSheet -> {
+                childFragment.setListener(productPickerUGCListener)
+                childFragment.setDataSource(object : ProductPickerUGCBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
+                    }
+
+                    override fun getShopBadgeIfAny(): String {
+                        return mDataSource?.getSelectedAccount()?.badge.orEmpty()
+                    }
+                })
+            }
+            is EtalaseListBottomSheet -> {
+                childFragment.setDataSource(object : EtalaseListBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
+                    }
+                })
+            }
         }
     }
 
@@ -119,36 +143,36 @@ class ProductSetupFragment @Inject constructor(
     private fun openCampaignAndEtalaseList() {
         EtalaseListBottomSheet.getFragment(
             childFragmentManager,
-            requireActivity().classLoader,
+            requireActivity().classLoader
         ).show(childFragmentManager)
     }
 
     private fun openShopProductChooser() {
         ProductChooserBottomSheet.getFragment(
             childFragmentManager,
-            requireActivity().classLoader,
+            requireActivity().classLoader
         ).show(childFragmentManager)
     }
 
     private fun openProductSummary() {
         ProductSummaryBottomSheet.getFragment(
             childFragmentManager,
-            requireActivity().classLoader,
+            requireActivity().classLoader
         ).show(childFragmentManager)
     }
 
     private fun openUGCProductChooser() {
         ProductPickerUGCBottomSheet.getOrCreate(
             childFragmentManager,
-            requireActivity().classLoader,
+            requireActivity().classLoader
         ).showNow(childFragmentManager)
     }
 
     private fun openProductChooser(chooserSource: ChooserSource) {
         this.chooserSource = chooserSource
 
-        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
-        if (selectedAccount.isShop) {
+        val selectedAccount = mDataSource?.getSelectedAccount()
+        if (selectedAccount?.isShop == true) {
             openShopProductChooser()
         } else {
             openUGCProductChooser()
@@ -157,6 +181,10 @@ class ProductSetupFragment @Inject constructor(
 
     fun setDataSource(dataSource: DataSource?) {
         mDataSource = dataSource
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
     }
 
     override fun getFactory(): ViewModelProvider.Factory {
@@ -171,9 +199,11 @@ class ProductSetupFragment @Inject constructor(
                     handle: SavedStateHandle
                 ): T {
                     return productSetupViewModelFactory.create(
+                        mDataSource?.creationId().orEmpty(),
+                        mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isEligibleForPin() ?: true,
+                        mDataSource?.isEligibleForPin() ?: true
                     ) as T
                 }
             }
@@ -190,5 +220,13 @@ class ProductSetupFragment @Inject constructor(
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
         fun isEligibleForPin(): Boolean
+        fun getSelectedAccount(): ContentAccountUiModel
+        fun creationId(): String
+        fun maxProduct(): Int
+    }
+
+    interface Listener {
+        fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
+        fun onProductSetupDismissed() {}
     }
 }

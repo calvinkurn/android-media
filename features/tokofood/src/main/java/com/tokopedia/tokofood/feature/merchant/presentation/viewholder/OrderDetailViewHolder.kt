@@ -32,6 +32,8 @@ class OrderDetailViewHolder(
 
     private var addOnInfoAdapter: AddOnInfoAdapter? = null
 
+    private var initialQuantity: Int? = null
+
     init {
         context = binding.root.context
         binding.qeuProductQtyEditor.setupEditText()
@@ -59,8 +61,11 @@ class OrderDetailViewHolder(
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val quantity = binding.qeuProductQtyEditor.getValue().orZero()
-                val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
-                clickListener.onUpdateQty(quantity, customOrderDetail)
+                if (initialQuantity != quantity) {
+                    val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
+                    clickListener.onUpdateQty(quantity, customOrderDetail)
+                    initialQuantity = quantity
+                }
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -74,6 +79,7 @@ class OrderDetailViewHolder(
         binding.customProductPrice.text = customOrderDetail.subTotalFmt
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
+        initialQuantity = customOrderDetail.qty
         binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
         addOnInfoAdapter?.setCustomListItems(customOrderDetail.customListItems)
     }

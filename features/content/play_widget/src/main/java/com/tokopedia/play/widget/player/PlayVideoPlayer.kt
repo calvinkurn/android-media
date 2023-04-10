@@ -12,18 +12,18 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play_common.util.PlayConnectionCommon
 
 
 /**
  * Created by mzennis on 09/10/20.
  */
-open class PlayVideoPlayer(val context: Context) {
-
-    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
+open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
     private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
@@ -31,6 +31,17 @@ open class PlayVideoPlayer(val context: Context) {
     var shouldCache: Boolean = false
 
     var maxDurationCellularInSeconds: Int? = null
+
+    private val shouldForceLowest = cardType != PlayWidgetType.Jumbo
+
+    private val trackSelector = DefaultTrackSelector(context).apply {
+        parameters = DefaultTrackSelector.ParametersBuilder(context)
+            .setForceLowestBitrate(shouldForceLowest).build()
+    }
+
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
+        .setTrackSelector(trackSelector)
+        .build()
 
     init {
         exoPlayer.volume = 0F

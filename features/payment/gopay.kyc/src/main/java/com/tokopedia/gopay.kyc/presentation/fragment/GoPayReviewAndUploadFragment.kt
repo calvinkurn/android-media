@@ -1,6 +1,12 @@
 package com.tokopedia.gopay.kyc.presentation.fragment
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +14,7 @@ import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gopay.kyc.R
@@ -56,9 +63,47 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     }
 
     private fun initViews() {
-        tncText.text = getString(R.string.gopay_kyc_accept_tnc_text).parseAsHtml()
+        setTncText()
         setImageFromFile(viewModel.ktpPath, ktpImage)
         setImageFromFile(viewModel.selfieKtpPath, ktpSelfieImage)
+    }
+
+    private fun setTncText() {
+        val tncSpannableString = createTncTextSpannable()
+        tncSpannableString?.let {
+            tncText.text = it
+            tncText.highlightColor =
+                MethodChecker.getColor(context, android.R.color.transparent)
+            tncText.movementMethod = LinkMovementMethod.getInstance()
+        }
+    }
+
+    private fun createTncTextSpannable(): SpannableStringBuilder? {
+        val originalText = getString(R.string.gopay_kyc_accept_tnc_text)
+        val startClickableIndex =
+            originalText.indexOf(getString(R.string.gopay_kyc_accept_tnc_syarat_text))
+        val endClickableIndex =
+            originalText.indexOf(getString(R.string.gopay_kyc_accept_tnc_untuk_text))
+
+        val spannableStringTnc = SpannableString(originalText)
+
+        val color =
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
+        spannableStringTnc.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                openHelpScreen()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = color
+                ds.isFakeBoldText = true
+            }
+        }, startClickableIndex, endClickableIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+
+        return SpannableStringBuilder.valueOf(spannableStringTnc)
     }
 
     private fun setImageFromFile(filePath: String, imageview: ImageView) {
@@ -89,7 +134,6 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
         retryKtpText.setOnClickListener { openKtpCameraScreen() }
         retryKtpSelfieIcon.setOnClickListener { openSelfieKtpCameraScreen() }
         retryKtpSelfieText.setOnClickListener { openSelfieKtpCameraScreen() }
-        tncText.setOnClickListener { openHelpScreen() }
         sendKycButton.setOnClickListener {
             sendAnalytics(
                 GoPayKycEvent.Click.UploadKycEvent(
@@ -99,6 +143,11 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
             sendKycButton.isLoading = true
             uploadPhotoForKyc()
         }
+        tncCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            sendKycButton.isEnabled = isChecked
+            sendKycButton.isClickable = isChecked
+        }
+        tncText.setOnClickListener { tncCheckbox.toggle() }
     }
 
     private fun openHelpScreen() {

@@ -3,7 +3,9 @@ package com.tokopedia.play.view.uimodel.state
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -32,11 +34,12 @@ data class PlayViewerNewUiState(
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
     val selectedVariant: NetworkResult<VariantUiModel>,
-    val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
     val engagement: EngagementUiState,
     val followPopUp: Boolean,
+    val exploreWidget: ExploreWidgetUiState,
+    val combinedState: PlayCombinedState,
 ) {
 
     companion object {
@@ -61,7 +64,6 @@ data class PlayViewerNewUiState(
                 status = PlayStatusUiModel.Empty,
                 quickReply = PlayQuickReplyInfoUiModel.Empty,
                 selectedVariant = NetworkResult.Loading,
-                isLoadingBuy = false,
                 address = AddressWidgetUiState(
                     shouldShow = false,
                     warehouseInfo = WarehouseInfoUiModel.Empty,
@@ -69,6 +71,8 @@ data class PlayViewerNewUiState(
                 featuredProducts = emptyList(),
                 engagement = EngagementUiState.Empty,
                 followPopUp = false,
+                exploreWidget = ExploreWidgetUiState.Empty,
+                combinedState = PlayCombinedState.Empty,
             )
     }
 }
@@ -138,6 +142,7 @@ data class EngagementUiState(
         val Empty: EngagementUiState get() = EngagementUiState(shouldShow = false, data = emptyList())
     }
 }
+
 data class FollowPopUpUiState(
     val shouldShow: Boolean,
     val partnerId: Long,
@@ -147,6 +152,34 @@ data class FollowPopUpUiState(
             get() = FollowPopUpUiState(
                 shouldShow = false,
                 partnerId = 0L,
+            )
+    }
+}
+
+data class ExploreWidgetUiState(
+    val shouldShow: Boolean,
+    val data: ExploreWidgetUiModel,
+) {
+    companion object {
+        val Empty: ExploreWidgetUiState
+            get() = ExploreWidgetUiState(
+                shouldShow = false,
+                data = ExploreWidgetUiModel.Empty,
+            )
+    }
+}
+
+data class PlayCombinedState(
+    val videoProperty: VideoPropertyUiModel,
+    val isLoadingBuy: Boolean,
+    val cartCount: Int,
+) {
+    companion object {
+        val Empty: PlayCombinedState
+            get() = PlayCombinedState(
+                videoProperty = VideoPropertyUiModel.Empty,
+                isLoadingBuy = false,
+                cartCount = 0,
             )
     }
 }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -50,7 +50,7 @@ class AttachedInvoiceSelectionViewHolder(
     }
 
     override fun bind(element: AttachInvoiceSelectionUiModel) {
-        if (element.status == RENDER_INVOICE_LIST_AND_BUTTON_ACTION) {
+        if (element.status == RENDER_TO_UI_BASED_ON_STATUS) {
             singleItemAdapter.setList(element.list)
             invoiceSelection.show()
         } else {

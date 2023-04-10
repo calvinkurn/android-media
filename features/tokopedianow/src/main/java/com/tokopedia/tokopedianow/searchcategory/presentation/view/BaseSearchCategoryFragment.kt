@@ -55,7 +55,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -84,6 +83,7 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -95,7 +95,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductCallback
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -515,7 +515,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
-        productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
@@ -529,7 +529,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     getViewModel().refreshMiniCart()
@@ -542,7 +542,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessRemoveFromCartMessage(result.data.second)
@@ -925,21 +925,17 @@ abstract class BaseSearchCategoryFragment:
     private fun sendAddToCartRecommendationTrackingEvent(
         addToCartDataTrackerModel: AddToCartDataTrackerModel
     ) {
-        val recommendationItem = mapProductItemToRecommendationItem(addToCartDataTrackerModel.productRecommendation)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getAddToCartClickProductTracking(
-                recommendationItem = recommendationItem,
-                position = addToCartDataTrackerModel.position,
-                isLoggedIn = userSession.isLoggedIn,
-                userId = userSession.userId,
-                eventLabel = getEventLabel(),
-                headerTitle = "",
-                quantity = addToCartDataTrackerModel.quantity,
-                cartId = addToCartDataTrackerModel.cartId,
-                eventAction = getAtcEventAction(),
-                eventCategory = getEventCategory(false),
-                listValue = getListValue(false, recommendationItem),
-            )
+        val product = addToCartDataTrackerModel.productRecommendation
+        val recommendationItem = mapProductItemToRecommendationItem(product)
+        SearchResultTracker.trackClickAddToCartProduct(
+            eventLabel = getEventLabel(),
+            userId = userSession.userId,
+            quantity = addToCartDataTrackerModel.quantity,
+            cartId = addToCartDataTrackerModel.cartId,
+            product = recommendationItem,
+            eventCategory = getEventCategory(false),
+            eventAction = getAtcEventAction(),
+            dimension40 = getListValue(false, recommendationItem)
         )
     }
 
@@ -954,7 +950,7 @@ abstract class BaseSearchCategoryFragment:
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         getViewModel().onViewATCRepurchaseWidget(data, quantity)
     }
 
@@ -1128,7 +1124,7 @@ abstract class BaseSearchCategoryFragment:
         },
     )
 
-    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : SimilarProductCallback {
-        return SimilarProductCallback(isCategoryPage)
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.generator
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
@@ -27,6 +26,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
@@ -38,7 +38,6 @@ import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -75,14 +74,6 @@ class ProductChooserIdGenerator {
         )
     )
 
-//    private val mockProductSections = listOf(
-//        ProductTagSectionUiModel(
-//            name = "Section Test",
-//            campaignStatus = CampaignStatus.Ongoing,
-//            products = mockSelectedProducts,
-//        )
-//    )
-
     private val campaignList = listOf(
         CampaignUiModel(
             id = "1",
@@ -110,33 +101,23 @@ class ProductChooserIdGenerator {
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
-    private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockParentViewModelFactoryCreator = object : PlayBroadcastViewModelFactory.Creator {
-        override fun create(activity: FragmentActivity): PlayBroadcastViewModelFactory {
-            return PlayBroadcastViewModelFactory(
-                activity = activity,
-                playBroViewModelFactory = object : PlayBroadcastViewModel.Factory {
-                    override fun create(handle: SavedStateHandle): PlayBroadcastViewModel {
-                        return parentViewModel
-                    }
-                }
-            )
-        }
-    }
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
         override fun create(
+            creationId: String,
+            maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean,
+            isEligibleForPin: Boolean
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
+                creationId = creationId,
+                maxProduct = maxProduct,
                 productSectionList = mockProductSections,
                 savedStateHandle = savedStateHandle,
                 isEligibleForPin = isEligibleForPin,
                 repo = repo,
-                configStore = configStore,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
             )
@@ -146,10 +127,36 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(
-                    mockParentViewModelFactoryCreator,
-                    mockProductSetupViewModelFactory,
-                )
+                ProductSetupFragment(mockProductSetupViewModelFactory, mockk(relaxed = true)).apply {
+                    setDataSource(object : ProductSetupFragment.DataSource {
+                        override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                            return emptyList()
+                        }
+
+                        override fun isEligibleForPin(): Boolean {
+                            return true
+                        }
+
+                        override fun getSelectedAccount(): ContentAccountUiModel {
+                            return ContentAccountUiModel.Empty.copy(
+                                type = ContentCommonUserType.TYPE_SHOP,
+                            )
+                        }
+
+                        override fun creationId(): String {
+                            return ""
+                        }
+
+                        override fun maxProduct(): Int {
+                            return 30
+                        }
+                    })
+                }
+            },
+            ProductSummaryBottomSheet::class.java to {
+              ProductSummaryBottomSheet(
+                  analytic = mockk(relaxed = true),
+              )
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
@@ -169,6 +176,16 @@ class ProductChooserIdGenerator {
                         mockk(relaxed = true),
                         CoroutineDispatchersProvider,
                     ),
+                )
+            },
+            ProductSummaryBottomSheet::class.java to {
+                ProductSummaryBottomSheet(
+                    mockk(relaxed = true)
+                )
+            },
+            ProductSortBottomSheet::class.java to {
+                ProductSortBottomSheet(
+                    mockk(relaxed = true)
                 )
             }
         )
@@ -200,6 +217,7 @@ class ProductChooserIdGenerator {
             type = ContentCommonUserType.TYPE_SHOP,
             hasUsername = true,
             hasAcceptTnc = true,
+            enable = true,
         )
 
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
@@ -264,6 +282,7 @@ class ProductChooserIdGenerator {
 
         onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.chips_etalase)).perform(click())
+        onView(isRoot()).perform(waitFor(500))
 
         scenario.onFragment {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)

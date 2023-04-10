@@ -5,20 +5,21 @@ import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
-import com.tokopedia.people.views.uimodel.content.MediaUiModel
-import com.tokopedia.people.views.uimodel.content.PaginationUiModel
-import com.tokopedia.people.views.uimodel.content.PostUiModel
-import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
+import com.tokopedia.people.utils.UserProfileVideoMapper
+import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 29, 2022
  */
-class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
+class UserProfileUiMapperImpl @Inject constructor(
+    private val userSession: UserSessionInterface,
+) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
         return ProfileUiModel(
@@ -46,6 +47,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
                 ),
             ),
+            isBlocking = response.profileHeader.isBlocking,
+            isBlockedBy = response.profileHeader.isBlockedBy,
         )
     }
 
@@ -62,8 +65,9 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
+            /** hasUsername has the same value across all content creation type (post, livestream, shortvideo) */
             hasUsername = authorUgc?.post?.hasUsername ?: false,
-            hasAcceptTnc = authorUgc?.post?.enable ?: false,
+            hasAcceptTnc = authorUgc?.hasAcceptTnc ?: false,
         )
     }
 
@@ -125,6 +129,19 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 }
             )
         }
+    }
+
+    override fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel {
+        val videoList = response.playGetContentSlot.data.firstOrNull()?.items?.map {
+            UserProfileVideoMapper.map(it, userSession.userId)
+        } ?: emptyList()
+        val nextCursor = response.playGetContentSlot.playGetContentSlot.nextCursor
+
+        return UserPlayVideoUiModel(
+            items = videoList,
+            nextCursor = nextCursor,
+            status = UserPlayVideoUiModel.Status.Success,
+        )
     }
 
     companion object {

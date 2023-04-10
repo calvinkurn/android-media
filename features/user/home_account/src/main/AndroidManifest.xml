@@ -27,7 +27,7 @@
 
         <activity android:name=".account_settings.presentation.activity.AccountSettingActivity"
             android:exported="false"
-            android:label="@string/home_account_title"
+            android:label="@string/menu_account_title_security"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 

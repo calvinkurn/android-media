@@ -5,10 +5,11 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.text.*
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -23,10 +24,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
 import com.tokopedia.feedcomponent.util.*
+import com.tokopedia.feedcomponent.util.caption.FeedCaption
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
@@ -39,12 +41,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
-class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
+class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -83,8 +87,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
-    private val topAdsProductCampaignCopywritingText = findViewById<Typography>(R.id.top_ads_campaign_copywriting)
+    private val asgcProductCampaignCopywritingContainer =
+        findViewById<FrameLayout>(R.id.top_ads_campaign_copywriting_container)
+    private val asgcProductCampaignCopywritingFirst =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_first)
+    private val asgcProductCampaignCopywritingSecond =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_second)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
+    private var animationHandler: FeedXCardSubtitlesAnimationHandler? = null
 
     private var mData = FeedXCard()
     private var positionInCdp: Int = 0
@@ -94,8 +104,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private val scope = CoroutineScope(Dispatchers.Main.immediate + job)
     private var topAdsJob: Job? = null
 
-
-
     private val adapter = FeedPostCarouselAdapter(
         dataSource = object : FeedPostCarouselAdapter.DataSource {
             override fun getFeedXCard(): FeedXCard {
@@ -103,7 +111,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun getTagBubbleListener(): PostTagView.TagBubbleListener {
-                return object : PostTagView.TagBubbleListener{
+                return object : PostTagView.TagBubbleListener {
                     override fun onPostTagBubbleClick(
                         positionInFeed: Int,
                         redirectUrl: String,
@@ -127,9 +135,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         imageListener = object : CarouselImageViewHolder.Listener {
             override fun onTopAdsCardClicked(
                 viewHolder: CarouselImageViewHolder,
-                media: FeedXMedia,
+                media: FeedXMedia
             ) {
-
                 if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
                     listener?.onCekSekarangButtonClicked(mData, positionInCdp)
                 }
@@ -138,7 +145,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 listener?.onImageClicked(mData)
                 changeCTABtnColorAsPerWidget(mData)
-
             }
 
             override fun onImageDoubleClicked(viewHolder: CarouselImageViewHolder) {
@@ -149,7 +155,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             override fun onImageLongClicked(viewHolder: CarouselImageViewHolder) {
                 changeCTABtnColorAsPerWidget(mData)
             }
-
 
             override fun onLiked(viewHolder: CarouselImageViewHolder) {
                 changeCTABtnColorAsPerWidget(mData)
@@ -168,20 +173,23 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 if (position == RecyclerView.NO_POSITION) return
 
                 if (data.isTypeProductHighlight) {
-
                     if (data.products.isEmpty() ||
-                        data.products.size <= position) return
-
+                        data.products.size <= position
+                    ) {
+                        return
+                    }
                 } else {
                     if (data.media.isEmpty() ||
-                        data.media.size <= position) return
-
+                        data.media.size <= position
+                    ) {
+                        return
+                    }
                 }
             }
 
             override fun onLihatProductClicked(
                 viewHolder: CarouselImageViewHolder,
-                media: FeedXMedia,
+                media: FeedXMedia
             ) {
                 changeCTABtnColorAsPerWidget(mData)
                 listener?.onLihatProdukClicked(
@@ -201,7 +209,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     positionInCdp,
                     media.tagProducts
                 )
-
             }
 
             override fun onMuteChanged(
@@ -209,7 +216,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 media: FeedXMedia,
                 isMuted: Boolean
             ) {
-                //TODO analytics
+                // TODO analytics
 //                listener?.muteUnmuteVideo(
 //                    mData.playChannelID,
 //                    isMuted,
@@ -231,7 +238,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
                 listener?.onVideoStopTrack(
                     mData,
-                    lastPosition,
+                    lastPosition
                 )
             }
         },
@@ -242,12 +249,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             override fun onTimerFinishOngoing() {
                 listener?.removeOngoingCampaignSaleWidget(mData, positionInCdp)
-
             }
             override fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int) {
                 listener?.onIngatkanSayaBtnClicked(mData, positionInFeed)
             }
-
         }
     )
     private val snapHelper = PagerSnapHelper()
@@ -310,23 +315,24 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             bindFirstItemForAnimations(feedXCard)
         }
         bindShare(feedXCard)
-
     }
 
     private fun bindFirstItemForAnimations(feedXCard: FeedXCard) {
         if (positionInCdp == 0 && isFirstImpressedItemAfterEnteringCDP) {
             isFirstImpressedItemAfterEnteringCDP = false
-            if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo)
+            if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo) {
                 playVOD(feedXCard)
-            else
+            } else {
                 bindImageOnImpress()
-            if (feedXCard.isTypeProductHighlight)
+            }
+            if (feedXCard.isTypeProductHighlight) {
                 onCTAVisible(mData)
+            }
         }
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-                listener?.onPostImpressed(feedXCard, positionInCdp)
+        listener?.onPostImpressed(feedXCard, positionInCdp)
     }
 
     fun bindLike(feedXCard: FeedXCard) {
@@ -340,11 +346,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private fun bindPublishedAt(publishedAt: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString = SpannableString(
-                String.format(
-                    context.getString(feedComponentR.string.feed_header_time_new),
-                    avatarDate
-                )
+            String.format(
+                context.getString(feedComponentR.string.feed_header_time_new),
+                avatarDate
             )
+        )
         timestampText.text = spannableString
         timestampText.show()
     }
@@ -353,7 +359,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         contentSubInfo.showWithCondition(shouldShow)
         contentSubInfo.text = value
     }
-
 
     fun bindHeader(
         feedXCard: FeedXCard
@@ -364,11 +369,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         val count = followers.count
 
         //region bind content sub info
-        val contentSubInfoValue =  if (feedXCard.isTypeProductHighlight) {
+        val contentSubInfoValue = if (feedXCard.isTypeProductHighlight) {
             when (feedXCard.type) {
                 ASGC_NEW_PRODUCTS -> context.getString(feedComponentR.string.feeds_asgc_new_product_text)
                 ASGC_RESTOCK_PRODUCTS -> context.getString(
-                    feedComponentR.string.feeds_asgc_restock_text)
+                    feedComponentR.string.feeds_asgc_restock_text
+                )
                 ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
                 ASGC_FLASH_SALE_TOKO -> context.getString(feedComponentR.string.feed_asgc_flash_sale_toko)
                 ASGC_RILISAN_SPECIAL -> context.getString(feedComponentR.string.feed_asgc_rilisan_special)
@@ -380,11 +386,15 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     context.getString(feedComponentR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(feedComponentR.string.feed_header_follow_count_less_text)
+            } else {
+                context.getString(feedComponentR.string.feed_header_follow_count_less_text)
+            }
         }
         bindContentSubInfo(
-            shouldShow = (feedXCard.isTypeProductHighlight
-                    || (!isFollowed || followers.transitionFollow)) && !feedXCard.isTypeUGC,
+            shouldShow = (
+                feedXCard.isTypeProductHighlight ||
+                    (!isFollowed || followers.transitionFollow)
+                ) && !feedXCard.isTypeUGC,
             value = contentSubInfoValue
         )
         //endregion
@@ -398,27 +408,28 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 feedXCard
             )
         }
-        val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(feedComponentR.string.kol_action_following_color)
+        if (!followers.transitionFollow && followers.isFollowed) {
+            this.authorFollowAction.hide()
         } else {
-            context.getString(feedComponentR.string.kol_action_follow_color)
-        }
-        if (!isFollowed || followers.transitionFollow) {
+            val textFollowAction = if (followers.isFollowed) {
+                context.getString(feedComponentR.string.kol_action_following_color)
+            } else {
+                context.getString(feedComponentR.string.kol_action_follow_color)
+            }
+
             this.authorFollowAction.text = MethodChecker.fromHtml(
                 "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
+                followers.transitionFollow = true
                 listener?.onFollowUnfollowClicked(
-                        feedXCard,
-                        positionInCdp
-                    )
+                    feedXCard,
+                    positionInCdp
+                )
             }
             this.authorFollowAction.show()
-        } else {
-            this.authorFollowAction.hide()
         }
-        followers.transitionFollow = false
         //endregion
 
         authorAvatar.setOnClickListener {
@@ -433,11 +444,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onClickOnThreeDots(
                 feedXCard,
-                positionInCdp)
+                positionInCdp
+            )
         }
     }
 
-    private fun bindShare(feedXCard: FeedXCard){
+    private fun bindShare(feedXCard: FeedXCard) {
         changeCTABtnColorAsPerWidget(mData)
         shareButton.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -447,20 +459,32 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
-        val ctaSubtitle =
-            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
-                ?: String.EMPTY else String.EMPTY
-        topAdsProductCampaignCopywritingText.text = ctaSubtitle
+        val ctaSubtitle = getCTAButtonSubtitle(feedXCard)
+
+        ctaSubtitle.mapIndexed { index, item ->
+            if (index == ZERO) {
+                asgcProductCampaignCopywritingFirst.text = item
+            } else if (index == ONE) {
+                asgcProductCampaignCopywritingSecond.text = item
+            }
+        }
+
+        if (ctaSubtitle.size >= TWO && shouldShowCtaSubtitile(ctaSubtitle)) {
+            animationHandler = FeedXCardSubtitlesAnimationHandler(
+                WeakReference(asgcProductCampaignCopywritingFirst),
+                WeakReference(asgcProductCampaignCopywritingSecond)
+            )
+            animationHandler?.subtitles = ctaSubtitle
+            animationHandler?.checkToCancelTimer()
+            animationHandler?.startTimer()
+        } else if (animationHandler != null) {
+            animationHandler?.stopAnimation()
+        }
+        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
-                    feedXCard.media.any { it.isImage }
-        )
-        topAdsProductCampaignCopywritingText.showWithCondition(
-            shouldShowCtaSubtitile(
-                ctaSubtitle,
-                feedXCard
-            )
+                feedXCard.media.any { it.isImage }
         )
 
         topAdsCard.setOnClickListener {
@@ -474,12 +498,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
         }
     }
-    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
-        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
+    private fun shouldShowCtaSubtitile(subtitle: List<String>) =
+        subtitle.isNotEmpty()
 
-
-    private fun bindViews(feedXCard: FeedXCard){
-
+    private fun bindViews(feedXCard: FeedXCard) {
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
@@ -510,7 +532,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 positionInCdp
             )
         }
-
     }
 
     private fun bindLikeData(feedXCard: FeedXCard) {
@@ -532,7 +553,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     if (like.count == 1) {
                         likedText.text =
                             context.getString(feedComponentR.string.feed_component_liked_count_text_only_me)
-                    } else
+                    } else {
                         likedText.text =
                             MethodChecker.fromHtml(
                                 context.getString(
@@ -540,7 +561,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                                     (like.count - 1).productThousandFormatted(1)
                                 )
                             )
-                } else
+                    }
+                } else {
                     likedText.text =
                         MethodChecker.fromHtml(
                             context.getString(
@@ -548,6 +570,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                                 like.count.productThousandFormatted(1)
                             )
                         )
+                }
             } else {
                 likedText.text = MethodChecker.fromHtml(
                     context.getString(
@@ -572,7 +595,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         profilePicture: String,
         name: String
     ) {
-
         setCommentCount(comments)
         comments.commentItems.firstOrNull()?.let {
             commentUserImage1.setImageUrl(it.author.badgeURL)
@@ -609,12 +631,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             listener?.onCommentClicked(mData, positionInCdp)
         }
     }
-    fun bindImageOnImpress(){
+    fun bindImageOnImpress() {
         adapter.focusItemAt(mData.lastCarouselIndex)
     }
 
     private fun bindItems(
-        feedXCard: FeedXCard,
+        feedXCard: FeedXCard
     ) {
         when {
             feedXCard.isTypeUGC -> setTypeUGC(feedXCard)
@@ -694,8 +716,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     globalCardProductList[it.tagIndex],
                     tagProducts
                 )
-            )
+            ) {
                 tagProducts.add(globalCardProductList[it.tagIndex])
+            }
         }
         feedMedia.isImageImpressedFirst = true
         setVODView(
@@ -705,7 +728,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             VOD_VIDEO_RATIO
         )
         feedVODViewHolder.visible()
-
     }
 
     private fun setVODView(
@@ -724,57 +746,57 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         )
         feedMedia.vodView = feedVODViewHolder
         feedVODViewHolder.bindData(GridPostAdapter.isMute)
-        feedVODViewHolder.setListener(listener = object : FeedVODViewHolder.VODListener {
-            override fun onLihatProdukClicked(
-                feedXCard: FeedXCard,
-                positionInFeed: Int,
-                products: List<FeedXProduct>
-            ) {
-                listener?.onLihatProdukClicked(feedXCard, positionInFeed, products)
+        feedVODViewHolder.setListener(
+            listener = object : FeedVODViewHolder.VODListener {
+                override fun onLihatProdukClicked(
+                    feedXCard: FeedXCard,
+                    positionInFeed: Int,
+                    products: List<FeedXProduct>
+                ) {
+                    listener?.onLihatProdukClicked(feedXCard, positionInFeed, products)
+                }
+
+                override fun onFullScreenBtnClicked(
+                    feedXCard: FeedXCard,
+                    positionInFeed: Int,
+                    redirectUrl: String,
+                    currentTime: Long,
+                    shouldTrack: Boolean,
+                    isFullScreenButton: Boolean
+                ) {
+                    listener?.onFullScreenButtonClicked(
+                        feedXCard,
+                        positionInFeed,
+                        currentTime,
+                        shouldTrack,
+                        isFullScreenButton
+                    )
+                }
+
+                override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
+                    listener?.onVolumeClicked(feedXCard, mute, mediaType)
+                }
+
+                override fun addViewsToVOD(
+                    feedXCard: FeedXCard,
+                    rowNumber: Int,
+                    time: Long,
+                    hitTrackerApi: Boolean
+                ) {
+                    listener?.addViewsToVOD(feedXCard, rowNumber, time, hitTrackerApi)
+                }
+
+                override fun onVODStopTrack(viewHolder: FeedVODViewHolder, lastPosition: Long) {
+                    listener?.sendWatchVODTracker(mData, lastPosition)
+                }
             }
-
-            override fun onFullScreenBtnClicked(
-                feedXCard: FeedXCard,
-                positionInFeed: Int,
-                redirectUrl: String,
-                currentTime: Long,
-                shouldTrack: Boolean,
-                isFullScreenButton: Boolean
-            ) {
-                listener?.onFullScreenButtonClicked(
-                    feedXCard,
-                    positionInFeed,
-                    currentTime,
-                    shouldTrack,
-                    isFullScreenButton
-                )
-            }
-
-            override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
-                listener?.onVolumeClicked(feedXCard, mute, mediaType)
-
-            }
-
-            override fun addViewsToVOD(
-                feedXCard: FeedXCard,
-                rowNumber: Int,
-                time: Long,
-                hitTrackerApi: Boolean
-            ) {
-                listener?.addViewsToVOD(feedXCard, rowNumber, time, hitTrackerApi)
-            }
-
-            override fun onVODStopTrack(viewHolder: FeedVODViewHolder, lastPosition: Long) {
-                listener?.sendWatchVODTracker(mData, lastPosition)
-            }
-
-        })
+        )
 
         feedVODViewHolder.updateLikedText {
             likedText.text = buildSpannedString {
                 append(it, 0, VIEWS_START_VALUE)
                 bold {
-                    append(it, VIEWS_START_VALUE,it.length)
+                    append(it, VIEWS_START_VALUE, it.length)
                 }
             }
         }
@@ -783,15 +805,18 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         }
     }
 
-    private fun setNewASGCLayout(feedXCard: FeedXCard){
+    private fun setNewASGCLayout(feedXCard: FeedXCard) {
         val products = feedXCard.products
         val totalProducts = feedXCard.products.size
         rvCarousel.visible()
         feedVODViewHolder.gone()
         pageControl.apply {
             setIndicator(
-                if (totalProducts <= MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL) totalProducts
-                else MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL
+                if (totalProducts <= MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL) {
+                    totalProducts
+                } else {
+                    MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL
+                }
             )
             setCurrentIndicator(feedXCard.lastCarouselIndex)
         }.showWithCondition(products.size > 1)
@@ -820,16 +845,16 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     isCashback = !TextUtils.isEmpty(product.cashbackFmt),
                     variant = product.variant,
                     cashBackFmt = product.cashbackFmt,
-                    tagProducts = listOf(product),
+                    tagProducts = listOf(product)
                 )
             }
-
 
         commentButton.invisible()
         seeAllCommentText.hide()
 
-        if (feedXCard.isTypeProductHighlight && feedXCard.campaign.isUpcoming)
+        if (feedXCard.isTypeProductHighlight && feedXCard.campaign.isUpcoming) {
             listener?.onIngatkanSayaBtnImpressed(mData, positionInCdp)
+        }
 
         adapter.setItemsAndAnimateChanges(mediaList)
         rvCarousel.addOneTimeGlobalLayoutListener {
@@ -840,8 +865,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         feedXCard.tags = feedXCard.products
     }
 
-
-
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
@@ -849,11 +872,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
     private fun ifProductAlreadyPresent(
         product: FeedXProduct,
-        tagList: List<FeedXProduct>,
+        tagList: List<FeedXProduct>
     ): Boolean {
         tagList.forEachIndexed { index, feedXProduct ->
-            if (feedXProduct.id == product.id)
+            if (feedXProduct.id == product.id) {
                 return true
+            }
         }
         return false
     }
@@ -871,129 +895,59 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun bindCaption(card: FeedXCard) {
-        val tagConverter = TagConverter()
-        var spannableString: SpannableString
-
-        val cs: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                listener?.onShopHeaderItemClicked(
-                    card,
-                    true
-                )
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
-                    context,
-                    unifyR.color.Unify_N600
-                )
-            }
-        }
         captionText.shouldShowWithAction(card.text.isNotEmpty()) {
-            if (card.text.length > MAX_CHAR ||
-                hasSecondLine(card.text)
-            ) {
-                val captionEnd =
-                    if (findSubstringSecondLine(card.text) < CAPTION_END)
-                        findSubstringSecondLine(card.text)
-                    else
-                        DynamicPostViewHolder.CAPTION_END
-
-                val captionTxt: String = buildString {
-                    append(
-                        ("<b>" + card.author.name + "</b>" + " - ")
-                            .plus(card.text.substring(0, captionEnd))
-                            .replace("\n", "<br/>")
-                            .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
-                            .plus("... ")
-                            .plus("<font color='${ColorUtil.getColorFromResToString(context, unifyR.color.Unify_N400)}'>" + "<b>")
-                            .plus(context.getString(feedComponentR.string.feed_component_read_more_button))
-                            .plus("</b></font>")
+            val authorCaption = FeedCaption.Author(
+                name = card.author.name,
+                colorRes = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N600
+                ),
+                typeface = getTypeface(
+                    context,
+                    FeedCaption.ROBOTO_BOLD
+                ),
+                clickListener = {
+                    listener?.onShopHeaderItemClicked(
+                        card,
+                        true
                     )
                 }
-                spannableString = tagConverter.convertToLinkifyHashtag(
-                    SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
-                ) {
-                        hashtag -> onHashtagClicked(hashtag, mData)
-                }
-
-                captionText.setOnClickListener {
-                    listener?.onReadMoreClicked(
-                        card
-                    )
-                    if (captionText.text.contains(context.getString(feedComponentR.string.feed_component_read_more_button))) {
-                        val txt: String = buildString {
-                            append("<b>" + card.author.name + "</b>" + " - ").appendLine(
-                                card.text.replace("(\r\n|\n)".toRegex(), "<br />")
-                            )
-                        }
-                        spannableString = tagConverter.convertToLinkifyHashtag(
-                            SpannableString(MethodChecker.fromHtml(txt)),
-                            colorLinkHashtag
-                        ) {
-                                hashtag -> onHashtagClicked(hashtag, card)
-                        }
-                        spannableString.setSpan(
-                            cs,
-                            0,
-
-                            MethodChecker.fromHtml(card.author.name).length - 1 ,
-                            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                        )
-                        captionText.text = spannableString
-                        captionText.movementMethod = LinkMovementMethod.getInstance()
-                    }
-                }
-
-            } else {
-
-                val captionTxt: String = buildString {
-                    append(
-                        ("<b>" + card.author.name + "</b>" + " - ").plus(
-                            card.text.replace(DynamicPostViewHolder.NEWLINE, " ")
-                        )
-                    )
-                }
-                spannableString = tagConverter
-                    .convertToLinkifyHashtag(
-                        SpannableString(
-                            MethodChecker.fromHtml(
-                                captionTxt
-                            )
-                        ),
-                        colorLinkHashtag
-                    ) {
-                            hashtag -> onHashtagClicked(hashtag, card)
-                    }
-            }
-            spannableString.setSpan(
-                cs,
-                0,
-                MethodChecker.fromHtml(card.author.name).length - 1,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
-            captionText.text = spannableString
+
+            val tagCaption = FeedCaption.Tag(
+                colorRes = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                ),
+                clickListener = {
+                    onHashtagClicked(it, card)
+                }
+            )
+            val captionBody = FeedCaption.Builder(card.text)
+                .withAuthor(authorCaption)
+                .withTag(tagCaption)
+                .build()
+
+            val readMoreCaption = FeedCaption.ReadMore(
+                maxTrimChar = MAX_CHAR,
+                label = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_read_more_button),
+                colorRes = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                ),
+                clickListener = {
+                    captionText.setText(captionBody, TextView.BufferType.SPANNABLE)
+                }
+            )
+            val trimmedCaption = FeedCaption.Builder(card.text)
+                .withAuthor(authorCaption)
+                .withTag(tagCaption)
+                .trimCaption(readMoreCaption)
+                .build()
+
+            captionText.setText(trimmedCaption, TextView.BufferType.SPANNABLE)
             captionText.movementMethod = LinkMovementMethod.getInstance()
         }
-    }
-
-    private val colorLinkHashtag: Int
-        get() = MethodChecker.getColor(context, unifyR.color.Unify_G400)
-
-
-    private fun hasSecondLine(caption: String): Boolean {
-        val firstIndex = caption.indexOf("\n", 0)
-        return caption.indexOf("\n", firstIndex + 1) != -1
-    }
-
-    private fun findSubstringSecondLine(caption: String): Int {
-        val firstIndex = caption.indexOf("\n", 0)
-        return if (hasSecondLine(caption)) caption.indexOf(
-            "\n",
-            firstIndex + 1
-        ) else caption.length
     }
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
@@ -1001,9 +955,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
-            val feedMedia = feedXCard.media[position]
-            val vodItem = feedMedia.vodView
-            vodItem?.setVODControl(GridPostAdapter.isMute)
+        val feedMedia = feedXCard.media[position]
+        val vodItem = feedMedia.vodView
+        vodItem?.setVODControl(GridPostAdapter.isMute)
     }
 
     private fun changeCTABtnColorAsPerWidget(card: FeedXCard, delayInMs: Long? = null) {
@@ -1016,22 +970,25 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             if (card.isTypeProductHighlight) {
                 if ((card.campaign.isRilisanSpl || card.campaign.isFlashSaleToko) && colorGradient.isNotEmpty()) {
-                    changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
-                        colorGradient.color
-                    } as? ArrayList<String>)
+                    changeCTABtnColorAsPerColorGradientFromBE(
+                        colorGradient.map { colorGradient ->
+                            colorGradient.color
+                        } as? ArrayList<String>
+                    )
                 } else if (card.cta.color.isNotEmpty()) {
                     changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
-                } else{
+                } else {
                     changeCTABtnColorToGreen()
                 }
-            } else
+            } else {
                 changeCTABtnColorToGreen()
+            }
         }
     }
 
     private fun changeCTABtnColor(
         primaryColor: Int,
-        secondaryColor: Int,
+        secondaryColor: Int
     ) {
         TransitionManager.beginDelayedTransition(
             this,
@@ -1039,7 +996,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1050,7 +1008,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             secondaryColor = MethodChecker.getColor(
                 context,
                 unifyR.color.Unify_N0
-            ),
+            )
         )
     }
 
@@ -1061,18 +1019,18 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 secondaryColor = MethodChecker.getColor(
                     context,
                     unifyR.color.Unify_N0
-                ),
+                )
             )
         }
     }
 
-
     private fun changeCTABtnColorGradient(
         colorArray: ArrayList<String>,
-        secondaryColor: Int,
+        secondaryColor: Int
     ) {
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
@@ -1096,12 +1054,17 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun getCTAButtonText(card: FeedXCard) =
-        if (card.isTypeProductHighlight) card.cta.text
-        else context.getString(feedComponentR.string.feeds_cek_sekarang)
+        if (card.isTypeProductHighlight) {
+            card.cta.text
+        } else {
+            context.getString(feedComponentR.string.feeds_cek_sekarang)
+        }
 
+    private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
 
     fun onCTAVisible(feedXCard: FeedXCard) {
-        changeCTABtnColorAsPerWidget(feedXCard,
+        changeCTABtnColorAsPerWidget(
+            feedXCard,
             FOCUS_CTA_DELAY
         )
     }
@@ -1119,7 +1082,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             secondaryColor = MethodChecker.getColor(
                 context,
                 unifyR.color.Unify_N0
-            ),
+            )
         )
     }
 
@@ -1132,7 +1095,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             secondaryColor = MethodChecker.getColor(
                 context,
                 unifyR.color.Unify_N0
-            ),
+            )
         )
     }
 
@@ -1147,7 +1110,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             secondaryColor = MethodChecker.getColor(
                 context,
                 unifyR.color.Unify_NN600
-            ),
+            )
         )
     }
 
@@ -1155,6 +1118,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         super.onDetachedFromWindow()
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
         feedVODViewHolder.onPause()
+        if (animationHandler != null) {
+            animationHandler?.stopAnimation()
+            animationHandler = null
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -1172,21 +1139,25 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         adapter.focusItemAt(pageControl.indicatorCurrentPosition)
-        if (mData.isTypeVOD || mData.isTypeLongVideo)
+        if (mData.isTypeVOD || mData.isTypeLongVideo) {
             feedVODViewHolder.onResume()
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         adapter.onPause()
-        if (mData.isTypeVOD || mData.isTypeLongVideo)
-        feedVODViewHolder.onPause()
+        if (mData.isTypeVOD || mData.isTypeLongVideo) {
+            feedVODViewHolder.onPause()
+        }
         job.cancelChildren()
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     internal fun onDestroy() {
-        if (mData.isTypeVOD || mData.isTypeLongVideo)
-        feedVODViewHolder.onDestroy()
+        if (mData.isTypeVOD || mData.isTypeLongVideo) {
+            feedVODViewHolder.onDestroy()
+        }
     }
 
     companion object {
@@ -1203,15 +1174,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val FOCUS_CTA_DELAY = 2000L
 
         private const val FOLLOW_COUNT_THRESHOLD = 100
-        private const val FOLLOW_MARGIN = 6
-        private const val MARGIN_ZERO = 0
-        private const val FOLLOW_SIZE = 7
-        private const val SPACE = 3
-        private const val DOT_SPACE = 2
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
+
         private const val MAX_CHAR = 120
-        private const val CAPTION_END = 120
         private const val VIEWS_START_VALUE = 14
-
     }
-
 }

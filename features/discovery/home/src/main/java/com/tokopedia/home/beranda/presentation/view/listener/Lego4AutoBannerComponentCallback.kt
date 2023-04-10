@@ -13,7 +13,7 @@ import java.util.HashMap
 /**
  * @author by yoasfs on 28/07/20
  */
-class Lego4AutoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): Lego4AutoBannerListener {
+class Lego4AutoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener, val userId: String): Lego4AutoBannerListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
         LegoBannerTracking.sendLegoBannerFourClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
@@ -26,14 +26,14 @@ class Lego4AutoBannerComponentCallback(val context: Context?, val homeCategoryLi
     }
 
     override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        LegoBannerTracking.sendLegoBannerFourClick(channelModel, channelGrid, position)
+        LegoBannerTracking.sendLegoBannerFourClick(channelModel, channelGrid, position, userId)
         RouteManager.route(context, channelGrid.applink)
     }
 
     override fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerFourImageImpression(
-                        channelModel, parentPosition, true
+                        channelModel, parentPosition, true, userId
                 ) as HashMap<String, Any>
         )
     }

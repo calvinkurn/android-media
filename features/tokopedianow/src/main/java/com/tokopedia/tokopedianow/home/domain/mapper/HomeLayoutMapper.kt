@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels.Companion.LAYOUT_LEGO_4_IMAGE
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
@@ -11,11 +13,11 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.COUPON_CLAIM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
@@ -29,12 +31,16 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -43,8 +49,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
@@ -60,6 +66,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSlide
 import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
+import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
@@ -79,17 +86,20 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
+    private const val SUCCESS_CODE = "200"
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
         LEGO_3_IMAGE,
         LEGO_6_IMAGE,
+        LAYOUT_LEGO_4_IMAGE,
         BANNER_CAROUSEL,
         PRODUCT_RECOM,
         PRODUCT_RECOM_OOC,
@@ -101,7 +111,8 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL,
         MIX_LEFT_CAROUSEL_ATC,
         MEDIUM_PLAY_WIDGET,
-        SMALL_PLAY_WIDGET
+        SMALL_PLAY_WIDGET,
+        COUPON_CLAIM
     )
 
     fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
@@ -207,20 +218,95 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCategoryGridData(
-        item: TokoNowCategoryGridUiModel,
-        response: List<CategoryResponse>?,
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCategoryMenuData(
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
         warehouseId: String = ""
     ) {
-        updateItemById(item.id) {
-            if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response, warehouseId, item.title)
-                val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW)
+        firstOrNull { it?.layout is TokoNowCategoryMenuUiModel }?.let {
+            val item = it.layout as TokoNowCategoryMenuUiModel
+            val newItem = if (!response.isNullOrEmpty()) {
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                val categoryList = mapToCategoryList(
+                    response = response,
+                    headerName = item.title,
+                    seeAllAppLink = seeAllAppLink
+                )
+                val layout = it.layout.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
-                val layout = item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
+                val layout = it.layout.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
+            val index = indexOf(it)
+            removeAt(index)
+            add(index, newItem)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
+        widgetId: String,
+        response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
+        slugs: List<String>? = null,
+        @TokoNowLayoutState state: Int
+    ) {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+
+            val slugList = if (!slugs.isNullOrEmpty()) slugs else item.slugs
+
+            val couponList = response.mapToClaimCouponWidgetUiModelList(
+                item = item,
+                slugList = slugList
+            )
+
+            if (response?.resultStatus?.code == SUCCESS_CODE && couponList.isEmpty()) {
+                removeItem(widgetId)
+            } else {
+                updateItemById(
+                    id = widgetId,
+                    block = {
+                        val layout = it.layout.copy(
+                            claimCouponList = couponList,
+                            state = state,
+                            slugs = slugList
+                        )
+                        HomeLayoutItemUiModel(
+                            layout = layout,
+                            state = HomeLayoutItemState.LOADED
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
+        widgetId: String,
+        catalogId: String,
+        ctaText: String
+    ) {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+
+            val layout = it.layout.copy(
+                id = item.id,
+                claimCouponList = item.claimCouponList?.map { claimCoupon ->
+                    if (claimCoupon.id == catalogId) {
+                        claimCoupon.copy(ctaText = ctaText)
+                    } else {
+                        claimCoupon
+                    }
+                },
+                state = item.state
+            )
+            val newItem = HomeLayoutItemUiModel(
+                layout = layout,
+                state = HomeLayoutItemState.LOADED
+            )
+            val index = indexOf(it)
+
+            removeAt(index)
+            add(index, newItem)
         }
     }
 
@@ -523,7 +609,6 @@ object HomeLayoutMapper {
                 newRecommendationList.getOrNull(index)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
                     newRecommendationList[index] = newRecommendationList[index].copy(productCardModel = this)
                 }
-
             }
 
             rtrItemList.getOrNull(rtrIndex)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
@@ -573,18 +658,21 @@ object HomeLayoutMapper {
 
                 val newRealTimeRecom = realTimeRecom.copy(productList = rtrItemList)
 
-                homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(
-                    productList = newProductList,
-                    realTimeRecom = newRealTimeRecom
-                ))
+                homeLayoutItemUiModel.copy(
+                    layout = layoutUiModel.copy(
+                        productList = newProductList,
+                        realTimeRecom = newRealTimeRecom
+                    )
+                )
             }
         }
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.updatePlayWidget(channelId: String, totalView: String) {
-        map { it?.layout }.filterIsInstance<HomePlayWidgetUiModel>().forEach {
-            val model = it.playWidgetState.model.copy(
-                items = it.playWidgetState.model.items.map { item ->
+        filter { it?.layout is HomePlayWidgetUiModel }.forEach {
+            val playWidget = it?.layout as HomePlayWidgetUiModel
+            val model = playWidget.playWidgetState.model.copy(
+                items = playWidget.playWidgetState.model.items.map { item ->
                     if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
                         item.copy(totalView = item.totalView.copy(totalViewFmt = totalView))
                     } else {
@@ -592,10 +680,10 @@ object HomeLayoutMapper {
                     }
                 }
             )
-            val playWidgetState = it.playWidgetState.copy(model = model)
-            val playWidgetUiModel = it.copy(playWidgetState = playWidgetState)
+            val playWidgetState = playWidget.playWidgetState.copy(model = model)
+            val playWidgetUiModel = playWidget.copy(playWidgetState = playWidgetState)
 
-            updateItemById(it.id) {
+            updateItemById(playWidget.id) {
                 HomeLayoutItemUiModel(playWidgetUiModel, HomeLayoutItemState.LOADED)
             }
         }
@@ -614,7 +702,7 @@ object HomeLayoutMapper {
             val recommendations = productRecom.productList
             recommendations.firstOrNull { it.getProductId() == productId } != null
         }?.let { uiModel ->
-            val productRecom = uiModel?.layout as HomeProductRecomUiModel
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList.toMutableList()
 
             val product = recommendations.first { it.getProductId() == productId }
@@ -626,9 +714,7 @@ object HomeLayoutMapper {
     }
 
     inline fun<reified T : Visitable<*>> List<HomeLayoutItemUiModel?>.getItem(itemClass: Class<T>): T? {
-        return mapNotNull { it?.layout }.find {
-            it.javaClass == itemClass
-        } as? T
+        return find { it?.layout?.javaClass == itemClass }?.layout as? T
     }
 
     private fun Visitable<*>.getVisitableId(): String? {
@@ -636,7 +722,7 @@ object HomeLayoutMapper {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
-            is TokoNowCategoryGridUiModel -> id
+            is TokoNowCategoryMenuUiModel -> id
             else -> null
         }
     }
@@ -664,7 +750,7 @@ object HomeLayoutMapper {
         return when (response.layout) {
             // region Dynamic Channel Component
             // Layout content data already returned from dynamic channel query, set state to loaded.
-            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
+            LEGO_3_IMAGE, LEGO_6_IMAGE, LAYOUT_LEGO_4_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
@@ -682,6 +768,7 @@ object HomeLayoutMapper {
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
+            COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState, warehouseId)
             // endregion
             else -> null
         }

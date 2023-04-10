@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -28,20 +28,51 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.CachedState
+import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.custom.activityresult.OpenLogin
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductButtonUiModel
+import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.orDefault
+import com.tokopedia.play.view.type.toAction
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
-import com.tokopedia.play.view.uimodel.event.*
+import com.tokopedia.play.view.uimodel.action.AtcProductAction
+import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
+import com.tokopedia.play.view.uimodel.action.BuyProductAction
+import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.OCCProductAction
+import com.tokopedia.play.view.uimodel.action.OCCProductVariantAction
+import com.tokopedia.play.view.uimodel.action.OpenCart
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
+import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
+import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
+import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderFailed
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderSuccess
+import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -69,6 +100,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
     private val router: Router,
+    private val resultRegistry: ActivityResultRegistry,
 ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
@@ -102,10 +134,15 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
+    private val openLoginForCart = registerForActivityResult(OpenLogin(), resultRegistry) { success ->
+        if (success) router.route(context, ApplinkConst.CART)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(
-            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+            requireParentFragment(),
+            (requireParentFragment() as PlayFragment).viewModelProviderFactory
         ).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
     }
@@ -124,7 +161,9 @@ class PlayBottomSheetFragment @Inject constructor(
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
-        } else super.onActivityResult(requestCode, resultCode, data)
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onPause() {
@@ -146,6 +185,14 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     override fun onCloseButtonClicked(view: ProductSheetViewComponent) {
         closeProductSheet()
+    }
+
+    override fun onCartClicked(view: ProductSheetViewComponent) {
+        if (playViewModel.isLoggedIn) {
+            router.route(context, ApplinkConst.CART)
+        } else {
+            openLoginForCart.launch(Unit)
+        }
     }
 
     override fun onButtonTransactionClicked(
@@ -176,24 +223,35 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         if (!playViewModel.bottomInsets.isProductSheetsShown) return
 
-        if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow)
+        if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow) {
             newAnalytic.impressProductBottomSheetNow(products)
-        else analytic.impressBottomSheetProduct(products)
+        } else {
+            analytic.impressBottomSheetProduct(products)
+        }
     }
 
     private fun onProductCountChanged() {
         if (playViewModel.bottomInsets.isKeyboardShown) return
 
         doShowToaster(
-                bottomSheetType = BottomInsetsType.ProductSheet,
-                toasterType = Toaster.TYPE_NORMAL,
-                message = getString(R.string.play_product_updated)
+            bottomSheetType = BottomInsetsType.ProductSheet,
+            toasterType = Toaster.TYPE_NORMAL,
+            message = getString(R.string.play_product_updated)
         )
     }
 
     override fun onInfoVoucherClicked(
-        view: ProductSheetViewComponent) {
+        view: ProductSheetViewComponent
+    ) {
         playViewModel.showCouponSheet(variantSheetMaxHeight)
+        newAnalytic.clickInfoVoucher()
+    }
+
+    override fun onInfoVoucherImpressed(
+        view: ProductSheetViewComponent,
+        voucher: PlayVoucherUiModel.Merchant
+    ) {
+        newAnalytic.impressInfoVoucher(voucher)
     }
 
     override fun onReminderImpressed(
@@ -209,7 +267,7 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onCloseButtonClicked(view: VariantSheetViewComponent) {
         closeVariantSheet()
     }
-    
+
     override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
             when (action) {
@@ -286,14 +344,14 @@ class PlayBottomSheetFragment @Inject constructor(
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
             toasterType = Toaster.TYPE_NORMAL,
-            message = getString(R.string.play_voucher_public),
+            message = getString(R.string.play_voucher_public)
         )
         newAnalytic.impressToasterPublic()
         newAnalytic.clickToasterPublic()
     }
 
     fun showVariantSheet(
-        button: ProductButtonUiModel,
+        button: ProductButtonUiModel
     ) {
         variantSheetView.setAction(button)
         playViewModel.onShowVariantSheet(variantSheetMaxHeight)
@@ -349,8 +407,11 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun hideLoadingView(allowStateLoss: Boolean = false) {
         val loadingDialog = getLoadingDialogFragment()
 
-        if (!allowStateLoss) loadingDialog?.dismiss()
-        else loadingDialog?.dismissAllowingStateLoss()
+        if (!allowStateLoss) {
+            loadingDialog?.dismiss()
+        } else {
+            loadingDialog?.dismissAllowingStateLoss()
+        }
     }
 
     private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int) {
@@ -358,27 +419,27 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun doShowToaster(
-            bottomSheetType: BottomInsetsType,
-            toasterType: Int,
-            message: String,
-            actionText: String = "",
-            actionClickListener: View.OnClickListener = View.OnClickListener {}
+        bottomSheetType: BottomInsetsType,
+        toasterType: Int,
+        message: String,
+        actionText: String = "",
+        actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         when (bottomSheetType) {
             BottomInsetsType.ProductSheet, BottomInsetsType.CouponSheet ->
                 Toaster.build(
-                        view = requireView(),
-                        text = message,
-                        type = toasterType,
-                        actionText = actionText,
-                        clickListener = actionClickListener
+                    view = requireView(),
+                    text = message,
+                    type = toasterType,
+                    actionText = actionText,
+                    clickListener = actionClickListener
                 ).show()
             BottomInsetsType.VariantSheet ->
                 variantSheetView.showToaster(
-                        toasterType = toasterType,
-                        message = message,
-                        actionText = actionText,
-                        actionListener = actionClickListener
+                    toasterType = toasterType,
+                    message = message,
+                    actionText = actionText,
+                    actionListener = actionClickListener
                 )
             else -> {
                 // nothing
@@ -387,9 +448,19 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
-        val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
-        val requiredMargin = offset16
-        playFragment.onBottomInsetsViewShown(requireView().height - (productSheetHeight + statusBarHeight + requiredMargin))
+        val closeIcon = playFragment.getCloseIconView() ?: return
+        val videoOrientation = playViewModel.videoOrientation
+        val dstHeight = if (videoOrientation is VideoOrientation.Horizontal) {
+            val dstStart = closeIcon.right + offset16
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (videoOrientation.widthRatio / videoOrientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - productSheetHeight -
+                    closeIcon.top -
+                    offset16
+        }
+        playFragment.onBottomInsetsViewShown(dstHeight.toInt())
     }
 
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
@@ -407,9 +478,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            if(configUiModel.config.type == ProductSectionType.TokoNow)
+            if (configUiModel.config.type == ProductSectionType.TokoNow) {
                 newAnalytic.clickProductBottomSheetNow(product, configUiModel, position)
-            else analytic.clickProduct(product, configUiModel, position)
+            } else {
+                analytic.clickProduct(product, configUiModel, position)
+            }
             openPageByApplink(product.applink, pipMode = true)
         }
     }
@@ -421,7 +494,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
         if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
-                    OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
+                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )
         } else {
             openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
@@ -442,10 +515,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-                .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
+            .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
-    private fun dismissSheets(){
+    private fun dismissSheets() {
         playFragment.hideKeyboard()
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
@@ -454,59 +527,70 @@ class PlayBottomSheetFragment @Inject constructor(
      * Observe
      */
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
-            val productSheetState = it[BottomInsetsType.ProductSheet]
-            val variantSheetState = it[BottomInsetsType.VariantSheet]
-            val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
-            val couponSheetState = it[BottomInsetsType.CouponSheet]
+        playViewModel.observableBottomInsetsState.observe(
+            viewLifecycleOwner,
+            DistinctObserver {
+                val productSheetState = it[BottomInsetsType.ProductSheet]
+                val variantSheetState = it[BottomInsetsType.VariantSheet]
+                val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
+                val couponSheetState = it[BottomInsetsType.CouponSheet]
 
-            if (productSheetState != null && !productSheetState.isPreviousStateSame) {
-                when (productSheetState) {
-                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
+                if (productSheetState != null && !productSheetState.isPreviousStateSame) {
+                    when (productSheetState) {
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
+                    }
+                } else if (variantSheetState != null && !variantSheetState.isPreviousStateSame) {
+                    when (variantSheetState) {
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(variantSheetState.estimatedInsetsHeight)
+                    }
+                } else if (leaderboardSheetState != null && !leaderboardSheetState.isPreviousStateSame) {
+                    when (leaderboardSheetState) {
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
+                    }
+                } else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
+                    when (couponSheetState) {
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown ->
+                            if (!it.isProductSheetsShown) pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
+                    }
                 }
-            } else if (variantSheetState != null && !variantSheetState.isPreviousStateSame) {
-                when (variantSheetState) {
-                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(variantSheetState.estimatedInsetsHeight)
-                }
-            } else if (leaderboardSheetState != null && !leaderboardSheetState.isPreviousStateSame) {
-                when (leaderboardSheetState) {
-                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
-                }
-            }
-            else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
-                when (couponSheetState) {
-                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
-                }
-            }
 
-            it[BottomInsetsType.ProductSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                it[BottomInsetsType.ProductSheet]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    } else {
+                        productSheetView.hide()
+                    }
                 }
-                else productSheetView.hide()
-            }
 
-            it[BottomInsetsType.VariantSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) variantSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else variantSheetView.hide()
-            }
-            it[BottomInsetsType.CouponSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) couponSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else couponSheetView.hide()
-            }
-
-            it[BottomInsetsType.LeaderboardSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
-                    playViewModel.submitAction(RefreshLeaderboard)
+                it[BottomInsetsType.VariantSheet]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        variantSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    } else {
+                        variantSheetView.hide()
+                    }
                 }
-                else leaderboardSheetView.hide()
+                it[BottomInsetsType.CouponSheet]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        couponSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    } else {
+                        couponSheetView.hide()
+                    }
+                }
+
+                it[BottomInsetsType.LeaderboardSheet]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                        playViewModel.submitAction(RefreshLeaderboard)
+                    } else {
+                        leaderboardSheetView.hide()
+                    }
+                }
             }
-        })
+        )
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -515,11 +599,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                when(state.winnerBadge.leaderboards.state) {
+            playViewModel.uiState.withCache().collectLatest { state ->
+                when (state.value.winnerBadge.leaderboards.state) {
                     ResultState.Success ->
                         leaderboardSheetView.setData(
-                            state.winnerBadge.leaderboards.data
+                            state.value.winnerBadge.leaderboards.data
                         )
                     is ResultState.Fail ->
                         leaderboardSheetView.setError()
@@ -527,25 +611,17 @@ class PlayBottomSheetFragment @Inject constructor(
                         leaderboardSheetView.setLoading()
                 }
 
-                if (state.status.channelStatus.statusType.isFreeze ||
-                    state.status.channelStatus.statusType.isBanned) {
+                if (state.value.status.channelStatus.statusType.isFreeze ||
+                    state.value.status.channelStatus.statusType.isBanned
+                ) {
                     viewModel.onFreezeBan()
                     hideLoadingView()
                 }
 
-                renderProductSheet(
-                    prevState?.tagItems,
-                    state.tagItems,
-                    state.tagItems.bottomSheetTitle,
-                    state.channel.emptyBottomSheetInfo
-                )
-
-                renderVoucherSheet(state.tagItems)
-
-                renderVariantSheet(state.selectedVariant)
-
-                if (state.isLoadingBuy) showLoadingView()
-                else hideLoadingView()
+                renderProductSheet(state)
+                renderVoucherSheet(state.value.tagItems)
+                renderVariantSheet(state.value.selectedVariant)
+                renderFullLoading(state)
             }
         }
     }
@@ -554,159 +630,168 @@ class PlayBottomSheetFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
-                        is BuySuccessEvent -> {
-                            router.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                    is BuySuccessEvent -> {
+                        router.route(requireContext(), ApplinkConstInternalMarketplace.CART)
 
-                            val bottomInsetsType = if (event.isVariant) {
-                                BottomInsetsType.VariantSheet
-                            } else BottomInsetsType.ProductSheet //TEMPORARY
-
-                            if (event.isProductFeatured) return@collect
-
-                            val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
-
-                            if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickBeliNowProduct(
-                                    product = event.product,
-                                    cartId = event.cartId,
-                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = sectionInfo,
-                                )
-                            else if (playViewModel.bottomInsets.isProductSheetsShown) {
-                                analytic.clickProductAction(
-                                    product = event.product,
-                                    cartId = event.cartId,
-                                    productAction = ProductAction.Buy,
-                                    bottomInsetsType = bottomInsetsType,
-                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = sectionInfo,
-                                )
-                            }
+                        val bottomInsetsType = if (event.isVariant) {
+                            BottomInsetsType.VariantSheet
+                        } else {
+                            BottomInsetsType.ProductSheet // TEMPORARY
                         }
-                        is ShowInfoEvent -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_NORMAL,
-                                message = getTextFromUiString(event.message)
+
+                        if (event.isProductFeatured) return@collect
+
+                        val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+
+                        if (sectionInfo.config.type == ProductSectionType.TokoNow) {
+                            newAnalytic.clickBeliNowProduct(
+                                product = event.product,
+                                cartId = event.cartId,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = sectionInfo
                             )
-                        }
-                        is ShowErrorEvent -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_ERROR,
-                                message = ErrorHandler.getErrorMessage(requireContext(), event.error))
-                        }
-                        is AtcSuccessEvent -> {
-                            val bottomInsetsType = if (event.isVariant) {
-                                BottomInsetsType.VariantSheet
-                            } else BottomInsetsType.ProductSheet //TEMPORARY
-
-                            val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow
-                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow) {
-                                newAnalytic.impressNowToaster()
-                                Triple(
-                                    getString(R.string.play_add_to_cart_message_success_mixed),
-                                    ApplinkConst.TokopediaNow.HOME +getString(R.string.play_tokonow_minicart_applink),
-                                    getString(R.string.play_toaster_tokonow_wording)
-                                )
-                            } else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
-                            else {
-                                newAnalytic.impressGlobalToaster()
-                                Triple(
-                                    getString(R.string.play_add_to_cart_message_success_tokonow),
-                                    ApplinkConstInternalMarketplace.CART,
-                                    getString(R.string.play_toaster_tokonow_wording)
-                                )
-                            }
-
-                            doShowToaster(
-                                bottomSheetType = bottomInsetsType,
-                                toasterType = Toaster.TYPE_NORMAL,
-                                message = wording,
-                                actionText = toaster,
-                                actionClickListener = {
-                                    router.route(requireContext(), route)
-                                    if (event.product.isPinned &&
-                                        !playViewModel.bottomInsets.isProductSheetsShown) {
-
-                                        newAnalytic.clickLihatToasterAtcPinnedProductCarousel(
-                                            channelId = playViewModel.channelId,
-                                            channelType = playViewModel.channelType,
-                                        )
-                                    }
-
-                                    if (event.product.isTokoNow && partnerTokoNow) {
-                                        newAnalytic.clickLihatNowToaster()
-                                        analytic.clickSeeToasterAfterAtc()
-                                    }
-                                    else analytic.clickSeeToasterAfterAtc()
-                                }
-                            )
-
-                            if (event.isVariant) closeVariantSheet()
-
-                            if (event.isProductFeatured) return@collect
-
-                            val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
-
-                            if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickAtcNowProduct(
-                                    product = event.product,
-                                    cartId = event.cartId,
-                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = sectionInfo,
-                                )
-                            else if (playViewModel.bottomInsets.isProductSheetsShown) {
-                                analytic.clickProductAction(
-                                    product = event.product,
-                                    cartId = event.cartId,
-                                    productAction = ProductAction.AddToCart,
-                                    bottomInsetsType = bottomInsetsType,
-                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                    sectionInfo = sectionInfo,
-                                )
-                            }
-                        }
-                        is ChangeCampaignReminderSuccess -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_NORMAL,
-                                message = event.message.ifBlank {
-                                    getString(R.string.play_product_upcoming_reminder_success)
-                                },
-                            )
-                        }
-                        is ChangeCampaignReminderFailed -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_ERROR,
-                                message = event.error.localizedMessage.ifBlank {
-                                    getString(R.string.play_product_upcoming_reminder_error)
-                                },
-                            )
-                        }
-                        is OCCSuccessEvent -> {
-                            router.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-
-                            val bottomInsetsType = if (event.isVariant) {
-                                BottomInsetsType.VariantSheet
-                            } else BottomInsetsType.ProductSheet //TEMPORARY
-
-                            if (event.isProductFeatured) return@collect
-
+                        } else if (playViewModel.bottomInsets.isProductSheetsShown) {
                             analytic.clickProductAction(
                                 product = event.product,
                                 cartId = event.cartId,
-                                productAction = ProductAction.OCC,
+                                productAction = ProductAction.Buy,
                                 bottomInsetsType = bottomInsetsType,
                                 shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+                                sectionInfo = sectionInfo
                             )
                         }
-                        else -> {}
                     }
+                    is ShowInfoEvent -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message)
+                        )
+                    }
+                    is ShowErrorEvent -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = ErrorHandler.getErrorMessage(requireContext(), event.error)
+                        )
+                    }
+                    is AtcSuccessEvent -> {
+                        val bottomInsetsType = if (event.isVariant) {
+                            BottomInsetsType.VariantSheet
+                        } else {
+                            BottomInsetsType.ProductSheet // TEMPORARY
+                        }
+
+                        val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow
+                        val (wording, route, toaster) = if (event.product.isTokoNow && partnerTokoNow) {
+                            newAnalytic.impressNowToaster()
+                            Triple(
+                                getString(R.string.play_add_to_cart_message_success_mixed),
+                                ApplinkConst.TokopediaNow.HOME + getString(R.string.play_tokonow_minicart_applink),
+                                getString(R.string.play_toaster_tokonow_wording)
+                            )
+                        } else if (event.product.isTokoNow && !partnerTokoNow) {
+                            Triple(getString(R.string.play_add_to_cart_message_success_tokonow), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_tokonow_wording))
+                        } else {
+                            newAnalytic.impressGlobalToaster()
+                            Triple(
+                                getString(R.string.play_add_to_cart_message_success_tokonow),
+                                ApplinkConstInternalMarketplace.CART,
+                                getString(R.string.play_toaster_tokonow_wording)
+                            )
+                        }
+
+                        doShowToaster(
+                            bottomSheetType = bottomInsetsType,
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = wording,
+                            actionText = toaster,
+                            actionClickListener = {
+                                router.route(requireContext(), route)
+                                if (event.product.isPinned &&
+                                    !playViewModel.bottomInsets.isProductSheetsShown
+                                ) {
+                                    newAnalytic.clickLihatToasterAtcPinnedProductCarousel(
+                                        channelId = playViewModel.channelId,
+                                        channelType = playViewModel.channelType
+                                    )
+                                }
+
+                                if (event.product.isTokoNow && partnerTokoNow) {
+                                    newAnalytic.clickLihatNowToaster()
+                                    analytic.clickSeeToasterAfterAtc()
+                                } else {
+                                    analytic.clickSeeToasterAfterAtc()
+                                }
+                            }
+                        )
+
+                        if (event.isVariant) closeVariantSheet()
+
+                        if (event.isProductFeatured) return@collect
+
+                        val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+
+                        if (sectionInfo.config.type == ProductSectionType.TokoNow) {
+                            newAnalytic.clickAtcNowProduct(
+                                product = event.product,
+                                cartId = event.cartId,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = sectionInfo
+                            )
+                        } else if (playViewModel.bottomInsets.isProductSheetsShown) {
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.AddToCart,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = sectionInfo
+                            )
+                        }
+                    }
+                    is ChangeCampaignReminderSuccess -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = event.message.ifBlank {
+                                getString(R.string.play_product_upcoming_reminder_success)
+                            }
+                        )
+                    }
+                    is ChangeCampaignReminderFailed -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = event.error.localizedMessage.ifBlank {
+                                getString(R.string.play_product_upcoming_reminder_error)
+                            }
+                        )
+                    }
+                    is OCCSuccessEvent -> {
+                        router.route(requireContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+
+                        val bottomInsetsType = if (event.isVariant) {
+                            BottomInsetsType.VariantSheet
+                        } else {
+                            BottomInsetsType.ProductSheet // TEMPORARY
+                        }
+
+                        if (event.isProductFeatured) return@collect
+
+                        analytic.clickProductAction(
+                            product = event.product,
+                            cartId = event.cartId,
+                            productAction = ProductAction.OCC,
+                            bottomInsetsType = bottomInsetsType,
+                            shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+                        )
+                    }
+                    else -> {}
                 }
             }
+        }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {
@@ -740,38 +825,50 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Render View
      */
-    private fun renderProductSheet(
-        prevTagItem: TagItemUiModel?,
-        tagItem: TagItemUiModel,
-        bottomSheetTitle: String,
-        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel,
-    ) {
-        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
+    private fun renderProductSheet(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged(
+                { it.tagItems },
+                { it.channel.showCart },
+                { it.combinedState.cartCount },
+                { it.channel.emptyBottomSheetInfo }
+            )
+        ) return
+
+        productSheetView.showCart(state.value.channel.showCart)
+        productSheetView.setCartCount(state.value.combinedState.cartCount)
+
+        val prevTagItems = state.prevValue?.tagItems
+        val tagItems = state.value.tagItems
+
+        if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
             productSheetView.showPlaceholder()
-        } else if (tagItem.resultState is ResultState.Fail) {
+        } else if (tagItems.resultState is ResultState.Fail) {
             productSheetView.showError(
-                isConnectionError = tagItem.resultState.error is ConnectException ||
-                        tagItem.resultState.error is UnknownHostException,
+                isConnectionError = tagItems.resultState.error is ConnectException ||
+                    tagItems.resultState.error is UnknownHostException,
                 onError = { playViewModel.submitAction(RetryGetTagItemsAction) }
             )
-        } else if (tagItem.product.productSectionList.isNotEmpty()) {
+        } else if (tagItems.product.productSectionList.isNotEmpty()) {
             productSheetView.setProductSheet(
-                sectionList = tagItem.product.productSectionList,
-                voucherList = tagItem.voucher.voucherList,
-                title = bottomSheetTitle,
+                sectionList = tagItems.product.productSectionList,
+                voucherList = tagItems.voucher.voucherList,
+                title = tagItems.bottomSheetTitle,
             )
         } else {
-            productSheetView.showEmpty(emptyBottomSheetInfoUi)
+            productSheetView.showEmpty(state.value.channel.emptyBottomSheetInfo)
         }
 
-        if (prevTagItem?.product?.productSectionList == tagItem.product.productSectionList) return
+        if (prevTagItems?.product?.productSectionList == tagItems.product.productSectionList) return
 
-        val prevSum = prevTagItem?.product?.productSectionList?.productsSum().orZero()
-        val sum = tagItem.product.productSectionList.productsSum()
+        val prevSum = prevTagItems?.product?.productSectionList?.productsSum().orZero()
+        val sum = tagItems.product.productSectionList.productsSum()
 
         if (prevSum != sum &&
-            prevTagItem?.resultState?.isLoading != true &&
-            sum != 0) onProductCountChanged()
+            prevTagItems?.resultState?.isLoading != true &&
+            sum != 0
+        ) {
+            onProductCountChanged()
+        }
     }
 
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
@@ -790,6 +887,17 @@ class PlayBottomSheetFragment @Inject constructor(
                 isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
                 onError = { }
             )
+            else -> {}
+        }
+    }
+
+    private fun renderFullLoading(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged { it.combinedState.isLoadingBuy }) return
+
+        if (state.value.combinedState.isLoadingBuy) {
+            showLoadingView()
+        } else {
+            hideLoadingView()
         }
     }
 
@@ -806,8 +914,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun List<ProductSectionUiModel>.productsSum(): Int {
         return sumOf {
-            if (it is ProductSectionUiModel.Section) it.productList.size
-            else 0
+            if (it is ProductSectionUiModel.Section) {
+                it.productList.size
+            } else {
+                0
+            }
         }
     }
 }

@@ -14,16 +14,17 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
@@ -34,7 +35,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayo
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,12 +45,14 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertTrue
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import java.lang.reflect.Field
 
+@ExperimentalCoroutinesApi
 abstract class TokoNowRepurchaseViewModelTestFixture {
 
     @RelaxedMockK
@@ -69,10 +72,15 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     protected lateinit var viewModel : TokoNowRepurchaseViewModel
 
@@ -82,16 +90,17 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = TokoNowRepurchaseViewModel(
-                getRepurchaseProductListUseCase,
-                getMiniCartUseCase,
-                getCategoryListUseCase,
-                addToCartUseCase,
-                updateCartUseCase,
-                deleteCartUseCase,
-                getChooseAddressWarehouseLocUseCase,
-                setUserPreferenceUseCase,
-                userSession,
-                CoroutineTestDispatchersProvider
+            getRepurchaseProductListUseCase,
+            getMiniCartUseCase,
+            getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            addressData,
+            coroutineTestRule.dispatchers,
         )
 
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {
@@ -170,8 +179,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
         Assert.assertEquals(expectedObject, actualObject)
     }
 
@@ -211,7 +220,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+    }
+
+    protected fun onGetCategoryList_thenReturn(error: Throwable) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws error
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {

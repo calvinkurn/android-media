@@ -313,7 +313,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/liked_text"
         app:typographyType="body_2"
-        tools:text="      Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
+        tools:text="Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/timestamp_text"

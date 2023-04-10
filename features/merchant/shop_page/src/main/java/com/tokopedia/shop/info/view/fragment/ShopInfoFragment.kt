@@ -46,7 +46,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
@@ -425,12 +425,16 @@ class ShopInfoFragment :
             }
 
             // go apotik info
-            goApotikInfoContainer.shouldShowWithAction(shopInfo.isGoApotik) {
-                tvSiaDescription.text =
-                    shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                tvSipaDescription.text =
-                    shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            shopViewModel?.let {
+                goApotikInfoContainer.shouldShowWithAction(
+                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
+                ) {
+                    tvSiaDescription.text =
+                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                    tvSipaDescription.text =
+                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                }
             }
 
             // shop location info

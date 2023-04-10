@@ -14,7 +14,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmMemberLoaderV
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashProgramVh
 
 class TokomemberDashProgramAdapter(
-    var programSellerList: List<ProgramItem>,
+    var programSellerList: MutableList<ProgramItem>,
     val fragmentManager: FragmentManager,
     val shopId: Int,
     val programActions: ProgramActions,
@@ -55,4 +55,8 @@ class TokomemberDashProgramAdapter(
 
     override fun getItemCount() = programSellerList.size
 
+    fun submitList(list:List<ProgramItem>){
+        programSellerList.clear()
+        programSellerList.addAll(list)
+    }
 }

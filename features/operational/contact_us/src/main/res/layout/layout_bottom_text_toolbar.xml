@@ -57,7 +57,9 @@
         app:layout_constraintEnd_toStartOf="@+id/iv_send_button"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toEndOf="@+id/iv_upload_img"
-        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images"
+        android:autofillHints="freeText"
+        android:inputType="text" />
 
     <ImageView
         android:id="@+id/iv_send_button"

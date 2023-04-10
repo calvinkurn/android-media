@@ -7,43 +7,62 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.SYSTEM_DOWN
+import com.tokopedia.affiliate.adapter.AffiliateAdapter
+import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
-import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -51,8 +70,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
-    AffiliatePromoInterface {
+class AffiliatePromoFragment :
+    AffiliateBaseFragment<AffiliatePromoViewModel>(),
+    AffiliatePromoInterface,
+    PromotionClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -63,6 +84,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
 
     private val tabFragments = arrayListOf<Fragment>()
+    private var remoteConfig: RemoteConfig? = null
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -74,9 +96,18 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         setObservers()
     }
 
+    private fun isAffiliateGamificationEnabled() =
+        remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
+
+    private fun affiliateRedirection() =
+        remoteConfig?.getString(
+            AFFILIATE_GAMIFICATION_REDIRECTION,
+            AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
+        )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -115,17 +146,54 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         view?.findViewById<ImageUnify>(R.id.icon_more)?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
+            sendClickEvent()
+            context?.let {
+                startActivity(
+                    Intent(it, AffiliateSSAShopListActivity::class.java)
+                )
+            }
+        }
+        view?.findViewById<LinearLayout>(R.id.ssa_container)?.isVisible =
+            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
+
+        view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible =
+            isAffiliateGamificationEnabled()
+
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener {
+            val urlRedirectionAppLink = affiliateRedirection()
+            if (urlRedirectionAppLink?.isNotEmpty() == true) {
+                RouteManager.route(context, urlRedirectionAppLink)
+            }
+        }
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
+        if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_DISCO_PROMO,
+                ""
+            ) == AFFILIATE_DISCO_PROMO
+        ) {
+            affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
+        }
+    }
+
+    private fun sendClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     fun handleBack() {
-        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) (
-            activity as? AffiliateActivity)?.handleBackButton(
-            false
-        )
-        else showDefaultState()
+        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) {
+            (activity as? AffiliateActivity)?.handleBackButton(false)
+        } else {
+            showDefaultState()
+        }
     }
 
     override fun onCreateView(
@@ -157,7 +225,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             viewPager?.adapter = adapter
             if (tabLayout != null && viewPager != null) {
                 TabLayoutMediator(tabLayout, viewPager) { _, _ ->
-
                 }.attach()
             }
             tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -173,7 +240,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                         adapter.setOnSelectView(tab)
                     }
                 }
-
             })
         }
         setCustomTabText(requireContext(), tabLayout)
@@ -200,21 +266,22 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 if (visibility) {
                     hideAllElements()
                     view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.show()
-                } else
+                } else {
                     view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.gone()
+                }
             }
         }
 
         affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
             view?.rootView?.let {
                 Toaster.build(
-                    it, getString(R.string.affiliate_product_link_invalid),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
+                    it,
+                    getString(R.string.affiliate_product_link_invalid),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
         }
-
-
 
         affiliatePromoViewModel.getValidateUserdata().observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
@@ -232,6 +299,46 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 )
             }
         }
+        affiliatePromoViewModel.getDiscoCampaignBanners().observe(this) {
+            if (!it?.recommendedAffiliateDiscoveryCampaign?.data?.items.isNullOrEmpty()) {
+                view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
+                view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
+                    ?.setOnClickListener {
+                        context?.let {
+                            startActivity(
+                                Intent(it, AffiliateDiscoPromoListActivity::class.java)
+                            )
+                        }
+                        sendDiscoLihatEvent()
+                    }
+                view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
+                    val discoBannerAdapter =
+                        AffiliateAdapter(
+                            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+                            affiliateAdapterFactory = AffiliateAdapterFactory(
+                                promotionClickInterface = this@AffiliatePromoFragment
+                            ),
+                            userId = userSessionInterface.userId
+                        )
+                    discoBannerAdapter.setVisitables(
+                        it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
+                            AffiliateDiscoBannerUiModel(campaign)
+                        }
+                    )
+                    this.adapter = discoBannerAdapter
+                }
+            }
+        }
+    }
+
+    private fun sendDiscoLihatEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
@@ -249,14 +356,11 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
     }
 
-
     private fun showDefaultState() {
-        view?.findViewById<Typography>(R.id.promotion_card_title)?.hide()
         view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.show()
     }
 
     private fun hideAllElements() {
-        view?.findViewById<Typography>(R.id.promotion_card_title)?.hide()
         view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.hide()
     }
 
@@ -281,12 +385,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
-
-
-    private fun disableSearchButton() {
-        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
-    }
-
 
     private fun setCustomTabText(context: Context?, tabLayout: TabLayout?) {
         if (context != null && tabLayout != null) {
@@ -322,9 +420,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
     }
 
-
     override fun onSystemDown() {
-        disableSearchButton()
         affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
         affiliatePromoViewModel.getAnnouncementInformation()
     }
@@ -357,6 +453,38 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         startActivity(Intent(context, AffiliatePromoSearchActivity::class.java))
     }
 
+    override fun onPromotionClick(
+        itemID: String,
+        itemName: String,
+        itemImage: String,
+        itemURL: String,
+        position: Int,
+        commison: String,
+        status: String,
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+    ) {
+        AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null,
+                itemID,
+                itemName,
+                itemImage,
+                itemURL,
+                itemID,
+                commission = commison,
+                type = type,
+                isLinkGenerationEnabled = true,
+                origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_DISCO_BANNER,
+                ssaInfo = ssaInfo
+            ),
+            AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+            null
+        ).show(childFragmentManager, "")
+    }
+
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) =
+        Unit
 }
 
 interface AffiliatePromoInterface {

@@ -39,16 +39,22 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRec
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
@@ -90,7 +96,9 @@ open class BuyerOrderDetailFragment :
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    OrderResolutionViewHolder.OrderResolutionListener {
+    OrderResolutionViewHolder.OrderResolutionListener,
+    ProductListToggleViewHolder.Listener,
+    PofRefundInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -138,6 +146,8 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
+            this,
             this,
             this,
             this,
@@ -250,6 +260,11 @@ open class BuyerOrderDetailFragment :
             BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
                 if (resultCode == Activity.RESULT_OK) {
                     handleResultOrderExtension(data)
+                }
+            }
+            BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    handleResultPartialOrderFulfillment(data)
                 }
             }
         }
@@ -508,7 +523,7 @@ open class BuyerOrderDetailFragment :
 
     private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
         if (result.throwable == null) {
-            showErrorToaster(result.message.getString(context))
+            showErrorToaster(result.message.getStringValue(context))
         } else {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)
@@ -658,6 +673,23 @@ open class BuyerOrderDetailFragment :
         bottomSheetManager.dismissBottomSheets()
     }
 
+    private fun handleResultPartialOrderFulfillment(data: Intent?) {
+        handleResultRefreshOnly()
+        val toasterMessage =
+            data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
+
+        if (!toasterMessage.isNullOrBlank()) {
+            view?.run {
+                Toaster.build(
+                    view = this,
+                    text = toasterMessage,
+                    type = Toaster.TYPE_NORMAL,
+                    duration = Toaster.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     private fun handleResultOrderExtension(data: Intent?) {
         val isOrderExtend = data?.getBooleanExtra(
             ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED,
@@ -766,6 +798,33 @@ open class BuyerOrderDetailFragment :
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    override fun onCollapseProductList() {
+        BuyerOrderDetailTracker.eventClickSeeLessProduct()
+        viewModel.collapseProductList()
+    }
+
+    override fun onExpandProductList() {
+        BuyerOrderDetailTracker.eventClickSeeAllProduct()
+        viewModel.expandProductList()
+    }
+
+    override fun estimateRefundInfoClicked(estimateInfoUiModel: EstimateInfoUiModel) {
+        BuyerOrderDetailTracker.eventClickEstimateIconInBom()
+        val bottomSheet = PofEstimateRefundInfoBottomSheet.newInstance(estimateInfoUiModel.title, estimateInfoUiModel.info)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun refundSummaryClicked(refundSummaryRefundUiModel: PofRefundSummaryUiModel) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(
+            PofDetailRefundedBottomSheet.KEY_DETAIL_REFUNDED_UI_MODEL,
+            refundSummaryRefundUiModel
+        )
+        val bottomSheet =
+            PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun <T> Continuation<T>.resumeSafely(any: T) {

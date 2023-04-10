@@ -37,6 +37,8 @@ class UohListTrackingTest {
 
     companion object {
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
+        private const val KEY_UOH_FILTER_CATEGORY = "GetUOHFilterCategory"
+        private const val KEY_UOH_PMS_NOTIFICATION = "GetPmsNotifications"
         private const val KEY_ATC = "add_to_cart_multi"
     }
 
@@ -51,10 +53,38 @@ class UohListTrackingTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context,
-                    R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_ATC, InstrumentationMockHelper.getRawString(context,
-                    R.raw.add_to_cart_multi_success_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_UOH_FILTER_CATEGORY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_uoh_filter_category
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_UOH_PMS_NOTIFICATION,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_uoh_get_pms_notification
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_UOH_ORDERS,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_mock_uoh_orders_succeed_manual
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_ATC,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.add_to_cart_multi_success_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -79,7 +109,9 @@ class UohListTrackingTest {
             loading()
             hideKeyboard()
             clickPrimaryButton()
+            loading()
             clickThreeDotsMenu()
+            loading()
             clickBeliLagi()
             loading()
             clickOrderCard()

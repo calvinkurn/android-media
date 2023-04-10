@@ -12,6 +12,7 @@ import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -168,10 +169,11 @@ class ProductBundleViewModel @Inject constructor(
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
                     requestData = RequestData(
                         variantDetail = true,
-                        CheckCampaign = true,
-                        BundleGroup = true,
-                        Preorder = true,
-                        BundleStats = true,
+                        checkCampaign = true,
+                        bundleGroup = true,
+                        preorder = true,
+                        bundleStats = true,
+                        shopInformation = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
@@ -244,7 +246,8 @@ class ProductBundleViewModel @Inject constructor(
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
             processDay = bundleInfo.preorder.processTime.toLongOrZero(),
-            processTypeNum = bundleInfo.preorder.processTypeNum
+            processTypeNum = bundleInfo.preorder.processTypeNum,
+            totalSold = bundleInfo.bundleStats.totalSold.toIntSafely()
         )
     }
 

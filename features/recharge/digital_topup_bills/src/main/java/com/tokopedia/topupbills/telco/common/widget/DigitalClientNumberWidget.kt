@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -15,12 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,20 +29,24 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                               defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+open class DigitalClientNumberWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     protected val imgOperator: ImageView
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
+    protected val seeAllChip: ChipsUnify
     protected val sortFilterChip: SortFilter
     protected val sortFilterChipShimmer: LoaderUnify
 
@@ -60,6 +64,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         view = View.inflate(context, getLayout(), this)
         imgOperator = view.findViewById(R.id.telco_img_operator)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
+        seeAllChip = view.findViewById(R.id.telco_chip_see_all)
         sortFilterChip = view.findViewById(R.id.telco_filter_chip)
         sortFilterChipShimmer = view.findViewById(R.id.telco_filter_chip_shimmer)
 
@@ -70,11 +75,19 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
         sortFilterChip.run {
             sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_16.toPx(), 0 , SORT_FILTER_PADDING_8.toPx() ,0)
+                SORT_FILTER_PADDING_4.toPx(),
+                0,
+                SORT_FILTER_PADDING_8.toPx(),
+                0
+            )
             sortFilterHorizontalScrollView.clipToPadding = false
         }
 
         initListener()
+    }
+
+    open fun formatClientNumberInput(clientNumber: String): String {
+        return CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
     }
 
     private fun initListener() {
@@ -98,11 +111,18 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-
+                    removeTextChangedListener(this)
+                    s?.let {
+                        it.replace(
+                            Int.ZERO,
+                            it.length,
+                            formatClientNumberInput(it.toString())
+                        )
+                    }
+                    addTextChangedListener(this)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -150,14 +170,37 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
+
+        seeAllChip.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                )
+                setOnClickListener {
+                    listener.onNavigateToContact(true)
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
+
+        // create each chip
         for (number in favnum.take(MAX_CHIP_SIZE)) {
             if (number.clientName.isEmpty()) {
                 listener.onShowFilterChip(false)
             } else {
                 listener.onShowFilterChip(true)
             }
-            val chipText = if (number.clientName.isEmpty())
-                number.clientNumber else number.clientName
+            val chipText = if (number.clientName.isEmpty()) {
+                number.clientNumber
+            } else {
+                number.clientName
+            }
             val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
                 if (number.clientName.isEmpty()) {
@@ -173,30 +216,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             sortFilter.add(sortFilterItem)
         }
 
-        val isMoreThanFive = favnum.size > MAX_CHIP_SIZE
-        if (isMoreThanFive) {
-            val sortFilterItem = SortFilterItem(
-                "",
-                type = ChipsUnify.TYPE_ALTERNATE
-            )
-            sortFilterItem.listener = {
-                listener.onNavigateToContact(true)
-            }
-            sortFilter.add(sortFilterItem)
-        }
-
         sortFilterChip.addItem(sortFilter)
-
-        if (isMoreThanFive) {
-            val chevronRight = IconUnify(
-                context, IconUnify.CHEVRON_RIGHT,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            chevronRight.layoutParams = ViewGroup.LayoutParams(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            )
-            sortFilterChip.chipItems?.last()?.refChipUnify?.addCustomView(chevronRight)
-        }
     }
 
     fun clearFocusAutoComplete() {
@@ -239,12 +259,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
         autoCompleteAdapter.updateItems(
             CommonTopupBillsDataMapper
-                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
+                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList()
+        )
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(
-            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
+        inputNumberField.editText.setText(inputNumber)
     }
 
     fun getInputNumber(): String {
@@ -340,8 +360,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val SORT_FILTER_PADDING_4 = 4
         private const val SORT_FILTER_PADDING_8 = 8
-        private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
         private const val MAX_CHIP_SIZE = 5

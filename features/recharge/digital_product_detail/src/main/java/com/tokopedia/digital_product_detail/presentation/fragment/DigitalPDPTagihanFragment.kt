@@ -906,6 +906,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         }
                     }
                 }
+            } else if (requestCode == BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL) {
+                showErrorFromCheckout(data)
             }
         }
     }
@@ -923,6 +925,15 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             }
         } else {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.startShakeAnimation()
+        }
+    }
+
+    private fun showErrorFromCheckout(data: Intent?) {
+        if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
+            val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                as Throwable
+            if (!throwable.message.isNullOrEmpty())
+                showErrorToaster(throwable)
         }
     }
 

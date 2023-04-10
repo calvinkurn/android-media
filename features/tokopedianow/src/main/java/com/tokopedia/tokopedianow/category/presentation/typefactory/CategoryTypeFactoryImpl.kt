@@ -3,14 +3,15 @@ package com.tokopedia.tokopedianow.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
@@ -20,7 +21,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
@@ -35,14 +35,14 @@ class CategoryTypeFactoryImpl(
     quickFilterListener: QuickFilterListener,
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
-    similarProductListener: SimilarProductListener,
+    productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     productRecommendationOocBindListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
     private val categoryAisleListener: CategoryAisleListener,
-    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
+    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
     feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
@@ -56,7 +56,7 @@ class CategoryTypeFactoryImpl(
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
         feedbackWidgetListener,
-        similarProductListener,
+        productCardCompactSimilarProductTrackerListener,
         productRecommendationOocBindListener,
         productRecommendationOocListener,
         productRecommendationListener
@@ -70,8 +70,8 @@ class CategoryTypeFactoryImpl(
                 CategoryChooseAddressViewHolder(view, chooseAddressListener)
             CategoryAisleViewHolder.LAYOUT ->
                 CategoryAisleViewHolder(view, categoryAisleListener)
-            TokoNowCategoryGridViewHolder.LAYOUT ->
-                TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowCategoryMenuViewHolder.LAYOUT ->
+                TokoNowCategoryMenuViewHolder(view, tokoNowCategoryMenuListener)
             TokoNowRepurchaseViewHolder.LAYOUT ->
                 TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
             else -> super.createViewHolder(view, type)

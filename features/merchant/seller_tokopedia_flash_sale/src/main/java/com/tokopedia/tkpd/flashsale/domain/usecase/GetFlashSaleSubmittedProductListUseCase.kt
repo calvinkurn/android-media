@@ -9,7 +9,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleSubmittedProductListMapper
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
-import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest.*
+import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest.Filter
+import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest.Pagination
+import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest.SubmittedProductListRequestHeader
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleSubmittedProductListResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProductData
 import javax.inject.Inject

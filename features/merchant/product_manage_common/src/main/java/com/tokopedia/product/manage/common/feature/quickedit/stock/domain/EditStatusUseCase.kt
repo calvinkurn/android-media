@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.quickedit.stock.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
@@ -8,11 +9,12 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("EditStatusGqlQuery", EditStatusUseCase.query)
 class EditStatusUseCase @Inject constructor(repository: GraphqlRepository) : GraphqlUseCase<ProductUpdateV3Response>(repository) {
 
     companion object {
         const val PARAM_INPUT = "input"
-        private val query = """
+        const val query = """
             mutation productUpdateV3(${'$'}input: ProductInputV3!){
                 ProductUpdateV3(input:${'$'}input) {
                     header {
@@ -23,11 +25,11 @@ class EditStatusUseCase @Inject constructor(repository: GraphqlRepository) : Gra
                     isSuccess
                 }
             }
-        """.trimIndent()
+        """
     }
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(EditStatusGqlQuery())
         setTypeClass(ProductUpdateV3Response::class.java)
     }
 

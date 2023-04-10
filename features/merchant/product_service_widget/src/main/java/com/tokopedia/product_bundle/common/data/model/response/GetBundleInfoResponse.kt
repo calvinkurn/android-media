@@ -83,18 +83,20 @@ data class BundleItem(
         @Expose val productStatus: String = ""
 ): Parcelable {
 
+    fun getBuyableChildren() = children.filter { it.isBuyable }
+
     fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
-        children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
+        getBuyableChildren().minByOrNull { it.bundlePrice }?.originalPrice.orZero()
 
     fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
-        children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+        getBuyableChildren().minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
 
     fun getMultipliedOriginalPrice() = getPreviewOriginalPrice() * getPreviewMinOrder()
 
     fun getMultipliedBundlePrice() = getPreviewBundlePrice() * getPreviewMinOrder()
 
     fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
-        children.minByOrNull { it.minOrder }?.minOrder.orZero()
+        getBuyableChildren().minByOrNull { it.minOrder }?.minOrder.orZero()
 }
 
 @Parcelize

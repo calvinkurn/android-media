@@ -26,7 +26,7 @@ object LoggingUtils {
     fun logGqlSuccessRate(operationName: String, gqlResult: String) {
         if (operationName.isNotBlank()) {
             ServerLogger.log(
-                Priority.SF,
+                Priority.P1,
                 "GP",
                 mapOf(
                     "on" to operationName,
@@ -48,7 +48,8 @@ object LoggingUtils {
     @JvmStatic
     fun oldLogGqlParseError(type: String, err: String, request: String) {
         ServerLogger.log(
-            Priority.P1, "GQL_PARSE_ERROR",
+            Priority.P1,
+            "GQL_PARSE_ERROR",
             mapOf(
                 "type" to type,
                 "err" to err.take(Const.GQL_ERROR_MAX_LENGTH).trim(),

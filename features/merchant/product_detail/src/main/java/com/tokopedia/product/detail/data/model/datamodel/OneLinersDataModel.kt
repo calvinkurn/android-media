@@ -43,4 +43,8 @@ data class OneLinersDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
+
+    val shouldRenderContent
+        get() = oneLinersContent?.isVisible == true
+
 }

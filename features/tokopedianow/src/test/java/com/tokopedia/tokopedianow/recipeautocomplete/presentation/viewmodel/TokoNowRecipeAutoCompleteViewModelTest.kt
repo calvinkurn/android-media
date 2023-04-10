@@ -13,7 +13,7 @@ class TokoNowRecipeAutoCompleteViewModelTest : TokoNowRecipeAutoCompleteViewMode
 
         viewModel.submitSearch(title)
 
-        val expectedParams = "?title=Lorem ipsum"
+        val expectedParams = "?title=Lorem+ipsum"
 
         viewModel.recipeListParam
             .verifyValueEquals(expectedParams)

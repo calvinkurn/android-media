@@ -7,7 +7,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.*
 import org.junit.Test
 
-class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
+class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check shop settings base appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
@@ -130,12 +130,6 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check kol youtube appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://kolyoutube/https://www.youtube.com/watch?v=WMh0KzwTviY"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
     fun `check content report appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-report/123456"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
@@ -144,12 +138,6 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check video detail appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/video-detail/123456"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
-    fun `check media preview appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/media-preview/123456"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
@@ -259,5 +247,4 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/accepted-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
-
 }
