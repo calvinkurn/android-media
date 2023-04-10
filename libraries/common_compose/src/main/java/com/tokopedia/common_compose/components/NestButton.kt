@@ -59,7 +59,7 @@ fun NestButton(
             buttonBorder = null,
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = NestTheme.colors.NN._0,
+            progressBarColor = Color.White,
             progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
@@ -76,7 +76,7 @@ fun NestButton(
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = NestTheme.colors.GN._500,
+            progressBarColor = Color.White,
             progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
@@ -93,7 +93,7 @@ fun NestButton(
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
             enabled = isEnabled,
             isLoading = isLoading,
-            progressBarColor = NestTheme.colors.GN._500,
+            progressBarColor = Color.White,
             progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
@@ -151,7 +151,7 @@ private fun NestDefaultButton(
         ) {
             if (!isLoading) {
                 NestTypography(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp),
                     text = text,
                     textStyle = textStyle,
                     maxLines = 1,
@@ -346,7 +346,8 @@ fun NestButtonPreview() {
             NestButtonTextPreview()
 
             NestTypography(text = "Filled - Various Sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonFilledVariousSizesPreview()
+            NestButtonFilledLargeMediumPreview()
+            NestButtonFilledMicroPreview()
         }
     }
 }
@@ -508,7 +509,7 @@ private fun NestButtonTextPreview() {
 }
 
 @Composable
-private fun NestButtonFilledVariousSizesPreview() {
+private fun NestButtonFilledLargeMediumPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
             modifier = Modifier.weight(0.25f),
@@ -539,7 +540,11 @@ private fun NestButtonFilledVariousSizesPreview() {
             isLoading = false,
             onClick = {},
         )
-
+    }
+}
+@Composable
+private fun NestButtonFilledMicroPreview() {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
             modifier = Modifier.weight(0.25f),
             text = "Micro",
