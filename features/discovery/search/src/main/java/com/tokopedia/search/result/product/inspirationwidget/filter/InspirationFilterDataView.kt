@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.inspirationwidget.filter
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
@@ -11,8 +12,9 @@ import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 class InspirationFilterDataView(
     override val data: InspirationWidgetDataView = InspirationWidgetDataView(),
-    val optionSizeData: List<InspirationFilterOptionDataView> = listOf(),
+    val optionFilterData: List<InspirationFilterOptionDataView> = listOf(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.Both,
+    inputType: String = "",
 ): InspirationWidgetVisitable {
 
     override fun addTopSeparator(): VerticalSeparable = this
@@ -22,6 +24,9 @@ class InspirationFilterDataView(
         return typeFactory.type(this)
     }
 
+    val isTypeRadio: Boolean = SearchConstant.InspirationCard.INPUT_TYPE_RADIO == inputType
+    val isTypeCheckbox: Boolean = SearchConstant.InspirationCard.INPUT_TYPE_CHECKBOX == inputType
+
     companion object {
         fun create(
             data: SearchProductModel.InspirationWidgetData,
@@ -30,13 +35,14 @@ class InspirationFilterDataView(
         ): InspirationFilterDataView {
             return InspirationFilterDataView(
                 data = InspirationWidgetDataView.create(data),
-                optionSizeData = data.inspirationWidgetOptions.mapToInspirationFilterOptionDataView(
+                optionFilterData = data.inspirationWidgetOptions.mapToInspirationFilterOptionDataView(
                     data.type,
                     keyword,
                     dimension90,
                     data.title,
                     data.trackingOption.toIntOrZero(),
                 ),
+                inputType = data.inputType,
             )
         }
 

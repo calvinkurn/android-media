@@ -178,6 +178,9 @@ public interface SearchConstant {
         String TYPE_RELATED = "related";
         String TYPE_SIZE_PERSO = "size_perso";
         String LAYOUT_FILTER = "filter";
+
+        String INPUT_TYPE_RADIO = "radio";
+        String INPUT_TYPE_CHECKBOX = "checkbox";
     }
 
     interface CustomDimension {

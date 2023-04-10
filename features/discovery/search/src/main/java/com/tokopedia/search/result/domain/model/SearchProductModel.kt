@@ -1081,6 +1081,10 @@ data class SearchProductModel(
         @SerializedName("tracking_option")
         @Expose
         val trackingOption: String = "0",
+
+        @SerializedName("input_type")
+        @Expose
+        val inputType: String = "",
     ) {
         fun asFilter(): Filter {
             return if (isPriceRangeWidget()) Filter(options = priceRangeOptions())

@@ -8,6 +8,7 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterListener
 import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterOptionDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
@@ -37,23 +38,24 @@ class InspirationWidgetListenerDelegate(
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
-        val label = "${option.inspirationCardType} - ${queryKey} - ${option.text}"
+        val label = "${option.inspirationCardType} - $queryKey - ${option.text}"
 
         InspirationWidgetTracking.trackEventClickInspirationCardOption(label)
     }
 
     override fun onInspirationFilterOptionClicked(
         filterOptionDataView: InspirationFilterOptionDataView,
-        filterOptionDataViewList: List<InspirationFilterOptionDataView>,
+        filterDataView: InspirationFilterDataView,
     ) {
         val optionList = filterOptionDataView.optionList
         val isFilterSelectedReversed = !isFilterSelected(optionList)
 
-        val nonSelectedFilterList = filterOptionDataViewList - filterOptionDataView
+        val nonSelectedFilterList = filterDataView.optionFilterData - filterOptionDataView
 
         trackInspirationFilterOptionClick(isFilterSelectedReversed, filterOptionDataView)
 
         applyInspirationFilter(
+            filterDataView,
             optionList,
             nonSelectedFilterList,
             isFilterSelectedReversed,
@@ -94,17 +96,14 @@ class InspirationWidgetListenerDelegate(
         if (isFilterSelected) filterOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
-    private fun List<Option>.hasCategoryFilter(): Boolean {
-        return any { it.isCategoryOption }
-    }
-
     private fun applyInspirationFilter(
+        filterDataView: InspirationFilterDataView,
         optionList: List<Option>,
         nonSelectedFilterList: List<InspirationFilterOptionDataView>,
         isFilterSelected: Boolean,
         componentId: String,
     ) {
-        if (optionList.hasCategoryFilter()) {
+        if (filterDataView.isTypeRadio) {
             val previousOptionList = nonSelectedFilterList
                 .filter { isFilterSelected(it.optionList) }
                 .flatMap { it.optionList }
