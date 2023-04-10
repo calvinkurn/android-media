@@ -92,18 +92,19 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
+        const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
     }
 
     /**
-     * @see defaultItems
+     * @see generalItems
      *
      * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
      **/
-    private val defaultItems = mutableListOf(
+    private val generalItems = mutableListOf(
+        DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
         LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
-        AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
@@ -113,14 +114,46 @@ class DeveloperOptionAdapter(
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
         ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
-        SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
+        ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
+        TranslatorUiModel(
+            listOf(
+                KEYWORD_API_KEY_SETTING,
+                KEYWORD_VISIT_BELOW_FOR_API_KEY,
+                KEYWORD_LANGUAGE_SETTING,
+                KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
+                KEYWORD_TOTAL_TRANSLATED_TEXT
+            )),
+        ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
+        HomeAndNavigationRevampSwitcherUiModel(
+            listOf(
+                KEYWORD_TRANSLATOR,
+                KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
+                KEYWORD_NEW_NAVIGATION,
+                KEYWORD_ALWAYS_OS_EXPERIMENT,
+                KEYWORD_OLD_BALANCE_WIDGET,
+                KEYWORD_NEW_BALANCE_WIDGET,
+                KEYWORD_OLD_INBOX,
+                KEYWORD_NEW_INBOX,
+                KEYWORD_OLD_CART_CHECKOUT,
+                KEYWORD_NEW_CART_CHECKOUT
+            )
+        ),
+        ConvertResourceIdUiModel(
+            listOf(KEYWORD_CONVERT_RESOURCE_ID)
+        ),
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
+    )
+
+    private val hiddenItems = mutableListOf(
+        AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
+        SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
-        ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
         TopAdsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION)),
         ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
         ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),
@@ -142,7 +175,6 @@ class DeveloperOptionAdapter(
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
-        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(
             listOf(
                 KEYWORD_LOGGING_TO_SERVER,
@@ -162,35 +194,11 @@ class DeveloperOptionAdapter(
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
-        TranslatorUiModel(
-            listOf(
-                KEYWORD_API_KEY_SETTING,
-                KEYWORD_VISIT_BELOW_FOR_API_KEY,
-                KEYWORD_LANGUAGE_SETTING,
-                KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
-                KEYWORD_TOTAL_TRANSLATED_TEXT
-            )
-        ),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
-        ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         RollenceAbTestingManualSwitcherUiModel(
             listOf(
                 KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
                 KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS
-            )
-        ),
-        HomeAndNavigationRevampSwitcherUiModel(
-            listOf(
-                KEYWORD_TRANSLATOR,
-                KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
-                KEYWORD_NEW_NAVIGATION,
-                KEYWORD_ALWAYS_OS_EXPERIMENT,
-                KEYWORD_OLD_BALANCE_WIDGET,
-                KEYWORD_NEW_BALANCE_WIDGET,
-                KEYWORD_OLD_INBOX,
-                KEYWORD_NEW_INBOX,
-                KEYWORD_OLD_CART_CHECKOUT,
-                KEYWORD_NEW_CART_CHECKOUT
             )
         ),
         PlayWebSocketSseLoggingUiModel(
@@ -199,14 +207,26 @@ class DeveloperOptionAdapter(
                 KEYWORD_VIEW_SSE_LOGGING
             )
         ),
-        ConvertResourceIdUiModel(
-            listOf(KEYWORD_CONVERT_RESOURCE_ID)
-        ),
-        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
         TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
     )
 
+    private var defaultItems = mutableListOf<OptionItemUiModel>()
+    private var isAuthorized = false
+
     init {
+        initializeList()
+    }
+
+    fun initializeList() {
+        defaultItems.clear()
+        if(isAuthorized.not()) {
+            defaultItems.addAll(generalItems)
+        } else {
+            defaultItems.addAll(generalItems)
+            defaultItems.addAll(hiddenItems)
+            removeWidget(DevOptsAuthorizationUiModel::class.java)
+        }
+
         if (GlobalConfig.isSellerApp()) {
             removeSellerAppItems()
         } else {
@@ -246,5 +266,9 @@ class DeveloperOptionAdapter(
 
     private fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
         return defaultItems.find { it.javaClass == itemClass }
+    }
+
+    fun setValueIsAuthorized(b: Boolean) {
+        isAuthorized = b
     }
 }
