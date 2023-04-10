@@ -24,6 +24,9 @@ data class Attributes(
     @SerializedName("livechat_session_id")
     val livechatSessionId: String? = null,
 
+    @SerializedName("is_simplify_csat")
+    val isSimplifyCsat: Boolean? = null,
+
     @SerializedName("trigger_rule_type")
     val triggerRuleType: String? = null,
 
@@ -40,6 +43,7 @@ data class Attributes(
         parcel.readParcelable(FallbackAttachment::class.java.classLoader),
         parcel.readString(),
         parcel.readString(),
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readString(),
         parcel.readString(),
         parcel.createTypedArrayList(PointsItem)
@@ -51,6 +55,7 @@ data class Attributes(
         parcel.writeString(reasonTitle)
         parcel.writeParcelable(fallbackAttachment, flags)
         parcel.writeString(chatbotSessionId)
+        parcel.writeValue(isSimplifyCsat)
         parcel.writeString(livechatSessionId)
         parcel.writeString(triggerRuleType)
         parcel.writeString(title)

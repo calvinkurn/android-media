@@ -87,7 +87,6 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
@@ -173,7 +172,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TopBotNewSessionState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ValidImageAttachment
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.databinding.FragmentChatbot2Binding
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
+import com.tokopedia.chatbot.util.logNewRelicMessageIdError
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
@@ -326,7 +325,6 @@ class ChatbotFragment2 :
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
         private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
-        private const val Y_COORDINATE = "y-coordinate"
         private const val BUBBLE_NOT_FOUND = -2
         private const val DELAY_TO_SHOW_COACHMARK = 1000L
         private const val ACTION_CSAT_SMILEY_BUTTON_CLICKED = "click csat smiley button"
@@ -400,7 +398,7 @@ class ChatbotFragment2 :
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        if (csatRemoteConfig) {
+        if (csatResponse.attachment?.attributes?.isSimplifyCsat.orFalse()) {
             openCsatNewFlow(csatResponse)
         } else {
             openCsatOldFlow(csatResponse)
@@ -696,7 +694,6 @@ class ChatbotFragment2 :
         viewState?.initView()
 
         startObservingViewModels()
-        remoteConfigForCsatExperiment()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
         handlingForMessageIdValidity(messageId)
@@ -743,12 +740,9 @@ class ChatbotFragment2 :
             }
         } catch (e: NumberFormatException) {
             setErrorLayoutForServer()
-            ChatbotNewRelicLogger.logNewRelic(
-                false,
+            logNewRelicMessageIdError(
                 messageId,
-                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
-                e,
-                pageSource = pageSource
+                pageSource
             )
         }
     }
@@ -992,7 +986,7 @@ class ChatbotFragment2 :
         }
     }
 
-    fun handleAddAttachmentButtonViewState(toShow: Boolean) {
+    private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
         showAddAttachmentMenu = toShow
         getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
             showAddAttachmentMenu
@@ -2649,10 +2643,6 @@ class ChatbotFragment2 :
             getUserNameForReplyBubble.getUserName(messageUiModel)
         )
         replyBubbleBottomSheet?.dismiss()
-    }
-
-    private fun remoteConfigForCsatExperiment() {
-        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
     }
 
     private fun checkVideoUploadOnboardingStatus() {

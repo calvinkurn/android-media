@@ -26,7 +26,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_UPDATE_TOOLBAR
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.BigReplyBoxAttribute
@@ -345,13 +344,6 @@ class ChatbotViewModel @Inject constructor(
         _checkUploadSecure.postValue(
             CheckUploadSecureState.HandleFailureCheckUploadSecure
         )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-            throwable,
-            pageSourceAccess
-        )
     }
 
     // Get Ticker Data
@@ -367,13 +359,6 @@ class ChatbotViewModel @Inject constructor(
     private fun onErrorGetTickerData(throwable: Throwable, messageId: String) {
         _tickerData.postValue(
             GetTickerDataState.HandleTickerDataFailure(throwable)
-        )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable,
-            pageSourceAccess
         )
     }
 
@@ -412,13 +397,6 @@ class ChatbotViewModel @Inject constructor(
         _submitCsatRating.postValue(
             ChatbotSubmitCsatRatingState.HandleFailureChatbotSubmitCsatRating(throwable)
         )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable,
-            pageSourceAccess
-        )
     }
 
     // No need to do any actions on UI
@@ -435,13 +413,6 @@ class ChatbotViewModel @Inject constructor(
     private fun onErrorOptionList(throwable: Throwable, messageId: String) {
         _optionsListError.postValue(
             true
-        )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable,
-            pageSourceAccess
         )
     }
 
@@ -466,13 +437,6 @@ class ChatbotViewModel @Inject constructor(
     private fun onFailureSubmitChatCsat(throwable: Throwable, messageId: String) {
         _submitChatCsat.postValue(
             ChatbotSubmitChatCsatState.FailureChatbotSubmitChatCsat(throwable)
-        )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable,
-            pageSourceAccess
         )
     }
 
@@ -506,13 +470,6 @@ class ChatbotViewModel @Inject constructor(
 
     private fun onFailureForResoLink(throwable: Throwable, messageId: String) {
         _resoLinkError.postValue(true)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-            throwable,
-            pageSourceAccess
-        )
     }
 
     fun checkToSendMessageForResoLink(
@@ -551,13 +508,6 @@ class ChatbotViewModel @Inject constructor(
     private fun onFailureSendRating(throwable: Throwable, messageId: String) {
         _sendChatRating.postValue(
             ChatbotSendChatRatingState.HandleErrorSendChatRating(throwable)
-        )
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable,
-            pageSourceAccess
         )
     }
 
@@ -598,14 +548,6 @@ class ChatbotViewModel @Inject constructor(
                         it
                     )
                 )
-
-                ChatbotNewRelicLogger.logNewRelic(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                    it,
-                    pageSourceAccess
-                )
             }
         )
     }
@@ -643,15 +585,6 @@ class ChatbotViewModel @Inject constructor(
                         it
                     )
                 )
-                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
-                    it,
-                    getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime,
-                    pageSourceAccess
-                )
             }
         )
     }
@@ -687,15 +620,6 @@ class ChatbotViewModel @Inject constructor(
                     ChatDataState.HandleFailureChatData(
                         it
                     )
-                )
-                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
-                    it,
-                    getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime,
-                    pageSourceAccess
                 )
             }
         )
@@ -748,13 +672,6 @@ class ChatbotViewModel @Inject constructor(
                 )
             },
             onError = {
-                ChatbotNewRelicLogger.logNewRelic(
-                    true,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it,
-                    pageSourceAccess
-                )
             }
         )
     }
@@ -1502,13 +1419,6 @@ class ChatbotViewModel @Inject constructor(
                         throwable,
                         imageUploadUiModel
                     )
-                )
-                ChatbotNewRelicLogger.logNewRelic(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
-                    e,
-                    pageSourceAccess
                 )
             }
 
