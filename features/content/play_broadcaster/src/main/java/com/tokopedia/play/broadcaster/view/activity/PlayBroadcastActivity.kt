@@ -339,7 +339,7 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
-                    is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFailed -> {
                         analytic.viewFailDownloadPreset(
                             viewModel.selectedAccount,
                             beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
