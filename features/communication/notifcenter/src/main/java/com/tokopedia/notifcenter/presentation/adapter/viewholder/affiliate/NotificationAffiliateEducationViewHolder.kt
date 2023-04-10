@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
@@ -15,6 +14,7 @@ import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticle
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.toDate
 import timber.log.Timber
@@ -35,9 +35,7 @@ class NotificationAffiliateEducationViewHolder(
         private const val DD_MMM = "dd MMM"
         private const val DD_MMM_YY = "dd MMM yy"
         private const val ITEM_HORIZONTAL_PADDING = 12
-        private const val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
-            "https://affiliate-staging.tokopedia.com/edu/"
-        private const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
+        private const val PATH_EDU = "edu/"
     }
 
     private val carousel = itemView?.findViewById<CarouselUnify>(R.id.education_carousel)
@@ -116,11 +114,7 @@ class NotificationAffiliateEducationViewHolder(
             Locale.getDefault(),
             "%s?url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
-            if (GraphqlUrl.BASE_URL.contains("staging")) {
-                EDUCATION_ARTICLE_DETAIL_STAGING_URL
-            } else {
-                EDUCATION_ARTICLE_DETAIL_PROD_URL
-            },
+            TokopediaUrl.getInstance().AFFILIATE + PATH_EDU,
             slug
         )
     }
