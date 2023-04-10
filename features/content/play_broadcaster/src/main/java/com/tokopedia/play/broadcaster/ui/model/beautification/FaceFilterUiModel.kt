@@ -13,6 +13,7 @@ import kotlinx.android.parcel.Parcelize
 data class FaceFilterUiModel(
     val id: String,
     val name: String,
+    val active: Boolean,
     val minValue: Double,
     val maxValue: Double,
     val defaultValue: Double,

@@ -31,6 +31,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
@@ -474,8 +475,14 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
         if (viewModel.isBeautificationEnabled) {
-            val isAllFaceFilterApplied = applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
-            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it) } ?: true
+            val isAllFaceFilterApplied = if (viewModel.selectedFaceFilter?.isRemoveEffect == true) {
+                viewModel.selectedFaceFilter?.let { applyFaceFilter(it) }.orTrue()
+            } else {
+                applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+            }
+
+            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it) }.orTrue()
+
 
             if(isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
                 analytic.viewFailReapplyBeautyFilter(account = viewModel.selectedAccount)

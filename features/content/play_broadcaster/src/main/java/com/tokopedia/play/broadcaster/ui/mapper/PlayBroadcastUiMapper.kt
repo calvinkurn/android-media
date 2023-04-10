@@ -212,11 +212,12 @@ class PlayBroadcastUiMapper @Inject constructor(
                     FaceFilterUiModel(
                         id = menu.id,
                         name = menu.name,
+                        active = menu.active,
                         minValue = menu.minValue,
                         maxValue = menu.maxValue,
                         defaultValue = menu.defaultValue,
                         value = menu.value,
-                        isSelected = false,
+                        isSelected = menu.active,
                     )
                 },
                 presets = config.beautificationConfig.presets.map { preset ->

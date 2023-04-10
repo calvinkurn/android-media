@@ -40,6 +40,7 @@ data class BeautificationConfigUiModel(
                 Config.BeautificationConfig.CustomFace.Menu(
                     id = faceFilter.id,
                     name = faceFilter.name,
+                    active = faceFilter.active,
                     minValue = faceFilter.minValue,
                     maxValue = faceFilter.maxValue,
                     defaultValue = faceFilter.defaultValue,
