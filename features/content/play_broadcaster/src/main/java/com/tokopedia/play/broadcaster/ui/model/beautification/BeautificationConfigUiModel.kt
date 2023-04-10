@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.play.broadcaster.domain.model.Config
 import kotlinx.android.parcel.Parcelize
 
