@@ -140,7 +140,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             context?.let {
                 val normalServiceView = getNormalServiceView()
 
-                val coachMarkItems = generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems =
+                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
                 whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
@@ -189,7 +190,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         return coachMarkItems
     }
 
-    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>, data: CustomProductLogisticModel) {
+    private fun CoachMark2.setOnBoardingListener(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        data: CustomProductLogisticModel
+    ) {
         this.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if (currentIndex < 1) {
@@ -203,7 +207,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         })
     }
 
-    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 1) {
+    private fun CoachMark2.manualScroll(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        currentIndex: Int = 1
+    ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
             binding.svShippingEditor.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)
@@ -226,7 +233,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun initObserver() {
-        viewModel.cplState.observe(viewLifecycleOwner, {
+        viewModel.cplState.observe(viewLifecycleOwner) {
             when (it) {
                 is CPLState.FirstLoad -> {
                     populateView(it.data)
@@ -251,7 +258,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     binding.btnSaveShipper.gone()
                 }
             }
-        })
+        }
     }
 
     private fun populateView(data: CustomProductLogisticModel) {

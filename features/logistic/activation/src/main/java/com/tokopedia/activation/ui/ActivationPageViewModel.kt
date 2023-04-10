@@ -13,9 +13,10 @@ import com.tokopedia.activation.model.UpdateFeatureModel
 import javax.inject.Inject
 
 class ActivationPageViewModel @Inject constructor(
-        private val getShopFeatureUseCase: GetShopFeatureUseCase,
-        private val updateShopFeatureUseCase: UpdateShopFeatureUseCase,
-        private val getShippingEditorUseCase: GetShippingEditorUseCase) : ViewModel() {
+    private val getShopFeatureUseCase: GetShopFeatureUseCase,
+    private val updateShopFeatureUseCase: UpdateShopFeatureUseCase,
+    private val getShippingEditorUseCase: GetShippingEditorUseCase
+) : ViewModel() {
 
     private val _shopFeature = MutableLiveData<ActivationPageState<ShopFeatureModel>>()
     val shopFeature: LiveData<ActivationPageState<ShopFeatureModel>>
@@ -32,43 +33,42 @@ class ActivationPageViewModel @Inject constructor(
     fun getShopFeature(shopId: String) {
         _shopFeature.value = ActivationPageState.Loading
         getShopFeatureUseCase.execute(
-                { shopFeatureModel: ShopFeatureModel ->
-                    _shopFeature.value = ActivationPageState.Success(shopFeatureModel)
-
-                },
-                {
+            { shopFeatureModel: ShopFeatureModel ->
+                _shopFeature.value = ActivationPageState.Success(shopFeatureModel)
+            },
+            {
                     throwable: Throwable ->
-                    _shopFeature.value = ActivationPageState.Fail(throwable, "")
-                },
-                getShopFeatureUseCase.generateRequestParams(shopId)
+                _shopFeature.value = ActivationPageState.Fail(throwable, "")
+            },
+            getShopFeatureUseCase.generateRequestParams(shopId)
         )
     }
 
     fun updateShopFeature(value: Boolean) {
         _updateShopFeature.value = ActivationPageState.Loading
         updateShopFeatureUseCase.execute(
-                { updateFeatureModel: UpdateFeatureModel ->
-                    _updateShopFeature.value = ActivationPageState.Success(updateFeatureModel)
-                },
-                {
+            { updateFeatureModel: UpdateFeatureModel ->
+                _updateShopFeature.value = ActivationPageState.Success(updateFeatureModel)
+            },
+            {
                     throwable: Throwable ->
-                    _updateShopFeature.value = ActivationPageState.Fail(throwable, "")
-                },
-                updateShopFeatureUseCase.generateRequestParams(value)
+                _updateShopFeature.value = ActivationPageState.Fail(throwable, "")
+            },
+            updateShopFeatureUseCase.generateRequestParams(value)
         )
     }
 
     fun validateActivatedShipping(userId: Long) {
-        _activatedShipping.value= ActivationPageState.Loading
+        _activatedShipping.value = ActivationPageState.Loading
         getShippingEditorUseCase.execute(
-                { shippingEditorModel: ShippingEditorModel ->
-                    _activatedShipping.value = ActivationPageState.Success(shippingEditorModel)
-                },
-                {
+            { shippingEditorModel: ShippingEditorModel ->
+                _activatedShipping.value = ActivationPageState.Success(shippingEditorModel)
+            },
+            {
                     throwable: Throwable ->
-                    _activatedShipping.value = ActivationPageState.Fail(throwable, "")
-                },
-                getShippingEditorUseCase.generateRequestParams(userId)
+                _activatedShipping.value = ActivationPageState.Fail(throwable, "")
+            },
+            getShippingEditorUseCase.generateRequestParams(userId)
         )
     }
 }

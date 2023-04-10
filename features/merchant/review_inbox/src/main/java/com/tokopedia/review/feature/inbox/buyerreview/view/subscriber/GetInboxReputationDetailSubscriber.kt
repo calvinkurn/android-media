@@ -192,8 +192,7 @@ open class GetInboxReputationDetailSubscriber constructor(
             revieweeBadgeSeller.reputationScore,
             revieweeBadgeSeller.score,
             revieweeBadgeSeller.minBadgeScore,
-            revieweeBadgeSeller.reputationBadgeUrl,
-            revieweeBadgeSeller.isFavorited
+            revieweeBadgeSeller.reputationBadgeUrl
         )
     }
 

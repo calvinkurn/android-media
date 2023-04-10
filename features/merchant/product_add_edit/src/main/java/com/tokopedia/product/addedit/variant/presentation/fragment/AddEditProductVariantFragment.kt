@@ -550,7 +550,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showImagePicker(position: Int){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingVariant(position)
             showImagePickerForVariant(position)
         } else {
@@ -1369,7 +1369,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImagePickerVariantSizeGuide(){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingForVariantSize()
             showImagePickerSizeGuide()
         } else {
@@ -1378,7 +1378,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImageEditorVariantSizeGuide(){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingForVariantSize()
             showEditorImagePickerSizeGuide()
         } else {

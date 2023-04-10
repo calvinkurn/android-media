@@ -5,6 +5,7 @@
     {
       "eventCategory": "homepage",
       "item_list": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
+      "item_list_name": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel top carousel",
       "sessionIris": ".*",
