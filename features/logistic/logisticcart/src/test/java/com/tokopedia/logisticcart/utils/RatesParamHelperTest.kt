@@ -20,26 +20,26 @@ class RatesParamHelperTest {
     @Test
     fun `given multiple spids when generate spids return multiple spids with commas`() {
         val data = listOf(
-                ShopShipment().apply {
-                    shipProds = listOf(
-                            ShipProd().apply {
-                                shipProdId = 1
-                            },
-                            ShipProd().apply {
-                                shipProdId = 2
-                            }
-                    )
-                },
-                ShopShipment().apply {
-                    shipProds = listOf(
-                            ShipProd().apply {
-                                shipProdId = 3
-                            },
-                            ShipProd().apply {
-                                shipProdId = 16
-                            }
-                    )
-                }
+            ShopShipment().apply {
+                shipProds = listOf(
+                    ShipProd().apply {
+                        shipProdId = 1
+                    },
+                    ShipProd().apply {
+                        shipProdId = 2
+                    }
+                )
+            },
+            ShopShipment().apply {
+                shipProds = listOf(
+                    ShipProd().apply {
+                        shipProdId = 3
+                    },
+                    ShipProd().apply {
+                        shipProdId = 16
+                    }
+                )
+            }
         )
         val expected = "1,2,3,16"
 
@@ -91,7 +91,7 @@ class RatesParamHelperTest {
     fun `given one product model when generate product json return json string`() {
         val data = ShippingParam().apply {
             products = listOf(
-                    Product(298851813, isFreeShipping = false, isFreeShippingTc = false)
+                Product(298851813, isFreeShipping = false, isFreeShippingTc = false)
             )
         }
         val expected = "[{\"product_id\":298851813,\"is_free_shipping\":false,\"is_free_shipping_tc\":false}]"

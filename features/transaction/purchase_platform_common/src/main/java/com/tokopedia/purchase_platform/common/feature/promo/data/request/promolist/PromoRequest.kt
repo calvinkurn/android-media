@@ -53,7 +53,7 @@ data class Order(
     @SerializedName("validation_metadata")
     var validationMetadata: String = "",
     @Transient
-    var boType: Int = 0,
+    var boType: Int = 0
 ) : Parcelable
 
 @Parcelize

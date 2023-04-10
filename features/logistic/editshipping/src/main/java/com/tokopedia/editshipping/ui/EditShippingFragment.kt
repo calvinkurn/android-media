@@ -578,7 +578,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         })
     }
 
-    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 0) {
+    private fun CoachMark2.manualScroll(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        currentIndex: Int = 0
+    ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
             scrollView?.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)

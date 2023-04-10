@@ -6,12 +6,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyUiModel(
-        var codes: List<String> = emptyList(),
-        var voucherOrders: List<LastApplyVoucherOrdersItemUiModel> = emptyList(),
-        var additionalInfo: LastApplyAdditionalInfoUiModel = LastApplyAdditionalInfoUiModel(),
-        var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
-        var listRedPromos: List<String> = emptyList(),
-        var listAllPromoCodes: List<String> = emptyList(),
-        var defaultEmptyPromoMessage: String = "",
-        var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
+    var codes: List<String> = emptyList(),
+    var voucherOrders: List<LastApplyVoucherOrdersItemUiModel> = emptyList(),
+    var additionalInfo: LastApplyAdditionalInfoUiModel = LastApplyAdditionalInfoUiModel(),
+    var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
+    var listRedPromos: List<String> = emptyList(),
+    var listAllPromoCodes: List<String> = emptyList(),
+    var defaultEmptyPromoMessage: String = "",
+    var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
 ) : Parcelable

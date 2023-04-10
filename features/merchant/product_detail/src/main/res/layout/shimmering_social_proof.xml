@@ -4,7 +4,7 @@
     android:id="@+id/pdp_shimmering_social_proof"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_txt_1"

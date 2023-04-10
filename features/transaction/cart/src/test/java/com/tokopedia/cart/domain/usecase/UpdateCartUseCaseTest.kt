@@ -68,7 +68,8 @@ class UpdateCartUseCaseTest {
 
         val result = HashMap<Type, Any>()
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
-                UpdateCartDataResponse(data = Data(status = false, error = errorMessage), status = "ERROR"))
+            UpdateCartDataResponse(data = Data(status = false, error = errorMessage), status = "ERROR")
+        )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
@@ -86,7 +87,8 @@ class UpdateCartUseCaseTest {
         // Given
         val result = HashMap<Type, Any>()
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
-                UpdateCartDataResponse(data = Data(status = false), status = "ERROR"))
+            UpdateCartDataResponse(data = Data(status = false), status = "ERROR")
+        )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
@@ -98,5 +100,4 @@ class UpdateCartUseCaseTest {
         // Then
         subscriber.assertValue(UpdateCartData(isSuccess = false, message = ""))
     }
-
 }
