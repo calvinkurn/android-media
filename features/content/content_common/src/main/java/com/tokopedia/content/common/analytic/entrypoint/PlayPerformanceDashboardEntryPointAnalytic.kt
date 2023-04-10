@@ -2,19 +2,73 @@ package com.tokopedia.content.common.analytic.entrypoint
 
 interface PlayPerformanceDashboardEntryPointAnalytic {
 
-    fun onViewBottomSheetContentCard(authorId: String, authorType: String)
-    fun onClickReportPageEntryPointShopPage(authorId: String, authorType: String)
-    fun onClickPerformanceDashboardEntryPointNative(authorId: String, authorType: String)
-    fun onViewBottomSheetContentCardShopPageChannel(authorId: String, authorType: String)
-    fun onClickReportPageEntryPoint(authorId: String, authorType: String)
-    fun onClickPerformanceDashboardEntryPointShortsPageChanel(authorId: String, authorType: String)
-    fun onClickPerformanceDashboardEntryPointChannelPage(authorId: String, authorType: String, channelId: String)
-    fun onClickReportPageEntryPointGroupChatRoom(authorId: String, authorType: String, channelId: String)
-    fun onClickPerformanceDashboardEntryPointReportPage(authorId: String, authorType: String)
-    fun onClickPerformanceDashboardEntryPointShopPage(authorId: String, authorType: String)
-    fun onClickPerformanceDashboardEntryPointPrepPage(authorId: String, authorType: String)
-    fun onViewCoachMarkPerformanceDashboardPrepPage(authorId: String, authorType: String)
-    fun onClickCloseCoachMarkPerformanceDashboardPrepPage(authorId: String, authorType: String)
-    fun onViewPerformanceDashboardEntryPointPrepPage(authorId: String, authorType: String)
+    /**
+     * row 1
+     **/
+    fun onViewBottomSheetContentCard(authorId: String)
 
+    /**
+     * row 2
+     **/
+    fun onClickReportPageEntryPointShopPage(authorId: String)
+
+    /**
+     * row 3
+     **/
+    fun onClickPerformanceDashboardEntryPointNative(authorId: String)
+
+    /**
+     * row 4
+     **/
+    fun onViewBottomSheetContentCardShopPageChannel(authorId: String)
+
+    /**
+     * row 5
+     **/
+    fun onClickReportPageEntryPoint(authorId: String)
+
+    /**
+     * row 6
+     **/
+    fun onClickPerformanceDashboardEntryPointShortsPageChanel(authorId: String)
+
+    /**
+     * row 7
+     **/
+    fun onClickPerformanceDashboardEntryPointChannelPage(authorId: String, channelId: String)
+
+    /**
+     * row 8
+     **/
+    fun onClickReportPageEntryPointGroupChatRoom(authorId: String, channelId: String)
+
+    /**
+     * row 9
+     **/
+    fun onClickPerformanceDashboardEntryPointReportPage(authorId: String)
+
+    /**
+     * row 10
+     **/
+    fun onClickPerformanceDashboardEntryPointShopPage(authorId: String)
+
+    /**
+     * row 11
+     **/
+    fun onClickPerformanceDashboardEntryPointPrepPage(authorId: String)
+
+    /**
+     * row 12
+     **/
+    fun onViewCoachMarkPerformanceDashboardPrepPage(authorId: String)
+
+    /**
+     * row 13
+     **/
+    fun onClickCloseCoachMarkPerformanceDashboardPrepPage(authorId: String)
+
+    /**
+     * row 14
+     **/
+    fun onViewPerformanceDashboardEntryPointPrepPage(authorId: String, creativeSlot: Int)
 }

@@ -54,6 +54,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheet() {
         viewBinding = BottomsheetPlayWidgetSellerActionListBinding.inflate(LayoutInflater.from(context))
         setChild(viewBinding?.root)
+        mListener?.onImpressed()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -251,6 +252,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     )
 
     interface Listener {
+        fun onImpressed() {}
         fun onClickShare(channel: PlayWidgetChannelUiModel)
         fun onClickSeePerformance(channel: PlayWidgetChannelUiModel)
         fun onClickSeePerformanceVideoAnalytics(channel: PlayWidgetChannelUiModel)

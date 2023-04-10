@@ -58,6 +58,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
@@ -324,6 +325,10 @@ class NewShopPageFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
+
+    @Inject
+    lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
+
     var shopViewModel: NewShopPageViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -504,6 +509,9 @@ class NewShopPageFragment :
                     }
 
                     override fun onPerformanceDashboardEntryClicked() {
+                        playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
+                            shopViewModel?.userShopId.orEmpty()
+                        )
                         goToPerformanceDashboard()
                     }
                 })
@@ -2547,7 +2555,6 @@ class NewShopPageFragment :
             valueDisplayed
         )
 
-        //TODO analytic row 1
         showContentCreationOptionBottomSheet()
     }
 

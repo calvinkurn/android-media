@@ -573,6 +573,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     parentViewModel.authorType
                 )
             }
+            if (isPerformanceDashboardEntryPointCoachMarkShown) {
+                analytic.onClickCloseCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+            }
             coachMark?.dismissCoachMark()
         }
 
@@ -773,6 +776,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
             }
             TYPE_DASHBOARD -> {
+                analytic.onClickPerformanceDashboardEntryPointPrepPage(parentViewModel.authorId)
                 RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
             }
         }
@@ -864,6 +868,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (prev == null || prev == curr) return
         adapterBanner.setItemsAndAnimateChanges(curr)
         if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        curr.forEachIndexed { index, _ ->
+            analytic.onViewPerformanceDashboardEntryPointPrepPage(
+                parentViewModel.authorId,
+                creativeSlot = index + 1,
+            )
+        }
 
         val containsShorts = curr.find { it.type == TYPE_SHORTS } != null
         val containsDashboard = curr.find { it.type == TYPE_DASHBOARD } != null
@@ -875,7 +885,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         if (containsDashboard) {
             val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
-            if (coachMark != null) setupCoachMark(coachMark)
+            if (coachMark != null) {
+                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                setupCoachMark(coachMark)
+            }
         }
     }
 

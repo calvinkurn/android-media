@@ -49,6 +49,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -291,6 +292,9 @@ open class ShopPageHomeFragment :
 
     @Inject
     lateinit var shopPlayWidgetAnalytic: ShopPlayWidgetAnalyticListener
+
+    @Inject
+    lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -4296,6 +4300,11 @@ open class ShopPageHomeFragment :
 
         playWidgetActionMenuBottomSheet.setChannel(channelUiModel)
         playWidgetActionMenuBottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+            override fun onImpressed() {
+                playPerformanceDashboardEntryPointAnalytic.onViewBottomSheetContentCard(
+                    viewModel?.userSessionShopId.orEmpty()
+                )
+            }
             override fun onClickShare(channel: PlayWidgetChannelUiModel) {
                 shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
                 copyToClipboard(channelUiModel.share.fullShareContent)
@@ -4304,10 +4313,16 @@ open class ShopPageHomeFragment :
 
             override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
                 shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
+                playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointShopPage(
+                    viewModel?.userSessionShopId.orEmpty()
+                )
                 RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
             }
 
             override fun onClickSeePerformanceVideoAnalytics(channel: PlayWidgetChannelUiModel) {
+                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointNative(
+                    viewModel?.userSessionShopId.orEmpty()
+                )
                 RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
             }
 

@@ -156,15 +156,9 @@
       "promotions": [
         {
           "creative_name": ".*",
-          "creative_slot": ".*",
+          "creative_slot": "\\d+",
           "item_id": ".*",
-          "item_name": ".*"
-        },
-        {
-          "creative_name": ".*",
-          "creative_slot": ".*",
-          "item_id": ".*",
-          "item_name": ".*"
+          "item_name": "performance dashboard entry point prep page"
         }
       ],
       "sessionIris": ".*",

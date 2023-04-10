@@ -31,6 +31,7 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -147,4 +148,8 @@ class PlayShortsModule(
     fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
         return UpdateChannelUseCase(graphqlRepository)
     }
+
+    @Provides
+    @PlayShortsScope
+    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }

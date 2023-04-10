@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -63,7 +64,8 @@ import com.tokopedia.content.common.R as contentCommonR
 class PlayMoreActionBottomSheet @Inject constructor(
     private val analytic: PlayAnalytic,
     private val trackingQueue: TrackingQueue,
-    private val analytic2Factory: PlayAnalytic2.Factory
+    private val analytic2Factory: PlayAnalytic2.Factory,
+    private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
 ) : BottomSheetUnify(),
     KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
@@ -85,6 +87,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private var userReportTimeMillis: Date = Date()
 
     var mListener: Listener? = null
+    private var mChannelId = ""
 
     private val seePerformanceAction by lazy {
         PlayMoreActionUiModel(
@@ -99,6 +102,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
             ),
             subtitleRes = R.string.play_kebab_see_performance,
             onClick = {
+                playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointGroupChatRoom(
+                    playViewModel.shopId,
+                    mChannelId,
+                )
                 mListener?.onSeePerformanceClicked(this)
             },
             priority = 1,
@@ -121,6 +128,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
             ),
             subtitleRes = contentCommonR.string.performance_dashboard_wording_entry_point,
             onClick = {
+                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointChannelPage(
+                    playViewModel.shopId,
+                    mChannelId,
+                )
                 RouteManager.route(
                     requireContext(),
                     PerformanceDashboardNavigation.getPerformanceDashboardAppLink()
@@ -274,6 +285,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             playViewModel.uiState.withCache().collectLatest {
                 val cachedState = it
+                mChannelId = it.value.channel.channelInfo.id
 
                 if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(
                     isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned

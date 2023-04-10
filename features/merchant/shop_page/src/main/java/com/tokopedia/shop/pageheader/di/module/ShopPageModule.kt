@@ -10,6 +10,7 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -61,4 +62,7 @@ class ShopPageModule {
     fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
+    @ShopPageScope
+    @Provides
+    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }
