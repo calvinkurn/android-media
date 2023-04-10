@@ -1900,7 +1900,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { throwable ->
             updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
             _uiEvent.emit(
-                PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable, preset)
+                PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
             )
         }
     }

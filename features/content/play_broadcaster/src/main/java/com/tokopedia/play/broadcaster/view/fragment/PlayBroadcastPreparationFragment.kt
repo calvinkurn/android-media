@@ -193,15 +193,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         requireView().requestApplyInsetsWhenAttached()
     }
 
-    override fun onPause() {
-        super.onPause()
-        if(beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage) {
-            beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage = false
-
-            analytic.openScreenBeautificationEntryPointOnPreparationPage()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -783,7 +774,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.preparationMenu.submitMenu(state)
 
         if(state.isMenuExists(DynamicPreparationMenu.Menu.FaceFilter)) {
-            beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage = true
+            if(!beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage) {
+                beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage = true
+
+                analytic.openScreenBeautificationEntryPointOnPreparationPage()
+            }
         }
 
         if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter) &&

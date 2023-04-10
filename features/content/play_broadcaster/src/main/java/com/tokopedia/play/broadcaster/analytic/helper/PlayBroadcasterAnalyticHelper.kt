@@ -3,12 +3,23 @@ package com.tokopedia.play.broadcaster.analytic.helper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value
+import com.tokopedia.play.broadcaster.analytic.const.Value
+import com.tokopedia.track.TrackApp
 
 /**
  * Created By : Jonathan Darwin on March 17, 2023
  */
 object PlayBroadcasterAnalyticHelper {
+
+    val currentSite: String
+        get() = if (GlobalConfig.isSellerApp()) {
+            Value.BROADCASTER_CURRENT_SITE_SELLER
+        } else {
+            Value.BROADCASTER_CURRENT_SITE_MAIN
+        }
+
+    val sessionIris: String
+        get() = TrackApp.getInstance().gtm.irisSessionId
 
     fun getEventLabelByAccount(account: ContentAccountUiModel): String {
         return "${account.id} - ${getAccountType(account)}"
@@ -20,16 +31,16 @@ object PlayBroadcasterAnalyticHelper {
 
     fun getAccountType(account: ContentAccountUiModel): String {
         return when {
-            account.isShop -> Value.SHORTS_TYPE_SELLER
-            account.isUser -> Value.SHORTS_TYPE_USER
+            account.isShop -> Value.BROADCASTER_TYPE_SELLER
+            account.isUser -> Value.BROADCASTER_TYPE_USER
             else -> ""
         }
     }
 
     fun getAccountType(authorType: String): String {
         return when(authorType) {
-            ContentCommonUserType.TYPE_SHOP -> Value.SHORTS_TYPE_SELLER
-            ContentCommonUserType.TYPE_USER -> Value.SHORTS_TYPE_USER
+            ContentCommonUserType.TYPE_SHOP -> Value.BROADCASTER_TYPE_SELLER
+            ContentCommonUserType.TYPE_USER -> Value.BROADCASTER_TYPE_USER
             else -> ""
         }
     }

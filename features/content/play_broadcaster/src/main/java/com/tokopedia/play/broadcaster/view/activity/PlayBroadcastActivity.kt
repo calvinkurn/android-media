@@ -350,7 +350,7 @@ class PlayBroadcastActivity : BaseActivity(),
                     is PlayBroadcastEvent.BeautificationRebindEffect -> {
                         rebindEffect(isFirstTimeOpenPage = false)
                     }
-                    is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFailed -> {
                         analytic.viewFailDownloadPreset(
                             viewModel.selectedAccount,
                             beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
