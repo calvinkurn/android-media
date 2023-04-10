@@ -67,7 +67,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result = repo.getComments(
                     source,
                     commentType = param.commentType,
-                    cursor = param.lastParentCursor,
+                    cursor = param.lastParentCursor
                 )
                 _comments.update {
                     val contentSame =
@@ -76,7 +76,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                         cursor = result.cursor,
                         state = result.state,
                         list = if (contentSame) it.list else it.list + result.list,
-                        commenterType = result.commenterType,
+                        commenterType = result.commenterType
                     )
                 }
                 _query.update {
@@ -91,7 +91,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 }
                 _query.update {
                     it.copy(
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }
@@ -126,13 +126,13 @@ class ContentCommentViewModel @AssistedInject constructor(
                     newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
                     curr.copy(
                         cursor = result.cursor,
-                        list = newChild,
+                        list = newChild
                     )
                 }
                 _query.update {
                     it.copy(
                         lastChildCursor = result.cursor,
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }) { error ->
@@ -141,7 +141,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 }
                 _query.update {
                     it.copy(
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }
@@ -289,8 +289,10 @@ class ContentCommentViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
-                        .count() > 0 && !comment.contains("tokopedia")
-                ) throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                    .count() > 0 && !comment.contains("tokopedia")
+                ) {
+                    throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                }
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 var index = 0
@@ -299,19 +301,21 @@ class ContentCommentViewModel @AssistedInject constructor(
                         val selected = it.list
                             .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
                         selected
-                    } else 0
+                    } else {
+                        0
+                    }
                     val newList = it.list.toMutableList().apply {
                         add(index, result)
                     }
                     it.copy(list = newList)
                 }
                 _event.emit(CommentEvent.ReplySuccess(index))
-
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
-                        message = MessageErrorException(CommentException.SendCommentFailed.message),
-                        onClick = { sendReply(comment, commentType) })
+                        message = if (it.message?.isBlank() == true) MessageErrorException(CommentException.SendCommentFailed.message) else it,
+                        onClick = { sendReply(comment, commentType) }
+                    )
                 )
             }
         }
