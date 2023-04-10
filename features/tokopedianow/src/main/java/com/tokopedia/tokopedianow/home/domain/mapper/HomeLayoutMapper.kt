@@ -419,6 +419,14 @@ object HomeLayoutMapper {
         updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
     }
 
+    fun MutableList<HomeLayoutItemUiModel?>.updateCarouselChipsQuantity(
+        miniCartData: MiniCartSimplifiedData
+    ) {
+        updateAllProductQuantity(miniCartData, CHIP_CAROUSEL)
+        updateDeletedProductQuantity(miniCartData, CHIP_CAROUSEL)
+    }
+
+
     // Update all product with quantity from cart
     private fun MutableList<HomeLayoutItemUiModel?>.updateAllProductQuantity(
         miniCartData: MiniCartSimplifiedData,
@@ -520,6 +528,29 @@ object HomeLayoutMapper {
                     }
                 }
             }
+            CHIP_CAROUSEL -> {
+                filter { it?.layout is HomeProductCarouselChipsUiModel }.forEach { homeLayoutItemUiModel ->
+                    val layout = homeLayoutItemUiModel?.layout as HomeProductCarouselChipsUiModel
+
+                    val miniCartItems = miniCartData.miniCartItems.values
+                        .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    val cartProductIds = miniCartItems.map { it.productId }
+
+                    val deletedProducts: MutableList<TokoNowProductCardCarouselItemUiModel> = mutableListOf()
+
+                    layout.carouselItemList.forEach {
+                        if ((it is TokoNowProductCardCarouselItemUiModel) && it.getProductId() !in cartProductIds) {
+                            deletedProducts.add(it)
+                        }
+                    }
+
+                    val variantGroup = miniCartItems.groupBy { it.productParentId }
+
+                    deletedProducts.forEach { item ->
+                        removeCarouselChipsProduct(item.getProductId(), item.parentId, variantGroup)
+                    }
+                }
+            }
         }
     }
 
@@ -556,6 +587,24 @@ object HomeLayoutMapper {
             }
         } else {
             updateLeftCarouselProductQuantity(productId, DEFAULT_QUANTITY)
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.removeCarouselChipsProduct(
+        productId: String,
+        parentProductId: String,
+        variantGroup: Map<String, List<MiniCartItem.MiniCartItemProduct>>
+    ) {
+        if (parentProductId != DEFAULT_PARENT_ID) {
+            val miniCartItemsWithSameParentId = variantGroup[parentProductId]
+            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+            if (totalQuantity == DEFAULT_QUANTITY) {
+                updateProductCarouselChipsWidget(productId, DEFAULT_QUANTITY)
+            } else {
+                updateProductCarouselChipsWidget(productId, totalQuantity)
+            }
+        } else {
+            updateProductCarouselChipsWidget(productId, DEFAULT_QUANTITY)
         }
     }
 

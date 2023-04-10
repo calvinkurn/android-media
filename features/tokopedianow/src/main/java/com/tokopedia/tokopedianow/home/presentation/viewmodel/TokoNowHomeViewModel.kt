@@ -65,6 +65,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerD
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateCarouselChipsQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateLeftCarouselProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updatePlayWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductQuantity
@@ -1132,6 +1133,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.updateRepurchaseProductQuantity(miniCart)
         homeLayoutItemList.updateProductRecomQuantity(miniCart)
         homeLayoutItemList.updateLeftCarouselProductQuantity(miniCart)
+        homeLayoutItemList.updateCarouselChipsQuantity(miniCart)
     }
 
     private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
