@@ -13,15 +13,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
-import com.tokopedia.product.detail.postatc.base.CommonTracker
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
-import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.tracker.CommonTracker
+import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
+import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
@@ -160,8 +161,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -176,8 +177,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
+                    adapter.removeComponent(uiModelId)
+                })
         }
 
     private fun showError(it: Throwable) {
@@ -268,6 +269,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                 recommendationItem.imageUrl
             )
         }
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
+        }
         goToProduct(productId)
     }
 
@@ -281,6 +285,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                 recommendationItem.name,
                 recommendationItem.imageUrl
             )
+        }
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
         }
     }
 
