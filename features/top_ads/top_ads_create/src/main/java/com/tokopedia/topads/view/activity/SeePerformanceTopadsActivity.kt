@@ -298,10 +298,32 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             if (it != null) {
                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatus.text =
                     when (it.data.status) {
-                        100 -> getString(R.string.topads_inactive)
-                        200, 300, 400 -> getString(R.string.topads_dalam_proses)
-                        500 -> getString(R.string.ads_active)
-                        600 -> getString(R.string.topads_dash_tidak_tampil)
+                        100 -> {
+                            ImageViewCompat.setImageTintList(
+                                mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
+                                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_NN500))
+                            )
+                            getString(R.string.topads_inactive)}
+                        200, 300, 400 -> {
+                            ImageViewCompat.setImageTintList(
+                                mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
+                                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_BN500))
+                            )
+                            getString(R.string.topads_dalam_proses)
+                        }
+                        500 -> {
+                            ImageViewCompat.setImageTintList(
+                                mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
+                                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_GN500))
+                            )
+                            getString(R.string.ads_active)
+                        }
+                        600 -> {
+                            ImageViewCompat.setImageTintList(
+                                mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
+                                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_YN300))
+                            )
+                            getString(R.string.topads_dash_tidak_tampil)}
                         else -> ""
                     }
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
