@@ -96,8 +96,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -113,8 +112,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -147,8 +145,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 }
                 is RegisterProgressiveResult.Failed -> {
                     setButtonLoading(false)
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                 }
             }
         }

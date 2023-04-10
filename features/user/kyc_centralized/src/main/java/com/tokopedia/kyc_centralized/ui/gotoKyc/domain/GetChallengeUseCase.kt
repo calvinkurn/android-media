@@ -40,12 +40,7 @@ class GetChallengeUseCase @Inject constructor(
         val dobChallenge = response.data.find { it.questionType == QUESTION_TYPE_DOB }
 
         return if (!response.isSuccess && dobChallenge?.id?.isEmpty() == true) {
-            val message = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
-            GetChallengeResult.Failed(MessageErrorException(message))
+            GetChallengeResult.Failed(MessageErrorException(response.errorMessages.first()))
         } else {
             GetChallengeResult.Success(questionId = dobChallenge?.id.orEmpty())
         }

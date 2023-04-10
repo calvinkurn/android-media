@@ -284,5 +284,6 @@
     <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
     <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
     <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
+    <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
 </resources>

@@ -156,9 +156,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 }
                 is RegisterProgressiveResult.Failed -> {
                     setButtonLoading(false)
-                    it.throwable?.let { throwable ->
-                        showToasterError(throwable)
-                    }
+                    showToasterError(
+                        getString(R.string.goto_kyc_error_from_be)
+                    )
                 }
             }
         }
@@ -182,8 +182,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         startKycForResult.launch(intent)
     }
 
-    private fun showToasterError(throwable: Throwable) {
-        val message = throwable.getMessage(requireActivity())
+    private fun showToasterError(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 

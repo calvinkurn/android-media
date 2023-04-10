@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
@@ -100,8 +99,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     showChallengeQuestion()
                 }
                 is GetChallengeResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -142,10 +140,9 @@ class DobChallengeFragment : BaseDaggerFragment() {
                 }
                 is SubmitChallengeResult.Failed -> {
                     setButtonLoading(false)
-                    val message = it.throwable?.getMessage(requireContext())
                     binding?.fieldDob?.apply {
                         isInputError = true
-                        setMessage(message.orEmpty())
+                        setMessage(getString(R.string.goto_kyc_error_from_be))
                     }
                 }
             }

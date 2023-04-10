@@ -203,7 +203,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
             tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = getString(R.string.goto_kyc_back_to_source, sourcePage)
+            btnPrimary.text = if (sourcePage.isEmpty()) {
+                getString(R.string.goto_kyc_back_to_source)
+            } else {
+                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            }
             btnSecondary.hide()
             btnPrimary.showWithCondition(!isAccountPage)
             tvTimer.showWithCondition(!isAccountPage)
@@ -255,7 +259,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
             tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = getString(R.string.goto_kyc_back_to_source, sourcePage)
+            btnPrimary.text = if (sourcePage.isEmpty()) {
+                getString(R.string.goto_kyc_back_to_source)
+            } else {
+                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            }
             btnSecondary.hide()
             tvTimer.hide()
         }
