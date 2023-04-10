@@ -4,6 +4,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.const.Value
+import com.tokopedia.track.TrackApp
 
 /**
  * Created By : Jonathan Darwin on March 17, 2023
@@ -16,6 +17,9 @@ object PlayBroadcasterAnalyticHelper {
         } else {
             Value.BROADCASTER_CURRENT_SITE_MAIN
         }
+
+    val sessionIris: String
+        get() = TrackApp.getInstance().gtm.irisSessionId
 
     fun getEventLabelByAccount(account: ContentAccountUiModel): String {
         return "${account.id} - ${getAccountType(account)}"
