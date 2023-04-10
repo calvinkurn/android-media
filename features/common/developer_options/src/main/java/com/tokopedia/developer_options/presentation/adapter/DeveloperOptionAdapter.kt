@@ -212,6 +212,13 @@ class DeveloperOptionAdapter(
         TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
     )
 
+    /**
+     * To Show Login Helper at the top
+     **/
+    private val topItems = mutableListOf(
+        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER))
+    )
+
     private var defaultItems = mutableListOf<OptionItemUiModel>()
     private var isAuthorized = false
 
@@ -224,7 +231,7 @@ class DeveloperOptionAdapter(
         if (isAuthorized.not()) {
             defaultItems.addAll(generalItems)
         } else {
-            defaultItems.add(0, LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)))
+            defaultItems.addAll(topItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
