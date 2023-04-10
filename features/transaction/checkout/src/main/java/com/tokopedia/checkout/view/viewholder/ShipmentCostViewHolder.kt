@@ -24,8 +24,11 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
-class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater,
-                             private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
+class ShipmentCostViewHolder(
+    itemView: View,
+    private val layoutInflater: LayoutInflater,
+    private val shipmentAdapterActionListener: ShipmentAdapterActionListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val mRlShipmentCostLayout: RelativeLayout = itemView.findViewById(R.id.rl_shipment_cost)
     private val mTvTotalItemLabel: TextView = itemView.findViewById(R.id.tv_total_item_label)
@@ -117,7 +120,11 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvBookingFee.text = getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
         renderAddOnCost(shipmentCost)
-        renderPlatformFee(shipmentCost.dynamicPlatformFee)
+        if (shipmentCost.totalItem > 0) {
+            renderPlatformFee(shipmentCost.dynamicPlatformFee)
+        } else {
+            hidePlatformFee()
+        }
     }
 
     private fun renderDiscount(shipmentCost: ShipmentCostModel) {
@@ -180,6 +187,16 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         }
     }
 
+    private fun hidePlatformFee() {
+        mTickerPlatformFeeInfo.gone()
+        mTvPlatformFeeLabel.gone()
+        mIvPlatformFeeIconInfo.gone()
+        mTvPlatformFeeValue.gone()
+        mTvPlatformSlashedFeeValue.gone()
+        mLoaderPlatformFeeLabel.gone()
+        mLoaderPlatformFeeValue.gone()
+    }
+
     private fun renderPlatformFee(platformFeeModel: ShipmentPlatformFeeModel) {
         if (platformFeeModel.isLoading) {
             mTickerPlatformFeeInfo.gone()
@@ -189,7 +206,6 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvPlatformSlashedFeeValue.gone()
             mLoaderPlatformFeeLabel.visible()
             mLoaderPlatformFeeValue.visible()
-
         } else if (platformFeeModel.isShowTicker) {
             mTvPlatformFeeLabel.gone()
             mIvPlatformFeeIconInfo.gone()
@@ -199,15 +215,13 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mLoaderPlatformFeeValue.gone()
             mTickerPlatformFeeInfo.visible()
             mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
-            mTickerPlatformFeeInfo.setDescriptionClickEvent(object: TickerCallback {
+            mTickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    shipmentAdapterActionListener.refetchPlatformFee();
+                    shipmentAdapterActionListener.refetchPlatformFee()
                 }
 
                 override fun onDismiss() { }
-
             })
-
         } else {
             mTickerPlatformFeeInfo.gone()
 
@@ -238,7 +252,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
 
                 if (platformFeeModel.isShowTooltip) {
                     mIvPlatformFeeIconInfo.visible()
-                    mIvPlatformFeeIconInfo.setOnClickListener{
+                    mIvPlatformFeeIconInfo.setOnClickListener {
                         shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
                     }
                 } else {
