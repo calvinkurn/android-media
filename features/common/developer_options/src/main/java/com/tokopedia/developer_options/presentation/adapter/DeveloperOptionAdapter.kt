@@ -103,7 +103,6 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
-        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         SystemNonSystemAppsUiModel(
@@ -126,7 +125,8 @@ class DeveloperOptionAdapter(
                 KEYWORD_LANGUAGE_SETTING,
                 KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
                 KEYWORD_TOTAL_TRANSLATED_TEXT
-            )),
+            )
+        ),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         HomeAndNavigationRevampSwitcherUiModel(
             listOf(
@@ -221,9 +221,10 @@ class DeveloperOptionAdapter(
 
     fun initializeList() {
         defaultItems.clear()
-        if(isAuthorized.not()) {
+        if (isAuthorized.not()) {
             defaultItems.addAll(generalItems)
         } else {
+            defaultItems.add(0, LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)))
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
