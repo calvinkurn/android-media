@@ -118,7 +118,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
             login()
             doActivityTestByModelClass(dataModelClass = TodoWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 waitForData2()
-                actionOnTodoWidget(viewHolder)
+                actionOnTodoWidget(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
