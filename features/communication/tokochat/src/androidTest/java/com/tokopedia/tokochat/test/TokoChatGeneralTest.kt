@@ -2,7 +2,10 @@ package com.tokopedia.tokochat.test
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.robot.consent.ConsentResult
+import com.tokopedia.tokochat.test.robot.consent.ConsentRobot
 import com.tokopedia.tokochat.test.robot.header.HeaderResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
@@ -130,5 +133,35 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         ReplyAreaResult.assertReplyAreaErrorMessage(
             activity.getString(R.string.tokochat_desc_max_char_exceeded, MAX_DISPLAYED_STRING)
         )
+    }
+
+    @Test
+    fun should_show_consent_bottomsheet_for_first_time_user() {
+        // Given
+        getNeedConsentResponse.editAndGetResponseObject {
+            it.data.collectionPoints.first().needConsent = true
+        }
+
+        // When
+        launchChatRoomActivity()
+
+        // Then
+        ConsentResult.assertConsentChatBottomSheet(isDisplayed = true)
+
+        // When
+        ConsentRobot.clickCheckBoxConsent()
+        ConsentRobot.clickSubmitConsent()
+
+        // Then
+        ConsentResult.assertConsentChatBottomSheet(isDisplayed = false)
+    }
+
+    @Test
+    fun should_not_show_consent_bottomsheet_for_recurring_time_user() {
+        // When
+        launchChatRoomActivity()
+
+        // Then
+        ConsentResult.assertConsentChatBottomSheet(isDisplayed = false)
     }
 }

@@ -16,6 +16,7 @@ object TokoChatUrlUtil {
     const val IV_MASKING_PHONE_NUMBER = TokopediaImageUrl.IV_MASKING_PHONE_NUMBER
     const val IC_TOKOFOOD_SOURCE = TokopediaImageUrl.IC_TOKOFOOD_SOURCE
     const val IMAGE_UNAVAILABLE_GENERAL_URL = TokopediaImageUrl.IMG_UNAVAILABLE_GENERAL
+    const val IMAGE_TOKOCHAT_CONSENT = TokopediaImageUrl.IMG_TOKOCHAT_CONSENT
 
     /**
      * Typing GIF

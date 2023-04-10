@@ -56,6 +56,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
@@ -112,6 +113,7 @@ open class TokoChatFragment :
     private var readModeStartsAt: Long = 0
 
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
+    private val consentBottomSheet = TokoChatConsentBottomSheet()
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
         reminderTickerListener = this,
@@ -130,18 +132,47 @@ open class TokoChatFragment :
         super.initViews(view, savedInstanceState)
         setupBackground()
         setupTrackers()
-        initializeChatRoom(savedInstanceState)
+        setDataFromArguments(savedInstanceState)
+        askTokoChatConsent()
+    }
+
+    private fun askTokoChatConsent() {
+        viewModel.getUserConsent()
     }
 
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
-        if (viewModel.gojekOrderId.isNotBlank()) { // Do not init when order id empty
+        loadChatRoomData()
+    }
+
+    private fun loadChatRoomData() {
+        // Do not init when order id empty
+        if (viewModel.gojekOrderId.isNotBlank()) {
             initGroupBooking()
         }
     }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle) {
         initializeChatRoom(savedInstanceState)
+    }
+
+    private fun observeUserConsent() {
+        observe(viewModel.isNeedConsent) {
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        showConsentBottomSheet()
+                    } else {
+                        // Show chat room
+                        loadChatRoomData()
+                    }
+                }
+                is Fail -> {
+                    // Show chat room
+                    loadChatRoomData()
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -239,6 +270,7 @@ open class TokoChatFragment :
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
         observeError()
+        observeUserConsent()
     }
 
     private fun observeError() {
@@ -1058,12 +1090,30 @@ open class TokoChatFragment :
         )
     }
 
-    protected open fun showUnavailableBottomSheet() {
+    private fun showUnavailableBottomSheet() {
         if (unavailableBottomSheet.isVisible) return
         unavailableBottomSheet.setListener(buttonAction = {
             activity?.finish()
         })
         unavailableBottomSheet.show(childFragmentManager)
+    }
+
+    private fun showConsentBottomSheet() {
+        if (consentBottomSheet.isVisible) return
+        consentBottomSheet.setConsentListener(
+            submitAction = {
+                // Show chat room
+                loadChatRoomData()
+            },
+            dismissAction = {
+                tokoChatAnalytics.clickDismissConsent(
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+                activity?.finish()
+            }
+        )
+        consentBottomSheet.show(childFragmentManager, TokoChatConsentBottomSheet.TAG)
     }
 
     private fun showLongMessageBottomSheet(element: TokoChatMessageBubbleUiModel) {
@@ -1098,7 +1148,6 @@ open class TokoChatFragment :
             initializeChatRoom(null)
         })
     }
-
 
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
