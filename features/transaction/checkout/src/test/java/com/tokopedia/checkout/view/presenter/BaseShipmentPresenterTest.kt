@@ -85,7 +85,7 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxed = true)
     lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK

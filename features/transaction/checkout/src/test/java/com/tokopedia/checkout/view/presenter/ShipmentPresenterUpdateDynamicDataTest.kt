@@ -171,12 +171,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
@@ -222,12 +216,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
@@ -280,12 +268,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -314,6 +296,9 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         )
         listAddOnDataItemModel.add(addOnDataItemModel)
         val groupShop = GroupShop(
+            groupShopData = listOf(
+                GroupShopV2()
+            ),
             addOns = AddOnsDataModel(
                 status = 1,
                 addOnsButtonModel = AddOnButtonModel(
@@ -374,12 +359,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -491,12 +470,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
@@ -545,12 +518,6 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             false,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            false
         )
 
         // Then
