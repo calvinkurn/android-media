@@ -14,6 +14,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,54 +47,76 @@ fun NestButton(
             disabledBackgroundColor = NestTheme.colors.NN._100
         )
 
-        FilledButton(
+        NestDefaultButton(
             modifier = modifier,
             text = text,
-            textStyle = toTextStyle(variant, isEnabled, size),
+            textStyle = createTextStyle(variant, isEnabled, size),
             buttonCornerRadius = size.toCornerRadius(),
             buttonColors = buttonColors,
             buttonHeight = size.toHeightDp(),
             buttonBorder = null,
             enabled = isEnabled,
             isLoading = isLoading,
+            progressBarColor = NestTheme.colors.NN._0,
             onClick = onClick,
         )
     }
     
     if (variant == Variant.GHOST) {
-        FilledButton(
+        NestDefaultButton(
             modifier = modifier,
             text = text,
-            textStyle = toTextStyle(variant, isEnabled, size),
+            textStyle = createTextStyle(variant, isEnabled, size),
             buttonCornerRadius = size.toCornerRadius(),
             buttonColors = ButtonDefaults.outlinedButtonColors(),
             buttonHeight = size.toHeightDp(),
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
             enabled = isEnabled,
             isLoading = isLoading,
+            progressBarColor = NestTheme.colors.GN._500,
             onClick = onClick,
         )
     }
 
     if (variant == Variant.GHOST_ALTERNATE) {
-        FilledButton(
+        NestDefaultButton(
             modifier = modifier,
             text = text,
-            textStyle = toTextStyle(variant, isEnabled, size),
+            textStyle = createTextStyle(variant, isEnabled, size),
             buttonCornerRadius = size.toCornerRadius(),
             buttonColors = ButtonDefaults.outlinedButtonColors(),
             buttonHeight = size.toHeightDp(),
             buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
             enabled = isEnabled,
             isLoading = isLoading,
+            progressBarColor = NestTheme.colors.GN._500,
             onClick = onClick,
         )
     }
 
+    if (variant == Variant.GHOST_INVERTED) {
+        NestDefaultButton(
+            modifier = modifier,
+            text = text,
+            textStyle = createTextStyle(variant, isEnabled, size),
+            buttonCornerRadius = size.toCornerRadius(),
+            buttonColors = ButtonDefaults.outlinedButtonColors(),
+            buttonHeight = size.toHeightDp(),
+            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
+            enabled = isEnabled,
+            isLoading = isLoading,
+            progressBarColor = NestTheme.colors.GN._500,
+            onClick = onClick,
+        )
+    }
+
+    if (variant == Variant.TEXT_ONLY) {
+        NestTextButton(modifier, text, variant, isEnabled, size, onClick)
+    }
 }
 
 @Composable
-private fun FilledButton(
+private fun NestDefaultButton(
     modifier: Modifier,
     text: String,
     textStyle: TextStyle,
@@ -103,7 +126,8 @@ private fun FilledButton(
     buttonBorder: BorderStroke?,
     enabled: Boolean,
     isLoading: Boolean,
-    onClick: () -> Unit,
+    progressBarColor: Color,
+    onClick: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
         Button(
@@ -112,7 +136,8 @@ private fun FilledButton(
             border = buttonBorder,
             shape = RoundedCornerShape(buttonCornerRadius),
             colors = buttonColors,
-            enabled = enabled
+            enabled = enabled,
+            elevation = null
         ) {
             if (!isLoading) {
                 NestTypography(
@@ -125,10 +150,36 @@ private fun FilledButton(
             }
 
             if (isLoading) {
-                CircularProgressIndicator(color = NestTheme.colors.NN._0)
+                CircularProgressIndicator(color = progressBarColor)
             }
         }
     }
+}
+@Composable
+private fun NestTextButton(
+    modifier: Modifier,
+    text: String,
+    variant: Variant,
+    isEnabled: Boolean,
+    size: Size,
+    onClick: () -> Unit
+) {
+
+    TextButton(
+        modifier = modifier,
+        onClick = onClick,
+        content = {
+            NestTypography(
+                text = text,
+                textStyle = createTextStyle(
+                    variant = variant, isEnabled = isEnabled, size = size
+                ),
+                modifier = Modifier,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    )
 }
 
 enum class Variant {
@@ -136,7 +187,7 @@ enum class Variant {
     GHOST,
     GHOST_ALTERNATE,
     GHOST_INVERTED,
-    TEXT,
+    TEXT_ONLY,
     FLOATING_BUTTON
 }
 
@@ -156,12 +207,12 @@ private fun toBackgroundColor(variant: Variant, isEnabled: Boolean): Color {
         Variant.GHOST -> NestTheme.colors.NN._0
         Variant.GHOST_ALTERNATE -> NestTheme.colors.NN._0
         Variant.GHOST_INVERTED -> Color.Transparent
-        Variant.TEXT -> NestTheme.colors.NN._0
+        Variant.TEXT_ONLY -> NestTheme.colors.NN._0
         Variant.FLOATING_BUTTON -> NestTheme.colors.GN._500
     }
 }
 @Composable
-private fun toTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : TextStyle {
+private fun createTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : TextStyle {
     val filledTextStyle = if (isEnabled) {
         NestTheme.typography.display1.copy(
             color = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
@@ -211,7 +262,7 @@ private fun toTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : Text
         Variant.GHOST -> ghostTextStyle
         Variant.GHOST_ALTERNATE -> ghostAlternateTextStyle
         Variant.GHOST_INVERTED -> ghostInvertedTextStyle
-        Variant.TEXT -> textTextStyle
+        Variant.TEXT_ONLY -> textTextStyle
         Variant.FLOATING_BUTTON -> floatingButtonTextStyle
     }
 
@@ -301,6 +352,10 @@ fun NestButtonPreview() {
             NestButtonGhostPreview()
             NestTypography(text = "Ghost - Alternate", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
             NestButtonGhostAlternatePreview()
+            NestTypography(text = "Ghost - Inverted", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestButtonGhostInvertedPreview()
+            NestTypography(text = "Text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestButtonTextPreview()
         }
     }
 }
@@ -432,6 +487,96 @@ private fun NestButtonGhostAlternatePreview() {
             modifier = Modifier.weight(0.25f),
             text = "Loading",
             variant = Variant.GHOST_ALTERNATE,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = true,
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun NestButtonGhostInvertedPreview() {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Enabled",
+            variant = Variant.GHOST_INVERTED,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Active",
+            variant = Variant.GHOST_INVERTED,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Disabled",
+            variant = Variant.GHOST_INVERTED,
+            size = Size.MEDIUM,
+            isEnabled = false,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Loading",
+            variant = Variant.GHOST_INVERTED,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = true,
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun NestButtonTextPreview() {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Enabled",
+            variant = Variant.TEXT_ONLY,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Active",
+            variant = Variant.TEXT_ONLY,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Disabled",
+            variant = Variant.TEXT_ONLY,
+            size = Size.MEDIUM,
+            isEnabled = false,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(0.25f),
+            text = "Loading",
+            variant = Variant.TEXT_ONLY,
             size = Size.MEDIUM,
             isEnabled = true,
             isLoading = true,
