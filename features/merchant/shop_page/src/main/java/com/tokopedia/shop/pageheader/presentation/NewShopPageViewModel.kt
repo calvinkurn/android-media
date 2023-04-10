@@ -59,7 +59,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
@@ -87,7 +87,7 @@ class NewShopPageViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         @GqlGetShopInfoForHeaderUseCaseQualifier
         private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-        private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
+        private val getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>,
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
@@ -398,8 +398,8 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        getBroadcasterAuthorConfig.get().params = GetBroadcasterAuthorConfig.createParams(shopId)
+        return getBroadcasterAuthorConfig.get().executeOnBackground()
     }
 
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {

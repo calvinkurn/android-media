@@ -58,6 +58,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.iconunify.IconUnify
@@ -423,6 +424,10 @@ class NewShopPageFragment :
         get() = shopViewModel?.isUserSessionActive ?: false
 
     private var isConfettiAlreadyShown = false
+    private var mBroadcasterConfig: Broadcaster.Config = Broadcaster.Config(
+        streamAllowed = false,
+        shortVideoAllowed = false,
+    )
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -488,13 +493,18 @@ class NewShopPageFragment :
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ShopContentCreationOptionBottomSheet -> {
+                childFragment.setData(mBroadcasterConfig)
                 childFragment.setListener(object : ShopContentCreationOptionBottomSheet.Listener {
+                    override fun onShortsCreationClicked() {
+                        goToShortsCreation()
+                    }
+
                     override fun onBroadcastCreationClicked() {
                         goToBroadcaster()
                     }
 
-                    override fun onShortsCreationClicked() {
-                        goToShortsCreation()
+                    override fun onPerformanceDashboardEntryClicked() {
+                        goToPerformanceDashboard()
                     }
                 })
             }
@@ -1622,13 +1632,17 @@ class NewShopPageFragment :
             .show(childFragmentManager)
     }
 
+    private fun goToShortsCreation() {
+        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    }
+
     private fun goToBroadcaster() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
     }
 
-    private fun goToShortsCreation() {
-        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    private fun goToPerformanceDashboard() {
+        RouteManager.route(context, PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageP1Data: NewShopPageP1HeaderData) {
@@ -2526,20 +2540,14 @@ class NewShopPageFragment :
         broadcasterConfig: Broadcaster.Config
     ) {
         val valueDisplayed = componentModel.label
+        mBroadcasterConfig = broadcasterConfig
         sendClickShopHeaderComponentTracking(
             shopHeaderWidgetUiModel,
             componentModel,
             valueDisplayed
         )
 
-        if (broadcasterConfig.streamAllowed && broadcasterConfig.shortVideoAllowed) {
-            showContentCreationOptionBottomSheet()
-        } else {
-            when {
-                broadcasterConfig.streamAllowed -> goToBroadcaster()
-                broadcasterConfig.shortVideoAllowed -> goToShortsCreation()
-            }
-        }
+        showContentCreationOptionBottomSheet()
     }
 
     override fun onImpressionPlayWidgetComponent(componentModel: ShopHeaderPlayWidgetButtonComponentUiModel, shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {

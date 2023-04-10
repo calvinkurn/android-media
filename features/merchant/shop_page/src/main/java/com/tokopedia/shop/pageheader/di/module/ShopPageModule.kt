@@ -9,7 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
-import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,8 +27,8 @@ class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
-        return GetBroadcasterShopConfigUseCase(graphqlUseCase)
+    fun provideGetBroadcasterAuthorConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterAuthorConfig {
+        return GetBroadcasterAuthorConfig(graphqlUseCase)
     }
 
     @ShopPageScope
