@@ -63,8 +63,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_platform_fee_label)
     private val mIvPlatformFeeIconInfo: IconUnify = itemView.findViewById(R.id.ic_platform_fee_info)
     private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_platform_fee_value)
-    private val mTvDiscountPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_discount_platform_fee_label)
-    private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_platform_fee_value)
+    private val mTvPlatformSlashedFeeValue: Typography = itemView.findViewById(R.id.tv_platform_slashed_fee_value)
     private val mLoaderPlatformFeeLabel: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_label)
     private val mLoaderPlatformFeeValue: LoaderUnify = itemView.findViewById(R.id.loader_platform_fee_value)
 
@@ -187,7 +186,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvPlatformFeeLabel.gone()
             mIvPlatformFeeIconInfo.gone()
             mTvPlatformFeeValue.gone()
-            mTvDiscountPlatformFeeValue.gone()
+            mTvPlatformSlashedFeeValue.gone()
             mLoaderPlatformFeeLabel.visible()
             mLoaderPlatformFeeValue.visible()
 
@@ -195,7 +194,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvPlatformFeeLabel.gone()
             mIvPlatformFeeIconInfo.gone()
             mTvPlatformFeeValue.gone()
-            mTvDiscountPlatformFeeValue.gone()
+            mTvPlatformSlashedFeeValue.gone()
             mLoaderPlatformFeeLabel.gone()
             mLoaderPlatformFeeValue.gone()
             mTickerPlatformFeeInfo.visible()
@@ -218,7 +217,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 mTvPlatformFeeLabel.gone()
                 mIvPlatformFeeIconInfo.gone()
                 mTvPlatformFeeValue.gone()
-                mTvDiscountPlatformFeeValue.gone()
+                mTvPlatformSlashedFeeValue.gone()
             } else {
                 mLoaderPlatformFeeLabel.gone()
                 mLoaderPlatformFeeValue.gone()
@@ -227,21 +226,13 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 mTvPlatformFeeValue.visible()
 
                 if (platformFeeModel.isShowSlashed) {
-                    mTvDiscountPlatformFeeLabel.visible()
-                    mTvDiscountPlatformFeeLabel.text = String.format(
-                            mTvDiscountPlatformFeeLabel.context.getString(R.string.platform_fee_diskon_label), platformFeeModel.title
-                    )
-                    mTvDiscountPlatformFeeValue.visible()
-                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+                    mTvPlatformSlashedFeeValue.visible()
+                    mTvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    mTvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
 
-                    val diskonPlatformFee = platformFeeModel.slashedFee - platformFeeModel.fee
-                    mTvDiscountPlatformFeeValue.text = String.format(
-                            mTvDiscountPlatformFeeValue.context.getString(R.string.platform_fee_diskon_format),
-                            convertPriceValueToIdrFormat(diskonPlatformFee.toLong(), false).removeDecimalSuffix()
-                    )
+                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
                 } else {
-                    mTvDiscountPlatformFeeLabel.gone()
-                    mTvDiscountPlatformFeeValue.gone()
+                    mTvPlatformSlashedFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
                 }
 
