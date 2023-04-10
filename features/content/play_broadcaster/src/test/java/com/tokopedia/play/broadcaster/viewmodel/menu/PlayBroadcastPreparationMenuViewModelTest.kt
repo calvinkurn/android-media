@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.beautification.BeautificationConfigUiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
@@ -38,20 +39,23 @@ class PlayBroadcastPreparationMenuViewModelTest {
 
     private val uiModelBuilder = UiModelBuilder()
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
+    private val beautificationConfigUiModelBuilder = BeautificationConfigUiModelBuilder()
 
+    private val mockAddedTag = GetAddedChannelTagsResponse()
+    private val mockEmptyProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList(sectionSize = 0)
+    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
+    private val mockBeautificationConfig = beautificationConfigUiModelBuilder.buildBeautificationConfig()
+    private val mockTitle = "Title"
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
         streamAllowed = true,
-        channelId = "123"
+        channelId = "123",
+        beautificationConfig = mockBeautificationConfig,
     )
     private val mockChannel = GetChannelResponse.Channel(
         basic = GetChannelResponse.ChannelBasic(
             channelId = "123"
         )
     )
-    private val mockAddedTag = GetAddedChannelTagsResponse()
-    private val mockEmptyProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList(sectionSize = 0)
-    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
-    private val mockTitle = "Title"
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
@@ -63,7 +67,7 @@ class PlayBroadcastPreparationMenuViewModelTest {
         DynamicPreparationMenu.createCover(false),
         DynamicPreparationMenu.createProduct(false),
         DynamicPreparationMenu.createSchedule(false),
-        DynamicPreparationMenu.createFaceFilter(false),
+        DynamicPreparationMenu.createFaceFilter(false).copy(isChecked = true),
     )
 
 
@@ -78,6 +82,11 @@ class PlayBroadcastPreparationMenuViewModelTest {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockPlayBroadcastMapper.mapCover(any(), any()) } returns uiModelBuilder.buildPlayCoverUiModel()
+
+        coEvery { mockRepo.downloadLicense(any()) } returns true
+        coEvery { mockRepo.downloadModel(any()) } returns true
+        coEvery { mockRepo.downloadCustomFace(any()) } returns true
+        coEvery { mockRepo.downloadPresetAsset(any(), any()) } returns true
     }
 
     @Test
