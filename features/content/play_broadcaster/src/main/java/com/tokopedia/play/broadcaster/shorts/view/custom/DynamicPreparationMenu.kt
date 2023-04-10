@@ -14,7 +14,6 @@ data class DynamicPreparationMenu(
     val isChecked: Boolean,
     val isEnabled: Boolean,
 ) {
-
     enum class Menu(val id: String) {
         Title("TITLE"),
         Cover("COVER"),
@@ -70,4 +69,8 @@ data class DynamicPreparationMenu(
             isEnabled = isMandatory,
         )
     }
+}
+
+fun List<DynamicPreparationMenu>.isMenuExists(menu: DynamicPreparationMenu.Menu): Boolean {
+    return this.firstOrNull { it.menu.id == menu.id } != null
 }

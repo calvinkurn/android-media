@@ -15,6 +15,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
@@ -40,6 +43,8 @@ import javax.inject.Inject
 class BeautificationSetupFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = TAG
@@ -55,6 +60,9 @@ class BeautificationSetupFragment @Inject constructor(
     private val bottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when(newState) {
+                BottomSheetBehavior.STATE_EXPANDED -> {
+                    beautificationAnalytic.openScreenBeautificationBottomSheet()
+                }
                 BottomSheetBehavior.STATE_HIDDEN -> {
                     beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 }
@@ -142,6 +150,22 @@ class BeautificationSetupFragment @Inject constructor(
                 if(selectedTabIdx != tab?.position) {
                     selectedTabIdx = tab?.position ?: -1
 
+                    beautificationAnalytic.clickBeautificationTab(
+                        account = viewModel.selectedAccount,
+                        page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                        tab = when(selectedTabIdx) {
+                            BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
+                                PlayBroadcastBeautificationAnalytic.Tab.FaceShaping
+                            }
+                            BeautificationTabFragment.Companion.Type.Preset.value -> {
+                                PlayBroadcastBeautificationAnalytic.Tab.Makeup
+                            }
+                            else -> {
+                                PlayBroadcastBeautificationAnalytic.Tab.Unknown
+                            }
+                        }
+                    )
+
                     setupSlider()
                 }
             }
@@ -169,10 +193,22 @@ class BeautificationSetupFragment @Inject constructor(
 
                 when(selectedTabIdx) {
                     BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
+                        beautificationAnalytic.clickSliderBeautyFilter(
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            tab = PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
+                            filterName = viewModel.selectedFaceFilter?.id.orEmpty(),
+                        )
                         viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
                     }
                     BeautificationTabFragment.Companion.Type.Preset.value -> {
                         viewModel.submitAction(PlayBroadcastAction.ChangePresetValue(p0.first))
+                        beautificationAnalytic.clickSliderBeautyFilter(
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            tab = PlayBroadcastBeautificationAnalytic.Tab.Makeup,
+                            filterName = viewModel.selectedPreset?.id.orEmpty(),
+                        )
                     }
                     else -> {}
                 }
@@ -182,6 +218,13 @@ class BeautificationSetupFragment @Inject constructor(
         bottomSheetBehavior.addBottomSheetCallback(bottomSheetBehaviorCallback)
 
         binding.tvBottomSheetAction.setOnClickListener {
+            beautificationAnalytic.clickBeautyFilterReset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
+            beautificationAnalytic.viewResetFilterPopup(
+                viewModel.selectedAccount,
+                beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                BeautificationTabFragment.Companion.Type.getByValue(selectedTabIdx).mapToAnalytic(),
+            )
+
             requireContext().getDialog(
                 actionType = DialogUnify.HORIZONTAL_ACTION,
                 title = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirmation_title),
@@ -189,6 +232,8 @@ class BeautificationSetupFragment @Inject constructor(
                 primaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirm),
                 primaryListener = { dialog ->
                     dialog.dismiss()
+
+                    beautificationAnalytic.clickYesResetFilter(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
                     viewModel.submitAction(PlayBroadcastAction.ResetBeautification)
                 },
                 secondaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_cancel),
@@ -302,11 +347,24 @@ class BeautificationSetupFragment @Inject constructor(
         beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
     }
 
-    fun showFaceSetupBottomSheet() {
+    fun showFaceSetupBottomSheet(pageSource: PageSource) {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+        beautificationAnalyticStateHolder.pageSource = pageSource
         beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetShown(binding.bottomSheet.height))
         setupSlider()
+    }
+
+    enum class PageSource {
+        Unknown, Preparation, Live;
+
+        fun mapToAnalytic(): PlayBroadcastBeautificationAnalytic.Page {
+            return when(this) {
+                Unknown -> PlayBroadcastBeautificationAnalytic.Page.Unknown
+                Preparation -> PlayBroadcastBeautificationAnalytic.Page.Preparation
+                Live -> PlayBroadcastBeautificationAnalytic.Page.Live
+            }
+        }
     }
 
     companion object {

@@ -38,10 +38,12 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.shorts.view.custom.isMenuExists
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
@@ -100,6 +102,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
     private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PlayBroadcastSetupTitleBottomSheet.Listener,
@@ -468,10 +471,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
+                        analytic.clickBeautificationEntryPointOnPreparationPage(parentViewModel.selectedAccount)
+
                         BeautificationSetupFragment.getFragment(
                             childFragmentManager,
                             requireActivity().classLoader
-                        ).showFaceSetupBottomSheet()
+                        ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Preparation)
                     }
                 }
             }
@@ -768,6 +773,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         binding.preparationMenu.submitMenu(state)
 
+        if(state.isMenuExists(DynamicPreparationMenu.Menu.FaceFilter)) {
+            if(!beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage) {
+                beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage = true
+
+                analytic.openScreenBeautificationEntryPointOnPreparationPage()
+            }
+        }
+
         if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter) &&
             parentViewModel.isTitleMenuChecked
         ) {
@@ -775,7 +788,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 DynamicPreparationMenu.Menu.FaceFilter,
                 getString(R.string.play_broadcaster_face_filter_coachmark_title),
                 getString(R.string.play_broadcaster_face_filter_coachmark_description)
-            )
+            ) {
+                analytic.clickCloseBeautificationCoachmark(parentViewModel.selectedAccount)
+            }
+
+            analytic.viewBeautificationCoachmark(parentViewModel.selectedAccount)
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter)
         }
     }

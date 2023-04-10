@@ -25,6 +25,7 @@
     <string name="play_broadcast_end">Akhiri</string>
     <string name="play_batal">Batal</string>
     <string name="play_bro_next_action">Lanjut</string>
+    <string name="play_broadcaster_retry">Ulangi</string>
 
     <string name="play_prepare_broadcast_create_promo_title">Buat Promo</string>
     <string name="play_prepare_broadcast_edit_promo_title">Ubah Promo</string>
@@ -334,4 +335,5 @@
     <string name="play_broadcaster_reset_filter_confirmation_description">Jika di-reset, maka akan kembali ke pengaturan filter semula.</string>
     <string name="play_broadcaster_reset_filter_cancel">Batal</string>
     <string name="play_broadcaster_reset_filter_confirm">Reset</string>
+    <string name="play_broadcaster_fail_download_filter">Oops, gagal mendownload filter</string>
 </resources>

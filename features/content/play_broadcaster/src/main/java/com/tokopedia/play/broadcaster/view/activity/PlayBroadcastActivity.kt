@@ -45,6 +45,7 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAG
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
@@ -128,6 +129,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var beautificationUiBridge: BeautificationUiBridge
+
+    @Inject
+    lateinit var beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -335,8 +339,27 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
-                    is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
-                        showToaster(err = event.throwable)
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFailed -> {
+                        analytic.viewFailDownloadPreset(
+                            viewModel.selectedAccount,
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            event.preset.id,
+                        )
+
+                        showToaster(
+                            err = event.throwable,
+                            customErrMessage = getString(R.string.play_broadcaster_fail_download_filter),
+                            duration = Toaster.LENGTH_SHORT,
+                            actionLabel = getString(R.string.play_broadcaster_retry),
+                            actionListener = {
+                                analytic.clickRetryDownloadPreset(
+                                    viewModel.selectedAccount,
+                                    beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                                    event.preset.id,
+                                )
+                                viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(event.preset))
+                            }
+                        )
                     }
                     else -> {}
                 }
@@ -558,6 +581,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun showToaster(
         err: Throwable,
+        customErrMessage: String? = null,
         duration: Int = Toaster.LENGTH_INDEFINITE,
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener { }
@@ -568,6 +592,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         findViewById<View>(android.R.id.content)?.showErrorToaster(
                 err = err,
+                customErrMessage = customErrMessage,
                 duration = duration,
                 actionLabel = actionLabel,
                 actionListener = actionListener,

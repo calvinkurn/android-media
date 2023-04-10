@@ -131,6 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:visibility="gone"
             app:icon_id="SMILE"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"

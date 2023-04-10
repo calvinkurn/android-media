@@ -10,9 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.BeautificationOptionItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
@@ -28,7 +31,9 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on February 27, 2023
  */
 class BeautificationTabFragment @Inject constructor(
-    private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
+    private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentBeautificationTabBinding? = null
@@ -45,11 +50,38 @@ class BeautificationTabFragment @Inject constructor(
         BeautificationFilterOptionAdapter(
             faceFilterListener = object : BeautificationFilterOptionViewHolder.FaceFilter.Listener {
                 override fun onClick(item: FaceFilterUiModel) {
+                    if(item.isRemoveEffect) {
+                        beautificationAnalytic.clickNoneCustomFace(
+                            viewModel.selectedAccount,
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                        )
+                    }
+                    else {
+                        beautificationAnalytic.clickCustomFace(
+                            viewModel.selectedAccount,
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            item.id,
+                        )
+                    }
+
                     viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
                 }
             },
             presetListener = object : BeautificationFilterOptionViewHolder.Preset.Listener {
                 override fun onClick(item: PresetFilterUiModel) {
+                    if(item.isRemoveEffect) {
+                        beautificationAnalytic.clickNonePreset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
+                    } else {
+                        when(item.assetStatus) {
+                            BeautificationAssetStatus.NotDownloaded -> {
+                                beautificationAnalytic.clickDownloadPreset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic(), item.id)
+                            }
+                            BeautificationAssetStatus.Available -> {
+                                beautificationAnalytic.clickPresetMakeup(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic(), item.id)
+                            }
+                        }
+                    }
+
                     viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(item))
                 }
             }
@@ -155,6 +187,14 @@ class BeautificationTabFragment @Inject constructor(
             Unknown(-1),
             FaceFilter(0),
             Preset(1);
+
+            fun mapToAnalytic(): PlayBroadcastBeautificationAnalytic.Tab {
+                return when(this) {
+                    Unknown -> PlayBroadcastBeautificationAnalytic.Tab.Unknown
+                    FaceFilter -> PlayBroadcastBeautificationAnalytic.Tab.FaceShaping
+                    Preset -> PlayBroadcastBeautificationAnalytic.Tab.Makeup
+                }
+            }
 
             companion object {
                 fun getByValue(value: Int): Type {
