@@ -527,6 +527,9 @@ class PlayViewModel @AssistedInject constructor(
     val userId: String
         get() = userSession.userId
 
+    val shopId: String
+        get() = userSession.shopId
+
     val isCastAllowed: Boolean
         get() {
             val castState = observableCastState.value ?: return false
