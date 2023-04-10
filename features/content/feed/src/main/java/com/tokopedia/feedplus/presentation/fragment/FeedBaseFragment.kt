@@ -88,13 +88,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var isJustLoggedIn: Boolean
         get() = arguments?.getBoolean(
             ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-            false,
+            false
         ) ?: false
         set(value) {
             val arguments = getOrCreateArguments()
             arguments.putBoolean(
                 ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                value,
+                value
             )
         }
 
@@ -106,7 +106,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val arguments = getOrCreateArguments()
             arguments.putString(
                 ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-                value.toString(),
+                value.toString()
             )
         }
 
@@ -227,27 +227,30 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun setupView() {
-        if (isJustLoggedIn) showJustLoggedInToaster()
+        if (isJustLoggedIn) {
+            showJustLoggedInToaster()
+            feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
+        }
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
+                    }
+                    onChangeTab(position)
                 }
-                onChangeTab(position)
-            }
-        })
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -375,14 +378,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                             router.route(
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,
-                                                status.contentId,
+                                                status.contentId
                                             )
                                         }
                                     )
                                 } else {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
+                                        duration = Toaster.LENGTH_LONG
                                     )
                                 }
                             }
@@ -413,8 +416,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) onPauseInternal()
-        else onResumeInternal()
+        if (!isVisibleToUser) {
+            onPauseInternal()
+        } else {
+            onResumeInternal()
+        }
     }
 
     override fun onPause() {
@@ -506,7 +512,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             childFragmentManager,
             lifecycle,
             data,
-            appLinkExtras = arguments ?: Bundle.EMPTY,
+            appLinkExtras = arguments ?: Bundle.EMPTY
         )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
@@ -600,7 +606,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         showNormalToaster(
             getString(
                 R.string.feed_report_login_success_toaster_text,
-                feedMainViewModel.displayName,
+                feedMainViewModel.displayName
             )
         )
     }
@@ -609,7 +615,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         text: String,
         duration: Int = Toaster.LENGTH_SHORT,
         actionText: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {},
+        actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
         Toaster.build(
             binding.layoutToaster,
@@ -617,7 +623,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             duration,
             Toaster.TYPE_NORMAL,
             actionText,
-            actionListener,
+            actionListener
         ).show()
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
@@ -29,7 +30,7 @@ class FeedPostLiveViewHolder(
 
     private var feedVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
-    private val videoPlayer = listener.getVideoPlayer()
+    private var videoPlayer: FeedExoPlayer? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
@@ -51,9 +52,13 @@ class FeedPostLiveViewHolder(
                 bindVideoPlayer(element)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                videoPlayer.stop()
+                videoPlayer?.stop()
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        videoPlayer?.destroy()
     }
 
     private fun bindAuthor(data: FeedCardVideoContentModel) {
@@ -67,17 +72,21 @@ class FeedPostLiveViewHolder(
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
         feedVideoJob?.cancel()
         with(binding) {
+            if (videoPlayer == null) {
+                videoPlayer = FeedExoPlayer(root.context)
+            }
+
             feedVideoJob = scope.launch {
-                playerFeedVideo.player = videoPlayer.getExoPlayer()
+                playerFeedVideo.player = videoPlayer?.getExoPlayer()
                 element.media[0].let {
-                    videoPlayer.start(it.mediaUrl, false)
+                    videoPlayer?.start(it.mediaUrl, false)
                 }
-                videoPlayer.setVideoStateListener(object : VideoStateListener {
+                videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showLoading()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideLoading()
                     }
 

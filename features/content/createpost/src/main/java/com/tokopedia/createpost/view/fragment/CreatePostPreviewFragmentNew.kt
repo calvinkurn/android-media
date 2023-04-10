@@ -431,7 +431,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     override fun onInitialStateLoading() {
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
 
                     }
 

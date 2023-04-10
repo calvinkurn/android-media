@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
@@ -39,7 +40,7 @@ class FeedPostVideoViewHolder(
 
     private var feedVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
-    private val videoPlayer = listener.getVideoPlayer()
+    private var videoPlayer: FeedExoPlayer? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
@@ -83,6 +84,7 @@ class FeedPostVideoViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
+                bindComments(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -119,11 +121,15 @@ class FeedPostVideoViewHolder(
                 bindVideoPlayer(element)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                videoPlayer.stop()
+                videoPlayer?.stop()
                 campaignView.resetView()
                 hideClearView()
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        videoPlayer?.destroy()
     }
 
     private fun renderLikeView(
@@ -205,26 +211,40 @@ class FeedPostVideoViewHolder(
         )
     }
 
+    private fun bindComments(model: FeedCardVideoContentModel) {
+        if (model.isTypeProductHighlight) {
+            binding.commentButton.hide()
+        } else {
+            binding.commentButton.show()
+        }
+    }
+
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
         feedVideoJob?.cancel()
         with(binding) {
+            if (videoPlayer == null) {
+                videoPlayer = FeedExoPlayer(root.context)
+            }
+
             feedVideoJob = scope.launch {
-                playerFeedVideo.player = videoPlayer.getExoPlayer()
-                playerControl.player = videoPlayer.getExoPlayer()
+                playerFeedVideo.player = videoPlayer?.getExoPlayer()
+                playerControl.player = videoPlayer?.getExoPlayer()
                 playerFeedVideo.videoSurfaceView?.setOnClickListener {
-                    videoPlayer.getExoPlayer().playWhenReady =
-                        !videoPlayer.getExoPlayer().playWhenReady
+                    videoPlayer?.getExoPlayer()?.playWhenReady =
+                        videoPlayer?.getExoPlayer()?.playWhenReady != true
                 }
                 element.media[0].let {
-                    videoPlayer.start(it.mediaUrl, false)
+                    videoPlayer?.start(it.mediaUrl, false)
                 }
-                videoPlayer.setVideoStateListener(object : VideoStateListener {
+                videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showLoading()
+                        binding.iconPlay.hide()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideLoading()
+                        binding.iconPlay.showWithCondition(!isPlaying)
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
@@ -236,7 +256,7 @@ class FeedPostVideoViewHolder(
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
-        if (videoPlayer.getExoPlayer().currentPosition == 0L) {
+        if (videoPlayer?.getExoPlayer()?.currentPosition == 0L) {
             binding.playerFeedVideo.hide()
         }
     }

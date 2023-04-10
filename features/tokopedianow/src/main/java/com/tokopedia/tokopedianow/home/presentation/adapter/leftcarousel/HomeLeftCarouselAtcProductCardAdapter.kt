@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 @Suppress("UNCHECKED_CAST")
 class HomeLeftCarouselAtcProductCardAdapter(
     differ: HomeLeftCarouselAtcProductCardDiffer,
-    private val typeFactory: HomeLeftCarouselAtcProductCardTypeFactoryImpl
+    private val typeFactory: HomeLeftCarouselAtcProductCardTypeFactoryImplCompact
 ): ListAdapter<Visitable<*>, AbstractViewHolder<Visitable<*>>>(differ) {
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
