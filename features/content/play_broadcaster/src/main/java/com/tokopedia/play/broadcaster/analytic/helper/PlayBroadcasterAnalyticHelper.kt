@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.analytic.helper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value
+import com.tokopedia.play.broadcaster.analytic.const.Value
 
 /**
  * Created By : Jonathan Darwin on March 17, 2023
@@ -20,16 +20,16 @@ object PlayBroadcasterAnalyticHelper {
 
     fun getAccountType(account: ContentAccountUiModel): String {
         return when {
-            account.isShop -> Value.SHORTS_TYPE_SELLER
-            account.isUser -> Value.SHORTS_TYPE_USER
+            account.isShop -> Value.BROADCASTER_TYPE_SELLER
+            account.isUser -> Value.BROADCASTER_TYPE_USER
             else -> ""
         }
     }
 
     fun getAccountType(authorType: String): String {
         return when(authorType) {
-            ContentCommonUserType.TYPE_SHOP -> Value.SHORTS_TYPE_SELLER
-            ContentCommonUserType.TYPE_USER -> Value.SHORTS_TYPE_USER
+            ContentCommonUserType.TYPE_SHOP -> Value.BROADCASTER_TYPE_SELLER
+            ContentCommonUserType.TYPE_USER -> Value.BROADCASTER_TYPE_USER
             else -> ""
         }
     }
