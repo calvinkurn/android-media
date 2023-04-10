@@ -12,7 +12,7 @@ object ApplinkConstInternalMarketplace {
 
     const val HOST_MARKETPLACE = "marketplace"
 
-    const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
+    const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE"
 
     // QrScannerActivity
     const val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
@@ -24,18 +24,22 @@ object ApplinkConstInternalMarketplace {
 
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
     const val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
+
     // CartActivity
     const val CART = "$INTERNAL_MARKETPLACE/cart"
+
     // ShipmentActivity
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
+
     // CartAddressChoiceActivity
     const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
+
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
     const val ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT = "$INTERNAL_MARKETPLACE/one-click-checkout?" +
-            "gateway_code={gateway_code}&" +
-            "tenure_type={tenure_type}&" +
-            "source={source}"
+        "gateway_code={gateway_code}&" +
+        "tenure_type={tenure_type}&" +
+        "source={source}"
     const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity
@@ -55,9 +59,9 @@ object ApplinkConstInternalMarketplace {
     // AtcVariantActivity
     @JvmField
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
-            "?pageSource={pageSource}&" +
-            "isTokoNow={isTokoNow}&" +
-            "cdListName={cdListName}"
+        "?pageSource={pageSource}&" +
+        "isTokoNow={isTokoNow}&" +
+        "cdListName={cdListName}"
 
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
@@ -96,10 +100,10 @@ object ApplinkConstInternalMarketplace {
     // InboxReputationActivity
     const val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
-    //ReviewDetailActivity
+    // ReviewDetailActivity
     const val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
 
-    //SellerReviewDetailActivity
+    // SellerReviewDetailActivity
     const val SELLER_REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/seller-review-detail"
 
     // InboxReputationDetailActivity
@@ -113,17 +117,17 @@ object ApplinkConstInternalMarketplace {
     // ImageReviewGalleryActivity
     const val IMAGE_REVIEW_GALLERY_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery-old"
 
-    //ShopOpenRoutingActivity
+    // ShopOpenRoutingActivity
     const val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
     const val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
 
     const val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
 
-    //ShopInfoActivity
+    // ShopInfoActivity
     const val SHOP_INFO = "$INTERNAL_MARKETPLACE/shop-info/{shop_id}/"
 
-    //ShopPageActivity
+    // ShopPageActivity
     const val SHOP_PAGE = "$SHOP_PAGE_BASE/{shop_id}/"
 
     const val SHOP_PAGE_HOME = "$SHOP_PAGE_BASE/{shop_id}/home"
@@ -154,18 +158,18 @@ object ApplinkConstInternalMarketplace {
      */
     const val SHOP_SETTINGS_BASE = "$INTERNAL_MARKETPLACE/shop-settings"
 
-    //ShopSettingsInfoActivity
+    // ShopSettingsInfoActivity
     const val SHOP_SETTINGS_INFO = "$SHOP_SETTINGS_BASE-info"
 
-    //ShopSettingsNotesActivity
+    // ShopSettingsNotesActivity
     const val SHOP_SETTINGS_NOTES = "$SHOP_SETTINGS_BASE-notes"
 
-    //ShopSettingsEtalaseActivity
+    // ShopSettingsEtalaseActivity
     const val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
     const val SHOP_SETTINGS_ETALASE_ADD = "$SHOP_SETTINGS_ETALASE/add"
 
-    //ShopSettingsAddressActivity
+    // ShopSettingsAddressActivity
     const val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
 
     const val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
@@ -176,10 +180,10 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"
 
-    //DistrictRecommendationShopSettingsActivity
+    // DistrictRecommendationShopSettingsActivity
     const val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
 
-    //GeolocationActivity
+    // GeolocationActivity
     const val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
 
     // OnboardingActivity
@@ -191,7 +195,7 @@ object ApplinkConstInternalMarketplace {
     const val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
     const val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
-    //Report Product
+    // Report Product
     const val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
     const val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
@@ -202,7 +206,7 @@ object ApplinkConstInternalMarketplace {
     const val TOPCHAT_REPORT = "$INTERNAL_MARKETPLACE/chat/report"
 
     // BubbleChatActivationActivity
-    const val TOPCHAT_BUBBLE_ACTIVATION = "${INTERNAL_MARKETPLACE}/bubble-activation"
+    const val TOPCHAT_BUBBLE_ACTIVATION = "$INTERNAL_MARKETPLACE/bubble-activation"
 
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
@@ -210,27 +214,27 @@ object ApplinkConstInternalMarketplace {
     // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
-    //AdminInvitationConfirmationActivity
+    // AdminInvitationConfirmationActivity
     @JvmField
     val ADMIN_INVITATION = "$INTERNAL_MARKETPLACE/shop-admin/invitation-page"
 
-    //AdminInvitationAcceptedActivity
+    // AdminInvitationAcceptedActivity
     @JvmField
     val ADMIN_ACCEPTED = "$INTERNAL_MARKETPLACE/shop-admin/accepted-page"
 
-    //ShopAdminRedirectionActivity
+    // ShopAdminRedirectionActivity
     @JvmField
     val ADMIN_REDIRECTION = "$INTERNAL_MARKETPLACE/shop-admin/redirection-page"
 
-    //ShopScorePerformanceActivity
+    // ShopScorePerformanceActivity
     @JvmField
     val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
 
-    //ShopPenaltyActivity
+    // ShopPenaltyActivity
     @JvmField
     val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
 
-    //ShopPenaltyDetailPageActivity
+    // ShopPenaltyDetailPageActivity
     @JvmField
     val SHOP_PENALTY_DETAIL = "$INTERNAL_MARKETPLACE/shop-penalty-detail"
 
@@ -260,25 +264,25 @@ object ApplinkConstInternalMarketplace {
     // ProductDraftListActivity
     const val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
 
-    //MitraToppersDashboardActivity
+    // MitraToppersDashboardActivity
     const val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
 
-    //SellerInfoActivity
+    // SellerInfoActivity
     const val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
 
     const val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
 
     const val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
-    //SellerReviewListActivity
+    // SellerReviewListActivity
     const val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
 
-    //InboxReputationReportActivity
+    // InboxReputationReportActivity
     const val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
     const val REVIEW_REMINDER = "$INTERNAL_MARKETPLACE/review-reminder"
 
-    //ShopFavouriteListActivity
+    // ShopFavouriteListActivity
     const val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
 
     const val SHOP_FAVOURITE_LIST_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/shop-favourites"
@@ -310,7 +314,6 @@ object ApplinkConstInternalMarketplace {
      */
     const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 
-    // Affiliate Notification
+    // NotificationAffiliateActivity
     const val AFFILIATE_NOTIFICATION = "${DeeplinkConstant.SCHEME_INTERNAL}://notif-center/affiliate"
-
 }
