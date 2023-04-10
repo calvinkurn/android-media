@@ -6,7 +6,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -60,7 +62,6 @@ fun NestButton(
             enabled = isEnabled,
             isLoading = isLoading,
             progressBarColor = Color.White,
-            progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
     }
@@ -77,7 +78,6 @@ fun NestButton(
             enabled = isEnabled,
             isLoading = isLoading,
             progressBarColor = NestTheme.colors.GN._500,
-            progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
     }
@@ -94,7 +94,6 @@ fun NestButton(
             enabled = isEnabled,
             isLoading = isLoading,
             progressBarColor = NestTheme.colors.NN._300,
-            progressBarSize = size.toHeightDp(),
             onClick = onClick,
         )
     }
@@ -114,7 +113,6 @@ fun NestButton(
             enabled = isEnabled,
             isLoading = isLoading,
             progressBarColor = Color.White,
-            progressBarSize = size.toHeightDp(),
             onClick = onClick
         )
     }
@@ -136,7 +134,6 @@ private fun NestDefaultButton(
     enabled: Boolean,
     isLoading: Boolean,
     progressBarColor: Color,
-    progressBarSize: Dp,
     onClick: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
@@ -147,21 +144,20 @@ private fun NestDefaultButton(
             shape = RoundedCornerShape(buttonCornerRadius),
             colors = buttonColors,
             enabled = enabled,
-            elevation = null
+            elevation = null,
+            contentPadding = PaddingValues(all = 0.dp)
         ) {
-            if (!isLoading) {
-                NestTypography(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp),
-                    text = text,
-                    textStyle = textStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            NestTypography(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = text,
+                textStyle = textStyle.copy(color = if(isLoading) Color.Transparent else textStyle.color),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(progressBarSize), color = progressBarColor)
-            }
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(32.dp), color = progressBarColor)
         }
     }
 }
@@ -181,10 +177,7 @@ private fun NestTextButton(
         content = {
             NestTypography(
                 text = text,
-                textStyle = createTextStyle(
-                    variant = variant, isEnabled = isEnabled, size = size
-                ),
-                modifier = Modifier,
+                textStyle = createTextStyle(variant = variant, isEnabled = isEnabled, size = size),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -324,7 +317,7 @@ private fun Size.toCornerRadius(): Dp {
     device = "spec:width=411dp,height=891dp"
 )
 @Composable
-fun NestButtonPreview() {
+private fun NestButtonPreview() {
     NestTheme {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -346,8 +339,7 @@ fun NestButtonPreview() {
             NestButtonTextPreview()
 
             NestTypography(text = "Filled - Various Sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonFilledLargeMediumPreview()
-            NestButtonFilledMicroPreview()
+            NestButtonSizesPreview()
         }
     }
 }
@@ -467,7 +459,7 @@ private fun NestButtonGhostInvertedPreview() {
 private fun NestButtonTextPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(1f),
             text = "Enabled",
             variant = Variant.TEXT_ONLY,
             size = Size.MEDIUM,
@@ -477,17 +469,7 @@ private fun NestButtonTextPreview() {
         )
 
         NestButton(
-            modifier = Modifier.weight(0.25f),
-            text = "Active",
-            variant = Variant.TEXT_ONLY,
-            size = Size.MEDIUM,
-            isEnabled = true,
-            isLoading = false,
-            onClick = {},
-        )
-
-        NestButton(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(1f),
             text = "Disabled",
             variant = Variant.TEXT_ONLY,
             size = Size.MEDIUM,
@@ -497,7 +479,7 @@ private fun NestButtonTextPreview() {
         )
 
         NestButton(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(1f),
             text = "Loading",
             variant = Variant.TEXT_ONLY,
             size = Size.MEDIUM,
@@ -509,7 +491,7 @@ private fun NestButtonTextPreview() {
 }
 
 @Composable
-private fun NestButtonFilledLargeMediumPreview() {
+private fun NestButtonSizesPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
             modifier = Modifier.weight(0.25f),
@@ -540,11 +522,7 @@ private fun NestButtonFilledLargeMediumPreview() {
             isLoading = false,
             onClick = {},
         )
-    }
-}
-@Composable
-private fun NestButtonFilledMicroPreview() {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
         NestButton(
             modifier = Modifier.weight(0.25f),
             text = "Micro",
