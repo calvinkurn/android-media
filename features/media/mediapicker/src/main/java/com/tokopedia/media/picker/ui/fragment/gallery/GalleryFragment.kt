@@ -91,7 +91,7 @@ open class GalleryFragment @Inject constructor(
                     true // force as true for recent media
                 }
 
-                if (viewModel.isMediaListLessThanThreshold.not()) {
+                if (viewModel.isMediaListLessThanThreshold.not() && hasNextPage) {
                     viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
                 }
             }
