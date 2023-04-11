@@ -11,4 +11,6 @@ interface QuestionnaireAdapterFactory {
     fun type(model: QuestionnaireUiModel.QuestionnaireSingleOptionUiModel): Int
 
     fun type(model: QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel): Int
+
+    fun type(model: QuestionnaireUiModel.QuestionnaireRatingUiModel): Int
 }

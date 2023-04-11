@@ -21,7 +21,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmDeactivationQuestionnaireBinding
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.FallbackActivity
@@ -290,6 +289,13 @@ class DeactivationQuestionnaireBottomSheet :
                     val answer = PMCancellationQuestionnaireAnswerModel(
                         question = it.question,
                         answers = it.getAnswerList().toMutableList()
+                    )
+                    answers.add(answer)
+                }
+                is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
+                    val answer = PMCancellationQuestionnaireAnswerModel(
+                        question = it.question,
+                        answers = mutableListOf(it.givenRating.toString())
                     )
                     answers.add(answer)
                 }

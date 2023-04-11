@@ -53,4 +53,16 @@ sealed class QuestionnaireUiModel(
 
         override fun isNoAnswer(): Boolean = options.any { it.isChecked }.not()
     }
+
+    data class QuestionnaireRatingUiModel(
+        val question: String = "",
+        var givenRating: Int = 0
+    ) : QuestionnaireUiModel(TYPE_RATE) {
+
+        override fun type(typeFactory: QuestionnaireAdapterFactory): Int {
+            return typeFactory.type(this)
+        }
+
+        override fun isNoAnswer(): Boolean = givenRating == 0
+    }
 }

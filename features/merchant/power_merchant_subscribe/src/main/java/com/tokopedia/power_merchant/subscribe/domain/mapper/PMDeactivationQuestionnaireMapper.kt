@@ -36,6 +36,9 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
                 QuestionnaireUiModel.TYPE_SINGLE_OPTION -> {
                     questionList.add(createSingleOptionQuestion(question))
                 }
+                QuestionnaireUiModel.TYPE_RATE -> {
+                    createRatingOptionQuestion(question)
+                }
                 else -> {
                     return@forEachIndexed
                 }
@@ -66,5 +69,11 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
                 QuestionnaireOptionUiModel(text = it.value)
             }
         )
+    }
+
+    private fun createRatingOptionQuestion(
+        questionData: Question
+    ): QuestionnaireUiModel.QuestionnaireRatingUiModel {
+        return QuestionnaireUiModel.QuestionnaireRatingUiModel(questionData.question)
     }
 }
