@@ -67,7 +67,7 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, "tokopedia://discovery/deals?activeTab=7&componentID=588")
+        RouteManager.route(this, APPLINK_CONST_DEALS)
     }
 
     override fun onHelpClicked() {
@@ -87,5 +87,6 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
 
     companion object {
         val TAG_VOUCHER_GAME_MENU = "voucherGameMenu"
+        const val APPLINK_CONST_DEALS = "tokopedia://discovery/deals?activeTab=7&componentID=588"
     }
 }
