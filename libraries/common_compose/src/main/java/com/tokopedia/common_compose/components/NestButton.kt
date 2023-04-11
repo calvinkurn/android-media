@@ -2,13 +2,13 @@ package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +20,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,80 +47,190 @@ fun NestButton(
     onClick: () -> Unit,
 ) {
     if (variant == Variant.FILLED) {
-        val buttonColors = ButtonDefaults.buttonColors(
-            backgroundColor = toBackgroundColor(variant, isEnabled),
-            disabledBackgroundColor = NestTheme.colors.NN._100
-        )
-
-        NestDefaultButton(
-            modifier = modifier,
-            text = text,
-            textStyle = createTextStyle(variant, isEnabled, size),
-            buttonCornerRadius = size.toCornerRadius(),
-            buttonColors = buttonColors,
-            buttonHeight = size.toHeightDp(),
-            buttonBorder = null,
-            enabled = isEnabled,
-            isLoading = isLoading,
-            progressBarColor = Color.White,
-            onClick = onClick,
-        )
+        FilledButton(modifier, isEnabled, text, size, isLoading, onClick)
     }
 
     if (variant == Variant.GHOST) {
-        NestDefaultButton(
-            modifier = modifier,
-            text = text,
-            textStyle = createTextStyle(variant, isEnabled, size),
-            buttonCornerRadius = size.toCornerRadius(),
-            buttonColors = ButtonDefaults.outlinedButtonColors(),
-            buttonHeight = size.toHeightDp(),
-            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
-            enabled = isEnabled,
-            isLoading = isLoading,
-            progressBarColor = NestTheme.colors.GN._500,
-            onClick = onClick,
-        )
+        GhostButton(modifier, text, isEnabled, size, isLoading, onClick)
     }
 
     if (variant == Variant.GHOST_ALTERNATE) {
-        NestDefaultButton(
-            modifier = modifier,
-            text = text,
-            textStyle = createTextStyle(variant, isEnabled, size),
-            buttonCornerRadius = size.toCornerRadius(),
-            buttonColors = ButtonDefaults.outlinedButtonColors(),
-            buttonHeight = size.toHeightDp(),
-            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
-            enabled = isEnabled,
-            isLoading = isLoading,
-            progressBarColor = NestTheme.colors.NN._300,
-            onClick = onClick,
-        )
+        GhostAlternateButton(modifier, text, isEnabled, size, isLoading, onClick)
     }
 
     if (variant == Variant.GHOST_INVERTED) {
-        NestDefaultButton(
-            modifier = modifier,
-            text = text,
-            textStyle = createTextStyle(variant, isEnabled, size),
-            buttonCornerRadius = size.toCornerRadius(),
-            buttonColors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                disabledBackgroundColor = Color.Transparent
-            ),
-            buttonHeight = size.toHeightDp(),
-            buttonBorder = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._100),
-            enabled = isEnabled,
-            isLoading = isLoading,
-            progressBarColor = Color.White,
-            onClick = onClick
-        )
+        GhostInvertedButton(modifier, text, size, isEnabled, isLoading, onClick)
     }
 
     if (variant == Variant.TEXT_ONLY) {
-        NestTextButton(modifier, text, variant, isEnabled, size, onClick)
+        TextButton(modifier, text, isEnabled, isLoading, size, onClick)
     }
+}
+
+@Composable
+private fun FilledButton(
+    modifier: Modifier,
+    isEnabled: Boolean,
+    text: String,
+    size: Size,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val textColor = if (isEnabled) {
+        if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+    } else {
+        NestTheme.colors.NN._400
+    }
+
+    val filledTextStyle = NestTheme.typography.display1.copy(
+        color = textColor,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    val buttonColors = ButtonDefaults.buttonColors(
+        backgroundColor = NestTheme.colors.GN._500,
+        disabledBackgroundColor = NestTheme.colors.NN._100
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        textStyle = filledTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = buttonColors,
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = null,
+        enabled = isEnabled,
+        isLoading = isLoading,
+        progressBarColor = Color.White,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun GhostButton(
+    modifier: Modifier,
+    text: String,
+    isEnabled: Boolean,
+    size: Size,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val ghostTextStyle = NestTheme.typography.display2.copy(
+        color = NestTheme.colors.GN._500,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        textStyle = ghostTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = ButtonDefaults.outlinedButtonColors(),
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
+        enabled = isEnabled,
+        isLoading = isLoading,
+        progressBarColor = NestTheme.colors.GN._500,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun GhostAlternateButton(
+    modifier: Modifier,
+    text: String,
+    isEnabled: Boolean,
+    size: Size,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val ghostAlternateTextStyle = NestTheme.typography.display1.copy(
+        color = NestTheme.colors.NN._300,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        textStyle = ghostAlternateTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = ButtonDefaults.outlinedButtonColors(),
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
+        enabled = isEnabled,
+        isLoading = isLoading,
+        progressBarColor = NestTheme.colors.NN._300,
+        onClick = onClick,
+    )
+}
+
+
+@Composable
+private fun GhostInvertedButton(
+    modifier: Modifier,
+    text: String,
+    size: Size,
+    isEnabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val ghostInvertedTextStyle = NestTheme.typography.display1.copy(
+        color = Color.White,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        textStyle = ghostInvertedTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Transparent,
+            disabledBackgroundColor = Color.Transparent
+        ),
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._100),
+        enabled = isEnabled,
+        isLoading = isLoading,
+        progressBarColor = Color.White,
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun TextButton(
+    modifier: Modifier,
+    text: String,
+    isEnabled: Boolean,
+    isLoading: Boolean,
+    size: Size,
+    onClick: () -> Unit
+) {
+    val textTextStyleColor = if (isEnabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400
+    val textButtonTextStyle = NestTheme.typography.display1.copy(
+        color = textTextStyleColor,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        textStyle = textButtonTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = ButtonDefaults.textButtonColors(),
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = null,
+        enabled = isEnabled,
+        isLoading = isLoading,
+        progressBarColor = NestTheme.colors.NN._300,
+        onClick = onClick,
+    )
 }
 
 @Composable
@@ -130,22 +241,25 @@ private fun NestDefaultButton(
     buttonCornerRadius: Dp,
     buttonColors: ButtonColors,
     buttonHeight: Dp,
-    buttonBorder: BorderStroke?,
+    buttonBorderStroke: BorderStroke?,
     enabled: Boolean,
     isLoading: Boolean,
     progressBarColor: Color,
     onClick: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
+        val interactionSource = remember { MutableInteractionSource() }
+
         Button(
             modifier = modifier.height(buttonHeight),
             onClick = onClick,
-            border = buttonBorder,
+            border = buttonBorderStroke,
             shape = RoundedCornerShape(buttonCornerRadius),
             colors = buttonColors,
             enabled = enabled,
             elevation = null,
-            contentPadding = PaddingValues(all = 0.dp)
+            contentPadding = PaddingValues(all = 0.dp),
+            interactionSource = interactionSource
         ) {
             NestTypography(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -157,32 +271,9 @@ private fun NestDefaultButton(
         }
 
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(32.dp), color = progressBarColor)
+            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = progressBarColor)
         }
     }
-}
-@Composable
-private fun NestTextButton(
-    modifier: Modifier,
-    text: String,
-    variant: Variant,
-    isEnabled: Boolean,
-    size: Size,
-    onClick: () -> Unit
-) {
-
-    TextButton(
-        modifier = modifier,
-        onClick = onClick,
-        content = {
-            NestTypography(
-                text = text,
-                textStyle = createTextStyle(variant = variant, isEnabled = isEnabled, size = size),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    )
 }
 
 enum class Variant {
@@ -190,8 +281,7 @@ enum class Variant {
     GHOST,
     GHOST_ALTERNATE,
     GHOST_INVERTED,
-    TEXT_ONLY,
-    FLOATING_BUTTON
+    TEXT_ONLY
 }
 
 enum class Size {
@@ -200,90 +290,6 @@ enum class Size {
     SMALL,
     MICRO
 }
-
-@Composable
-private fun toBackgroundColor(variant: Variant, isEnabled: Boolean): Color {
-    if (!isEnabled) return NestTheme.colors.NN._100
-
-    return when(variant) {
-        Variant.FILLED -> NestTheme.colors.GN._500
-        Variant.GHOST -> NestTheme.colors.NN._0
-        Variant.GHOST_ALTERNATE -> NestTheme.colors.NN._0
-        Variant.GHOST_INVERTED -> Color.Transparent
-        Variant.TEXT_ONLY -> NestTheme.colors.NN._0
-        Variant.FLOATING_BUTTON -> NestTheme.colors.GN._500
-    }
-}
-
-@Composable
-private fun Variant.toBorderStroke(): BorderStroke? {
-    return when(this) {
-        Variant.FILLED -> null
-        Variant.GHOST -> BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500)
-        Variant.GHOST_ALTERNATE -> BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300)
-        Variant.GHOST_INVERTED -> BorderStroke(width = 1.dp, color = NestTheme.colors.NN._0)
-        Variant.TEXT_ONLY -> null
-        Variant.FLOATING_BUTTON -> null
-    }
-}
-@Composable
-private fun createTextStyle(variant: Variant, isEnabled: Boolean, size: Size) : TextStyle {
-    val filledTextStyle = if (isEnabled) {
-        NestTheme.typography.display1.copy(
-            color = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = size.toFontSize()
-        )
-    } else {
-        NestTheme.typography.display1.copy(
-            color = NestTheme.colors.NN._400,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = size.toFontSize()
-        )
-    }
-
-    val ghostTextStyle = NestTheme.typography.display2.copy(
-        color = NestTheme.colors.GN._500,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = size.toFontSize()
-    )
-
-    val ghostAlternateTextStyle = NestTheme.typography.display1.copy(
-        color = NestTheme.colors.NN._300,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = size.toFontSize()
-    )
-
-    val ghostInvertedTextStyle = NestTheme.typography.display1.copy(
-        color = Color.White,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = size.toFontSize()
-    )
-
-    val textTextStyleColor = if (isEnabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400
-    val textTextStyle = NestTheme.typography.display1.copy(
-        color = textTextStyleColor,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = size.toFontSize()
-    )
-
-    val floatingButtonTextStyle = NestTheme.typography.display2.copy(
-        color = if (isSystemInDarkTheme()) NestTheme.colors.NN._0 else NestTheme.colors.NN._1000,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = size.toFontSize()
-    )
-
-    return when(variant) {
-        Variant.FILLED -> filledTextStyle
-        Variant.GHOST -> ghostTextStyle
-        Variant.GHOST_ALTERNATE -> ghostAlternateTextStyle
-        Variant.GHOST_INVERTED -> ghostInvertedTextStyle
-        Variant.TEXT_ONLY -> textTextStyle
-        Variant.FLOATING_BUTTON -> floatingButtonTextStyle
-    }
-
-}
-
 private fun Size.toHeightDp(): Dp {
     return when(this) {
         Size.LARGE -> 48.dp
