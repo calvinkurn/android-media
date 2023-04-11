@@ -33,41 +33,9 @@ fun NestLabel(
     labelText: String,
     labelType: NestLabelType
 ) {
-    val backgroundColor = when (labelType) {
-        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN._100
-        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN._100
-        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN._100
-        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN._100
-        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> NestTheme.colors.BN._100
-        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> NestTheme.colors.TN._100
 
-        NestLabelType.HIGHLIGHT_DARK_GREEN -> NestTheme.colors.GN._500
-        NestLabelType.HIGHLIGHT_DARK_BLUE -> NestTheme.colors.BN._500
-        NestLabelType.HIGHLIGHT_DARK_ORANGE -> NestTheme.colors.YN._500
-        NestLabelType.HIGHLIGHT_DARK_RED -> NestTheme.colors.RN._500
-        NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._500
-        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
-
-        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
-    }
-
-    val textColor = when (labelType) {
-        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._800 else NestTheme.colors.GN._500
-        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._800 else NestTheme.colors.YN._500
-        NestLabelType.HIGHLIGHT_LIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._500
-        NestLabelType.HIGHLIGHT_LIGHT_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._800 else NestTheme.colors.RN._500
-        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._800 else NestTheme.colors.BN._500
-        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._800 else NestTheme.colors.TN._500
-
-        NestLabelType.HIGHLIGHT_DARK_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-        NestLabelType.HIGHLIGHT_DARK_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-        NestLabelType.HIGHLIGHT_DARK_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-        NestLabelType.HIGHLIGHT_DARK_RED -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-        NestLabelType.HIGHLIGHT_DARK_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-
-        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
-    }
+    val backgroundColor = labelType.toBackgroundColor()
+    val textColor = labelType.toTextColor()
 
     Surface(
         modifier = modifier.height(20.dp),
@@ -100,6 +68,48 @@ enum class NestLabelType {
     HIGHLIGHT_DARK_GREY,
 
     HIGHLIGHT_DARK_IMAGE_LABEL,
+}
+
+@Composable
+private fun NestLabelType.toBackgroundColor(): Color {
+    return when (this) {
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN._100
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN._100
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN._100
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN._100
+        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> NestTheme.colors.BN._100
+        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> NestTheme.colors.TN._100
+
+        NestLabelType.HIGHLIGHT_DARK_GREEN -> NestTheme.colors.GN._500
+        NestLabelType.HIGHLIGHT_DARK_BLUE -> NestTheme.colors.BN._500
+        NestLabelType.HIGHLIGHT_DARK_ORANGE -> NestTheme.colors.YN._500
+        NestLabelType.HIGHLIGHT_DARK_RED -> NestTheme.colors.RN._500
+        NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._500
+        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
+
+        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
+    }
+}
+
+@Composable
+fun NestLabelType.toTextColor(): Color {
+    return when (this) {
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._800 else NestTheme.colors.GN._500
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._800 else NestTheme.colors.YN._500
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._500
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._800 else NestTheme.colors.RN._500
+        NestLabelType.HIGHLIGHT_LIGHT_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._800 else NestTheme.colors.BN._500
+        NestLabelType.HIGHLIGHT_LIGHT_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._800 else NestTheme.colors.TN._500
+
+        NestLabelType.HIGHLIGHT_DARK_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_RED -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+        NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+
+        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+    }
 }
 
 //region Preview: Light
