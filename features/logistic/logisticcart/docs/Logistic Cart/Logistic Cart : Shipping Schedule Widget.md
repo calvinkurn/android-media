@@ -1,6 +1,8 @@
 ---
 title: Logistic Cart : Shipping Schedule Widget
 labels:
+- logistic-cart
+- shipping-schedule-widget
 ---
 
 

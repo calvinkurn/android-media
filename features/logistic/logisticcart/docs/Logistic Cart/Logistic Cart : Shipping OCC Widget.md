@@ -1,6 +1,8 @@
 ---
 title: Logistic Cart : Shipping OCC Widget
 labels:
+- logistic-cart
+- shipping-occ-widget
 ---
 
 

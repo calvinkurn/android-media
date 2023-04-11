@@ -1,6 +1,7 @@
 ---
 title: Logistic Add Address: Pinpoint Webview
 labels:
+- pinpoint
 ---
 
 

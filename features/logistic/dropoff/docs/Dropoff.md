@@ -1,6 +1,9 @@
 ---
 title: Dropoff
 labels:
+- logistic
+- trade-in
+- dropoff
 ---
 
 

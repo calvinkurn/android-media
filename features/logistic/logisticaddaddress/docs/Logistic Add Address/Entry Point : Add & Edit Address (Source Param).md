@@ -1,6 +1,9 @@
 ---
 title: Entry Point : Add & Edit Address (Source Param)
 labels:
+- addaddress
+- editaddress
+- source
 ---
 
 
@@ -69,4 +72,3 @@ intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, sourceValue)
 | --- | --- | --- |
 | `kero_add_address` | [Add Address - /maps/v1/address/add](/wiki/spaces/LG/pages/571965659) | To Add New address |
 | `kero_edit_address` | [Edit Address - /maps/v1/address/edit](/wiki/spaces/LG/pages/572194984) | To Edit Address |
-

@@ -1,6 +1,8 @@
 ---
 title: Logistic Cart : Shipping Schedule Bottomsheet
 labels:
+- logistic-cart
+- shipping-schedule-bottomsheet
 ---
 
 

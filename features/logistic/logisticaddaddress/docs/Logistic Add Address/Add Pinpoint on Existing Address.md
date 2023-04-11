@@ -1,7 +1,7 @@
 ---
 title: Add Pinpoint on Existing Address
 labels:
-- kb-how-to-article
+- pinpoint
 ---
 
 

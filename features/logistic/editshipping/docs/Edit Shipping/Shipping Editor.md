@@ -34,17 +34,17 @@ Tokopedia facilitates seller to set up courier with a feature called `Shipping E
 
 Shipping Editor on **Single-Loc** handle shop edit address and courier selection in one page. Meanwhile, Shipping Editor on **Multi-Loc** only handle courier selection, but having interconnection with shop edit address in another page.
 
-![](res/loc_shipping_editor.png)
+![](../res/shippingeditor/loc_shipping_editor.png)
 
 ## Navigation
 
 - Both pages can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
 
-![](res/navigation.png)
+![](../res/shippingeditor/navigation.png)
 
 ## Flow Diagram
 
-![](res/flow_diagram.png)
+![](../res/shippingeditor/flow_diagram.png)
 
 ## Tech Stack
 

@@ -1,6 +1,8 @@
 ---
 title: Logistic Cart : Shipping Widget
 labels:
+- logistic-cart
+- shipping-widget
 ---
 
 

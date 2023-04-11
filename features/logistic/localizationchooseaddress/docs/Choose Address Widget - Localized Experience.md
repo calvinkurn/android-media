@@ -1,6 +1,9 @@
 ---
 title: Choose Address Widget - Localized Experience
 labels:
+- logistic
+- localization-choose-address
+- widget
 ---
 
 

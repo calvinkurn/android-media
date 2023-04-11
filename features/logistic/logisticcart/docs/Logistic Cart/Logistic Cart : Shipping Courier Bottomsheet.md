@@ -1,6 +1,8 @@
 ---
 title: Logistic Cart : Shipping Courier Bottomsheet
 labels:
+- logistic-cart
+- shipping-courier
 ---
 
 

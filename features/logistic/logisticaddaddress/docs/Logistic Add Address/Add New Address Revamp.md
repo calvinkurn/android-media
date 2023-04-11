@@ -1,6 +1,8 @@
 ---
 title: Add New Address Revamp
 labels:
+- addaddress
+- anarevamp
 ---
 
 

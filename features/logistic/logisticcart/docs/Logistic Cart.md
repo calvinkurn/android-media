@@ -1,6 +1,10 @@
 ---
 title: Logistic Cart
 labels:
+- logistic-cart
+- shipping-widget
+- shipping-courier
+- shipping-duration
 ---
 
 
@@ -46,4 +50,3 @@ All entry points for widgets & bottomsheets in the logistics cart from the check
 | [Logistic Cart : Shipping OCC Widget](/wiki/spaces/PA/pages/2052555030/Logistic+Cart+%3A+Shipping+OCC+Widget) | This is widget to show selected shipping duration and courier only used on occ page | - | ✅ |
 | [Logistic Cart : Shipping Schedule Widget](/wiki/spaces/PA/pages/2084702465/Logistic+Cart+%3A+Shipping+Schedule+Widget) | This is widget to show schedule delivery widget only used on checkout page | ✅ | - |
 | [Logistic Cart : Shipping Schedule Bottomsheet](/wiki/spaces/PA/pages/2086731957/Logistic+Cart+%3A+Shipping+Schedule+Bottomsheet) | This is bottomsheet to select schedule delivery | ✅ | - |
-

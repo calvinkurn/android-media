@@ -1,6 +1,9 @@
 ---
 title: Localization Choose Address Common
 labels:
+- logistic
+- localization-choose-address
+- common
 ---
 
 

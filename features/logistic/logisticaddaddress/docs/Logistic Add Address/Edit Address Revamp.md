@@ -1,6 +1,8 @@
 ---
 title: Edit Address Revamp
 labels:
+- editaddress
+- editaddressrevamp
 ---
 
 

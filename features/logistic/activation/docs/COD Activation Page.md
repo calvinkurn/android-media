@@ -1,6 +1,9 @@
 ---
 title: COD Activation Page
 labels:
+- logistic
+- cod
+- activation
 ---
 
 
