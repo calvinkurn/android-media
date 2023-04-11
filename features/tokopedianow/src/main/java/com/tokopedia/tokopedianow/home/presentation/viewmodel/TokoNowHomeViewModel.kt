@@ -16,6 +16,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -34,6 +35,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -57,6 +59,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeClaimCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductBundleRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
@@ -136,6 +139,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
     private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
     private val redeemCouponUseCase: RedeemCouponUseCase,
+    private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -157,6 +161,7 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val DEFAULT_INDEX = 1
         private const val SUCCESS_CODE = "200"
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
+        private const val QUERY_PARAM_PRODUCT_BUNDLE = "type=SINGLE,MULTIPLE&pageName=now_homepage"
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -594,8 +599,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }, onError = {
-                removeWidget(item.id)
-            })
+            removeWidget(item.id)
+        })
     }
 
     fun updatePlayWidget(channelId: String, totalView: String) {
@@ -709,8 +714,8 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = referralEvaluateJoinUseCase.execute(referralData)
             _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
-                _referralEvaluate.postValue(Fail(it))
-            })
+            _referralEvaluate.postValue(Fail(it))
+        })
     }
 
     /**
@@ -744,6 +749,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
+            is TokoNowBundleUiModel -> getProductBundleRecomAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -772,6 +778,19 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
             homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
+        }
+    }
+
+    private suspend fun getProductBundleRecomAsync(
+        item: TokoNowBundleUiModel
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getProductBundleRecomUseCase.execute(
+                queryParam = QUERY_PARAM_PRODUCT_BUNDLE
+            )
+            homeLayoutItemList.mapProductBundleRecomData(item, response)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
         }
     }
 

@@ -37,6 +37,7 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowBundleTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
@@ -45,6 +46,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTy
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -52,6 +54,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUi
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowBundleWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -140,7 +143,8 @@ class HomeAdapterTypeFactory(
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowServerErrorTypeFactory,
-    TokoNowProductRecommendationOocTypeFactory
+    TokoNowProductRecommendationOocTypeFactory,
+    TokoNowBundleTypeFactory
 {
 
     // region Common TokoNow Component
@@ -150,6 +154,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowBundleUiModel): Int = TokoNowBundleWidgetViewHolder.LAYOUT
     // endregion
 
     // region TokoNow Home Component
@@ -198,6 +203,7 @@ class HomeAdapterTypeFactory(
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener, productRecommendationBindOocListener)
+            TokoNowBundleWidgetViewHolder.LAYOUT -> TokoNowBundleWidgetViewHolder(view)
             // endregion
 
             // region TokoNow Home Component

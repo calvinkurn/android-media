@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -32,9 +33,9 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SH
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
@@ -48,6 +49,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
+import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleLayout
+import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
@@ -377,6 +380,20 @@ object HomeLayoutMapper {
         updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapProductBundleRecomData(
+        item: TokoNowBundleUiModel,
+        response: ProductBundleRecomResponse
+    ) {
+        val uiModel = mapToProductBundleUiModel(item, response)
+        if (uiModel.bundleIds.isEmpty()) {
+            removeItem(item.id)
+        } else {
+            updateItemById(item.id) {
+                HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+            }
         }
     }
 
@@ -723,6 +740,7 @@ object HomeLayoutMapper {
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
             is TokoNowCategoryMenuUiModel -> id
+            is TokoNowBundleUiModel -> id
             else -> null
         }
     }
@@ -761,7 +779,7 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
-            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
+//            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
@@ -770,6 +788,10 @@ object HomeLayoutMapper {
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
             COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState, warehouseId)
             // endregion
+
+            // region Tokopedia Now Common
+            CATEGORY -> mapToProductBundleLayout(response, notLoadedState)
+//            PRODUCT_BUNDLING_RECOM -> mapToProductBundleLayout(response, notLoadedState)
             else -> null
         }
     }
