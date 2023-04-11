@@ -36,6 +36,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -53,6 +54,10 @@ class AffiliateEducationLandingPage :
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
+
+    @JvmField
+    @Inject
+    var userSessionInterface: UserSessionInterface? = null
 
     override fun getViewModelType(): Class<AffiliateEducationLandingViewModel> {
         return AffiliateEducationLandingViewModel::class.java
@@ -105,6 +110,7 @@ class AffiliateEducationLandingPage :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        eduViewModel?.getEducationLandingPageData()
         view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
@@ -123,7 +129,9 @@ class AffiliateEducationLandingPage :
                         affiliateEducationTopicTutorialClickInterface = this,
                         educationSocialCTAClickInterface = this,
                         educationBannerClickInterface = this
-                    )
+                    ),
+                    source = AffiliateAdapter.PageSource.SOURCE_EDU_LANDING,
+                    userId = userSessionInterface?.userId.orEmpty()
                 )
             adapter.setVisitables(it)
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter

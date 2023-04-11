@@ -64,7 +64,7 @@ class AffiliatePromoSearchFragment :
     private val adapter: AffiliateAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(null, null, this),
-            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+            source = AffiliateAdapter.PageSource.SOURCE_PROMOSIKAN,
             userId = userSessionInterface?.userId.orEmpty()
         )
     }

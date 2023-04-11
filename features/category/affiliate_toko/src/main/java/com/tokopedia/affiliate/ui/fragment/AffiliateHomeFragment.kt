@@ -143,7 +143,7 @@ class AffiliateHomeFragment :
                 bottomNavBarClickListener = bottomNavBarClickListener,
                 affiliatePerformanceChipClick = this
             ),
-            source = AffiliateAdapter.SOURCE_HOME,
+            source = AffiliateAdapter.PageSource.SOURCE_HOME,
             userId = userSessionInterface.userId
         )
     }

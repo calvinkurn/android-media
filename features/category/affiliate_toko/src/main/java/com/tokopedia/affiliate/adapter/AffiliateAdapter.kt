@@ -20,6 +20,11 @@ import com.tokopedia.affiliate.ui.custom.OnStickyHeaderListener
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDateFilterVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerListVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationBannerItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationSocialRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformanceChipRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionCardItemVH
@@ -29,6 +34,11 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShim
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerListUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipRVModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
@@ -37,10 +47,13 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmerModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AffiliateAdapter(
     private val affiliateAdapterFactory: AffiliateAdapterFactory,
-    private val source: String = "",
+    private val source: PageSource? = null,
     private val userId: String = ""
 ) : BaseAdapter<AffiliateAdapterFactory>(affiliateAdapterFactory),
     AffiliateStickyHeaderView.OnStickyHeaderAdapter {
@@ -51,10 +64,6 @@ class AffiliateAdapter(
         private const val SHOP_TYPE = 1
         private const val CAMPAIGN_TYPE = 3
         private const val PRODUCT_ACTIVE = 1
-        const val SOURCE_HOME = "home"
-        const val SOURCE_PROMOSIKAN = "promosikan"
-        const val SOURCE_SSA_SHOP = "ssa_shop"
-        const val SOURCE_DISCO_BANNER_LIST = "disco_banner_list"
     }
 
     private val itemImpressionSet = HashSet<Int>()
@@ -92,13 +101,16 @@ class AffiliateAdapter(
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
-        when (source) {
-            SOURCE_HOME -> handleHomeImpressions(holder)
-            SOURCE_PROMOSIKAN -> handlePromoImpressions(holder)
-            SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
-            SOURCE_DISCO_BANNER_LIST -> handleDiscoPromoListImpression(holder)
+        CoroutineScope(Dispatchers.IO).launch {
+            when (source) {
+                PageSource.SOURCE_HOME -> handleHomeImpressions(holder)
+                PageSource.SOURCE_PROMOSIKAN -> handlePromoImpressions(holder)
+                PageSource.SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
+                PageSource.SOURCE_DISCO_BANNER_LIST -> handleDiscoPromoListImpression(holder)
+                PageSource.SOURCE_EDU_LANDING -> handleEducationLandingImpression(holder)
+                else -> {}
+            }
         }
-
         super.onViewAttachedToWindow(holder)
     }
 
@@ -173,6 +185,66 @@ class AffiliateAdapter(
                         item?.article,
                         holder.bindingAdapterPosition
                     )
+                }
+            }
+        }
+    }
+
+    private fun handleEducationLandingImpression(
+        holder: AbstractViewHolder<*>
+    ) {
+        when (holder) {
+            is AffiliateEducationBannerItemVH -> {
+                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationBannerUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
+                    sendEducationImpressions(
+                        item?.bannerList?.get(0)?.title,
+                        item?.bannerList?.get(0)?.bannerId.toString(),
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_MAIN_BANNER
+                    )
+                }
+            }
+            is AffiliateEducationEventRVVH -> {
+                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationEventRVUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
+                    sendEducationImpressions(
+                        item?.event?.title,
+                        item?.event?.id,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD
+                    )
+                }
+            }
+            is AffiliateEducationArticleRVVH -> {
+                val item =
+                    list[holder.bindingAdapterPosition] as? AffiliateEducationArticleRVUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
+                    sendEducationImpressions(
+                        item?.article?.title,
+                        item?.article?.id,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_LATEST_ARTICLE_CARD
+                    )
+                }
+            }
+            is AffiliateEducationTutorialRVVH -> {
+                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationTutorialUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
+                    sendEducationImpressions(
+                        item?.articleTopic?.title,
+                        item?.articleTopic?.id.toString(),
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CATEGORY
+                    )
+                }
+            }
+            is AffiliateEducationSocialRVVH -> {
+                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationSocialRVUiModel
+                item?.socialList?.forEach {
+                    if (itemImpressionSet.add(it.hashCode())) {
+                        sendEducationImpressions(
+                            it?.socialChannel,
+                            it?.socialChannel,
+                            AffiliateAnalytics.ActionKeys.IMPRESSION_SOCIAL_MEDIA_CARD
+                        )
+                    }
                 }
             }
         }
@@ -339,6 +411,24 @@ class AffiliateAdapter(
         )
     }
 
+    private fun sendEducationImpressions(
+        creativeName: String?,
+        id: String?,
+        actionKeys: String,
+        position: Int = 0
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM,
+            actionKeys,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
+            id,
+            position = position,
+            id,
+            userId,
+            creativeName
+        )
+    }
+
     override fun stickyHeaderPositions(): IntArray = intArrayOf(
         visitables?.indexOfFirst { it is AffiliateDateFilterModel }.orZero(),
         visitables?.indexOfFirst { it is AffiliatePerformanceChipRVModel }.orZero()
@@ -374,5 +464,13 @@ class AffiliateAdapter(
 
     override fun setListener(onAffiliateStickyHeaderViewListener: OnStickyHeaderListener?) {
         this.onAffiliateStickyHeaderViewListener = onAffiliateStickyHeaderViewListener
+    }
+
+    enum class PageSource {
+        SOURCE_HOME,
+        SOURCE_PROMOSIKAN,
+        SOURCE_SSA_SHOP,
+        SOURCE_DISCO_BANNER_LIST,
+        SOURCE_EDU_LANDING
     }
 }

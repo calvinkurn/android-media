@@ -64,7 +64,7 @@ class AffiliateDiscoPromoListFragment :
     private val discoBannerAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(promotionClickInterface = this),
-            source = AffiliateAdapter.SOURCE_DISCO_BANNER_LIST,
+            source = AffiliateAdapter.PageSource.SOURCE_DISCO_BANNER_LIST,
             userId = userSessionInterface?.userId.orEmpty()
         )
     }
