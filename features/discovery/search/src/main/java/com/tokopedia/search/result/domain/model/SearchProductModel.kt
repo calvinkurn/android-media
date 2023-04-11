@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMAX
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMIN
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.LAYOUT_FILTER
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
@@ -1100,6 +1101,10 @@ data class SearchProductModel(
 
         private fun inspirationWidgetAsFilterOption() = inspirationWidgetOptions.flatMap {
             it.asOptionList()
+        }
+
+        fun isTypeRadio(): Boolean {
+            return Option.INPUT_TYPE_RADIO == inputType
         }
     }
 

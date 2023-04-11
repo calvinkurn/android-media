@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
@@ -24,7 +25,7 @@ class InspirationFilterDataView(
         return typeFactory.type(this)
     }
 
-    val isTypeRadio: Boolean = SearchConstant.InspirationCard.INPUT_TYPE_RADIO == inputType
+    val isTypeRadio: Boolean = Option.INPUT_TYPE_RADIO == inputType
 
     companion object {
         fun create(

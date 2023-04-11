@@ -625,10 +625,6 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
         }
     }
 
-    private fun SearchProductModel.InspirationWidgetData.isTypeRadio() : Boolean {
-        return SearchConstant.InspirationCard.INPUT_TYPE_RADIO == inputType
-    }
-
     private fun InspirationFilterDataView.assertInspirationFilterDataView(
         inspirationWidget: SearchProductModel.InspirationWidgetData,
     ) {
