@@ -368,6 +368,41 @@ class PlayBroadcastBeautificationViewModelTest {
     }
 
     @Test
+    fun `playBroadcaster_beautification_selectFaceFilter_none`() {
+
+        val mockSelectedFaceFilterPosition = 0
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectFaceFilterOption(mockBeautificationConfigAvailable.faceFilters[mockSelectedFaceFilterPosition]))
+            }
+
+            state.beautificationConfig.faceFilters.forEachIndexed { idx, e ->
+                if (idx == mockSelectedFaceFilterPosition) {
+                    e.active.assertTrue()
+                    e.isSelected.assertTrue()
+                }
+                else {
+                    e.active.assertFalse()
+                    e.isSelected.assertFalse()
+                    e.isChecked.assertFalse()
+                    e.value.assertEqualTo(e.defaultValue)
+                }
+            }
+        }
+    }
+
+    @Test
     fun `playBroadcaster_beautification_changeFaceFilterValue`() {
 
         val mockSelectedFaceFilterPosition = 2
