@@ -24,7 +24,8 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.PRODUCT_RECOM_OOC,
     TokoNowLayoutType.MEDIUM_PLAY_WIDGET,
     TokoNowLayoutType.SMALL_PLAY_WIDGET,
-    TokoNowLayoutType.COUPON_CLAIM
+    TokoNowLayoutType.COUPON_CLAIM,
+    TokoNowLayoutType.CHIP_CAROUSEL
 )
 annotation class TokoNowLayoutType {
     companion object {
