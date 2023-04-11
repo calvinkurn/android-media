@@ -45,7 +45,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -298,7 +297,7 @@ class CartFragment :
         const val NAVIGATION_WISHLIST = 345
         const val NAVIGATION_PROMO = 456
         const val NAVIGATION_SHIPMENT = 567
-        const val NAVIGATION_TOKONOW_HOME_PAGE = 678
+        const val NAVIGATION_GROUP = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
         const val NAVIGATION_APPLINK = 809
@@ -509,7 +508,7 @@ class CartFragment :
             NAVIGATION_PROMO -> onResultFromPromoPage(resultCode, data)
             NAVIGATION_SHOP_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
-            NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_GROUP -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
             NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
@@ -696,13 +695,6 @@ class CartFragment :
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
             startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
-        }
-    }
-
-    private fun routeToTokoNowHomePage() {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalTokopediaNow.HOME)
-            startActivityForResult(intent, NAVIGATION_TOKONOW_HOME_PAGE)
         }
     }
 
@@ -2149,14 +2141,17 @@ class CartFragment :
         }
     }
 
-    override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
+    override fun onCartGroupNameClicked(appLink: String, isTokoNow: Boolean) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, appLink)
+            startActivityForResult(intent, NAVIGATION_GROUP)
+        }
+    }
+
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
-            if (isTokoNow) {
-                routeToTokoNowHomePage()
-            } else {
-                routeToShopPage(shopId)
-            }
+            routeToShopPage(shopId)
         }
     }
 

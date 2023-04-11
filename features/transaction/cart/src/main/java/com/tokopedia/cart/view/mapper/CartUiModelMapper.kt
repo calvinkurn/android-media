@@ -180,8 +180,9 @@ object CartUiModelMapper {
                 uiGroupType = availableGroup.uiGroupType
                 groupName = availableGroup.groupInformation.name
                 groupBadge = availableGroup.groupInformation.badgeUrl
+                groupAppLink = availableGroup.groupInformation.appLink
 //                isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = availableGroup.shipmentInformation.shopLocation
+                fulfillmentName = availableGroup.groupInformation.description
 //                fulfillmentBadgeUrl = cartData.tokoCabangInfo.badgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
