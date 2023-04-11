@@ -168,8 +168,7 @@ class MultipleProductBundleFragment :
                 this.firstOrNull()?.run {
                     renderShopInfoLayout(binding, this.shopInformation)
                 }
-                val aaa = productBundleInfo.getValidBundleInfo()
-                aaa.forEach { bundleInfo ->
+                productBundleInfo.getValidBundleInfo().forEach { bundleInfo ->
                     // map product bundle info to product bundle master and details
                     val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
                     val warehouseId = bundleInfo.warehouseID.toString()

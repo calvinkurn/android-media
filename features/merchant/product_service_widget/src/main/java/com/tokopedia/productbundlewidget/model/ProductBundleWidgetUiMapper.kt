@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_TYPE_SINGLE
+import com.tokopedia.product_bundle.common.data.mapper.BundleDataMapper.getValidBundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.Preorder
@@ -24,9 +25,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
 
     fun groupAndMap(bundleInfo: List<BundleInfo>): List<BundleUiModel> {
         val groupedBundle = bundleInfo
-            .filter {
-                it.status == PRODUCT_BUNDLE_STATUS_ACTIVE
-            }
+            .getValidBundleInfo()
             .groupBy { it.groupID }
         return groupedBundle.groupBundleToBundleUi()
     }
