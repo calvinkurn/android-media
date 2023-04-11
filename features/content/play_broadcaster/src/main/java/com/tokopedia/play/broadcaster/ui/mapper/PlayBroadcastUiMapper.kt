@@ -209,6 +209,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 modelLink = config.beautificationConfig.model,
                 customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
                 faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+                    val isRemoveEffectActive = config.beautificationConfig.customFace.menu.firstOrNull { it.active && it.id == FaceFilterUiModel.Type.None.id } != null
+
                     FaceFilterUiModel(
                         id = menu.id,
                         name = menu.name,
@@ -217,6 +219,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = menu.maxValue,
                         defaultValue = menu.defaultValue,
                         value = menu.value,
+                        isChecked = if (isRemoveEffectActive) false else menu.value > 0.0,
                         isSelected = menu.active,
                     )
                 },

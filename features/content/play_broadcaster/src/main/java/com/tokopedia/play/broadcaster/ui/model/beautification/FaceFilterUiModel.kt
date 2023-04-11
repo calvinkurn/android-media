@@ -18,11 +18,9 @@ data class FaceFilterUiModel(
     val maxValue: Double,
     val defaultValue: Double,
     val value: Double,
+    val isChecked: Boolean,
     val isSelected: Boolean,
 ) : Parcelable {
-
-    val isChecked: Boolean
-        get() = value != 0.0
 
     val isRemoveEffect: Boolean
         get() = id == Type.None.id
