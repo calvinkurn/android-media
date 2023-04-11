@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.icu.text.BreakIterator
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -106,7 +107,8 @@ class ContentCommentBottomSheet @Inject constructor(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                val isBtnEnabled = p0.isNullOrBlank() || p0.length > 140
+                val newLength = p0.toString().getGraphemeLength()
+                val isBtnEnabled = p0.isNullOrBlank() || newLength > 140
                 binding.ivCommentSend.background.setTint(
                     if (isBtnEnabled) {
                         MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
@@ -122,7 +124,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length > MAX_CHAR) {
+                if (newLength > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
                         CommentException.SendCommentFailed.message,
@@ -135,7 +137,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 val distanceFromEnd = prevLength - selEnd // calculate cursor distance from text end
 
                 val newText =
-                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = p0.length.orZero())
+                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = newLength.orZero())
                 binding.newComment.setText(newText)
 
                 val currentLength = binding.newComment.length()
@@ -161,6 +163,16 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private var isFromChild: Boolean = false
+
+    fun String.getGraphemeLength(): Int {
+        val it: BreakIterator = BreakIterator.getCharacterInstance()
+        it.setText(this)
+        var count = 0
+        while (it.next() != BreakIterator.DONE) {
+            count++
+        }
+        return count
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -506,7 +518,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private fun handleSendComment() {
         showKeyboard(false)
-        if (binding.newComment.length() > MAX_CHAR) {
+        val newLength = binding.newComment.text.toString().getGraphemeLength()
+        if (newLength > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
                 CommentException.SendCommentFailed.message,
