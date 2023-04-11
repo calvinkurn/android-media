@@ -41,6 +41,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.mapper.BundleDataMapper.getValidBundleInfo
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
@@ -167,9 +168,8 @@ class MultipleProductBundleFragment :
                 this.firstOrNull()?.run {
                     renderShopInfoLayout(binding, this.shopInformation)
                 }
-                productBundleInfo.forEach { bundleInfo ->
-                    // skip the bundle if not available
-                    if (!viewModel.isProductBundleAvailable(bundleInfo)) return@forEach
+                val aaa = productBundleInfo.getValidBundleInfo()
+                aaa.forEach { bundleInfo ->
                     // map product bundle info to product bundle master and details
                     val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
                     val warehouseId = bundleInfo.warehouseID.toString()
