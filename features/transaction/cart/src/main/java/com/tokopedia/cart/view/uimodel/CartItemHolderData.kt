@@ -68,6 +68,7 @@ data class CartItemHolderData(
     // OWOC
     var shopHolderData: CartShopHolderData = CartShopHolderData(),
     var isShopShown: Boolean = false,
+    var originWarehouseIds: List<Int> = emptyList(),
 
     // Analytics data
     var shopId: String = "",

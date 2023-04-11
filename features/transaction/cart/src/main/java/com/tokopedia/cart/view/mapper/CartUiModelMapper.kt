@@ -512,6 +512,7 @@ object CartUiModelMapper {
                 isError = false
             }
             shopHolderData = shopData
+            originWarehouseIds = product.originWarehouseIds
             needPrescription = product.ethicalDrug.needPrescription
             butuhResepText = product.ethicalDrug.text
             butuhResepIconUrl = product.ethicalDrug.iconUrl

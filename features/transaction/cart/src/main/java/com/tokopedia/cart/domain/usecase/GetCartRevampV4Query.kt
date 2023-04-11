@@ -188,7 +188,6 @@ const val CART_REVAMP_V4_QUERY =
                       }
                     }
                     cart_details {
-                      origin_warehouse_ids
                       bundle_detail {
                         bundle_description
                         bundle_group_id
@@ -210,6 +209,7 @@ const val CART_REVAMP_V4_QUERY =
                         bundle_grayscale_icon_url
                       }
                       products {
+                        origin_warehouse_ids
                         checkbox_state
                         cart_id
                         product_information
