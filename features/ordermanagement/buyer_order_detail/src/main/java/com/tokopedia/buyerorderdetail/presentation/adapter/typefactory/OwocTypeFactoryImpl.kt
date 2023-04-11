@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocAddonsViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListToggleViewHolder
@@ -18,6 +20,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocTicker
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocShimmerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
@@ -25,7 +28,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 
 class OwocTypeFactoryImpl(
     private val navigator: BuyerOrderDetailNavigator,
-    private val owocProductListToggleListener: OwocProductListToggleViewHolder.Listener
+    private val owocListener: OwocListener
 ): BaseAdapterTypeFactory(), OwocTypeFactory {
 
     override fun type(owocTickerUiModel: OwocTickerUiModel): Int {
@@ -34,6 +37,10 @@ class OwocTypeFactoryImpl(
 
     override fun type(owocShimmerUiModel: OwocShimmerUiModel): Int {
         return OwocShimmerViewHolder.LAYOUT
+    }
+
+    override fun type(owocErrorUiModel: OwocErrorUiModel): Int {
+        return OwocErrorStateViewHolder.LAYOUT
     }
 
     override fun type(owocProductListHeaderUiModel: OwocProductListUiModel.ProductListHeaderUiModel): Int {
@@ -63,11 +70,12 @@ class OwocTypeFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OwocShimmerViewHolder.LAYOUT -> OwocShimmerViewHolder(parent)
+            OwocErrorStateViewHolder.LAYOUT -> OwocErrorStateViewHolder(parent, owocListener)
             OwocTickerViewHolder.LAYOUT -> OwocTickerViewHolder(parent, navigator)
             OwocProductListHeaderViewHolder.LAYOUT -> OwocProductListHeaderViewHolder(parent, navigator)
             OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(parent, navigator)
             OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator)
-            OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocProductListToggleListener)
+            OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocListener)
             OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
             OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)

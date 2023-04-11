@@ -1,8 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.typefactory
 
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AddonsViewHolder
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocShimmerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
@@ -14,6 +13,8 @@ interface OwocTypeFactory {
     fun type(owocTickerUiModel: OwocTickerUiModel): Int
 
     fun type(owocShimmerUiModel: OwocShimmerUiModel): Int
+
+    fun type(owocErrorUiModel: OwocErrorUiModel): Int
 
     fun type(owocProductListHeaderUiModel: OwocProductListUiModel.ProductListHeaderUiModel): Int
 
