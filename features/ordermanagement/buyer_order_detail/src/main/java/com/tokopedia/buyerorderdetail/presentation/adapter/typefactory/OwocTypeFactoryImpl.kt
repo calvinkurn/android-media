@@ -13,12 +13,14 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProduc
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocSectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocShimmerViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocTickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocShimmerUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 
 class OwocTypeFactoryImpl(
@@ -54,6 +56,10 @@ class OwocTypeFactoryImpl(
         return OwocAddonsViewHolder.LAYOUT
     }
 
+    override fun type(owocThickDividerUiModel: OwocThickDividerUiModel): Int {
+        return OwocThickDividerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OwocShimmerViewHolder.LAYOUT -> OwocShimmerViewHolder(parent)
@@ -63,6 +69,7 @@ class OwocTypeFactoryImpl(
             OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator)
             OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocProductListToggleListener)
             OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
+            OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -1,18 +1,17 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import android.animation.LayoutTransition
 import android.view.View
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductListHeaderViewHolder(
@@ -24,10 +23,11 @@ class OwocProductListHeaderViewHolder(
         val LAYOUT = R.layout.item_owoc_product_list_header
     }
 
-    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val icBuyerOrderDetailSeeShopBadge = itemView?.findViewById<ImageView>(R.id.icBuyerOrderDetailSeeShopBadge)
-    private val icBuyerOrderDetailSeeShopPage = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailSeeShopPage)
-    private val tvBuyerOrderDetailShopName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailShopName)
+    private val ivOwocShopTier = itemView?.findViewById<ImageView>(R.id.ivOwocShopTier)
+    private val tvOwocShopLabel = itemView?.findViewById<Typography>(R.id.tvOwocShopLabel)
+    private val tvOwocOrderInvoice = itemView?.findViewById<Typography>(R.id.tvOwocOrderInvoice)
+    private val labelOwoc = itemView?.findViewById<Label>(R.id.labelOwoc)
+    private val btnOwocMoreDetail = itemView?.findViewById<UnifyButton>(R.id.btnOwocMoreDetail)
 
     init {
         setupClickListener()
@@ -40,6 +40,8 @@ class OwocProductListHeaderViewHolder(
             this.element = it
             setupShopBadge(it.shopBadgeUrl)
             setupShopName(it.shopName)
+            setupInvoice(it.invoiceNumber)
+            setupButtonOrLabel(it.fromShopId, it.currentShopId)
         }
     }
 
@@ -48,7 +50,6 @@ class OwocProductListHeaderViewHolder(
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is OwocProductListUiModel.ProductListHeaderUiModel && newItem is OwocProductListUiModel.ProductListHeaderUiModel) {
-                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
                     if (oldItem.shopBadgeUrl != newItem.shopBadgeUrl) {
                         setupShopBadge(newItem.shopBadgeUrl)
@@ -56,7 +57,12 @@ class OwocProductListHeaderViewHolder(
                     if (oldItem.shopName != newItem.shopName) {
                         setupShopName(newItem.shopName)
                     }
-                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    if (oldItem.invoiceNumber != newItem.invoiceNumber) {
+                        setupInvoice(newItem.invoiceNumber)
+                    }
+                    if (oldItem.fromShopId != newItem.fromShopId || oldItem.currentShopId != newItem.currentShopId) {
+                        setupButtonOrLabel(newItem.fromShopId, newItem.currentShopId)
+                    }
                     return
                 }
             }
@@ -66,23 +72,25 @@ class OwocProductListHeaderViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.icBuyerOrderDetailSeeShopBadge, R.id.tvBuyerOrderDetailShopName, R.id.icBuyerOrderDetailSeeShopPage -> {
-                goToShopPage()
+            R.id.btnOwocMoreDetail -> {
+                goToOtherBomDetail()
             }
         }
     }
 
-    private fun goToShopPage() {
+    private fun goToOtherBomDetail() {
         element?.let {
-            navigator.goToShopPage(it.shopId)
-            BuyerOrderDetailTracker.eventClickShopName(it.orderStatusId, it.orderId)
+            navigator.goToBomDetailPage(it.orderId)
         }
     }
 
     private fun setupClickListener() {
-        icBuyerOrderDetailSeeShopBadge?.setOnClickListener(this@OwocProductListHeaderViewHolder)
-        tvBuyerOrderDetailShopName?.setOnClickListener(this@OwocProductListHeaderViewHolder)
-        icBuyerOrderDetailSeeShopPage?.setOnClickListener(this@OwocProductListHeaderViewHolder)
+        labelOwoc?.setOnClickListener(this@OwocProductListHeaderViewHolder)
+    }
+
+    private fun setupButtonOrLabel(fromShopId: String, currentShopId: String) {
+        labelOwoc?.showWithCondition(fromShopId == currentShopId)
+        btnOwocMoreDetail?.showWithCondition(fromShopId != currentShopId)
     }
 
     private fun setupShopBadge(shopBadgeUrl: String) {
@@ -94,15 +102,19 @@ class OwocProductListHeaderViewHolder(
     }
 
     private fun setupShopName(shopName: String) {
-        tvBuyerOrderDetailShopName?.text = MethodChecker.fromHtml(shopName)
+        tvOwocShopLabel?.text = MethodChecker.fromHtml(shopName)
+    }
+
+    private fun setupInvoice(invoice: String) {
+        tvOwocOrderInvoice?.text = invoice
     }
 
     private fun hideShopBadge() {
-        icBuyerOrderDetailSeeShopBadge?.gone()
+        ivOwocShopTier?.gone()
     }
 
     private fun showShopBadge(url: String) {
-        icBuyerOrderDetailSeeShopBadge?.let {
+        ivOwocShopTier?.let {
             it.loadImage(url) {
                 setErrorDrawable(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
             }

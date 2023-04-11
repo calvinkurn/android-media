@@ -8,7 +8,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustNothing"
-            android:exported="false">
+            android:exported="false"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

@@ -5,6 +5,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -13,7 +14,7 @@ class OwocPartialProductItemViewHolder(
     private val itemView: View?,
     partialProductItemViewStub: View?,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel
+    private var element: OwocProductListUiModel.ProductUiModel
 ) : View.OnClickListener {
 
     private val tvOwocProductName =
@@ -32,8 +33,8 @@ class OwocPartialProductItemViewHolder(
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel,
-        newItem: ProductListUiModel.ProductUiModel
+        oldItem: OwocProductListUiModel.ProductUiModel,
+        newItem: OwocProductListUiModel.ProductUiModel
     ) {
         this.element = newItem
 

@@ -53,7 +53,7 @@
         app:typographyType="small" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/owocLabel"
+        android:id="@+id/labelOwoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:labelType="general_light_grey"
@@ -66,7 +66,7 @@
         app:layout_constrainedWidth="true" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/owocMoreDetailBtn"
+        android:id="@+id/btnOwocMoreDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:unifyButtonType="alternate"

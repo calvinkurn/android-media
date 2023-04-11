@@ -12,7 +12,7 @@ data class OwocProductListUiModel(
 ) {
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
-        val shopId: String,
+        val fromShopId: String,
         val currentShopId: String,
         val shopName: String,
         val invoiceNumber: String,
@@ -42,7 +42,7 @@ data class OwocProductListUiModel(
         val quantity: Int,
         val totalPrice: String,
         val totalPriceText: String,
-        val addonsListUiModel: AddonsListUiModel? = null,
+        val addonsListUiModel: OwocAddonsListUiModel? = null,
         val isPof: Boolean = false
     ) : BaseOwocVisitableUiModel {
 

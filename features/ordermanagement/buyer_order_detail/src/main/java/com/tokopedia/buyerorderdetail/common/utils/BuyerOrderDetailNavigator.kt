@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -45,6 +46,15 @@ class BuyerOrderDetailNavigator(
             com.tokopedia.resources.common.R.anim.slide_right_in_medium,
             com.tokopedia.resources.common.R.anim.slide_left_out_medium
         )
+    }
+
+     fun goToBomDetailPage(orderId: String) {
+        val appLink = Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL).buildUpon()
+            .appendQueryParameter(DeeplinkMapperUoh.PATH_ORDER_ID, orderId)
+            .build()
+            .toString()
+        val intent = RouteManager.getIntent(activity, appLink)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {
