@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,22 +50,26 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
                 .padding(2.dp),
             text = textFinal,
             style = style,
-            color = androidx.compose.ui.graphics.Color.White
+            color = androidx.compose.ui.graphics.Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 enum class Color { PRIMARY, SECONDARY }
 
-@Preview
+@Preview("Notification")
+@Preview("Notification (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NotificationPreview() {
     NestTheme {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Notification: ")
-            NestNotification("12")
-            NestNotification(text = "122", colorType = Color.SECONDARY)
-            NestNotification(text = "NEW")
+        Surface {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Notification: ")
+                NestNotification("12")
+                NestNotification(text = "122", colorType = Color.SECONDARY)
+                NestNotification(text = "NEW")
+            }
         }
     }
 }
