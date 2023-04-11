@@ -14,6 +14,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
@@ -95,6 +96,7 @@ class AffiliateEducationSeeAllViewModelTest {
             )
         } returns expectedList
 
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
         verifyOrder {
             educationCategoryChipObserver.onChanged(expectedList)
@@ -105,6 +107,55 @@ class AffiliateEducationSeeAllViewModelTest {
         assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
         assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
         assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should not fetch chips when not empty`() {
+        val chipModel: AffiliateEduCategoryChipModel = mockk(relaxed = true)
+        val expectedList: List<AffiliateEduCategoryChipModel> =
+            listOf(chipModel, chipModel, chipModel)
+        val educationArticleResponse: AffiliateEducationArticleCardsResponse = mockk(relaxed = true)
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+        coEvery {
+            educationCategoryUseCase.getEducationFilterChips(
+                any(),
+                any()
+            )
+        } returns expectedList
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        // calling first time should invoke chip live data
+        affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
+        verify(exactly = 1) {
+            educationCategoryChipObserver.onChanged(expectedList)
+        }
+        // calling again should not invoke chip live data again
+        affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
+        verify(exactly = 1) {
+            educationCategoryChipObserver.onChanged(expectedList)
+        }
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+    }
+
+    @Test
+    fun `should not populate data when response null or empty`() {
+        val expectedList: List<AffiliateEduCategoryChipModel> = mockk()
+        val educationArticleResponse: AffiliateEducationArticleCardsResponse = mockk(relaxed = true)
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+        coEvery {
+            educationCategoryUseCase.getEducationFilterChips(
+                any(),
+                any()
+            )
+        } returns expectedList
+        affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(null, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertEquals(null, affiliateEducationSeeAllViewModel.getTotalCount().value)
     }
 
     @Test
