@@ -27,7 +27,7 @@ abstract class ViewModelModule {
     @ProductDetailScope
     @Binds
     internal abstract fun bindSubViewModelScope(
-        provider: TkpdSubViewModelScopeProvider
+        provider: SubViewModelScopeProvider
     ): SubViewModelScope
 
     @ProductDetailScope

@@ -1,8 +1,9 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail.base
 
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
-class TkpdSubViewModelScopeProvider: SubViewModelScopeProvider {
+class TkpdSubViewModelScopeProvider @Inject constructor(): SubViewModelScopeProvider {
     private var provider: (() -> CoroutineScope)? = null
 
     override fun registerProvider(provider: () -> CoroutineScope) {
