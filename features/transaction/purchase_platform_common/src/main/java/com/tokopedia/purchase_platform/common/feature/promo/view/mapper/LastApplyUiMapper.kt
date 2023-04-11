@@ -48,7 +48,8 @@ object LastApplyUiMapper {
         return LastApplyVoucherOrdersItemUiModel(
             code = promoCheckoutVoucherOrdersItemUiModel.code,
             uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
-            message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
+            message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel),
+            cartStringGroup = promoCheckoutVoucherOrdersItemUiModel.cartStringGroup
         )
     }
 

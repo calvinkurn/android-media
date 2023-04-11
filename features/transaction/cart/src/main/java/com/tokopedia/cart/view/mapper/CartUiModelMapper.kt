@@ -24,12 +24,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSec
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -137,7 +137,7 @@ object CartUiModelMapper {
             val productUiModelList = mutableListOf<CartItemHolderData>()
             val groupShopCount = availableGroup.groupShopCartData.count()
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
-                val shopUiModel = CartShopHolderData().apply { 
+                val shopUiModel = CartShopHolderData().apply {
                     shopId = availableShop.shop.shopId
                     shopName = availableShop.shop.shopName
                     shopTypeInfo = availableShop.shop.shopTypeInfo
@@ -164,7 +164,7 @@ object CartUiModelMapper {
                             unavailableSection = null,
                             availableShop = availableShop,
                             shopData = shopUiModel
-                        ).apply { 
+                        ).apply {
                             isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0
                         }
                         productUiModelList.add(productUiModel)
@@ -703,7 +703,8 @@ object CartUiModelMapper {
         return LastApplyVoucherOrdersItemUiModel(
             code = voucherOrders.code,
             uniqueId = voucherOrders.uniqueId,
-            message = mapMessage(voucherOrders.message)
+            message = mapMessage(voucherOrders.message),
+            cartStringGroup = voucherOrders.cartStringGroup
         )
     }
 

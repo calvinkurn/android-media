@@ -647,7 +647,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         // Then
         assertEquals(
             listOf(ShipmentCrossSellModel(index = 0)),
-            presenter.getListShipmentCrossSellModel()
+            presenter.listShipmentCrossSellModel
         )
     }
 
@@ -672,7 +672,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         )
 
         // Then
-        assertTrue(presenter.getListShipmentCrossSellModel().size == 0)
+        assertTrue(presenter.listShipmentCrossSellModel.size == 0)
     }
 
     @Test

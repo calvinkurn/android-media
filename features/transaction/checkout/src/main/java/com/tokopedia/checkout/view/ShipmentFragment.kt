@@ -872,7 +872,7 @@ class ShipmentFragment :
             shipmentPresenter.shipmentNewUpsellModel,
             shipmentPresenter.shipmentCartItemModelList,
             shipmentPresenter.shipmentDonationModel,
-            shipmentPresenter.getListShipmentCrossSellModel(),
+            shipmentPresenter.listShipmentCrossSellModel,
             shipmentPresenter.lastApplyData.value,
             shipmentPresenter.shipmentCostModel.value,
             shipmentPresenter.egoldAttributeModel.value,

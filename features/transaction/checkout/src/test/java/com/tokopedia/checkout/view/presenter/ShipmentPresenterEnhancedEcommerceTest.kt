@@ -96,7 +96,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -140,7 +140,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
         presenter.lastApplyData.value = LastApplyUiModel(
             additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
@@ -188,7 +188,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -232,7 +232,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))

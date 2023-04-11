@@ -103,23 +103,19 @@ class ShipmentDataConverter @Inject constructor() {
         }
     }
 
-    fun getListShipmentCrossSellModel(cartShipmentAddressFormData: CartShipmentAddressFormData): ArrayList<ShipmentCrossSellModel>? {
+    fun getListShipmentCrossSellModel(cartShipmentAddressFormData: CartShipmentAddressFormData): ArrayList<ShipmentCrossSellModel> {
         val listCrossSellModel = ArrayList<ShipmentCrossSellModel>()
-        return if (cartShipmentAddressFormData.crossSell.isNotEmpty()) {
-            for (i in cartShipmentAddressFormData.crossSell.indices) {
-                val shipmentCrossSellModel = ShipmentCrossSellModel()
-                shipmentCrossSellModel.isChecked =
-                    cartShipmentAddressFormData.crossSell[i].isChecked
-                shipmentCrossSellModel.isEnabled =
-                    !cartShipmentAddressFormData.crossSell[i].checkboxDisabled
-                shipmentCrossSellModel.crossSellModel = cartShipmentAddressFormData.crossSell[i]
-                shipmentCrossSellModel.index = i
-                listCrossSellModel.add(shipmentCrossSellModel)
-            }
-            listCrossSellModel
-        } else {
-            null
+        for (i in cartShipmentAddressFormData.crossSell.indices) {
+            val shipmentCrossSellModel = ShipmentCrossSellModel()
+            shipmentCrossSellModel.isChecked =
+                cartShipmentAddressFormData.crossSell[i].isChecked
+            shipmentCrossSellModel.isEnabled =
+                !cartShipmentAddressFormData.crossSell[i].checkboxDisabled
+            shipmentCrossSellModel.crossSellModel = cartShipmentAddressFormData.crossSell[i]
+            shipmentCrossSellModel.index = i
+            listCrossSellModel.add(shipmentCrossSellModel)
         }
+        return listCrossSellModel
     }
 
     private fun createRecipientAddressModel(

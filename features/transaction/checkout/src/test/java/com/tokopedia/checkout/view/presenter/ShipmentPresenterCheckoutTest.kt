@@ -66,7 +66,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -103,7 +103,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -167,7 +167,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -207,7 +207,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -245,7 +245,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -285,7 +285,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -332,7 +332,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         presenter.shipmentDonationModel = ShipmentDonationModel(isChecked = true)
 
         // When
@@ -562,7 +562,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -641,7 +641,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -678,7 +678,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -719,7 +719,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -760,7 +760,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             id = "1"
         }
         presenter.setPurchaseProtection(true)
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -801,7 +801,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -987,14 +987,13 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(
+        presenter.listShipmentCrossSellModel =
             arrayListOf(
                 ShipmentCrossSellModel().apply {
                     isChecked = true
                     crossSellModel = CrossSellModel()
                 }
             )
-        )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
         val transactionId = "1234"
@@ -1036,7 +1035,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
                 isChecked = true
             )
         )
-        presenter.setListShipmentCrossSellModel(listCrossSellModel)
+        presenter.listShipmentCrossSellModel = listCrossSellModel
 
         // When
         val checkoutRequest =
@@ -1068,17 +1067,6 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             additionalVerticalId = "2",
             transactionType = "upsell"
         )
-//        coEvery {
-//            getShipmentAddressFormV4UseCase.setParams(
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any()
-//            )
-//        } just Runs
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns
             CartShipmentAddressFormData(
                 groupAddress = listOf(groupAddress),
@@ -1089,19 +1077,13 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         val checkoutRequest =
@@ -1136,17 +1118,6 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             additionalVerticalId = "2",
             transactionType = "upsell"
         )
-//        coEvery {
-//            getShipmentAddressFormV3UseCase.setParams(
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any()
-//            )
-//        } just Runs
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns
             CartShipmentAddressFormData(
                 groupAddress = listOf(groupAddress),
@@ -1157,19 +1128,13 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         val checkoutRequest =
@@ -1210,19 +1175,13 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         val checkoutRequest =
@@ -1253,17 +1212,6 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             additionalVerticalId = "2",
             transactionType = "upsell"
         )
-//        coEvery {
-//            getShipmentAddressFormV3UseCase.setParams(
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any(),
-//                any()
-//            )
-//        } just Runs
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns
             CartShipmentAddressFormData(
                 groupAddress = listOf(groupAddress),
@@ -1274,19 +1222,13 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             true,
             false,
             false
-//            false,
-//            false,
-//            null,
-//            "",
-//            "",
-//            true
         )
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.setListShipmentCrossSellModel(arrayListOf())
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         val checkoutRequest =

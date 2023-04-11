@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view
 
 import android.app.Activity
-import android.util.Pair
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.checkout.data.model.request.checkout.Carts
@@ -13,7 +12,6 @@ import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
@@ -347,9 +345,6 @@ interface ShipmentContract {
         )
 
         var shipmentDonationModel: ShipmentDonationModel?
-        fun getListShipmentCrossSellModel(): ArrayList<ShipmentCrossSellModel>
-
-        fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?)
 
 //        fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?)
         val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel>
@@ -402,11 +397,11 @@ interface ShipmentContract {
         fun validateClearAllBoPromo()
         fun doUnapplyBo(uniqueId: String, promoCode: String)
         fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product>
-        fun processBoPromoCourierRecommendation(
-            itemPosition: Int,
-            voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
-            shipmentCartItemModel: ShipmentCartItemModel
-        )
+//        fun processBoPromoCourierRecommendation(
+//            itemPosition: Int,
+//            voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
+//            shipmentCartItemModel: ShipmentCartItemModel
+//        )
 
         fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel)
         fun hitClearAllBo()

@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view
 
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -59,7 +58,6 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter.Compan
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstProductId
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
-import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber
@@ -237,7 +235,7 @@ class ShipmentPresenter @Inject constructor(
 
     override var shipmentDonationModel: ShipmentDonationModel? = null
 
-    private var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel> = ArrayList()
+    var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel> = ArrayList()
 
     override val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel> =
         CheckoutMutableLiveData(ShipmentButtonPaymentModel())
@@ -603,7 +601,7 @@ class ShipmentPresenter @Inject constructor(
         return buyEgoldValue
     }
 
-    fun updateCheckoutButtonData(shipmentCost: ShipmentCostModel) {
+    private fun updateCheckoutButtonData(shipmentCost: ShipmentCostModel) {
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
         for (shipmentCartItemModel in shipmentCartItemModelList) {
@@ -638,14 +636,6 @@ class ShipmentPresenter @Inject constructor(
                 totalPrice = "-"
             )
         }
-    }
-
-    override fun getListShipmentCrossSellModel(): ArrayList<ShipmentCrossSellModel> {
-        return listShipmentCrossSellModel
-    }
-
-    override fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?) {
-        this.listShipmentCrossSellModel = listShipmentCrossSellModel ?: ArrayList()
     }
 
     private fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
@@ -901,7 +891,7 @@ class ShipmentPresenter @Inject constructor(
         }, AddressConstant.ANA_REVAMP_FEATURE_ID)
     }
 
-    fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
+    internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
         setLatValidateUseRequest(null)
         validateUsePromoRevampUiModel = null
         shipmentTickerErrorModel = ShipmentTickerErrorModel(cartShipmentAddressFormData.errorTicker)
@@ -933,13 +923,8 @@ class ShipmentPresenter @Inject constructor(
         } else {
             shipmentDonationModel = null
         }
-        if (cartShipmentAddressFormData.crossSell.isNotEmpty()) {
-            val listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>? =
-                shipmentDataConverter.getListShipmentCrossSellModel(cartShipmentAddressFormData)
-            setListShipmentCrossSellModel(listShipmentCrossSellModel)
-        } else {
-            setListShipmentCrossSellModel(null)
-        }
+        listShipmentCrossSellModel =
+            shipmentDataConverter.getListShipmentCrossSellModel(cartShipmentAddressFormData)
         lastApplyData.value = cartShipmentAddressFormData.lastApplyData
         isBoUnstackEnabled =
             cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
@@ -984,7 +969,7 @@ class ShipmentPresenter @Inject constructor(
         shippingCourierViewModelsState = hashMapOf()
     }
 
-    fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
+    internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
         this.isPurchaseProtectionPage = isPurchaseProtectionPage
     }
 
@@ -1092,7 +1077,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    fun generateCheckoutParams(
+    internal fun generateCheckoutParams(
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
@@ -1327,8 +1312,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun triggerCrossSellClickPilihPembayaran() {
-        val shipmentCrossSellModelList: List<ShipmentCrossSellModel> =
-            getListShipmentCrossSellModel()
+        val shipmentCrossSellModelList: List<ShipmentCrossSellModel> = listShipmentCrossSellModel
         var eventLabel = ""
         var digitalProductName = ""
         if (shipmentCrossSellModelList.isNotEmpty()) {
@@ -1377,7 +1361,7 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    fun generateCheckoutAnalyticsDataLayer(
+    internal fun generateCheckoutAnalyticsDataLayer(
         step: String,
         pageSource: String
     ): Map<String, Any> {
@@ -2456,7 +2440,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    fun getClearPromoOrderByUniqueId(
+    internal fun getClearPromoOrderByUniqueId(
         list: ArrayList<ClearPromoOrder>,
         uniqueId: String
     ): ClearPromoOrder? {
@@ -3639,19 +3623,12 @@ class ShipmentPresenter @Inject constructor(
                         shipmentCartItemModel
                     )
                 )
-//                viewModelScope.launch {
-//                    processBoPromoCourierRecommendationNew(
-//                        itemAdapterPosition,
-//                        voucherOrdersItemUiModel,
-//                        shipmentCartItemModel
-//                    )
-//                }
             }
         }
         processBoPromoCourierRecommendationNew(listToProcess)
     }
 
-    override fun processBoPromoCourierRecommendation(
+    /*override fun processBoPromoCourierRecommendation(
         itemPosition: Int,
         voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
         shipmentCartItemModel: ShipmentCartItemModel
@@ -3771,7 +3748,7 @@ class ShipmentPresenter @Inject constructor(
                 )
             )
         }
-    }
+    }*/
 
     private fun processBoPromoCourierRecommendationNew(
         listToProcess: List<Triple<Int, PromoCheckoutVoucherOrdersItemUiModel, ShipmentCartItemModel>>
@@ -3888,7 +3865,6 @@ class ShipmentPresenter @Inject constructor(
                                                     itemPosition,
                                                     promoCode
                                                 )
-                                                logisticPromoDonePublisher?.onCompleted()
                                                 continue@loopProcess
                                             } else {
                                                 shippingCourierUiModel.isSelected = true
@@ -3970,20 +3946,7 @@ class ShipmentPresenter @Inject constructor(
                     } else {
                         errorReason = "rates empty data"
                     }
-                    cancelAutoApplyPromoStackLogistic(
-                        itemPosition,
-                        promoCode,
-                        shipmentCartItemModel
-                    )
-                    clearOrderPromoCodeFromLastValidateUseRequest(cartString, promoCode)
-                    view?.resetCourier(shipmentCartItemModel)
-                    view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-                    view?.logOnErrorLoadCourier(
-                        MessageErrorException(errorReason),
-                        itemPosition,
-                        promoCode
-                    )
-                    logisticPromoDonePublisher?.onCompleted()
+                    throw MessageErrorException(errorReason)
                 } catch (t: Throwable) {
                     cancelAutoApplyPromoStackLogistic(
                         itemPosition,
@@ -3994,7 +3957,6 @@ class ShipmentPresenter @Inject constructor(
                     view?.resetCourier(shipmentCartItemModel)
                     view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
                     view?.logOnErrorLoadCourier(t, itemPosition, promoCode)
-                    logisticPromoDonePublisher?.onCompleted()
                 }
             }
             shipmentButtonPayment.value =
