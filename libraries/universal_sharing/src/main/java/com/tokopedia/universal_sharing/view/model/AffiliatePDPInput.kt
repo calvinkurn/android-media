@@ -1,6 +1,5 @@
 package com.tokopedia.universal_sharing.view.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.universal_sharing.tracker.PageType
@@ -73,7 +72,7 @@ data class AffiliatePDPInput(
     @SerializedName("PageDetail")
     var pageDetail: PageDetail? = null,
 
-    @Expose(serialize = false, deserialize = false)
+    @Transient
     var affiliateLinkType: AffiliateLinkType? = null
 ) {
     /** get id based on page type
