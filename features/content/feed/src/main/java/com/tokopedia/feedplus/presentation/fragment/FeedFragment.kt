@@ -510,7 +510,7 @@ class FeedFragment :
                     if (it.data.items.isEmpty()) {
                         adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
-                        adapter?.setElements(it.data.items)
+                        adapter?.updateList(it.data.items)
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
@@ -748,7 +748,7 @@ class FeedFragment :
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
-        private const val MINIMUM_ENDLESS_CALL = 1
+        private const val MINIMUM_ENDLESS_CALL = 3
 
         private const val ZERO = 0
         private const val ONE = 1

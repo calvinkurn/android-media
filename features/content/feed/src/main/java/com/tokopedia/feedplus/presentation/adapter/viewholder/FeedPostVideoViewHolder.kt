@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
+import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
@@ -10,6 +11,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
@@ -48,6 +50,31 @@ class FeedPostVideoViewHolder(
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+
+    init {
+        binding.playerControl.setListener(object : FeedPlayerControl.Listener {
+            override fun onScrubbing(
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
+            ) {
+                binding.videoTimeView.setCurrentPosition(currPosition)
+                binding.videoTimeView.setTotalDuration(totalDuration)
+                binding.videoTimeView.show()
+                showClearView(showDisableClearMode = false)
+            }
+
+            override fun onStopScrubbing(
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
+            ) {
+                binding.videoTimeView.hide()
+                hideClearView()
+            }
+        })
+    }
+
     override fun bind(element: FeedCardVideoContentModel?) {
         element?.let { data ->
             with(binding) {
@@ -229,7 +256,9 @@ class FeedPostVideoViewHolder(
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
-        binding.playerFeedVideo.hide()
+        if (videoPlayer?.getExoPlayer()?.currentPosition == 0L) {
+            binding.playerFeedVideo.hide()
+        }
     }
 
     private fun hideLoading() {
@@ -237,7 +266,7 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.show()
     }
 
-    private fun showClearView() {
+    private fun showClearView(showDisableClearMode: Boolean = true) {
         with(binding) {
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
@@ -247,7 +276,7 @@ class FeedPostVideoViewHolder(
             shareButton.hide()
             productTagButton.root.hide()
             productTagView.root.hide()
-            btnDisableClearMode.show()
+            btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
     }
 
