@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.inspirationwidget.filter
 
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
