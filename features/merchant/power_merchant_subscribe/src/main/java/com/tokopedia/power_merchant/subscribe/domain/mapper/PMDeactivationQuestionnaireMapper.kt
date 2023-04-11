@@ -37,7 +37,7 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
                     questionList.add(createSingleOptionQuestion(question))
                 }
                 QuestionnaireUiModel.TYPE_RATE -> {
-                    createRatingOptionQuestion(question)
+                    questionList.add(createRatingOptionQuestion(question))
                 }
                 else -> {
                     return@forEachIndexed
