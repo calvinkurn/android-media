@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
- * [BaseViewModelV2] is a class for easier implementation of [SubViewModel] support
+ * [BaseViewModelV2] is a class extend from [BaseViewModel] for easier implementation of [SubViewModel] support
  */
 open class BaseViewModelV2(
     baseDispatcher: CoroutineDispatcher,
