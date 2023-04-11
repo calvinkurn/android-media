@@ -263,11 +263,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun onResumeInternal() {
+        feedMainViewModel.resumePage()
+
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
     }
 
     private fun onPauseInternal() {
+        feedMainViewModel.pausePage()
+
         mOnboarding?.dismiss()
         mOnboarding = null
     }

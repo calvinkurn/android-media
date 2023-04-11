@@ -159,28 +159,17 @@ class FeedFragment :
         observeReport()
         observeFollow()
         observeLikeContent()
+        observeResumePage()
     }
 
     override fun onPause() {
         super.onPause()
-
-        val currentIndex = binding.rvFeedPost.currentItem
-        if (currentIndex >= (adapter?.list?.size ?: 0)) return
-        val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
-
-        videoPlayerManager.pause(item.id)
+        pauseCurrentVideo()
     }
 
     override fun onResume() {
         super.onResume()
-
-        val currentIndex = binding.rvFeedPost.currentItem
-        if (currentIndex >= (adapter?.list?.size ?: 0)) return
-        val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
-
-        videoPlayerManager.resume(item.id)
+        resumeCurrentVideo()
     }
 
     override fun onDestroyView() {
@@ -602,6 +591,31 @@ class FeedFragment :
                 }
             }
         }
+    }
+
+    private fun observeResumePage() {
+        feedMainViewModel.isPageResumed.observe(viewLifecycleOwner) { isResumed ->
+            if (isResumed) resumeCurrentVideo()
+            else pauseCurrentVideo()
+        }
+    }
+
+    private fun pauseCurrentVideo() {
+        val currentIndex = binding.rvFeedPost.currentItem
+        if (currentIndex >= (adapter?.list?.size ?: 0)) return
+        val item = adapter?.list?.get(currentIndex) ?: return
+        if (item !is FeedCardVideoContentModel) return
+
+        videoPlayerManager.pause(item.id)
+    }
+
+    private fun resumeCurrentVideo() {
+        val currentIndex = binding.rvFeedPost.currentItem
+        if (currentIndex >= (adapter?.list?.size ?: 0)) return
+        val item = adapter?.list?.get(currentIndex) ?: return
+        if (item !is FeedCardVideoContentModel) return
+
+        videoPlayerManager.resume(item.id)
     }
 
     private fun onGoToLogin() {
