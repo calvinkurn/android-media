@@ -166,6 +166,7 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         updateMediaLabel(position)
         updateThumbnail(position)
+        shouldShowRecommendationLabel(position)
     }
 
     private fun setupThumbnailRv() {
