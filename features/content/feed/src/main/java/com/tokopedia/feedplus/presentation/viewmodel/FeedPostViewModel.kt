@@ -93,47 +93,54 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val feedPostsDeferred = async {
-                    getFeedPosts(
-                        source = source,
-                        cursor = _feedHome.value?.cursor.orEmpty()
-                    )
+                    try {
+                        Success(
+                            getFeedPosts(
+                                source = source,
+                                cursor = _feedHome.value?.cursor.orEmpty()
+                            )
+                        )
+                    } catch (e: Throwable) {
+                        Fail(e)
+                    }
                 }
 
-                _feedHome.value = try {
-                    val feedPosts = feedPostsDeferred.await()
-                    val items = feedPosts.items.map {
-                        when (it) {
-                            is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
-                                it.copy(
-                                    campaign = it.campaign.copy(
-                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                val feedPosts = feedPostsDeferred.await()
+                _feedHome.value = when (feedPosts) {
+                    is Success -> {
+                        val items = feedPosts.items.map {
+                            when (it) {
+                                is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                    it.copy(
+                                        campaign = it.campaign.copy(
+                                            isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                        )
                                     )
-                                )
-                            } else {
-                                it
-                            }
-                            is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
-                                it.copy(
-                                    campaign = it.campaign.copy(
-                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                } else {
+                                    it
+                                }
+                                is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                    it.copy(
+                                        campaign = it.campaign.copy(
+                                            isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                        )
                                     )
-                                )
-                            } else {
-                                it
+                                } else {
+                                    it
+                                }
+                                else -> it
                             }
-                            else -> it
-                        }
-                    }.toList()
+                        }.toList()
 
-                    Success(
-                        feedPosts.copy(
-                            items = relevantPostsDeferred.await() +
-                                _feedHome.value?.items.orEmpty() +
-                                items
+                        Success(
+                            data = feedPosts.data.copy(
+                                items = relevantPostsDeferred.await() +
+                                    _feedHome.value?.items.orEmpty() +
+                                    items
+                            )
                         )
-                    )
-                } catch (e: Throwable) {
-                    Fail(e)
+                    }
+                    else -> feedPosts
                 }
             }
         }

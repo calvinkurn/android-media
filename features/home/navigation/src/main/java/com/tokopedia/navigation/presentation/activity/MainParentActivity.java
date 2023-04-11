@@ -460,7 +460,9 @@ public class MainParentActivity extends BaseActivity implements
                     if (oldArgs == null) {
                         oldArgs = new Bundle();
                     }
-                    oldArgs.putAll(getIntent().getExtras());
+                    if (getIntent().getExtras() != null) {
+                        oldArgs.putAll(getIntent().getExtras());
+                    }
                     fragment.setArguments(oldArgs);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();

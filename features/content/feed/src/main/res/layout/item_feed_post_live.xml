@@ -125,7 +125,7 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_NN0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"

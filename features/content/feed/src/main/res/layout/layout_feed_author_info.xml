@@ -42,7 +42,7 @@
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_NN0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
         app:layout_constraintEnd_toStartOf="@id/btn_feed_follow"
