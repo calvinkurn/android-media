@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Content(
@@ -21,5 +20,12 @@ data class Content(
     @SerializedName("isAnnotation")
     val isAnnotation: Boolean = false,
     @SerializedName("showAtBottomsheet")
-    val showAtBottomSheet: Boolean = false
+    val showAtBottomSheet: Boolean = false,
+
+    // as identifier for tracker or mapping other action
+    @SerializedName("key")
+    val key: String = "",
+    // param for aggregator page, such as product detail info bottom sheet from panduan ukuran
+    @SerializedName("extParam")
+    val extParam: String = ""
 )

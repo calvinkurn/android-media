@@ -17,5 +17,7 @@ data class ProductDetailInfoContent(
     val infoLink: String = "",
     val showAtFront: Boolean = false,
     val isAnnotation: Boolean = false,
-    val showAtBottomSheet: Boolean = true
+    val showAtBottomSheet: Boolean = true,
+    val key: String = "",
+    val extParam: String = ""
 ) : Parcelable
