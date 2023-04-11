@@ -78,7 +78,7 @@ class CreateReviewProgressBar @JvmOverloads constructor(
                 return
             }
             state.isNeedBadRatingReasonOnly() -> {
-                if (state.isTextAreaFilled && state.isPhotosFilled) {
+                if (state.isTestimonyComplete && state.isPhotosFilled) {
                     setThreeQuartersProgress()
                 } else {
                     setHalfProgress()
