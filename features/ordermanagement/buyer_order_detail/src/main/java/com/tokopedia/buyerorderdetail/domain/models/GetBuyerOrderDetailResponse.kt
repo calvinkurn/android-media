@@ -389,7 +389,7 @@ data class GetBuyerOrderDetailResponse(
                 data class Button(
                     @SerializedName("key")
                     val key: String = "",
-                    @SerializedName("icon_key")
+                    @SerializedName("icon")
                     val icon: String = "",
                     @SerializedName("action_type")
                     val actionType: String = "",

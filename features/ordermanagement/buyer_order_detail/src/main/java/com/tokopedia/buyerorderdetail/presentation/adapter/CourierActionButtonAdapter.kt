@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CourierActionButtonAdapter(
-    private val driver: ShipmentInfoUiModel.CourierDriverInfoUiModel,
     private val navigator: BuyerOrderDetailNavigator
 ) : RecyclerView.Adapter<CourierActionButtonAdapter.ViewHolder>() {
 
@@ -25,7 +24,7 @@ class CourierActionButtonAdapter(
     ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_buyer_order_detail_courier_driver_icon, parent, false)
-        return ViewHolder(view, driver, navigator)
+        return ViewHolder(view, navigator)
     }
 
     override fun getItemCount(): Int {
@@ -38,7 +37,6 @@ class CourierActionButtonAdapter(
 
     class ViewHolder(
         itemView: View,
-        private val driver: ShipmentInfoUiModel.CourierDriverInfoUiModel,
         private val navigator: BuyerOrderDetailNavigator
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -65,7 +63,7 @@ class CourierActionButtonAdapter(
                         }
                         Action.ACTION.value -> {
                             if (it.value == CALL_DRIVER) {
-                                navigator.goToCallingPage(driver.phoneNumber)
+                                navigator.goToCallingPage(button.value)
                             }
                         }
                     }

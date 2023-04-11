@@ -57,14 +57,11 @@ open class CourierDriverInfoViewHolder(
     }
 
     private fun setupDriverPlateNumber(plateNumber: String) {
-        tvBuyerOrderDetailCourierDriverPlateNumber?.run {
-            text = plateNumber
-            showWithCondition(plateNumber.isNotBlank())
-        }
+        tvBuyerOrderDetailCourierDriverPlateNumber?.text = plateNumber
     }
 
     private fun setupActionButtons(element: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        CourierActionButtonAdapter(element, navigator).apply {
+        CourierActionButtonAdapter(navigator).apply {
             this.driverActionButtonList = element.buttonList
             rvBuyerOrderDetailCourierDriverButton?.adapter = this
             rvBuyerOrderDetailCourierDriverButton.layoutManager = LinearLayoutManager(
