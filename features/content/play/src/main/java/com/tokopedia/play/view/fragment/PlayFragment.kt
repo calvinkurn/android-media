@@ -11,11 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tkpd.atcvariant.util.roundToIntOrZero
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantAnalyticsListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -85,7 +87,8 @@ class PlayFragment @Inject constructor(
     PlayFragmentContract,
     FragmentVideoViewComponent.Listener,
     FragmentYouTubeViewComponent.Listener,
-    PlayVideoScalingManager.Listener {
+    PlayVideoScalingManager.Listener,
+    AtcVariantAnalyticsListener {
 
     private lateinit var ivClose: View
     private val fragmentVideoView by viewComponent {
@@ -296,10 +299,11 @@ class PlayFragment @Inject constructor(
                     }
                 }
             )
-            if (forceTop)
+            if (forceTop) {
                 variantSheet.setOnDismissListener {
                     onBottomInsetsViewHidden()
                 }
+            }
             variantSheet
         }
 
@@ -716,6 +720,27 @@ class PlayFragment @Inject constructor(
         }
     }
     //endregion
+
+    // Global Variant Bottom Sheet
+    override fun onButtonActionClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickActionFromToaster(message: String) {
+        analytic.clickActionFromVariantSheet(message)
+    }
+
+    override fun impressErrorToaster(message: String) {
+        analytic.impressErrorToasterVariantSheet(message)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        if (childFragment is AtcVariantBottomSheet) {
+            childFragment.setAnalytics(this)
+        }
+    }
 
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"

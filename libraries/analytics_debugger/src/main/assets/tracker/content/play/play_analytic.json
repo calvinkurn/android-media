@@ -771,6 +771,28 @@
       ],
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - lihat on add to cart success toaster",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .*",
+      "trackerId": "42904",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view error when add to cart",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - not success - .*",
+      "trackerId": "42905",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
