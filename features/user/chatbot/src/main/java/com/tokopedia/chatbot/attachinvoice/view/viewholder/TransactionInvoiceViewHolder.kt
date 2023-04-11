@@ -3,9 +3,9 @@ package com.tokopedia.chatbot.attachinvoice.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,7 +37,10 @@ class TransactionInvoiceViewHolder(itemView: View, private val listener: Transac
 
     private fun setStatus(invoice: TransactionInvoiceUiModel) {
         if (invoice.status.isNotEmpty()) {
-            val labelType = getLabelType(invoice.statusId)
+            var labelType : Int = if(invoice.color.isEmpty())
+                InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
+            else
+                InvoiceStatusLabelHelper.getLabelType(invoice.color)
             tvStatus.text = invoice.status
             tvStatus.setLabelType(labelType)
             tvStatus.show()
@@ -54,15 +57,6 @@ class TransactionInvoiceViewHolder(itemView: View, private val listener: Transac
             tvPricePrefix.show()
             tvPrice.text = totalAmount
             tvPrice.show()
-        }
-    }
-
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
         }
     }
 

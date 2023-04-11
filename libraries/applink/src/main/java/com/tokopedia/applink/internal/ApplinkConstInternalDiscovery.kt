@@ -20,6 +20,8 @@ object ApplinkConstInternalDiscovery {
 
     const val AUTOCOMPLETE = "$INTERNAL_DISCOVERY/autocomplete"
 
+    const val UNIVERSAL = "$INTERNAL_DISCOVERY/universal"
+
     const val SIMILAR_SEARCH_RESULT_BASE = "$INTERNAL_DISCOVERY/similar-search-result"
 
     const val SIMILAR_SEARCH_RESULT = "$SIMILAR_SEARCH_RESULT_BASE/{product_id}/"

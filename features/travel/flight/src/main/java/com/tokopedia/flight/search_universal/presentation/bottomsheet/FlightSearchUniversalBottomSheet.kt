@@ -70,7 +70,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
             }
         }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER)
         }
     }
 
@@ -82,7 +82,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
             }
         }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DESTINATION_AIRPORT_PICKER)
         }
     }
 

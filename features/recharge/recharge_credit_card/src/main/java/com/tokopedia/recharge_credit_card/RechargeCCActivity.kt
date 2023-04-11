@@ -9,12 +9,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_recharge_cc.*
 import javax.inject.Inject
 
 /*
@@ -32,10 +31,12 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var toolbarCreditCard: HeaderUnify? = null
+
     override fun getNewFragment(): Fragment? {
         val bundle = intent.extras
         val categoryId = bundle?.getString(PARAM_CATEGORY_ID, CATEGORY_ID_DEFAULT)
-                ?: CATEGORY_ID_DEFAULT
+            ?: CATEGORY_ID_DEFAULT
         val menuId = bundle?.getString(PARAM_MENU_ID, MENU_ID_DEFAULT) ?: MENU_ID_DEFAULT
 
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID, "") ?: ""
@@ -60,18 +61,16 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        toolbarCreditCard = findViewById(R.id.toolbar_credit_card)
+
         setSecureWindowFlag()
         component.inject(this)
 
-        toolbar_credit_card.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
-        toolbar_credit_card.rightIcons?.let {
+        toolbarCreditCard?.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
+        toolbarCreditCard?.rightIcons?.let {
             it[0].setOnClickListener {
                 RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
             }
-        }
-
-        cc_logo_verified?.let { imageView ->
-            imageView.loadImage(CC_IMG_VERIFIED)
         }
     }
 
@@ -92,8 +91,8 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
     override fun getComponent(): RechargeCCComponent {
         return DaggerRechargeCCComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     companion object {
@@ -108,7 +107,5 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
         private const val CATEGORY_ID_DEFAULT = "26"
         private const val MENU_ID_DEFAULT = "169"
-
-        private const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
     }
 }

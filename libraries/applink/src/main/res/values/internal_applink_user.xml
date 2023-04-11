@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="UnusedResources"
+    xmlns:tools="http://schemas.android.com/tools">
     <string name="host_user" translatable="false">user</string>
 
     <!--Home Account-->
@@ -12,13 +13,16 @@
     <string name="path_link_account">/link-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
+    <string name="path_consent_withdrawal">/consent/withdrawal</string>
+    <string name="path_dsar">/dsar</string>
+    <string name="path_dsar_add_email">/dsar/add-email</string>
 
     <!--Profile Completion-->
     <string name="path_add_name_register">/add-name-register</string>
-    <string name="path_add_name_register_clean_view">/add-name-register/clean-view</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
+    <string name="path_new_add_phone">/new-add-phone</string>
     <string name="path_add_bod">/add-bod</string>
     <string name="path_add_pin">/add-pin</string>
     <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
@@ -44,8 +48,10 @@
     <string name="applink_change_phone_number">Change Phone Number</string>
     <string name="applink_instant_loan_title">Pinjaman Online</string>
     <string name="applink_digital_deals_title">digital_deals</string>
-    <string name="applink_liveness_detection">Liveness Detection</string>
     <string name="applink_fingerprint">Sidik Jari</string>
+
+    <!--Title for DF Privacy Center-->
+    <string name="title_privacy_center">Privacy Center</string>
 
     <string name="applink_notif_troubleshooter">Push Notif Troubleshooter</string>
     <string name="applink_choose_account_fingerprint">/choose-account-fingerprint</string>
@@ -85,8 +91,34 @@
     <string name="applink_phone_shop_creation">/phone-shop-creation</string>
     <string name="applink_name_shop_creation">/name-shop-creation</string>
 
+    <!--Privacy Center-->
+    <string name="path_privacy_center">/privacy-center</string>
+    <string name="path_account_linking_webview">/account-linking-webview</string>
+
     //Register
     <string name="applink_init_register">/init-register</string>
     <string name="applink_email_register">/email-register</string>
+
+    <!--Redefine Register-->
+    <string name="path_redefine_register_email">/redefine-register-email</string>
+
+    <!--Notif Troubleshooter-->
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
+
+    <!--Telephony Masking-->
+    <string name="path_telephony_masking">/telephony-masking</string>
+
+    <!-- KYC & LIVENESS -->
+    <string name="applink_liveness_detection">Liveness Detection</string>
+
+    <string name="path_user_identification_info">/user-identification-info</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
+
+    <!--Privacy Center-->
+    <string name="path_search_history">/search-history</string>
+    <string name="path_new_consent_withdrawal">/consent/withdrawal/new</string>
+    <string name="path_sharing_wishlist">/sharing-wishlist</string>
 
 </resources>

@@ -1,6 +1,6 @@
 package com.tokopedia.people.analytic.tracker
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
 interface UserProfileTracker {
 
@@ -40,8 +40,6 @@ interface UserProfileTracker {
         self: Boolean,
         live: Boolean,
         activityId: String,
-        imageUrl: String,
-        videoPosition: Int
     )
 
     fun clickFeedTab(userId: String, self: Boolean)
@@ -59,8 +57,6 @@ interface UserProfileTracker {
         userId: String,
         self: Boolean,
         activityId: String,
-        imageUrl: String,
-        postPosition: Int,
         mediaType: String
     )
 
@@ -92,12 +88,10 @@ interface UserProfileTracker {
 
     fun clickProfileRecommendation(
         userId: String,
-        shopId: String,
-        imageUrl: String,
-        postPosition: Int
+        item: ShopRecomUiModelItem,
     )
 
-    fun clickFollowProfileRecommendation(userId: String, shopId: String)
+    fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem)
 
     fun clickCreatePost(userId: String)
 
@@ -127,6 +121,9 @@ interface UserProfileTracker {
 
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
 
-    fun sendAll()
+    fun clickCreateShorts(userId: String)
 
+    fun viewCreateShorts(userId: String)
+
+    fun sendAll()
 }

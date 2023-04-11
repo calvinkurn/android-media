@@ -11,14 +11,14 @@ data class SummariesUiModel(
         var description: String = "",
         var type: String = "",
         var amountStr: String = "",
-        var amount: Int = -1,
+        var amount: Long = -1L,
         val details: ArrayList<DetailUiModel> = arrayListOf()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.createTypedArrayList(DetailUiModel) ?: arrayListOf()) {
     }
 
@@ -26,7 +26,7 @@ data class SummariesUiModel(
         parcel.writeString(description)
         parcel.writeString(type)
         parcel.writeString(amountStr)
-        parcel.writeInt(amount)
+        parcel.writeLong(amount)
         parcel.writeTypedList(details)
     }
 

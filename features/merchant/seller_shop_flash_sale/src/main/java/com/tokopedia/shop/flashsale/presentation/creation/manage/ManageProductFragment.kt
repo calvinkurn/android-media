@@ -3,7 +3,6 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +47,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
-        private const val DELAY = 1000L
+        private const val DELAY = 3000L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
@@ -167,7 +166,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
-        if (pageMode == PageMode.UPDATE) {
+        if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
             binding?.btnSaveDraft?.gone()
         }
     }
@@ -191,7 +190,9 @@ class ManageProductFragment : BaseDaggerFragment() {
                         hideEmptyState()
                     } else {
                         showEmptyState()
-                        showChooseProductPage()
+                        if (viewModel.autoNavigateToChooseProduct()) {
+                            showChooseProductPage()
+                        }
                     }
                 }
                 is Fail -> {
@@ -251,6 +252,9 @@ class ManageProductFragment : BaseDaggerFragment() {
                 HIDE_BANNER -> {
                     hideBanner()
                 }
+                else -> {
+                    hideBanner()
+                }
             }
         }
     }
@@ -272,8 +276,6 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun displayProducts(productList: SellerCampaignProductList) {
-        viewModel.setProductErrorMessage(productList)
-        viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
         viewModel.getCampaignDetail(campaignId)
         handleScrollUp()
@@ -450,7 +452,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                         )
                     }
 
-                    val coachMark = activity?.let { it -> CoachMark2(it) }
+                    val coachMark = activity?.let { act -> CoachMark2(act) }
                     coachMark?.showCoachMark(coachMarkItems)
                     viewModel.setIsCoachMarkShown(true)
                     coachMark?.onFinishListener = {
@@ -505,14 +507,12 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        doOnDelayFinished(DELAY) {
-            val intent = ChooseProductActivity.createIntent(
-                context,
-                campaignId.toString(),
-                manageProductListAdapter.itemCount
-            )
-            startActivityForResult(intent, REQUEST_CODE)
-        }
+        val intent = ChooseProductActivity.createIntent(
+            context,
+            campaignId.toString(),
+            manageProductListAdapter.itemCount
+        )
+        startActivityForResult(intent, REQUEST_CODE)
     }
 
     private fun editProduct(product: SellerCampaignProductList.Product) {
@@ -522,6 +522,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
         ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
+                showLoader()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)
@@ -550,6 +551,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 viewModel.autoShowEditProduct = true
+                viewModel.setAutoNavigateToChooseProduct(false)
                 showLoader()
                 doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)

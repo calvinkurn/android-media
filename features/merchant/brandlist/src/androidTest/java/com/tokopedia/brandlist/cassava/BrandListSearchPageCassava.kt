@@ -17,8 +17,8 @@ import com.tokopedia.brandlist.brandlist_search.presentation.activity.BrandlistS
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchHeaderViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationNotFoundViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper

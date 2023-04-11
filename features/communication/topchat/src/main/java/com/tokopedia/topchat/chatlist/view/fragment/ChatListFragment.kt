@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -34,19 +36,17 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
-import com.tokopedia.topchat.chatlist.view.adapter.ChatListAdapter
-import com.tokopedia.topchat.chatlist.view.adapter.decoration.ChatListItemDecoration
-import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactoryImpl
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
@@ -56,15 +56,23 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USE
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
-import com.tokopedia.topchat.chatlist.view.listener.ChatListContract
-import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
-import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
-import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
-import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.view.adapter.ChatListAdapter
+import com.tokopedia.topchat.chatlist.view.adapter.decoration.ChatListItemDecoration
+import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactoryImpl
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.view.listener.ChatListContract
+import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
+import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
+import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
+import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
@@ -77,6 +85,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -89,14 +98,14 @@ import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-    ChatListItemListener, LifecycleOwner {
+open class ChatListFragment constructor() :
+    BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+    ChatListItemListener,
+    LifecycleOwner,
+    ChatListTickerListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
@@ -109,9 +118,8 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var remoteConfig: RemoteConfig? = null
     private var chatTabListContract: ChatListContract.TabFragment? = null
-    private var mUserSeen = false
-    private var mViewCreated = false
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
@@ -140,10 +148,25 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        if (getRemoteConfigOnCreate()) {
+            super.onCreate(null)
+        } else {
+            super.onCreate(savedInstanceState)
+        }
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    private fun getRemoteConfigOnCreate(): Boolean {
+        if (remoteConfig == null) {
+            context?.let {
+                remoteConfig = FirebaseRemoteConfigImpl(it)
+            }
+        }
+        // If the value is empty, default true
+        // If the remote config is null or error, default to false
+        return remoteConfig?.getBoolean(ON_CREATE_KEY, true) ?: false
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
@@ -191,8 +214,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("$sightTag onViewCreated")
-        mViewCreated = true
-        tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView(view)
         initView(view)
@@ -200,15 +221,19 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         setupSellerBroadcast()
         setupChatSellerBannedStatus()
         setupEmptyModel()
+        notifyAndGetChatListMessage(view)
     }
 
     private fun setupChatSellerBannedStatus() {
         if (!isTabSeller()) return
-        chatItemListViewModel.chatBannedSellerStatus.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> updateChatBannedSellerStatus(it.data)
+        chatItemListViewModel.chatBannedSellerStatus.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> updateChatBannedSellerStatus(it.data)
+                }
             }
-        })
+        )
     }
 
     private fun setupEmptyModel() {
@@ -251,42 +276,43 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setupSellerBroadcastButton() {
-        chatItemListViewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
-            when (visibility) {
-                true -> {
-                    broadCastButton.show()
+        chatItemListViewModel.broadCastButtonVisibility.observe(
+            viewLifecycleOwner,
+            Observer { visibility ->
+                when (visibility) {
+                    true -> {
+                        broadCastButton.show()
+                    }
+                    false -> broadCastButton.hide()
                 }
-                false -> broadCastButton.hide()
             }
-        })
-        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { applink ->
-            if (applink.isNullOrEmpty()) return@Observer
-            broadCastButton.setOnClickListener {
-                if (isSellerMigrationEnabled(context)) {
-                    val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
-                    val intent = context?.let { context ->
-                        SellerMigrationActivity.createIntent(
+        )
+        chatItemListViewModel.broadCastButtonUrl.observe(
+            viewLifecycleOwner,
+            Observer { applink ->
+                if (applink.isNullOrEmpty()) return@Observer
+                broadCastButton.setOnClickListener {
+                    if (isSellerMigrationEnabled(context)) {
+                        val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
+                        val intent = context?.let { context ->
+                            SellerMigrationActivity.createIntent(
                                 context = context,
                                 featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
                                 screenName = screenName,
                                 appLinks = arrayListOf(
-                                        ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, applink
+                                    ApplinkConstInternalSellerapp.SELLER_HOME_CHAT,
+                                    applink
                                 )
-                        )
+                            )
+                        }
+                        startActivity(intent)
+                    } else {
+                        chatListAnalytics.eventClickBroadcastButton()
+                        RouteManager.route(context, applink)
                     }
-                    startActivity(intent)
-                } else {
-                    chatListAnalytics.eventClickBroadcastButton()
-                    RouteManager.route(context, applink)
                 }
             }
-        })
-    }
-
-    private fun tryViewCreatedFirstSight() {
-        if (mUserSeen && mViewCreated) {
-            onViewCreatedFirstSight(view)
-        }
+        )
     }
 
     private fun initView(view: View) {
@@ -312,8 +338,10 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             when (it) {
                 is Success -> {
                     onSuccessGetChatList(it.data.data)
-                    if (GlobalConfig.isSellerApp() && isFirstPage())  {
+                    if (GlobalConfig.isSellerApp() && isFirstPage()) {
                         chatItemListViewModel.getOperationalInsight(userSession.shopId)
+                    } else if (!GlobalConfig.isSellerApp() && isFirstPage()) {
+                        chatItemListViewModel.getChatListTicker()
                     }
                 }
                 is Fail -> onFailGetChatList(it.throwable)
@@ -358,15 +386,84 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
+            } else if (chatItemListViewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
+                addBubbleChatTicker()
             }
+        }
+
+        chatItemListViewModel.chatListTicker.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                val tickerChatListIndex = adapter?.list?.indexOfFirst { it -> it is ChatListTickerUiModel }
+
+                if (tickerChatListIndex == RecyclerView.NO_POSITION) {
+                    setChatListTickerBuyer(result.data)
+                    setChatListTickerSeller(result.data)
+                }
+            }
+        }
+    }
+
+    private fun setChatListTickerBuyer(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerBuyer.enable && !isTabSeller()) {
+            val tickerChatListBuyer = ChatListTickerUiModel(
+                result.tickerBuyer.message,
+                result.tickerBuyer.tickerType,
+                applink = ApplinkConst.TokoFood.TOKOFOOD_ORDER
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListBuyer)
+        }
+    }
+
+    private fun setChatListTickerSeller(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerSeller.enable && isTabSeller()) {
+            val tickerChatListSeller = ChatListTickerUiModel(
+                result.tickerSeller.message,
+                result.tickerSeller.tickerType,
+                applink = String.EMPTY
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListSeller)
+        }
+    }
+
+    private fun addBubbleChatTicker() {
+        val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
+            message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+        ).apply {
+            this.showCloseButton = true
+            this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
+        }
+        adapter?.addElement(Int.ZERO, chatListTicker)
+    }
+
+    override fun onChatListTickerClicked(applink: String) {
+        if (applink.isNotBlank()) {
+            context?.let {
+                when (applink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
+                }
+                RouteManager.route(it, applink)
+            }
+        }
+    }
+
+    override fun onDismissTicker(element: ChatListTickerUiModel) {
+        adapter?.removeElement(element)
+        if (element.sharedPreferenceKey.isNotBlank()) {
+            chatItemListViewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
         }
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
         adapter?.let { adapter ->
             if (
-                    (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
-                    filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+                (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
+                filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
             ) {
                 return
             }
@@ -374,11 +471,13 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             val index = adapter.list.indexOfFirst { chat ->
                 return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
+
             val shouldUpdateReadStatus = !newChat.isFromMySelf(getRole(), userSession.userId)
             updateItemOnIndex(
                 index,
                 newChat,
-                shouldUpdateExistingChatReadStatus = shouldUpdateReadStatus)
+                shouldUpdateExistingChatReadStatus = shouldUpdateReadStatus
+            )
         }
     }
 
@@ -393,14 +492,14 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 index >= adapter.list.size -> {
                     return
                 }
-                //not found on list
+                // not found on list
                 index == RecyclerView.NO_POSITION -> {
                     if (!newChat.isFromMySelf(getRole(), userSession.userId)) {
                         adapter.onNewItemChatMessage(newChat, chatItemListViewModel.pinnedMsgId)
                         increaseNotificationCounter()
                     }
                 }
-                //found on list, not the first
+                // found on list, not the first
                 index >= 0 -> {
                     adapter.onNewIncomingChatMessage(
                         index = index,
@@ -417,9 +516,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
         adapter?.let { adapter ->
             if (
-                    (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
-                    adapter.list.isEmpty() ||
-                    filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+                (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
+                adapter.list.isEmpty() ||
+                filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
             ) {
                 return
             }
@@ -474,7 +573,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun getAdapterTypeFactory(): ChatListTypeFactoryImpl {
-        return ChatListTypeFactoryImpl(this, chatListAnalytics)
+        return ChatListTypeFactoryImpl(this, this, chatListAnalytics)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -491,6 +590,23 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
+    override fun onChatListTickerImpressed(applink: String) {
+        if (applink.isNotBlank()) {
+            when (applink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
+        }
+    }
+
+    private fun getRoleStr(): String {
+        return if (isTabSeller()) ChatListAnalytic.Other.SELLER else ChatListAnalytic.Other.BUYER
+    }
+
     private fun showFilterDialog() {
         activity?.let {
             if (filterMenu.isAdded) return@let
@@ -498,8 +614,11 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             val arrayFilterString = chatItemListViewModel.getFilterTitles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, hasCheck = true))
-                else itemMenus.add(TopchatItemMenu(title))
+                if (index == filterChecked) {
+                    itemMenus.add(TopchatItemMenu(title, hasCheck = true))
+                } else {
+                    itemMenus.add(TopchatItemMenu(title))
+                }
             }
 
             val title = getString(R.string.menu_chat_filter)
@@ -556,8 +675,12 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         activity?.let {
             with(chatListAnalytics) {
                 eventClickChatList(
-                        if (isTabSeller()) ChatListActivity.SELLER_ANALYTICS_LABEL
-                        else ChatListActivity.BUYER_ANALYTICS_LABEL)
+                    if (isTabSeller()) {
+                        ChatListActivity.SELLER_ANALYTICS_LABEL
+                    } else {
+                        ChatListActivity.BUYER_ANALYTICS_LABEL
+                    }
+                )
             }
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -637,16 +760,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         chatItemListViewModel.isChatAdminEligible.removeObservers(this)
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (!mUserSeen && isVisibleToUser) {
-            mUserSeen = true
-            onUserFirstSight()
-            tryViewCreatedFirstSight()
-        }
-        onUserVisibleChanged(isVisibleToUser)
-    }
-
     override fun onScrollToTop() {
         rv?.post {
             rv?.smoothScrollToPosition(RV_TOP_POSITION)
@@ -662,7 +775,8 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
         val operationalInsightBottomSheet = OperationalInsightBottomSheet(
-            element, userSession.shopId
+            element,
+            userSession.shopId
         )
         operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
         TopChatAnalyticsKt.eventClickOperationalInsightTicker(
@@ -682,19 +796,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
-    private fun onViewCreatedFirstSight(view: View?) {
-        Timber.d("$sightTag onViewCreatedFirstSight")
+    private fun notifyAndGetChatListMessage(view: View?) {
         chatTabListContract?.notifyViewCreated()
         chatItemListViewModel.getChatListMessage(1, filterChecked, sightTag)
-    }
-
-    private fun onUserFirstSight() {
-        Timber.d("$sightTag onUserFirstSight")
-    }
-
-
-    private fun onUserVisibleChanged(visible: Boolean) {
-        Timber.d("$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -770,25 +874,27 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {
         val msgId = element.msgId
-        chatItemListViewModel.pinUnpinChat(msgId, isPinChat,
-                {
-                    element.updatePinStatus(isPinChat)
-                    if (isPinChat) {
-                        // chat pinned.
-                        onSuccessPinChat(element, position)
-                    } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
-                        // chat unpinned and can be restored to current list.
-                        onSuccessUnpinPreviouslyLoadedChat(element, position)
-                    } else {
-                        // check if it can be repositioned in the middle or append at the end when
-                        // hasNext is false. else chat unpinned and can not be restored
-                        // to current list, just remove the item.
-                        onSuccessUnpinChat(element, position)
-                    }
-                },
-                {
-                    showSnackbarError(it)
+        chatItemListViewModel.pinUnpinChat(
+            msgId,
+            isPinChat,
+            {
+                element.updatePinStatus(isPinChat)
+                if (isPinChat) {
+                    // chat pinned.
+                    onSuccessPinChat(element, position)
+                } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
+                    // chat unpinned and can be restored to current list.
+                    onSuccessUnpinPreviouslyLoadedChat(element, position)
+                } else {
+                    // check if it can be repositioned in the middle or append at the end when
+                    // hasNext is false. else chat unpinned and can not be restored
+                    // to current list, just remove the item.
+                    onSuccessUnpinChat(element, position)
                 }
+            },
+            {
+                showSnackbarError(it)
+            }
         )
     }
 
@@ -800,11 +906,11 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
         adapter?.unpinChatItem(
-                element,
-                position,
-                chatItemListViewModel.pinnedMsgId.size,
-                chatItemListViewModel.chatListHasNext,
-                chatItemListViewModel.unpinnedMsgId
+            element,
+            position,
+            chatItemListViewModel.pinnedMsgId.size,
+            chatItemListViewModel.chatListHasNext,
+            chatItemListViewModel.unpinnedMsgId
         )
         chatItemListViewModel.pinnedMsgId.remove(element.msgId)
         showToaster(R.string.title_success_unpin_chat)
@@ -826,14 +932,14 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    .show()
+                .show()
         }
     }
 
     private fun showToaster(@StringRes message: Int) {
         view?.let {
             Toaster.build(it, it.context.getString(message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    .show()
+                .show()
         }
     }
 
@@ -872,7 +978,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun getRole(): Int {
-        return if(isTabSeller()) {
+        return if (isTabSeller()) {
             RoleType.SELLER
         } else {
             RoleType.BUYER
@@ -885,7 +991,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onResume() {
         super.onResume()
-        if(!isFromTopChatRoom()) {
+        if (!isFromTopChatRoom()) {
             adapter?.resetActiveChatIndicator()
         }
     }
@@ -893,10 +999,11 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_TAB_TITLE = "chat_tab_title"
-        const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
-        const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
-        const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
+        const val CHAT_SELLER_EMPTY = TokopediaImageUrl.CHAT_SELLER_EMPTY
+        const val CHAT_BUYER_EMPTY = TokopediaImageUrl.CHAT_BUYER_EMPTY
+        const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
+        const val ON_CREATE_KEY = "android_chatlist_oncreate"
 
         private const val RV_TOP_POSITION = 0
 
@@ -908,6 +1015,5 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             fragment.arguments = bundle
             return fragment
         }
-
     }
 }

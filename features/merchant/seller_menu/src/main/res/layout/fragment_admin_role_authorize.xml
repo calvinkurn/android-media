@@ -17,8 +17,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_admin_role"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

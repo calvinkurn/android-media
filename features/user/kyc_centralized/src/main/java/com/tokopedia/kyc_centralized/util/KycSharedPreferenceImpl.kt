@@ -1,7 +1,7 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.SharedPreferences
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,6 +26,20 @@ class KycSharedPreferenceImpl @Inject constructor(
         sharedPreferences.edit().remove(key).apply()
     }
 
+    override fun saveStringCache(key: String, value: String) {
+        sharedPreferences.edit()
+            .putString(key, value)
+            .apply()
+    }
+
+    override fun getStringCache(key: String): String {
+        return sharedPreferences.getString(key, "").orEmpty()
+    }
+
+    override fun removeStringCache(key: String) {
+        sharedPreferences.edit().remove(key).apply()
+    }
+
     private val String.toPreservedByteArray: ByteArray
         get() {
             return this.toByteArray(Charsets.ISO_8859_1)
@@ -41,4 +55,7 @@ interface KycSharedPreference {
     fun saveByteArrayCache(key: String, data: ByteArray)
     fun getByteArrayCache(key: String): ByteArray?
     fun removeCache(key: String)
+    fun saveStringCache(key: String, value: String)
+    fun getStringCache(key: String): String
+    fun removeStringCache(key: String)
 }

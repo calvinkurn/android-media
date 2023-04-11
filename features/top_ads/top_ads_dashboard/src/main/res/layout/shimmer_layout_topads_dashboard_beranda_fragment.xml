@@ -109,7 +109,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Static_White"
+        android:background="@color/Unify_Background"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.LoaderUnify

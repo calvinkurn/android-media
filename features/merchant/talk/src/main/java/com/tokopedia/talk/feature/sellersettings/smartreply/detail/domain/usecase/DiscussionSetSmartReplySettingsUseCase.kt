@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -7,7 +8,10 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.Discussi
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class DiscussionSetSmartReplySettingsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionSetSmartReplySettingResponseWrapper>(graphqlRepository) {
+class DiscussionSetSmartReplySettingsUseCase @Inject constructor(
+    @ApplicationContext
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<DiscussionSetSmartReplySettingResponseWrapper>(graphqlRepository) {
 
     companion object {
         const val PARAM_SWITCHED_ON = "switchedOn"

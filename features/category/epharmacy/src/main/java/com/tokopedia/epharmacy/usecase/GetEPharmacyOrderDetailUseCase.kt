@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-@GqlQuery("GQL_FETCH_ORDER_DETAILS_QUERY",GQL_FETCH_ORDER_DETAILS_QUERY)
+@GqlQuery("GqlFetchOrderDetailsQuery",GQL_FETCH_ORDER_DETAILS_QUERY)
 class GetEPharmacyOrderDetailUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<EPharmacyDataResponse>(graphqlRepository) {
 
@@ -17,7 +17,7 @@ class GetEPharmacyOrderDetailUseCase @Inject constructor(graphqlRepository: Grap
         try {
             this.setTypeClass(EPharmacyDataResponse::class.java)
             this.setRequestParams(getRequestParams(orderId))
-            this.setGraphqlQuery(GQL_FETCH_ORDER_DETAILS_QUERY)
+            this.setGraphqlQuery(GqlFetchOrderDetailsQuery())
             this.execute(
                 { result ->
                     onSuccess(result)

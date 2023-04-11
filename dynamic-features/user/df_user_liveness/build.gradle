@@ -1,12 +1,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-
-repositories{
-    flatDir {
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
+apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -32,6 +27,12 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
     }
 
     // Specifies 4 flavor dimensions.

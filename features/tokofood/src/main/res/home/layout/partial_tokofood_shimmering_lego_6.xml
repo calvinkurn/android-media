@@ -25,42 +25,42 @@
         android:layout_marginLeft="12dp"
         app:loader_type="rect"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image_1"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="4dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="0dp"
+        app:layout_constraintWidth_percent="0.33"
         app:layout_constraintTop_toBottomOf="@+id/loader_desc"
         app:layout_constraintStart_toStartOf="parent"
-        >
+        />
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="4dp"
-            app:loader_type="rect"
-            app:loader_corner_radius="0dp"
-            android:layout_weight="1"
-            />
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image_2"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="4dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="0dp"
+        android:layout_marginLeft="2dp"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintTop_toBottomOf="@+id/loader_desc"
+        app:layout_constraintStart_toEndOf="@id/loader_image_1"
+        />
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="4dp"
-            app:loader_type="rect"
-            app:loader_corner_radius="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_weight="1"
-            />
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="2dp"
-            app:loader_type="rect"
-            app:loader_corner_radius="0dp"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image_3"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="2dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="0dp"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintTop_toBottomOf="@+id/loader_desc"
+        app:layout_constraintStart_toEndOf="@id/loader_image_2"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

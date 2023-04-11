@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
@@ -42,15 +43,14 @@
 
             <com.tokopedia.loginregister.common.view.PartialRegisterInputView
                 android:id="@+id/login_input_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl5"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl5"
                 android:layout_marginBottom="@dimen/spacing_lvl3">
 
                 <View
@@ -70,7 +70,7 @@
                     android:padding="@dimen/spacing_lvl4"
                     android:text="@string/or_login_with_space"
                     android:textColor="@color/Unify_N700_32"
-                    app:typographyType="body_3"
+                    app:typographyType="display_3"
                     app:typographyWeight="reguler" />
             </RelativeLayout>
 
@@ -79,8 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/spacing_lvl5"
-                android:layout_marginRight="@dimen/spacing_lvl5"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:contentDescription="@string/content_desc_fingerprint_button"
                 android:gravity="center"
@@ -95,8 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/spacing_lvl5"
-                android:layout_marginRight="@dimen/spacing_lvl5"
+                android:layout_marginHorizontal="16dp"
                 android:contentDescription="@string/content_desc_socmed_btn_phone"
                 android:text="@string/another_method"
                 android:textAllCaps="false"

@@ -29,12 +29,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.commonTopupBills)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
@@ -55,6 +56,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -95,7 +98,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
 }
 

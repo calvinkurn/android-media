@@ -49,6 +49,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageToLoad
 import com.tokopedia.hotel.common.util.MutationHotelCheckout
 import com.tokopedia.hotel.common.util.QueryHotelCancelVoucher
 import com.tokopedia.hotel.common.util.QueryHotelGetCart
@@ -358,7 +359,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding?.ivHotelInfoImage?.clipToOutline = true
         }
-        binding?.ivHotelInfoImage?.loadIcon(property.image.urlMax300){
+        binding?.ivHotelInfoImage?.loadIcon(property.getImageToLoad(context)){
             setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
         }
     }
@@ -669,11 +670,17 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun validateData(): Boolean {
         var isValid = true
-        if ((binding?.tvRoomRequestInput?.getEditableValue().toString().length) > roomRequestMaxCharCount) isValid = false
-        if (binding?.radioButtonContactGuest?.isChecked == true && binding?.tvGuestInput?.getEditableValue()?.isEmpty() == true) {
+        val guestInputName = binding?.tvGuestInput?.getEditableValue() ?: ""
+        val roomRequestInput = binding?.tvRoomRequestInput?.getEditableValue()
+
+        if ((roomRequestInput.toString().length) > roomRequestMaxCharCount) isValid = false
+
+        if (binding?.radioButtonContactGuest?.isChecked == true && guestInputName.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
-        } else if (binding?.tvGuestInput?.getEditableValue()?.isNotEmpty() == true && !validateNameIsAlphabetOnly(binding?.tvGuestInput?.getEditableValue() ?: "")) {
+        } else if (binding?.radioButtonContactSelf?.isChecked == true) {
+            isValid = true
+        } else if (guestInputName.isNotEmpty() && !validateNameIsAlphabetOnly(guestInputName)) {
             toggleGuestFormError(true)
             isValid = false
         }

@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class UserProfileIsFollow(
     @SerializedName("feedXProfileIsFollowing")
-    val profileHeader: ProfileUserFollowing
+    val profileHeader: ProfileUserFollowing,
 )
 
 data class ProfileUserFollowing(
     @SerializedName("isUserFollowing")
-    val items: MutableList<FollowingProfile>
+    val items: MutableList<FollowingProfile>,
 )
 
 data class ProfileIsFollowing(
     @SerializedName("isUserFollowing")
-    val items: MutableList<FollowingProfile>
+    val items: MutableList<FollowingProfile>,
 )
 
 data class FollowingProfile(
@@ -25,5 +25,5 @@ data class FollowingProfile(
     val encryptedUserID: String,
 
     @SerializedName("status")
-    val status: Boolean
+    val status: Boolean,
 )

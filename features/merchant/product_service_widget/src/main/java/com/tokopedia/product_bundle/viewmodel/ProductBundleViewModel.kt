@@ -12,6 +12,7 @@ import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -168,10 +169,11 @@ class ProductBundleViewModel @Inject constructor(
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
                     requestData = RequestData(
                         variantDetail = true,
-                        CheckCampaign = true,
-                        BundleGroup = true,
-                        Preorder = true,
-                        BundleStats = true,
+                        checkCampaign = true,
+                        bundleGroup = true,
+                        preorder = true,
+                        bundleStats = true,
+                        shopInformation = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
@@ -244,7 +246,8 @@ class ProductBundleViewModel @Inject constructor(
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
             processDay = bundleInfo.preorder.processTime.toLongOrZero(),
-            processTypeNum = bundleInfo.preorder.processTypeNum
+            processTypeNum = bundleInfo.preorder.processTypeNum,
+            totalSold = bundleInfo.bundleStats.totalSold.toIntSafely()
         )
     }
 
@@ -255,13 +258,13 @@ class ProductBundleViewModel @Inject constructor(
                 productId = bundleItem.productID,
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
-                productQuantity = bundleItem.quantity,
+                productQuantity = bundleItem.getPreviewMinOrder().coerceAtLeast(ATC_BUNDLE_QUANTITY),
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
-                    originalPrice = bundleItem.getPreviewOriginalPrice(),
-                    bundlePrice = bundleItem.getPreviewBundlePrice()
+                    originalPrice = bundleItem.getMultipliedOriginalPrice(),
+                    bundlePrice = bundleItem.getMultipliedBundlePrice()
                 ),
                 productVariant = if (productVariant.hasVariant) productVariant else null
             )
@@ -272,7 +275,7 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
-                quantity = ATC_BUNDLE_QUANTITY,
+                quantity = productBundleDetail.productQuantity,
                 shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,
@@ -297,6 +300,7 @@ class ProductBundleViewModel @Inject constructor(
                 this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
                 this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
                 this.selectedVariantText = getSelectedVariantText(productVariant, this.selectedVariantId ?: "")
+                this.productImageUrl = selectedProductVariant.getVariantPicture()
             }
         }
         return target
@@ -334,11 +338,11 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun calculateTotalPrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.originalPrice }.sum()
+        return productBundleDetails.map { it.originalPrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalBundlePrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.bundlePrice }.sum()
+        return productBundleDetails.map { it.bundlePrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {

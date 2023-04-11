@@ -143,7 +143,12 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
         (mPresenter as InboxListContract.Presenter).getTicketList(null)
         (mPresenter as InboxListContract.Presenter).getTopBotStatus()
         settingOnClickListener()
-        btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
+        btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(
+            MethodChecker.getDrawable(
+                this,
+                R.drawable.contactus_ic_filter_list
+            ), null, null, null
+        )
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
         editText?.setListener((mPresenter as InboxListContract.Presenter).getSearchListener())
     }
@@ -206,7 +211,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
             contactUsHome.putExtra(KEY_TITLE, getString(R.string.contact_us_title_home))
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
-            ContactUsTracking.sendGTMInboxTicket(this, "",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.InboxEmpty)

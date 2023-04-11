@@ -17,7 +17,11 @@ class EmptyStateUseCase @Inject constructor() {
             it.selectedFilters = null
             it.selectedSort = null
             it.noOfPagesLoaded = 0
-            if(it.name == ComponentsList.ProductCardCarousel.componentName ||it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName)
+            if (it.name == ComponentsList.ProductCardCarousel.componentName
+                || it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName
+                || it.name == ComponentsList.MerchantVoucherCarousel.componentName
+                || it.name == ComponentsList.ShopCardView.componentName
+            )
                 it.shouldRefreshComponent = true
             getComponent(it.parentFilterComponentId?:it.parentComponentId, it.pageEndPoint)?.let { item ->
                 val filterItem = if (item.name == ComponentNames.QuickFilter.componentName)

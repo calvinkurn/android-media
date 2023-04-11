@@ -62,8 +62,32 @@ data class Product(
     val stockAlertCount: Int = 0,
     @Expose
     @SerializedName("stockAlertActive")
-    val stockAlertActive: Boolean = false
+    val stockAlertActive: Boolean = false,
+    @Expose
+    @SerializedName("haveNotifyMeOOS")
+    val haveNotifyMeOOS: Boolean = false,
+    @Expose
+    @SerializedName("notifyMeOOSCount")
+    val notifyMeOOSCount: String,
+    @Expose
+    @SerializedName("notifyMeOOSWording")
+    val notifyMeOOSWording: String,
+    @Expose
+    @SerializedName("isEmptyStock")
+    val isEmptyStock: Boolean = false,
+    @Expose
+    @SerializedName("manageProductData")
+    val manageProductData: ManageProductData = ManageProductData()
 ) {
+
+    data class ManageProductData(
+        @Expose
+        @SerializedName("isStockGuaranteed")
+        val isStockGuaranteed: Boolean = false,
+        @Expose
+        @SerializedName("isTobacco")
+        val isTobacco: Boolean = false,
+    )
 
     fun isTopAds(): Boolean {
         return topAds != null && topAds.isApplied()

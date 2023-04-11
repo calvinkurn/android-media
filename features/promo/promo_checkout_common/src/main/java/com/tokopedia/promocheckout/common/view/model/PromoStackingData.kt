@@ -11,7 +11,7 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var description: String = "",
                              var title: String = "",
                              var counterLabel: String = "",
-                             var amount: Int = 0,
+                             var amount: Long = 0L,
                              var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY,
                              var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL,
                              var titleDefault: String = "",
@@ -33,7 +33,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         var description: String = ""
         var title: String = ""
         var counterLabel: String = ""
-        var amount: Int = 0
+        var amount: Long = 0L
         var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY
         var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL
         var titleDefault: String = ""
@@ -45,7 +45,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         fun description(description: String) = apply { this.description = description }
         fun title(title: String) = apply { this.title = title }
         fun counterLabel(counterLabel: String) = apply { this.counterLabel = counterLabel }
-        fun amount(amount: Int) = apply { this.amount = amount }
+        fun amount(amount: Long) = apply { this.amount = amount }
         fun state(state: TickerPromoStackingCheckoutView.State) = apply { this.state = state }
         fun variant(variant: TickerPromoStackingCheckoutView.Variant) = apply { this.variant = variant }
         fun titleDefault(titleDefault: String) = apply { this.titleDefault = titleDefault }

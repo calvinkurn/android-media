@@ -1,21 +1,21 @@
 package com.tokopedia.digital_checkout.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
-import kotlinx.android.synthetic.main.item_digital_checkout_detail.view.*
-import kotlinx.android.synthetic.main.item_digital_checkout_detail_subtitle.view.*
+import com.tokopedia.digital_checkout.databinding.ItemDigitalCheckoutDetailBinding
+import com.tokopedia.digital_checkout.databinding.ItemDigitalCheckoutDetailSubtitleBinding
 
 /**
  * @author by jessica on 11/01/21
  */
 
-class DigitalCartDetailInfoAdapter(private val actionListener: ActionListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DigitalCartDetailInfoAdapter(
+    private val actionListener: ActionListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var infoItems: MutableList<Any> = mutableListOf()
     private var mainInfoItemCount: Int = 0
@@ -23,17 +23,24 @@ class DigitalCartDetailInfoAdapter(private val actionListener: ActionListener)
     var isExpanded = false
     set(value) {
         field = value
-        if (isExpanded) actionListener.expandAdditionalList() else actionListener.collapseAdditionalList()
+        if (isExpanded) actionListener.expandAdditionalList()
+        else actionListener.collapseAdditionalList()
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == DigitalCartDetailTitleViewHolder.LAYOUT) {
-            val view: View = LayoutInflater.from(parent.context).inflate(DigitalCartDetailTitleViewHolder.LAYOUT, parent, false)
-            DigitalCartDetailTitleViewHolder(view)
+            val binding = ItemDigitalCheckoutDetailSubtitleBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+            DigitalCartDetailTitleViewHolder(binding)
         } else {
-            val view: View = LayoutInflater.from(parent.context).inflate(DigitalCartDetailViewHolder.LAYOUT, parent, false)
-            DigitalCartDetailViewHolder(view)
+            val binding = ItemDigitalCheckoutDetailBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+            DigitalCartDetailViewHolder(binding)
         }
     }
 
@@ -84,13 +91,14 @@ class DigitalCartDetailInfoAdapter(private val actionListener: ActionListener)
         }
     }
 
-    class DigitalCartDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DigitalCartDetailViewHolder(private val binding: ItemDigitalCheckoutDetailBinding)
+        : RecyclerView.ViewHolder(binding.root) {
         companion object {
             val LAYOUT = R.layout.item_digital_checkout_detail
         }
 
         fun bind(item: CartItemDigital) {
-            with(itemView) {
+            with(binding) {
                 tvCheckoutDetailLabel.text = item.label
                 tvCheckoutDetailValue.text = item.value
             }
@@ -98,13 +106,14 @@ class DigitalCartDetailInfoAdapter(private val actionListener: ActionListener)
         }
     }
 
-    class DigitalCartDetailTitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DigitalCartDetailTitleViewHolder(private val binding: ItemDigitalCheckoutDetailSubtitleBinding)
+        : RecyclerView.ViewHolder(binding.root) {
         companion object {
             val LAYOUT = R.layout.item_digital_checkout_detail_subtitle
         }
 
         fun bind(item: CartItemDigitalWithTitle) {
-            itemView.tvCheckoutDetailSubtitle.text = item.title
+            binding.tvCheckoutDetailSubtitle.text = item.title
         }
     }
 

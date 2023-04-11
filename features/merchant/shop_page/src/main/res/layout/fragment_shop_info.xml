@@ -25,7 +25,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
@@ -74,12 +74,15 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/image_warning"
-                android:layout_width="14dp"
+                android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/ic_warning"
+                app:icon_name="WARNING"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_color_light_disabled="@color/Unify_NN900"
+                app:icon_enable_state="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

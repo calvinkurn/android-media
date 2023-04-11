@@ -1,27 +1,22 @@
 package com.tokopedia.quest_widget.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.quest_widget.constants.QuestWidgetLocations
-import com.tokopedia.quest_widget.data.QuestWidgetListItem
+import com.tokopedia.quest_widget.data.QuestWidgetList
+import com.tokopedia.quest_widget.data.ResultStatus
 import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.quest_widget.util.LiveDataResult
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
 class QuestWidgetViewTest{
@@ -68,4 +63,54 @@ class QuestWidgetViewTest{
         assertEquals(questViewModel.questWidgetListLiveData.value?.status, LiveDataResult.STATUS.ERROR)
     }
 
+    @Test
+    fun `empty page allowed`(){
+          coEvery { userSession.isLoggedIn } returns true
+        questViewModel.getWidgetList(channel, channelSlug,"", userSession)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.ERROR)
+    }
+
+    @Test
+    fun `get quest widget data with null response`(){
+        coEvery { questWidgetUseCase.getResponse(any()) } returns null
+        questViewModel.getQuestWidgetData(channel, channelSlug, page)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.EMPTY_DATA)
+    }
+
+    @Test
+    fun `get quest widget data with not 200 status code`(){
+        val widgetData : WidgetData = mockk()
+        val widgetList = QuestWidgetList(questWidgetList = listOf())
+        every { widgetData.questWidgetList } returns widgetList
+        coEvery { questWidgetUseCase.getResponse(any()) } returns widgetData
+        questViewModel.getQuestWidgetData(channel, channelSlug, page)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.ERROR)
+    }
+
+    @Test
+    fun `get quest widget data with no eligibility`(){
+        val widgetData : WidgetData = mockk()
+        val widgetList = QuestWidgetList(questWidgetList = listOf(), resultStatus = ResultStatus(code = "200"), isEligible = false)
+        every { widgetData.questWidgetList } returns widgetList
+        coEvery { questWidgetUseCase.getResponse(any()) } returns widgetData
+        questViewModel.getQuestWidgetData(channel, channelSlug, page)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.EMPTY_DATA)
+    }
+
+    @Test
+    fun `get quest widget data with eligibility`(){
+        val widgetData : WidgetData = mockk()
+        val widgetList = QuestWidgetList(questWidgetList = listOf(), resultStatus = ResultStatus(code = "200"), isEligible = true)
+        every { widgetData.questWidgetList } returns widgetList
+        coEvery { questWidgetUseCase.getResponse(any()) } returns widgetData
+        questViewModel.getQuestWidgetData(channel, channelSlug, page)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.SUCCESS)
+    }
+
+    @Test
+    fun `get quest widget data with error`(){
+        coEvery { questWidgetUseCase.getResponse(any()) } throws Exception("error")
+        questViewModel.getQuestWidgetData(channel, channelSlug, page)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status,LiveDataResult.STATUS.ERROR)
+    }
 }

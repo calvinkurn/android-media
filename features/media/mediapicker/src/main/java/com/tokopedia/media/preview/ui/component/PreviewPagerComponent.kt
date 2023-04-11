@@ -88,12 +88,12 @@ class PreviewPagerComponent(
     }
 
     private fun setData(medias: List<MediaUiModel>) {
-        val asPreviewUiModel = medias.map {
+        val toPreviewUiModel = medias.map {
             PreviewUiModel(it)
         }
 
         this.medias.clear()
-        this.medias.addAll(asPreviewUiModel)
+        this.medias.addAll(toPreviewUiModel)
     }
 
     private fun getData(media: MediaUiModel) = medias.firstOrNull {
@@ -101,13 +101,11 @@ class PreviewPagerComponent(
     }
 
     private fun attachStateListener() = object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
-            v?.post {
-                adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
-            }
+        override fun onViewAttachedToWindow(view: View) {
+            view.post { adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start() }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
         }
     }

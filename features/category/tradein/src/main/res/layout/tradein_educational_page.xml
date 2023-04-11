@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scroll_parent"
     android:layout_width="match_parent"
-    android:background="@color/Unify_Background"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scroll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="72dp"
+        android:orientation="vertical"
+        android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
         android:clickable="true"
         android:focusable="true">
 
@@ -27,7 +30,6 @@
             app:toolbarAlwaysShowShadow="false"
             app:toolbarBackButton="back"
             app:toolbarContentType="typeTitle"
-            app:toolbarInitialFillColor="@color/Unify_N0"
             app:toolbarInitialTheme="light"
             app:toolbarTitle="Tukar Tambah" />
 
@@ -210,7 +212,7 @@
                     app:layout_constraintTop_toBottomOf="@id/iv_tradein_exchange_adv_3"
                     app:typographyType="heading_6" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </com.tokopedia.unifycomponents.CardUnify2>
@@ -287,7 +289,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
             app:imageDpiSupportType="singleDpi"
@@ -330,7 +331,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_2.png"
             app:imageDpiSupportType="singleDpi"
@@ -373,7 +373,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_3.png"
             app:imageDpiSupportType="singleDpi"
@@ -416,7 +415,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_4.png"
             app:imageDpiSupportType="singleDpi"
@@ -479,7 +477,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_5.png"
             app:imageDpiSupportType="singleDpi"
@@ -523,18 +520,25 @@
             tools:text="Dengan mulai Tukar Tambah, kamu setuju dengan
 Syarat &amp; Ketentuan yang berlaku." />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:gravity="center_horizontal"
             android:text="@string/tradein_tukar_tambah_sekarang"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edu_subtext_6" />
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -92,7 +92,7 @@
                 tools:visibility="visible"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:layout_marginTop="2dp"
                 />
 
             <androidx.recyclerview.widget.RecyclerView

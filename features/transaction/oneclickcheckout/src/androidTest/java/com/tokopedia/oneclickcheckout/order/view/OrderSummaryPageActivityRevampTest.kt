@@ -69,37 +69,37 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = null,
+                productSlashPriceLabel = null,
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertAddressRevamp(
-                    addressName = "Address 1 - User 1 (1)",
-                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                addressName = "Address 1 - User 1 (1)",
+                addressDetail = "Address Street 1, District 1, City 1, Province 1 1"
             )
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "Kurir Rekomendasi",
-                    shippingPrice = "Rp15.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "Kurir Rekomendasi",
+                shippingPrice = "Rp15.000",
+                shippingEta = null
             )
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
@@ -108,26 +108,26 @@ class OrderSummaryPageActivityRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp116.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp116.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -141,8 +141,8 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertAddressRevamp(
-                    addressName = "Address 1 - User 1 (1)",
-                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                addressName = "Address 1 - User 1 (1)",
+                addressDetail = "Address Street 1, District 1, City 1, Province 1 1"
             )
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_ADDRESS_2_RESPONSE_PATH
@@ -151,16 +151,16 @@ class OrderSummaryPageActivityRevampTest {
             }
 
             assertAddressRevamp(
-                    addressName = "Address 2 - User 1 (2)",
-                    addressDetail = "Address Street 2, District 2, City 2, Province 2 2",
+                addressName = "Address 2 - User 1 (2)",
+                addressDetail = "Address Street 2, District 2, City 2, Province 2 2"
             )
 
             assertPayment("Rp116.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -174,10 +174,10 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "Kurir Rekomendasi",
-                    shippingPrice = "Rp15.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "Kurir Rekomendasi",
+                shippingPrice = "Rp15.000",
+                shippingEta = null
             )
 
             clickChangeDurationRevamp {
@@ -185,18 +185,18 @@ class OrderSummaryPageActivityRevampTest {
             }
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Next Day (1 hari)",
-                    shippingCourier = "JNE",
-                    shippingPrice = "Rp38.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Next Day (1 hari)",
+                shippingCourier = "JNE",
+                shippingPrice = "Rp38.000",
+                shippingEta = null
             )
 
             assertPayment("Rp139.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -210,10 +210,10 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "Kurir Rekomendasi",
-                    shippingPrice = "Rp15.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "Kurir Rekomendasi",
+                shippingPrice = "Rp15.000",
+                shippingEta = null
             )
 
             clickChangeCourierRevamp {
@@ -221,18 +221,18 @@ class OrderSummaryPageActivityRevampTest {
             }
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "AnterAja",
-                    shippingPrice = "Rp16.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "AnterAja",
+                shippingPrice = "Rp16.000",
+                shippingEta = null
             )
 
             assertPayment("Rp117.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -242,31 +242,36 @@ class OrderSummaryPageActivityRevampTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY, "payment2")
-            putExtra(PaymentListingActivity.EXTRA_RESULT_METADATA, "metadata")
-        }))
+        intending(anyIntent()).respondWith(
+            ActivityResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY, "payment2")
+                    putExtra(PaymentListingActivity.EXTRA_RESULT_METADATA, "metadata")
+                }
+            )
+        )
 
         orderSummaryPage {
             assertPaymentRevamp(
-                    paymentName = "Payment 1",
-                    paymentDetail = null
+                paymentName = "Payment 1",
+                paymentDetail = null
             )
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_PAYMENT_2_RESPONSE_PATH
             clickChangePaymentRevamp()
 
             assertPaymentRevamp(
-                    paymentName = "Payment 2",
-                    paymentDetail = "second payment"
+                paymentName = "Payment 2",
+                paymentDetail = "second payment"
             )
 
             assertPayment("Rp116.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -285,9 +290,9 @@ class OrderSummaryPageActivityRevampTest {
             assertPayment("Rp216.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -309,18 +314,18 @@ class OrderSummaryPageActivityRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp1.000",
-                        totalPrice = "Rp117.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp1.000",
+                    totalPrice = "Rp117.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
@@ -332,26 +337,26 @@ class OrderSummaryPageActivityRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = null,
-                        totalPrice = "Rp116.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = null,
+                    totalPrice = "Rp116.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -364,8 +369,9 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShipmentPromoRevamp(
-                    hasPromo = true,
-                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+                hasPromo = true,
+                promoDescription = "Tersedia Bebas Ongkir (4-6 hari)"
+            )
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 
@@ -374,37 +380,37 @@ class OrderSummaryPageActivityRevampTest {
             assertShipmentPromoRevamp(hasPromo = false)
 
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
-                    shippingPrice = null,
-                    shippingEta = null
+                shippingDuration = null,
+                shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
+                shippingPrice = null,
+                shippingEta = null
             )
 
             assertPayment("Rp101.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp0",
-                        isBbo = true,
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp101.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp0",
+                    isBbo = true,
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp101.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -417,8 +423,9 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShipmentPromoRevamp(
-                    hasPromo = true,
-                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+                hasPromo = true,
+                promoDescription = "Tersedia Bebas Ongkir (4-6 hari)"
+            )
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 
@@ -427,73 +434,76 @@ class OrderSummaryPageActivityRevampTest {
             assertShipmentPromoRevamp(hasPromo = false)
 
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
-                    shippingPrice = null,
-                    shippingEta = null
+                shippingDuration = null,
+                shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
+                shippingPrice = null,
+                shippingEta = null
             )
 
             assertPayment("Rp101.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp0",
-                        isBbo = true,
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp101.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp0",
+                    isBbo = true,
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp101.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
+
+            promoInterceptor.customValidateUseResponsePath = null
 
             clickChangeCourierRevamp {
                 chooseCourierWithText("Next Day (1 hari)")
             }
 
             assertShipmentPromoRevamp(
-                    hasPromo = true,
-                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+                hasPromo = true,
+                promoDescription = "Tersedia Bebas Ongkir (4-6 hari)"
+            )
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Next Day (1 hari)",
-                    shippingCourier = "JNE",
-                    shippingPrice = "Rp38.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Next Day (1 hari)",
+                shippingCourier = "JNE",
+                shippingPrice = "Rp38.000",
+                shippingEta = null
             )
 
             assertPayment("Rp139.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp38.000",
-                        isBbo = false,
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp139.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp38.000",
+                    isBbo = false,
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp139.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -507,16 +517,16 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "AnterAja",
-                    shippingPrice = "Rp16.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "AnterAja",
+                shippingPrice = "Rp16.000",
+                shippingEta = null
             )
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -553,35 +563,35 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = null,
+                productSlashPriceLabel = null,
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertAddressRevamp(
-                    addressName = "Address 1 - User 1 (1)",
-                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
-                    isMainAddress = true
+                addressName = "Address 1 - User 1 (1)",
+                addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                isMainAddress = true
             )
 
             assertShipmentError(
-                    errorMessage = "Durasi pengiriman tidak tersedia Ubah"
+                errorMessage = "Durasi pengiriman tidak tersedia Ubah"
             )
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
@@ -593,36 +603,36 @@ class OrderSummaryPageActivityRevampTest {
             }
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Next Day (1 hari)",
-                    shippingCourier = "JNE",
-                    shippingPrice = "Rp38.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Next Day (1 hari)",
+                shippingCourier = "JNE",
+                shippingPrice = "Rp38.000",
+                shippingEta = null
             )
 
             assertPayment("Rp139.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp38.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp139.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp38.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp139.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }

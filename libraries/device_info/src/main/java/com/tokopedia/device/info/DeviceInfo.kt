@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.installations.FirebaseInstallationsException
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import com.tokopedia.kotlin.extensions.backgroundCommit
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -133,26 +134,6 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    fun logIdentifier(context: Context, source: String) {
-        GlobalScope.launch {
-            try {
-                val hasFID = !getFirebaseId().isNullOrBlank()
-                ServerLogger.log(
-                    Priority.P2,
-                    "DEVICE_UNIQUE_ID",
-                    mapOf(
-                        "type" to "ads_id_empty",
-                        "source" to source,
-                        "hasUUID" to hasUuid(context).toString(),
-                        "hasFID" to hasFID.toString()
-                    )
-                )
-            } catch (ignored: Exception) {
-            }
-        }
-    }
-
-    @JvmStatic
     fun hasUuid(context: Context): Boolean {
         return try {
             val uuid = getUUID(context)
@@ -190,16 +171,9 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                getAdsIdSuspend(
-                    context, ({ adsId ->
-                        if (adsId.isEmpty()) {
-                            logIdentifier(context, "DeviceInfo")
-                        }
-                    }))
-                ""
-            } catch (e: Exception) {
-                ""
-            }
+                getAdsIdSuspend(context)
+            } catch (ignored: Exception) { }
+            ""
         }
     }
 
@@ -301,8 +275,16 @@ object DeviceInfo {
 
     private fun setCacheAdsId(context: Context, adsId: String) {
         val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        if (enabledBackgroundCommit()) {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).backgroundCommit()
+        } else {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        }
         cacheAdsId = adsId
+    }
+
+    private fun enabledBackgroundCommit(): Boolean {
+        return true
     }
 
     @JvmStatic

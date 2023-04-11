@@ -40,19 +40,14 @@ class GreenGradientButton @JvmOverloads constructor(
 
         val paddingTop = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_top_padding)?.toInt() ?: 0
         val paddingSide = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_side_padding)?.toInt() ?: 0
-        val lp = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-        lp.apply {
-            setPadding(paddingSide, paddingTop, paddingSide, paddingTop + shadowPadding)
-        }
-        layoutParams = lp
-
+        setPadding(paddingSide, paddingTop, paddingSide, paddingTop + shadowPadding)
         initPaintProps()
     }
 
     fun initPaintProps() {
         shadowStrokeWidth = 15.toPx().toFloat()
         blurRadius = 10.toPx().toFloat()
-        shadowColor = ContextCompat.getColor(context, com.tokopedia.promoui.common.R.color.promo_ui_com_shadow_color)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32)
 
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)

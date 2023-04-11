@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -23,7 +24,6 @@ import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
@@ -42,8 +42,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -66,7 +65,7 @@ class ShopPageCampaignFragment :
         private const val KEY_SHOP_REF = "SHOP_REF"
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
-        private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
+        private const val CONFETTI_URL = TokopediaImageUrl.CONFETTI_URL
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
         fun createInstance(
@@ -100,9 +99,6 @@ class ShopPageCampaignFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
-    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
-        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-    }
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
@@ -168,7 +164,8 @@ class ShopPageCampaignFragment :
                     isOwner,
                     isLogin,
                     isThematicWidgetShown,
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    shopId
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }
@@ -182,7 +179,7 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
-        if(shopCampaignTabAdapter.isAllWidgetLoading()){
+        if (shopCampaignTabAdapter.isAllWidgetLoading()) {
             setCampaignTabBackgroundGradient()
             checkShowCampaignTabConfetti()
         }
@@ -190,22 +187,22 @@ class ShopPageCampaignFragment :
     }
 
     private fun checkShowCampaignTabConfetti() {
-        if(isShowConfetti()){
+        if (isShowConfetti()) {
             setConfettiAlreadyShown()
             showConfetti()
         }
     }
 
     private fun showConfetti() {
-        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
+        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
     }
 
-    private fun setConfettiAlreadyShown(){
-        (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
+    private fun setConfettiAlreadyShown() {
+        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
     }
 
     override fun observeShopProductFilterParameterSharedViewModel() {}
@@ -282,7 +279,7 @@ class ShopPageCampaignFragment :
             VALUE_MULTIPLE_BUNDLING,
             selectedMultipleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onSingleBundleProductClicked(
@@ -309,7 +306,7 @@ class ShopPageCampaignFragment :
             VALUE_SINGLE_BUNDLING,
             selectedSingleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun impressionProductItemBundleMultiple(
@@ -372,7 +369,7 @@ class ShopPageCampaignFragment :
         )
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             model.id.orEmpty(),
             model.name.orEmpty(),
@@ -383,13 +380,14 @@ class ShopPageCampaignFragment :
             widgetModel.header.title,
             ShopUtil.getActualPositionFromIndex(position)
         )
-        goToPDP(model.id ?: "")
+        goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
+        position: Int,
+        parentPosition: Int
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             shopHomeProductUiModel.id.orEmpty(),
@@ -415,7 +413,9 @@ class ShopPageCampaignFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
             shopHomeNewProductLaunchCampaignUiModel.name,
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopCampaignTabTracker.clickCampaignTabProduct(
@@ -430,7 +430,7 @@ class ShopPageCampaignFragment :
             )
         }
         shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -469,7 +469,8 @@ class ShopPageCampaignFragment :
 
     override fun onClickCampaignBannerAreaNplWidget(
         model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int
+        widgetPosition: Int,
+        position: Int
     ) {
         shopCampaignTabTracker.clickShopBannerWidget(
             shopId,
@@ -505,19 +506,17 @@ class ShopPageCampaignFragment :
         override fun onProductCardThematicWidgetImpressListener(
             products: List<ProductCardUiModel>,
             position: Int,
-            campaignId: String,
-            campaignName: String,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?
         ) {
             products.firstOrNull()?.let {
                 shopCampaignTabTracker.impressionCampaignTabProduct(
                     it.id.orEmpty(),
                     it.name.orEmpty(),
                     it.displayedPrice.toLongOrZero(),
-                    campaignName,
+                    thematicWidgetUiModel?.name.orEmpty(),
                     shopId,
                     userId,
-                    campaignTitle,
+                    thematicWidgetUiModel?.header?.title.orEmpty(),
                     ShopUtil.getActualPositionFromIndex(position)
                 )
             }
@@ -525,19 +524,17 @@ class ShopPageCampaignFragment :
 
         override fun onProductCardThematicWidgetClickListener(
             product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?,
+            position: Int
         ) {
             shopCampaignTabTracker.clickCampaignTabProduct(
                 product.id.orEmpty(),
                 product.name.orEmpty(),
                 product.displayedPrice.toLongOrZero(),
-                campaignName,
+                thematicWidgetUiModel?.name.orEmpty(),
                 shopId,
                 userId,
-                campaignTitle,
+                thematicWidgetUiModel?.header?.title.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(position)
             )
             RouteManager.route(context, product.productUrl)
@@ -548,7 +545,7 @@ class ShopPageCampaignFragment :
                 campaignId = campaignId,
                 campaignName = campaignName,
                 shopId = shopId,
-                userId = userId,
+                userId = userId
             )
             RouteManager.route(context, appLink)
         }
@@ -558,7 +555,7 @@ class ShopPageCampaignFragment :
                 campaignId = campaignId,
                 campaignName = campaignName,
                 shopId = shopId,
-                userId = userId,
+                userId = userId
             )
             RouteManager.route(context, appLink)
         }
@@ -640,10 +637,11 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
                 }
-                if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
+                if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
+                }
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
                 val lastCompletelyVisibleItemPosition =
                     layoutManager?.findLastCompletelyVisibleItemPositions(
@@ -684,10 +682,11 @@ class ShopPageCampaignFragment :
         val shouldLoadFirstVisibleItem =
             shopCampaignTabAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
-            val position = if (shouldLoadLastVisibleItem)
+            val position = if (shouldLoadLastVisibleItem) {
                 lastVisibleItemPosition
-            else
+            } else {
                 firstVisibleItemPosition
+            }
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
 
@@ -747,11 +746,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.analytic
 
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -19,10 +20,12 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
@@ -35,6 +38,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
  * https://mynakama.tokopedia.com/datatracker/requestdetail/781
+ * New Seller Journey Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3581
  * */
 
 object SellerHomeTracking {
@@ -52,10 +56,7 @@ object SellerHomeTracking {
         }
         val map = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_CARD,
             label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
@@ -70,10 +71,7 @@ object SellerHomeTracking {
         }
         val map = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_CARD,
             label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
@@ -88,7 +86,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH,
             arrayOf(dataKey, emptyStatus, title).joinToString(" - ")
         )
@@ -103,7 +101,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_LINE_GRAPH,
                 TrackingConstant.SEE_MORE
@@ -121,7 +119,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_LINE_GRAPH,
                 TrackingConstant.EMPTY_STATE
@@ -134,7 +132,7 @@ object SellerHomeTracking {
     fun sendImpressionDescriptionEvent(dataKey: String) {
         val map = createEventMap(
             TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             TrackingConstant.IMPRESSION_WIDGET_DESCRIPTION,
             dataKey
         )
@@ -144,7 +142,7 @@ object SellerHomeTracking {
     fun sendClickDescriptionEvent(dataKey: String) {
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_DESCRIPTION,
                 TrackingConstant.SEE_MORE
@@ -157,8 +155,7 @@ object SellerHomeTracking {
     fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME)
-                .joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_PROGRESS_BAR,
             label = arrayOf(dataKey, stateColor, valueScore).joinToString(" - ")
         )
@@ -168,7 +165,7 @@ object SellerHomeTracking {
     fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_PROGRESS_BAR,
                 TrackingConstant.SEE_MORE
@@ -185,7 +182,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             TrackingConstant.IMPRESSION_WIDGET_POST,
             arrayOf(model.dataKey, emptyStatus, filterName).joinToString(" - ")
         )
@@ -199,7 +196,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_POST,
                 TrackingConstant.SEE_MORE
@@ -229,7 +226,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(TrackingConstant.CLICK_WIDGET_POST, TrackingConstant.POST).joinToString(" - "),
             arrayOf(
                 model.dataKey, emptyStatus, filterName,
@@ -246,7 +243,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_POST,
                 TrackingConstant.FILTER
@@ -263,10 +260,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_POST,
                 TrackingConstant.EMPTY_STATE
@@ -279,10 +273,7 @@ object SellerHomeTracking {
     fun sendClickCarouselCtaEvent(dataKey: String) {
         val map = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_BANNER,
                 TrackingConstant.SEE_MORE
@@ -299,10 +290,7 @@ object SellerHomeTracking {
     ) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_BANNER,
             label = arrayOf(dataKey, items[position].id, position.toString()).joinToString(" - ")
         )
@@ -316,10 +304,7 @@ object SellerHomeTracking {
     ) {
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_BANNER,
             label = arrayOf(dataKey, items[position].id, position.toString()).joinToString(" - ")
         )
@@ -331,10 +316,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_TABLE,
             label = arrayOf(model.dataKey, state).joinToString(" - ")
         )
@@ -351,10 +333,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE,
                 TrackingConstant.SWIPE
@@ -369,10 +348,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE,
                 TrackingConstant.SEE_MORE
@@ -391,7 +367,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE, dataKey).joinToString(" - "),
             arrayOf(state, url).joinToString(" - ")
         )
@@ -407,10 +383,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE,
                 TrackingConstant.EMPTY_STATE
@@ -427,7 +400,7 @@ object SellerHomeTracking {
 
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+            TrackingConstant.SELLER_APP_HOME,
             arrayOf(
                 TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE,
                 TrackingConstant.FILTER
@@ -442,10 +415,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_PIE_CHART,
             label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
         )
@@ -457,10 +427,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_PIE_CHART,
                 TrackingConstant.EMPTY_STATE
@@ -475,10 +442,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_PIE_CHART,
                 TrackingConstant.SEE_MORE
@@ -494,10 +458,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_BAR_CHART,
             label = arrayOf(model.dataKey, state, value).joinToString(" - ")
         )
@@ -510,10 +471,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_BAR_CHART,
                 TrackingConstant.EMPTY_STATE
@@ -529,10 +487,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_BAR_CHART,
                 TrackingConstant.SEE_MORE
@@ -545,10 +500,7 @@ object SellerHomeTracking {
     fun sendAnnouncementImpressionEvent(model: AnnouncementWidgetUiModel) {
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_ANNOUNCEMENT,
             label = model.dataKey
         )
@@ -558,10 +510,7 @@ object SellerHomeTracking {
     fun sendAnnouncementClickEvent(model: AnnouncementWidgetUiModel) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_ANNOUNCEMENT,
             label = model.dataKey
         )
@@ -576,10 +525,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_MULTI_LINE_GRAPH,
                 TrackingConstant.TRENDLINE
@@ -598,10 +544,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_MULTI_LINE_GRAPH,
                 TrackingConstant.SEE_MORE
@@ -617,10 +560,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_MULTI_LINE_GRAPH,
             label = arrayOf(model.dataKey, emptyStatus).joinToString(" - ")
         )
@@ -633,10 +573,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_MULTI_LINE_GRAPH,
                 TrackingConstant.EMPTY_STATE
@@ -671,10 +608,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_RECOMMENDATION,
                 TrackingConstant.SEE_MORE
@@ -709,10 +643,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_RECOMMENDATION,
                 TrackingConstant.HYPERLINK
@@ -748,10 +679,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_RECOMMENDATION,
             label = eventLabel
         )
@@ -761,10 +689,7 @@ object SellerHomeTracking {
     fun sendRecommendationItemClickEvent(dataKey: String, item: RecommendationItemUiModel) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = arrayOf(
                 TrackingConstant.CLICK_WIDGET_RECOMMENDATION,
                 TrackingConstant.RECOMMENDATION
@@ -780,10 +705,7 @@ object SellerHomeTracking {
     ) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_TICKER_HYPERLINK,
             label = arrayOf(
                 tickerId,
@@ -799,10 +721,7 @@ object SellerHomeTracking {
     ) {
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinToString(" - "),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_TICKER,
             label = arrayOf(
                 tickerId,
@@ -832,10 +751,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_MILESTONE,
             label = arrayOf(model.title, state).joinSpaceSeparator()
         )
@@ -855,10 +771,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_MILESTONE_CARD,
             label = arrayOf(mission.title, state, position).joinSpaceSeparator()
         )
@@ -878,10 +791,7 @@ object SellerHomeTracking {
 
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_MILESTONE_CARD,
             label = arrayOf(mission.title, state, position).joinSpaceSeparator()
         )
@@ -892,10 +802,7 @@ object SellerHomeTracking {
     fun sendMilestoneFinishedMissionCtaClickEvent() {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_MILESTONE_CARD_FINISHED
         )
 
@@ -905,10 +812,7 @@ object SellerHomeTracking {
     fun sendMilestoneWidgetCtaClickEvent() {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_MILESTONE_SEE_MORE
         )
 
@@ -918,10 +822,7 @@ object SellerHomeTracking {
     fun sendMilestoneWidgetMinimizeClickEvent() {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_MILESTONE_MINIMIZE
         )
 
@@ -931,10 +832,7 @@ object SellerHomeTracking {
     fun sendMilestoneMissionShareClickEvent(socialMedia: String) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_MILESTONE_SHARE,
             label = socialMedia
         )
@@ -948,10 +846,7 @@ object SellerHomeTracking {
         val eventTitle = "${event.label} ${event.eventName}"
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_CALENDAR_EVENT,
             label = arrayOf(
                 element.dataKey,
@@ -975,10 +870,7 @@ object SellerHomeTracking {
             val dateRage = "$startDateStr - $endDateStr"
             val eventMap = createEventMap(
                 event = TrackingConstant.CLICK_PG,
-                category = arrayOf(
-                    TrackingConstant.SELLER_APP,
-                    TrackingConstant.HOME
-                ).joinDashSeparator(),
+                category = TrackingConstant.SELLER_APP_HOME,
                 action = TrackingConstant.CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE,
                 label = arrayOf(
                     element.dataKey,
@@ -1000,10 +892,7 @@ object SellerHomeTracking {
             "${element.filter.getDateRange().startDate} - ${element.filter.getDateRange().endDate}"
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_CALENDAR,
             label = arrayOf(element.dataKey, emptyNotEmpty, dateRage).joinDashSeparator(),
             businessUnit = TrackingConstant.PG,
@@ -1016,10 +905,7 @@ object SellerHomeTracking {
     fun sendUnificationImpressionEvent(dataKey: String) {
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_UNIFICATION,
             label = dataKey
         )
@@ -1037,10 +923,7 @@ object SellerHomeTracking {
         }
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_UNIFICATION_SEE_TAB,
             label = arrayOf(
                 dataKey, tab.title, emptyLabel
@@ -1059,10 +942,7 @@ object SellerHomeTracking {
         }
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB,
             label = arrayOf(
                 dataKey, tab.title, emptyLabel
@@ -1073,18 +953,32 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendUnificationTableItemClickEvent(dataKey: String, tab: UnificationTabUiModel) {
-        val emptyLabel = TrackingConstant.NOT_EMPTY
+    fun sendUnificationTableItemClickEvent(
+        dataKey: String,
+        tab: UnificationTabUiModel,
+        text: String,
+        meta: TableRowsUiModel.Meta,
+        isEmpty: Boolean
+    ) {
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else if (isEmpty) {
+            TrackingConstant.EMPTY
+        } else {
+            TrackingConstant.NOT_EMPTY
+        }
+        val labels = mutableListOf(
+            dataKey, tab.title, emptyLabel, text
+        )
+        if (meta.flag.isNotBlank()) {
+            labels.add(meta.flag)
+        }
+
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB_ITEM,
-            label = arrayOf(
-                dataKey, tab.title, emptyLabel
-            ).joinDashSeparator()
+            label = labels.joinToString(TrackingConstant.SEPARATOR)
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33400"
 
@@ -1099,10 +993,7 @@ object SellerHomeTracking {
         }
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_SEE_MORE,
             label = arrayOf(
                 dataKey, tab.title, emptyLabel
@@ -1117,10 +1008,7 @@ object SellerHomeTracking {
         if (tab == null) return
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
+            category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_EMPTY_STATE,
             label = arrayOf(
                 dataKey, tab.title, TrackingConstant.EMPTY
@@ -1129,6 +1017,136 @@ object SellerHomeTracking {
         eventMap[TrackingConstant.TRACKER_ID] = "33402"
 
         TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendClickWidgetAnnouncementDismissalPromptEvent(dataKey: String, clickYes: Boolean) {
+        val actionClick = if (clickYes) "Yes" else "No"
+        val eventLabel = "$dataKey - $actionClick"
+        val trackerId = "35798"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_DISMISSAL_PROMPT)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickWidgetAnnouncementSubmitDismissalEvent(dataKey: String) {
+        val trackerId = "35799"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_SUBMIT_DISMISSAL)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(dataKey)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickWidgetAnnouncementCancelDismissalEvent(dataKey: String) {
+        val trackerId = "35800"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_CANCEL_DISMISSAL)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(dataKey)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickWidgetPostDeleteEvent(dataKey: String) {
+        val trackerId = "35801"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_DELETE)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(dataKey)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickWidgetPostSubmitDismissalEvent(dataKey: String, numberOfPost: Int) {
+        val trackerId = "35802"
+        val eventLabel = arrayOf(dataKey, numberOfPost.toString()).joinDashSeparator()
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_SUBMIT_DISMISSAL)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickWidgetPostCancelDismissalEvent(dataKey: String, numberOfPost: Int) {
+        val trackerId = "35803"
+        val eventLabel = arrayOf(dataKey, numberOfPost.toString()).joinDashSeparator()
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_CANCEL_DISMISSAL)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionFirstTransactionPopUpEvent() {
+        val trackerId = "38976"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.VIEW_PG_IRIS)
+            .setEventAction(TrackingConstant.IMPRESSION_FIRST_TRANSACTION_POPUP)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickOnFirstTransactionPopUpSecondaryCtaEvent() {
+        val trackerId = "38977"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_FIRST_TRANSACTION_POPUP_NANTI_SAJA)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickOnFirstTransactionPopUpPrimaryCtaEvent() {
+        val trackerId = "38978"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_FIRST_TRANSACTION_POPUP_PROSES_PESANAN)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
     }
 
     fun sendScreen(screenName: String) {

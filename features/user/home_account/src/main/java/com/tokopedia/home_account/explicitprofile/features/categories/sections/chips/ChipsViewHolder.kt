@@ -37,11 +37,13 @@ class ChipsViewHolder(
             }
 
             setOnClickListener {
-                this.isSelected = !this.isSelected
-                this.chipType = if (this.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+                chipsListener.onItemClick(questionDataModel, this.isSelected) { isSelected ->
 
-                questionDataModel.answerValue = if (this.isSelected) ANSWER_YES else ANSWER_NO
-                chipsListener.onItemClick(questionDataModel, this.isSelected)
+                    this.isSelected = isSelected
+                    this.chipType = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+                    questionDataModel.answerValue = if (isSelected) ANSWER_YES else ANSWER_NO
+                }
             }
         }
     }
@@ -62,7 +64,7 @@ class ChipsViewHolder(
     }
 
     interface QuestionChipsListener {
-        fun onItemClick(questionDataModel: QuestionDataModel, isActive: Boolean)
+        fun onItemClick(questionDataModel: QuestionDataModel, isChipSelected: Boolean, updateChipsSelection: (isSelected: Boolean) -> Unit)
     }
 
     companion object {

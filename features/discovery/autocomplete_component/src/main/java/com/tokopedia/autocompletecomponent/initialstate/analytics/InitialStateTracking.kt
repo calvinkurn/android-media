@@ -32,6 +32,7 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
+import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTracking.Companion.Action.CLICK_CURATED_CAMPAIGN
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTracking.Companion.Action.CLICK_DYNAMIC_SECTION
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTracking.Companion.Action.CLICK_INITIAL_STATE_PRODUCT_LINE
@@ -382,5 +383,9 @@ open class InitialStateTracking(
                 )
             )
         }
+    }
+
+    open fun eventClickSearchBarEducation(item: BaseItemInitialStateSearch) {
+        item.click(TrackApp.getInstance().gtm)
     }
 }

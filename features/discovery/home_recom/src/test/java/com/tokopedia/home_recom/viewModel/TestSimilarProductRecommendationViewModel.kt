@@ -9,15 +9,10 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -27,7 +22,6 @@ import io.mockk.*
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 import java.util.concurrent.TimeoutException
 
 class TestSimilarProductRecommendationViewModel {
@@ -36,19 +30,13 @@ class TestSimilarProductRecommendationViewModel {
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val getSingleRecommendationUseCase = mockk<GetSingleRecommendationUseCase>(relaxed = true)
-    private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
-    private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
-    private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
     private val viewModel = spyk(SimilarProductRecommendationViewModel(
             dispatcher = RecommendationDispatcherTest(),
             singleRecommendationUseCase = getSingleRecommendationUseCase,
-            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
-            removeWishListUseCase = removeWishListUseCase,
-            addWishListUseCase = addWishListUseCase,
             userSessionInterface = userSession,
             getRecommendationFilterChips = getRecommendationFilterChips,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
@@ -92,34 +80,6 @@ class TestSimilarProductRecommendationViewModel {
         Assert.assertTrue(viewModel.recommendationItem.value != null)
         Assert.assertTrue(viewModel.recommendationItem.value?.isError() == true)
         Assert.assertTrue(viewModel.recommendationItem.value?.exception is TimeoutException)
-    }
-
-    @Test
-    fun `get success add wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessAddWishlist(recommendation.productId.toString())
-        }
-        viewModel.addWishlist(recommendation) { success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `get error add wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorAddWishList("", recommendation.productId.toString())
-        }
-        viewModel.addWishlist(recommendation) { success, _ ->
-            status = success
-        }
-        assert(status == false)
     }
 
     @Test
@@ -176,66 +136,6 @@ class TestSimilarProductRecommendationViewModel {
 
         verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
-    }
-
-    @Test
-    fun `get success add topads wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
-        val mockData = mockk<WishlistModel.Data>(relaxed = true)
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { mockWishlistModel.data } returns mockData
-        every { mockData.isSuccess } returns true
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onNext(mockWishlistModel)
-        }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `get error add topads wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onError(mockk())
-        }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
-            status = success
-        }
-        assert(status == false)
-    }
-
-    @Test
-    fun `get success remove wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessRemoveWishlist(recommendation.productId.toString())
-        }
-        viewModel.removeWishlist(recommendation) { success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `get error remove wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorRemoveWishlist("", recommendation.productId.toString())
-        }
-        viewModel.removeWishlist(recommendation) { success, _ ->
-            status = success
-        }
-        assert(status == false)
     }
 
     @Test

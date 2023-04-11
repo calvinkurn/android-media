@@ -14,13 +14,12 @@ private const val EVENT_ACTION = "eventAction"
 private const val EVENT_LABEL = "eventLabel"
 private const val EVENT_BUSINESSUNIT = "businessUnit"
 private const val EVENT_CURRENTSITE = "currentSite"
-private const val CATEGORY_FEED = "Feed"
+private const val EVENT_SESSION_IRIS = "sessionIris"
 private const val EVENT_CLICK_FEED = "clickFeed"
 private const val CLICK_HOMEPAGE = "clickHomepage"
 private const val ACTION_CLICK_SEARCH_ICON = "click search icon"
 private const val ACTION_CLICK_CHAT_ICON = "click chat icon"
 private const val ACTION_CLICK_NOTIFICATION_ICON = "click notification icon"
-private const val CLICK_BUAT_POST = "click buat post"
 const val CLICK_FEED_TAB = "click - feed tab"
 
 const val CONTENT_FEED_CREATION = "content feed creation"
@@ -28,6 +27,7 @@ const val CONTENT_FEED_TIMELINE = "content feed timeline"
 const val CLICK_RETRY_ON_FEED_TO_POST = "click on retry button"
 const val FORMAT_TWO_PARAM = "%s - %s"
 const val CONTENT = "content"
+const val PLAY = "play"
 const val MARKETPLACE = "tokopediamarketplace"
 
 private object EventLabel {
@@ -118,5 +118,21 @@ class FeedToolBarAnalytics @Inject constructor() {
         )
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
+    }
+
+
+    fun clickUserProfileIcon(userId: String) {
+        getTracker().sendGeneralEvent(
+            mapOf(
+                EVENT_NAME to CLICK_HOMEPAGE,
+                EVENT_ACTION to "click - user profile icon",
+                EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
+                EVENT_LABEL to "self",
+                EVENT_BUSINESSUNIT to CONTENT,
+                EVENT_CURRENTSITE to MARKETPLACE,
+                EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId
+            )
+        )
     }
 }

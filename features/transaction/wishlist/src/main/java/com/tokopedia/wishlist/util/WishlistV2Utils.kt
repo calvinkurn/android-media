@@ -31,7 +31,8 @@ object WishlistV2Utils {
         isAutomaticDelete: Boolean,
         recomm: WishlistV2RecommendationDataModel,
         topadsData: TopAdsImageViewModel?,
-        isUsingCollection: Boolean): List<WishlistV2TypeLayoutData> {
+        isUsingCollection: Boolean
+    ): List<WishlistV2TypeLayoutData> {
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
         var isFilterActive = false
@@ -40,10 +41,10 @@ object WishlistV2Utils {
         }
 
         // empty wishlist
-        if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page == 1) {
+        if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page <= 1) {
             listData = mapToEmptyState(wishlistV2UiModel, listData, isFilterActive, recomm, isUsingCollection)
 
-        // non-empty wishlist
+            // non-empty wishlist
         } else {
             if (wishlistV2UiModel.page == 1) {
                 listProductId.clear()
@@ -102,18 +103,14 @@ object WishlistV2Utils {
                     isAutomaticDelete
                 )
 
-                if (wishlistV2UiModel.page == 1) {
-                    mapToTopads(recommPosition, listData, topadsData)
-                } else {
-                    if (wishlistV2UiModel.items.size >= recommPosition) {
-                        if (wishlistV2UiModel.page % 2 == 0) {
-                            mapToRecommendation(recommPosition, listData, recomm)
-                        } else {
-                            mapToTopads(recommPosition, listData, topadsData)
-                        }
+                if (wishlistV2UiModel.items.size >= recommPosition) {
+                    if (wishlistV2UiModel.page % 2 == 0) {
+                        mapToRecommendation(recommPosition, listData, recomm)
                     } else {
-                        mapToRecommendation(0, listData, recomm)
+                        mapToTopads(recommPosition, listData, topadsData)
                     }
+                } else {
+                    mapToRecommendation(0, listData, recomm)
                 }
             }
         }
@@ -159,7 +156,6 @@ object WishlistV2Utils {
                         WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
                     )
                 )
-
             } else if (isFilterActive) {
                 val wishlistV2Empty = WishlistV2EmptyStateData(
                     R.string.empty_state_img,
@@ -173,7 +169,6 @@ object WishlistV2Utils {
                         WishlistV2Consts.TYPE_EMPTY_STATE
                     )
                 )
-
             } else if (!isFilterActive && wishlistV2Response.query.isEmpty()) {
                 listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
             }
@@ -206,13 +201,15 @@ object WishlistV2Utils {
     ): ArrayList<WishlistV2TypeLayoutData> {
         if (index > 0) {
             listData.add(
-                index, WishlistV2TypeLayoutData(
+                index,
+                WishlistV2TypeLayoutData(
                     WishlistV2Consts.RECOMMENDED_FOR_YOU,
                     WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
                 )
             )
             listData.add(
-                index + 1, WishlistV2TypeLayoutData(
+                index + 1,
+                WishlistV2TypeLayoutData(
                     recommItems,
                     WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
                 )
@@ -237,12 +234,14 @@ object WishlistV2Utils {
 
     fun mapToTopads(
         index: Int,
-        listData: ArrayList<WishlistV2TypeLayoutData>, topadsData: TopAdsImageViewModel?
+        listData: ArrayList<WishlistV2TypeLayoutData>,
+        topadsData: TopAdsImageViewModel?
     ): ArrayList<WishlistV2TypeLayoutData> {
         if (topadsData != null) {
             if (index > 0) {
                 listData.add(
-                    index, WishlistV2TypeLayoutData(
+                    index,
+                    WishlistV2TypeLayoutData(
                         topadsData,
                         WishlistV2Consts.TYPE_TOPADS
                     )
@@ -741,26 +740,6 @@ object WishlistV2Utils {
             button = newButtonTicker
         )
 
-        val newListStorageCleanerBottomSheet = arrayListOf<WishlistV2UiModel.StorageCleanerBottomSheet.OptionCleanerBottomsheet>()
-        data.storageCleanerBottomsheet.options.forEach { optionItem ->
-            val newOptionItem = WishlistV2UiModel.StorageCleanerBottomSheet.OptionCleanerBottomsheet(
-                name = optionItem.name,
-                description = optionItem.description
-            )
-            newListStorageCleanerBottomSheet.add(newOptionItem)
-        }
-
-        val newBtnClean = WishlistV2UiModel.StorageCleanerBottomSheet.ButtonCleanBottomSheet(
-            text = data.storageCleanerBottomsheet.button.text
-        )
-
-        val newStorageCleanerBottomSheet = WishlistV2UiModel.StorageCleanerBottomSheet(
-            title = data.storageCleanerBottomsheet.title,
-            description = data.storageCleanerBottomsheet.description,
-            options = newListStorageCleanerBottomSheet,
-            btnCleanBottomSheet = newBtnClean
-        )
-
         return WishlistV2UiModel(
             errorMessage = data.errorMessage,
             offset = data.offset,
@@ -773,9 +752,31 @@ object WishlistV2Utils {
             items = listItem,
             emptyState = newEmptyState,
             ticker = newTickerState,
-            storageCleanerBottomSheet = newStorageCleanerBottomSheet,
+            storageCleanerBottomSheet = mapToStorageCleanerBottomSheet(data.storageCleanerBottomsheet),
             countRemovableItems = data.countRemovableItems,
             showDeleteProgress = data.showDeleteProgress
+        )
+    }
+
+    fun mapToStorageCleanerBottomSheet(storageCleanerBottomsheet: GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.StorageCleanerBottomsheet): WishlistV2UiModel.StorageCleanerBottomSheet {
+        val newListStorageCleanerBottomSheet = arrayListOf<WishlistV2UiModel.StorageCleanerBottomSheet.OptionCleanerBottomsheet>()
+        storageCleanerBottomsheet.options.forEach { optionItem ->
+            val newOptionItem = WishlistV2UiModel.StorageCleanerBottomSheet.OptionCleanerBottomsheet(
+                name = optionItem.name,
+                description = optionItem.description
+            )
+            newListStorageCleanerBottomSheet.add(newOptionItem)
+        }
+
+        val newBtnClean = WishlistV2UiModel.StorageCleanerBottomSheet.ButtonCleanBottomSheet(
+            text = storageCleanerBottomsheet.button.text
+        )
+
+        return WishlistV2UiModel.StorageCleanerBottomSheet(
+            title = storageCleanerBottomsheet.title,
+            description = storageCleanerBottomsheet.description,
+            options = newListStorageCleanerBottomSheet,
+            btnCleanBottomSheet = newBtnClean
         )
     }
 }

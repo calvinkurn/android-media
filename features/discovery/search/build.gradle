@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
@@ -30,7 +29,7 @@ android {
         exclude 'META-INF/**'
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -44,6 +43,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 }
@@ -63,7 +63,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.globalNavWidget)
     implementation projectOrAar(rootProject.ext.features.shopWidget)
@@ -82,6 +81,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.linker)
 
@@ -125,6 +127,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     implementation rootProject.ext.dbDependencies.sqliteFramework
 
@@ -133,7 +136,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

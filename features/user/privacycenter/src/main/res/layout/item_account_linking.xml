@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icon_partner"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/privacy_center_ic_gojek"
+        app:layout_constraintBottom_toBottomOf="@+id/description_account_linking"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/name_partner" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/name_partner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/ic_account_linked"
+        app:layout_constraintStart_toEndOf="@+id/icon_partner"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:text="@string/account_linking_partner_gojek" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/description_account_linking"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/name_partner"
+        app:layout_constraintStart_toStartOf="@+id/name_partner"
+        app:layout_constraintTop_toBottomOf="@+id/name_partner"
+        app:typographyType="paragraph_3"
+        android:text="@string/account_linking_label_account_unlinked" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/description_account_linking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/name_partner"
+        android:text="@string/account_linking_text_detail_unlinked" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_account_linked"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/description_account_linking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/name_partner" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

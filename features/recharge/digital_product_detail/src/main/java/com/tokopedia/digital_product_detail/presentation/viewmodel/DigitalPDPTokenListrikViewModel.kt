@@ -7,7 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
@@ -18,18 +22,13 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.C
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
-import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -129,8 +128,9 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
                 val denomGrid = repo.getProductTokenListrikDenomGrid(menuId, operator, clientNumber)
                 _observableDenomData.value = RechargeNetworkResult.Success(denomGrid)
             }) {
-                if (it !is CancellationException)
+                if (it !is CancellationException) {
                     _observableDenomData.value = RechargeNetworkResult.Fail(it)
+                }
             }
         }
     }
@@ -190,17 +190,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
-        digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String,
-        isUseGql: Boolean
+        userId: String
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
-                digitalSubscriptionParams,
-                userId,
-                isUseGql
+                userId
             )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
@@ -228,7 +224,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
                 clientNumbers,
                 dgCategoryIds,
                 dgOperatorIds,
-                DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT,
+                DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT
             )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
@@ -301,18 +297,22 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
         var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
-            if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()
-            ) selectedProductPositionId = index
+            if (denomData.id.equals(selectedGridProduct.denomData.id, false) &&
+                selectedGridProduct.denomData.id.isNotEmpty()
+            ) {
+                selectedProductPositionId = index
+            }
         }
         return selectedProductPositionId
     }
 
     fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
-        (selectedGridProduct.denomData.id.isNotEmpty()
-                && selectedGridProduct.position >= 0
-                && selectedGridProduct.denomWidgetEnum == layoutType
-                && isEligibleToBuy)
+        (
+            selectedGridProduct.denomData.id.isNotEmpty() &&
+                selectedGridProduct.position >= 0 &&
+                selectedGridProduct.denomWidgetEnum == layoutType &&
+                isEligibleToBuy
+            )
 
     fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
@@ -321,6 +321,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     fun getListInfo(): List<String> {
         return if (operatorData.id.isNotEmpty()) {
             operatorData.attributes.operatorDescriptions
-        } else listOf()
+        } else {
+            listOf()
+        }
     }
 }

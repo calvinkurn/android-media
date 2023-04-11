@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.loginregister.goto_seamless.model.GetNameParam
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.model.LoginSeamlessParams
+import com.tokopedia.loginregister.goto_seamless.usecase.GetNameUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.LoginSeamlessUseCase
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 class GotoSeamlessLoginViewModel @Inject constructor(
     private val loginSeamlessUseCase: LoginSeamlessUseCase,
+    private val getNameUseCase: GetNameUseCase,
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val userSessionInterface: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -36,6 +39,11 @@ class GotoSeamlessLoginViewModel @Inject constructor(
         launch {
             try {
                 val result = gotoSeamlessHelper.getGojekProfile()
+                if(result.authCode.isNotEmpty()) {
+                    userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                    val getNameResult = getNameUseCase(GetNameParam(authCode = result.authCode))
+                    result.tokopediaName = getNameResult.data.name
+                }
                 mutableGojekProfileData.value = Success(result)
             } catch (e: Exception) {
                 mutableGojekProfileData.value = Fail(e)

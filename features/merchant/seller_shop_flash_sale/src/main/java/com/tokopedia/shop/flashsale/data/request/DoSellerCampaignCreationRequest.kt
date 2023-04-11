@@ -40,15 +40,12 @@ data class DoSellerCampaignCreationRequest(
     @SerializedName("payment_type")
     val paymentType: Int,
 
-    ) {
+    @SerializedName("package_id")
+    val packageId: String
+) {
 
     data class GradientColorInput(
         @SerializedName("first_color") val firstColor: String,
         @SerializedName("second_color") val secondColor: String
-    )
-
-    data class Rule(
-        @SuppressLint("Invalid Data Type") @SerializedName("rule_id") val ruleId: Int,
-        @SerializedName("is_active") val isActive: Boolean
     )
 }

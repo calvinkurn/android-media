@@ -20,29 +20,25 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
-import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
@@ -79,13 +75,13 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300)
 
         fun createInstance(
-                shopId: String,
-                shopName: String,
-                isOfficial: Boolean,
-                isGoldMerchant: Boolean,
-                keyword: String,
-                shopAttribution: String,
-                shopRef: String
+            shopId: String,
+            shopName: String,
+            isOfficial: Boolean,
+            isGoldMerchant: Boolean,
+            keyword: String,
+            shopAttribution: String,
+            shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
@@ -101,14 +97,14 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         }
 
         fun createInstance(
-                shopId: String,
-                shopName: String,
-                isOfficial: Boolean,
-                isGoldMerchant: Boolean,
-                keyword: String,
-                shopAttribution: String,
-                sortId: String,
-                shopRef: String
+            shopId: String,
+            shopName: String,
+            isOfficial: Boolean,
+            isGoldMerchant: Boolean,
+            keyword: String,
+            shopAttribution: String,
+            sortId: String,
+            shopRef: String
         ): Fragment {
             return createInstance(shopId, shopName, isOfficial, isGoldMerchant, keyword, shopAttribution, shopRef).apply {
                 val bundleData = arguments
@@ -136,23 +132,14 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
 
-    private lateinit var viewModel: ShopSearchProductViewModel
-    private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
-
-    private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isMyShop(shopId)
-        } else false
+    private val viewModel: ShopSearchProductViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopSearchProductViewModel::class.java)
+    }
+    private val viewBinding: FragmentShopSearchProductBinding? by viewBinding()
 
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else {
-            ""
-        }
-    private val remoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
+        get() = viewModel.userId
+
     private var shopAttribution: String = ""
     private var searchQuery = ""
     private var shopRef: String = ""
@@ -166,15 +153,14 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        initViewModel()
         getArgumentsData()
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_shop_search_product, container, false)
     }
@@ -209,9 +195,9 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
                 shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
-                        SCREEN_SHOP_PAGE,
-                        searchQuery,
-                        model.url
+                    SCREEN_SHOP_PAGE,
+                    searchQuery,
+                    model.url
                 )
                 redirectToProductDetailPage(model.appLink)
             }
@@ -229,11 +215,11 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     override fun initInjector() {
         activity?.let {
             DaggerShopSearchProductComponent
-                    .builder()
-                    .shopSearchProductModule(ShopSearchProductModule())
-                    .shopComponent(getComponent(ShopComponent::class.java))
-                    .build()
-                    .inject(this)
+                .builder()
+                .shopSearchProductModule(ShopSearchProductModule())
+                .shopComponent(getComponent(ShopComponent::class.java))
+                .build()
+                .inject(this)
         }
     }
 
@@ -261,24 +247,24 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
         view?.run {
             Toaster.showErrorWithAction(
-                    this,
-                    ErrorHandler.getErrorMessage(this.context, throwable),
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(com.tokopedia.merchantvoucher.R.string.retry),
-                    onClickListener
+                this,
+                ErrorHandler.getErrorMessage(this.context, throwable),
+                Snackbar.LENGTH_INDEFINITE,
+                getString(com.tokopedia.merchantvoucher.R.string.retry),
+                onClickListener
             )
         }
     }
 
     private fun redirectToShopProductListPage(sourceOfRedirection: String) {
         val intent = ShopProductListResultActivity.createIntentWithSourceRedirection(
-                context,
-                shopId,
-                searchQuery,
-                "",
-                shopAttribution,
-                shopRef,
-                sourceOfRedirection
+            context,
+            shopId,
+            searchQuery,
+            "",
+            shopAttribution,
+            shopRef,
+            sourceOfRedirection
         )
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -289,15 +275,17 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private fun observeShopSearchProductResult() {
-        viewModel.shopSearchProductResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    populateDynamicSearchResult(it.data)
-                }
-                is Fail -> {
-                    val throwable = it.throwable
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+        viewModel.shopSearchProductResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        populateDynamicSearchResult(it.data)
+                    }
+                    is Fail -> {
+                        val throwable = it.throwable
+                        if (!ShopUtil.isExceptionIgnored(throwable)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeShopSearchProductResult.name,
                                 liveDataName = ShopSearchProductViewModel::shopSearchProductResult.name,
@@ -307,14 +295,18 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                                 errorMessage = ErrorHandler.getErrorMessage(context, throwable),
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
+                            )
+                        }
+                        showToasterRequestError(
+                            it.throwable,
+                            View.OnClickListener {
+                                searchProduct()
+                            }
                         )
                     }
-                    showToasterRequestError(it.throwable, View.OnClickListener {
-                        searchProduct()
-                    })
                 }
             }
-        })
+        )
     }
 
     private fun populateFixedSearchResult() {
@@ -322,11 +314,13 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             return
         }
         val listData = mutableListOf<ShopSearchProductDataModel>().apply {
-            add(ShopSearchProductFixedResultDataModel(
+            add(
+                ShopSearchProductFixedResultDataModel(
                     searchQuery,
                     getString(R.string.shop_search_product_in_shop_name, shopName),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
-            ))
+                )
+            )
         }
         renderList(listData, false)
     }
@@ -334,7 +328,8 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
         productListData.clear()
         universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
-            productListData.add(ShopSearchProductDynamicResultDataModel(
+            productListData.add(
+                ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
                     it.keyword,
                     it.affiliateUsername,
@@ -342,7 +337,8 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                     it.url,
                     searchQuery,
                     ShopSearchProductDataModel.Type.TYPE_PDP
-            ))
+                )
+            )
         }
         renderList(productListData, false)
     }
@@ -354,17 +350,19 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         hideClearButton()
         (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()
-            addItemDecoration(ShopSearchProductDividerItemDecoration(
+            addItemDecoration(
+                ShopSearchProductDividerItemDecoration(
                     view.context.resources.getDrawable(R.drawable.shop_page_bg_line_separator_thin)
-            ))
+                )
+            )
         }
         textCancel?.setOnClickListener {
             onClickCancel()
         }
         editTextSearchProduct?.apply {
             hint = getString(
-                    R.string.shop_product_search_hint_2,
-                    MethodChecker.fromHtml(shopName).toString()
+                R.string.shop_product_search_hint_2,
+                MethodChecker.fromHtml(shopName).toString()
             )
             addTextChangedListener(getSearchTextWatcher())
             setOnEditorActionListener(getSearchEditorActionListener())
@@ -387,7 +385,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
@@ -432,7 +429,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                 }
                 return false
             }
-
         }
     }
 
@@ -460,11 +456,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(ShopSearchProductViewModel::class.java)
     }
 
     private fun onClickCancel() {

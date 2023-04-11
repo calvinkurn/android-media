@@ -12,8 +12,9 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import timber.log.Timber
 
-class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoRecommendationBinding,
-                                    private val listener: PromoCheckoutActionListener
+class PromoRecommendationViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoRecommendationBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoRecommendationUiModel>(viewBinding.root) {
 
     companion object {
@@ -58,22 +59,21 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
     private fun playAnimation() {
         with(viewBinding) {
             lottieButtonApplyPromoRecommendation.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animator: Animator?) {}
+                override fun onAnimationRepeat(animator: Animator) {}
 
-                override fun onAnimationEnd(animator: Animator?) {
+                override fun onAnimationEnd(animator: Animator) {
                     lottieButtonApplyPromoRecommendation.gone()
                 }
 
-                override fun onAnimationCancel(animator: Animator?) {
+                override fun onAnimationCancel(animator: Animator) {
                     lottieButtonApplyPromoRecommendation.gone()
                 }
 
-                override fun onAnimationStart(animator: Animator?) {}
+                override fun onAnimationStart(animator: Animator) {}
             })
             if (!lottieButtonApplyPromoRecommendation.isAnimating) {
                 lottieButtonApplyPromoRecommendation.playAnimation()
             }
         }
     }
-
 }

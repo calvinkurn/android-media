@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
 import com.tokopedia.play_common.R as commonR
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -28,7 +28,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private var mTitle = ""
     private var mSubtitle = ""
     private var mImageUrl = ""
-    private var mInteractiveUiModel: InteractiveUiModel? = null
+    private var mGameUiModel: GameUiModel? = null
 
     private lateinit var tvTitle: Typography
     private lateinit var tvDetail: Typography
@@ -71,21 +71,21 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         }
     }
 
-    fun setData(imageUrl: String, title: String, subtitle: String, interactive: InteractiveUiModel) {
+    fun setData(imageUrl: String, title: String, subtitle: String, game: GameUiModel) {
         mImageUrl = imageUrl
         mTitle = title
         mSubtitle = subtitle
-        mInteractiveUiModel = interactive
+        mGameUiModel = game
 
         setupView()
     }
 
-    private fun getInteractive(interactive: InteractiveUiModel): Int {
-        return when (interactive){
-            is InteractiveUiModel.Giveaway -> {
+    private fun getInteractive(game: GameUiModel): Int {
+        return when (game){
+            is GameUiModel.Giveaway -> {
                 commonR.drawable.bg_play_interactive
             }
-            is InteractiveUiModel.Quiz -> {
+            is GameUiModel.Quiz -> {
                 commonR.drawable.bg_quiz_winner
             }
             else -> commonR.drawable.bg_play_interactive
@@ -105,7 +105,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         if (::tvTitle.isInitialized) tvTitle.text = mTitle
         if (::tvDetail.isInitialized) tvDetail.text = mSubtitle
         if (::imgUser.isInitialized) imgUser.loadImage(mImageUrl)
-        if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mInteractiveUiModel ?: InteractiveUiModel.Unknown))
+        if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mGameUiModel ?: GameUiModel.Unknown))
     }
 
     companion object {

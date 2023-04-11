@@ -13,7 +13,8 @@ class PlayUpcomingInfoModelBuilder {
         isReminderSet: Boolean = false,
         coverUrl: String = "cover_url.com",
         startTime: String = "2021-12-12'T'12:23:45",
-        isAlreadyLive: Boolean = false
+        isAlreadyLive: Boolean = false,
+        description: String = "Ini description"
     ): PlayUpcomingUiModel =
         PlayUpcomingUiModel(
             title = title,
@@ -21,6 +22,7 @@ class PlayUpcomingInfoModelBuilder {
             isReminderSet = isReminderSet,
             coverUrl = coverUrl,
             startTime = startTime,
-            isAlreadyLive = isAlreadyLive
+            isAlreadyLive = isAlreadyLive,
+            description = description,
         )
 }

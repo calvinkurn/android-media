@@ -12,6 +12,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
@@ -827,6 +828,46 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is false`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Showing when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is true`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `dismissAnonymousInfoBottomSheet should change anonymousInfoBottomSheetUiState equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
+        viewModel.dismissAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
     fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false and review topics inspiration is enabled`() = runBlockingTest {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
         mockSuccessGetReviewTemplate()
@@ -887,7 +928,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_create_fail_toaster),
             actionText = StringRes(R.string.review_oke),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -910,7 +952,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -934,7 +977,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -958,7 +1002,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -983,7 +1028,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -1404,11 +1450,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
 
     @Test
     fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runBlockingTest {
-        val expectedToasterQueue = CreateReviewToasterUiModel(
+        val expectedToasterQueue = CreateReviewToasterUiModel<Unit>(
             message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -1545,6 +1592,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { putString("savedStateUtmSource", any()) }
             verify { putBoolean("savedStateShowIncentiveBottomSheet", any()) }
             verify { putBoolean("savedStateShowTextAreaBottomSheet", any()) }
+            verify { putBoolean("savedStateShowAnonymousInfoBottomSheet", any()) }
             verify { putBoolean("savedStateSendingReview", any()) }
             verify { putSerializable("savedStateReviewForm", any()) }
             verify { putSerializable("savedStateIncentiveOvo", any()) }
@@ -1576,6 +1624,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
                     "savedStateUtmSource" -> ""
                     "savedStateShowIncentiveBottomSheet" -> false
                     "savedStateShowTextAreaBottomSheet" -> false
+                    "savedStateShowAnonymousInfoBottomSheet" -> false
                     "savedStateSendingReview" -> false
                     "savedStateReviewText" -> CreateReviewTextAreaTextUiModel()
                     "savedStateShopId" -> ""
@@ -1601,6 +1650,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { this@mockk.get("savedStateUtmSource") }
             verify { this@mockk.get("savedStateShowIncentiveBottomSheet") }
             verify { this@mockk.get("savedStateShowTextAreaBottomSheet") }
+            verify { this@mockk.get("savedStateShowAnonymousInfoBottomSheet") }
             verify { this@mockk.get("savedStateSendingReview") }
             verify { this@mockk.get("savedStateReviewText") }
             verify { this@mockk.get("savedStateShopId") }

@@ -1,25 +1,18 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
-import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
-import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.track.TrackApp
 
 /**
  * @author by jessica on 11/01/21
@@ -38,7 +31,7 @@ object DigitalCheckoutMapper {
             if (!isEnableVoucher) {
                 promoData = PromoData(
                     description = it.discountAmountLabel,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.INACTIVE
                 )
             } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
@@ -47,7 +40,7 @@ object DigitalCheckoutMapper {
                     description = it.messageSuccess,
                     promoCode = it.code,
                     typePromo = it.isCoupon,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.ACTIVE
                 )
             }
@@ -58,8 +51,7 @@ object DigitalCheckoutMapper {
     fun mapGetCartToCartDigitalInfoData(
         responseRechargeGetCart: RechargeGetCart.Response,
         isSpecialProduct: Boolean
-    )
-            : CartDigitalInfoData {
+    ): CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
 
@@ -73,10 +65,12 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
                 cartDigitalInfoData.additionalInfos = additionalInfos.map {
-                    CartItemDigitalWithTitle(it.title,
+                    CartItemDigitalWithTitle(
+                        it.title,
                         it.detail.map { detail ->
                             CartItemDigital(detail.label, detail.value)
-                        })
+                        }
+                    )
                 }
             }
 
@@ -92,8 +86,12 @@ object DigitalCheckoutMapper {
                 attributesDigital.price = attributes.priceText
                 attributesDigital.pricePlain = attributes.price
                 attributesDigital.isEnableVoucher = attributes.enableVoucher
-                if (attributes.isCouponActive) attributesDigital.isCouponActive =
-                    1 else attributesDigital.isCouponActive = 0
+                if (attributes.isCouponActive) {
+                    attributesDigital.isCouponActive =
+                        1
+                } else {
+                    attributesDigital.isCouponActive = 0
+                }
                 attributesDigital.voucherAutoCode = attributes.voucher
                 attributesDigital.adminFee = attributes.adminFee
                 attributesDigital.isAdminFeeIncluded = attributes.isAdminFeeIncluded
@@ -159,22 +157,9 @@ object DigitalCheckoutMapper {
                 responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
-
         } catch (e: Exception) {
             throw Throwable(e.message, e)
         }
-    }
-
-    fun mapToPaymentPassData(responseCheckoutData: ResponseCheckout): PaymentPassData {
-        val paymentPassData = PaymentPassData()
-        responseCheckoutData.attributes.run {
-            paymentPassData.callbackFailedUrl = callbackUrlFailed ?: ""
-            paymentPassData.callbackSuccessUrl = callbackUrlSuccess ?: ""
-            paymentPassData.redirectUrl = redirectUrl ?: ""
-            paymentPassData.queryString = queryString ?: ""
-            paymentPassData.transactionId = parameter?.transactionId ?: ""
-        }
-        return paymentPassData
     }
 
     fun mapToPaymentPassData(responseCheckoutData: RechargeCheckoutResponse): PaymentPassData {
@@ -190,10 +175,11 @@ object DigitalCheckoutMapper {
     }
 
     fun buildCheckoutData(
-        cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
+        cartDigitalInfoData: CartDigitalInfoData,
+        accessToken: String?,
         requestCheckoutDataParameter: DigitalCheckoutDataParameter
     ): DigitalCheckoutDataParameter {
-        //not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
+        // not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
         requestCheckoutDataParameter.cartId = cartDigitalInfoData.id
         requestCheckoutDataParameter.accessToken = accessToken ?: ""
         requestCheckoutDataParameter.walletRefreshToken = ""
@@ -206,60 +192,4 @@ object DigitalCheckoutMapper {
 
         return requestCheckoutDataParameter
     }
-
-    fun getRequestBodyCheckout(
-        checkoutData: DigitalCheckoutDataParameter,
-        digitalIdentifierParam: RequestBodyIdentifier,
-        fintechProduct: FintechProduct?
-    ): RequestBodyCheckout {
-        val requestBodyCheckout = RequestBodyCheckout()
-        requestBodyCheckout.type = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE
-
-        val attributes = RequestBodyCheckout.AttributesCheckout()
-        attributes.voucherCode = checkoutData.voucherCode
-        attributes.transactionAmount = checkoutData.transactionAmount.toLong()
-        attributes.ipAddress = checkoutData.ipAddress
-        attributes.userAgent = checkoutData.userAgent
-        attributes.identifier = digitalIdentifierParam
-        attributes.deviceId = checkoutData.deviceId
-
-        try {
-            val getTrackClientId: String = TrackApp.getInstance().gtm.clientIDString
-            attributes.clientId = getTrackClientId
-
-            attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
-                TrackApp.getInstance().appsFlyer.uniqueId,
-                TrackApp.getInstance().appsFlyer.googleAdId
-            )
-        } catch (e: Throwable) {
-        }
-
-        attributes.subscribe = checkoutData.isSubscriptionChecked
-
-        val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
-        checkoutData.fintechProducts.values.forEach { fintech ->
-            fintechProductsCheckout.add(
-                RequestBodyCheckout.FintechProductCheckout(
-                    transactionType = fintech.transactionType,
-                    tierId = fintech.tierId.toIntOrZero(),
-                    userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                    fintechAmount = fintech.fintechAmount.toLong(),
-                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
-                    productName = fintech.info.title
-                )
-            )
-        }
-        attributes.fintechProduct = fintechProductsCheckout
-
-        requestBodyCheckout.attributes = attributes
-        requestBodyCheckout.relationships = CheckoutRelationships(
-            CheckoutRelationships.Cart(
-                CheckoutRelationships.Cart.Data(
-                    checkoutData.relationType, checkoutData.relationId
-                )
-            )
-        )
-        return requestBodyCheckout
-    }
-
 }

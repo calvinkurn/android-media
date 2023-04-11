@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 @GqlQuery(PlayPostContentUseCase.QUERY_NAME, PlayPostContentUseCase.QUERY)
 class PlayPostContentUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<UserPostModel>(graphqlRepository) {
 
     init {
@@ -99,9 +99,15 @@ class PlayPostContentUseCase @Inject constructor(
                           id
                           name
                         }
+                        share {
+                          text
+                          redirect_url
+                          is_show_button
+                        }
                         app_link
                         web_link
                         display_type
+                        performanceSummaryPageLink
                       }
                     }
                     hash

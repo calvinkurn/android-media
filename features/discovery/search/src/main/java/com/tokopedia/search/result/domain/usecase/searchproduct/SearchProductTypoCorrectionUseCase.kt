@@ -1,10 +1,13 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_NETWORK_USE_CASE_ATTRIBUTION
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_NETWORK_USE_CASE_NORMAL
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_NETWORK_USE_CASE_TYPO_CORRECTED
 import com.tokopedia.search.utils.ProductionSchedulersProvider
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -15,35 +18,20 @@ import rx.Observable
 class SearchProductTypoCorrectionUseCase(
     private val searchProductUseCase: UseCase<SearchProductModel>,
     private val searchProductTopAdsUseCase: UseCase<TopAdsModel>,
-    private val remoteConfig: RemoteConfig,
-    schedulersProvider: SchedulersProvider = ProductionSchedulersProvider()
+    performanceMonitoringProvider: PerformanceMonitoringProvider,
+    schedulersProvider: SchedulersProvider = ProductionSchedulersProvider(),
 ) : UseCase<SearchProductModel>(
     schedulersProvider.io(),
     schedulersProvider.ui()
 ) {
     private val typoCorrectionCodes = listOf("3", "6")
-
-    private val isABTestTypoCorrectionAds: Boolean by lazy {
-        getABTestTypoCorrectionAds()
-    }
-
-    private fun getABTestTypoCorrectionAds(): Boolean {
-        return try {
-            val abTestTypoCorrectionAds = remoteConfig.getString(
-                RollenceKey.SEARCH_TYPO_CORRECTION_ADS,
-                ""
-            )
-            RollenceKey.SEARCH_TYPO_CORRECTION_ADS_VARIANT == abTestTypoCorrectionAds
-        } catch (e: Exception) {
-            false
-        }
-    }
+    private val performanceMonitoring: PageLoadTimePerformanceInterface? =
+        performanceMonitoringProvider.get()
 
     private fun shouldCallTopAdsGqlForTypoCorrection(
         searchProductModel: SearchProductModel
     ): Boolean {
-        return isABTestTypoCorrectionAds
-                && searchProductModel.searchProduct.header.responseCode in typoCorrectionCodes
+        return searchProductModel.searchProduct.header.responseCode in typoCorrectionCodes
     }
 
     override fun createObservable(
@@ -52,8 +40,16 @@ class SearchProductTypoCorrectionUseCase(
         return searchProductUseCase.createObservable(requestParams)
             .switchMap { searchProductModel ->
                 if (shouldCallTopAdsGqlForTypoCorrection(searchProductModel)) {
+                    performanceMonitoring?.addAttribution(
+                        SEARCH_RESULT_PLT_NETWORK_USE_CASE_ATTRIBUTION,
+                        SEARCH_RESULT_PLT_NETWORK_USE_CASE_TYPO_CORRECTED
+                    )
                     callTopAdsUseCase(requestParams, searchProductModel)
                 } else {
+                    performanceMonitoring?.addAttribution(
+                        SEARCH_RESULT_PLT_NETWORK_USE_CASE_ATTRIBUTION,
+                        SEARCH_RESULT_PLT_NETWORK_USE_CASE_NORMAL
+                    )
                     Observable.just(searchProductModel)
                 }
             }

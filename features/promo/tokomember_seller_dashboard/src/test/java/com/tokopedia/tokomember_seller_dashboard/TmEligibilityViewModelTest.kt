@@ -5,11 +5,13 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TmOnBoardingCheckUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.SellerData
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -98,6 +100,35 @@ class TmEligibilityViewModelTest {
         viewModel.getSellerInfo()
         Assert.assertEquals(
             (viewModel.sellerInfoResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun getOnboardingInfoSuccess(){
+       val data = mockk<MembershipData>()
+        every {
+            tmOnBoardingCheckUsecase.getMemberOnboardingInfo(any(),any(),any())
+        } answers {
+            firstArg<(MembershipData) -> Unit>().invoke(data)
+        }
+        viewModel.getOnboardingInfo(0)
+        Assert.assertEquals(
+            (viewModel.tokomemberOnboardingResultLiveData.value as Success).data,
+            data
+        )
+    }
+
+    @Test
+    fun getOnboardingInfoFailure(){
+        every {
+            tmOnBoardingCheckUsecase.getMemberOnboardingInfo(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getOnboardingInfo(0)
+        Assert.assertEquals(
+            (viewModel.tokomemberOnboardingResultLiveData.value as Fail).throwable,
             mockThrowable
         )
     }

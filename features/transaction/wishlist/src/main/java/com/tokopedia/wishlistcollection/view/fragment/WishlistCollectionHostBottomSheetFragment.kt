@@ -11,17 +11,19 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 
-class WishlistCollectionHostBottomSheetFragment: Fragment(),
-    BottomSheetCollectionWishlistAdapter.ActionListener,
+class WishlistCollectionHostBottomSheetFragment :
+    Fragment(),
+    BottomSheetWishlistCollectionAdapter.ActionListener,
     BottomSheetAddCollectionWishlist.ActionListener,
     ActionListenerFromPdp {
 
@@ -74,9 +76,11 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         listProductId.add(productId)
         val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = id, collectionName = name, productIds = listProductId)
         bottomSheetCollection.saveToCollection(addWishlistParam)
+        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listProductId.toString(), src)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
+        WishlistCollectionAnalytics.sendClickKoleksiBaruEvent(productId, src)
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
             val source = if (src == SRC_WISHLIST) SRC_THREE_DOTS_CREATE_COLLECTION else src
             showBottomSheetCreateNewCollection(childFragmentManager, source)
@@ -104,7 +108,6 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, data.dataItem.success)
             intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.dataItem.message)
             intent.putExtra(STRING_EXTRA_COLLECTION_ID, data.dataItem.collectionId)
-
         } else {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
             val errorMessage = if (data.errorMessage.isNotEmpty()) {

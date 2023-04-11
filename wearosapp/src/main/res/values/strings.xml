@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Tokopedia Wear</string>
+    <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
+    <string name="home_title">Tokopedia Seller</string>
+
+    <!-- Notification List -->
+    <string name="notification_list_text_open_from_phone">Buka di handphone</string>
+    <string name="content_description_app_icon">App Icon</string>
+
+    <!-- New Order Summary -->
+    <string name="new_order_summary_text_open_order">Open</string>
+
+    <!-- Order List -->
+    <string name="order_list_text_title">%s (%1d)</string>
+    <string name="new_order_list_text_due_response">Batas respons</string>
+    <string name="ready_to_shop_order_list_text_due_response">Respons sebelum</string>
+    <string name="order_list_text_accept_all_order">Terima Semua\n Pesanan</string>
+    <string name="order_list_text_open_on_phone">Buka di handphone</string>
+    <string name="order_list_footer_title">Actions</string>
+    <string name="order_list_order_left_format">+%1s pesanan lainnya</string>
+    <!-- New Order Detail -->
+    <string name="new_order_detail_content_description_seller_icon">Seller Icon</string>
+    <string name="new_order_detail_status_response">Batas Respons (P0):</string>
+    <string name="new_order_detail_content_description_clocked_filled">Clock Icon</string>
+    <string name="new_order_detail_footer_title">Actions</string>
+    <string name="new_order_detail_accept_order">Terima Pesanan</string>
+    <string name="new_order_detail_open_on_cellphone">Buka di handphone</string>
+    <string name="order_detail_product_left_format">+%1s produk lainnya</string>
+    <string name="watch_shape">Square Watch</string>
+
+    <string name="state_button_login_in_app">"Login In Android App"</string>
+    <string name="state_button_retry">"Retry"</string>
+    <string name="state_button_install_app">"Install App"</string>
+
+</resources>

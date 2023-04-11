@@ -36,8 +36,9 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     interface Listener {
         fun getUserName(): String
-        fun showReplyOption(messageUiModel: MessageUiModel)
+        fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView? = null)
         fun goToBubble(parentReply: ParentReply)
+        fun resetGuidelineForReplyBubble()
     }
 
     fun setReplyListener(listener: Listener) {
@@ -157,6 +158,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
                 clearReferTo()
+                listener?.resetGuidelineForReplyBubble()
                 hide()
             }
         } else {

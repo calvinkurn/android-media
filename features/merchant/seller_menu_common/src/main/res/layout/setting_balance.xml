@@ -48,7 +48,7 @@
                 android:id="@+id/icon_shc_balance_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginVertical="@dimen/layout_lvl1"
+                android:layout_marginVertical="8dp"
                 app:icon_name="RELOAD"
                 app:layout_constraintEnd_toStartOf="@id/tv_shc_balance_failed"
                 app:layout_constraintTop_toTopOf="parent"
@@ -74,14 +74,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/spacing_lvl4"/>
+            app:layout_constraintGuide_begin="16dp"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="@dimen/spacing_lvl4"/>
+            app:layout_constraintGuide_end="16dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

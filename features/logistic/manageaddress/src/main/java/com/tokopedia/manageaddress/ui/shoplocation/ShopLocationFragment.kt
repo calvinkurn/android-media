@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -108,8 +112,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                         fetchData()
                     } else {
                         activity?.finish()
-                        val intent = context?.let { context -> ShopSettingsAddressActivity.createIntent(context) }
-                        startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
+                        context?.let { ctx ->
+                            val intent = getSellerSettingsIntent(ctx)
+                            startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
+                        }
                     }
                 }
 
@@ -179,6 +185,15 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun updateData(data: List<Warehouse>) {
         adapter.clearData()
         adapter.addList(data)
+    }
+
+    private fun getSellerSettingsIntent(context: Context) : Intent {
+        return if (GlobalConfig.isSellerApp()) {
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, userSession.shopId)
+            }
+
     }
 
     private fun setGeneralTicker(data: GeneralTickerModel) {
@@ -342,12 +357,23 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openFormShopEditAddress(data: Warehouse) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS)
-        if (!data.latLon.isNullOrEmpty()) {
-            intent.putExtra(EXTRA_LAT, data.latLon.substringBefore(",").toDouble())
-            intent.putExtra(EXTRA_LONG, data.latLon.substringAfter(",").toDouble())
+        data.latLon.checkLatlon { latitude, longitude ->
+            intent.putExtra(EXTRA_LAT, latitude)
+            intent.putExtra(EXTRA_LONG, longitude)
         }
         intent.putExtra(EXTRA_WAREHOUSE_DATA, data)
         startActivityForResult(intent, EDIT_WAREHOUSE_REQUEST_CODE)
+    }
+
+    private fun String?.checkLatlon(latLon: (latitude: Double, longitude: Double) -> Unit) {
+        this?.takeIf { isNotEmpty() } ?.apply {
+            val latitude = substringBefore(",").toDoubleOrNull()
+            val longitude = substringAfter(",").toDoubleOrNull()
+
+            if (latitude != null && longitude != null) {
+                latLon.invoke(latitude, longitude)
+            }
+        }
     }
 
     companion object {

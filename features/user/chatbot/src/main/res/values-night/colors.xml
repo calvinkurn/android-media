@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chatbot_dms_read_more_color">#42b549</color>
+    <color name="chatbot_dms_right_message_bg">#2ABF70</color>
+    <color name="chatbot_dms_quick_reply_bg">#1D2025</color>
+    <color name="chatbot_dms_left_message_bg">#2D323A</color>
+    <color name="chatbot_dms_read_receipt_bg">#03AC0E</color>
+    <color name="chatbot_dms_time_text">#DCE4ED</color>
+    <color name="chatbot_dms_chat_divider_bg">#4B5461</color>
+    <color name="chatbot_dms_invoice_date">#808FA1</color>
+    <color name="chatbot_dms_invoice_price">#F2600C</color>
+    <color name="chatbot_dms_stroke">#2ABF70</color>
+    <color name="chatbot_dms_date_indicator_bg">#BCE8FE</color>
+    <color name="chatbot_dms_date_indicator_text">#AD31353B</color>
+    <color name="chatbot_dms_message_text">#FFFFFF</color>
+    <color name="chatbot_dms_message_see_more">#2ABF70</color>
+    <color name="chatbot_dms_message_hint_color">#DCE4ED</color>
+    <color name="chatbot_dms_add_attachment_color">#525A67</color>
+    <color name="chatbot_dms_sender_image_background">#252930</color>
+    <color name="chatbot_dms_color_date">#F531353B</color>
+    <color name="chatbot_dms_chat_divider_text">#FFFAE6</color>
+    <color name="chatbot_dms_chat_image_gradient">#00eeeeee</color>
+    <color name="chatbot_dms_chat_image_gradient_start">#50000000</color>
+    <color name="chatbot_dms_compose_msg_hint">#DCE4ED</color>
+    <color name="chatbot_dms_right_chat_message_bg">#2ABF70</color>
+    <color name="chatbot_dms_left_chat_message_bg">#2D323A</color>
+    <color name="chatbot_dms_compose_bg">#1D2025</color>
+    <color name="chatbot_dms_optional_text">#808FA1</color>
+
+
+</resources>

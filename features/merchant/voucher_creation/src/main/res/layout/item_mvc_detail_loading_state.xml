@@ -9,7 +9,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="8dp"
         android:background="@color/Neutral_N75"/>
 
     <include layout="@layout/item_mvc_detail_shimmer_info"/>
@@ -18,10 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/mvc_dimen_1dp"
         android:background="@color/Neutral_N75"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"/>
 
     <include layout="@layout/item_mvc_detail_shimmer_info"/>
 

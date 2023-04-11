@@ -896,34 +896,39 @@ public class AddAddressFragment extends BaseDaggerFragment
         /*here access presenter*/
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
-        int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
-        if (ConnectionResult.SUCCESS == resultCode) {
-            LocationPass locationPass = new LocationPass();
+        Activity activity = getActivity();
 
-            if (!TextUtils.isEmpty(address.getLatitude())
-                    && !TextUtils.isEmpty(address.getLongitude())
-                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
-                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
-                locationPass.setLatitude(address.getLatitude());
-                locationPass.setLongitude(address.getLongitude());
-                locationPass.setGeneratedAddress(locationEditText.getText().toString());
-            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
-                locationPass.setDistrictName(address.getDistrictName());
-                locationPass.setCityName(address.getCityName());
-            } else {
-                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
-                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
-            }
+        if (activity != null) {
+            int resultCode = availability.isGooglePlayServicesAvailable(activity);
+            if (ConnectionResult.SUCCESS == resultCode) {
+                LocationPass locationPass = new LocationPass();
 
-            if (getActivity() != null) {
-                Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
+                if (!TextUtils.isEmpty(address.getLatitude())
+                        && !TextUtils.isEmpty(address.getLongitude())
+                        && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
+                        && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
+                    locationPass.setLatitude(address.getLatitude());
+                    locationPass.setLongitude(address.getLongitude());
+                    locationPass.setGeneratedAddress(locationEditText.getText().toString());
+                } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
+                    locationPass.setDistrictName(address.getDistrictName());
+                    locationPass.setCityName(address.getCityName());
+                } else {
+                    locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
+                    locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
+                }
+
+                Intent intent = GeolocationActivity.createInstance(activity, locationPass,
                         isAddAddressFromCartCheckoutMarketplace());
                 startActivityForResult(intent, REQUEST_CODE);
+
+            } else {
+                Timber.d("Google play services unavailable");
+                Dialog dialog = availability.getErrorDialog(activity, resultCode, 0);
+                if (dialog != null) {
+                    dialog.show();
+                }
             }
-        } else {
-            Timber.d("Google play services unavailable");
-            Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
-            dialog.show();
         }
     }
 

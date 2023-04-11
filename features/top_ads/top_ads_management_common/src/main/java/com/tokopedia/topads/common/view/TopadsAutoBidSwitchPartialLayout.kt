@@ -53,11 +53,17 @@ class TopadsAutoBidSwitchPartialLayout(
                 tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                     context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
-                        tracker?.bidChangeConfirmationDialogPositiveClick(it.isChecked)
+                        if(isBidAutomatic)
+                            tracker?.bidChangeToManualLanjuktanClicked()
+                        else
+                            tracker?.bidChangeConfirmationDialogPositiveClick()
                         it.isChecked = !it.isChecked
                         onCheckBoxStateChanged?.invoke(it.isChecked)
                     }, {
-                        tracker?.bidChangeConfirmationDialogNegativeClick(it.isChecked)
+                        if(isBidAutomatic)
+                            tracker?.bidChangeToManualDismissed()
+                        else
+                            tracker?.bidChangeConfirmationDialogNegativeClick()
                     })
                 }
                 false
@@ -74,7 +80,9 @@ class TopadsAutoBidSwitchPartialLayout(
 
     interface TrackerListener {
         fun autoBidSwitchClicked(on: Boolean)
-        fun bidChangeConfirmationDialogPositiveClick(isAutomatic: Boolean)
-        fun bidChangeConfirmationDialogNegativeClick(isAutomatic: Boolean)
+        fun bidChangeConfirmationDialogPositiveClick()
+        fun bidChangeConfirmationDialogNegativeClick()
+        fun bidChangeToManualLanjuktanClicked()
+        fun bidChangeToManualDismissed()
     }
 }

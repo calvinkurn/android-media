@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 
 /**
  * Created by yfsx on 3/1/21.
@@ -29,6 +30,7 @@ class BalanceWidgetView : FrameLayout {
     private var layoutManager: LinearLayoutManager? = null
     private var balanceWidgetAdapter: BalanceWidgetAdapter? = null
     private var subscriptionPosition = HomeBalanceModel.DEFAULT_BALANCE_POSITION
+    private var previousElement: HomeBalanceModel? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -43,8 +45,10 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
+        val layout = if(HomeRollenceController.isUsingAtf2Variant())
+            R.layout.layout_item_widget_balance_widget_atf2
+        else R.layout.layout_item_widget_balance_widget
+        val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
         this.itemContext = view.context
@@ -66,7 +70,9 @@ class BalanceWidgetView : FrameLayout {
         }
         when (element.status) {
             HomeBalanceModel.STATUS_LOADING -> {
-                balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+                if (previousElement?.status == HomeBalanceModel.STATUS_LOADING || previousElement == null) {
+                    balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+                }
             }
             HomeBalanceModel.STATUS_ERROR -> {
                 balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
@@ -75,15 +81,18 @@ class BalanceWidgetView : FrameLayout {
                 loadDataSuccess(element)
             }
         }
+        previousElement = element
     }
 
     private fun loadDataSuccess(element: HomeBalanceModel) {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
-            listener?.showBalanceWidgetCoachMark(element)
-            rvBalance?.post {
+            if(!HomeRollenceController.isUsingAtf2Variant()) {
                 listener?.showBalanceWidgetCoachMark(element)
+                rvBalance?.post {
+                    listener?.showBalanceWidgetCoachMark(element)
+                }
             }
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))

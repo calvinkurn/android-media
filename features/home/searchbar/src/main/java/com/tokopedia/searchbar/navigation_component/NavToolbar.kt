@@ -2,8 +2,10 @@ package com.tokopedia.searchbar.navigation_component
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.ColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -15,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getResourceIdOrThrow
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -26,6 +30,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
+import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -62,7 +68,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
+class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
@@ -97,15 +103,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TYPE_EDITABLE = 1
         }
         private const val MAX_BACKGROUND_ALPHA = 225f
+
         // for set transparent searchbar on toolbar
         const val ALPHA_MAX = 255f
     }
 
-    //public variable
+    // public variable
     var toolbarThemeType: Int = 0
-    private set
+        private set
 
-    //attribution variable
+    // attribution variable
     private val DEFAULT_PAGE_NAME = "Unknown page"
     private var backType = BACK_TYPE_NONE
     private var initialTheme = TOOLBAR_DARK_TYPE
@@ -126,31 +133,31 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var darkIconColor: Int? = getDarkIconColor()
     private var lightIconColor: Int? = getLightIconColor()
 
-    private val navIconRecyclerView : RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+    private val navIconRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
     }
     private val divider: View by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.divider)
     }
-    private val navToolbar : Toolbar by lazy(LazyThreadSafetyMode.NONE) {
+    private val navToolbar: Toolbar by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.navToolbar)
     }
-    private val tvToolbarTitle: Typography by lazy(LazyThreadSafetyMode.NONE){
+    private val tvToolbarTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.toolbar_title)
     }
     private val navIconBack: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.nav_icon_back)
     }
-    private val layoutSearch : ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
+    private val layoutSearch: ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.layout_search)
     }
     private val layoutCustomView: ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.layout_custom_view)
     }
-    private val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
+    private val etSearch: EditText by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.et_search)
     }
-    private val iconSearchMagnify : IconUnify by lazy(LazyThreadSafetyMode.NONE) {
+    private val iconSearchMagnify: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.search_magnify_icon)
     }
 
@@ -170,8 +177,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun initializeViewModel(it: Context): NavigationViewModel? {
         val component = DaggerNavigationComponent.builder()
-                .navigationModule(NavigationModule(it.applicationContext))
-                .build()
+            .navigationModule(NavigationModule(it.applicationContext))
+            .build()
         component.inject(this)
         return when (it) {
             is AppCompatActivity -> {
@@ -195,11 +202,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    //helper variable
+    // helper variable
     var shadowApplied: Boolean = false
     private var userSessionInterface: UserSessionInterface? = null
 
-    //controller variable
+    // controller variable
     internal var statusBarUtil: StatusBarUtil? = null
     private lateinit var navSearchBarController: NavSearchbarController
     private var navIconAdapter: NavToolbarIconAdapter? = null
@@ -218,14 +225,13 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 initialTheme = ta.getInt(R.styleable.NavToolbar_toolbarInitialTheme, TOOLBAR_DARK_TYPE)
                 toolbarAlwaysShowShadow = ta.getBoolean(R.styleable.NavToolbar_toolbarAlwaysShowShadow, false)
                 toolbarContentType = ta.getInt(R.styleable.NavToolbar_toolbarContentType, TOOLBAR_TYPE_TITLE)
-                toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
-                toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
-                toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
+                toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle) ?: ""
+                toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint) ?: ""
+                toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName) ?: DEFAULT_PAGE_NAME
                 toolbarInitialFillColor = ta.getInt(R.styleable.NavToolbar_toolbarInitialFillColor, TOOLBAR_FILLED)
                 invertSearchBarColor = ta.getBoolean(R.styleable.NavToolbar_toolbarInvertSearchBarColor, false)
                 toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
             } catch (e: IllegalArgumentException) {
-
             } finally {
                 ta.recycle()
             }
@@ -256,8 +262,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         toolbarThemeCondition(
-                lightCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT) },
-                darkCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK) }
+            lightCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT) },
+            darkCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK) }
         )
 
         viewModel?.navNotificationLiveData?.value?.let {
@@ -287,7 +293,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
      * Hide shadow and adjust padding
      */
     fun hideShadow(lineShadow: Boolean = true) {
-        if(shadowApplied){
+        if (shadowApplied) {
             shadowApplied = false
             if (lineShadow) {
                 divider.visibility = View.INVISIBLE
@@ -314,7 +320,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
      * Show shadow and adjust padding
      */
     fun showShadow(lineShadow: Boolean = true) {
-        if(!shadowApplied && toolbarAlwaysShowShadow){
+        if (!shadowApplied && toolbarAlwaysShowShadow) {
             shadowApplied = true
 
             if (lineShadow) {
@@ -358,36 +364,45 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
+    fun setupMicroInteraction(navToolbarMicroInteraction: NavToolbarMicroInteraction?) {
+        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch)
+    }
+
     /**
      * Show and setup searchbar
      * @durationAutoTransition is delay for each hint in ms
      */
-    fun setupSearchbar(hints: List<HintData>,
-                       applink: String = "",
-                       searchbarClickCallback: ((hint: String) -> Unit)? = null,
-                       searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
-                       durationAutoTransition: Long = 0,
-                       shouldShowTransition: Boolean = true,
-                       disableDefaultGtmTracker: Boolean = false,
-                       searchbarType: Int = SearchBarType.TYPE_CLICK,
-                       navSearchbarInterface: ((text: CharSequence?,
-                                                start: Int,
-                                                count: Int,
-                                                after: Int) -> Unit)? = null,
-                       editorActionCallback: ((hint: String) -> Unit)? = null
+    fun setupSearchbar(
+        hints: List<HintData>,
+        applink: String = "",
+        searchbarClickCallback: ((hint: String) -> Unit)? = null,
+        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
+        durationAutoTransition: Long = 0,
+        shouldShowTransition: Boolean = true,
+        disableDefaultGtmTracker: Boolean = false,
+        searchbarType: Int = SearchBarType.TYPE_CLICK,
+        navSearchbarInterface: (
+            (
+                text: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) -> Unit
+        )? = null,
+        editorActionCallback: ((hint: String) -> Unit)? = null
 
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(
-                this,
-                applinkForController,
-                searchbarClickCallback = searchbarClickCallback,
-                searchbarImpressionCallback = searchbarImpressionCallback,
-                topNavComponentListener = this,
-                disableDefaultGtmTracker = disableDefaultGtmTracker,
-                navSearchbarInterface = navSearchbarInterface,
-                editorActionCallback = editorActionCallback
+            this,
+            applinkForController,
+            searchbarClickCallback = searchbarClickCallback,
+            searchbarImpressionCallback = searchbarImpressionCallback,
+            topNavComponentListener = this,
+            disableDefaultGtmTracker = disableDefaultGtmTracker,
+            navSearchbarInterface = navSearchbarInterface,
+            editorActionCallback = editorActionCallback
         )
         this.searchbarType = searchbarType
         searchbarTypeValidation(
@@ -397,14 +412,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             },
             ifEditableSearchbarType = {
                 val hint = hints.getOrNull(0)
-                navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+                navSearchBarController.setEditableSearchbar(hint?.placeholder ?: "")
             }
         )
     }
 
-    fun searchbarTypeValidation(searchbarType: Int,
-                                ifClickSearchbarType: () -> Unit = {},
-                                ifEditableSearchbarType: () -> Unit = {}) {
+    fun searchbarTypeValidation(
+        searchbarType: Int,
+        ifClickSearchbarType: () -> Unit = {},
+        ifEditableSearchbarType: () -> Unit = {}
+    ) {
         if (searchbarType == SearchBarType.TYPE_CLICK) {
             ifClickSearchbarType.invoke()
         } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
@@ -432,9 +449,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconBack.setOnClickListener {
             if (!disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
-                        pageName = toolbarPageName,
-                        componentName = IconList.NAME_BACK_BUTTON,
-                        userId = getUserId()
+                    pageName = toolbarPageName,
+                    componentName = IconList.NAME_BACK_BUTTON,
+                    userId = getUserId()
                 )
             }
             backButtonClickListener.invoke()
@@ -442,7 +459,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setToolbarContentType(toolbarContentType: Int) {
-        when(toolbarContentType) {
+        when (toolbarContentType) {
             TOOLBAR_TYPE_TITLE -> {
                 showTitle()
             }
@@ -470,9 +487,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             if (context is Activity) {
                 navIconBack.setOnClickListener {
                     NavToolbarTracking.clickNavToolbarComponent(
-                            pageName = toolbarPageName,
-                            componentName = IconList.NAME_BACK_BUTTON,
-                            userId = getUserId()
+                        pageName = toolbarPageName,
+                        componentName = IconList.NAME_BACK_BUTTON,
+                        userId = getUserId()
                     )
                     (context as? Activity)?.onBackPressed()
                 }
@@ -505,7 +522,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarPageName = pageName
     }
 
-    //this needed to enable coachmark on homepage
+    // this needed to enable coachmark on homepage
     fun getGlobalNavIconView(): View? {
         val globalNavPosition = navIconAdapter?.getGlobalNavIconPosition()
         globalNavPosition?.let {
@@ -515,12 +532,31 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    //this needed to enable coachmark on homepage
+    // this needed to enable coachmark on homepage
     fun getInboxIconView(): View? {
         val globalNavPosition = navIconAdapter?.getInboxIconPosition()
         globalNavPosition?.let {
             val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
+        }
+        return null
+    }
+
+    // this needed to enable coachmark on wishlist detail page
+    fun getShareIconView(): View? {
+        val shareIconPosition = navIconAdapter?.getShareIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
+    private fun getNoteBookIconView(): IconNotification? {
+        val noteBookPosition = navIconAdapter?.getNoteBookPosition()
+        noteBookPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it) as? ImageIconHolder
+            return viewholder?.iconImage
         }
         return null
     }
@@ -555,6 +591,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
     }
 
+    fun setSearchbarText(text: String) {
+        navSearchBarController.etSearch?.setText(text)
+    }
+
     fun getCurrentSearchbarText(): String {
         return navSearchBarController.etSearch?.text?.toString() ?: ""
     }
@@ -562,6 +602,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun clearSearchbarText() {
         navSearchBarController.etSearch?.text?.clear()
         navSearchBarController.etSearch?.clearFocus()
+    }
+
+    fun setInvertSearchBarColor(invertColor: Boolean) {
+        invertSearchBarColor = invertColor
+        configureInvertedSearchBar()
     }
 
     private fun applyStatusBarPadding() {
@@ -597,12 +642,15 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     private fun observeLiveData() {
-        lifecycleOwner?.let {owner ->
-            viewModel?.navNotificationLiveData?.observe(owner, Observer {
-                it?.let {
-                    updateCentralizedNotificationData(it)
+        lifecycleOwner?.let { owner ->
+            viewModel?.navNotificationLiveData?.observe(
+                owner,
+                Observer {
+                    it?.let {
+                        updateCentralizedNotificationData(it)
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -619,7 +667,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     private fun configureToolbarContentTypeBasedOnAttribute() {
-        when(toolbarContentType) {
+        when (toolbarContentType) {
             TOOLBAR_TYPE_SEARCH -> {
                 showSearchbar(listOf(HintData(toolbarDefaultHint, toolbarDefaultHint)))
             }
@@ -644,6 +692,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomViewContent?.let {
             val parentLayout = layoutCustomView
             it.id = generateViewId()
+            parentLayout.removeAllViews()
             parentLayout.addView(it)
         }
     }
@@ -659,6 +708,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun configureInvertedSearchBar() {
         if (invertSearchBarColor) {
             layoutSearch.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
+        } else {
+            layoutSearch.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner)
         }
     }
 
@@ -692,6 +743,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             DrawableCompat.setTint(wrappedDrawable, color)
             navIconBack.setImageDrawable(it)
         }
+    }
+
+    fun setCustomBackButton(icon: Int = IconUnify.ARROW_BACK, color: Int) {
+        navIconBack.setImage(
+            newIconId = icon,
+            newLightEnable = color,
+            newLightDisable = color,
+            newDarkDisable = color,
+            newDarkEnable = color
+        )
     }
 
     private fun setBackButtonColorBasedOnTheme() {
@@ -773,9 +834,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType == TOOLBAR_DARK_TYPE) darkCondition.invoke()
     }
 
-    override fun getUserId(): String = userSessionInterface?.userId?:""
+    override fun getUserId(): String = userSessionInterface?.userId ?: ""
 
-    override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn?:false
+    override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn ?: false
 
     override fun getPageName(): String = toolbarPageName
 
@@ -784,5 +845,82 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         layoutSearch.alpha = alpha / ALPHA_MAX
         iconSearchMagnify.alpha = alpha / ALPHA_MAX
         etSearch.isEnabled = etSearch.alpha > Float.ZERO
+    }
+
+    private fun getColor(resourceId: Int): Int {
+        return ContextCompat.getColor(
+            context,
+            resourceId
+        )
+    }
+
+    private fun getDrawable(resourceId: Int): Drawable? {
+        return ContextCompat.getDrawable(
+            context,
+            resourceId
+        )
+    }
+
+    private fun blendColor(color: Int): ColorFilter? {
+        return BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+            color,
+            BlendModeCompat.SRC_ATOP
+        )
+    }
+
+    @Suppress("DEPRECATION")
+    private fun switchStatusBarIconColor(needDarkColor: Boolean, activity: Activity?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.window?.decorView?.systemUiVisibility = if (!needDarkColor) View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN else View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+    }
+
+    /**
+     * Switch to static color of toolbar.
+     * In NavRecyclerViewScrollListener, put this function into onSwitchToDarkToolbar function.
+     */
+    fun switchToStaticBackground(activity: Activity?) {
+        if (context.isDarkMode()) {
+            val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_static)
+            val blendIconColor = blendColor(getColor(R.color.searchbar_dms_icon_dark_color))
+            val blendIconSearchColor = blendColor(getColor(R.color.searchbar_dms_search_icon_dark_color))
+            val hintTextColor = getColor(R.color.searchbar_dms_text_color)
+
+            layoutSearch.background = searchBackgroundColor
+            navIconBack.colorFilter = blendIconColor
+            iconSearchMagnify.colorFilter = blendIconSearchColor
+            etSearch.setHintTextColor(hintTextColor)
+            getNoteBookIconView()?.imageDrawable?.colorFilter = blendIconColor
+
+            switchStatusBarIconColor(
+                needDarkColor = true,
+                activity = activity
+            )
+        }
+    }
+
+    /**
+     * Switch to normal color of toolbar.
+     * Use this function if switchToStaticBackground function is used as well.
+     * In NavRecyclerViewScrollListener, put this function into onSwitchToLightToolbar function.
+     */
+    fun switchToNormalBackground(activity: Activity?) {
+        if (context.isDarkMode()) {
+            val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
+            val blendIconColor = blendColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+            val blendIconSearchColor = blendColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+            val hintTextColor = getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+
+            layoutSearch.background = searchBackgroundColor
+            navIconBack.colorFilter = blendIconColor
+            iconSearchMagnify.colorFilter = blendIconSearchColor
+            etSearch.setHintTextColor(hintTextColor)
+            getNoteBookIconView()?.imageDrawable?.colorFilter = blendIconColor
+
+            switchStatusBarIconColor(
+                needDarkColor = false,
+                activity = activity
+            )
+        }
     }
 }

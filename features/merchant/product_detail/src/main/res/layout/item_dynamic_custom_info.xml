@@ -1,123 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/custom_info_container"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_info_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/top_separator"
+    <ViewStub
+        android:id="@+id/vs_custom_info"
+        android:layout="@layout/item_dynamic_info_content"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:layout_height="wrap_content" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/custom_layout_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp">
-
-        <ImageView
-            android:id="@+id/custom_image"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="custom_image"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="HardcodedText"
-            tools:src="@drawable/ic_power_merchant"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_custom_see"
-            app:layout_constraintEnd_toStartOf="@+id/custom_label_see"
-            app:layout_constraintStart_toEndOf="@+id/custom_image"
-            app:layout_constraintTop_toTopOf="@id/guideline_custom_see"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="paragraph_1"
-            app:typographyWeight="bold"
-            tools:text="Bangga Buatan Indonesiaa"
-            tools:visibility="visible" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_title_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierAllowsGoneWidgets="false"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="custom_title, custom_image" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/pdp_dp_3"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrier_title_bottom"
-            app:typographyType="display_2"
-            tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
-            tools:visibility="visible" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_custom_see"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="28dp" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_label_see"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="0dp"
-            android:text="@string/pdp_general_info_see"
-            android:textColor="@color/Unify_GN500"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_custom_see"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline_custom_see"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_custom_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:labelType="general_light_green"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/custom_desc"
-            tools:text="Promo Bingkisan"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/bottom_separator"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
-</LinearLayout>
+</FrameLayout>

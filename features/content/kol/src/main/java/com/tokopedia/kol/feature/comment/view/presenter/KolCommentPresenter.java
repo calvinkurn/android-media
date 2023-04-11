@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase;
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel;
 import com.tokopedia.kol.feature.comment.domain.interactor.DeleteKolCommentUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.SendKolCommentUseCase;
@@ -16,7 +16,6 @@ import com.tokopedia.kol.feature.comment.view.subscriber.ReportKolSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.SendKolCommentSubscriber;
 import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -62,7 +61,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void getCommentFirstTime(int postId) {
+    public void getCommentFirstTime(long postId) {
         getView().showLoading();
         getKolCommentsUseCase.execute(
                 GetKolCommentsUseCase.getFirstTimeParam(postId),
@@ -70,7 +69,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void loadMoreComments(int postId) {
+    public void loadMoreComments(long postId) {
         getKolCommentsUseCase.execute(
                 GetKolCommentsUseCase.getParam(postId, cursor),
                 new GetKolCommentSubscriber(getView()));
@@ -85,7 +84,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     public void deleteComment(String id, int adapterPosition) {
         getView().showProgressDialog();
         deleteKolCommentUseCase.execute(
-                DeleteKolCommentUseCase.getParam(Integer.parseInt(id)),
+                DeleteKolCommentUseCase.getParam(Long.parseLong(id)),
                 new DeleteKolCommentSubscriber(getView(), adapterPosition)
         );
     }
@@ -99,7 +98,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void sendComment(int id, String comment) {
+    public void sendComment(long id, String comment) {
         if (isValid(comment)) {
             getView().showProgressDialog();
             getView().disableSendComment();
@@ -115,7 +114,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
             getMentionableUserUseCase.unsubscribe();
             getMentionableUserUseCase.execute(
                     GetMentionableUserUseCase.Companion.getParam(keyword),
-                    new Subscriber<List<? extends MentionableUserViewModel>>() {
+                    new Subscriber<List<? extends MentionableUserModel>>() {
                         @Override
                         public void onCompleted() {
 
@@ -127,8 +126,8 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
                         }
 
                         @Override
-                        public void onNext(List<? extends MentionableUserViewModel> mentionableUserViewModels) {
-                            getView().showMentionUserSuggestionList((List<MentionableUserViewModel>) mentionableUserViewModels);
+                        public void onNext(List<? extends MentionableUserModel> mentionableUserViewModels) {
+                            getView().showMentionUserSuggestionList((List<MentionableUserModel>) mentionableUserViewModels);
                         }
                     }
             );

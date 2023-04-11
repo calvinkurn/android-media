@@ -14,7 +14,7 @@ object MockChannelHeader {
                 "tokopedia://home",
                 "https://www.tokopedia.com/",
                 "red",
-                "https://ecs7-p.tokopedia.net/img/attachment/2020/2/19/31902163/31902163_54855172-a370-46cc-93a2-154e6919143f.jpg",
+                "https://images.tokopedia.net/img/attachment/2020/2/19/31902163/31902163_54855172-a370-46cc-93a2-154e6919143f.jpg",
                 ""
         )
     }

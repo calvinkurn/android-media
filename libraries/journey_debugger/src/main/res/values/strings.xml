@@ -1,0 +1,5 @@
+<resources>
+    <string name="journey_already_copied">Journey already copied</string>
+    <string name="journey_not_copied">Journey are not copied</string>
+    <string name="journey_debugger_label_search">Search</string>
+</resources>

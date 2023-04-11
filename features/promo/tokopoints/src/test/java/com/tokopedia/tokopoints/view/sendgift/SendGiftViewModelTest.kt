@@ -9,18 +9,18 @@ import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
 import java.lang.NullPointerException
 import kotlin.reflect.KClass
 
+@ExperimentalCoroutinesApi
 class SendGiftViewModelTest {
 
 

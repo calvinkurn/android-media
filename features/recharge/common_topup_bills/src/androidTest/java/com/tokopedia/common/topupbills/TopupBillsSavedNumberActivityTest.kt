@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.clearText
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.action.ViewActions.swipeUp
@@ -25,19 +24,19 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment
 import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivityStub
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.unifycomponents.SearchBarUnify
 import junit.framework.Assert.assertTrue
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -68,11 +67,13 @@ class TopupBillsSavedNumberActivityTest {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         val extras = Bundle()
-        extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
-        extras.putString(EXTRA_CLIENT_NUMBER, CLIENT_NUMBER)
-        extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, DG_CATEGORY_IDS)
-        extras.putString(EXTRA_DG_CATEGORY_NAME, CATEGORY_NAME)
-        extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
+        extras.putString(TopupBillsPersoSavedNumberActivity.EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
+        extras.putString(TopupBillsPersoSavedNumberActivity.EXTRA_CLIENT_NUMBER, CLIENT_NUMBER)
+        extras.putStringArrayList(TopupBillsPersoSavedNumberActivity.EXTRA_DG_CATEGORY_IDS, DG_CATEGORY_IDS)
+        extras.putStringArrayList(TopupBillsPersoSavedNumberActivity.EXTRA_DG_OPERATOR_IDS, arrayListOf())
+        extras.putString(TopupBillsPersoSavedNumberActivity.EXTRA_DG_CATEGORY_NAME, CATEGORY_NAME)
+        extras.putString(TopupBillsPersoSavedNumberActivity.EXTRA_LOYALTY_STATUS, "")
+        extras.putBoolean(TopupBillsPersoSavedNumberActivity.EXTRA_IS_SWITCH_CHECKED, false)
 
         intent = Intent(targetContext, TopupBillsSavedNumberActivityStub::class.java).apply {
             putExtras(extras)
@@ -168,19 +169,13 @@ class TopupBillsSavedNumberActivityTest {
 
 
     private fun isFavnumCoachmarkDisabled(context: Context, isDisabled: Boolean) {
-        LocalCacheHandler(context, TopupBillsFavoriteNumberFragment.CACHE_PREFERENCES_NAME).also {
-            it.putBoolean(TopupBillsFavoriteNumberFragment.CACHE_SHOW_COACH_MARK_KEY, isDisabled)
+        LocalCacheHandler(context, TopupBillsPersoFavoriteNumberFragment.CACHE_PREFERENCES_NAME).also {
+            it.putBoolean(TopupBillsPersoFavoriteNumberFragment.CACHE_SHOW_COACH_MARK_KEY, isDisabled)
             it.applyEditor()
         }
     }
 
     companion object {
-        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
-        const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
-        const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
-        const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
-
         const val SEARCH_INPUT_NUMBER_PREFIX = "0812"
         const val SEARCH_INPUT_NAME_CHARACTER = "m"
 

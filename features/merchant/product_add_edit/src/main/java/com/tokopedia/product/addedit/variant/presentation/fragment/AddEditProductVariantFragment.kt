@@ -27,8 +27,11 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS
@@ -38,6 +41,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
+import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.*
@@ -54,9 +58,12 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_CUSTOM_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_PHOTO_IMAGE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -80,17 +87,17 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class AddEditProductVariantFragment :
-        BaseDaggerFragment(),
-        VariantTypeAdapter.OnVariantTypeClickListener,
-        VariantDataValuePicker.OnButtonSaveClickListener,
-        VariantValueAdapter.OnRemoveButtonClickListener,
-        CustomVariantUnitValueForm.OnCustomVariantUnitAddListener,
-        VariantDataValuePicker.OnAddCustomVariantUnitValueListener,
-        VariantUnitPicker.OnVariantUnitPickListener,
-        VariantDataValuePicker.OnVariantUnitPickerClickListener,
-        VariantPhotoAdapter.OnItemClickListener,
-        VariantDataValuePicker.OnVariantUnitValuePickListener,
-        AddEditProductPerformanceMonitoringListener {
+    BaseDaggerFragment(),
+    VariantTypeAdapter.OnVariantTypeClickListener,
+    VariantDataValuePicker.OnButtonSaveClickListener,
+    VariantValueAdapter.OnRemoveButtonClickListener,
+    CustomVariantUnitValueForm.OnCustomVariantUnitAddListener,
+    VariantDataValuePicker.OnAddCustomVariantUnitValueListener,
+    VariantUnitPicker.OnVariantUnitPickListener,
+    VariantDataValuePicker.OnVariantUnitPickerClickListener,
+    VariantPhotoAdapter.OnItemClickListener,
+    VariantDataValuePicker.OnVariantUnitValuePickListener,
+    AddEditProductPerformanceMonitoringListener {
 
     companion object {
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
@@ -169,7 +176,7 @@ class AddEditProductVariantFragment :
 
         cacheManagerId?.run {
             viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
-                    ProductInputModel::class.java) ?: ProductInputModel()
+                ProductInputModel::class.java) ?: ProductInputModel()
         }
     }
 
@@ -539,7 +546,16 @@ class AddEditProductVariantFragment :
 
     override fun onItemClicked(position: Int) {
         viewModel.clickedVariantPhotoItemPosition = position
-        showPhotoVariantPicker()
+        showImagePicker(position)
+    }
+
+    private fun showImagePicker(position: Int){
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
+            doTrackingVariant(position)
+            showImagePickerForVariant(position)
+        } else {
+            showPhotoVariantPicker()
+        }
     }
 
     private fun resetVariantValueSection(layoutPosition: Int) {
@@ -563,6 +579,21 @@ class AddEditProductVariantFragment :
                         viewModel.updateSizechart(it)
                     }
                 }
+
+                REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER -> {
+                    val imageUrlOrPathList = MediaPicker.result(data)
+                    viewModel.cleanUrlOrPathPicture(imageUrlOrPathList)?.let {
+                        viewModel.updateSizechart(it)
+                    }
+                }
+
+                REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER -> {
+                    val imageUrlOrPathList = ImagePickerAddEditNavigation.resultExtrasEditor(data)
+                    viewModel.cleanUrlOrPathPicture(imageUrlOrPathList)?.let {
+                        viewModel.updateSizechart(it)
+                    }
+                }
+
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS).orEmpty()
                     imageUrlOrPathList.firstOrNull()?.let {
@@ -570,12 +601,21 @@ class AddEditProductVariantFragment :
                         variantPhotoAdapter?.updateImageData(it, position)
                     }
                 }
+
+                REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER -> {
+                    val imageResultPicker = MediaPicker.result(data)
+                    viewModel.cleanUrlOrPathPicture(imageResultPicker)?.let {
+                        val position = viewModel.clickedVariantPhotoItemPosition.orZero()
+                        variantPhotoAdapter?.updateImageData(it, position)
+                    }
+                }
+
                 REQUEST_CODE_VARIANT_DETAIL -> {
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID)
                     val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
                     cacheManagerId?.let {
                         viewModel.productInputModel.value = saveInstanceCacheManager
-                                .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                            .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     }
                     submitVariantInput()
                 }
@@ -585,14 +625,14 @@ class AddEditProductVariantFragment :
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_VARIANT_TRACE)
@@ -681,9 +721,9 @@ class AddEditProductVariantFragment :
     private fun setupTitleLayoutVariantType() {
         titleLayoutVariantType.setActionButtonOnClickListener {
             val bottomSheet = CustomVariantManageBottomSheet(
-                    variantTypeAdapter?.getSelectedItems(),
-                    variantTypeAdapter?.getCustomVariantTypeItems(),
-                    variantTypeAdapter?.getItems())
+                variantTypeAdapter?.getSelectedItems(),
+                variantTypeAdapter?.getCustomVariantTypeItems(),
+                variantTypeAdapter?.getItems())
 
             bottomSheet.setOnVariantTypeEditedListener { editedIndex, variantDetail ->
                 editVariantType(editedIndex, variantDetail)
@@ -726,8 +766,8 @@ class AddEditProductVariantFragment :
     }
 
     private fun setupAddEditVariantPage(
-            variantDataList: List<VariantDetail>,
-            selectedVariantDetails: List<VariantDetail>
+        variantDataList: List<VariantDetail>,
+        selectedVariantDetails: List<VariantDetail>
     ) {
         // setup variant type section view
         variantTypeAdapter?.setData(variantDataList)
@@ -756,9 +796,9 @@ class AddEditProductVariantFragment :
         displayedVariantDetail.forEachIndexed { index, variantDetail ->
             val selectedVariantUnit = variantDetail.units.firstOrNull() ?: Unit()
             val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
-                    ?: mutableListOf()
+                ?: mutableListOf()
             val selectedVariantData = variantTypeAdapter?.getSelectedItems()?.getOrNull(index)
-                    ?: return@forEachIndexed // break loop if invalid index inputted
+                ?: return@forEachIndexed // break loop if invalid index inputted
             val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.getOrNull(index)
                 .orZero()
             val isPredefinedVariant = variantDataList.any { it.variantID == variantDetail.variantID }
@@ -816,7 +856,7 @@ class AddEditProductVariantFragment :
 
         // set product variant size chart
         val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
-                ?: PictureVariantInputModel()
+            ?: PictureVariantInputModel()
         viewModel.updateSizechart(sizechart)
 
         // update sizechart visibility based on variant selected type
@@ -850,7 +890,7 @@ class AddEditProductVariantFragment :
                     stopPerformanceMonitoring()
                     context?.let {
                         showGetVariantCategoryCombinationErrorToast(
-                                ErrorHandler.getErrorMessage(it, result.throwable))
+                            ErrorHandler.getErrorMessage(it, result.throwable))
                         viewModel.isEditMode.value?.let { isEditMode ->
                             trackOopsConnectionPageScreen(isEditMode, result.throwable, it)
                         }
@@ -937,9 +977,9 @@ class AddEditProductVariantFragment :
 
     private fun showToaster(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG,
-                actionText = getString(R.string.action_oke))
-                .setAnchorView(R.id.cardViewSave)
-                .show()
+            actionText = getString(R.string.action_oke))
+            .setAnchorView(R.id.cardViewSave)
+            .show()
     }
 
     private fun showVariantDataValuePicker(variantData: VariantDetail,
@@ -1005,16 +1045,25 @@ class AddEditProductVariantFragment :
         val ctx = context ?: return
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
-                .withSimpleEditor()
+            .withSimpleEditor()
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
-            else ProductAddVariantTracking.pickProductVariantPhotos(shopId)
         }
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
+    }
+
+    private fun showImagePickerForVariant(position: Int) {
+        val ctx = context ?: return
+        val pageSourceState = variantPhotoAdapter?.getAddOrEditPickerState(position)?:return
+        val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
+            ctx,
+            pageSourceState
+        )
+        startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER)
     }
 
     private fun showExitConfirmationDialog() {
@@ -1062,12 +1111,12 @@ class AddEditProductVariantFragment :
 
     private fun showReplaceVariantUnitDialog(oldUnitName: String, newUnit: Unit, variantData: VariantDetail, layoutPosition: Int) {
         val dialogTitle = getString(R.string.label_variant_replace) +
-                " " + oldUnitName + " " + getString(R.string.label_variant_to) +
-                " " + newUnit.unitName + getString(R.string.label_question_mark)
+            " " + oldUnitName + " " + getString(R.string.label_variant_to) +
+            " " + newUnit.unitName + getString(R.string.label_question_mark)
         val dialogDesc = getString(R.string.label_variant_data) +
-                " " + oldUnitName +
-                " " + getString(R.string.label_variant_replacement_notice) +
-                " " + newUnit.unitName
+            " " + oldUnitName +
+            " " + getString(R.string.label_variant_replacement_notice) +
+            " " + newUnit.unitName
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(dialogTitle)
@@ -1097,14 +1146,24 @@ class AddEditProductVariantFragment :
 
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImageEditorBuilder(
-                imageUrls = arrayListOf(urlOrPath),
-                defaultRatio = ImageRatioType.RATIO_1_1
+            imageUrls = arrayListOf(urlOrPath),
+            defaultRatio = ImageRatioType.RATIO_1_1
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+    }
+
+    private fun showEditorImagePickerSizeGuide(){
+        val ctx = context ?: return
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal ?: ""
+        val intent = ImagePickerAddEditNavigation.getIntentMediaEditor(
+            ctx,
+            arrayListOf(urlOrPath)
+        )
+        startActivityForResult(intent, REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER)
     }
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
@@ -1163,7 +1222,7 @@ class AddEditProductVariantFragment :
 
         if (notOnAdapter) {
             variantTypeAdapter?.addData(newVariantDetail,
-                    isSelected = selectedVariantTypeCount < MAX_SELECTED_VARIANT_TYPE)
+                isSelected = selectedVariantTypeCount < MAX_SELECTED_VARIANT_TYPE)
         } else if (selectedVariantTypeCount < MAX_SELECTED_VARIANT_TYPE) {
             // if variant type already inside adapter, don't add variant, just invoke selected listener
             variantTypeAdapter?.onVariantTypeSelected(selectedIndex)
@@ -1175,7 +1234,7 @@ class AddEditProductVariantFragment :
         val selectedVariantCount = variantTypeAdapter?.getSelectedCount().orZero()
 
         variantTypeAdapter?.addData(customVariantTypeDetail,
-                isSelected = selectedVariantCount < MAX_SELECTED_VARIANT_TYPE)
+            isSelected = selectedVariantCount < MAX_SELECTED_VARIANT_TYPE)
     }
 
     private fun editVariantType(editedIndex: Int, variantDetail: VariantDetail) {
@@ -1257,7 +1316,7 @@ class AddEditProductVariantFragment :
     private fun processCustomVariantTypeOrder(selectedVariantDetails: List<VariantDetail>) {
         val adapterSelectedVariantDetails = variantTypeAdapter?.getSelectedItems()
         val isUnordered = selectedVariantDetails.firstOrNull()?.variantID !=
-                adapterSelectedVariantDetails?.firstOrNull()?.variantID
+            adapterSelectedVariantDetails?.firstOrNull()?.variantID
         if (isUnordered) {
             variantTypeAdapter?.swapSelectedItem()
             viewModel.setSelectedVariantDetails(variantTypeAdapter?.getSelectedItems().orEmpty())
@@ -1287,15 +1346,15 @@ class AddEditProductVariantFragment :
 
     private fun onSizechartClicked() {
         if (viewModel.variantSizechart.value?.urlOriginal.isNullOrEmpty()) {
-            showSizechartPicker()
+            showImagePickerVariantSizeGuide()
         } else {
             val fm = this@AddEditProductVariantFragment.childFragmentManager
             val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
             dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
             dialogFragment.setOnImageEditListener(object :
-                    AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
+                AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
                 override fun clickImageEditor() {
-                    showEditorSizechartPicker()
+                    showImageEditorVariantSizeGuide()
                 }
 
                 override fun clickRemoveImage() {
@@ -1303,10 +1362,42 @@ class AddEditProductVariantFragment :
                 }
 
                 override fun clickChangeImagePath() {
-                    showSizechartPicker()
+                    showImagePickerVariantSizeGuide()
                 }
             })
         }
+    }
+
+    fun showImagePickerVariantSizeGuide(){
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
+            doTrackingForVariantSize()
+            showImagePickerSizeGuide()
+        } else {
+            showSizechartPicker()
+        }
+    }
+
+    fun showImageEditorVariantSizeGuide(){
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
+            doTrackingForVariantSize()
+            showEditorImagePickerSizeGuide()
+        } else {
+            showEditorSizechartPicker()
+        }
+    }
+
+    private fun doTrackingVariant(position: Int){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        val isEdit = !variantPhotoAdapter?.isPictIdIsEmpty(position = position).orTrue()
+        MediaImprovementTracker.sendVariantActionTracker(isEdit, userId, shopId)
+    }
+
+    private fun doTrackingForVariantSize(){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        val isEdit =  viewModel.isEditMode.value ?: false
+        MediaImprovementTracker.sendVariantActionTracker(isEdit, userId, shopId)
     }
 
     private fun removeVariant() {
@@ -1330,12 +1421,21 @@ class AddEditProductVariantFragment :
         val ctx = context ?: return
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
-                .withSimpleEditor()
+            .withSimpleEditor()
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+    }
+
+    private fun showImagePickerSizeGuide(){
+        val ctx = context ?: return
+        val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
+            ctx,
+            PageSource.EditVariant
+        )
+        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)
     }
 
     private fun onImagePickerEditContinue(context: Context, isInEditMode: Boolean): ImagePickerCallback {
@@ -1409,14 +1509,14 @@ class AddEditProductVariantFragment :
         val errorName = AddEditProductUploadErrorHandler.getErrorName(throwable)
         if (isEditMode) {
             ProductEditStepperTracking.oopsConnectionPageScreen(
-                    userId,
-                    errorMessage,
-                    errorName)
+                userId,
+                errorMessage,
+                errorName)
         } else {
             ProductAddStepperTracking.oopsConnectionPageScreen(
-                    userId,
-                    errorMessage,
-                    errorName)
+                userId,
+                errorMessage,
+                errorName)
         }
     }
 

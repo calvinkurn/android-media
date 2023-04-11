@@ -6,4 +6,5 @@ package com.tokopedia.play.broadcaster.ui.model.paged
 data class PagedDataUiModel<T: Any>(
     val dataList: List<T>,
     val hasNextPage: Boolean,
+    val cursor: String = "",
 )

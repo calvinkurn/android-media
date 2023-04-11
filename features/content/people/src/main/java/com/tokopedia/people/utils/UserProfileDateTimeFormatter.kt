@@ -25,7 +25,7 @@ object UserProfileDateTimeFormatter {
     fun formatDate(
         raw: String,
         inputPattern: String = yyyyMMddTHHmmss,
-        outputPattern: String = ddMMMyyyy_HHmm
+        outputPattern: String = ddMMMyyyy_HHmm,
     ): String {
         return try {
             val inputFormat = SimpleDateFormat(inputPattern, locale)
@@ -36,16 +36,15 @@ object UserProfileDateTimeFormatter {
                 val calendar = Calendar.getInstance()
                 calendar.time = it
 
-                val diff = (getDeviceGMT().toInt() - GMT07.toInt())
-                if(diff != 0) {
-                    calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
-                    calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)
+                val diff = (getDeviceGMT().toLong() - GMT07.toLong())
+                if (diff != 0L) {
+                    calendar.add(Calendar.HOUR_OF_DAY, (diff / GMT_DIVIDER).toInt())
+                    calendar.add(Calendar.MINUTE, (diff % GMT_DIVIDER).toInt())
                 }
 
                 return@let outputFormat.format(calendar.time)
             } ?: raw
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             raw
         }
     }
@@ -55,15 +54,14 @@ object UserProfileDateTimeFormatter {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone(GMT), locale)
             val dateFormat = SimpleDateFormat(Z, locale)
             dateFormat.format(calendar.time)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             GMT07
         }
     }
 
     fun convertToCalendar(
         raw: String,
-        pattern: String = yyyyMMddTHHmmss
+        pattern: String = yyyyMMddTHHmmss,
     ): Calendar? {
         return try {
             val format = SimpleDateFormat(pattern, locale)
@@ -73,16 +71,15 @@ object UserProfileDateTimeFormatter {
                 val calendar = Calendar.getInstance()
                 calendar.time = it
 
-                val diff = (getDeviceGMT().toInt() - GMT07.toInt())
-                if(diff != 0) {
-                    calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
-                    calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)
+                val diff = (getDeviceGMT().toLong() - GMT07.toLong())
+                if (diff != 0L) {
+                    calendar.add(Calendar.HOUR_OF_DAY, (diff / GMT_DIVIDER).toInt())
+                    calendar.add(Calendar.MINUTE, (diff % GMT_DIVIDER).toInt())
                 }
 
                 return@let calendar
             }
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
     }

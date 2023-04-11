@@ -4,8 +4,8 @@
     android:layout_width="@dimen/dp_132"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/Unify_N0"
-    app:cardCornerRadius="@dimen/unify_space_8"
-    app:cardElevation="@dimen/unify_space_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -13,7 +13,7 @@
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/unify_space_8"
+        android:paddingBottom="8dp"
         tools:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView

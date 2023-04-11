@@ -12,16 +12,19 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
-import com.tokopedia.product.addedit.common.util.toBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.toBigIntegerSafely
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
-import com.tokopedia.product.addedit.variant.data.model.*
+import com.tokopedia.product.addedit.variant.data.model.AllVariant
+import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
+import com.tokopedia.product.addedit.variant.data.model.UnitValue
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetAllVariantUseCase
 import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
 import com.tokopedia.product.addedit.variant.domain.GetVariantDataByIdUseCase
@@ -39,7 +42,12 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.extension.hasVariant
 import com.tokopedia.product.addedit.variant.presentation.extension.removeVariantCombinations
-import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -47,14 +55,13 @@ import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 class AddEditProductVariantViewModel @Inject constructor(
-        private val coroutineDispatcher: CoroutineDispatchers,
-        private val getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase,
-        private val titleValidationUseCase: GetProductTitleValidationUseCase,
-        private val getAllVariantUseCase: GetAllVariantUseCase,
-        private val getVariantDataByIdUseCase: GetVariantDataByIdUseCase
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase,
+    private val titleValidationUseCase: GetProductTitleValidationUseCase,
+    private val getAllVariantUseCase: GetAllVariantUseCase,
+    private val getVariantDataByIdUseCase: GetVariantDataByIdUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     var clickedVariantPhotoItemPosition: Int? = null
@@ -150,8 +157,8 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
             mGetVariantCategoryCombinationResult.value = Success(result)
         }, onError = {
-            mGetVariantCategoryCombinationResult.value = Fail(it)
-        })
+                mGetVariantCategoryCombinationResult.value = Fail(it)
+            })
     }
 
     fun getAllVariantFromKeyword(keyword: String) {
@@ -166,8 +173,8 @@ class AddEditProductVariantViewModel @Inject constructor(
                 }
                 mVariantTypeSearchResult.value = Success(result)
             }, onError = {
-                mVariantTypeSearchResult.value = Fail(it)
-            })
+                    mVariantTypeSearchResult.value = Fail(it)
+                })
         }
     }
 
@@ -179,8 +186,8 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
             mGetVariantDetailResult.value = Success(result.getVariantDataByID.variantDetail)
         }, onError = {
-            mGetVariantDetailResult.value = Fail(it)
-        })
+                mGetVariantDetailResult.value = Fail(it)
+            })
     }
 
     fun validateVariantTitle(
@@ -199,12 +206,14 @@ class AddEditProductVariantViewModel @Inject constructor(
             selectedVariantDetails.any { it.name.equals(productName, ignoreCase = true) } -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
-            customVariantDetails.any { it.variantID == CUSTOM_VARIANT_TYPE_ID &&
-                    it.name.equals(productName, ignoreCase = true) } -> {
+            customVariantDetails.any {
+                it.variantID == CUSTOM_VARIANT_TYPE_ID &&
+                    it.name.equals(productName, ignoreCase = true)
+            } -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             variantDetails.any { it.name.equals(productName, ignoreCase = true) } &&
-                    selectedVariantDetails.size == VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                selectedVariantDetails.size == VARIANT_VALUE_LEVEL_TWO_COUNT -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             else -> validateIllegalVariantTitle(productName)
@@ -243,8 +252,11 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun getVariantValuesLayoutPosition(adapterPosition: Int): Int {
-        return if (variantValuesLayoutMap.isEmpty()) VARIANT_VALUE_LEVEL_ONE_POSITION
-        else variantValuesLayoutMap[adapterPosition] ?: VARIANT_VALUE_LEVEL_ONE_POSITION
+        return if (variantValuesLayoutMap.isEmpty()) {
+            VARIANT_VALUE_LEVEL_ONE_POSITION
+        } else {
+            variantValuesLayoutMap[adapterPosition] ?: VARIANT_VALUE_LEVEL_ONE_POSITION
+        }
     }
 
     fun getRenderedLayoutAdapterPosition(): Int {
@@ -285,8 +297,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun updateVariantInputModel(variantPhotos: List<VariantPhoto>) {
-        var sortedVariantUnitValuesMap =  selectedVariantUnitValuesMap.toSortedMap()
-        var sortedSelectedVariantUnitMap =  selectedVariantUnitMap
+        var sortedVariantUnitValuesMap = selectedVariantUnitValuesMap.toSortedMap()
+        var sortedSelectedVariantUnitMap = selectedVariantUnitMap
         if (isOldVariantData) {
             var unitValueIndex = 0
             var unitIndex = 0
@@ -304,7 +316,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         productInputModel.getValueOrDefault().variantInputModel.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos, sortedVariantUnitValuesMap)
-            selections =  mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
+            selections = mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
             sizecharts = mapSizechart(variantSizechart.value)
         }
     }
@@ -413,10 +425,10 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun removeVariant() {
         mIsRemovingVariant.value = true
         // keep isRemoteDataHasVariant old data
-        val isRemoteDataHasVariant = productInputModel.getValueOrDefault().variantInputModel.
-            isRemoteDataHasVariant
+        val isRemoteDataHasVariant = productInputModel.getValueOrDefault().variantInputModel
+            .isRemoteDataHasVariant
         // keep the selections before being cleared
-        val selections = productInputModel.getValueOrDefault().variantInputModel.selections.filter{
+        val selections = productInputModel.getValueOrDefault().variantInputModel.selections.filter {
             it.variantId != CUSTOM_VARIANT_TYPE_ID.toString()
         }
 
@@ -448,9 +460,9 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     private fun mapSelections(
-            variantDetailsSelected: List<VariantDetail>,
-            variantUnitValuesMap: SortedMap<Int, MutableList<UnitValue>>,
-            variantUnitMap: HashMap<Int, Unit>
+        variantDetailsSelected: List<VariantDetail>,
+        variantUnitValuesMap: SortedMap<Int, MutableList<UnitValue>>,
+        variantUnitMap: HashMap<Int, Unit>
     ): List<SelectionInputModel> {
         val result: MutableList<SelectionInputModel> = mutableListOf()
         var level = 0 // variant value level
@@ -459,14 +471,16 @@ class AddEditProductVariantViewModel @Inject constructor(
             if (it.value.isNotEmpty()) {
                 variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
                     val unit = variantUnitMap.getOrElse(it.key) { Unit() }
-                    result.add(SelectionInputModel(
+                    result.add(
+                        SelectionInputModel(
                             variantDetail.variantID.toString(),
                             variantDetail.name,
                             unit.variantUnitID.toString(),
                             unit.unitName,
                             variantDetail.identifier,
                             mapOptions(it.value)
-                    ))
+                        )
+                    )
                     level++
                 }
             }
@@ -483,18 +497,18 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
-            unit.map {
-                OptionInputModel(
-                        it.variantUnitValueID.toString(),
-                        it.value,
-                        it.hex
-                )
-            }
+        unit.map {
+            OptionInputModel(
+                it.variantUnitValueID.toString(),
+                it.value,
+                it.hex
+            )
+        }
 
     private fun mapProducts(
-            variantDetails: List<VariantDetail>,
-            variantPhotos: List<VariantPhoto>,
-            variantUnitValuesMap: SortedMap<Int, MutableList<UnitValue>>
+        variantDetails: List<VariantDetail>,
+        variantPhotos: List<VariantPhoto>,
+        variantUnitValuesMap: SortedMap<Int, MutableList<UnitValue>>
     ): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
         val unitValueList: MutableList<List<UnitValue>> = mutableListOf()
@@ -527,10 +541,12 @@ class AddEditProductVariantViewModel @Inject constructor(
 
             if (unitValueLevel2.isEmpty()) {
                 // loop condition when variant having 1 level
-                result.add(mapProductVariant(
+                result.add(
+                    mapProductVariant(
                         variantPicture,
                         listOf(optionIndexLevel1)
-                ))
+                    )
+                )
             } else {
                 // loop condition when variant having 2 level
                 unitValueLevel2.forEachIndexed { optionIndexLevel2, _ ->
@@ -539,10 +555,12 @@ class AddEditProductVariantViewModel @Inject constructor(
                         variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel2))
                     }
 
-                    result.add(mapProductVariant(
+                    result.add(
+                        mapProductVariant(
                             variantPicture,
                             listOf(optionIndexLevel1, optionIndexLevel2)
-                    ))
+                        )
+                    )
                 }
             }
         }
@@ -551,8 +569,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     private fun mapProductVariant(
-            variantPicture: List<PictureVariantInputModel>,
-            combination: List<Int>
+        variantPicture: List<PictureVariantInputModel>,
+        combination: List<Int>
     ): ProductVariantInputModel {
         val products = productInputModel.getValueOrDefault().variantInputModel.products
         val productVariant = products.firstOrNull {
@@ -562,11 +580,12 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (productVariant == null) {
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
-                    price = productInputModel.getValueOrDefault().getVariantDefaultVariantPrice(
-                        isEditMode.getValueOrDefault(false)),
-                    pictures = variantPicture,
-                    combination = combination,
-                    status = STATUS_ACTIVE_STRING
+                price = productInputModel.getValueOrDefault().getVariantDefaultVariantPrice(
+                    isEditMode.getValueOrDefault(false)
+                ),
+                pictures = variantPicture,
+                combination = combination,
+                status = STATUS_ACTIVE_STRING
             )
         } else {
             // condition if updating existing product variant
@@ -580,15 +599,15 @@ class AddEditProductVariantViewModel @Inject constructor(
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
-                    filePath = variantPhoto.filePath,
-                    urlOriginal = variantPhoto.imageUrlOrPath,
-                    picID = variantPhoto.picID,
-                    description = variantPhoto.description,
-                    fileName = variantPhoto.fileName,
-                    width = variantPhoto.width,
-                    height = variantPhoto.height,
-                    isFromIG = variantPhoto.isFromIG,
-                    uploadId = variantPhoto.uploadId
+                filePath = variantPhoto.filePath,
+                urlOriginal = variantPhoto.imageUrlOrPath,
+                picID = variantPhoto.picID,
+                description = variantPhoto.description,
+                fileName = variantPhoto.fileName,
+                width = variantPhoto.width,
+                height = variantPhoto.height,
+                isFromIG = variantPhoto.isFromIG,
+                uploadId = variantPhoto.uploadId
             )
             listOf(result)
         } else {
@@ -649,7 +668,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    fun disableRemovingVariant(){
+    fun disableRemovingVariant() {
         mIsRemovingVariant.value = false
     }
 
@@ -676,7 +695,8 @@ class AddEditProductVariantViewModel @Inject constructor(
             val photoIsFromIG = picture?.isFromIG.orEmpty()
             val photoUploadId = picture?.uploadId.orEmpty()
 
-            variantPhotos.add(VariantPhoto(
+            variantPhotos.add(
+                VariantPhoto(
                     variantUnitValueName,
                     photoUrl,
                     photoPicID,
@@ -687,14 +707,16 @@ class AddEditProductVariantViewModel @Inject constructor(
                     photoHeight,
                     photoIsFromIG,
                     photoUploadId
-            ))
+                )
+            )
         }
         return variantPhotos
     }
 
     fun updateIsOldVariantData(
-            selectedVariantDetails: List<VariantDetail>,
-            extractedVariantDetails: List<VariantDetail>) {
+        selectedVariantDetails: List<VariantDetail>,
+        extractedVariantDetails: List<VariantDetail>
+    ) {
         val firstSelectedVariant = selectedVariantDetails.firstOrNull()
         val firstExtractedVariant = extractedVariantDetails.firstOrNull()
 
@@ -717,5 +739,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (productInputModel.hasVariant()) {
             productInputModel.removeVariantCombinations(position, layoutPosition)
         }
+    }
+
+    fun cleanUrlOrPathPicture(imageResult: PickerResult): String? {
+        val editedPath = imageResult.editedImages.firstOrNull()
+        val originalPath = imageResult.originalPaths.firstOrNull()
+        return if (editedPath.isNullOrEmpty()) originalPath else editedPath
     }
 }

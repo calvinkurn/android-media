@@ -8,9 +8,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
@@ -38,11 +38,8 @@ class AddEditProductAddingAnalyticTest {
         private const val PRODUCT_PREVIEW_PAGE_CANCEL_BACK = "tracker/merchant/product_add_edit/add/product_preview_page_cancel_back.json"
 
         private const val PRODUCT_IMAGE_PICKER_OPEN = "tracker/merchant/product_add_edit/add/product_image_picker_open.json"
-        private const val PRODUCT_IMAGE_EDITOR_CLICK_CONTINUE = "tracker/merchant/product_add_edit/add/product_image_editor_click_continue.json"
 
         private const val PRODUCT_DETAIL_PAGE_OPEN = "tracker/merchant/product_add_edit/add/product_detail_page_open.json"
-        private const val PRODUCT_DETAIL_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/add/product_detail_page_click_back.json"
-
 
         private const val PRODUCT_DETAIL_PAGE_CLICK_CONTINUE = "tracker/merchant/product_add_edit/add/product_detail_page_click_continue.json"
 
@@ -50,17 +47,21 @@ class AddEditProductAddingAnalyticTest {
         private const val PRODUCT_DESCRIPTION_PAGE_CLICK_CONTINUE = "tracker/merchant/product_add_edit/add/product_description_page_click_continue.json"
 
         private const val PRODUCT_SHIPPING_PAGE_OPEN = "tracker/merchant/product_add_edit/add/product_shipping_page_open.json"
-
     }
 
     @Rule @JvmField
     var activityRule: IntentsTestRule<AddEditProductPreviewActivityStub> = IntentsTestRule(
-        AddEditProductPreviewActivityStub::class.java, false, false)
+        AddEditProductPreviewActivityStub::class.java,
+        false,
+        false
+    )
+
     @Rule @JvmField
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     @get:Rule
     var cassavaRule = CassavaTestRule()
@@ -97,10 +98,8 @@ class AddEditProductAddingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CANCEL_BACK)
 
         doAnalyticDebuggerTest(PRODUCT_IMAGE_PICKER_OPEN)
-        doAnalyticDebuggerTest(PRODUCT_IMAGE_EDITOR_CLICK_CONTINUE)
 
         doAnalyticDebuggerTest(PRODUCT_DETAIL_PAGE_OPEN)
-        doAnalyticDebuggerTest(PRODUCT_DETAIL_PAGE_CLICK_BACK)
 
         activityRule.activity.finish()
     }
@@ -149,9 +148,11 @@ class AddEditProductAddingAnalyticTest {
 
     private fun performClickNextOnImagePicker() {
         Thread.sleep(500)
-        Espresso.onView(CommonMatcher
-                .firstView(withText("Lanjut")))
-                .perform(click())
+        Espresso.onView(
+            CommonMatcher
+                .firstView(withText("Lanjut"))
+        )
+            .perform(click())
     }
 
     private fun createIntentAddProduct(): Intent {

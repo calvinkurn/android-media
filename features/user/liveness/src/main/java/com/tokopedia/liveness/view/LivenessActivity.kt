@@ -4,25 +4,35 @@ import ai.advance.common.utils.ScreenUtil
 import ai.advance.core.PermissionActivity
 import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import javax.inject.Inject
+import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 
 open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var fragment: Fragment? = null
 
@@ -36,30 +46,42 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        component.inject(this)
 
-        livenessSdk.initOffLine(application)
-        livenessSdk.letSDKHandleCameraPermission()
-        livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setActionSequence(true,
-            Detector.DetectionType.MOUTH,
-            Detector.DetectionType.BLINK,
-            Detector.DetectionType.POS_YAW
-        )
-
-        intent?.data?.let {
-            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
-
-            intent?.extras?.apply {
-                putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId.toInt())
-            }
-        }
-
+        setupStatusBar()
+        initLivenessSDK()
         setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
         ScreenUtil.init(this)
 
         if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
             requestPermissions()
         }
+    }
+
+    private fun initLivenessSDK() {
+        livenessSdk.initOffLine(application)
+        livenessSdk.letSDKHandleCameraPermission()
+        livenessSdk.setDeviceType(DeviceType.RealPhone)
+        livenessSdk.setResultPictureSize(RESOLUTION_LIVENESS)
+        livenessSdk.setActionSequence(
+            isRandomDetection(),
+            Detector.DetectionType.MOUTH,
+            Detector.DetectionType.BLINK,
+            Detector.DetectionType.POS_YAW
+        )
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!this.isDarkMode()) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor =
+            ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     override fun onBackPressed() {
@@ -133,10 +155,19 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
     }
 
     override fun getRequiredPermissions(): Array<String> {
-        return arrayOf(
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+            )
+        }else{
+            arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+            )
+        }
+
     }
 
     override fun onPermissionGranted() { }
@@ -147,5 +178,14 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
                 .setPositiveButton(getString(R.string.liveness_perform)) { _, _ ->
                     finish()
                 }.create().show()
+    }
+
+    private fun isRandomDetection(): Boolean = remoteConfig.getBoolean(
+        REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION,
+        false
+    )
+
+    companion object {
+        private const val RESOLUTION_LIVENESS = 600
     }
 }

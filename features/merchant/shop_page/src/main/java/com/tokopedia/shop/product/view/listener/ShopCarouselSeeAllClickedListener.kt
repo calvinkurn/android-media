@@ -9,5 +9,4 @@ import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 interface ShopCarouselSeeAllClickedListener {
 
     fun onSeeAllClicked(shopProductEtalaseChipItemViewModel: ShopEtalaseItemDataModel)
-
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tkpd_bg_color"
-    android:paddingTop="@dimen/padding_small">
+    android:background="@color/contact_us_dms_ticket_bg"
+    android:paddingTop="10dp">
 
     <ScrollView
         android:id="@+id/scroll"
@@ -17,152 +17,151 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_small"
+            android:paddingBottom="10dp"
             android:visibility="invisible"
             tools:visibility="visible">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/main_text"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:text="@string/title_problem_category"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <EditText
                 android:id="@+id/main_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/main_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/contact_us_dms_detail_background"
                 android:enabled="false"
                 android:gravity="top"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:textSize="14sp"
                 tools:text="Saya pasien > Walalala" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/name_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_small"
-                android:text="@string/title_name"
-                android:textSize="15sp"
                 android:layout_below="@id/main_category"
-                android:textStyle="bold"
-                tools:visibility="gone"/>
+                android:padding="10dp"
+                android:text="@string/title_name"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/Unify_N0"
                 android:gravity="top"
                 android:inputType="textCapWords"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:textSize="14sp"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/email_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:text="@string/title_email"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                tools:visibility="gone"/>
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/email_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/Unify_N0"
                 android:gravity="top"
                 android:inputType="textEmailAddress"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:textSize="14sp"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/detail_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/email"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:text="@string/title_problem_detail"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <EditText
                 android:id="@+id/detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/detail_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/contact_us_dms_detail_background"
                 android:gravity="top"
                 android:minLines="5"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:textSize="14sp" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/phone_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/detail"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:text="@string/title_phone_optional"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <EditText
                 android:id="@+id/phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/phone_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/contact_us_dms_detail_background"
                 android:gravity="top"
                 android:inputType="phone"
-                android:padding="@dimen/padding_small"
+                android:padding="10dp"
                 android:textSize="14sp" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/attachment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/phone_number"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/title_attachment"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/attachment_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attachment_text"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:textSize="14sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:textStyle="italic"
                 android:visibility="gone"
+                app:typographyType="display_2"
                 tools:text="Mohon lampirkan bukti resi pengiriman Anda."
                 tools:visibility="visible" />
 
@@ -171,15 +170,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attachment_note"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/Unify_N0"
                 android:scrollbars="horizontal" />
 
         </RelativeLayout>
-
-
     </ScrollView>
-
 </RelativeLayout>

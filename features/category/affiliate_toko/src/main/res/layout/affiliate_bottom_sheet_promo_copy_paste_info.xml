@@ -1,0 +1,123 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    tools:context="com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/share_link_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/copy_paste_share_link_title"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/share_link_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/copy_paste_share_link_desc"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/share_link_title"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/card_link_image1"
+            android:layout_width="135dp"
+            android:layout_height="220dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/share_link_desc"
+            app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/1-Product-preview.png" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/card_link_image2"
+            android:layout_width="135dp"
+            android:layout_height="220dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/card_link_image1"
+            app:layout_constraintTop_toBottomOf="@id/share_link_desc"
+            app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/1-Shop-preview.png" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recommend_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/copy_paste_recommend_title"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/card_link_image1"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/recommend_image1"
+            android:layout_width="130dp"
+            android:layout_height="212dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recommend_title"
+            app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/2-Recommendation-widget.png" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recommend_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/copy_paste_recommend_desc"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="@id/recommend_image1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/recommend_image1"
+            app:layout_constraintTop_toTopOf="@id/recommend_image1"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/copy_paste_action_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/copy_paste_action_desc"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/recommend_image1"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/paste_link_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/affiliate_paste_link"
+            app:layout_constraintTop_toBottomOf="@id/copy_paste_action_text"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/paste_link_button"
+            app:unify_image_corner_radius="0"
+            app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/Bottom-Illlustration.png" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

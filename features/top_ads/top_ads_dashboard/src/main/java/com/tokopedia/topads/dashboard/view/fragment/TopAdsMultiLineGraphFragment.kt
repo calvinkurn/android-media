@@ -112,7 +112,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
                 context?.let {
                     textColor {
                         ContextCompat.getColor(
-                            it, (com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+                            it, (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                         )
                     }
                 }

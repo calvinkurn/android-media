@@ -1,0 +1,152 @@
+[
+  {
+    "data": {
+      "orderDetails": {
+        "status": {
+          "status": 0,
+          "statusText": "Transaksi Berhasil",
+          "statusLabel": "Status",
+          "iconUrl": "",
+          "textColor": "#42B549",
+          "backgroundColor": "",
+          "fontSize": "16sp"
+        },
+        "title": [
+          {
+            "label": "Tanggal Transaksi",
+            "value": "19 Aug 2022 21:39 ",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          },
+          {
+            "label": "Kategori Produk",
+            "value": "Food & Voucher",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "metadata": "{\"category_name\":\"deal\",\"item_ids\":[7419],\"item_map\":{\"7419\":{\"category_id\":15,\"child_category_ids\":\"25\",\"custom_link_app_url\":\"https://www.tokopedia.com/seru/referral/food-vouchers-dec\",\"custom_link_label\":\"Mau dapat kupon spesial? Klik di sini untuk ajak temanmu, yuk!\",\"custom_link_type\":\"redirect\",\"custom_link_web_url\":\"https://www.tokopedia.com/seru/referral/food-vouchers-dec\",\"device\":\"default_v3\",\"device_version\":\"\",\"email\":\"te.digital@tokopedia.com\",\"end_time\":\"15 Dec 2022 00:00\",\"flag_id\":32769,\"id\":7419,\"invoice_id\":12481856,\"invoice_status\":\"BOOKED\",\"mobile\":\"081113906578\",\"name\":\"Test GiftN\",\"order_trace_id\":\"c8bc6a77-cef4-4a30-4cfa-656b4494ee36\",\"package_name\":\"testing\",\"product_app_url\":\"tokopedia://deals/testing-giftn-7419\",\"product_id\":7419,\"product_image\":\"https://images.tokopedia.net/img/qfBCeS/2022/1/24/894f18b8-cd2c-4de8-b58d-dd11c22e5b30.jpg\",\"product_name\":\"testing\",\"product_web_url\":\"https://www.tokopedia.com/deals/i/testing-giftn-7419/\",\"provider_id\":6,\"quantity\":1,\"start_time\":\"07 Nov 2017 07:00\",\"user_id\":68521721}},\"order_subtitle\":\"Test GiftN\",\"order_title\":\"testing\",\"payment_configuration\":{},\"product_ids\":[7419],\"product_names\":[\"Test GiftN\"],\"provider_ids\":[6],\"quantity\":1,\"unique_id\":\"68521721-1660919956\"}",
+        "invoice": {
+          "invoiceRefNum": "FAV/20220819/XXII/VIII/789215825859551988",
+          "invoiceUrl": "/order/invoice/bcfd8f83-304b-4b6c-aca1-ce0cbdc4a9f9"
+        },
+        "items": [
+          {
+            "categoryID": 0,
+            "id": 7419,
+            "imageUrl": "https://images.tokopedia.net/img/qfBCeS/2022/1/24/894f18b8-cd2c-4de8-b58d-dd11c22e5b30.jpg",
+            "category": "Food & Voucher",
+            "title": "testing",
+            "quantity": 1,
+            "price": "Rp0",
+            "trackingURL": "",
+            "trackingNumber": "",
+            "invoiceID": 0,
+            "promotionAmount": "",
+            "metaData": "{\"category_id\":15,\"child_category_ids\":\"25\",\"custom_link_app_url\":\"https://www.tokopedia.com/seru/referral/food-vouchers-dec\",\"custom_link_label\":\"Mau dapat kupon spesial? Klik di sini untuk ajak temanmu, yuk!\",\"custom_link_type\":\"redirect\",\"custom_link_web_url\":\"https://www.tokopedia.com/seru/referral/food-vouchers-dec\",\"device\":\"default_v3\",\"device_version\":\"\",\"email\":\"te.digital@tokopedia.com\",\"end_time\":\"15 Dec 2022 00:00\",\"flag_id\":32769,\"id\":7419,\"invoice_id\":12481856,\"invoice_status\":\"BOOKED\",\"mobile\":\"081113906578\",\"name\":\"Test GiftN\",\"order_trace_id\":\"c8bc6a77-cef4-4a30-4cfa-656b4494ee36\",\"package_name\":\"testing\",\"product_app_url\":\"tokopedia://deals/testing-giftn-7419\",\"product_id\":7419,\"product_image\":\"https://images.tokopedia.net/img/qfBCeS/2022/1/24/894f18b8-cd2c-4de8-b58d-dd11c22e5b30.jpg\",\"product_name\":\"testing\",\"product_web_url\":\"https://www.tokopedia.com/deals/i/testing-giftn-7419/\",\"provider_id\":6,\"quantity\":1,\"start_time\":\"07 Nov 2017 07:00\",\"user_id\":68521721}",
+            "actionButtons": [],
+            "tapActions": []
+          }
+        ],
+        "pricing": [
+          {
+            "label": "Total Harga",
+            "value": "Rp0",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "detail": [],
+        "paymentData": {
+          "label": "Total Tagihan",
+          "value": "Rp0",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": ""
+        },
+        "actionButtons": [
+          {
+            "label": "Kirim Ulang E-mail",
+            "buttonType": "",
+            "uri": "https://booking.tokopedia.com/v3/api/order/notify/user",
+            "mappingUri": "",
+            "weight": 0,
+            "key": "",
+            "method": "",
+            "uriWeb": "",
+            "value": "",
+            "name": "customer_notification",
+            "control": "button",
+            "header": "",
+            "color": {
+              "textColor": "#000000",
+              "border": "#E0E0E0",
+              "background": "#FFFFFF"
+            },
+            "body": {
+              "appURL": "",
+              "webURL": "",
+              "method": "",
+              "body": ""
+            }
+          }
+        ],
+        "conditionalInfo": {
+          "text": "",
+          "color": {
+            "border": "",
+            "background": ""
+          }
+        },
+        "contactUs": {
+          "helpText": "Butuh info lebih lanjut? Kunjungi Pusat Bantuan",
+          "helpUrl": "https://www.tokopedia.com/help"
+        },
+        "paymentMethod": {
+          "label": "",
+          "value": ""
+        },
+        "payMethod": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "Zero Payment Gateway"
+          },
+          {
+            "label": "Gateway Fee",
+            "value": "Rp0"
+          },
+          {
+            "label": "Extra Fee",
+            "value": "Rp0"
+          },
+          {
+            "label": "Amount",
+            "value": "Rp0"
+          }
+        ],
+        "beforeOrderId": 0,
+        "resolutionId": 0,
+        "driverDetails": {
+          "name": "",
+          "phone": "",
+          "photo": "",
+          "licenseNumber": "",
+          "trackingURL": ""
+        },
+        "promoCode": "",
+        "additionalInfo": [],
+        "additionalTickerInfo": [
+          {
+            "title": "ticker_for_cashback",
+            "notes": "Kamu dapat Rp5.000 Total Cashback GoPay Coins ",
+            "urlDetail": "",
+            "urlText": ""
+          }
+        ]
+      }
+    }
+  }
+]

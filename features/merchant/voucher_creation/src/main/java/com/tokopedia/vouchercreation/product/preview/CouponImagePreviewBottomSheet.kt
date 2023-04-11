@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -201,8 +202,8 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
     }
 
     private fun getDeviceHeight(): Float {
-        val displayMetrics = resources.displayMetrics
-        return displayMetrics.heightPixels / displayMetrics.density
+        val displayMetrics = context?.resources?.displayMetrics
+        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
     }
 
 

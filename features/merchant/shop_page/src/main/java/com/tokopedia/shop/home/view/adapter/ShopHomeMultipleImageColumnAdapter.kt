@@ -9,7 +9,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 class ShopHomeMultipleImageColumnAdapter(
-        val listener: ShopHomeDisplayWidgetListener
+    val listener: ShopHomeDisplayWidgetListener
 ) : ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemImageColumnViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
     private var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
@@ -18,8 +18,8 @@ class ShopHomeMultipleImageColumnAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeItemImageColumnViewHolder {
         val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_shop_home_page_image_column, parent, false)
+            .from(parent.context)
+            .inflate(R.layout.item_shop_home_page_image_column, parent, false)
         return ShopHomeItemImageColumnViewHolder(view, listener, heightRatio)
     }
 
@@ -42,5 +42,4 @@ class ShopHomeMultipleImageColumnAdapter(
     fun setHeightRatio(heightRatio: Float) {
         this.heightRatio = heightRatio
     }
-
 }

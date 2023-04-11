@@ -42,12 +42,16 @@ data class Author(
         @SerializedName("livestream")
         @Expose
         val livestream: LivestreamConfig = LivestreamConfig(),
+
+        @SerializedName("shortvideo")
+        @Expose
+        val shortVideo: ShortVideoConfig = ShortVideoConfig(),
 ) {
 
         data class PostConfig(
                 @SerializedName("enable")
                 @Expose
-                val hasAcceptTnc: Boolean = false,
+                val enable: Boolean = false,
 
                 @SerializedName("has_username")
                 @Expose
@@ -57,11 +61,21 @@ data class Author(
         data class LivestreamConfig(
                 @SerializedName("enable")
                 @Expose
-                val hasAcceptTnc: Boolean = false,
+                val enable: Boolean = false,
 
                 @SerializedName("has_username")
                 @Expose
                 val hasUsername: Boolean = false,
+        )
+
+        data class ShortVideoConfig(
+            @SerializedName("enable")
+            @Expose
+            val enable: Boolean = false,
+
+            @SerializedName("has_username")
+            @Expose
+            val hasUsername: Boolean = false,
         )
 
     companion object {

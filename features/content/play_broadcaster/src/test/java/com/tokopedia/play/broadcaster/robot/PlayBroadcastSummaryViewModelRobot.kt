@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
@@ -13,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -37,7 +40,9 @@ class PlayBroadcastSummaryViewModelRobot(
     getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
     setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
-    getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
+    getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true),
+    hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
+    account: ContentAccountUiModel = ContentAccountUiModel.Empty,
 ) : Closeable {
 
     private val viewModel = PlayBroadcastSummaryViewModel(
@@ -54,6 +59,8 @@ class PlayBroadcastSummaryViewModelRobot(
         setChannelTagsUseCase = setChannelTagsUseCase,
         getChannelUseCase = getChannelUseCase,
         getInteractiveSummaryLivestreamUseCase = getInteractiveSummaryLivestreamUseCase,
+        account = account,
+        hydraConfigStore = hydraConfigStore,
     )
 
     fun recordState(fn: suspend PlayBroadcastSummaryViewModelRobot.() -> Unit): PlayBroadcastSummaryUiState {

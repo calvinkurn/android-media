@@ -137,22 +137,22 @@ abstract class SomBottomSheet <T: ViewBinding> (
             overlayFadeInAnimation?.cancel()
             overlayFadeOutAnimation = animateFade(alpha, Float.ZERO).apply {
                 addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {
+                    override fun onAnimationRepeat(animation: Animator) {
                         // noop
                     }
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         this@run?.gone()
                         onDismissed()
                         oneTimeOnDismissed?.invoke()
                         oneTimeOnDismissed = null
                     }
 
-                    override fun onAnimationCancel(animation: Animator?) {
+                    override fun onAnimationCancel(animation: Animator) {
                         // noop
                     }
 
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                         // noop
                     }
                 })

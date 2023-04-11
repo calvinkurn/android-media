@@ -6,17 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -33,36 +33,43 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
+    /** Can be channelId / shortId */
+    @Assisted private val creationId: String,
+    @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted isEligibleForPin: Boolean,
     private val repo: PlayBroadcastRepository,
-    private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(
+            creationId: String,
+            maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean,
+            isEligibleForPin: Boolean
         ): PlayBroProductSetupViewModel
     }
 
@@ -72,12 +79,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
         savedStateHandle.setEligiblePinStatus(isEligibleForPin)
     }
-
-    val channelId: String
-        get() = configStore.getChannelId()
-
-    val maxProduct: Int
-        get() = configStore.getMaxProduct()
 
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
@@ -92,7 +93,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Success)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
     private val _config = MutableStateFlow(
-        ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
+        ProductSetupConfig(shopName = userSession.shopName, maxProduct = maxProduct)
     )
 
     private val searchQuery = MutableStateFlow("")
@@ -104,13 +105,13 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
 
-    val uiState = combine(
+    val uiState: StateFlow<ProductChooserUiState> = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductList,
         _loadParam,
         _saveState,
-        _config,
+        _config
     ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam, saveState,
         config ->
         ProductChooserUiState(
@@ -119,17 +120,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             selectedProductList = selectedProductList,
             loadParam = loadParam,
             saveState = saveState,
-            config = config,
+            config = config
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(STOP_TIME_OUT_MILLIS),
-        ProductChooserUiState.Empty,
+        ProductChooserUiState.Empty
     )
 
     val summaryUiState = combine(
         _productTagSectionList,
-        _productTagSummary,
+        _productTagSummary
     ) { productTagSectionList, productTagSummary ->
         PlayBroProductSummaryUiState(
             productTagSectionList = productTagSectionList,
@@ -137,6 +138,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             productTagSummary = productTagSummary
         )
     }
+
+    val selectedProducts: List<ProductUiModel>
+        get() = _selectedProductList.value
 
     init {
         getCampaignAndEtalaseList()
@@ -168,7 +172,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             _productTagSectionList.collectLatest { sections ->
-                savedStateHandle[KEY_PRODUCT_SECTIONS] = sections
+                savedStateHandle.setProductSections(sections)
             }
         }
     }
@@ -178,10 +182,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             is ProductSetupAction.SetSort -> handleSetSort(action.sort)
             is ProductSetupAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is ProductSetupAction.SelectCampaign -> handleSelectCampaign(action.campaign)
-            is ProductSetupAction.SelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.ToggleSelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.SetProducts -> handleSetProducts(action.products)
             is ProductSetupAction.LoadProductList -> handleLoadProductList(
                 param = _loadParam.value,
-                resetList = false,
+                resetList = false
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
@@ -207,7 +212,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 it.copy(
                     campaignList = campaignListDeferred.await().orEmpty(),
                     etalaseList = etalaseListDeferred.await().orEmpty(),
-                    state = NetworkState.Success,
+                    state = NetworkState.Success
                 )
             }
         }) {
@@ -216,7 +221,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             }
         }
     }
-
 
     private fun handleSetSort(sort: SortUiModel) {
         _loadParam.update {
@@ -231,7 +235,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private fun handleSelectEtalase(etalase: EtalaseUiModel) {
         _loadParam.update {
             it.copy(
-                etalase = SelectedEtalaseModel.Etalase(etalase),
+                etalase = SelectedEtalaseModel.Etalase(etalase)
             )
         }
     }
@@ -241,7 +245,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             it.copy(
                 etalase = SelectedEtalaseModel.Campaign(campaign),
                 sort = null,
-                keyword = "",
+                keyword = ""
             )
         }
     }
@@ -252,7 +256,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         _selectedProductList.update { products ->
             val hasProduct = products.any { it.id == product.id }
 
-            if (!hasProduct && configStore.getMaxProduct() > products.size) {
+            if (!hasProduct && maxProduct > products.size) {
                 products + product
             } else {
                 products.filterNot { it.id == product.id }
@@ -260,26 +264,40 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSetProducts(products: List<ProductUiModel>) = whenProductsNotSaving {
+        val productsSize = min(maxProduct, products.size)
+        _selectedProductList.value = products.subList(0, productsSize).filterNot { it.stock <= 0 }
+    }
+
     private fun handleLoadProductList(
         param: ProductListPaging.Param,
-        resetList: Boolean,
+        resetList: Boolean
     ) {
         if (!resetList && when (val result = _focusedProductList.value.resultState) {
             PageResultState.Loading -> true
             is PageResultState.Success -> !result.hasNextPage
             else -> false
-        }) return
+        }
+        ) {
+            return
+        }
 
         _focusedProductList.update {
             it.copy(
                 productList = if (resetList) emptyList() else it.productList,
-                resultState = PageResultState.Loading,
+                resultState = PageResultState.Loading
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
-            val page = if (resetList) 1 else _focusedProductList.value.page + 1
+            val pagingType = _focusedProductList.value.pagingType
             when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> {
+                    val page = when {
+                        resetList -> 1
+                        pagingType is PagingType.Page -> pagingType.page + 1
+                        else -> 1
+                    }
+
                     val pagedProductList = repo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
@@ -289,26 +307,34 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Page(page)
                         )
                     }
                 }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
+                    val cursor = when {
+                        resetList -> ""
+                        pagingType is PagingType.Cursor -> pagingType.cursor
+                        else -> ""
+                    }
+
                     val pagedProductList = repo.getProductsInEtalase(
                         etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
                             selectedEtalase.etalase.id
-                        } else "",
-                        page = page,
+                        } else {
+                            ""
+                        },
+                        cursor = cursor,
                         keyword = param.keyword,
-                        sort = param.sort ?: SortUiModel.supportedSortList.first(),
+                        sort = param.sort ?: SortUiModel.supportedSortList.first()
                     )
 
                     _focusedProductList.update {
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Cursor(pagedProductList.cursor)
                         )
                     }
                 }
@@ -316,7 +342,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }) { err ->
             _focusedProductList.update {
                 it.copy(
-                    resultState = PageResultState.Fail(err),
+                    resultState = PageResultState.Fail(err)
                 )
             }
         }
@@ -331,13 +357,15 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSaveProducts() {
-        _saveState.update {
+        val currentState = _saveState.getAndUpdate {
             it.copy(isLoading = true)
         }
+        if (currentState.isLoading) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
-                channelId = configStore.getChannelId(),
-                productIds = _selectedProductList.value.map(ProductUiModel::id),
+                channelId = creationId,
+                productIds = _selectedProductList.value.map(ProductUiModel::id)
             )
 
             getProductTagSummary()
@@ -366,7 +394,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             val productIds = _productTagSectionList.value.flatMap { section ->
                 section.products.mapNotNull { if (it.id != product.id) it.id else null }
             }
-            repo.setProductTags(channelId, productIds)
+            repo.setProductTags(creationId, productIds)
 
             _uiEvent.emit(PlayBroProductChooserEvent.DeleteProductSuccess(1))
 
@@ -382,7 +410,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private suspend fun getProductTagSummary() {
-        val response = repo.getProductTagSummarySection(channelId)
+        val response = repo.getProductTagSummarySection(creationId)
 
         _productTagSectionList.value = response
         _selectedProductList.value = response.flatMap { it.products }
@@ -392,7 +420,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     /**
      * Util
      */
-    private fun <T: Any> whenProductsNotSaving(fn: () -> T) {
+    private fun <T : Any> whenProductsNotSaving(fn: () -> T) {
         if (_saveState.value.isLoading) return
         fn()
     }
@@ -421,13 +449,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         return savedStateHandle[KEY_ELIGIBLE_PIN] ?: true
     }
 
-    private fun handleClickPin(product: ProductUiModel){
+    private fun handleClickPin(product: ProductUiModel) {
         viewModelScope.launchCatchError(block = {
             product.updatePinProduct(isLoading = true, needToReset = true)
-            val result = repo.setPinProduct(channelId, product)
-            if(result)
+            val result = repo.setPinProduct(creationId, product)
+            if (result) {
                 product.updatePinProduct(isLoading = false)
-        }){
+            }
+        }) {
             product.updatePinProduct(isLoading = false, needToReset = true)
             _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
@@ -439,14 +468,27 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToReset: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
-                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
-                sectionUiModel.products.map { prod ->
-                    if(prod.id == this.id)
-                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading, isPinned =
-                            if(!needToReset) this.pinStatus.isPinned.switch()
-                            else this.pinStatus.isPinned))
-                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
-                })
+                sectionUiModel.copy(
+                    campaignStatus = sectionUiModel.campaignStatus,
+                    products =
+                    sectionUiModel.products.map { prod ->
+                        if (prod.id == this.id) {
+                            prod.copy(
+                                pinStatus = this.pinStatus.copy(
+                                    isLoading = isLoading,
+                                    isPinned =
+                                    if (!needToReset) {
+                                        this.pinStatus.isPinned.switch()
+                                    } else {
+                                        this.pinStatus.isPinned
+                                    }
+                                )
+                            )
+                        } else {
+                            prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
+                        }
+                    }
+                )
             }
         }
     }

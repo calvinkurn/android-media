@@ -1,0 +1,16 @@
+{
+  "readme": "Feed Page - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - user profile icon",
+      "eventCategory": "content feed timeline",
+      "eventLabel": "self",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}

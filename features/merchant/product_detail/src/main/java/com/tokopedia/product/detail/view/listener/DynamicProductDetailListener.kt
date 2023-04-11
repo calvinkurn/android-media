@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
-import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
@@ -9,21 +9,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -69,6 +73,7 @@ interface DynamicProductDetailListener {
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
@@ -83,7 +88,6 @@ interface DynamicProductDetailListener {
     fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
@@ -94,6 +98,12 @@ interface DynamicProductDetailListener {
      * OneLinerViewHolder
      */
     fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    )
+    fun showOneLinersImsCoachMark(view: ImageUnify?)
 
     /**
      * ProductDiscussionViewHolder
@@ -132,6 +142,11 @@ interface DynamicProductDetailListener {
         userLabel: String,
         componentTrackData: ComponentTrackDataModel
     )
+    fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
+    )
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -165,6 +180,14 @@ interface DynamicProductDetailListener {
     fun onShopCredibilityImpressed(
         countLocation: String,
         componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    /**
+     * [ProductShopAdditionalViewHolder]
+     */
+    fun onLearnButtonShopAdditionalClicked(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
     )
 
     /**
@@ -256,6 +279,7 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads(pageName: String)
+    fun loadViewToView(pageName: String)
 
     fun loadPlayWidget()
 
@@ -284,9 +308,12 @@ interface DynamicProductDetailListener {
      * ProductTickerViewHolder
      */
     fun onTickerShopClicked(
-        tickerTitle: String, tickerType: Int,
+        tickerTitle: String,
+        tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        tickerDescription: String, applink: String, actionType: String,
+        tickerDescription: String,
+        applink: String,
+        actionType: String,
         tickerActionBs: TickerActionBs?
     )
 
@@ -317,7 +344,11 @@ interface DynamicProductDetailListener {
      * ProductDetailInfoViewHolder
      */
     fun onSeeMoreDescriptionClicked(
-        dataContent: List<ProductDetailInfoContent>,
+        infoData: ProductDetailInfoDataModel,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+    fun onSeeMoreSpecificationClicked(
+        infoData: ProductDetailInfoDataModel,
         componentTrackDataModel: ComponentTrackDataModel
     )
 
@@ -331,6 +362,12 @@ interface DynamicProductDetailListener {
      */
     fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 
+    fun onSocialProofItemClickTracking(
+        identifier: SocialProofUiModel.Identifier,
+        trackData: ComponentTrackDataModel?
+    )
+    fun onSocialProofItemImpression(socialProof: SocialProofUiModel)
+
     /**
      * ProductShippingViewHolder
      */
@@ -338,7 +375,8 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
@@ -346,6 +384,18 @@ interface DynamicProductDetailListener {
         title: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
+
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    /**
+     * ProductArViewHolder
+     */
+    fun showArCoachMark(view: ConstraintLayout?)
+    fun hideArCoachMark()
+    fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductCategoryCarouselViewHolder
@@ -365,6 +415,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductBundlingViewHolder
      */
+    fun removeComponent(componentName: String)
+
     fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,
@@ -377,10 +429,17 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
+    fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean = true
     )
 
     /**
@@ -410,4 +469,33 @@ interface DynamicProductDetailListener {
     fun onImpressBackToTop(label: String)
     fun onImpressProductDetailNavigation(labels: List<String>)
     fun onClickProductDetailnavigation(position: Int, label: String)
+    fun updateNavigationTabPosition()
+
+    fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
+    fun startVerticalRecommendation(pageName: String)
+    fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
+
+    /**
+     * ViewToView widget recommendation
+     */
+    fun onViewToViewImpressed(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    )
+    fun onViewToViewClicked(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    )
+    fun onViewToViewReload(pageName: String)
+
+    /**
+     * Thumbnail Variant
+     */
+    fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
+
+    fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
 }

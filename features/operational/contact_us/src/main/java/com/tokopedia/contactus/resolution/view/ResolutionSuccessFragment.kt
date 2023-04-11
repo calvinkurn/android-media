@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.resolution.view
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.databinding.FragmentResolutionSuccessBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
 
 class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
 
@@ -55,7 +58,10 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
     private fun routeToDetail() {
         if (url.isNotEmpty()) {
             activity?.let {
-                RouteManager.route(it, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                RouteManager.route(
+                    it,
+                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+                )
                 it.finish()
             }
         }
@@ -75,7 +81,7 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
 
     companion object {
         private const val KEY_URL = "url"
-        private const val URL_IMAGE = "https://images.tokopedia.net/img/resolution/icons/resolution_success_state.png"
+        private const val URL_IMAGE = TokopediaImageUrl.RESOLUTION_URL_IMAGE
 
         fun createNewInstance(url: String): Fragment {
             return ResolutionSuccessFragment().apply {

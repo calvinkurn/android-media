@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="total_pembayaran">Total Pembayaran</string>
+    <string name="sisa_waktu">Sisa Waktu</string>
+</resources>

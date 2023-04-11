@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.empty_state.EmptyStateUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/empty_state_tokofood_search_merchant_full"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:unifyEmptyStateOrientation="vertical"
+    app:unifyEmptyStateTitle="@string/search_srp_empty_with_filter_title"
+    app:unifyEmptyStateDescription="@string/search_srp_empty_with_filter_description"
+    app:unifyEmptyStatePrimaryCTAText="@string/search_srp_reset_filter"
+    app:unifyEmptyStateType="page"/>

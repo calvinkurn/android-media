@@ -8,7 +8,7 @@ class PostItemDecoration(private val space: Int) : RecyclerView.ItemDecoration()
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State
+        state: RecyclerView.State,
     ) {
         val position = parent.getChildAdapterPosition(view)
         if (position % 2 == 0) {

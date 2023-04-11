@@ -265,8 +265,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun displayCouponImage(imageUrl: String) {
         binding?.imgCoupon?.loadImageRounded(
             url = imageUrl,
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-                .toFloat()
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                ?.toFloat().orZero()
         )
     }
 

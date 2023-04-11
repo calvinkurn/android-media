@@ -40,15 +40,16 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_play_button"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/bg_circle_play_button"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

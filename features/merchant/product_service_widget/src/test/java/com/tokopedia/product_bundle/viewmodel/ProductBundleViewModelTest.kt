@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.product.detail.common.data.model.variant.Picture
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -12,10 +13,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_PDP
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
-import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
-import com.tokopedia.product_bundle.common.data.model.response.BundleItem
-import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
-import com.tokopedia.product_bundle.common.data.model.response.Selection
+import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
@@ -136,11 +134,13 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val productBundleDetails = listOf(
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             ),
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             )
         )
 
@@ -528,7 +528,8 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         nonSpykViewModel2.selectedProductBundleMaster.observeForever(observer)
         // given
         val bundleInfo = BundleInfo(
-            bundleID = 123L
+            bundleID = 123L,
+            bundleStats = BundleStats("2")
         )
         val bundleMaster = nonSpykViewModel2.mapBundleInfoToBundleMaster(bundleInfo)
 
@@ -545,6 +546,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         assertEquals(listOf<ProductBundleDetail>(), selectedBundleEmptyList)
         assertEquals(123L, bundleMasterNew.bundleId)
         assertEquals(123, selectedBundleList.first().productId)
+        assertEquals(2,bundleMaster.totalSold)
     }
 
     @Test
@@ -554,7 +556,10 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             ProductBundleDetail(productId = 123L),
             ProductBundleDetail(),
             ProductBundleDetail(productVariant = ProductVariant(
-                children = listOf(VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"))),
+                children = listOf(
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = Picture(url100 = "")),
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = null)
+                ),
                 variants = listOf(Variant(pv = "1111", name = "Warna", options = listOf(
                     VariantOption(id = "1", value = "merah")
                 )))

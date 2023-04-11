@@ -7,6 +7,7 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.mapper.MapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -57,6 +58,7 @@ class ViewModelBuilderImpl(
         castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
         playShareExperience: PlayShareExperience = mockk(relaxed = true),
         playLog: PlayLog = mockk(relaxed = true),
+        chatManagerFactory: ChatManager.Factory = mockk(relaxed = true),
         chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
         liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = mockk(relaxed = true),
     ) = PlayViewModel(
@@ -80,6 +82,7 @@ class ViewModelBuilderImpl(
         castPlayerHelper,
         playShareExperience,
         playLog,
+        chatManagerFactory,
         chatStreamsFactory,
         liveRoomMetricsCommon,
     )

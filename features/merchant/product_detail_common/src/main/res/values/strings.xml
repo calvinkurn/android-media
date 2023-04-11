@@ -11,6 +11,7 @@
     <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="empty_stock_atc">Stok Habis</string>
     <string name="template_campaign_off">%1$.0f%%</string>
+    <string name="template_campaign_off_string">%1$s%%</string>
 
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
     <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
@@ -55,11 +56,16 @@
     <string name="pdp_usp_tokomart_static_text_4" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now?utm_campaign=Help-13808288-a-2981-100921&utm_source=salinlink&utm_medium=share">Pelajari</a></font>]]></string>
     <string name="pdp_usp_tokomart_static_text_5"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
 
-    <string name="pdp_hampers_coachmark_title">Kirim hadiah ke orang spesial!</string>
-    <string name="pdp_hampers_coachmark_desc">Biar makin berkesan, tambahkan kemasan atau kartu ucapan ke produk ini. </string>
-
     <string name="pdp_common_gallery_label">Product Detail Gallery</string>
     <string name="pdp_common_gallery_default_selected">Gambar tidak tersedia untuk varian yang dipilih. Coba tanya detailnya ke penjual, ya.</string>
 
     <string name="pdp_common_oke">Oke</string>
+
+    <string name="pdp_ar_coachmark_title">Ayo coba barang ini dari HP-mu</string>
+    <string name="pdp_ar_coachmark_desc">Cek dulu supaya kamu makin yakin dengan kualitas barangnya!</string>
+
+    <!-- One Liners -->
+    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
+    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
+
 </resources>

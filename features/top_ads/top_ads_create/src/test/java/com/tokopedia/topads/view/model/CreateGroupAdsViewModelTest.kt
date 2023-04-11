@@ -58,7 +58,7 @@ class CreateGroupAdsViewModelTest {
     fun `check invocation of onError validateGroup`() {
         val expected = "error"
         var actual = ""
-        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(errors = listOf(Error().apply {
+        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateNameV2(errors = listOf(Error().apply {
             detail = expected
         })))
         val onError: (String) -> Unit = {
@@ -87,7 +87,7 @@ class CreateGroupAdsViewModelTest {
     fun `check invocation of onSuccess validateGroup`() {
         val expected = "test"
         var actual = ""
-        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName.Data(groupName = expected)))
+        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateNameV2(ResponseGroupValidateName.TopAdsGroupValidateNameV2.Data(groupName = expected)))
         val onSuccess: () -> Unit = {
             actual = expected
         }

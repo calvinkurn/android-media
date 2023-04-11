@@ -23,11 +23,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
@@ -50,10 +52,14 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
+import java.util.Locale
+
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
@@ -193,7 +199,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32)
             val shadowRadius = tvRewardFirstLine.dpToPx(5)
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -579,9 +585,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tokoButtonContainer.btnReminder.setOnClickListener {
             if (!isReminderSet) {
                 viewModel.setReminder()
+                showNotificationReminderPrompt()
             } else {
                 viewModel.unSetReminder()
             }
+        }
+    }
+
+    private fun setClickEventOnSeru(){
+        tokoButtonContainer.btnThird.setOnClickListener {
+            GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
+            RouteManager.route(context,String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, Constants.SERU_WEBLINK))
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "tapTapKotak"
+        activity?.let {
+            val view = NotificationGeneralPromptLifecycleCallbacks()
+                .notificationGeneralPromptView(it, pageName)
+            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
         }
     }
 
@@ -634,14 +657,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean, showToast: Boolean) {
         context?.let {
             if (isUserReminded) {
-                tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
                 if (showToast && !reminder?.textSet.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textSet!!)
                     GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
                 }
             } else {
-                tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
                 if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textUnset!!)
@@ -705,6 +726,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(alphaAnim, alphaAnimReminder)
         animatorSet.duration = 200L
+        setClickEventOnSeru()
         return animatorSet
     }
 
@@ -712,7 +734,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         super.initialViewSetup()
 
         tvTapHint.setBackgroundResource(R.drawable.gami_bg_text_hint_box)
-        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gf_tap_hint))
+        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gamification_dms_tap_hint))
         directGiftView.alpha = 0f
         llRewardMessage.alpha = 0f
         tokoButtonContainer.btnReminder.alpha = 0f
@@ -812,6 +834,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
                     val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
+                    setClickEventOnSeru()
                 } else {
                     val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
@@ -878,7 +901,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 height = 180.toPx()
                 width = 180.toPx()
             }
-            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.gf_black_transparent))
+            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gamification_dms_black_transparent))
             dialog.dialogImageContainer.outlineProvider = null
             dialog.setImageDrawable(R.drawable.gami_exit_icon)
             dialog.setDescription(backButton.text)

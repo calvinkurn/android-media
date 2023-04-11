@@ -4,27 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.productcard.options.divider.ProductCardOptionsItemDivider
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -32,20 +26,14 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.Subscriber
-import javax.inject.Named
 
 internal class ProductCardOptionsViewModel(
         private val dispatcherProvider: CoroutineDispatchers,
         val productCardOptionsModel: ProductCardOptionsModel?,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface,
-        @Named(FLAG_IS_USING_ADD_REMOVE_WISHLIST_V2)
-        private val isUsingWishlistV2: Boolean
 ): BaseViewModel(dispatcherProvider.main) {
 
     private val productCardOptionsItemListLiveData = MutableLiveData<List<Visitable<*>>>()
@@ -98,8 +86,7 @@ internal class ProductCardOptionsViewModel(
 
     private fun tryToggleWishlist(isAddWishlist: Boolean) {
         if (userSession.isLoggedIn) {
-            if (isUsingWishlistV2) doWishlistActionV2(isAddWishlist)
-            else doWishlistAction(isAddWishlist)
+            doWishlistActionV2(isAddWishlist)
         }
         else rejectWishlistAction()
     }
@@ -110,26 +97,6 @@ internal class ProductCardOptionsViewModel(
         closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
-    private fun createWishlistActionListener(): WishListActionListener {
-        return object: WishListActionListener {
-            override fun onSuccessRemoveWishlist(productId: String?) = onSuccessRemoveWishlist()
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) = onErrorRemoveWishlist()
-
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) = onErrorAddWishlist()
-
-            override fun onSuccessAddWishlist(productId: String?) = onSuccessAddWishlist()
-        }
-    }
-
-    private fun doWishlistAction(isAddWishlist: Boolean) {
-        val wishListActionListener = createWishlistActionListener()
-        postLoadingEvent()
-
-        if (!isAddWishlist) removeWishlist(wishListActionListener)
-        else addWishlist(wishListActionListener)
-    }
-
     private fun doWishlistActionV2(isAddWishlist: Boolean) {
         postLoadingEvent()
 
@@ -137,21 +104,11 @@ internal class ProductCardOptionsViewModel(
         else addWishlistV2()
     }
 
-    private fun onSuccessRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(
-            isUserLoggedIn = true,
-            isSuccess = true,
-            isAddWishlist = false,
-            isUsingWishlistV2 = isUsingWishlistV2)
-        wishlistEventLiveData.postValue(Event(true))
-    }
-
     private fun onSuccessRemoveWishlistV2(result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
         productCardOptionsModel?.wishlistResult = WishlistResult(
             isUserLoggedIn = true,
             isSuccess = result.success,
             isAddWishlist = false,
-            isUsingWishlistV2 = isUsingWishlistV2,
             messageV2 = result.message,
             toasterColorV2 = result.toasterColor,
             ctaTextV2 = result.button.text,
@@ -163,8 +120,7 @@ internal class ProductCardOptionsViewModel(
         productCardOptionsModel?.wishlistResult = WishlistResult(
             isUserLoggedIn = true,
             isSuccess = false,
-            isAddWishlist = false,
-            isUsingWishlistV2 = isUsingWishlistV2)
+            isAddWishlist = false)
         wishlistEventLiveData.postValue(Event(true))
     }
 
@@ -172,24 +128,15 @@ internal class ProductCardOptionsViewModel(
         productCardOptionsModel?.wishlistResult = WishlistResult(
             isUserLoggedIn = true,
             isSuccess = false,
-            isAddWishlist = true,
-            isUsingWishlistV2 = isUsingWishlistV2)
-        wishlistEventLiveData.postValue(Event(true))
-    }
-
-    private fun onSuccessAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(
-            isUserLoggedIn = true,
-            isSuccess = true,
-            isAddWishlist = true,
-            isUsingWishlistV2 = isUsingWishlistV2)
+            isAddWishlist = true)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onSuccessAddWishlistV2(resultWishlistV2: AddToWishlistV2Response.Data.WishlistAddV2) {
         productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true,
-            isSuccess = resultWishlistV2.success, isAddWishlist = true,
-            isUsingWishlistV2 = isUsingWishlistV2, messageV2 = resultWishlistV2.message,
+            isSuccess = resultWishlistV2.success,
+            isAddWishlist = true,
+            messageV2 = resultWishlistV2.message,
             toasterColorV2 = resultWishlistV2.toasterColor,
             ctaTextV2 = resultWishlistV2.button.text,
             ctaActionV2 = resultWishlistV2.button.action)
@@ -212,33 +159,6 @@ internal class ProductCardOptionsViewModel(
         }
     }
 
-    private fun removeWishlist(wishListActionListener: WishListActionListener) {
-        try {
-            tryRemoveWishlist(wishListActionListener)
-        }
-        catch(throwable: Throwable) {
-            catchRemoveWishlistError(throwable)
-        }
-    }
-
-    private fun tryRemoveWishlist(wishListActionListener: WishListActionListener) {
-        removeWishListUseCase.unsubscribe()
-        removeWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
-    }
-
-    private fun catchRemoveWishlistError(throwable: Throwable?) {
-        throwable?.printStackTrace()
-        onErrorRemoveWishlist()
-    }
-
-    private fun addWishlist(wishListActionListener: WishListActionListener) {
-        if (productCardOptionsModel?.isTopAds == true) {
-            addWishlistTopAds()
-        } else {
-            addWishlistNonTopAds(wishListActionListener)
-        }
-    }
-
     private fun addWishlistV2() {
         launch(dispatcherProvider.main) {
             addToWishlistV2UseCase.setParams(getProductId(), userSession.userId)
@@ -249,44 +169,6 @@ internal class ProductCardOptionsViewModel(
                 onErrorAddWishlist()
             }
         }
-    }
-
-    private fun addWishlistTopAds() {
-        topAdsWishlistUseCase.execute(
-                createAddWishlistTopAdsRequestParams(),
-                createAddWishlistTopAdsSubscriber()
-        )
-    }
-
-    private fun createAddWishlistTopAdsRequestParams() = RequestParams.create().also {
-        it.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, productCardOptionsModel?.topAdsWishlistUrl)
-    }
-
-    private fun createAddWishlistTopAdsSubscriber() = object: Subscriber<Boolean>() {
-        override fun onNext(t: Boolean?) = onSuccessAddWishlist()
-
-        override fun onError(e: Throwable?) = catchAddWishlistError(e)
-
-        override fun onCompleted() { }
-    }
-
-    private fun addWishlistNonTopAds(wishListActionListener: WishListActionListener) {
-        try {
-            tryAddWishlist(wishListActionListener)
-        }
-        catch(throwable: Throwable) {
-            catchAddWishlistError(throwable)
-        }
-    }
-
-    private fun tryAddWishlist(wishListActionListener: WishListActionListener) {
-        addWishListUseCase.unsubscribe()
-        addWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
-    }
-
-    private fun catchAddWishlistError(throwable: Throwable?) {
-        throwable?.printStackTrace()
-        onErrorAddWishlist()
     }
 
     private fun getProductId() = productCardOptionsModel?.productId ?: "0"
@@ -317,8 +199,8 @@ internal class ProductCardOptionsViewModel(
             requestParams.putObject(
                     REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                     AddToCartRequestParams(
-                            productId = productCardOptionsModel.productId.toLongOrZero(),
-                            shopId = productCardOptionsModel.shopId.toIntOrZero(),
+                            productId = productCardOptionsModel.productId,
+                            shopId = productCardOptionsModel.shopId,
                             quantity = productCardOptionsModel.addToCartParams?.quantity ?: 0,
                             productName = productCardOptionsModel.productName,
                             category = productCardOptionsModel.categoryName,

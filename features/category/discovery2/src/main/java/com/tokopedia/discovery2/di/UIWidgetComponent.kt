@@ -14,6 +14,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
@@ -23,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productbundling.ProductBundlingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
@@ -83,5 +86,7 @@ interface UIWidgetComponent {
     fun inject(viewModel: TopQuestViewModel)
     fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
     fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
-
+    fun inject(productBundlingViewModel: ProductBundlingViewModel)
+    fun inject(contentCardViewModel: ContentCardViewModel)
+    fun inject(contentCardItemViewModel: ContentCardItemViewModel)
 }

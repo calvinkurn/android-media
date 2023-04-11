@@ -32,9 +32,9 @@ android {
                     pathSources + 'credibility',
                     pathSources + 'reading',
                     pathSources + 'gallery',
-                    pathSources + 'imagepreview',
                     pathSources + 'common',
-                    pathSources + 'media'
+                    pathSources + 'media',
+                    pathSources + 'bulk_write_review'
             ]
         }
         androidTest {
@@ -57,6 +57,7 @@ kapt {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
@@ -86,11 +87,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
@@ -149,7 +152,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
     androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
     androidTestImplementation rootProject.ext.miscDependencies.rxJava

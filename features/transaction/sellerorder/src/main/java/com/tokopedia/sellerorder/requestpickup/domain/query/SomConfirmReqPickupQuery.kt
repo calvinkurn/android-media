@@ -18,6 +18,7 @@ object SomConfirmReqPickupQuery: GqlQueryInterface {
               }
               detail{
                 title
+                invoice
                 shippers{
                   name
                   service

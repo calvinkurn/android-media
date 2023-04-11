@@ -21,6 +21,7 @@ internal object RechargeHomepageSkeletonQuery{
                 search_bar_web_link
                 search_bar_screen_name
                 search_bar_redirection
+                search_bar_type
                 sections {
                   id
                   template

@@ -6,6 +6,6 @@ package com.tokopedia.people.model
 class CommonModelBuilder {
 
     fun buildException(
-        message: String = "Terjadi kesalahan."
+        message: String = "Terjadi kesalahan.",
     ) = Exception(message)
 }

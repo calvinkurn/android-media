@@ -4,11 +4,11 @@ package com.tokopedia.topads.headline.data
 import com.google.gson.annotations.SerializedName
 
 data class ShopAdInfo(
-    @SerializedName("topadsGetShopInfoV2")
-    val topadsGetShopInfoV2: TopadsGetShopInfoV2 = TopadsGetShopInfoV2()
+    @SerializedName("topadsGetShopInfoV2_1")
+    val topadsGetShopInfoV2_1: TopadsGetShopInfoV2_1 = TopadsGetShopInfoV2_1()
 )
 
-data class TopadsGetShopInfoV2(
+data class TopadsGetShopInfoV2_1(
         @SerializedName("data")
         val data: Data = Data(),
         @SerializedName("errors")

@@ -1,0 +1,110 @@
+{
+  "tokofoodFilterAndSort": {
+    "filter": [
+      {
+        "title": "Rentang harga",
+        "subtitle": "",
+        "options": [
+          {
+            "name": "$",
+            "description": "Di bawah Rp16.000",
+            "key": "pricing",
+            "value": "1",
+            "inputType": "checkbox",
+            "isNew": false
+          },
+          {
+            "name": "$",
+            "description": "Di atas Rp16.000",
+            "key": "pricing",
+            "value": "2",
+            "inputType": "checkbox",
+            "isNew": false
+          },
+          {
+            "name": "$",
+            "description": "Rp40.000 sampai Rp100.000",
+            "key": "pricing",
+            "value": "3",
+            "inputType": "checkbox",
+            "isNew": false
+          },
+          {
+            "name": "$",
+            "description": "Di atas Rp100.000",
+            "key": "pricing",
+            "value": "4",
+            "inputType": "checkbox",
+            "isNew": false
+          }
+        ]
+      },
+      {
+        "title": "Rating",
+        "subtitle": "",
+        "options": [
+          {
+            "name": "Bintang 4.0+",
+            "description": "",
+            "key": "rating",
+            "value": "4",
+            "inputType": "radio",
+            "isNew": false
+          },
+          {
+            "name": "Bintang 4,5+",
+            "description": "",
+            "key": "rating",
+            "value": "4.5",
+            "inputType": "radio",
+            "isNew": false
+          }
+        ]
+      },
+      {
+        "title": "Diskonan",
+        "subtitle": "",
+        "options": [
+          {
+            "name": "Promo",
+            "description": "",
+            "key": "promo_available",
+            "value": "true",
+            "inputType": "chips_checkbox",
+            "isNew": false
+          }
+        ]
+      },
+      {
+        "title": "Lainnya",
+        "subtitle": "",
+        "options": [
+          {
+            "name": "Buka Sekarang",
+            "description": "",
+            "key": "open_now",
+            "value": "true",
+            "inputType": "chips_checkbox",
+            "isNew": false
+          }
+        ]
+      }
+    ],
+    "sort": [
+      {
+        "name": "Paling Sesuai",
+        "key": "sort",
+        "value": "1",
+        "inputType": "radio",
+        "applyFilter": ""
+      },
+      {
+        "name": "Paling Dekat",
+        "key": "sort",
+        "value": "2",
+        "inputType": "radio",
+        "applyFilter": ""
+      }
+    ]
+  }
+}

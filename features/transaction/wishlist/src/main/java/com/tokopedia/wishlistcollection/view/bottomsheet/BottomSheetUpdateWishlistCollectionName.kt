@@ -30,15 +30,15 @@ import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionNameParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.*
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import javax.inject.Inject
 
-class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<WishlistCollectionComponent> {
+class BottomSheetUpdateWishlistCollectionName : BottomSheetUnify(), HasComponent<WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
@@ -112,18 +112,19 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             collectionCreateNameInputTextField.editText.setText(_existingCollectionName)
-            collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
+            collectionCreateNameInputTextField.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
-                    newCollectionName = p0.toString()
+                    newCollectionName = p0.toString().trimStart().trimEnd()
                     if (newCollectionName.isNotEmpty()) {
                         handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                    } else {
+                        disableSaveButton()
                     }
                 }
-
             })
             collectionCreateButton.apply {
                 isEnabled = false
@@ -158,30 +159,34 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
             collectionCreateButton.apply {
                 text = getString(R.string.update_collection_bottomsheet_button)
                 isEnabled = false
-                setOnClickListener {  }
+                setOnClickListener { }
             }
         }
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
-        if (listCollections.isNotEmpty()) {
-            run check@ {
-                listCollections.forEach { item ->
-                    if (checkName == item.name || checkName.isEmpty()) {
-                        binding?.run {
-                            if (checkName != _existingCollectionName && checkName.isNotEmpty()) {
-                                collectionCreateNameInputTextField.isInputError = true
-                                val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
-                                collectionCreateNameInputTextField.setMessage(labelMessage)
+        if (checkName.isEmpty()) {
+            disableSaveButton()
+        } else {
+            if (listCollections.isNotEmpty()) {
+                run check@{
+                    listCollections.forEach { item ->
+                        if (checkName.lowercase() == item.name.lowercase()) {
+                            binding?.run {
+                                if (checkName != _existingCollectionName) {
+                                    collectionCreateNameInputTextField.isInputError = true
+                                    val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
+                                    collectionCreateNameInputTextField.setMessage(labelMessage)
+                                }
+                                disableSaveButton()
+                                return@check
                             }
-                            disableSaveButton()
-                            return@check
-                        }
-                    } else {
-                        binding?.run {
-                            collectionCreateNameInputTextField.isInputError = false
-                            collectionCreateNameInputTextField.setMessage("")
-                            enableSaveButton()
+                        } else {
+                            binding?.run {
+                                collectionCreateNameInputTextField.isInputError = false
+                                collectionCreateNameInputTextField.setMessage("")
+                                enableSaveButton()
+                            }
                         }
                     }
                 }
@@ -229,8 +234,11 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                     if (result.data.status == OK) {
                         listCollections = result.data.data
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
                     }
                 }
@@ -250,8 +258,11 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                         actionListener?.onSuccessUpdateCollectionName(result.data.data.message)
                         dismiss()
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         errorMessage?.let { setTextFieldError(it) }
                     }
                 }

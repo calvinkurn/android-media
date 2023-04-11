@@ -12,7 +12,7 @@ class WishlistCollectionRecommendationTitleViewHolder(private val binding: Wishl
         private const val PADDING_8 = 8
         private const val PADDING_12 = 12
     }
-    
+
     fun bind(data: WishlistCollectionTypeLayoutData) {
         binding.root.visible()
         binding.root.setPadding(0, 0, 0, PADDING_12.toPx())

@@ -1,8 +1,7 @@
 package com.tokopedia.digital_checkout.data.request
 
 import android.os.Parcelable
-import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author by jessica on 20/01/21
@@ -22,7 +21,7 @@ data class DigitalCheckoutDataParameter(
     var deviceId: Int = 5,
 
     var isSubscriptionChecked: Boolean = false,
-    var fintechProducts: HashMap<String, FintechProduct> = hashMapOf(),
+    var crossSellProducts: HashMap<String, DigitalCrossSellData> = hashMapOf(),
     var userInputPriceValue: Long? = null,
 
     var isInstantCheckout: Boolean = false

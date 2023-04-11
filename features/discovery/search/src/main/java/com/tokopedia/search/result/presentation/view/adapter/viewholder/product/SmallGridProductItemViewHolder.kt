@@ -13,8 +13,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SmallGridProductItemViewHolder(
     itemView: View,
-    productListener: ProductListener
-) : ProductItemViewHolder(itemView, productListener) {
+    productListener: ProductListener,
+    isAutoplayEnabled: Boolean = false,
+) : ProductItemViewHolder(itemView, productListener, isAutoplayEnabled) {
 
     companion object {
         @LayoutRes
@@ -67,19 +68,33 @@ class SmallGridProductItemViewHolder(
             productItemData,
             createImageProductViewHintListener(productItemData)
         )
+
+        productCardView.setAddToCartOnClickListener {
+            productListener.onAddToCartClick(productItemData)
+        }
     }
 
     private fun ProductItemDataView.getProductImage(): String {
-        return if (getProductListTypeEnum() == ProductCardModel.ProductListType.LONG_IMAGE)
+        return if (getProductListTypeEnum().needBiggerImage(this))
             imageUrl700
         else
             imageUrl300
     }
 
+    private fun ProductCardModel.ProductListType.needBiggerImage(
+        productItemDataView: ProductItemDataView
+    ): Boolean {
+        return this == ProductCardModel.ProductListType.LONG_IMAGE
+            || (this == ProductCardModel.ProductListType.PORTRAIT && productItemDataView.isPortrait)
+    }
+
     private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
-        return when(productListType) {
+        return when (productListType) {
             SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
             SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            SearchConstant.ProductListType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
+            SearchConstant.ProductListType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
+            SearchConstant.ProductListType.ETA -> ProductCardModel.ProductListType.ETA
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

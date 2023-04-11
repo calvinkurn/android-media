@@ -61,11 +61,28 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     private fun openFeedbackForm(uri: Uri, currentActivity: Activity) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
-        val activityName = currentActivity::class.java.canonicalName
+        val activityName = getActivityName(currentActivity)
         intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
-        intent.putExtra(SellerFeedbackFragment.EXTRA_ACTIVITY_NAME, activityName)
+        intent.putExtra(
+            SellerFeedbackFragment.EXTRA_ACTIVITY_NAME,
+            activityName
+        )
         currentActivity.startActivity(intent)
         handleFeedbackSuccessToaster(currentActivity)
+    }
+
+    private fun getActivityName(currentActivity: Activity): String {
+        return if (currentActivity.intent.data?.query.orEmpty().isNotEmpty()) {
+            if (currentActivity::class.java.canonicalName.contains("webview")) {
+                currentActivity::class.java.canonicalName + "?${
+                    currentActivity.intent.data?.query.orEmpty()
+                }"
+            } else {
+                currentActivity::class.java.canonicalName
+            }
+        } else {
+            currentActivity::class.java.canonicalName
+        }
     }
 
     private fun handleFeedbackSuccessToaster(currentActivity: Activity) {

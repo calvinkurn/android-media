@@ -22,7 +22,6 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.hideViewWithAnimationVod
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.util.util.showViewWithAnimationVOD
@@ -43,7 +42,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
     private val layoutFrameView: ConstraintLayout
     private val layoutPlayerView : PlayerView
     private val vodLihatProdukBtn : Typography
-    private val vodPlayIcon : ImageView
+    private val vodPlayIcon : ImageUnify
     private val vodFullScreenIcon : ImageView
     private val vodVolumeIcon : ImageView
     private val vodLanjutMemontomBtn : Typography
@@ -55,7 +54,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
     private var mUpdateViewsText: ((String) -> Unit)? = null
     private var mFeedXMedia: FeedXMedia? = null
     private var mFeedXCard: FeedXCard? = null
-    private var mfinalPostId: Int = 0
     private var mPostionInFeed: Int = 0
     private var mIsMute : Boolean = false
     private var mRatio: String = "1"
@@ -109,10 +107,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
         this.mFeedXCard = feedXCard
         this.mProducts = products
         this.mPostionInFeed = positionInFeed
-
-        mfinalPostId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
-
-
     }
 
     private fun setConstraintsForVODLayout(){
@@ -447,7 +441,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    internal fun onDestroy() {
+    fun onDestroy() {
         onViewDetached()
     }
 

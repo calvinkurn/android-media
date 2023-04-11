@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,17 +20,19 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
+        val containerWidgetParam = createContainerWidgetParams(displayMetrics)
+        val itemView = createItemView(parent, viewType, containerWidgetParam)
         return if (viewType == ProductBundleSingleViewHolder.LAYOUT) {
             ProductBundleSingleViewHolder(
-                View.inflate(parent.context, viewType, null),
-                createContainerWidgetParams(displayMetrics)
+                itemView,
+                containerWidgetParam
             ).apply {
                 setListener(listener)
             }
         } else {
             ProductBundleMultipleViewHolder(
-                View.inflate(parent.context, viewType, null),
-                createContainerWidgetParams(displayMetrics)
+                itemView,
+                containerWidgetParam
             ).apply {
                 setListener(listener)
             }
@@ -55,6 +58,11 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         } else {
             ProductBundleMultipleViewHolder.LAYOUT
         }
+    }
+
+    private fun createItemView(parent: ViewGroup, viewType: Int, containerWidgetParam: Int): View {
+        val root = if (containerWidgetParam == ConstraintLayout.LayoutParams.MATCH_PARENT) parent else null
+        return LayoutInflater.from(parent.context).inflate(viewType, root, false)
     }
 
     private fun createContainerWidgetParams(displayMetrics: DisplayMetrics) =

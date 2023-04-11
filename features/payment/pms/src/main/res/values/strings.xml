@@ -88,5 +88,9 @@
     <string name="pms_payment_cancel">Batalkan</string>
     <string name="pms_payment_detail">Detail</string>
     <string name="pms_payment_item_heading">Transaksi %1$d - %2$s</string>
+    <string name="pms_complete_payment_title">Pembayaran</string>
+    <string name="pms_complete_credit_card_payment">Lanjut Bayar</string>
+    <string name="pms_complete_payment_timeout">Gagal memuat pembayaran. Silakan coba lagi</string>
+
 
 </resources>

@@ -8,7 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -17,23 +16,26 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
 class OtherMenuAdapter(
     private val context: Context?,
     private val listener: Listener,
+    private val userSession: UserSessionInterface,
+    private val sharedPref: SellerHomeSharedPref,
     typeFactory: OtherMenuAdapterTypeFactory
-) :
-    BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
+) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
-        private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
         private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
         private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
         private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
+        const val PERSONA_EXPIRED_DATE = 1681142400000 ////10-04-2023
     }
 
     private var isShowCentralizedPromoTag: Boolean = false
@@ -96,12 +98,6 @@ class OtherMenuAdapter(
             context?.startActivity(intent)
         },
         DividerUiModel(),
-        PrintingMenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_product_package).orEmpty(),
-            iconUnify = IconUnify.PACKAGE
-        ) {
-            listener.goToPrintingPage()
-        },
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_finance_service).orEmpty(),
             clickApplink = null,
@@ -153,13 +149,17 @@ class OtherMenuAdapter(
     }
 
     private fun getSettingsTag(): String {
-        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
-        val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
-            context?.getString(R.string.setting_new_tag).orEmpty()
-        } else {
-            SellerHomeConst.EMPTY_STRING
+        context?.let {
+            val expiredDateMillis = PERSONA_EXPIRED_DATE
+            val todayMillis = Date().time
+            val isNotExpired = todayMillis < expiredDateMillis
+            return if (sharedPref.shouldShowPersonaEntryPoint(userSession.userId) && isNotExpired) {
+                it.getString(R.string.setting_new_tag)
+            } else {
+                SellerHomeConst.EMPTY_STRING
+            }
         }
+        return SellerHomeConst.EMPTY_STRING
     }
 
     private fun getCentralizedPromoTag(): String {
@@ -202,8 +202,6 @@ class OtherMenuAdapter(
 
 
     interface Listener {
-        fun goToPrintingPage()
         fun goToSettings()
     }
-
 }

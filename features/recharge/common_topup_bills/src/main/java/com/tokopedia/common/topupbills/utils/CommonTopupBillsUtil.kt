@@ -13,15 +13,19 @@ class CommonTopupBillsUtil {
         const val FORMATTED_NUMBER_CODE = "+62"
         const val NORMALIZED_NUMBER_PREFIX = "0"
         const val NUMBER_REGEX = "[^0-9]+"
+        const val SYMBOL_REGEX = "[+-.:;]"
 
-        fun isSeamlessFavoriteNumber(context: Context): Boolean {
+        fun isFavoriteNumberRevamp(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER, true)
         }
 
         fun getApplinkFavoriteNumber(context: Context): String {
-            return if (isSeamlessFavoriteNumber(context))
-                ApplinkConsInternalDigital.FAVORITE_NUMBER else ApplinkConsInternalDigital.SEARCH_NUMBER
+            return if (isFavoriteNumberRevamp(context)) {
+                ApplinkConsInternalDigital.FAVORITE_NUMBER
+            } else {
+                ApplinkConsInternalDigital.SEARCH_NUMBER
+            }
         }
 
         fun formatPrefixClientNumber(phoneNumber: String?): String {
@@ -42,9 +46,20 @@ class CommonTopupBillsUtil {
             if (phoneNumber.startsWith(FORMATTED_NUMBER_CODE)) {
                 phoneNumber = phoneNumber.replace(FORMATTED_NUMBER_CODE, NORMALIZED_NUMBER_PREFIX)
             }
-            phoneNumber = phoneNumber.replace(".", "")
+            phoneNumber = phoneNumber.replace(SYMBOL_REGEX.toRegex(), "")
 
             return phoneNumber.replace(NUMBER_REGEX.toRegex(), "")
+        }
+
+        fun buildRedirectAppLinkToCheckout(
+            productId: String,
+            clientNumber: String,
+            categoryId: String
+        ): String {
+            return """
+                tokopedia://digital/cart?product_id=$productId&client_number=$clientNumber
+                &category_id=$categoryId&operator_id=&idem_potency_key=&instant_checkout=&slug=
+            """.filterNot { it.isWhitespace() }
         }
     }
 }

@@ -59,7 +59,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityHeaderUiState.Hidden
+        initialValue = ReviewCredibilityHeaderUiState.Loading
     )
     val reviewCredibilityAchievementBoxUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -77,7 +77,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityStatisticBoxUiState.Hidden
+        initialValue = ReviewCredibilityStatisticBoxUiState.Loading
     )
     val reviewCredibilityFooterUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -86,7 +86,7 @@ class ReviewCredibilityViewModel @Inject constructor(
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewCredibilityFooterUiState.Hidden
+        initialValue = ReviewCredibilityFooterUiState.Loading
     )
     val reviewCredibilityGlobalErrorUiState = combine(
         shouldLoadReviewCredibilityData,
@@ -145,7 +145,11 @@ class ReviewCredibilityViewModel @Inject constructor(
             when (requestState) {
                 is RequestState.Success -> {
                     ReviewCredibilityResponseMapper.toReviewCredibilityHeaderUiModel(
-                        requestState.result
+                        requestState.result,
+                        reviewerUserID,
+                        userSession.userId,
+                        productID,
+                        source
                     ).let { ReviewCredibilityHeaderUiState.Showed(it) }
                 }
                 is RequestState.Requesting -> {

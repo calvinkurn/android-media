@@ -15,7 +15,6 @@
     <string name="konten_gagal_ditampilkan">Konten gagal ditampilkan</string>
     <string name="recom_message_retry_general">Ketuk ikon untuk memuat ulang</string>
     <string name="empty_stock">Stok Habis</string>
-    <string name="percentage_template"></string>
     <string name="home_recom_filter">Filter</string>
     <string name="recom_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="recom_msg_empty_next_page">Produk telah berhasil tampil keseluruhan</string>
@@ -24,6 +23,7 @@
     <string name="recom_empty_filter_title">Oops, barangnya nggak ketemu</string>
     <string name="recom_empty_filter_desc">Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!</string>
     <string name="recom_empty_filter_button" tools:ignore="ExtraTranslation">Reset Filter</string>
+    <string name="recom_content_description_failed_load">Gambar gagal memuat</string>
 
     <string name="tag_home_nav_toolbar_recom_infinite">recom_infinite_navigation_toolbar</string>
     <string name="tag_home_nav_toolbar_recom_fragment">recom_fragmentr</string>

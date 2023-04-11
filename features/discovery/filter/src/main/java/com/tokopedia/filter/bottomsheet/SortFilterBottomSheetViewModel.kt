@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
@@ -20,6 +21,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -187,9 +189,26 @@ internal class SortFilterBottomSheetViewModel {
             when {
                 filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
                 filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
+                filter.isPriceRangeCheckboxFilter -> sortFilterList.add(createPriceRangeFilterCheckbox(filter))
                 else -> sortFilterList.add(createFilterViewModel(filter))
             }
         }
+    }
+
+    private fun createPriceRangeFilterCheckbox(priceFilter: Filter): PriceRangeFilterCheckboxDataView {
+        return PriceRangeFilterCheckboxDataView(
+            filter = priceFilter,
+            optionViewModelList = priceFilter.options.map {
+                val option = it.apply {
+                    updateInputState()
+                }
+                OptionViewModel(
+                    option = option
+                ).apply {
+                    isSelected = option.inputState.toBoolean()
+                }
+            }.toMutableList(),
+        )
     }
 
     private fun createPriceFilterViewModel(priceFilter: Filter): PriceFilterViewModel {
@@ -234,7 +253,7 @@ internal class SortFilterBottomSheetViewModel {
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()
-        processOptionList(filter.options, optionViewModelMutableList)
+        processOptionList(filter.options, optionViewModelMutableList, true)
 
         val hasSeeAllButton = filter.options.any { !it.isPopular } || filter.isCategoryFilter
 
@@ -242,7 +261,11 @@ internal class SortFilterBottomSheetViewModel {
                 .apply { sortBySelectedAndName() }
     }
 
-    private fun processOptionList(optionList: List<Option>, optionViewModelList: MutableList<OptionViewModel>) {
+    private fun processOptionList(
+        optionList: List<Option>,
+        optionViewModelList: MutableList<OptionViewModel>,
+        willSortOptionList: Boolean
+    ) {
         val levelTwoCategoryList = mutableListOf<Option>()
         val levelThreeCategoryList = mutableListOf<Option>()
 
@@ -265,7 +288,11 @@ internal class SortFilterBottomSheetViewModel {
             selectedOrPopularOptionList.addIfSelectedOrPopular(option)
         }
 
-        val optionListForViewModel = createOptionListForViewModel(selectedOrPopularOptionList)
+        val optionListForViewModel = if (willSortOptionList) {
+            createOptionListForViewModel(selectedOrPopularOptionList)
+        } else {
+            selectedOrPopularOptionList
+        }
 
         optionListForViewModel.forEach {
             optionViewModelList.add(createOptionViewModel(it))
@@ -312,7 +339,7 @@ internal class SortFilterBottomSheetViewModel {
         levelThreeCategoryList.addAll(currentLevelThreeCategoryList.map { it.asOption() })
     }
 
-    private fun FilterViewModel.sortBySelectedAndName() {
+    private fun FilterRefreshable.sortBySelectedAndName() {
         val sortedOptionViewModelList = optionViewModelList.filter { it.isSelected }.toMutableList()
         sortedOptionViewModelList.sortBy { it.option.name }
 
@@ -321,15 +348,15 @@ internal class SortFilterBottomSheetViewModel {
         optionViewModelList = sortedOptionViewModelList
     }
 
-    fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
-        applyFilter(filterViewModel, optionViewModel)
+    fun onOptionClick(filterRefreshable: FilterRefreshable, optionViewModel: OptionViewModel) {
+        applyFilter(filterRefreshable, optionViewModel)
     }
 
-    private fun applyFilter(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
+    private fun applyFilter(filterRefreshable: FilterRefreshable, optionViewModel: OptionViewModel) {
         val isCleanUpExistingFilterWithSameKey = optionViewModel.option.isCategoryOption || optionViewModel.option.isTypeRadio
 
         if (isCleanUpExistingFilterWithSameKey)
-            filterViewModel.optionViewModelList.unSelectNotClickedOption(optionViewModel)
+            filterRefreshable.optionViewModelList.unSelectNotClickedOption(optionViewModel)
 
         val isSelected = !optionViewModel.isSelected
         filterController.setFilter(optionViewModel.option, isSelected, isCleanUpExistingFilterWithSameKey)
@@ -344,7 +371,7 @@ internal class SortFilterBottomSheetViewModel {
         sortFilterIndexSet: MutableSet<Int>
     ) {
         sortFilterList.forEachIndexed { index, visitable ->
-            if(visitable is FilterViewModel && visitable.filter.options.isNotEmpty()) {
+            if(visitable is FilterRefreshable && visitable.filter.options.isNotEmpty()) {
                 val needUpdate = visitable.filter.getFlattenedOptions().any { option ->
                     option in filterOptionList
                 }
@@ -444,7 +471,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun createPriceRangeClickTrackingEventAction(priceOptionViewModel: PriceOptionViewModel): String {
         return String.format(
                 FilterEventTracking.Action.CLICK_FILTER_PRICE_RANGE,
-                priceOptionViewModel.option.valMin.toInt(), priceOptionViewModel.option.valMax.toInt(), priceOptionViewModel.position
+                priceOptionViewModel.option.valMin.toIntOrZero(), priceOptionViewModel.option.valMax.toIntOrZero(), priceOptionViewModel.position
         )
     }
 
@@ -551,6 +578,12 @@ internal class SortFilterBottomSheetViewModel {
         return selectedSortMap
     }
 
+    fun getSortAutoFilterMap(): Map<String, String> {
+        val activeFilterMap = filterController.getActiveFilterMap()
+        val hasNoDuplicateFilter = sortApplyFilterMap.none { activeFilterMap.containsKey(it.key) }
+        return if (hasNoDuplicateFilter) sortApplyFilterMap else emptyMap()
+    }
+
     fun resetSortAndFilter() {
         sortFilterList.forEachIndexed(this::resetSortFilterItem)
 
@@ -564,8 +597,8 @@ internal class SortFilterBottomSheetViewModel {
     private fun resetSortFilterItem(index: Int, visitable: Visitable<*>) {
         when (visitable) {
             is SortViewModel -> visitable.reset(index)
-            is FilterViewModel -> visitable.reset(index)
             is PriceFilterViewModel -> visitable.reset(index)
+            is FilterRefreshable -> visitable.reset(index)
         }
     }
 
@@ -579,20 +612,6 @@ internal class SortFilterBottomSheetViewModel {
 
             updateViewInPositionEventMutableLiveData.value = Event(sortIndex)
         }
-    }
-
-    private fun FilterViewModel.reset(filterIndex: Int) {
-        var shouldUpdate = false
-
-        optionViewModelList.forEach {
-            if (it.isSelected) {
-                shouldUpdate = true
-                it.isSelected = false
-                it.option.inputState = false.toString()
-            }
-        }
-
-        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
     }
 
     private fun PriceFilterViewModel.reset(filterIndex: Int) {
@@ -612,6 +631,20 @@ internal class SortFilterBottomSheetViewModel {
             if (it.isSelected) {
                 shouldUpdate = true
                 it.isSelected = false
+            }
+        }
+
+        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
+    }
+
+    private fun FilterRefreshable.reset(filterIndex: Int) {
+        var shouldUpdate = false
+
+        optionViewModelList.forEach {
+            if (it.isSelected) {
+                shouldUpdate = true
+                it.isSelected = false
+                it.option.inputState = false.toString()
             }
         }
 
@@ -665,14 +698,16 @@ internal class SortFilterBottomSheetViewModel {
         notifyViewOnApplyFilter(sortFilterIndexSet.toList())
     }
 
-    private fun FilterViewModel.refreshOptionList() {
+    private fun FilterRefreshable.refreshOptionList() {
         val newOptionViewModelList = mutableListOf<OptionViewModel>()
-        processOptionList(filter.options, newOptionViewModelList)
+        processOptionList(filter.options, newOptionViewModelList, willSortOptionList)
 
         optionViewModelList.clear()
         optionViewModelList.addAll(newOptionViewModelList)
 
-        sortBySelectedAndName()
+        if (willSortOptionList) {
+            sortBySelectedAndName()
+        }
     }
 
     fun onApplyCategoryFilterFromDetailPage(categoryFilterViewModel: FilterViewModel, selectedCategoryFilterValue: String) {

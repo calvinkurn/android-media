@@ -10,6 +10,7 @@
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - featured product",
+      "item_list_name": "/groupchat - featured product",
       "items": [
         {
           "index": "\\d+(.\\d+)?",
@@ -50,7 +51,7 @@
       "event": "add_to_cart",
       "eventAction": "click buy pinned product",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false) - beli langsung (true|false)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [

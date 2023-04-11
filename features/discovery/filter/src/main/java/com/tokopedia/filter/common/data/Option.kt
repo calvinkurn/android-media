@@ -3,7 +3,6 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -84,13 +83,13 @@ class Option(@SerializedName("name")
     }
 
     val isAnnotation: Boolean
-        get() = KEY_ANNOTATION_ID.equals(key)
+        get() = KEY_ANNOTATION_ID == key
 
     val isCategoryOption: Boolean
-        get() = KEY_CATEGORY.equals(key)
+        get() = KEY_CATEGORY == key
 
     val isOfficialOption: Boolean
-        get() = KEY_OFFICIAL.equals(key)
+        get() = KEY_OFFICIAL == key
 
     val uniqueId: String
         get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
@@ -137,6 +136,7 @@ class Option(@SerializedName("name")
         const val KEY_PRICE_MAX = "pmax"
         const val KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax"
         const val KEY_PRICE_WHOLESALE = "wholesale"
+        const val KEY_PRICE_RANGE = "price_range_"
         const val KEY_PRICE_RANGE_1 = "price_range_1"
         const val KEY_PRICE_RANGE_2 = "price_range_2"
         const val KEY_PRICE_RANGE_3 = "price_range_3"
@@ -148,6 +148,7 @@ class Option(@SerializedName("name")
         const val KEY_ANNOTATION_ID = "annotation_id"
         const val KEY_MAIN_KEYWORD = "main_keyword"
         const val KEY_NEGATIVE_KEYWORD = "negative_keyword"
+        const val KEY_PRICING = "pricing"
 
         const val INPUT_TYPE_TEXTBOX = "textbox"
         const val INPUT_TYPE_CHECKBOX = "checkbox"

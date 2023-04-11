@@ -17,7 +17,13 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -60,13 +66,13 @@ import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
 
-class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
-        VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        SelectVariantMainBottomSheet.SelectVariantMainListener,
-        VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
-        AddEditProductPerformanceMonitoringListener,
-        MultipleVariantEditListener
-{
+class AddEditProductVariantDetailFragment :
+    BaseDaggerFragment(),
+    VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
+    SelectVariantMainBottomSheet.SelectVariantMainListener,
+    VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
+    AddEditProductPerformanceMonitoringListener,
+    MultipleVariantEditListener {
 
     companion object {
         const val SCROLLING_DELAY = 500L
@@ -123,18 +129,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-            val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
-                    ProductInputModel::class.java) ?: ProductInputModel()
+            val productInputModel = saveInstanceCacheManager.get(
+                EXTRA_PRODUCT_INPUT_MODEL,
+                ProductInputModel::class.java
+            ) ?: ProductInputModel()
             viewModel.updateProductInputModel(productInputModel)
         }
 
         activity?.window?.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_variant_detail, container, false)
     }
 
@@ -157,8 +168,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
-        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
-                this, this))
+        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(
+            VariantDetailInputTypeFactoryImpl(
+                this,
+                this
+            )
+        )
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
         recyclerViewVariantDetailFields?.itemAnimator = null
@@ -185,7 +200,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeSelectedVariantSize()
         observeHasWholesale()
         observeMaxStockThreshold()
-
 
         enableSku()
         setupToolbarActions()
@@ -298,7 +312,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val updatedFieldPosition = viewModel.updatePrimaryVariant(combination)
 
         // update switch status if primary variant changed (index bigger than -1)
-        if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero() ) {
+        if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero()) {
             viewModel.updateSwitchStatus(true, updatedFieldPosition)
             variantDetailFieldsAdapter?.activateVariantStatus(combination)
         }
@@ -309,14 +323,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE)
@@ -391,6 +405,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         variantListButton = view.findViewById(R.id.variantListButton)
         buttonSave = view.findViewById(R.id.buttonSave)
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
+        multiLocationTicker?.setTextDescription(context?.resources?.getString(R.string.ticker_variant_only_main_location).toString())
+        tickerVariantWholesale?.setTextDescription(context?.resources?.getString(R.string.label_variant_wholesale_warning).toString())
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
@@ -398,15 +414,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
             val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                productVariantIndex, Int.ZERO, unitValue.value, isSkuVisible)
+                productVariantIndex,
+                Int.ZERO,
+                unitValue.value,
+                isSkuVisible
+            )
             val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
-                variantDetailInputModel, firstTimeWeightPerVariant)
+                variantDetailInputModel,
+                firstTimeWeightPerVariant
+            )
             fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
-        //increment for indexing product variant
+        // increment for indexing product variant
         var productVariantIndex = Int.ZERO
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
@@ -425,9 +447,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                    productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
+                    productVariantIndex,
+                    headerVisitablePosition,
+                    level2Value.value,
+                    isSkuVisible
+                )
                 val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
-                    variantDetailInputModel, firstTimeWeightPerVariant)
+                    variantDetailInputModel,
+                    firstTimeWeightPerVariant
+                )
                 fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }
@@ -461,7 +489,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateProductInputModel()
             viewModel.productInputModel.value?.apply {
                 val cacheManagerId = arguments?.getString(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+                ).orEmpty()
                 SaveInstanceCacheManager(requireContext(), cacheManagerId)
                     .put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
@@ -515,24 +544,28 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun sendTrackerSaveMainVariant(combination: List<Int>) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.saveMainVariant(
-                    viewModel.getPrimaryVariantTitle(combination),
-                    userSession.shopId)
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.saveMainVariant(
-                    viewModel.getPrimaryVariantTitle(combination),
-                    userSession.shopId)
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId
+            )
         }
     }
 
     private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.clickVariantStatusToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.clickVariantStatusToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         }
     }
 
@@ -547,25 +580,27 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun sendTrackerClickSKUToggleData(isChecked: Boolean) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.clickSKUToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.clickSKUToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         }
     }
 
     private fun sendTrackerTrackScreenData() {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.trackScreen(
-                    userSession.isLoggedIn.toString(),
-                    userSession.userId
+                userSession.isLoggedIn.toString(),
+                userSession.userId
             )
         } else {
             ProductAddVariantDetailTracking.trackScreen(
-                    userSession.isLoggedIn.toString(),
-                    userSession.userId
+                userSession.isLoggedIn.toString(),
+                userSession.userId
             )
         }
     }

@@ -5,17 +5,22 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
+import com.tokopedia.search.utils.SearchIdlingResource
+import com.tokopedia.search.utils.clickAddToCartOnInspirationListATC
+import com.tokopedia.search.utils.clickAddToCartOnProductCard
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -26,6 +31,7 @@ import org.junit.Test
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
 private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
+@CassavaTest
 internal class SearchProductTrackingTest {
 
     private val isFromNetwork = true
@@ -72,6 +78,7 @@ internal class SearchProductTrackingTest {
         recyclerViewIdlingResource = RecyclerViewHasItemIdlingResource(recyclerView)
 
         IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
+        IdlingRegistry.getInstance().register(SearchIdlingResource.idlingResource)
     }
 
     @Test
@@ -87,9 +94,29 @@ internal class SearchProductTrackingTest {
         val productListAdapter = recyclerView.getProductListAdapter()
         val topAdsPosition = productListAdapter.itemList.getFirstTopAdsProductPosition()
         val organicPosition = productListAdapter.itemList.getFirstOrganicProductPosition()
+        val inspirationListATCPosition =
+            productListAdapter.itemList.indexOfFirst { it is InspirationListAtcDataView }
 
-        recyclerView.perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsPosition, click()))
-        recyclerView.perform(actionOnItemAtPosition<ProductItemViewHolder>(organicPosition, click()))
+        recyclerView.perform(
+            actionOnItemAtPosition<ProductItemViewHolder>(
+                topAdsPosition,
+                clickAddToCartOnProductCard()
+            )
+        )
+
+        recyclerView.perform(
+            actionOnItemAtPosition<ProductItemViewHolder>(
+                organicPosition,
+                clickAddToCartOnProductCard()
+            )
+        )
+
+        recyclerView.perform(
+            actionOnItemAtPosition<InspirationListAtcViewHolder>(
+                inspirationListATCPosition,
+                clickAddToCartOnInspirationListATC()
+            )
+        )
 
         activityRule.activity.finish()
 
@@ -101,5 +128,6 @@ internal class SearchProductTrackingTest {
     fun tearDown() {
         InstrumentationRegistry.getInstrumentation().removeMonitor(blockAllIntentsMonitor)
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
+        IdlingRegistry.getInstance().unregister(SearchIdlingResource.idlingResource)
     }
 }

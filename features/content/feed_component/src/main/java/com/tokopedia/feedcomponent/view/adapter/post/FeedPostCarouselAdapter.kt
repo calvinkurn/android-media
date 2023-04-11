@@ -8,10 +8,10 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 
 /**
  * Created by kenny.hadisaputra on 24/06/22
@@ -20,11 +20,12 @@ class FeedPostCarouselAdapter(
     dataSource: DataSource,
     imageListener: CarouselImageViewHolder.Listener,
     videoListener: CarouselVideoViewHolder.Listener,
+    listener: FeedCampaignListener? = null
 ) : BaseDiffUtilAdapter<FeedXMedia>(true) {
 
     init {
         delegatesManager
-            .addDelegate(CarouselImageDelegate(dataSource, imageListener))
+            .addDelegate(CarouselImageDelegate(dataSource, imageListener, listener))
             .addDelegate(CarouselVideoDelegate(videoListener))
     }
 
@@ -38,6 +39,13 @@ class FeedPostCarouselAdapter(
     ): Boolean {
         return if (!oldItem.isImage) false
         else oldItem == newItem
+    }
+
+    fun updateReminderStatusForAllButtonsInCarousel(){
+        val changeReminderBtnState = Bundle().apply {
+            putBoolean(PAYLOAD_REMINDER_BTN, true)
+        }
+        notifyItemRangeChanged(0, itemList.size, changeReminderBtnState)
     }
 
     fun focusItemAt(position: Int) {
@@ -81,6 +89,7 @@ class FeedPostCarouselAdapter(
     private class CarouselImageDelegate(
         private val dataSource: DataSource,
         private val listener: CarouselImageViewHolder.Listener,
+        private val fstListener: FeedCampaignListener?,
     ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselImageViewHolder>(
         R.layout.item_post_image_new
     ) {
@@ -107,11 +116,14 @@ class FeedPostCarouselAdapter(
                     if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
                     else holder.removeFocus()
                 }
+                if (payloads.containsKey(PAYLOAD_REMINDER_BTN)) {
+                    if (payloads.getBoolean(PAYLOAD_REMINDER_BTN)) holder.updateAsgcButton()
+                }
             }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselImageViewHolder {
-            return CarouselImageViewHolder.create(parent, dataSource, listener)
+            return CarouselImageViewHolder.create(parent, dataSource, listener, fstListener)
         }
     }
 
@@ -158,6 +170,7 @@ class FeedPostCarouselAdapter(
     companion object {
         private const val PAYLOAD_FOCUS = "payload_focus"
         private const val PAYLOAD_PAUSE = "payload_pause"
+        private const val PAYLOAD_REMINDER_BTN = "payload_reminder_button"
 
         private const val FOCUS_POSITION_THRESHOLD = 2
     }

@@ -7,12 +7,14 @@ import com.tokopedia.wishlist.data.model.WishlistCollectionEmptyStateData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_BACK_TO_HOME
+import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_OPEN_MY_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_RESET_FILTER
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SEARCH_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SHOW_SEARCH_BAR
+import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION_NAME
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
-import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 
 class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2EmptyStateItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
@@ -41,13 +43,24 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
                         ACTION_SHOW_SEARCH_BAR -> {
                             setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
                         }
+                        ACTION_OPEN_MY_WISHLIST -> {
+                            setPrimaryCTAClickListener { actionListener?.goToMyWishlist() }
+                        }
                     }
 
                     if (item.dataObject.listButton.size > 1) {
                         setSecondaryCTAText(item.dataObject.listButton[1].text)
 
-                        if (item.dataObject.listButton[1].action == ACTION_UPDATE_COLLECTION_NAME) {
-                            setSecondaryCTAClickListener { actionListener?.onChangeCollectionName() }
+                        when (item.dataObject.listButton[1].action) {
+                            ACTION_UPDATE_COLLECTION_NAME -> {
+                                setSecondaryCTAClickListener { actionListener?.onChangeCollectionName() }
+                            }
+                            ACTION_BACK_TO_HOME -> {
+                                setSecondaryCTAClickListener { actionListener?.goToHome() }
+                            }
+                            ACTION_UPDATE_COLLECTION -> {
+                                setSecondaryCTAClickListener { actionListener?.goToEditWishlistCollectionPage() }
+                            }
                         }
                     }
                 }

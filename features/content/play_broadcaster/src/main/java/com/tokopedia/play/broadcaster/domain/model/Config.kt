@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class Config(
         @SerializedName("streamAllowed")
         val streamAllowed: Boolean = false,
+        @SerializedName("shortVideoAllowed")
+        val shortVideoAllowed: Boolean = false,
         @SerializedName("active_live_channel")
         val activeLiveChannel: Int = 0,
         @SerializedName("draft_channel")
@@ -40,7 +42,7 @@ data class Config(
         @SerializedName("scheduled_time")
         val scheduledTime: ScheduledTime = ScheduledTime(),
         @SerializedName("tnc")
-        val tnc: List<GetBroadcasterShopConfigResponse.TermsAndCondition> = emptyList(),
+        val tnc: List<GetBroadcasterAuthorConfigResponse.TermsAndCondition> = emptyList(),
 ) {
         data class ScheduledTime(
                 @SerializedName("minimum")

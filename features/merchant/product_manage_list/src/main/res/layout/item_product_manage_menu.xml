@@ -7,8 +7,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icuPmlMoreMenu"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

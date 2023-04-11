@@ -1,5 +1,7 @@
 package com.tokopedia.product_bundle.common.data.constant
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 object ProductBundleConstants {
 
     /**
@@ -16,10 +18,13 @@ object ProductBundleConstants {
     const val EXTRA_IS_VARIANT_CHANGED = "is_variant_changed"
 
     // image resource links
-    const val BUNDLE_EMPTY_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant/product_service/product_bundle/product_bundle_empty.png"
+    const val BUNDLE_EMPTY_IMAGE_URL = TokopediaImageUrl.BUNDLE_EMPTY_IMAGE_URL
 
     // preorder time unit
     const val PREORDER_TYPE_DAY: Int = 1
     const val PREORDER_TYPE_WEEK: Int = 2
     const val PREORDER_TYPE_MONTH: Int = 3
+
+    // product bundle types
+    const val BUNDLE_TYPE_SINGLE: Int = 1
 }

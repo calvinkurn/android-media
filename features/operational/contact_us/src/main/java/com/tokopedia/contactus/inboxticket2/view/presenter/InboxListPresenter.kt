@@ -29,7 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val ALL = 0
@@ -189,7 +188,7 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
     }
 
     private fun sendGtmClickTicketFilter(selected: String) {
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.Event,
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventClickTicketFilter,
                 selected)
@@ -207,10 +206,10 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
         val detailIntent =
                 InboxDetailActivity.getIntent(mView?.getActivity(), originalList[index].id, isOfficialStore)
         mView?.navigateToActivityRequest(detailIntent, InboxBaseView.REQUEST_DETAILS)
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.Event,
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventTicketClick,
-                originalList[index].caseNumber)
+                originalList[index].caseNumber.orEmpty())
     }
 
     override fun scrollList() {
@@ -317,7 +316,6 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
 
     override fun sendGTMClickChatButton() {
         ContactUsTracking.sendGTMInboxTicket(
-                mView?.getActivity(),
                 InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventClickChatbotButton,

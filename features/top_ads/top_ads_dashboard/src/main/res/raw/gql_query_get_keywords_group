@@ -1,5 +1,5 @@
-query GetTopadsDashboardKeywords($queryInput :  GetTopadsDashboardKeywordsInputType!){
-  GetTopadsDashboardKeywords(queryInput: $queryInput) {
+query GetTopadsDashboardKeywordsV3($queryInput :  GetTopadsDashboardKeywordsInputTypeV3!){
+  GetTopadsDashboardKeywordsV3(queryInput: $queryInput) {
         meta {
           page {
             per_page

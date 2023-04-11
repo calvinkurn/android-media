@@ -1,32 +1,37 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
+import com.tokopedia.digital.home.domain.SearchAutoCompleteHomePageUseCase
+import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
-import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
-import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class DigitalHomePageSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase
@@ -37,25 +42,37 @@ class DigitalHomePageSearchViewModelTest {
     @RelaxedMockK
     lateinit var searchAutoCompleteHomePageUseCase: SearchAutoCompleteHomePageUseCase
 
-    lateinit var digitalHomePageSearchViewModel: DigitalHomePageSearchViewModel
+    @RelaxedMockK
+    lateinit var job: Job
 
-    val searchParam = "navsource=tnb&q=paket&source=search&categoryid="
-    val searchQuery = "paket"
-    val mapSearchParam = mapOf(DigitalHomePageSearchViewModel.PARAM to searchParam)
+    private lateinit var digitalHomePageSearchViewModel: DigitalHomePageSearchViewModel
+    private val coroutineTestDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    private val searchParam = "navsource=tnb&q=paket&source=search&categoryid="
+    private val searchQuery = "paket"
+    private val mapSearchParam = mapOf(DigitalHomePageSearchViewModel.PARAM to searchParam)
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
 
         digitalHomePageSearchViewModel =
-                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
-                        searchAutoCompleteHomePageUseCase, CoroutineTestDispatchersProvider)
+            DigitalHomePageSearchViewModel(
+                searchCategoryHomePageUseCase,
+                searchCategoryByDynamicIconUseCase,
+                searchAutoCompleteHomePageUseCase,
+                coroutineTestDispatcher,
+                job
+            )
     }
 
     @Test
     fun getSearchCategoryList_Success() {
         coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } returns
-               DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+            DigitalHomePageSearchNewModel(
+                false, Tracking(), "test", listOf(
+                    DigitalHomePageSearchCategoryModel(searchQuery = "test")
+                )
+            )
 
         digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
@@ -67,8 +84,8 @@ class DigitalHomePageSearchViewModelTest {
 
     @Test
     fun getSearchCategoryList_Fail() {
-        coEvery{ searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
+            MessageErrorException()
 
         digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
@@ -80,7 +97,12 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any())
-        } returns DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(
+            false,
+            Tracking(),
+            "test",
+            listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
+        )
 
         //when
         digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
@@ -96,8 +118,8 @@ class DigitalHomePageSearchViewModelTest {
     @Test
     fun getSearchCategoryByDynamicIcons_Fail() {
         //given
-        coEvery{ searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any()) } throws
+            MessageErrorException()
 
         //when
         digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
@@ -108,7 +130,7 @@ class DigitalHomePageSearchViewModelTest {
     }
 
     @Test
-    fun getMapSearchAutoComplete(){
+    fun getMapSearchAutoComplete() {
         //when
         val searchParamResult = digitalHomePageSearchViewModel.mapAutoCompleteParams(searchQuery)
 
@@ -121,7 +143,12 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any())
-        } returns DigitalHomePageSearchNewModel(true, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(
+            true,
+            Tracking(),
+            "test",
+            listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
+        )
 
         //when
         digitalHomePageSearchViewModel.searchAutoComplete(mapSearchParam, "paket")
@@ -138,8 +165,8 @@ class DigitalHomePageSearchViewModelTest {
     @Test
     fun getSearchAutoComplete_Fail() {
         //given
-        coEvery{ searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any()) } throws
+            MessageErrorException()
 
         //when
         digitalHomePageSearchViewModel.searchAutoComplete(mapSearchParam, searchQuery)
@@ -181,7 +208,7 @@ class DigitalHomePageSearchViewModelTest {
 
     @Test
     fun cancelSearchAutoComplete_NotActive() {
-        GlobalScope.launch {
+        coroutineRule.runBlockingTest {
             //given
             val job = Job()
             digitalHomePageSearchViewModel.job = job
@@ -200,7 +227,7 @@ class DigitalHomePageSearchViewModelTest {
     }
 
     @Test
-    fun getJob(){
+    fun getJob() {
         //given
         val job = Job()
 

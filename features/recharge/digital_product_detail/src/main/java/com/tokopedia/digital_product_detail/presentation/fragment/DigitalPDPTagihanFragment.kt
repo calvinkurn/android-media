@@ -31,10 +31,8 @@ import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
@@ -43,6 +41,8 @@ import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
@@ -68,7 +68,6 @@ import com.tokopedia.recharge_component.model.client_number.RechargeClientNumber
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -78,16 +77,19 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
-class DigitalPDPTagihanFragment : BaseDaggerFragment(),
+class DigitalPDPTagihanFragment :
+    BaseDaggerFragment(),
     RechargeSimplifyWidgetListener,
     DigitalHistoryIconListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    ClientNumberSortFilterListener {
+    ClientNumberSortFilterListener,
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -98,8 +100,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
-
-    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpTagihanBinding>()
 
@@ -149,18 +149,10 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    // do nothing
-                }
-
-                override fun onKeyboardHidden() {
-                    // do nothing
-                }
-            })
+            registerLifecycleOwner(viewLifecycleOwner)
+            registerKeyboard(WeakReference(it))
         }
     }
-
 
     private fun observeData() {
         viewModel.menuDetailData.observe(viewLifecycleOwner, {
@@ -219,7 +211,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.operatorData.attributes.name,
                         it.data.priceProduct,
-                        it.data.channelId,
+                        it.data.channelId
                     )
                     navigateToCart(it.data.categoryId)
                 }
@@ -232,7 +224,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 }
             }
         })
-
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
@@ -429,7 +420,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
                         loyaltyStatus,
-                        userSession.userId,
+                        userSession.userId
                     )
                     showMoreInfoBottomSheet(listInfo, title)
                 }
@@ -479,7 +470,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             for (item in tickers) {
                 messages.add(
                     TickerData(
-                        item.name, item.content,
+                        item.name,
+                        item.content,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -493,8 +485,10 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             binding?.rechargePdpTagihanListrikTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                        this@DigitalPDPTagihanFragment.requireContext(), messages
-                    ), messages
+                        this@DigitalPDPTagihanFragment.requireContext(),
+                        messages
+                    ),
+                    messages
                 )
                 show()
             }
@@ -549,7 +543,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     private fun renderProduct() {
         binding?.run {
             if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX_LISTRIK) {
-
                 /* validate client number */
                 viewModel.run {
                     cancelValidatorJob()
@@ -645,7 +638,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
+                it,
+                clientNumber,
+                dgCategoryIds,
+                dgOperatorIds,
+                categoryName,
+                loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -677,7 +675,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            activity, throwable, ErrorHandler.Builder().build()
+            activity,
+            throwable,
+            ErrorHandler.Builder().build()
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
@@ -722,9 +722,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             setAddToCartLoading()
             addToCart(
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams(),
-                userSession.userId,
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+                userSession.userId
             )
         }
     }
@@ -773,9 +771,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         startActivityForResult(intent, DigitalPDPConstant.RESULT_CODE_QR_SCAN)
     }
 
-    override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
-    }
+    override fun isKeyboardShown(): Boolean = isSoftKeyboardShown()
 
     //endregion
 
@@ -826,7 +822,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 viewModel.operatorData.attributes.name,
                 loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             digitalPDPAnalytics.clickFavoriteNumberChips(
@@ -852,7 +848,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             val dgOperatorIds: ArrayList<String> =
                 ArrayList(viewModel.operatorList.map { it.id })
             navigateToContact(
-                clientNumber, dgCategoryIds, dgOperatorIds,
+                clientNumber,
+                dgCategoryIds,
+                dgOperatorIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId)
             )
         }
@@ -890,7 +888,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
                         orderClientNumber.operatorId,
-                        orderClientNumber.inputNumberActionTypeIndex,
+                        orderClientNumber.inputNumberActionTypeIndex
                     )
                 } else {
                     handleCallbackAnySavedNumberCancel()
@@ -901,6 +899,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         FavoriteNumberType.LIST
                     )
                 )
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.clearFocusAutoComplete()
             } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
@@ -912,6 +911,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         }
                     }
                 }
+            } else if (requestCode == BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL) {
+                showErrorFromCheckout(data)
             }
         }
     }
@@ -932,12 +933,14 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-
-    override fun onDestroyView() {
-        binding?.root?.let {
-            keyboardWatcher.unlisten(it)
+    private fun showErrorFromCheckout(data: Intent?) {
+        if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
+            val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                as Throwable
+            if (!throwable.message.isNullOrEmpty()) {
+                showErrorToaster(throwable)
+            }
         }
-        super.onDestroyView()
     }
 
     companion object {

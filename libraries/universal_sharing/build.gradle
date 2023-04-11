@@ -33,8 +33,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.miscDependencies.lifeCycleCommon
-
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -44,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     api rootProject.ext.miscDependencies.coroutineCore
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -51,6 +53,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.json
+    implementation rootProject.ext.firebase.crashlytics
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.logger)

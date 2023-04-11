@@ -16,12 +16,12 @@
           "user_id": 128068031,
           "access_token": "",
           "upload_app_url": "https://u12.tokopedia.net/upload/attachment",
-          "img_banner_base": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg",
-          "img_banner_ig_post": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg",
-          "img_banner_ig_story": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_story.jpg",
-          "img_banner_label_gratis_ongkir": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png",
-          "img_banner_label_cashback": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png",
-          "img_banner_label_cashback_hingga": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png",
+          "img_banner_base": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg",
+          "img_banner_ig_post": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg",
+          "img_banner_ig_story": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_story.jpg",
+          "img_banner_label_gratis_ongkir": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png",
+          "img_banner_label_cashback": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png",
+          "img_banner_label_cashback_hingga": "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png",
           "prefix_voucher_code": "YDPS"
         }
       }

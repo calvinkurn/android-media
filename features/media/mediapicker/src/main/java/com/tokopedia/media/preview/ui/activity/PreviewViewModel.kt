@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
 import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionRepository,
     private val mediaSaver: SaveToGalleryRepository,
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
+    private val paramCache: PickerCacheManager
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
@@ -37,7 +39,7 @@ class PreviewViewModel @Inject constructor(
     private val videoCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isVideo() == true && it.isFromPickerCamera }
+                .filter { it.file?.isVideo() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
         }
@@ -46,7 +48,7 @@ class PreviewViewModel @Inject constructor(
     private val imageCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isImage() == true && it.isFromPickerCamera }
+                .filter { it.file?.isImage() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
     }
@@ -69,11 +71,13 @@ class PreviewViewModel @Inject constructor(
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        imageCameraFiles
-            .plus(videoCameraFiles)
-            .forEach {
-                mediaSaver.dispatch(it)
-            }
+        if (!paramCache.get().isEditorEnabled()) {
+            imageCameraFiles
+                .plus(videoCameraFiles)
+                .forEach {
+                    mediaSaver.dispatch(it)
+                }
+        }
 
         PickerResult(
             originalPaths = originalFiles,

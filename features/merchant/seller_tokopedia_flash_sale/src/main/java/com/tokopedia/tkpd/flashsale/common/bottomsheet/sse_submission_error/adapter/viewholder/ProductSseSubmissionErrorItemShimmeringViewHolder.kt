@@ -1,0 +1,9 @@
+package com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.adapter.viewholder
+
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsProductListSubmissionErrorShimmeringLayoutBinding
+
+
+class ProductSseSubmissionErrorItemShimmeringViewHolder(
+    binding: StfsProductListSubmissionErrorShimmeringLayoutBinding
+) : RecyclerView.ViewHolder(binding.root)

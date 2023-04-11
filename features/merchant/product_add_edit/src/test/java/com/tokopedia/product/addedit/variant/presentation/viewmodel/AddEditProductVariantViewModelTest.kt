@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidation
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidationResponse
@@ -11,14 +12,23 @@ import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleVali
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
-import com.tokopedia.product.addedit.variant.data.model.*
+import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
+import com.tokopedia.product.addedit.variant.data.model.GetVariantDataById
+import com.tokopedia.product.addedit.variant.data.model.GetVariantDataByIdResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
+import com.tokopedia.product.addedit.variant.data.model.UnitValue
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.extension.hasVariant
-import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -38,18 +48,18 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         spiedViewModel.productInputModel.value = ProductInputModel()
 
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest2.units[0].unitValues[2],
-                variantDetailTest2.units[0].unitValues[3]
+            variantDetailTest2.units[0].unitValues[2],
+            variantDetailTest2.units[0].unitValues[3]
         )
 
         val variantPhotos = listOf(
-                VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
-                VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
+            VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
+            VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
         )
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -64,7 +74,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.removeVariant()
         assert(viewModel.getSelectedVariantUnitValues(0).size == 0)
         assert(viewModel.getSelectedVariantUnitValues(1).size == 0)
-
     }
 
     @Test
@@ -72,18 +81,18 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         spiedViewModel.productInputModel.value = ProductInputModel()
 
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest2.units[0].unitValues[2],
-                variantDetailTest2.units[0].unitValues[3]
+            variantDetailTest2.units[0].unitValues[2],
+            variantDetailTest2.units[0].unitValues[3]
         )
 
         val variantPhotos = listOf(
-                VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
-                VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
+            VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
+            VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
         )
 
         val colorVariantDetailTest1 = variantDetailsTest[0]
@@ -92,14 +101,13 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
         spiedViewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
-        spiedViewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID=62, unitName="Volume"))
+        spiedViewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID = 62, unitName = "Volume"))
         spiedViewModel.setSelectedVariantDetails(colorVariantDetailsTest)
         spiedViewModel.isOldVariantData = true
         spiedViewModel.updateVariantInputModel(variantPhotos)
 
         val selection = spiedViewModel.productInputModel.value?.variantInputModel?.selections
         assert(selection != null && selection.isNotEmpty())
-
     }
 
     @Test
@@ -123,13 +131,13 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     @Test
     fun `When updateSizechartVisibility size unit is found Expect enable visibility`() {
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest2.units[0].unitValues[2],
-                variantDetailTest2.units[0].unitValues[3]
+            variantDetailTest2.units[0].unitValues[2],
+            variantDetailTest2.units[0].unitValues[3]
         )
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -139,7 +147,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val isVariantSizechartVisible = spiedViewModel.isVariantSizechartVisible.value
         assert(isVariantSizechartVisible == true)
 
-        //test if reversed
+        // test if reversed
         spiedViewModel.updateSizechartFieldVisibility(variantDetailsTest.reversed())
         assert(spiedViewModel.isVariantSizechartVisible.value == true)
     }
@@ -147,8 +155,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     @Test
     fun `When updateSizechartVisibility size unit is not found Expect disable visibility`() {
         val selectedUnitValues = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValues)
@@ -161,8 +169,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     @Test
     fun `When updateSizechartVisibility Expect change visibility enable visibility`() {
         val selectedUnitValues = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         spiedViewModel.setSelectedVariantDetails(variantDetailsTest)
@@ -180,8 +188,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     @Test
     fun `When updateSizechartVisibility Expect change visibility disable visibility`() {
         val selectedUnitValues = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         viewModel.setSelectedVariantDetails(mutableListOf(variantDetailTest1))
@@ -212,12 +220,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     @Test
     fun `When selectedUnitValuesLevel Expect change correct isInputValid validity`() {
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest1.units[1].unitValues[2],
-                variantDetailTest1.units[1].unitValues[3]
+            variantDetailTest1.units[1].unitValues[2],
+            variantDetailTest1.units[1].unitValues[3]
         )
 
         viewModel.isSingleVariantTypeIsSelected = false
@@ -262,13 +270,13 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.productInputModel.value = ProductInputModel()
 
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest2.units[0].unitValues[2],
-                variantDetailTest2.units[0].unitValues[3]
+            variantDetailTest2.units[0].unitValues[2],
+            variantDetailTest2.units[0].unitValues[3]
         )
 
         viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -301,7 +309,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // test non-custom unit value
         viewModel.updateVariantDataMap(0, variantDetailTest1)
         val isUpdateVariantDataMapSuccess =
-                viewModel.getVariantData(0).variantID == variantDetailTest1.variantID
+            viewModel.getVariantData(0).variantID == variantDetailTest1.variantID
         assert(isUpdateVariantDataMapSuccess)
 
         //
@@ -311,7 +319,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // test custom unit value
         viewModel.addCustomVariantUnitValue(0, Unit(), UnitValue(value = "silver"))
         val isAddCustomVariantUnitValueSuccess =
-                viewModel.getVariantData(0).units[0].unitValues.last().value == "silver"
+            viewModel.getVariantData(0).units[0].unitValues.last().value == "silver"
         assert(isAddCustomVariantUnitValueSuccess)
     }
 
@@ -333,18 +341,18 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.productInputModel.value = ProductInputModel()
 
         val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
+            variantDetailTest1.units[0].unitValues[2],
+            variantDetailTest1.units[0].unitValues[3]
         )
 
         val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest2.units[0].unitValues[2],
-                variantDetailTest2.units[0].unitValues[3]
+            variantDetailTest2.units[0].unitValues[2],
+            variantDetailTest2.units[0].unitValues[3]
         )
 
         val variantPhotos = listOf(
-                VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
-                VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
+            VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
+            VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
         )
 
         viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -393,7 +401,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `getCategoryVariantCombination function should execute getCategoryVariantCombinationUseCase`() = runBlocking {
-
         coEvery {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         } returns GetVariantCategoryCombinationResponse()
@@ -410,9 +417,11 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `getCategoryVariantCombination function in edit mode should execute getCategoryVariantCombinationUseCase`() = runBlocking {
-        val selections = listOf(SelectionInputModel(
+        val selections = listOf(
+            SelectionInputModel(
                 variantId = "111"
-        ))
+            )
+        )
         viewModel.productInputModel.value = ProductInputModel(productId = 10000L)
         viewModel.productInputModel.getOrAwaitValue()
         viewModel.isEditMode.getOrAwaitValue()
@@ -436,7 +445,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.getVariantCategoryCombination(0, listOf())
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        coVerify (exactly = 0) {
+        coVerify(exactly = 0) {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
     }
@@ -498,7 +507,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.getVariantDetailFromVariantId(givenVariantId)
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        //then
+        // then
         coVerify {
             getVariantDataByIdUseCase.executeOnBackground()
         }
@@ -517,7 +526,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.getVariantDetailFromVariantId(givenVariantId)
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        //then
+        // then
         coVerify {
             getVariantDataByIdUseCase.executeOnBackground()
         }
@@ -536,12 +545,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.validateIllegalVariantTitle(givenProductName)
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        //then
+        // then
         coVerify {
             titleValidationUseCase.executeOnBackground()
         }
-        assertEquals(viewModel.variantTitleValidationStatus.getOrAwaitValue(),
-                VariantTitleValidationStatus.NO_ERROR)
+        assertEquals(
+            viewModel.variantTitleValidationStatus.getOrAwaitValue(),
+            VariantTitleValidationStatus.NO_ERROR
+        )
     }
 
     @Test
@@ -550,20 +561,24 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val givenProductName = "123"
         coEvery {
             titleValidationUseCase.executeOnBackground()
-        } returns GetProductTitleValidationResponse(GetProductTitleValidation(
+        } returns GetProductTitleValidationResponse(
+            GetProductTitleValidation(
                 blacklistKeyword = listOf(BlacklistKeyword(keyword = "shopee"))
-        ))
+            )
+        )
 
         // when
         viewModel.validateIllegalVariantTitle(givenProductName)
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        //then
+        // then
         coVerify {
             titleValidationUseCase.executeOnBackground()
         }
-        assertEquals(viewModel.variantTitleValidationStatus.getOrAwaitValue(),
-                VariantTitleValidationStatus.ILLEGAL_WORD)
+        assertEquals(
+            viewModel.variantTitleValidationStatus.getOrAwaitValue(),
+            VariantTitleValidationStatus.ILLEGAL_WORD
+        )
     }
 
     @Test
@@ -578,7 +593,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.validateIllegalVariantTitle(givenProductName)
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        //then
+        // then
         coVerify {
             titleValidationUseCase.executeOnBackground()
         }
@@ -722,14 +737,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         spiedViewModel.productInputModel.value?.variantInputModel?.isRemoteDataHasVariant = expectedState
         spiedViewModel.removeVariant()
         val isRemoteDataHasVariant = spiedViewModel.productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
-                ?: false
+            ?: false
         assert(isRemoteDataHasVariant)
         assert(spiedViewModel.getSelectedVariantDetails().isEmpty())
         assert(spiedViewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION).isEmpty())
         assert(spiedViewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION).isEmpty())
         assert(spiedViewModel.getVariantValuesLayoutPosition(0) == VARIANT_VALUE_LEVEL_ONE_POSITION)
         assert(spiedViewModel.isVariantPhotosVisible.value == false)
-        coVerify { spiedViewModel.getVariantCategoryCombination(expectedCategoryId,listOf()) }
+        coVerify { spiedViewModel.getVariantCategoryCombination(expectedCategoryId, listOf()) }
     }
 
     @Test
@@ -739,7 +754,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
                 selections = listOf(
                     SelectionInputModel(variantId = "0"),
                     SelectionInputModel(variantId = "1"),
-                    SelectionInputModel(variantId = "2"),
+                    SelectionInputModel(variantId = "2")
                 )
             )
         )
@@ -777,24 +792,25 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val expectedIsFromIG = "expected value"
         val expectedUploadId = "expected value"
         val variantPhoto = VariantPhoto(
-                variantUnitValueName = "",
-                imageUrlOrPath = expectedFilePathUrlOriginal,
-                picID = expectedPicID,
-                description = expectedDescription,
-                fileName = expectedFileName,
-                filePath = expectedWidth.toString(),
-                width = expectedHeight,
-                height = expectedHeight,
-                isFromIG = expectedIsFromIG,
-                uploadId = expectedUploadId)
+            variantUnitValueName = "",
+            imageUrlOrPath = expectedFilePathUrlOriginal,
+            picID = expectedPicID,
+            description = expectedDescription,
+            fileName = expectedFileName,
+            filePath = expectedWidth.toString(),
+            width = expectedHeight,
+            height = expectedHeight,
+            isFromIG = expectedIsFromIG,
+            uploadId = expectedUploadId
+        )
         viewModel.productInputModel.value = ProductInputModel()
         viewModel.setSelectedVariantDetails(mutableListOf(VariantDetail(variantID = COLOUR_VARIANT_TYPE_ID)))
         viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, mutableListOf(UnitValue()))
         viewModel.updateVariantInputModel(listOf(variantPhoto))
         val productVariantInputModel = viewModel.productInputModel.value?.variantInputModel?.products?.firstOrNull()
-                ?: ProductVariantInputModel()
+            ?: ProductVariantInputModel()
         val pictureVariantInputModel = productVariantInputModel.pictures.firstOrNull()
-                ?: PictureVariantInputModel()
+            ?: PictureVariantInputModel()
         assert(pictureVariantInputModel.urlOriginal == expectedFilePathUrlOriginal)
         assert(pictureVariantInputModel.picID == expectedPicID)
         assert(pictureVariantInputModel.description == expectedDescription)
@@ -818,12 +834,13 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val productInputModel = ProductInputModel()
         val optionInputModel1 = OptionInputModel(unitValueID = expectedUnitValueId.toString(), value = expectedUnitValue)
         val selectionInputModel1 = SelectionInputModel(
-                variantId = expectedVariantId.toString(),
-                variantName = expectedName,
-                unitID = expectedUnit.variantUnitID.toString(),
-                unitName = expectedUnit.unitName,
-                identifier = expectedIdentifier,
-                options = listOf(optionInputModel1))
+            variantId = expectedVariantId.toString(),
+            variantName = expectedName,
+            unitID = expectedUnit.variantUnitID.toString(),
+            unitName = expectedUnit.unitName,
+            identifier = expectedIdentifier,
+            options = listOf(optionInputModel1)
+        )
         productInputModel.variantInputModel.selections = listOf(selectionInputModel1)
         val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
         val selectedVariantDetail = selectedVariantDetails.first()
@@ -853,14 +870,15 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val expectedPhotoIsFromIG = "true"
         val expectedPhotoUploadId = "expectedPhotoUploadId"
         val pictureVariantInputModel = PictureVariantInputModel(
-                urlOriginal = expectedPhotoUrl,
-                picID = expectedPhotoPicID,
-                description = expectedPhotoDescription,
-                fileName = expectedPhotoFileName,
-                width = expectedPhotoWidth,
-                height = expectedPhotoHeight,
-                isFromIG = expectedPhotoIsFromIG,
-                uploadId = expectedPhotoUploadId)
+            urlOriginal = expectedPhotoUrl,
+            picID = expectedPhotoPicID,
+            description = expectedPhotoDescription,
+            fileName = expectedPhotoFileName,
+            width = expectedPhotoWidth,
+            height = expectedPhotoHeight,
+            isFromIG = expectedPhotoIsFromIG,
+            uploadId = expectedPhotoUploadId
+        )
         val productVariantInputModel = ProductVariantInputModel(combination = listOf(0), pictures = listOf(pictureVariantInputModel))
         val selectionInputModel = SelectionInputModel(variantId = COLOUR_VARIANT_TYPE_ID.toString())
         val optionInputModel = OptionInputModel(value = "Red")
@@ -903,18 +921,25 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `mapProductVariant should return ProductVariantInputModel`() {
-        viewModel.productInputModel = MutableLiveData(ProductInputModel(
+        viewModel.productInputModel = MutableLiveData(
+            ProductInputModel(
                 variantInputModel = VariantInputModel(
-                        products = listOf(
-                                ProductVariantInputModel(combination = listOf(1))
-                        )
-                )))
-        viewModel.callPrivateFunc("mapProductVariant",
-                emptyList<PictureVariantInputModel>(),
-                listOf(1)) as ProductVariantInputModel
-        val product = viewModel.callPrivateFunc("mapProductVariant",
-                listOf(PictureVariantInputModel(picID = "1")),
-                listOf(1)) as ProductVariantInputModel
+                    products = listOf(
+                        ProductVariantInputModel(combination = listOf(1))
+                    )
+                )
+            )
+        )
+        viewModel.callPrivateFunc(
+            "mapProductVariant",
+            emptyList<PictureVariantInputModel>(),
+            listOf(1)
+        ) as ProductVariantInputModel
+        val product = viewModel.callPrivateFunc(
+            "mapProductVariant",
+            listOf(PictureVariantInputModel(picID = "1")),
+            listOf(1)
+        ) as ProductVariantInputModel
         assertEquals(listOf(1), product.combination)
         assertEquals(0L, viewModel.productInputModel.value?.productId)
     }
@@ -949,7 +974,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `validateVariantTitle should return validation status`() {
-        //variant name test
+        // variant name test
         val variantNameValid = "valid varian"
         val variantNameMinChar = "aa"
         val variantNameIllegalString = "<<>>>>"
@@ -970,8 +995,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.validateVariantTitle(variantNameUsed, listOf(), variantDetailsUsed, listOf())
         val testResultCustomVariantExist = viewModel.variantTitleValidationStatus.getOrAwaitValue()
 
-        viewModel.validateVariantTitle(variantNameUsed, listOf(VariantDetail(), VariantDetail()),
-            listOf(), variantDetailsUsed)
+        viewModel.validateVariantTitle(
+            variantNameUsed,
+            listOf(VariantDetail(), VariantDetail()),
+            listOf(),
+            variantDetailsUsed
+        )
         val testResultVariantDetailFull = viewModel.variantTitleValidationStatus.getOrAwaitValue()
 
         viewModel.validateVariantTitle(variantNameUsed, variantDetailsUsed, listOf(), listOf())
@@ -994,10 +1023,10 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.productInputModel.value = ProductInputModel(
             variantInputModel = VariantInputModel(
                 products = listOf(
-                    ProductVariantInputModel(combination = listOf(0,0)),
-                    ProductVariantInputModel(combination = listOf(0,1)),
-                    ProductVariantInputModel(combination = listOf(1,0)),
-                    ProductVariantInputModel(combination = listOf(1,1))
+                    ProductVariantInputModel(combination = listOf(0, 0)),
+                    ProductVariantInputModel(combination = listOf(0, 1)),
+                    ProductVariantInputModel(combination = listOf(1, 0)),
+                    ProductVariantInputModel(combination = listOf(1, 1))
                 )
             )
         )
@@ -1010,5 +1039,30 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
             assertEquals(1, it.products[1].combination[0])
             assertEquals(0, it.products[1].combination[1])
         }
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on edited url`() {
+        val editedPhotoAddress = arrayListOf("/0/tkpd/1")
+        val originalPhotoAddress = arrayListOf("")
+        val params = PickerResult(editedImages = editedPhotoAddress, originalPaths = originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(actualResult, "/0/tkpd/1")
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on original url`() {
+        val editedPhotoAddress = arrayListOf("")
+        val originalPhotoAddress = arrayListOf("0/tkpd/chace/1")
+        val params = PickerResult(editedImages = editedPhotoAddress, originalPaths = originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals("0/tkpd/chace/1", actualResult)
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture when it is null`() {
+        val params = PickerResult()
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(null, actualResult)
     }
 }

@@ -17,29 +17,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@id/redeem_btn_deals"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_margin="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="@dimen/spacing_lvl3"
         android:text="@string/voucher_code_title_deals"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_3" />
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/redeem_btn_deals"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:gravity="center"
-        android:background="@drawable/rounded_rectangle_green_solid"
         android:layout_margin="@dimen/spacing_lvl3"
-        android:paddingVertical="@dimen/spacing_lvl3"
-        android:paddingHorizontal="@dimen/spacing_lvl4"
         android:layout_alignParentEnd="true"
         android:text="@string/redeem_deals_btn"
+        android:gravity="center"
+        android:background="@drawable/rounded_rectangle_green_solid"
+        android:paddingVertical="@dimen/spacing_lvl3"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N0"/>
 
     <FrameLayout

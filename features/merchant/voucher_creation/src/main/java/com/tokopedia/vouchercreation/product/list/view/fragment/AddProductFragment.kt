@@ -368,6 +368,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             when (result) {
                 is Success -> {
                     val productData = result.data.productList.data
+                    viewModel.productCounter += productData.size
                     val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
                     val productList = viewModel.excludeSelectedProducts(productUiModels, viewModel.getSelectedProductIds())
                     viewModel.setProductUiModels(productList)
@@ -419,7 +420,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             productData = updatedProductList
                     )
 
-                    val hasNextPage = dataWithSelections.isNotEmpty()
+                    val hasNextPage = viewModel.isLoadMoreAvailable(
+                        productListSize = viewModel.productCounter,
+                        totalActiveProductCount = viewModel.totalActiveProductCount
+                    )
                     renderList(dataWithSelections, hasNextPage)
 
 //                    if (isSelectAll) {
@@ -502,6 +506,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.getProductListMetaDataResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    val tabs = result.data.response.data.tab
+                    viewModel.totalActiveProductCount = viewModel.getTotalActiveProductCount(tabs)
                     val sort = result.data.response.data.sort
                     val categories = result.data.response.data.category
                     val filteredSort = viewModel.excludeDefaultSortSelection(sort)
@@ -609,6 +615,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     override fun clearAdapterData() {
         adapter?.clearData()
+        viewModel.productCounter = Int.ZERO
     }
 
     override fun onShowLoading() {

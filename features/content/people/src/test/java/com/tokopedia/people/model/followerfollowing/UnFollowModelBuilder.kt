@@ -1,9 +1,8 @@
 package com.tokopedia.people.model.followerfollowing
 
-import com.tokopedia.people.model.ProfileDoFollowModelBase
-import com.tokopedia.people.model.ProfileDoFollowedData
-import com.tokopedia.people.model.ProfileDoFollowedDataVal
-import com.tokopedia.people.model.ProfileDoUnFollowModelBase
+import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedData
+import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedDataVal
+import com.tokopedia.feedcomponent.people.model.ProfileDoUnFollowModelBase
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
@@ -26,7 +25,7 @@ class UnFollowModelBuilder {
                 ),
                 messages = emptyList(),
                 errorCode = "",
-            )
+            ),
         )
     }
 }

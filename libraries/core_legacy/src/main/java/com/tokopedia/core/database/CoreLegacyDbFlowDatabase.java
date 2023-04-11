@@ -26,7 +26,7 @@ public abstract class CoreLegacyDbFlowDatabase extends RoomDatabase {
         if  (instance == null) {
             synchronized (CoreLegacyDbFlowDatabase.class) {
                 if (instance == null) {
-                    instance = buildDatabase(context);
+                    instance = buildDatabase(context.getApplicationContext());
                 }
             }
         }

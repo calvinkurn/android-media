@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.util
 
 import android.content.Context
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -19,12 +20,18 @@ object TimeConverter {
     private const val DAYS_IN_A_YEAR = 365.toLong()
     private const val HOURS_IN_A_DAY = 24.toLong()
     private const val DEFAULT_FEED_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
+    const val yyyyMMddTHHmmss = "yyyy-MM-dd HH:mm:ss"
     private const val HOUR_MINUTE_FORMAT = "HH:mm"
     private const val DAY_MONTH_FORMAT = "dd MMMM"
     private const val DAY_MONTH_YEAR_FORMAT = "dd MMMM yyyy"
     private const val MONTH_YEAR_FORMAT = "MMMM yyyy"
     private const val COUNTRY_ID = "ID"
     private const val LANGUAGE_ID = "in"
+    private const val GMT = "GMT"
+    private const val Z = "Z"
+    private const val GMT_DIVIDER = 100
+    private const val GMT07 = "+0700"
+    private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
     fun generateTime(context: Context, postTime: String): String {
         return generateTime(context, postTime, DEFAULT_FEED_FORMAT)
@@ -223,6 +230,42 @@ object TimeConverter {
                 .plus(sdfHour.format(postDate))
         else {
             sdfYear.format(postDate)
+        }
+    }
+
+    fun convertToCalendar(
+        raw: String,
+        pattern: String = yyyyMMddTHHmmss
+    ): Calendar? {
+        return try {
+            val format = SimpleDateFormat(pattern, locale)
+            val date = format.parse(raw)
+
+            date?.let {
+                val calendar = Calendar.getInstance()
+                calendar.time = it
+
+                val diff = (getDeviceGMT().toIntOrZero() - GMT07.toIntOrZero())
+                if(diff != 0) {
+                    calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
+                    calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)
+                }
+
+                return@let calendar
+            }
+        }
+        catch (e: Exception) {
+            null
+        }
+    }
+    private fun getDeviceGMT(): String {
+        return try {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone(GMT), locale)
+            val dateFormat = SimpleDateFormat(Z, locale)
+            dateFormat.format(calendar.time)
+        }
+        catch (e: Exception) {
+            GMT07
         }
     }
 

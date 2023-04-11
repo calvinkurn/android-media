@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.annotation.NonNull
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
@@ -17,7 +16,6 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**

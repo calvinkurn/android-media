@@ -33,7 +33,7 @@
                 android:layout_marginStart="3dp"
                 android:gravity="center_vertical"
                 android:text="@string/cm_app_title_name"
-                android:textColor="@color/medium_green_70"
+                android:textColor="@color/dms_medium_green_70"
                 android:textSize="13sp" />
 
             <ImageView
@@ -48,7 +48,7 @@
                 android:id="@+id/push_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/cm_grey_255"
+                android:textColor="@color/dms_cm_grey_255"
                 android:textSize="12sp"
                 tools:text="11:00 am" />
 
@@ -63,7 +63,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             tools:text="Title"
-            android:textColor="@color/cm_title_black_255"
+            android:textColor="@color/dms_cm_title_black_255"
             android:textSize="13sp" />
 
         <TextView
@@ -75,7 +75,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             tools:text="@tools:sample/lorem/random"
-            android:textColor="@color/cm_light_grey_255"
+            android:textColor="@color/dms_cm_light_grey_255"
             android:textSize="13sp" />
 
     </RelativeLayout>

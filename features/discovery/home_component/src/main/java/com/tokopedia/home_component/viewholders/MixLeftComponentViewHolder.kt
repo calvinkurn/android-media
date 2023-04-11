@@ -95,7 +95,7 @@ class MixLeftComponentViewHolder (itemView: View,
 
         itemView.addOnImpressionListener(element.channelModel)  {
             if (!isCacheData)
-                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, element.channelModel.verticalPosition)
         }
     }
 
@@ -105,11 +105,11 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, adapterPosition, position)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, channelModel.verticalPosition, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, adapterPosition, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, channelModel.verticalPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -124,7 +124,8 @@ class MixLeftComponentViewHolder (itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerBottom = binding?.homeComponentDividerFooter,
+            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
@@ -153,7 +154,7 @@ class MixLeftComponentViewHolder (itemView: View,
 
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
-                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, channel.verticalPosition)
             }
             parallaxBackground.setBackgroundColor(
                     ContextCompat.getColor(itemView.context, R.color.transparent)
@@ -183,7 +184,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
+        listData.add(CarouselEmptyCardDataModel(channel, channel.verticalPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
@@ -291,7 +292,7 @@ class MixLeftComponentViewHolder (itemView: View,
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, element.channelModel.verticalPosition, element)
             }
         })
     }

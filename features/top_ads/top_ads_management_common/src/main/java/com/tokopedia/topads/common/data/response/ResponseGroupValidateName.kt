@@ -4,10 +4,10 @@ package com.tokopedia.topads.common.data.response
 import com.google.gson.annotations.SerializedName
 
 data class ResponseGroupValidateName(
-        @SerializedName("topAdsGroupValidateName")
-        val topAdsGroupValidateName: TopAdsGroupValidateName = TopAdsGroupValidateName()
+        @SerializedName("topAdsGroupValidateNameV2")
+        val topAdsGroupValidateName: TopAdsGroupValidateNameV2 = TopAdsGroupValidateNameV2()
 ) {
-    data class TopAdsGroupValidateName(
+    data class TopAdsGroupValidateNameV2(
             @SerializedName("data")
             val `data`: Data = Data(),
             @SerializedName("errors")
@@ -17,7 +17,7 @@ data class ResponseGroupValidateName(
                 @SerializedName("groupName")
                 val groupName: String = "",
                 @SerializedName("shopID")
-                val shopID: Int = 0
+                val shopID: String = "0"
         )
     }
 }

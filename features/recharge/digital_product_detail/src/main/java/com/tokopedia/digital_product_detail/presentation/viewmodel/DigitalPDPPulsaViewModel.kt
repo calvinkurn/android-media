@@ -7,9 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
@@ -19,18 +25,13 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
-import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -97,6 +98,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
+        get() = _errorAtc
+
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
@@ -129,8 +134,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
             _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
         }) {
-            if (it !is CancellationException)
+            if (it !is CancellationException) {
                 _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
+            }
         }
     }
 
@@ -191,23 +197,24 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
-        digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String,
-        isUseGql: Boolean
+        userId: String
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
-                digitalSubscriptionParams,
-                userId,
-                isUseGql
+                userId
             )
-            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            if (categoryIdAtc.errorAtc == null) {
+                _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            } else {
+                _errorAtc.value = categoryIdAtc.errorAtc
+            }
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.value =
-                    RechargeNetworkResult.Fail(MessageErrorException(it.message))
+                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+            } else if (it is DigitalAtcErrorException) {
+                _errorAtc.value = it.getError()
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -226,7 +233,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 dgCategoryIds,
                 emptyList(),
                 DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_PULSA,
-                true,
+                true
             )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
@@ -299,9 +306,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
         var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
-            if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()
-            ) selectedProductPositionId = index
+            if (denomData.id.equals(selectedGridProduct.denomData.id, false) &&
+                selectedGridProduct.denomData.id.isNotEmpty()
+            ) {
+                selectedProductPositionId = index
+            }
         }
         return selectedProductPositionId
     }
@@ -311,10 +320,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
-        (selectedGridProduct.denomData.id.isNotEmpty()
-                && selectedGridProduct.position >= 0
-                && selectedGridProduct.denomWidgetEnum == layoutType
-                && isEligibleToBuy)
+        (
+            selectedGridProduct.denomData.id.isNotEmpty() &&
+                selectedGridProduct.position >= 0 &&
+                selectedGridProduct.denomWidgetEnum == layoutType &&
+                isEligibleToBuy
+            )
 
     fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/img_main_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/cd_img_preview"
+        android:elevation="2dp"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_main_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:contentDescription="@string/cd_img_preview"
+            android:elevation="1dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/vid_main_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:contentDescription="@string/cd_img_preview"
+            android:elevation="1dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>

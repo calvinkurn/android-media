@@ -21,6 +21,18 @@
         />
 
     <include
+        android:id="@+id/view_end_live_info"
+        layout="@layout/view_end_live_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
         android:id="@+id/view_gradient_background"
         layout="@layout/view_gradient_background"
         android:layout_width="@dimen/layout_lvl0"
@@ -81,8 +93,8 @@
     <include
         android:id="@+id/view_share_experience"
         layout="@layout/view_share_experience"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_goneMarginEnd="0dp"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
@@ -136,7 +148,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
-        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
+        app:layout_constraintBottom_toTopOf="@id/view_play_widget_address"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
@@ -144,41 +156,28 @@
         tools:visibility="visible"
         />
 
-    <com.tokopedia.play.view.custom.PlayChatListView
-        android:id="@+id/view_chat_list"
-        android:layout_width="@dimen/layout_lvl0"
+    <com.tokopedia.play.util.scroll.NestedScrollableHost
+        android:id="@+id/scrollable_host_chat"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned"
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/view_size"
+        app:lockScroll="true"
         tools:visibility="visible"
-        />
+        >
 
-    <FrameLayout
-        android:id="@+id/view_interactive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        <com.tokopedia.play.view.custom.PlayChatListView
+            android:id="@+id/view_chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
-    <View
-        android:id="@+id/v_winner_badge_bottom"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_anchor_size"
-        app:layout_constraintTop_toTopOf="@id/view_interactive"
-        app:layout_constraintBottom_toBottomOf="@id/view_interactive"
-        app:layout_constraintStart_toStartOf="@id/view_interactive"
-        app:layout_constraintVertical_bias="0.3"
-        />
+    </com.tokopedia.play.util.scroll.NestedScrollableHost>
 
     <com.tokopedia.play.view.custom.video.PlayVideoControlView
         android:id="@+id/pcv_video"
@@ -218,38 +217,15 @@
         />
 
     <include
-        android:id="@+id/view_pip_control"
-        layout="@layout/view_pip_control"
+        android:id="@+id/view_explore_widget"
+        layout="@layout/view_explore_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/play_offset_12"
-        android:visibility="gone"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/view_partner_info"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
+        app:layout_constraintTop_toTopOf="@+id/view_partner_info"
         tools:visibility="visible" />
-
-    <androidx.mediarouter.app.MediaRouteButton
-        android:id="@+id/btn_play_cast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/view_pip_control"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
-        app:mediaRouteButtonTint="@color/Unify_Static_White"
-        />
-
-    <include
-        android:id="@+id/view_end_live_info"
-        layout="@layout/view_end_live_info"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
 
     <include
         android:id="@+id/view_toolbar_room"
@@ -270,8 +246,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintEnd_toStartOf="@id/btn_play_cast"
+        android:layout_marginEnd="@dimen/play_offset_12"
+        app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
@@ -290,36 +266,17 @@
         app:layout_constraintTop_toBottomOf="@id/view_partner_info"
         />
 
-    <FrameLayout
-        android:id="@+id/view_interactive_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        tools:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_stats_info"
-        />
-
-    <com.tokopedia.play_common.view.game.InteractiveFinishView
-        android:id="@+id/view_interactive_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_active"
-        />
-
     <include
         android:id="@+id/view_game_interactive_result"
         layout="@layout/view_game_interactive_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_finish" />
+        app:layout_constraintTop_toBottomOf="@id/scrollable_host_engagement"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
@@ -343,9 +300,9 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="invisible"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="@id/view_chat_list"
+        app:layout_constraintEnd_toEndOf="@id/scrollable_host_chat"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
+        app:layout_constraintBottom_toTopOf="@id/scrollable_host_chat"
         app:layout_constraintHorizontal_bias="0"
         app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
         />
@@ -399,9 +356,29 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:orientation="horizontal"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
         app:layout_constraintEnd_toEndOf="@id/gl_like_bubble_start"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_size" />
+
+    <com.tokopedia.play.util.scroll.NestedScrollableHost
+        android:id="@+id/scrollable_host_engagement"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:layout_marginEnd="4dp"
+        android:maxHeight="110dp"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        app:lockScroll="true"
+        >
+
+        <include
+            android:id="@+id/v_engagement_widget"
+            layout="@layout/view_small_engagement_widget"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </com.tokopedia.play.util.scroll.NestedScrollableHost>
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

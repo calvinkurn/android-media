@@ -28,4 +28,6 @@ interface HomeAccountUserListener {
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)
     fun onLinkingAccountClicked(isLinked: Boolean)
+    fun onAddPhoneClicked()
+    fun onVerifyPhoneCLicked(phoneNumber: String)
 }

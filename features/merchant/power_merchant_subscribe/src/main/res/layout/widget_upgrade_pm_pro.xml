@@ -114,7 +114,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/pm_header_terms_status"
                 android:textColor="@color/Unify_NN950"
-                android:textSize="@dimen/unify_font_12"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@id/icTargetHeader"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />

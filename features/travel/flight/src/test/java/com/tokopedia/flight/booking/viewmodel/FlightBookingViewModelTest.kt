@@ -111,7 +111,7 @@ class FlightBookingViewModelTest {
         promo.promoData.typePromo shouldBe 0
         promo.promoData.promoCode shouldBe ""
         promo.promoData.description shouldBe ""
-        promo.promoData.amount shouldBe 0
+        promo.promoData.amount shouldBe 0L
         promo.promoData.state shouldBe TickerCheckoutView.State.EMPTY
     }
 

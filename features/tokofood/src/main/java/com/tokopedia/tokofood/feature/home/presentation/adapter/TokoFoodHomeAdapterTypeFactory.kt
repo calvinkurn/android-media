@@ -35,7 +35,8 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.TokoFoodCommonTypeFactory
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
@@ -44,7 +45,8 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoF
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeMerchantTitleViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeTickerViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -72,6 +74,7 @@ class TokoFoodHomeAdapterTypeFactory (
     private val homeIconListener: TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener? = null,
     private val merchantListListener: TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener? = null,
     private val tickerListener: TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener? = null,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener? = null
 ):  BaseAdapterTypeFactory(),
     TokoFoodHomeTypeFactory,
     TokoFoodMerchantListTypeFactory,
@@ -117,8 +120,8 @@ class TokoFoodHomeAdapterTypeFactory (
             TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view, uspListener)
             TokoFoodHomeEmptyStateLocationViewHolder.LAYOUT -> TokoFoodHomeEmptyStateLocationViewHolder(view, emptyStateLocationListener)
             TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
-            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view, merchantListListener)
-            TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view, homeIconListener)
+            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view, merchantListListener, tokofoodScrollChangedListener)
+            TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view, homeIconListener, tokofoodScrollChangedListener)
             TokoFoodHomeChooseAddressViewHolder.LAYOUT -> TokoFoodHomeChooseAddressViewHolder(view, tokoFoodView, chooseAddressWidgetListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             TokoFoodHomeMerchantTitleViewHolder.LAYOUT -> TokoFoodHomeMerchantTitleViewHolder(view)

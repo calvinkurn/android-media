@@ -31,7 +31,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 private const val PRODUCT_CARD_COUNT_THREE = 3
@@ -243,7 +242,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
                 items.add(ShowMoreItemModel(cpmData, shopApplink, adsClickUrl))
             }
         } else {
-            repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerViewModel()) }
+            repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerUiModel()) }
         }
         return items
     }

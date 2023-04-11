@@ -3,188 +3,177 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/date_picker_loader"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="15dp"
-        app:loader_corner_radius="8dp"
-        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="80dp"
-        android:layout_height="30dp"/>
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:alpha="0.8"
         android:id="@+id/date_picker_text_loader"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_width="140dp"
+        android:layout_height="12dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
-        app:loader_corner_radius="@dimen/unify_space_8"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.8"
         app:layout_constraintStart_toStartOf="@id/date_picker_loader"
-        app:layout_constraintTop_toBottomOf="@id/date_picker_loader" />
+        app:layout_constraintTop_toBottomOf="@id/date_picker_loader"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_24"
         android:id="@+id/title_adp"
         android:layout_width="140dp"
-        android:layout_height="@dimen/unify_space_24"
-        app:loader_corner_radius="8dp"
-        app:loader_type="rect"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_picker_text_loader"/>
+        app:layout_constraintTop_toBottomOf="@id/date_picker_text_loader"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginTop="@dimen/unify_space_12"
-        app:layout_constraintTop_toBottomOf="@id/title_adp"
-        android:layout_marginStart="@dimen/dp_10"
         android:id="@+id/card1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/card2"
-        app:layout_constraintStart_toStartOf="parent" >
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_adp">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_margin="@dimen/unify_space_8"
                 android:layout_width="60dp"
-                android:layout_height="@dimen/unify_space_12"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="12dp"
+                android:layout_margin="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="140dp"
-                android:layout_height="wrap_content"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="112dp"
-                android:layout_height="@dimen/unify_space_12"/>
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/dp_10"
-        app:layout_constraintStart_toEndOf="@id/card1"
         android:id="@+id/card2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_adp" >
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_margin="@dimen/unify_space_8"
-                android:layout_width="60dp"
-                android:layout_height="@dimen/unify_space_12"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_width="112dp"
-                android:layout_height="@dimen/unify_space_12"/>
-        </LinearLayout>
-    </com.tokopedia.unifycomponents.CardUnify>
-    <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginStart="@dimen/dp_10"
-        android:id="@+id/card3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/card2"
+        android:layout_marginStart="10dp"
+        app:layout_constraintEnd_toStartOf="@id/card3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card1" >
+        app:layout_constraintTop_toBottomOf="@id/card1">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_margin="@dimen/unify_space_8"
                 android:layout_width="60dp"
-                android:layout_height="@dimen/unify_space_12"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="12dp"
+                android:layout_margin="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="140dp"
-                android:layout_height="wrap_content"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="112dp"
-                android:layout_height="@dimen/unify_space_12"/>
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginEnd="@dimen/dp_10"
-        app:layout_constraintStart_toEndOf="@id/card1"
-        android:id="@+id/card4"
+        android:id="@+id/card3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card2" >
+        app:layout_constraintStart_toEndOf="@id/card2"
+        app:layout_constraintTop_toTopOf="@id/card2">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <com.tokopedia.unifycomponents.LoaderUnify
-                app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_margin="@dimen/unify_space_8"
                 android:layout_width="60dp"
-                android:layout_height="@dimen/unify_space_12"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="12dp"
+                android:layout_margin="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="140dp"
-                android:layout_height="wrap_content"/>
-            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 app:loader_corner_radius="8dp"
-                app:loader_type="rect"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginStart="@dimen/unify_space_8"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="112dp"
-                android:layout_height="@dimen/unify_space_12"/>
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_margin="@dimen/unify_space_16"
         android:id="@+id/title_product"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        app:loader_corner_radius="8dp"
-        app:loader_type="rect"
+        android:layout_margin="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card3"/>
+        app:layout_constraintTop_toBottomOf="@id/card2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/chip_category"
+        android:layout_width="120dp"
+        android:layout_height="32dp"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_product"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

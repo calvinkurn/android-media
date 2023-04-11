@@ -3,6 +3,7 @@
     "data": {
       "updateFavoriteDetail": {
         "clientNumber": "0811111111111",
+        "hashedClientNumber": "tokopedia",
         "operatorID": 12,
         "productID": 70,
         "categoryID": 1,

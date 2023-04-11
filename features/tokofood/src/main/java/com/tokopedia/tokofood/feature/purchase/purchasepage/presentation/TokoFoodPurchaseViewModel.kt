@@ -14,16 +14,15 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
@@ -35,6 +34,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUpdatedCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCartId
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updatePromoData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateShippingData
@@ -42,7 +42,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickerErrorShopLevelData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickersData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTotalAmountData
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.PartialTokoFoodUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
@@ -64,8 +69,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
     private val checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
-    val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.main) {
+    val dispatcher: CoroutineDispatchers
+) :
+    BaseViewModel(dispatcher.main) {
 
     private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
     val purchaseUiEvent: LiveData<PurchaseUiEvent>
@@ -199,20 +205,20 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            if (_isAddressHasPinpoint.value.second) {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                    throwable = it
-                )
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                    isLastLoadStateSuccess = false,
-                    shopName = "",
-                    shopLocation = ""
-                )
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-            }
-        })
+                if (_isAddressHasPinpoint.value.second) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                        throwable = it
+                    )
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                        isLastLoadStateSuccess = false,
+                        shopName = "",
+                        shopLocation = ""
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                }
+            })
     }
 
     fun loadDataPartial() {
@@ -246,27 +252,27 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _trackerLoadCheckoutData.emit(it.data)
             }
         }, onError = {
-            if (_isAddressHasPinpoint.value.second) {
-                _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
-                        lastResponse,
-                        lastResponse.isEnabled(),
-                        false
-                    ).toMutableList()
+                if (_isAddressHasPinpoint.value.second) {
+                    _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
+                        TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
+                            lastResponse,
+                            lastResponse.isEnabled(),
+                            false
+                        ).toMutableList()
+                    }
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
+                        throwable = it
+                    )
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                        isLastLoadStateSuccess = false,
+                        shopName = "",
+                        shopLocation = ""
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
                 }
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
-                    throwable = it
-                )
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                    isLastLoadStateSuccess = false,
-                    shopName = "",
-                    shopLocation = ""
-                )
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-            }
-        })
+            })
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
@@ -311,8 +317,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
         _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
-                data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
+            state = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
+            data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
         )
     }
 
@@ -362,18 +368,22 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun collapseUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
-                                            dataList: MutableList<Visitable<*>>,
-                                            mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
+    private fun collapseUnavailableProducts(
+        newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
+        dataList: MutableList<Visitable<*>>,
+        mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>
+    ) {
         newAccordionUiModel.isCollapsed = true
         dataList[mAccordionData.first] = newAccordionUiModel
         tmpCollapsedUnavailableItems.setCollapsedUnavailableProducts(dataList, mAccordionData)
         dataList.removeAll(tmpCollapsedUnavailableItems)
     }
 
-    private fun expandUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
-                                          dataList: MutableList<Visitable<*>>,
-                                          mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
+    private fun expandUnavailableProducts(
+        newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
+        dataList: MutableList<Visitable<*>>,
+        mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>
+    ) {
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION
@@ -393,8 +403,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
         if (targetIndex > RecyclerView.NO_POSITION) {
             _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
-                    data = targetIndex
+                state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
+                data = targetIndex
             )
         }
     }
@@ -440,8 +450,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         )
     }
 
-    fun updateAddressPinpoint(latitude: String,
-                              longitude: String) {
+    fun updateAddressPinpoint(
+        latitude: String,
+        longitude: String
+    ) {
         _isAddressHasPinpoint.value.first.takeIf { it.isNotEmpty() }.let { addressId ->
             if (addressId == null) {
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
@@ -453,14 +465,15 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                         if (isSuccess) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = Pair(latitude, longitude))
                         } else {
                             _isAddressHasPinpoint.value = addressId to false
                             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                         }
-                    }, onError = {
+                    },
+                    onError = {
                         _isAddressHasPinpoint.value = addressId to false
-                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT, data = it)
                     }
                 )
             }
@@ -521,12 +534,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
-                data = it.getGlobalErrorType(),
-                throwable = it
-            )
-        })
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
+                    data = it.getGlobalErrorType(),
+                    throwable = it
+                )
+            })
     }
 
     fun setPaymentButtonLoading(isLoading: Boolean) {
@@ -589,12 +602,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         const val TOTO_LATITUDE = "-6.2216771"
         const val TOTO_LONGITUDE = "106.8184023"
 
-        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
+        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 500L
 
         private const val INDEX_BEFORE_FROM_HEADER = 2
         private const val INDEX_BEFORE_FROM_TICKER = 3
         private const val INDEX_BEFORE_FROM_DIVIDER = 3
         private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
     }
-
 }

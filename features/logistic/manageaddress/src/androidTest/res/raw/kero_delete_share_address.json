@@ -1,0 +1,11 @@
+{
+  "KeroAddrDeleteSharedAddress": {
+    "is_success": true,
+    "message": "Alamat berhasil dihapus!",
+    "number_address_deleted": 1,
+    "kero_addr_error": {
+      "code": 0,
+      "detail": ""
+    }
+  }
+}

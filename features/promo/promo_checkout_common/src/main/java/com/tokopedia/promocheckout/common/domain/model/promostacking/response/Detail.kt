@@ -17,5 +17,5 @@ data class Detail(
         val amountStr: String,
 
         @SerializedName("amount")
-        val amount: Int
+        val amount: Long
 )

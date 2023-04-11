@@ -2,8 +2,12 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +22,12 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.TM_PROGRAM_FORM
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_ACTIVE
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_WAITING
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DETAIL_BG
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
@@ -29,12 +35,15 @@ import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
+import kotlinx.android.synthetic.main.tm_program_detail_card.*
+import kotlinx.android.synthetic.main.tm_program_detail_tv_card.*
 import javax.inject.Inject
 
 class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
 
     private var shopId = 0
     private var programId = 0
+    private var tmTracker : TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -66,6 +75,9 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tmTracker = TmTracker()
+        tmTracker?.viewProgramDetail(shopId.toString(), programId.toString())
+
         Glide.with(linear_top)
             .asDrawable()
             .load(TM_DETAIL_BG)
@@ -95,46 +107,79 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         })
     }
     private fun setMainUi(membershipGetProgramForm: MembershipGetProgramForm?) {
-        tvProgramPeriod.setText("${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+        val startDateString = membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
             TmDateUtil.setDatePreview(
                 it
             )
-        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
-            TmDateUtil.setTime(
-                it
-            )
-        }} - ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+        }
+
+        val endDateString = membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
             TmDateUtil.setDatePreview(
                 it
             )
-        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+        }
+
+        val startTimeString = membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
             TmDateUtil.setTime(
                 it
             )
-        }}")
+        }
+
+        val endTimeString = membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+            TmDateUtil.setTime(
+                it
+            )
+        }
+        val finalString = "$startDateString, $startTimeString - $endDateString, $endTimeString"
+        tvProgramPeriod.text = getDateTimeSpannable(finalString,startDateString?.length ?: 0,endDateString?.length ?: 0)
+
         tvMemberCount.text = membershipGetProgramForm?.programForm?.analytics?.totalNewMember
         tvProgramStatus.visibility = View.VISIBLE
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr
         when(membershipGetProgramForm?.programForm?.statusStr){
-            PROGRAM_DETAIL_ACTIVE ->{
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, true), tag).addToBackStack(tag).commit()
+            PROGRAM_DETAIL_ACTIVE -> {
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(
+                        arguments, true,
+                        PROGRAM_DETAIL_SCREEN
+                    ), tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
             PROGRAM_DETAIL_WAITING -> {
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList,
+                    TokomemberDashCouponFragment.newInstance(
+                        arguments,
+                        false,
+                        PROGRAM_DETAIL_SCREEN
+                    ),
+                    tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_YN400
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
             else -> {
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList,
+                    TokomemberDashCouponFragment.newInstance(
+                        arguments,
+                        false,
+                        PROGRAM_DETAIL_SCREEN
+                    ),
+                    tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
         }
@@ -152,6 +197,23 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         header_program_detail.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
+    }
+
+    private fun getDateTimeSpannable(dateTimeString:String?,startDateLen:Int,endDateLen:Int) : SpannableString{
+      val ss = SpannableString(dateTimeString)
+        val delimiterIdx = ss.indexOf("-")
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,startDateLen,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            delimiterIdx+2,delimiterIdx+2+endDateLen,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return ss
     }
 
     override fun getScreenName() = ""

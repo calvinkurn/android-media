@@ -8,8 +8,14 @@ import javax.inject.Inject
 
 class GetOvoTopUpUrlUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<OvoTopUpUrlGqlResponse>) {
 
-    fun execute(customerName: String, customerEmail: String, customerPhone: String, redirectUrl: String,
-                onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(
+        customerName: String,
+        customerEmail: String,
+        customerPhone: String,
+        redirectUrl: String,
+        onSuccess: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         val params = mutableMapOf<String, Any>().apply {
             put(PARAM_CUSTOMER_NAME, customerName)
             put(PARAM_CUSTOMER_EMAIL, customerEmail)
@@ -23,8 +29,12 @@ class GetOvoTopUpUrlUseCase @Inject constructor(private val graphqlUseCase: Grap
             if (gqlResponse.response.success && gqlResponse.response.data.redirectURL.isNotBlank()) {
                 onSuccess(gqlResponse.response.data.redirectURL)
             } else {
-                onError(MessageErrorException(gqlResponse.response.errors.firstOrNull()?.message
-                        ?: DEFAULT_ERROR_MESSAGE))
+                onError(
+                    MessageErrorException(
+                        gqlResponse.response.errors.firstOrNull()?.message
+                            ?: DEFAULT_ERROR_MESSAGE
+                    )
+                )
             }
         }, { throwable ->
             onError(throwable)

@@ -16,8 +16,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_CASHBACK
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_DISCOUNT
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.merchantvoucher.common.model.*
 
 
@@ -76,7 +79,7 @@ open class MerchantVoucherView : CustomVoucherView {
                 MethodChecker.getDrawable(context, R.drawable.bg_voucher_button)
         )
         btnUseVoucher?.setTextColor(
-                context.resources.getColorStateList(R.color.text_color_voucher_button)
+                context.resources.getColorStateList(com.tokopedia.merchantvoucher.R.color.merchant_voucher_dms_voucher_button)
         )
         btnUseVoucher?.setOnClickListener {
             merchantVoucherViewModel?.run {
@@ -130,7 +133,10 @@ open class MerchantVoucherView : CustomVoucherView {
         merchantVoucherViewModel?.run {
             var voucherImageUrl = ""
             when (merchantVoucherViewModel.merchantVoucherType) {
-                TYPE_DISCOUNT, TYPE_CASHBACK -> {
+                TYPE_DISCOUNT -> {
+                    voucherImageUrl = DISCOUNT_VOUCHER_IMAGE_URL
+                }
+                TYPE_CASHBACK -> {
                     voucherImageUrl = DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
                 }
                 TYPE_FREE_ONGKIR -> {

@@ -3,24 +3,22 @@ package com.tokopedia.editshipping.ui.customview;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import androidx.annotation.NonNull;
-
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.PackageViewCheckboxBinding;
 import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
-import com.tokopedia.editshipping.util.EditShippingConstant;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 
 /**
  * Created by kris on 8/23/16. Tokopedia
  */
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
-        EditShippingViewListener>{
-    CheckBox serviceCheckbox;
+        EditShippingViewListener, PackageViewCheckboxBinding>{
 
     EditShippingViewListener mainView;
 
@@ -39,35 +37,27 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
     }
 
     @Override
-    protected int getLayoutView() {
-        return R.layout.package_view_checkbox;
-    }
-
-    @Override
-    protected void bindView(View view) {
-        serviceCheckbox = (CheckBox) view.findViewById(R.id.service_checkbox);
+    protected PackageViewCheckboxBinding getLayoutView(Context context) {
+        return PackageViewCheckboxBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void renderData(@NonNull Service service, int serviceIndex) {
-        serviceCheckbox.setText(service.name);
-        serviceCheckbox.setChecked(service.getActive());
+        getBinding().serviceCheckbox.setText(service.name);
+        getBinding().serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
-        if (needToShowCoachmarkGocarInstan(service)) {
-            mainView.showCoachmarkGocarInstan(serviceCheckbox);
-        }
-        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
-        serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
+        getBinding().serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
+        getBinding().serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(getBinding().serviceCheckbox,
                 service.description, service.name));
     }
 
-    private boolean needToShowCoachmarkGocarInstan(@NonNull Service service) {
-        return service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID);
+    public void setServiceCheckBoxListener(final int courierIndex){
+        getBinding().serviceCheckbox.setOnCheckedChangeListener(onServiceCheckedChanged(courierIndex));
     }
 
-    public void setServiceCheckBoxListener(final int courierIndex){
-        serviceCheckbox.setOnCheckedChangeListener(onServiceCheckedChanged(courierIndex));
+    public void setServiceWhitelabelLayout(boolean isWhitelabel) {
+        getBinding().serviceCheckbox.setTextBold(isWhitelabel);
     }
 
     private CompoundButton.OnCheckedChangeListener onServiceCheckedChanged(final int courierIndex){
@@ -79,7 +69,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         };
     }
 
-    private View.OnTouchListener onDescriptionTouchedListener(final CheckBox checkBox, final String description, final String serviceName){
+    private View.OnTouchListener onDescriptionTouchedListener(final CheckboxUnify checkBox, final String description, final String serviceName){
         return new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
             @Override

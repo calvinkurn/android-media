@@ -71,7 +71,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                 )
                 putString(
                     Promotion.ITEM_NAME,
-                    Ecommerce.PROMOTION_NAME.format(position, VPS_NAME, channel.channelHeader.name)
+                    Ecommerce.PROMOTION_NAME.format(channel.verticalPosition, VPS_NAME, channel.channelHeader.name)
                 )
             }
             putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
@@ -80,7 +80,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
 
     fun sendVpsItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
         getTracker().sendEnhanceEcommerceEvent(
-            Event.PROMO_CLICK,
+            Event.SELECT_CONTENT,
             getVpsItemClick(channelModel, channelGrid, position, userId)
         )
     }

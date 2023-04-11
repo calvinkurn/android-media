@@ -1,0 +1,158 @@
+[
+  {
+    "data": {
+      "orderDetails": {
+        "status": {
+          "status": 0,
+          "statusText": "Transaksi Berhasil",
+          "statusLabel": "Status",
+          "iconUrl": "",
+          "textColor": "#42B549",
+          "backgroundColor": "",
+          "fontSize": "16sp"
+        },
+        "title": [
+          {
+            "label": "Tanggal Transaksi",
+            "value": "07 Jun 2022 14:26 ",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          },
+          {
+            "label": "Kategori Produk",
+            "value": "Food & Voucher",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "metadata": "{\"category_name\":\"deal\",\"item_ids\":[28603],\"item_map\":{\"28603\":{\"category_id\":15,\"child_category_ids\":\"25\",\"device\":\"ios\",\"device_version\":\"2.182.0\",\"email\":\"te.digital@tokopedia.com\",\"end_time\":\"04 Jan 2023 10:00\",\"flag_id\":1025,\"id\":28603,\"invoice_id\":12274239,\"invoice_status\":\"BOOKED\",\"mobile\":\"081113906578\",\"name\":\"Voucher Haagen Dazs Rp 100.000 (Penawaran Spesial)\",\"order_trace_id\":\"2bfe83e7-a9f7-441a-6a1b-7a73b8689a36\",\"package_name\":\"Haagen-Dazs\",\"payment_type\":\"-\",\"price\":60000,\"product_app_url\":\"tokopedia://deals/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603\",\"product_id\":28603,\"product_image\":\"https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg\",\"product_name\":\"Haagen-Dazs\",\"product_web_url\":\"https://www.tokopedia.com/deals/i/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603/\",\"provider_id\":11,\"quantity\":2,\"schedule_timestamp\":1654586813,\"start_time\":\"26 Jan 2020 10:00\",\"total_price\":120000,\"user_id\":68521721}},\"order_subtitle\":\"Voucher Haagen Dazs Rp 100.000 (Penawaran Spesial)\",\"order_title\":\"Haagen-Dazs\",\"payment_configuration\":{},\"product_ids\":[28603],\"product_names\":[\"Voucher Haagen Dazs Rp 100.000 (Penawaran Spesial)\"],\"provider_ids\":[11],\"quantity\":2,\"total_price\":120000,\"unique_id\":\"68521721-1654586813\"}",
+        "invoice": {
+          "invoiceRefNum": "FAV/20220607/XXII/VI/768463397702991880",
+          "invoiceUrl": "/order/invoice/a2599a73-4be9-47de-bc93-30e30066a172"
+        },
+        "items": [
+          {
+            "categoryID": 0,
+            "id": 28603,
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
+            "category": "Food & Voucher",
+            "title": "Haagen-Dazs",
+            "quantity": 2,
+            "price": "Rp60.000",
+            "trackingURL": "",
+            "trackingNumber": "",
+            "invoiceID": 0,
+            "promotionAmount": "",
+            "metaData": "{\"category_id\":15,\"child_category_ids\":\"25\",\"device\":\"ios\",\"device_version\":\"2.182.0\",\"email\":\"te.digital@tokopedia.com\",\"end_time\":\"04 Jan 2023 10:00\",\"flag_id\":1025,\"id\":28603,\"invoice_id\":12274239,\"invoice_status\":\"BOOKED\",\"mobile\":\"081113906578\",\"name\":\"Voucher Haagen Dazs Rp 100.000 (Penawaran Spesial)\",\"order_trace_id\":\"2bfe83e7-a9f7-441a-6a1b-7a73b8689a36\",\"package_name\":\"Haagen-Dazs\",\"payment_type\":\"-\",\"price\":60000,\"product_app_url\":\"tokopedia://deals/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603\",\"product_id\":28603,\"product_image\":\"https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg\",\"product_name\":\"Haagen-Dazs\",\"product_web_url\":\"https://www.tokopedia.com/deals/i/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603/\",\"provider_id\":11,\"quantity\":2,\"schedule_timestamp\":1654586813,\"start_time\":\"26 Jan 2020 10:00\",\"total_price\":120000,\"user_id\":68521721}",
+            "actionButtons": [],
+            "tapActions": []
+          }
+        ],
+        "pricing": [
+          {
+            "label": "Total Harga",
+            "value": "Rp120.000",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "detail": [],
+        "paymentData": {
+          "label": "Total Tagihan",
+          "value": "Rp120.000",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": "https://images.tokopedia.net/img/toppay/payment-logo/saldo-new.png"
+        },
+        "actionButtons": [
+          {
+            "label": "Kirim Ulang E-mail",
+            "buttonType": "",
+            "uri": "https://booking.tokopedia.com/v3/api/order/notify/user",
+            "mappingUri": "",
+            "weight": 0,
+            "key": "",
+            "method": "",
+            "uriWeb": "",
+            "value": "",
+            "name": "customer_notification",
+            "control": "button",
+            "header": "",
+            "color": {
+              "textColor": "#000000",
+              "border": "#E0E0E0",
+              "background": "#FFFFFF"
+            },
+            "body": {
+              "appURL": "",
+              "webURL": "",
+              "method": "",
+              "body": ""
+            }
+          }
+        ],
+        "conditionalInfo": {
+          "text": "",
+          "color": {
+            "border": "",
+            "background": ""
+          }
+        },
+        "contactUs": {
+          "helpText": "Butuh info lebih lanjut? Kunjungi Pusat Bantuan",
+          "helpUrl": "https://www.tokopedia.com/help"
+        },
+        "paymentMethod": {
+          "label": "",
+          "value": ""
+        },
+        "payMethod": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "Saldo Tokopedia"
+          },
+          {
+            "label": "Gateway Fee",
+            "value": "Rp0"
+          },
+          {
+            "label": "Extra Fee",
+            "value": "Rp0"
+          },
+          {
+            "label": "Amount",
+            "value": "Rp120.000"
+          }
+        ],
+        "beforeOrderId": 0,
+        "resolutionId": 0,
+        "driverDetails": {
+          "name": "",
+          "phone": "",
+          "photo": "",
+          "licenseNumber": "",
+          "trackingURL": ""
+        },
+        "promoCode": "",
+        "additionalInfo": [],
+        "additionalTickerInfo": [
+          {
+            "title": "ticker_partial_refund",
+            "notes": "dana kamu dibatalkan sebagian dan akan dikirim melalui BCA virtual account",
+            "urlDetail": "",
+            "urlText": ""
+          },
+          {
+            "title": "ticker_partial_refund_no_promo",
+            "notes": "dana kamu dibatalkan sebagian dan akan dikirim melalui BCA virtual account",
+            "urlDetail": "",
+            "urlText": ""
+          }
+        ]
+      }
+    }
+  }
+]

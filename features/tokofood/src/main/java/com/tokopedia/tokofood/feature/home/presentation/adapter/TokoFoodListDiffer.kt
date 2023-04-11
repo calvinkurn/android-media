@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.home.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.tokofood.common.presentation.adapter.BaseTokoFoodDiffer
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel

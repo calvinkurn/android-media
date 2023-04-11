@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="topads_heading_color">#F531353B</color>
-    <color name="topads_common_select_color_checked">#03AC0E</color>
     <color name="topads_common_select_color_unchecked">#AD31353B</color>
     <color name="topads_common_green_tab">#42b549</color>
     <color name="topads_common_line_color">#E5E7E9</color>
     <color name="topads_common_shimmer_color">#FA591D</color>
-    <color name="topads_common_tab_green">#03ac0e</color>
     <color name="divider_notif_big">#f3f4f5</color>
     <color name="text_color">#fa31353b</color>
     <color name="topads_common_white">#ffffff</color>
@@ -14,10 +11,13 @@
     <color name="topads_clr_7031353b">#7031353b</color>
     <color name="topads_actionbar_black">#31353B</color>
     <color name="topads_action_bar_image">#9FA6B0</color>
-    <color name="topads_light_shadow">#AD31353B</color>
     <color name="topads_common_red">#d6001c</color>
     <color name="topads_common_light_grey">#778092</color>
     <color name="topads_common_neutral">#EFF3F9</color>
     <color name="topads_item_selected">#EBFFEF</color>
     <color name="topads_common_text_disabled">#5231353B</color>
+
+    <color name="top_ads_management_common_dms_blue_bg">#C24998E3</color>
+    <color name="top_ads_management_common_dms_green_bg">#82EF95</color>
+    <color name="top_ads_management_common_dms_orange_bg">#FDCD4C</color>
 </resources>

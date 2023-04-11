@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.data
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -28,13 +30,13 @@ internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlR
 )
 
 internal fun createCategoryFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        CATEGORY_FILTER_QUERY,
+        FILTER_SORT_PRODUCT_QUERY,
         CategoryFilterModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createQuickFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        QUICK_FILTER_QUERY,
+        FILTER_SORT_PRODUCT_QUERY,
         QuickFilterModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
@@ -58,6 +60,20 @@ internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlReq
         )
     )
 }
+
+internal fun getFeedbackFieldToggleData(
+    graphqlResponse: GraphqlResponse
+) : GetFeedbackFieldModel {
+    return graphqlResponse
+        .getData<GetFeedbackFieldModel?>(GetFeedbackFieldModel::class.java) ?: GetFeedbackFieldModel()
+}
+
+internal fun createFeedbackFieldToggleRequest() : GraphqlRequest = GraphqlRequest(
+    FEEDBACK_FIELD_TOGGLE_QUERY,
+    GetFeedbackFieldModel::class.java,
+    mapOf()
+)
+
 
 private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
     val categoryID = params[CATEGORY_ID]?.toString() ?: ""
@@ -106,6 +122,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     ratingAverage
                     stock
                     minOrder
+                    maxOrder
                     labelGroups {
                         title
                         position
@@ -131,6 +148,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             maxOrder
             ratingAverage
             minOrder
+            stock
             source_engine
             boosterList
             shop {
@@ -149,55 +167,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
               type_variant
               hex_color
             }
+            wishlist
           }
         }
       }
     }
 """
 
-private const val CATEGORY_FILTER_QUERY = """
-    query CategoryFilter(${'$'}params: String!) {
-      filter_sort_product(params:${'$'}params){
-        data {
-          filter {
-            title
-            subTitle
-            options {
-              name
-              key
-              icon
-              value
-              isNew
-              inputType
-              totalData
-              valMax
-              valMin
-              hexColor
-              child {
-                  key
-                  value
-                  name
-                  icon
-                  inputType
-                  totalData
-                  child {
-                      key
-                      value
-                      name
-                      icon
-                      inputType
-                      totalData
-                  }
-              }
-            }
-          }
-        }
-      }
-    }
-"""
-
-private const val QUICK_FILTER_QUERY = """
-    query QuickFilter(${'$'}params: String!) {
+private const val FILTER_SORT_PRODUCT_QUERY = """
+    query FilterSortProduct(${'$'}params: String!) {
       filter_sort_product(params:${'$'}params){
         data {
           filter {
@@ -344,5 +322,21 @@ private const val DYNAMIC_CHANNEL_QUERY = """
               }
             }
         }
+    }
+"""
+
+private const val FEEDBACK_FIELD_TOGGLE_QUERY = """
+    {
+      TokonowFeedbackFieldToggle(){
+        header{
+          process_time
+          error_code
+          messages
+          reason
+        }
+        data{
+          isActive
+        }
+      }
     }
 """

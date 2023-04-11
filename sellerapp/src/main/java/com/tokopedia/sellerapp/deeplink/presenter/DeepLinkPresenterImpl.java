@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -17,14 +19,13 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
-import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.view.activity.CreationOnboardingActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.webview.BaseSessionWebViewFragment;
+import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,11 +52,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String APP_EXCLUDED_HOST = "app_excluded_host";
 
     private final Activity context;
-    private final DeepLinkView viewListener;
-    private static final String TAG = "DeepLinkPresenterImpl";
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
-        this.viewListener = activity;
         this.context = activity;
     }
 
@@ -94,8 +92,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void prepareOpenWebView(Uri uriData) {
-        viewListener.inflateFragmentV4(BaseSessionWebViewFragment.newInstance(uriData.toString()), "WEB_VIEW");
+    private void prepareOpenWebView(Uri uri) {
+        String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
+        Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
+                encodedUri);
+        if (intent != null) {
+            context.startActivity(intent);
+            context.finish();
+        }
     }
 
     private int getDeepLinkType(Uri uriData) {

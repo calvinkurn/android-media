@@ -32,17 +32,12 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -68,8 +63,6 @@ import javax.inject.Inject
 open class RecommendationPageViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
@@ -89,6 +82,9 @@ open class RecommendationPageViewModel @Inject constructor(
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
+        const val PARAM_RECOMPUSH = "recompush"
+        const val PARAM_RECOMPUSH_ANCHOR = "recom_1_recompush_anchor"
+        const val PARAM_RECOM_WIDGET = "recom_widget"
     }
     /**
      * public variable
@@ -200,6 +196,8 @@ open class RecommendationPageViewModel @Inject constructor(
                 GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
                 PARAM_JOB_TIMEOUT_DEFAULT
             )
+            var pageNameParam = ""
+            var srcParam = GetTopadsIsAdsUseCase.DEFAULT_SRC
 
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
@@ -207,29 +205,37 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
 
+            if (queryParam.contains(PARAM_RECOMPUSH)) {
+                pageNameParam = PARAM_RECOMPUSH_ANCHOR
+                srcParam = PARAM_RECOM_WIDGET
+            }
+
             val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",
                         shopDomain = "",
                         urlParam = queryParam,
-                        pageName = ""
+                        pageName = pageNameParam,
+                        src = srcParam
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
-                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                        val topadsProduct = adsStatus.data.productList[0]
-                        it.isTopads = topadsProduct.isCharge
-                        it.clickUrl = topadsProduct.clickUrl
-                        it.trackerImageUrl = topadsProduct.product.image.m_url
-
-                        val itemIndex = dataList.indexOf(productRecom)
-                        dataList[itemIndex] = productRecom
-
-                        _recommendationListLiveData.postValue(dataList)
+                    (productRecom as? ProductInfoDataModel)?.let {
+                        it.isGetTopAds = true
+                        it.productDetailData?.let { productDetailData ->
+                            if (adsStatus.data.productList.isNotEmpty()) {
+                                val topadsProduct = adsStatus.data.productList[0]
+                                productDetailData.isTopads = topadsProduct.isCharge
+                                productDetailData.clickUrl = topadsProduct.clickUrl
+                                productDetailData.trackerImageUrl =
+                                    topadsProduct.product.image.m_url
+                                _recommendationListLiveData.postValue(dataList)
+                            }
+                        }
                     }
                 } else {
                     RecomServerLogger.logServer(
@@ -260,31 +266,6 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
-    fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit)){
-        if(isTopAds && wishlistUrl.isNotEmpty()){
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    callback.invoke(false, e)
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null && wishlistModel.data.isSuccess) {
-                        callback.invoke(true, null)
-                    } else {
-                        callback.invoke(false, Throwable())
-                    }
-                }
-            })
-        } else {
-            doAddToWishlist(productId, callback)
-        }
-    }
-
     fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
         launch(dispatcher.getMainDispatcher()) {
             addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
@@ -295,51 +276,6 @@ open class RecommendationPageViewModel @Inject constructor(
                 actionListener.onErrorAddWishList(result.throwable, productId)
             }
         }
-    }
-
-    private fun doAddToWishlist(productId: String, callback: (Boolean, Throwable?) -> Unit) {
-        addWishListUseCase.createObservable(productId, userSessionInterface.userId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // do nothing
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // do nothing
-            }
-        })
-    }
-
-    /**
-     * [addWishlist] is the void for handling removing wishlist item
-     * @param productId id of product want to remove wishlist
-     */
-    fun removeWishlist(productId: String, wishlistCallback: (Boolean, Throwable?) -> Unit){
-        removeWishListUseCase.createObservable(productId, userSessionInterface.userId, object:
-            WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // do nothing
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                // do nothing
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                wishlistCallback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                wishlistCallback.invoke(true, null)
-            }
-        })
     }
 
     fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
@@ -357,8 +293,8 @@ open class RecommendationPageViewModel @Inject constructor(
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productDetailData.id
-            addToCartRequestParams.shopId = productDetailData.shop.id
+            addToCartRequestParams.productId = productDetailData.id.toString()
+            addToCartRequestParams.shopId = productDetailData.shop.id.toString()
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = productDetailData.name
@@ -392,8 +328,8 @@ open class RecommendationPageViewModel @Inject constructor(
     fun onBuyNow(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productDetailData.id.toLong()
-            addToCartRequestParams.shopId = productDetailData.shop.id
+            addToCartRequestParams.productId = productDetailData.id.toString()
+            addToCartRequestParams.shopId = productDetailData.shop.id.toString()
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""
             addToCartRequestParams.atcFromExternalSource = AtcFromExternalSource.ATC_FROM_DISCOVERY

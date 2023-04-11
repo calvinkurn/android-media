@@ -56,6 +56,9 @@ class GetWishlistCollectionUseCase @Inject constructor(@ApplicationContext priva
                       action
                       url
                     }
+                    indicator {
+                      title
+                    }
                   }
                   placeholder {
                     text

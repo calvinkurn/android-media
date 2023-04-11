@@ -9,20 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -128,17 +128,16 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         return productUiModel?.name
     }
 
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
+    }
+
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initInjector()
-    }
-
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                 .builder()
@@ -165,6 +164,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         setDataFromCacheManagerOrArguments()
         observeUpdateCart()
 
@@ -281,6 +281,14 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
     }
 
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
+    }
+
     private fun setupHeaderToolbar(foodName: String) {
         activity?.let {
             (it as? AppCompatActivity)?.apply {
@@ -314,6 +322,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                                 bottomSheet.show(childFragmentManager)
                             }
                         }
+                    }
+                    UiEvent.EVENT_FAILED_ADD_TO_CART, UiEvent.EVENT_FAILED_UPDATE_CART -> {
+                        binding?.atcButton?.isLoading = false
+                        showErrorMessage(it.throwable?.message)
                     }
                 }
             }
@@ -351,11 +363,13 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         this.productUiModel = productUiParcelable.copyParcelable()
     }
 
-    private fun showErrorMessage() {
+    private fun showErrorMessage(errorMessage: String? = null) {
+        val message = errorMessage
+            ?: getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
-                text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                text = message,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()

@@ -7,7 +7,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,11 +16,10 @@
         android:id="@+id/container_options_menu"
         android:orientation="vertical">
 
+
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:textColor="@color/Unify_NN950"
             android:text="Filter"
             app:typographyType="heading_3"/>
@@ -27,8 +27,6 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:textColor="@color/Unify_NN950"
             app:typographyWeight="bold"
@@ -38,8 +36,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterStatusSemua">
@@ -79,8 +75,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterStatusAktif">
@@ -120,8 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterStatusBelumAktif">
@@ -161,8 +154,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterStatusSudahBerakhir">
@@ -202,8 +193,6 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:textColor="@color/Unify_NN950"
             app:typographyWeight="bold"
@@ -213,8 +202,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterTipeSemua">
@@ -254,8 +241,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterTipeCashback">
@@ -295,8 +280,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_marginTop="@dimen/tm_dash_dp_20"
             android:orientation="vertical"
             android:id="@+id/filterTipeGratisOngkir">
@@ -335,8 +318,6 @@
             app:unifyButtonSize="medium"
             android:layout_marginTop="@dimen/tm_dash_dp_30"
             android:layout_marginBottom="@dimen/tm_dash_dp_8"
-            android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:layout_marginEnd="@dimen/tm_dash_dp_16"
             android:layout_gravity="bottom"/>
 
     </LinearLayout>

@@ -60,19 +60,21 @@ open class VerificationMethodAdapter(
                     override fun onClick(widget: View) {}
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(methodText.context, RUnify.color.Unify_N700)
+                        ds.color =
+                            MethodChecker.getColor(methodText.context, RUnify.color.Unify_N700)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 }
 
                 val spannable: Spannable
                 spannable = SpannableString(otpListTextHtml)
-                if(indexNewline > -1) {
+                if (indexNewline > -1) {
                     spannable.setSpan(clickableSpan, 0, indexNewline, 0)
                 }
                 methodText.setText(spannable, TextView.BufferType.SPANNABLE)
             }
         }
+
     }
 
     interface ClickListener {

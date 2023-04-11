@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
@@ -8,6 +9,7 @@ import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
 import com.tokopedia.discovery2.data.push.PushStatusResponse
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
 import com.tokopedia.discovery2.data.push.PushUnSubscriptionResponse
+import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +32,7 @@ class CalendarWidgetItemViewModelTest {
     }
     private val application: Application = mockk()
     private val stringTest = "stringTest"
+    private var context:Context = mockk()
 
     private var pushSubscriptionResponse : PushSubscriptionResponse = spyk(PushSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
     private var pushUnSubscriptionResponse : PushUnSubscriptionResponse = spyk(PushUnSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
@@ -41,12 +44,15 @@ class CalendarWidgetItemViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+        mockkConstructor(UserSession::class)
+        every { application.applicationContext } returns context
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkConstructor(UserSession::class)
     }
 
     @Test
@@ -86,12 +92,25 @@ class CalendarWidgetItemViewModelTest {
 
             viewModel.unSubscribeUserForPushNotification("1")
 
+            assertEquals(viewModel.getPushBannerStatusData().value, Pair(false, stringTest))
+
+            val pushUnSubscriptionResponse1 : PushUnSubscriptionResponse = spyk(PushUnSubscriptionResponse(null))
+            coEvery { viewModel.subScribeToUseCase.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse1
+
+            viewModel.unSubscribeUserForPushNotification("1")
+
+            assertEquals(viewModel.getPushBannerStatusData().value != null, true)
+
+            coEvery { viewModel.subScribeToUseCase.unSubscribeToPush(any()) } throws Exception("error")
+
+            viewModel.unSubscribeUserForPushNotification("1")
+
+            assertEquals(viewModel.getShowErrorToastData().value != null, true)
+
         }
     }
     @Test
     fun `test for checkUserPushStatus`(){
-        runBlocking {
-
             every { viewModel.isUserLoggedIn() } returns true
             coEvery { viewModel.checkPushStatusUseCase.checkPushStatus(any()) } returns pushStatusResponse
 
@@ -99,12 +118,39 @@ class CalendarWidgetItemViewModelTest {
 
             assertEquals(viewModel.getPushBannerSubscriptionData().value, true)
 
-
-            every { viewModel.isUserLoggedIn() } returns false
+            coEvery { viewModel.checkPushStatusUseCase.checkPushStatus(any()) } throws Exception("error")
 
             viewModel.checkUserPushStatus("1")
 
-        }
+            assertEquals(viewModel.getPushBannerSubscriptionData().value != null, true)
+
+            val pushStatusResponse1 : PushStatusResponse = spyk(PushStatusResponse(null))
+            coEvery { viewModel.checkPushStatusUseCase.checkPushStatus(any()) } returns pushStatusResponse1
+
+            viewModel.checkUserPushStatus("1")
+
+            assertEquals(viewModel.getPushBannerSubscriptionData().value != null, true)
+    }
+
+    @Test
+    fun `test for loggedInCallback`(){
+        viewModel.loggedInCallback()
+
+        assertEquals(viewModel.syncData.value, true)
+    }
+
+    @Test
+    fun `test for isUserLoggedIn`(){
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+
+        assertEquals(viewModel.isUserLoggedIn(), true)
+    }
+
+    @Test
+    fun `test for getUserId`(){
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "2"
+
+        assertEquals(viewModel.getUserId() == "2", true)
     }
 
     @Test

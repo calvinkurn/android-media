@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment.setup.cover
 
-import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
@@ -19,12 +18,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
@@ -63,7 +66,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private val coverSetupViewModelFactory: PlayCoverSetupViewModel.Factory,
     private val dispatcher: CoroutineDispatchers,
     private val permissionPref: PermissionSharedPreferences,
-    private val analytic: PlayBroadcastAnalytic
+    private val analytic: PlayBroCoverPickerAnalytic,
 ) : PlayBaseSetupFragment(),
     CoverCropViewComponent.Listener,
     CoverSetupViewComponent.Listener,
@@ -149,8 +152,6 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
-
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {
@@ -181,7 +182,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        analytic.viewAddCoverTitleBottomSheet()
+        analytic.viewAddCoverTitleBottomSheet(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -253,12 +254,12 @@ class PlayCoverSetupFragment @Inject constructor(
             }
         } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
-        analytic.clickContinueOnCroppingPage()
+        analytic.clickContinueOnCroppingPage(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     override fun onChangeButtonClicked(view: CoverCropViewComponent) {
         onChangeCoverFromCropping(viewModel.source)
-        analytic.clickChangeCoverOnCroppingPage()
+        analytic.clickChangeCoverOnCroppingPage(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     /**
@@ -266,12 +267,12 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     override fun onImageAreaClicked(view: CoverSetupViewComponent) {
         requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
-        analytic.clickAddCover()
+        analytic.clickAddCover(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     override fun onNextButtonClicked(view: CoverSetupViewComponent) {
         shouldUploadCover()
-        analytic.clickContinueOnAddCoverAndTitlePage()
+        analytic.clickContinueOnAddCoverAndTitlePage(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     override fun onTitleAreaHasFocus() {
@@ -389,7 +390,7 @@ class PlayCoverSetupFragment @Inject constructor(
         coverCropView.setImageForCrop(coverImageUri)
 
         // called twice, the first one with null coverImageUri
-        if (coverImageUri != null) analytic.viewCroppingPage()
+        if (coverImageUri != null) analytic.viewCroppingPage(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {
@@ -426,6 +427,8 @@ class PlayCoverSetupFragment @Inject constructor(
             imagePickerHelper = CoverImagePickerHelper(
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
+                    pageSource = mDataSource?.getPageSource().orUnknown(),
+                    account = mDataSource?.getSelectedAccount().orUnknown(),
                     listener = object : CoverImagePickerHelper.OnChosenListener {
                         override fun onGetFromProduct(productId: String, imageUrl: String) {
                             onGetCoverFromProduct(productId, imageUrl)
@@ -470,12 +473,12 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun isGalleryPermissionGranted(): Boolean {
         return permissionHelper.isAllPermissionsGranted(
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         )
     }
 
     private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissions = arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
                     permissions = permissions,
@@ -539,10 +542,12 @@ class PlayCoverSetupFragment @Inject constructor(
     fun getViewModelFactory(): ViewModelProvider.Factory {
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
+                        mDataSource?.getSelectedAccount().orUnknown(),
                         mDataSource?.getChannelId().orEmpty(),
+                        mDataSource?.getPageSource().orUnknown(),
                     ) as T
                 }
             }
@@ -659,6 +664,8 @@ class PlayCoverSetupFragment @Inject constructor(
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getSelectedAccount(): ContentAccountUiModel
         fun getChannelId(): String
+        fun getPageSource(): PlayBroPageSource
     }
 }

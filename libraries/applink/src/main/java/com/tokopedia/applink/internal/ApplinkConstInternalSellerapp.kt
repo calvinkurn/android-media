@@ -73,6 +73,35 @@ object ApplinkConstInternalSellerapp {
     // Seller Shop Flash Sale - CampaignListActivity
     const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
+    // Seller Tokopedia Flash Sale - CampaignListActivity
+    const val SELLER_TOKOPEDIA_FLASH_SALE = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/{tab_menu}/"
+
+    // Seller Tokopedia Flash Sale - CampaignDetailActivity
+    const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
+
+    // Seller MVC Creation Redirection Page - MvcRedirectionPageActivity
+    const val SELLER_MVC_REDIRECTION_PAGE = "$INTERNAL_SELLERAPP/seller-mvc/redirection-page"
+    // Seller MVC Creation Intro - MvcIntroActivity
+    const val SELLER_MVC_INTRO = "$INTERNAL_SELLERAPP/seller-mvc/intro"
+    /**
+     * Seller MVC Creation - MvcListActivity
+     * This applink will redirect to voucher list page with following filter status at the suffix
+     * here is the suffix definition:
+     * - active: will display active vouchers, which is upcoming and ongoing vouchers
+     * - history: will display inactive vouchers, which is canceled and ended vouchers
+     * - ongoing: will display ongoing voucher only
+     * - upcoming: will display upcoming voucher only
+     */
+    const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list/{voucher_status}/"
+    const val SELLER_MVC_LIST_ACTIVE = "$INTERNAL_SELLERAPP/seller-mvc/list/active/"
+    const val SELLER_MVC_LIST_HISTORY = "$INTERNAL_SELLERAPP/seller-mvc/list/history/"
+    const val SELLER_MVC_LIST_ONGOING = "$INTERNAL_SELLERAPP/seller-mvc/list/ongoing/"
+    const val SELLER_MVC_LIST_UPCOMING = "$INTERNAL_SELLERAPP/seller-mvc/list/upcoming/"
+    //{voucher_type} value -> shop, product
+    const val SELLER_MVC_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/{voucher_type}/"
+
+    const val SELLER_MVC_DETAIL = "$INTERNAL_SELLERAPP/seller-mvc/detail/{voucher_id}/"
+
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 
@@ -100,5 +129,24 @@ object ApplinkConstInternalSellerapp {
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
 
+    //TokomemberMainActivity
     const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
+    const val TOKOMEMBER_PROGRAM_LIST = "$TOKOMEMBER/program-list"
+    const val TOKOMEMBER_COUPON_LIST = "$TOKOMEMBER/coupon-list"
+    const val TOKOMEMBER_COUPON_DETAIL = "$TOKOMEMBER/coupon-detail/{coupon_id}"
+
+    //TmDashCreateActivity if registered
+    const val TOKOMEMBER_PROGRAM_CREATION = "$TOKOMEMBER/program-creation"
+    const val TOKOMEMBER_COUPON_CREATION = "$INTERNAL_SELLERAPP/tokomember/coupon-creation"
+    const val TOKOMEMBER_PROGRAM_EXTENSION = "$TOKOMEMBER/program-extension/{program_id}"
+
+    //TokomemberMemberListActivity
+    const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
+
+    //Seller Persona
+    const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
+
+    //Stock Reminder
+    const val SELLER_STOCK_REMINDER = "$INTERNAL_SELLERAPP/stock-reminder/{productId}/{productName}/{isVariant}/"
+
 }

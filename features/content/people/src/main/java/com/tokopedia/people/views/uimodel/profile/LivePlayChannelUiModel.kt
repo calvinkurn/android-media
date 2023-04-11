@@ -6,7 +6,7 @@ package com.tokopedia.people.views.uimodel.profile
 data class LivePlayChannelUiModel(
     val isLive: Boolean,
     val channelId: String,
-    val channelLink: LinkUiModel
+    val channelLink: LinkUiModel,
 ) {
     companion object {
         val Empty: LivePlayChannelUiModel

@@ -11,38 +11,34 @@
         android:layout_height="40dp"
         android:layout_alignParentStart="true"/>
 
-    <LinearLayout
-        android:id="@+id/ll_collection_info"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/main_collection_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         android:layout_alignTop="@id/collection_item_image"
+        android:layout_toEndOf="@id/collection_item_image"
+        android:layout_marginStart="12dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/main_collection_total_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        android:layout_below="@id/main_collection_total_item"
         android:layout_alignBottom="@+id/collection_item_image"
         android:layout_toEndOf="@id/collection_item_image"
         android:layout_marginStart="12dp"
-        android:orientation="vertical">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/main_collection_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/main_collection_total_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyWeight="reguler"
-            app:typographyType="body_3"/>
-
-    </LinearLayout>
+        android:textColor="@color/Unify_N700_68"/>
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_collection_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_toEndOf="@id/ll_collection_info"
+        android:layout_toEndOf="@id/main_collection_item_name"
         app:labelType="highlight_light_grey"/>
 
     <com.tokopedia.iconunify.IconUnify

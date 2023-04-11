@@ -7,19 +7,19 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconStcCloseActionMenu"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcActionMenuTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="@+id/iconStcCloseActionMenu"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,8 +32,8 @@
         android:id="@+id/rvStcActionMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="16dp"
         app:layout_constraintTop_toBottomOf="@+id/iconStcCloseActionMenu"
         tools:listitem="@layout/item_stc_action_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

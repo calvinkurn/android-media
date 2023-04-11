@@ -11,7 +11,7 @@ import com.tokopedia.hotel.common.util.HotelSubmitCancellationMutation.SUBMIT_CA
 @GqlQuery("MutationDeleteRecentSearchUUID", DELETE_RECENT_SEARCH_UUID)
 internal object HotelDeleteRecentSearchUUIDMutation{
     const val DELETE_RECENT_SEARCH_UUID = """
-        mutation (${'$'}id: Int!,${'$'}uuid: String!) {
+        mutation travelRecentSearchDelete (${'$'}id: Int!,${'$'}uuid: String!) {
           travelRecentSearchDelete(userID:${'$'}id,dataType:HOTEL,UUID:${'$'}uuid){
             Result
           }
@@ -22,7 +22,7 @@ internal object HotelDeleteRecentSearchUUIDMutation{
 @GqlQuery("MutationDeleteRecentSearch", DELETE_RECENT_SEARCH)
 internal object HotelDeleteRecentSearchMutation{
     const val DELETE_RECENT_SEARCH = """
-        mutation {
+        mutation travelRecentSearchDelete() {
             travelRecentSearchDelete(
               dataType : HOTEL
             ){

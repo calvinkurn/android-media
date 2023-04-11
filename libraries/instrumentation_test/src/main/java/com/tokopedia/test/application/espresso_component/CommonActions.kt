@@ -16,9 +16,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.core.AllOf
 
 object CommonActions {
 
@@ -50,8 +49,18 @@ object CommonActions {
         }
         for (i in 0 until childItemCount) {
             try {
-                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.withContentDescription(UNDER_TEST_TAG)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                Espresso.onView(
+                    allOf(
+                        ViewMatchers.withId(recyclerViewId),
+                        ViewMatchers.withContentDescription(UNDER_TEST_TAG)
+                    )
+                )
+                    .perform(
+                        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                            i,
+                            ViewActions.click()
+                        )
+                    )
             } catch (e: PerformException) {
                 e.printStackTrace()
             }
@@ -75,15 +84,18 @@ object CommonActions {
             }
 
             override fun getConstraints(): Matcher<View> {
-                return AllOf.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
+                return allOf(
+                    isDisplayed(),
+                    ViewMatchers.isAssignableFrom(TabLayout::class.java)
+                )
             }
 
             override fun perform(uiController: UiController, view: View) {
                 val tabLayout = view as TabLayout
                 val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
-                        ?: throw PerformException.Builder()
-                                .withCause(Throwable("No tab at index $tabIndex"))
-                                .build()
+                    ?: throw PerformException.Builder()
+                        .withCause(Throwable("No tab at index $tabIndex"))
+                        .build()
                 tabAtIndex.select()
             }
         }
@@ -164,7 +176,7 @@ object CommonActions {
     fun displayChildViewWithIdAndText(
         position: Int,
         targetViewId: Int,
-        text:String
+        text: String
     ): Matcher<View?> {
         return object : BoundedMatcher<View?, RecyclerView?>(
             RecyclerView::class.java
@@ -182,6 +194,7 @@ object CommonActions {
 
         }
     }
+
     /**
      * Use for screenshot entire recyclerview into one image
      * @param startPosition determine in start position it will start screenshot
@@ -189,7 +202,12 @@ object CommonActions {
      *        if you don't want to specify endPosition, pass adapter size
      * @param filePrefix name of the images .png file
      */
-    fun screenShotFullRecyclerView(recyclerViewId: Int, startPosition: Int = 0 , endPosition: Int, filePrefix: String) {
+    fun screenShotFullRecyclerView(
+        recyclerViewId: Int,
+        startPosition: Int = 0,
+        endPosition: Int,
+        filePrefix: String
+    ) {
         val views: MutableList<View?> = mutableListOf()
         getAllViewsViewHolder(recyclerViewId, startPosition, endPosition - 1) { view, index ->
             Thread.sleep(2000)
@@ -210,23 +228,28 @@ object CommonActions {
      * Will screenshot partial view
      */
     fun findViewAndScreenShot(viewId: Int, fileName: String, fileNamePostFix: String) {
-        Espresso.onView(Matchers.allOf(ViewMatchers.withId(viewId))).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
-            override fun getConstraints(): Matcher<View>? = ViewMatchers.isAssignableFrom(View::class.java)
+        Espresso.onView(allOf(ViewMatchers.withId(viewId)))
+            .check(ViewAssertions.matches(isDisplayed())).perform(object : ViewAction {
+                override fun getConstraints(): Matcher<View>? =
+                    ViewMatchers.isAssignableFrom(View::class.java)
 
-            override fun getDescription(): String {
-                return "getting text from a View";
-            }
+                override fun getDescription(): String {
+                    return "getting text from a View"
+                }
 
-            override fun perform(uiController: UiController?, view: View?) {
-                view.takeScreenShot("$fileName-$fileNamePostFix")
-            }
-        })
+                override fun perform(uiController: UiController?, view: View?) {
+                    view.takeScreenShot("$fileName-$fileNamePostFix")
+                }
+            })
     }
 
     fun findViewHolderAndDo(recyclerViewId: Int, position: Int, action: (View?) -> Unit) {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(isDisplayed()))
         viewInteraction.perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view ->
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position,
+                screenShotChild { view ->
                     action.invoke(view)
                 })
         )
@@ -236,10 +259,19 @@ object CommonActions {
      * Will screenshot viewholder based on position, please make sure your data
      * @param shouldDelay if you need delay or wait (usually waiting for image to be inflate)
      */
-    fun findViewHolderAndScreenshot(recyclerViewId: Int, position: Int, fileName: String, fileNamePostFix: String, shouldDelay: Boolean = false) {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    fun findViewHolderAndScreenshot(
+        recyclerViewId: Int,
+        position: Int,
+        fileName: String,
+        fileNamePostFix: String,
+        shouldDelay: Boolean = false
+    ) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(isDisplayed()))
         viewInteraction.perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view ->
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position,
+                screenShotChild { view ->
                     if (shouldDelay) {
                         Thread.sleep(5000)
                     }
@@ -277,12 +309,20 @@ object CommonActions {
     }
 
 
-    private fun getAllViewsViewHolder(recyclerViewId: Int, startPosition: Int, endPosition: Int, listener: (View?, Int) -> Unit) {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    private fun getAllViewsViewHolder(
+        recyclerViewId: Int,
+        startPosition: Int,
+        endPosition: Int,
+        listener: (View?, Int) -> Unit
+    ) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(isDisplayed()))
 
         (startPosition..endPosition).forEach {
             viewInteraction.perform(
-                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(it, returnView { view ->
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    it,
+                    returnView { view ->
                         if (view?.height != 0) {
                             listener.invoke(view, it)
                         }

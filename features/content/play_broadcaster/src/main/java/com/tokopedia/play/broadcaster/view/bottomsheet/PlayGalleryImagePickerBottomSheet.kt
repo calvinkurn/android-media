@@ -120,7 +120,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     override fun onMediaClick(item: MediaItem?, checked: Boolean, adapterPosition: Int) {
         item?.let {
             if (isMediaPassValidation(it)) {
-                mListener?.onGetCoverFromGallery(it.contentUri)
+                mListener?.onGetCoverFromGallery(Uri.fromFile(File(it.path)))
                 dismiss()
             }
         }

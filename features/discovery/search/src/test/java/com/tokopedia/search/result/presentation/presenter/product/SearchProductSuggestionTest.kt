@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import io.mockk.every
 import io.mockk.slot

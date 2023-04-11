@@ -54,6 +54,11 @@
                     android:path="@string/path_tokofood_purchase"
                     android:scheme="@string/internal_scheme" />
 
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_search"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
 

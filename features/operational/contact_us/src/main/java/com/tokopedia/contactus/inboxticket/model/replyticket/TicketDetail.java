@@ -3,7 +3,6 @@ package com.tokopedia.contactus.inboxticket.model.replyticket;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketImageAttachment;
 import com.tokopedia.core.session.model.UserReputation;
 
 import java.util.ArrayList;
@@ -19,19 +18,19 @@ public class TicketDetail {
     private String userName;
     @SerializedName("user_label_id")
     @Expose
-    private int userLabelId;
+    private long userLabelId;
     @SerializedName("user_url")
     @Expose
     private String userUrl;
     @SerializedName("ticket_detail_id")
     @Expose
-    private int ticketDetailId;
+    private long ticketDetailId;
     @SerializedName("ticket_new_rating")
     @Expose
-    private int ticketNewRating;
+    private long ticketNewRating;
     @SerializedName("is_cs")
     @Expose
-    private int isCs;
+    private long isCs;
     @SerializedName("user_label")
     @Expose
     private String userLabel;
@@ -46,7 +45,7 @@ public class TicketDetail {
     private String createTimeAgo;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private long userId;
     @SerializedName("user_pic")
     @Expose
     private String userPic;
@@ -111,7 +110,7 @@ public class TicketDetail {
      * @return
      *     The userLabelId
      */
-    public int getUserLabelId() {
+    public long getUserLabelId() {
         return userLabelId;
     }
 
@@ -120,7 +119,7 @@ public class TicketDetail {
      * @param userLabelId
      *     The user_label_id
      */
-    public void setUserLabelId(int userLabelId) {
+    public void setUserLabelId(long userLabelId) {
         this.userLabelId = userLabelId;
     }
 
@@ -157,7 +156,7 @@ public class TicketDetail {
      * @return
      *     The ticketDetailId
      */
-    public int getTicketDetailId() {
+    public long getTicketDetailId() {
         return ticketDetailId;
     }
 
@@ -166,7 +165,7 @@ public class TicketDetail {
      * @param ticketDetailId
      *     The ticket_detail_id
      */
-    public void setTicketDetailId(int ticketDetailId) {
+    public void setTicketDetailId(long ticketDetailId) {
         this.ticketDetailId = ticketDetailId;
     }
 
@@ -180,7 +179,7 @@ public class TicketDetail {
      * @return
      *     The ticketNewRating
      */
-    public int getTicketNewRating() {
+    public long getTicketNewRating() {
         return ticketNewRating;
     }
 
@@ -189,7 +188,7 @@ public class TicketDetail {
      * @param ticketNewRating
      *     The ticket_new_rating
      */
-    public void setTicketNewRating(int ticketNewRating) {
+    public void setTicketNewRating(long ticketNewRating) {
         this.ticketNewRating = ticketNewRating;
     }
 
@@ -203,7 +202,7 @@ public class TicketDetail {
      * @return
      *     The isCs
      */
-    public int getIsCs() {
+    public long getIsCs() {
         return isCs;
     }
 
@@ -212,7 +211,7 @@ public class TicketDetail {
      * @param isCs
      *     The is_cs
      */
-    public void setIsCs(int isCs) {
+    public void setIsCs(long isCs) {
         this.isCs = isCs;
     }
 
@@ -295,7 +294,7 @@ public class TicketDetail {
      * @return
      *     The userId
      */
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -304,7 +303,7 @@ public class TicketDetail {
      * @param userId
      *     The user_id
      */
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

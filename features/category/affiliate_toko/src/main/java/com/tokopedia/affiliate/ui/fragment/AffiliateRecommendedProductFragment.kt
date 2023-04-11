@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
@@ -38,10 +39,11 @@ import kotlinx.android.synthetic.main.affiliate_recommended_product_fragment_lay
 import java.util.*
 import javax.inject.Inject
 
-class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecommendedProductViewModel>(),
-         PromotionClickInterface{
+class AffiliateRecommendedProductFragment :
+    BaseViewModelFragment<AffiliateRecommendedProductViewModel>(),
+    PromotionClickInterface {
 
-    private var currentPageNumber : Int = 0
+    private var currentPageNumber: Int = 0
     private var recommendationHasNextPage = true
     private var isSwipeRefresh = false
     private var listSize = 0
@@ -49,69 +51,86 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireParentFragment(), viewModelProvider) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(
+            requireParentFragment(),
+            viewModelProvider
+        )
+    }
     private lateinit var affiliatePromoSharedViewModel: AffiliatePromoViewModel
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    lateinit var userSessionInterface: UserSessionInterface
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
-    private var affiliatePromoInterface : AffiliatePromoInterface? = null
+    private val adapter: AffiliateAdapter =
+        AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
+    private var affiliatePromoInterface: AffiliatePromoInterface? = null
     private var identifier = BOUGHT_IDENTIFIER
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
         const val BOUGHT_IDENTIFIER = "recent_purchase"
         const val LAST_VIEWED_IDENTIFIER = "recent_view"
-        fun getFragmentInstance(recommendationType : String , promoInterface : AffiliatePromoInterface): Fragment {
+        fun getFragmentInstance(
+            recommendationType: String,
+            promoInterface: AffiliatePromoInterface
+        ): Fragment {
             return AffiliateRecommendedProductFragment().apply {
-                affiliatePromoInterface = promoInterface
                 identifier = recommendationType
+                affiliatePromoInterface = promoInterface
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.affiliate_recommended_product_fragment_layout, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            R.layout.affiliate_recommended_product_fragment_layout,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        affiliatePromoSharedViewModel = viewModelFragmentProvider[AffiliatePromoViewModel::class.java]
+        affiliatePromoSharedViewModel =
+            viewModelFragmentProvider[AffiliatePromoViewModel::class.java]
         setObservers()
     }
 
     private fun afterViewCreated() {
         setUpRecyclerView()
         setUpEmptyState()
-        sendScreenEvent()
-        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
+        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier, PAGE_ZERO)
     }
 
     private fun setUpEmptyState() {
         recommended_global_error.run {
             errorIllustration.hide()
             errorSecondaryAction.gone()
-            setButtonFull(true)
-            if(identifier == BOUGHT_IDENTIFIER){
+            if (identifier == BOUGHT_IDENTIFIER) {
                 errorTitle.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet_content)
-            }else {
+                errorDescription.text =
+                    getString(R.string.affiliate_no_product_bought_on_tokopedia_yet_content)
+            } else {
                 errorTitle.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
+                errorDescription.text =
+                    getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
             }
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
-               affiliatePromoInterface?.enterLinkButtonClicked()
+                affiliatePromoInterface?.enterLinkButtonClicked()
             }
-
         }
     }
 
     private fun showEmptyState() {
-        if(identifier == BOUGHT_IDENTIFIER) emptyStateRecentPurchase() else emptyStateLastSeen()
+        if (identifier == BOUGHT_IDENTIFIER) emptyStateRecentPurchase() else emptyStateLastSeen()
     }
 
     private fun emptyStateLastSeen() {
@@ -124,8 +143,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         affiliate_no_product_bought_iv.show()
     }
 
-    private fun setUpRecyclerView(){
-        val layoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+    private fun setUpRecyclerView() {
+        val layoutManager =
+            StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         adapter.setVisitables(ArrayList())
         view?.findViewById<RecyclerView>(R.id.recommended_recycler_view)?.let { recyclerView ->
             recyclerView.addItemDecoration(AffiliateItemOffSetDecoration())
@@ -135,7 +155,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 listSize = 0
                 adapter.resetList()
                 loadMoreTriggerListener?.resetState()
-                affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
+                affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
+                    identifier,
+                    PAGE_ZERO
+                )
             }
             loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
             recyclerView.adapter = adapter
@@ -143,10 +166,12 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(recommendationHasNextPage) {
+                if (recommendationHasNextPage) {
                     sendImpressionEvent()
                     affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
                         identifier,
@@ -167,72 +192,98 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             item.product.title?.let {
                 itemName = it
             }
-            var label = ""
+            var label = itemID
             lastItem?.product?.commission?.amount?.let {
-                label = "$itemID - {$it}"
+                label += " - $it"
             }
-            val action = if(identifier == BOUGHT_IDENTIFIER) AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI else AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
-            AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,action,AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-                userSessionInterface.userId,itemID,listSize,itemName,label)
+            if (lastItem?.product?.ssaStatus == true) {
+                label += " - komisi extra"
+            }
+            val (action, itemList) =
+                if (identifier == BOUGHT_IDENTIFIER) {
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
+                    )
+                } else {
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+                    )
+                }
+            AffiliateAnalytics.trackEventImpression(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+                action,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+                userSessionInterface.userId,
+                itemID,
+                listSize,
+                itemName,
+                label,
+                itemList
+            )
         }
     }
 
     private fun setObservers() {
-        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner,{
+        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner) {
             onGetValidateUserType(it)
-        })
-        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(viewLifecycleOwner, { visibility ->
-            if (visibility != null) {
-                if (visibility)
-                    adapter.addShimmer(true)
-                else {
-                    adapter.removeShimmer(listSize)
+        }
+        affiliateRecommendedProductViewModel.getShimmerVisibility()
+            .observe(viewLifecycleOwner) { visibility ->
+                if (visibility != null) {
+                    if (visibility) {
+                        adapter.addShimmer(true)
+                    } else {
+                        adapter.removeShimmer(listSize)
+                    }
                 }
             }
-        })
 
-        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(viewLifecycleOwner ,{ dataList ->
-            adapter.removeShimmer(listSize)
-            if(isSwipeRefresh){
-                swipe_refresh_layout.isRefreshing = false
-                isSwipeRefresh = !isSwipeRefresh
+        affiliateRecommendedProductViewModel.getAffiliateDataItems()
+            .observe(viewLifecycleOwner) { dataList ->
+                adapter.removeShimmer(listSize)
+                if (isSwipeRefresh) {
+                    swipe_refresh_layout.isRefreshing = false
+                    isSwipeRefresh = !isSwipeRefresh
+                }
+                if (dataList.isNotEmpty()) {
+                    setLastDataForEvent(dataList)
+                    listSize += dataList.size
+                    hideErrorGroup()
+                    swipe_refresh_layout.show()
+                    adapter.addMoreData(dataList)
+                    loadMoreTriggerListener?.updateStateAfterGetData()
+                } else {
+                    showErrorGroup()
+                    showEmptyState()
+                    swipe_refresh_layout.hide()
+                }
             }
-            if (dataList.isNotEmpty()) {
-                setLastDataForEvent(dataList)
-                listSize += dataList.size
-                hideErrorGroup()
-                swipe_refresh_layout.show()
-                adapter.addMoreData(dataList)
-                loadMoreTriggerListener?.updateStateAfterGetData()
-            } else {
-                showErrorGroup()
-                showEmptyState()
-                swipe_refresh_layout.hide()
+
+        affiliateRecommendedProductViewModel.getAffiliateItemCount()
+            .observe(viewLifecycleOwner) { pageInfo ->
+                currentPageNumber = pageInfo.currentPage ?: 0
+                recommendationHasNextPage = pageInfo.hasNext ?: false
             }
-        })
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(viewLifecycleOwner, { pageInfo ->
-            currentPageNumber = pageInfo.currentPage ?: 0
-            recommendationHasNextPage = pageInfo.hasNext ?: false
-        })
-
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner, {
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner) {
             swipe_refresh_layout.hide()
             showErrorGroup()
             showEmptyState()
-        })
-    }
-
-    private fun onGetValidateUserType(type: String?) {
-        when(type){
-            ON_REGISTERED,ON_REVIEWED -> afterViewCreated()
         }
     }
 
-    var lastItem : AffiliateStaggeredPromotionCardModel? = null
+    private fun onGetValidateUserType(type: String?) {
+        when (type) {
+            ON_REGISTERED, ON_REVIEWED -> afterViewCreated()
+        }
+    }
+
+    private var lastItem: AffiliateStaggeredPromotionCardModel? = null
     private fun setLastDataForEvent(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         dataList[dataList.lastIndex].let {
-            if(it is AffiliateStaggeredPromotionCardModel){
+            if (it is AffiliateStaggeredPromotionCardModel) {
                 lastItem = it
             }
         }
@@ -259,10 +310,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun getViewModelType(): Class<AffiliateRecommendedProductViewModel> {
         return AffiliateRecommendedProductViewModel::class.java
@@ -272,41 +323,74 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         affiliateRecommendedProductViewModel = viewModel as AffiliateRecommendedProductViewModel
     }
 
-    private fun sendScreenEvent() {
-
-    }
-
-    override fun onPromotionClick(itemID: String, itemName: String, itemImage: String, itemURL: String, position: Int, commison: String, status: String,type: String?) {
-        pushPromosikanEvent(itemID,itemName,position,commison)
-        val origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
-        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null,null,
-                itemID, itemName, itemImage, itemURL,
-                "",origin,commission = commison).show(childFragmentManager, "")
+    override fun onPromotionClick(
+        itemID: String,
+        itemName: String,
+        itemImage: String,
+        itemURL: String,
+        position: Int,
+        commison: String,
+        status: String,
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+    ) {
+        pushPromosikanEvent(itemID, itemName, position, commison, ssaInfo?.ssaStatus)
+        val origin =
+            if (identifier == BOUGHT_IDENTIFIER) {
+                AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA
+            } else {
+                AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
+            }
+        AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null,
+                itemID,
+                itemName,
+                itemImage,
+                itemURL,
+                "",
+                origin,
+                commission = commison,
+                ssaInfo = ssaInfo
+            ),
+            AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+            null
+        ).show(childFragmentManager, "")
     }
 
     private fun pushPromosikanEvent(
         productId: String,
         productName: String,
         position: Int,
-        commison: String
+        commission: String,
+        ssaStatus: Boolean?
     ) {
-        var item = ""
-        var eventAction = ""
-        if(identifier == BOUGHT_IDENTIFIER) {
+        val item: String
+        val eventAction: String
+        if (identifier == BOUGHT_IDENTIFIER) {
             item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL
             eventAction = AffiliateAnalytics.ActionKeys.PROMISIKAN_PERNAH_DIBELI
-        }
-        else {
+        } else {
             item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT
             eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_PERNAH_DILIHAT
         }
-        AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.SELECT_CONTENT,eventAction,AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,userSessionInterface.userId,
-            productId,position+1,productName,"$productId - $commison",item
+        var label = "$productId - $commission"
+        if (ssaStatus == true) {
+            label += " - komisi extra"
+        }
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            userSessionInterface.userId,
+            productId,
+            position + 1,
+            productName,
+            label,
+            item
         )
     }
 
-    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
-
-    }
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) =
+        Unit
 }

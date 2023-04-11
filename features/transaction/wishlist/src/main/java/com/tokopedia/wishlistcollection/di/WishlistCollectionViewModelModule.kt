@@ -45,4 +45,10 @@ abstract class WishlistCollectionViewModelModule {
     @IntoMap
     @ViewModelKey(BottomSheetCreateNewCollectionViewModel::class)
     internal abstract fun bottomSheetWishlistCreateNewCollectionViewModel(viewModel: BottomSheetCreateNewCollectionViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(WishlistCollectionEditViewModel::class)
+    internal abstract fun wishlistCollectionEditViewModel(viewModel: WishlistCollectionEditViewModel): ViewModel
 }

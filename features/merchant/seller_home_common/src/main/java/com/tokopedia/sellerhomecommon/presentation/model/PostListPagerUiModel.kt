@@ -5,5 +5,5 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class PostListPagerUiModel(
-        val postList: List<PostItemUiModel> = emptyList()
+    val postList: List<PostItemUiModel> = emptyList()
 )

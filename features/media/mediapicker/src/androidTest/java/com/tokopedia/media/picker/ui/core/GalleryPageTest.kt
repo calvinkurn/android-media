@@ -62,7 +62,7 @@ abstract class GalleryPageTest : PickerTest() {
     object Robot {
         fun clickContinueButtonOnToolbar() {
             onView(
-                withId(R.id.btn_done)
+                withId(R.id.action_text_done)
             ).perform(click())
         }
 
@@ -106,7 +106,7 @@ abstract class GalleryPageTest : PickerTest() {
 
         fun assertContinueButtonIsVisible() {
             onView(
-                withId(R.id.btn_done)
+                withId(R.id.action_text_done)
             ).check(matches(isDisplayed()))
         }
 

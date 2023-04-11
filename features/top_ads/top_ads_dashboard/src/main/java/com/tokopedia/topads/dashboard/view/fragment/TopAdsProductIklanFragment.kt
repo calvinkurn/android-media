@@ -104,7 +104,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
-    private var isDeletedTabEnabled: Boolean = false
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
@@ -200,7 +199,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
-        topAdsDashboardPresenter.getWhiteListedUser(::onSuccessWhiteListing) {}
         view.findViewById<ImageUnify>(R.id.auto_ad_status_image)
             ?.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
         view.findViewById<UnifyButton>(R.id.onBoarding)?.setOnClickListener {
@@ -221,7 +219,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         activity?.run {
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this) { loadData() }
             snackbarRetry?.setColorActionRetry(ContextCompat.getColor(this,
-                com.tokopedia.abstraction.R.color.green_400))
+                com.tokopedia.abstraction.R.color.Unify_GN500))
         }
 
         appBarLayout2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
@@ -263,19 +261,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         Utils.setSearchListener(context, view, ::fetchData)
     }
 
-
-    private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
-        response.data.forEach {
-            when(it.featureId) {
-                TopAdsFeature.DELETED_TAB_PRODUCT_HEADLINE -> isDeletedTabEnabled = true
-            }
-        }
-    }
-
     private fun renderManualViewPager() {
         viewPagerFrag?.adapter = getViewPagerAdapter()
-        viewPagerFrag?.offscreenPageLimit =
-            if (isDeletedTabEnabled) fragmentLoadCountThree else DEFAULT_FRAGMENT_LOAD_COUNT
+        viewPagerFrag?.offscreenPageLimit = fragmentLoadCountThree
         viewPagerFrag?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
@@ -300,23 +288,16 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tabLayout?.tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
         tabLayout?.addNewTab(GRUP)
         tabLayout?.addNewTab(TANPA_GRUP)
+        tabLayout?.addNewTab(DIHAPUS)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment.createInstance(prepareBundle())))
         list.add(FragmentTabItem(TANPA_GRUP,
             TopAdsDashWithoutGroupFragment.createInstance(prepareBundle())))
-
-        addDeletedTab(list)
+        list.add(FragmentTabItem(DIHAPUS,
+            TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
         return adapter
-    }
-
-    private fun addDeletedTab(list: ArrayList<FragmentTabItem>) {
-        if (isDeletedTabEnabled) {
-            tabLayout?.addNewTab(DIHAPUS)
-            list.add(FragmentTabItem(DIHAPUS,
-                TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
-        }
     }
 
     private fun setAutoAdsAdapter() {

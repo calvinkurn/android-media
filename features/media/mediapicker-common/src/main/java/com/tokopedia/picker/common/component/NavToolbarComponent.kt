@@ -11,7 +11,6 @@ import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.mapper.Unify_G500
 import com.tokopedia.picker.common.mapper.Unify_N700_96
 import com.tokopedia.picker.common.mapper.Unify_Static_White
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 sealed class ToolbarTheme {
@@ -27,7 +26,7 @@ class NavToolbarComponent(
 
     private val btnAction = findViewById<IconUnify>(R.id.btn_action)
     private val txtTitle = findViewById<Typography>(R.id.txt_title)
-    private val btnDone = findViewById<UnifyButton>(R.id.btn_done)
+    private val btnDone = findViewById<Typography>(R.id.action_text_done)
 
     init {
         btnAction.setOnClickListener {
@@ -55,16 +54,12 @@ class NavToolbarComponent(
         setActionColor(isTransparent)
     }
 
+    fun setVisibility(isVisible: Boolean) {
+        container().showWithCondition(isVisible)
+    }
+
     fun showContinueButtonAs(visibility: Boolean) {
         btnDone.showWithCondition(visibility)
-    }
-
-    fun showContinueButton() {
-        btnDone.show()
-    }
-
-    fun hideContinueButton() {
-        btnDone.hide()
     }
 
     private fun setActionColor(isTransparent: Boolean) {
@@ -126,22 +121,11 @@ class NavToolbarComponent(
         }
     }
 
-    private fun colorForSolidMode()
-        = ContextCompat.getColor(context,
-        Unify_N700_96
-    )
+    private fun colorForSolidMode() = ContextCompat.getColor(context, Unify_N700_96)
 
-    private fun colorForTransparentMode()
-        = ContextCompat.getColor(context,
-        Unify_Static_White
-    )
+    private fun colorForTransparentMode() = ContextCompat.getColor(context, Unify_Static_White)
 
-    private fun colorActionSolidMode()
-        = ContextCompat.getColor(context,
-        Unify_G500
-    )
-
-    override fun release() {}
+    private fun colorActionSolidMode() = ContextCompat.getColor(context, Unify_G500)
 
     interface Listener {
         fun onCloseClicked()

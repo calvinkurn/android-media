@@ -1,0 +1,20 @@
+{
+  "offer_interrupt": {
+    "errorMessage": [""],
+    "offers": [
+      {
+        "name": "phone",
+        "enableSkip": false
+      },
+      {
+        "name": "verif-phone",
+        "enableSkip": false
+      },
+      {
+        "name": "accounts-link",
+        "enableSkip": true
+      }
+    ],
+    "interval": 1
+  }
+}

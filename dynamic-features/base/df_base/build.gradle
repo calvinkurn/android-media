@@ -1,6 +1,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
+apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -26,6 +27,12 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
     }
 
     // Specifies 4 flavor dimensions.
@@ -58,7 +65,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.catalog)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
-    implementation projectOrAar(rootProject.ext.features.findNative)
     implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
@@ -86,14 +92,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.search)
     implementation projectOrAar(rootProject.ext.features.autocomplete)
     implementation projectOrAar(rootProject.ext.features.homeRecom)
-    implementation projectOrAar(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
+//    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
-    implementation projectOrAar(rootProject.ext.features.ovop2p)
+//    implementation projectOrAar(rootProject.ext.features.ovop2p)
     implementation projectOrAar(rootProject.ext.features.paylater)
+    implementation projectOrAar(rootProject.ext.features.insurance)
 
     //IM
     //implementation projectOrAar(rootProject.ext.features.referral) //Need to fix the structure

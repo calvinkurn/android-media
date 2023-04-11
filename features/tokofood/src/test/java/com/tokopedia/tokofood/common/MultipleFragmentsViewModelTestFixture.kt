@@ -76,7 +76,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
         unmockkAll()
     }
 
-    protected fun onLoadCartList_shouldReturn(response: CheckoutTokoFood) {
+    protected fun onLoadCartList_shouldReturn(response: CheckoutTokoFood?) {
         coEvery {
             loadCartTokoFoodUseCase.get().execute(SOURCE)
         } returns response

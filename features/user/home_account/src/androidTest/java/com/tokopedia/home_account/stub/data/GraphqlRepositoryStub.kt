@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.common.AndroidFileUtil
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
@@ -61,21 +62,32 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_ELIGIBLE -> GraphqlResponse(
-                        mapOf(WalletEligibleDataModel::class.java to provideWalletEligibileSuccess()),
-                        mapOf(),
-                        false
-                )
-                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_NOT_ELIGIBLE ->  {
-                    GraphqlResponse(
-                        mapOf(WalletEligibleDataModel::class.java to provideWalletNotEligibileSuccess()),
-                        mapOf(),
-                        false
-                ) }
                 it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
                         mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
                         mapOf(),
                         false)
+                it.contains("offer_interrupt") -> {
+                    val response = when(mapParam[TestStateParam.ADD_VERIFY_PHONE]) {
+                        TestStateValue.ADD_PHONE -> {
+                            provideOfferInterruptResponse()
+                        }
+                        TestStateValue.VERIFY_PHONE -> {
+                            provideOfferInterruptResponse().apply {
+                                val phoneData = data.offers.find { offerList ->
+                                    offerList.name == AccountConstants.OfferInterruptionList.OFFER_PHONE
+                                }
+                                data.offers.remove(phoneData)
+                            }
+                        }
+                        else -> provideOfferInterruptResponse()
+                    }
+
+                    GraphqlResponse(
+                        mapOf(OfferInterruptResponse::class.java to response),
+                        mapOf(),
+                        false
+                    )
+                }
                 else -> throw Exception("query is not exists")
             }
         }
@@ -130,20 +142,11 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     BalanceAndPointDataModel::class.java
             )
 
-    private fun provideWalletEligibileSuccess(): WalletEligibleDataModel {
-        val response = AndroidFileUtil.parse(
-                R.raw.success_get_wallet_eligible,
-                WalletEligibleDataModel::class.java
-        ) as WalletEligibleDataModel
-        return response
-    }
-
-    private fun provideWalletNotEligibileSuccess(): WalletEligibleDataModel {
-        val response = AndroidFileUtil.parse(
-                R.raw.success_get_wallet_not_eligible,
-                WalletEligibleDataModel::class.java
-        ) as WalletEligibleDataModel
-        return response
+    private fun provideOfferInterruptResponse(): OfferInterruptResponse {
+        return AndroidFileUtil.parse(
+            R.raw.success_get_offer_interrupt,
+            OfferInterruptResponse::class.java
+        )
     }
 
     private fun provideStatusFilteredSuccess(): ShortcutResponse =

@@ -10,57 +10,65 @@ object HomeScreenshotTestHelper {
     fun turnOffAnimation(activity: Activity) {
         val homeRv = activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
 
-        //turn off slider banner
+        // turn off slider banner
         (homeRv.findViewHolderForAdapterPosition(3) as? BannerComponentViewHolder)?.let {
             resetBanner(it)
         }
     }
 
-     fun getWidgetScreenshotList(): List<ScreenshotModel> {
+    fun getWidgetScreenshotList(): List<ScreenshotModel> {
         return listOf(
-                ScreenshotModel(name = "Header"),
-                ScreenshotModel(name = "Ticker"),
-                ScreenshotModel(name = "ATF1-Icon"),
-                ScreenshotModel(name = "ATF2-Banner Carousel"),
-                ScreenshotModel(name = "ATF3-Icon"),
-                ScreenshotModel(name = "ATF4-Lego4Image"),
-                ScreenshotModel(name = "Lego6Image"),
-                ScreenshotModel(name = "CampaignWidget"),
-                ScreenshotModel(name = "Lego4Image"),
-                ScreenshotModel(name = "Lego3Image"),
-                ScreenshotModel(name = "1x2Banner"),
-                ScreenshotModel(name = "4BannerAuto"),
-                ScreenshotModel(name = "6ImageAuto"),
-                ScreenshotModel(name = "RecommendationListCarousel"),
-                ScreenshotModel(name = "ProductHighlight"),
-                ScreenshotModel(name = "CategoryWidget"),
-                ScreenshotModel(name = "CategoryWidgetV2"),
-                ScreenshotModel(name = "LeftCarousel"),
-                ScreenshotModel(name = "TopCarousel"),
-                ScreenshotModel(name = "PopularKeyword"),
-                ScreenshotModel(name = "HomeWidget"),
-                ScreenshotModel(name = "ProductReview"),
-                ScreenshotModel(name = "BestSelling"),
-                ScreenshotModel(name = "RechargeReminder"),
-                ScreenshotModel(name = "SalamReminder"),
-                ScreenshotModel(name = "HomeWidget2"),
-                ScreenshotModel(name = "HomeFeaturedShop"),
-                ScreenshotModel(name = "PlayWidget"),
-                ScreenshotModel(name = "SpecialReleaseWidget"),
-                ScreenshotModel(name = "CMHomeWidget"),
-                ScreenshotModel(name = "MerchantVoucherWidget"),
-                ScreenshotModel(name = "HomePayLaterWidget"),
-                ScreenshotModel(name = "CueWidgetCategory2x2"),
-                ScreenshotModel(name = "CueWidgetCategory3x2"),
-                ScreenshotModel(name = "VpsWidget"),
-                ScreenshotModel(name = "MissionWidget")
+            ScreenshotModel(name = "Header"),
+            ScreenshotModel(name = "Ticker"),
+            ScreenshotModel(name = "ATF1-Icon"),
+            ScreenshotModel(name = "ATF2-Banner Carousel"),
+            ScreenshotModel(name = "ATF3-Icon"),
+            ScreenshotModel(name = "ATF4-Lego4Image"),
+            ScreenshotModel(name = "Lego6Image"),
+            ScreenshotModel(name = "CampaignWidget"),
+            ScreenshotModel(name = "Lego4Image"),
+            ScreenshotModel(name = "Lego3Image"),
+            ScreenshotModel(name = "1x2Banner"),
+            ScreenshotModel(name = "4BannerAuto"),
+            ScreenshotModel(name = "6ImageAuto"),
+            ScreenshotModel(name = "RecommendationListCarousel"),
+            ScreenshotModel(name = "ProductHighlight"),
+            ScreenshotModel(name = "CategoryWidget"),
+            ScreenshotModel(name = "CategoryWidgetV2"),
+            ScreenshotModel(name = "LeftCarousel"),
+            ScreenshotModel(name = "TopCarousel"),
+            ScreenshotModel(name = "PopularKeyword"),
+            ScreenshotModel(name = "HomeWidget"),
+            ScreenshotModel(name = "ProductReview"),
+            ScreenshotModel(name = "BestSelling"),
+            ScreenshotModel(name = "RechargeReminder"),
+            ScreenshotModel(name = "SalamReminder"),
+            ScreenshotModel(name = "HomeWidget2"),
+            ScreenshotModel(name = "HomeFeaturedShop"),
+            ScreenshotModel(name = "PlayWidget"),
+            ScreenshotModel(name = "SpecialReleaseWidget"),
+            ScreenshotModel(name = "CMHomeWidget"),
+            ScreenshotModel(name = "MerchantVoucherWidget"),
+            ScreenshotModel(name = "HomePayLaterWidget"),
+            ScreenshotModel(name = "CueWidgetCategory2x2"),
+            ScreenshotModel(name = "CueWidgetCategory3x2"),
+            ScreenshotModel(name = "VpsWidget"),
+            ScreenshotModel(name = "MissionWidget"),
+            ScreenshotModel(name = "Lego4Product"),
+            ScreenshotModel(name = "MixLeftPadding"),
+            ScreenshotModel(name = "Lego2ImagePadding"),
+            ScreenshotModel(name = "Lego4ImagePadding"),
+            ScreenshotModel(name = "Lego3ImagePadding"),
+            ScreenshotModel(name = "Lego6ImagePadding"),
+            ScreenshotModel(name = "Lego4AutoPadding"),
+            ScreenshotModel(name = "TodoWidget")
         )
     }
 
     data class ScreenshotModel(val name: String)
 
     private fun resetBanner(bannerComponentViewholder: BannerComponentViewHolder) {
-        //turn off slider banner
+        // turn off slider banner
         bannerComponentViewholder.coroutineContext.cancelChildren()
         bannerComponentViewholder.scrollTo(0)
 

@@ -7,6 +7,6 @@
         android:id="@+id/dividerSellerSearch"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/spacing_lvl4" />
+        android:layout_marginTop="16dp" />
 
 </RelativeLayout>

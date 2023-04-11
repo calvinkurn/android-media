@@ -1,6 +1,9 @@
 package com.tokopedia.kol.model
 
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -34,6 +37,22 @@ class ContentDetailModelBuilder {
         action = followAction,
     )
 
+    fun getUserFollowUnfollowModel(
+        isFollow: Boolean,
+        currentPosition: Int,
+    ) = UGCFollowUnfollowModel(
+        isFollow = isFollow,
+        currentPosition = currentPosition
+    )
+
+    fun buildMutationSuccess(
+        message: String = "Yeay",
+    ) = MutationUiModel.Success(message)
+
+    fun buildMutationError(
+        message: String = "Terjadi kesalahan",
+    ) = MutationUiModel.Error(message)
+
     fun getVisitContentModel(rowNumber: Int = 0) = VisitContentModel(rowNumber)
 
     fun getDeleteContentModel(rowNumber: Int = 0) = DeleteContentModel(rowNumber)
@@ -47,4 +66,20 @@ class ContentDetailModelBuilder {
     )
 
     fun getReportContentModel(rowNumber: Int = 0) = ReportContentModel(rowNumber)
+
+    fun getCheckCampaignResponse(campaignId: Long, rowNumber: Int, isAvailable: Boolean) =
+        FeedAsgcCampaignResponseModel(
+            campaignId = campaignId,
+            rowNumber = rowNumber,
+            reminderStatus = if (isAvailable) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(
+                campaignId
+            )
+        )
+
+    fun getSetUnsetCampaignResponse(campaignId: Long, rowNumber: Int, reminderStatus: FeedASGCUpcomingReminderStatus) =
+        FeedAsgcCampaignResponseModel(
+            campaignId = campaignId,
+            rowNumber = rowNumber,
+            reminderStatus = reminderStatus
+            )
 }

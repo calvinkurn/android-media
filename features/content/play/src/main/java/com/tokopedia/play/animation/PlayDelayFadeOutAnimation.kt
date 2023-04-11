@@ -32,37 +32,37 @@ class PlayDelayFadeOutAnimation(
     }
 
     private fun getFadeListener(view: View) = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             view.isClickable = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             view.isClickable = true
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             view.isClickable = false
         }
     }
 
     private fun getDelayListener(view: View) = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
     }
 }

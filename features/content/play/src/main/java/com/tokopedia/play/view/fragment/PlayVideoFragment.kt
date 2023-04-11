@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.floatingwindow.exception.FloatingWindowException
@@ -41,7 +40,6 @@ import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -50,8 +48,10 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
@@ -72,11 +72,12 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val pipSessionStorage: PiPSessionStorage,
-        private val playLog: PlayLog
+    private val dispatchers: CoroutineDispatchers,
+    private val pipAnalytic: PlayPiPAnalytic,
+    private val analytic: PlayAnalytic,
+    private val pipSessionStorage: PiPSessionStorage,
+    private val playLog: PlayLog,
+    private val router: Router,
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -85,7 +86,6 @@ class PlayVideoFragment @Inject constructor(
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -201,8 +201,8 @@ class PlayVideoFragment @Inject constructor(
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -271,7 +271,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
+        val orientation = ScreenOrientation2.get(requireActivity())
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
@@ -322,7 +322,10 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
-        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+        videoView.setOrientation(
+            orientation,
+            playViewModel.videoOrientation,
+        )
     }
 
     private fun setupObserve() {
@@ -330,7 +333,6 @@ class PlayVideoFragment @Inject constructor(
         observeVideoProperty()
         observeBottomInsetsState()
         observePiPEvent()
-        observeOnboarding()
         observeCastState()
 
         observeUiState()
@@ -357,7 +359,10 @@ class PlayVideoFragment @Inject constructor(
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
-            videoView.setOrientation(orientation, meta.videoStream.orientation)
+            videoView.setOrientation(
+                orientation,
+                meta.videoStream.orientation,
+            )
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
@@ -398,12 +403,6 @@ class PlayVideoFragment @Inject constructor(
         }
     }
 
-    private fun observeOnboarding() {
-        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView?.showAnimated()
-        })
-    }
-
     private fun observeCastState() {
         playViewModel.observableCastState.observe(viewLifecycleOwner, {
             when(it.currentState) {
@@ -432,9 +431,9 @@ class PlayVideoFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
 

@@ -1,5 +1,9 @@
 package com.tokopedia.contactus.createticket.fragment;
 
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_CREATE_TICKET;
+
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -17,8 +21,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -27,17 +32,15 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
 
-import org.jetbrains.annotations.NotNull;
-
-import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
@@ -49,16 +52,14 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
     private static final String CHATBOT_SCHEME = "tokopedia://topchat";
-    private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
     private TkpdWebView webView;
-    private ProgressBar progressBar;
+    private LoaderUnify progressBar;
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
     private UserSessionInterface session;
     ContactUsFaqListener listener;
-    String url;
-    private Bundle savedState;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
 
     @Override
     protected String getScreenName() {
@@ -89,25 +90,25 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         initialVar();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         lauchWebView();
     }
 
-    private void lauchWebView() {
-        String url;
-        if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
-            url = URL_HELP;
-        } else
-            url = getArguments().getString(EXTRAS_PARAM_URL);
 
+    @SuppressLint("DeprecatedMethod")
+    private void lauchWebView() {
+        String url= "";
+        if (getArguments() != null) {
+            if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
+                url = URL_HELP;
+            } else
+                url = getArguments().getString(EXTRAS_PARAM_URL);
+        }
+
+        newRelicLogging.sendToNewRelicLog(url);
         webView.loadAuthUrlWithFlags(url, session);
     }
 
@@ -115,6 +116,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         return R.layout.fragment_contact_us_faq;
     }
 
+    @SuppressLint({"DeprecatedMethod", "SetJavaScriptEnabled"})
     private void initView(View view) {
         if (webView != null) {
             webView.clearCache(true);
@@ -124,12 +126,12 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
 
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
-        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
         WebSettings webSettings = webView.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        webSettings.setAppCacheEnabled(false);
+//        webSettings.setAppCacheEnabled(false);
         MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
@@ -138,35 +140,27 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         listener = (ContactUsActivity) getActivity();
     }
 
+    @SuppressLint("DeprecatedMethod")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Uri[] results = null;
-            //Check if response is positive
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == ATTACH_FILE_REQUEST) {
-                    if (null == uploadMessageAfterLolipop) {
-                        return;
-                    }
+        Uri[] results = null;
+        //Check if response is positive
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ATTACH_FILE_REQUEST) {
+                if (null == uploadMessageAfterLolipop) {
+                    return;
+                }
 
-                    String dataString = intent.getDataString();
-                    if (dataString != null) {
-                        results = new Uri[]{Uri.parse(dataString)};
+                String dataString = intent.getDataString();
+                if (dataString != null) {
+                    results = new Uri[]{Uri.parse(dataString)};
 
-                    }
                 }
             }
-            uploadMessageAfterLolipop.onReceiveValue(results);
-            uploadMessageAfterLolipop = null;
-        } else {
-            if (requestCode == ATTACH_FILE_REQUEST) {
-                if (null == uploadMessageBeforeLolipop) return;
-                Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-                uploadMessageBeforeLolipop.onReceiveValue(result);
-                uploadMessageBeforeLolipop = null;
-            }
         }
+        uploadMessageAfterLolipop.onReceiveValue(results);
+        uploadMessageAfterLolipop = null;
     }
 
     private class MyWebViewClient extends WebChromeClient {
@@ -176,7 +170,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                 if (newProgress == 100) {
                     webView.setVisibility(View.VISIBLE);
                     view.setVisibility(View.VISIBLE);
-                    progressBar.setIndeterminate(false);
+                    progressBar.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -184,22 +178,8 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
             super.onProgressChanged(view, newProgress);
         }
 
-        //For Android 3.0+
-        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-            openFileChooserBeforeLolipop(uploadMsg);
-        }
-
-        // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
-        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-            openFileChooserBeforeLolipop(uploadMsg);
-        }
-
-        //For Android 4.1+
-        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-            openFileChooserBeforeLolipop(uploadMsg);
-        }
-
         //For Android 5.0+
+        @SuppressLint("DeprecatedMethod")
         public boolean onShowFileChooser(
                 WebView webView, ValueCallback<Uri[]> filePathCallback,
                 WebChromeClient.FileChooserParams fileChooserParams) {
@@ -223,26 +203,13 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
-        uploadMessageBeforeLolipop = uploadMessage;
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-    }
-
     private class MyWebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            try {
-                progressBar.setIndeterminate(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            progressBar.setVisibility(View.VISIBLE);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             final Uri uri = Uri.parse(url);
@@ -255,6 +222,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
             return onOverrideUrl(request.getUrl());
         }
 
+        @SuppressLint("DeprecatedMethod")
         protected boolean onOverrideUrl(Uri url) {
             try {
                 Context mContext = getContext();
@@ -263,35 +231,43 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                         webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
                                 .BASE_CONTACT_US, mContext), session);
                     }
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
-                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url
-                                    .getQueryParameter(SOLUTION_ID));
-                    bundle.putString(ContactUsActivity.PARAM_TAG,
-                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
+                    String solutionId = url.getQueryParameter(SOLUTION_ID) == null ? "" : url
+                            .getQueryParameter(SOLUTION_ID);
+                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
+                    String tag = url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS);
+                    bundle.putString(ContactUsActivity.PARAM_TAG, tag);
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter
                                     (ORDER_ID));
+                    newRelicLogging.sendToNewRelicLog(url.toString(), ACTION_CREATE_TICKET, solutionId, tag);
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("return")) {
                     Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.finish_contact_us)), Toast.LENGTH_LONG).show();
+                    if(getActivity() != null)
                     getActivity().finish();
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
-                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
+                    String chatRoute = ApplinkConst.CHATBOT
+                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId);
+                    newRelicLogging.sendToNewRelicLog(url.toString(), chatRoute);
+                    Intent chatBotIntent = RouteManager.getIntent(getContext(), chatRoute);
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)) {
                     RouteManager.route(getActivity(), url.toString());
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else {
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return false;
                 }
             } catch (NullPointerException e) {
@@ -306,12 +282,11 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progressBar != null)
-            progressBar.setIndeterminate(false);
     }
 
     public BackButtonListener getBackButtonListener() {
         return new BackButtonListener() {
+            @SuppressLint("DeprecatedMethod")
             @Override
             public void onBackPressed() {
                 if (webView != null && webView.canGoBack()) {
@@ -320,6 +295,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
 
             }
 
+            @SuppressLint("DeprecatedMethod")
             @Override
             public boolean canGoBack() {
                 return webView != null && webView.canGoBack();

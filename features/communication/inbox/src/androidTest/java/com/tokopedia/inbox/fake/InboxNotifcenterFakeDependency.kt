@@ -29,9 +29,6 @@ class InboxNotifcenterFakeDependency {
     @Inject
     lateinit var getRecommendationUseCase: FakeGetRecommendationUseCase
 
-    @Inject
-    lateinit var addWishlistUseCase: FakeNotifCenterAddWishlist
-
     fun init() {
         initResponse()
         initCacheManager()

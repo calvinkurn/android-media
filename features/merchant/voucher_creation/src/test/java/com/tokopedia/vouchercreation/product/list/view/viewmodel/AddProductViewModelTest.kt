@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -12,8 +13,10 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.list.domain.model.response.*
+import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListMetaResponse.*
 import com.tokopedia.vouchercreation.product.list.domain.usecase.*
 import com.tokopedia.vouchercreation.product.list.view.model.*
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.ACTIVE
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.BENEFIT_TYPE_IDR
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.BENEFIT_TYPE_PERCENT
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.COUPON_TYPE_CASHBACK
@@ -441,8 +444,8 @@ class AddProductViewModelTest {
 
     @Test
     fun `when sort list are mapped to view model expect sort selections`() {
-        val sort1 = ProductListMetaResponse.Sort(id = "1", value = "sortA", name = "sortA")
-        val sort2 = ProductListMetaResponse.Sort(id = "2", value = "sortB", name = "sortB")
+        val sort1 = Sort(id = "1", value = "sortA", name = "sortA")
+        val sort2 = Sort(id = "2", value = "sortB", name = "sortB")
         val sorts = listOf(sort1, sort2)
         val sortSelection1 = SortSelection(id = "1", value = "sortA", name = "sortA")
         val sortSelection2 = SortSelection(id = "2", value = "sortB", name = "sortB")
@@ -453,9 +456,9 @@ class AddProductViewModelTest {
 
     @Test
     fun `when exclude default sort expect no sort with sort default id`() {
-        val sort1 = ProductListMetaResponse.Sort(id = "1", value = "sortA", name = "sortA")
-        val sort2 = ProductListMetaResponse.Sort(id = "2", value = "sortB", name = "sortB")
-        val sort3 = ProductListMetaResponse.Sort(id = SORT_DEFAULT, value = "sortC", name = "sortC")
+        val sort1 = Sort(id = "1", value = "sortA", name = "sortA")
+        val sort2 = Sort(id = "2", value = "sortB", name = "sortB")
+        val sort3 = Sort(id = SORT_DEFAULT, value = "sortC", name = "sortC")
         val sorts = listOf(sort1, sort2, sort3)
         val expectedResult = listOf(sort1, sort2)
         val actualResult = mViewModel.excludeDefaultSortSelection(sorts)
@@ -464,8 +467,8 @@ class AddProductViewModelTest {
 
     @Test
     fun `when category list are mapped to view model category selections`() {
-        val category1 = ProductListMetaResponse.Category(id = "1", value = "value1", name = "name1")
-        val category2 = ProductListMetaResponse.Category(id = "2", value = "value2", name = "name2")
+        val category1 = Category(id = "1", value = "value1", name = "name1")
+        val category2 = Category(id = "2", value = "value2", name = "name2")
         val categories = listOf(category1, category2)
         val selection1 = CategorySelection(id = "1", value = "value1", name = "name1")
         val selection2 = CategorySelection(id = "2", value = "value2", name = "name2")
@@ -731,5 +734,69 @@ class AddProductViewModelTest {
         val dummyOriginId = 0
         val dummyWarehouseSelectionId = 1
         mViewModel.isLocationSelectionChanged(dummyOriginId,dummyWarehouseSelectionId)
+    }
+
+    @Test
+    fun `when active tab is missing expect zero active product count`() {
+        val tabs: List<Tab> = listOf()
+        val expectedResult = Int.ZERO
+        val actualResult = mViewModel.getTotalActiveProductCount(tabs)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when active tabs exist expect legit active product count`() {
+        val tabs = listOf(
+            Tab(
+                id = ACTIVE,
+                value = 100,
+                name = "Test"
+            )
+        )
+        val expectedResult = 100
+        val actualResult = mViewModel.getTotalActiveProductCount(tabs)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when there is no active tabs expect zero active product count`() {
+        val tabs = listOf(
+            Tab(
+                id = "Test",
+                value = 100,
+                name = "Test"
+            )
+        )
+        val expectedResult = Int.ZERO
+        val actualResult = mViewModel.getTotalActiveProductCount(tabs)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when product list size is less than total active product count expect load more to be available`() {
+        val productListSize = 90
+        val totalActiveProductCount = 100
+        val actualResult = mViewModel.isLoadMoreAvailable(productListSize, totalActiveProductCount)
+        assertTrue(actualResult)
+    }
+
+    @Test
+    fun `when product list size is more than total active product count expect load more to be unavailable`() {
+        val productListSize = 100
+        val totalActiveProductCount = 100
+        val actualResult = mViewModel.isLoadMoreAvailable(productListSize, totalActiveProductCount)
+        assertFalse(actualResult)
+    }
+
+    @Test
+    fun `product counter and total active product count should have zero default value`() {
+        assertEquals(Int.ZERO, mViewModel.productCounter)
+        assertEquals(Int.ZERO, mViewModel.totalActiveProductCount)
+    }
+
+    @Test
+    fun `paging index setter and getter should perform correctly`() {
+        mViewModel.setPagingIndex(10)
+        assertEquals(10, mViewModel.getPagingIndex())
     }
 }

@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductWishlistButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
@@ -39,7 +40,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRob
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
 
@@ -94,7 +95,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
+                    Activity.RESULT_OK,
+                    getAttachProductData(1)
                 )
             )
 
@@ -119,7 +121,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
+                    Activity.RESULT_OK,
+                    getAttachProductData(1)
                 )
             )
         clickPlusIconMenu()
@@ -127,7 +130,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(2)
+                    Activity.RESULT_OK,
+                    getAttachProductData(2)
                 )
             )
         clickPlusIconMenu()
@@ -135,7 +139,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(3)
+                    Activity.RESULT_OK,
+                    getAttachProductData(3)
                 )
             )
         clickPlusIconMenu()
@@ -159,7 +164,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
+                    Activity.RESULT_OK,
+                    getAttachProductData(1)
                 )
             )
 
@@ -178,12 +184,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload()
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(3)
+                    Activity.RESULT_OK,
+                    getAttachProductData(3)
                 )
             )
 
@@ -222,13 +229,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-                generatePreAttachPayload(exProductId)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(exProductId)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
 
-        //When
+        // When
         doScrollChatToPosition(0)
 
         // Then
@@ -243,7 +250,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         doScrollChatToPosition(0)
 
         // Then
@@ -258,7 +265,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(4)
         clickATCButtonAt(4)
@@ -274,7 +281,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(4)
         clickBuyButtonAt(4)
@@ -290,15 +297,21 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickBuyButtonAt(1)
 
         // Then
-        val intent = RouteManager.getIntent(context,
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", VariantPageSource.TOPCHAT_PAGESOURCE.source, "false", "") //Product from firstPageChatAsBuyer
+            "1160424090",
+            "6115659",
+            VariantPageSource.TOPCHAT_PAGESOURCE.source,
+            "false",
+            ""
+        ) // Product from firstPageChatAsBuyer
         openPageWithIntent(intent)
     }
 
@@ -309,65 +322,63 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickATCButtonAt(1)
 
         // Then
-        val intent = RouteManager.getIntent(context,
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", VariantPageSource.TOPCHAT_PAGESOURCE.source, "false", "") //Product from firstPageChatAsBuyer
+            "1160424090",
+            "6115659",
+            VariantPageSource.TOPCHAT_PAGESOURCE.source,
+            "false",
+            ""
+        ) // Product from firstPageChatAsBuyer
         openPageWithIntent(intent)
     }
 
     @Test
-    fun should_show_toaster_when_user_click_ingatkan_saya() {
+    fun should_show_check_wishlist_and_success_toaster_wishlist_when_user_add_to_wishlist() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = getZeroStockAttachment()
-        addWishListUseCase.isFail = false
+        addToWishlistV2UseCase.isFail = false
         launchChatRoomActivity()
 
-        //When
-        doScrollChatToPosition(0)
-        clickWishlistButtonAt(1)
-
-        // Then
-        hasToasterWithMsg(context.getString(R.string.title_topchat_success_atw))
-    }
-
-    @Test
-    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_failed() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = getZeroStockAttachment()
-        addWishListUseCase.isFail = true
-        launchChatRoomActivity()
-
-        //When
-        doScrollChatToPosition(0)
-        clickWishlistButtonAt(1)
-
-        // Then
-        hasFailedToasterWithMsg("Oops!")
-    }
-
-    @Test
-    fun should_open_wishlist_when_user_click_cek_wishlist() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = getZeroStockAttachment()
-        launchChatRoomActivity()
-
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
-        clickWishlistButtonAt(1) //click wishlist
-        clickWishlistButtonAt(1) //click go to wishlist
+        clickWishlistButtonAt(1) // click wishlist
+        clickWishlistButtonAt(1) // click go to wishlist
 
-        //Then
-        intended(hasData(ApplinkConst.NEW_WISHLIST))
+        // Then
+        hasProductWishlistButtonWithText("Cek Wishlist Kamu", 1)
+        hasToasterWithMsg(
+            context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        )
+    }
+
+    @Test
+    fun should_show_error_toaster_wishlist_when_user_fail_to_add_to_wishlist() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = getZeroStockAttachment()
+        addToWishlistV2UseCase.isFail = true
+        launchChatRoomActivity()
+
+        // When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(0)
+        clickWishlistButtonAt(1) // click wishlist
+        clickWishlistButtonAt(1) // click go to wishlist
+
+        // Then
+        hasFailedToasterWithMsg(
+            context.getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        )
     }
 
     @Test
@@ -378,7 +389,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         addToCartUseCase.isError = true
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(4)
         clickBuyButtonAt(4)
@@ -396,7 +407,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         addToCartUseCase.errorMessage = arrayListOf(errorMsg)
         launchChatRoomActivity()
 
-        //When
+        // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(4)
         clickBuyButtonAt(4)
@@ -427,18 +438,19 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         val products = ArrayList<ResultProduct>(totalProduct)
         for (i in 0 until totalProduct) {
             products.add(
-                    ResultProduct(
-                            i.toString(),
-                            "tokopedia://product/1111",
-                            ProductPreviewAttribute.productThumbnail,
-                            "Rp ${i + 1}5.000.000",
-                            "${i + 1} ${ProductPreviewAttribute.productName}"
-                    )
+                ResultProduct(
+                    i.toString(),
+                    "tokopedia://product/1111",
+                    ProductPreviewAttribute.productThumbnail,
+                    "Rp ${i + 1}5.000.000",
+                    "${i + 1} ${ProductPreviewAttribute.productName}"
+                )
             )
         }
         return Intent().apply {
             putParcelableArrayListExtra(
-                    ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY,
+                products
             )
         }
     }

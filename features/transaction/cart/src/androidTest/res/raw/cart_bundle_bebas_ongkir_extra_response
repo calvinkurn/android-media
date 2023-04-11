@@ -120,16 +120,16 @@
                   "estimation": "",
                   "free_shipping": {
                     "eligible": true,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "free_shipping_extra": {
                     "eligible": true,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "free_shipping_general": {
                     "bo_name": "bebas ongkir extra",
                     "bo_type": 2,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "preorder": {
                     "is_preorder": false,
@@ -168,8 +168,8 @@
                   "shop_type_info": {
                     "shop_tier": 2,
                     "shop_grade": 0,
-                    "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-                    "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge": "https://images.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge_svg": "https://images.tokopedia.net/img/official_store/badge_os128.png",
                     "title": "Official Store"
                   }
                 },
@@ -259,11 +259,11 @@
                         },
                         "product_price_currency": 1,
                         "product_image": {
-                          "image_src": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_300": "https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_square": "https://ecs7.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
+                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
                         },
                         "product_all_images": "[{\"file_name\":\"28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg\",\"file_path\":\"VqbcmM/2020/12/14\",\"status\":2}]",
                         "product_notes": "",
@@ -366,7 +366,7 @@
                   "estimation": "",
                   "free_shipping": {
                     "eligible": true,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "free_shipping_extra": {
                     "eligible": false,
@@ -375,7 +375,7 @@
                   "free_shipping_general": {
                     "bo_name": "bebas ongkir",
                     "bo_type": 1,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "preorder": {
                     "is_preorder": false,
@@ -414,8 +414,8 @@
                   "shop_type_info": {
                     "shop_tier": 2,
                     "shop_grade": 0,
-                    "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-                    "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge": "https://images.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge_svg": "https://images.tokopedia.net/img/official_store/badge_os128.png",
                     "title": "Official Store"
                   }
                 },
@@ -505,11 +505,11 @@
                         },
                         "product_price_currency": 1,
                         "product_image": {
-                          "image_src": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_300": "https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_square": "https://ecs7.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
+                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
                         },
                         "product_all_images": "[{\"file_name\":\"28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg\",\"file_path\":\"VqbcmM/2020/12/14\",\"status\":2}]",
                         "product_notes": "",
@@ -612,11 +612,11 @@
                   "estimation": "",
                   "free_shipping": {
                     "eligible": false,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "free_shipping_extra": {
                     "eligible": false,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "free_shipping_general": {
                     "bo_name": "",
@@ -660,8 +660,8 @@
                   "shop_type_info": {
                     "shop_tier": 2,
                     "shop_grade": 0,
-                    "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-                    "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge": "https://images.tokopedia.net/img/official_store/badge_os128.png",
+                    "badge_svg": "https://images.tokopedia.net/img/official_store/badge_os128.png",
                     "title": "Official Store"
                   }
                 },
@@ -751,11 +751,11 @@
                         },
                         "product_price_currency": 1,
                         "product_image": {
-                          "image_src": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_300": "https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_square": "https://ecs7.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
+                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
                         },
                         "product_all_images": "[{\"file_name\":\"28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg\",\"file_path\":\"VqbcmM/2020/12/14\",\"status\":2}]",
                         "product_notes": "",

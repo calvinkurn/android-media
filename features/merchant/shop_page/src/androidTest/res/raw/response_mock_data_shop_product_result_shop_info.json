@@ -12,7 +12,7 @@
         },
         "freeOngkir": {
           "isActive": true,
-          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imgURL": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "closedInfo": {
           "closedNote": "",
@@ -23,14 +23,14 @@
           "openSince": "May 2018"
         },
         "shopAssets": {
-          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
-          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/attachment/2020/4/20/29402544/29402544_d7d80f86-21e6-40d1-9cc5-0624fbb75f50.png"
+          "avatar": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
+          "cover": "https://images.tokopedia.net/img/cache/1190/attachment/2020/4/20/29402544/29402544_d7d80f86-21e6-40d1-9cc5-0624fbb75f50.png"
         },
         "shipmentInfo": [{
           "isAvailable": 1,
           "code": "wahana",
           "shipmentID": "6",
-          "image": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+          "image": "https://images.tokopedia.net/img/kurir-wahana.png",
           "name": "Wahana",
           "product": [{
             "isAvailable": 1,
@@ -45,7 +45,7 @@
           "isAvailable": 1,
           "code": "gojek",
           "shipmentID": "10",
-          "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+          "image": "https://images.tokopedia.net/img/kurir-gosend.png",
           "name": "Gojek",
           "product": [{
             "isAvailable": 1,
@@ -60,7 +60,7 @@
           "isAvailable": 1,
           "code": "sicepat",
           "shipmentID": "11",
-          "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+          "image": "https://images.tokopedia.net/img/kurir-sicepat.png",
           "name": "SiCepat",
           "product": [{
             "isAvailable": 1,
@@ -90,7 +90,7 @@
           "isAvailable": 1,
           "code": "grab",
           "shipmentID": "13",
-          "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+          "image": "https://images.tokopedia.net/img/kurir-grab.png",
           "name": "GrabExpress",
           "product": [{
             "isAvailable": 1,
@@ -110,7 +110,7 @@
           "isAvailable": 1,
           "code": "jnt",
           "shipmentID": "14",
-          "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+          "image": "https://images.tokopedia.net/img/kurir-jnt.png",
           "name": "J\u0026T",
           "product": [{
             "isAvailable": 1,
@@ -125,7 +125,7 @@
           "isAvailable": 1,
           "code": "anteraja",
           "shipmentID": "23",
-          "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+          "image": "https://images.tokopedia.net/img/kurir-anteraja.png",
           "name": "AnterAja",
           "product": [{
             "isAvailable": 1,
@@ -140,7 +140,7 @@
           "isAvailable": 1,
           "code": "jne",
           "shipmentID": "1",
-          "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+          "image": "https://images.tokopedia.net/img/kurir-jne.png",
           "name": "JNE",
           "product": [{
             "isAvailable": 1,
@@ -160,7 +160,7 @@
           "isAvailable": 1,
           "code": "tiki",
           "shipmentID": "2",
-          "image": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+          "image": "https://images.tokopedia.net/img/kurir-tiki.png",
           "name": "TIKI",
           "product": [{
             "isAvailable": 1,

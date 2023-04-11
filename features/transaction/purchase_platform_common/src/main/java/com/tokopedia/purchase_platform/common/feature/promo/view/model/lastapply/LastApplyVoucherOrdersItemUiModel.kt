@@ -5,7 +5,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyVoucherOrdersItemUiModel(
-        var code: String = "",
-        var uniqueId: String = "",
-        var message: LastApplyMessageUiModel = LastApplyMessageUiModel()
-) : Parcelable
+    var code: String = "",
+    var uniqueId: String = "",
+    var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
+    var shippingId: Int = 0,
+    var spId: Int = 0,
+    var type: String = ""
+) : Parcelable {
+
+    companion object {
+        private const val TYPE_LOGISTIC = "logistic"
+    }
+
+    fun isTypeLogistic(): Boolean {
+        return type == TYPE_LOGISTIC
+    }
+}

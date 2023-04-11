@@ -28,18 +28,18 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
 
 class TopchatImageUploadViewHolder(
-    itemView: View?,
+    itemView: View,
     private val listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val commonListener: CommonViewHolderListener,
     private val userSession: UserSessionInterface
 ) : ImageUploadViewHolder(itemView, listener) {
 
-    private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
-    private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(
+    private val viewContainer: LinearLayout? = itemView.findViewById(R.id.ll_image_container)
+    private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView.findViewById(
         R.id.rba_image
     )
-    private var msgOffsetLine: View? = itemView?.findViewById(
+    private var msgOffsetLine: View? = itemView.findViewById(
         R.id.v_image_offset
     )
 
@@ -52,26 +52,26 @@ class TopchatImageUploadViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = ViewUtil.getShadowColorViewHolder(itemView.context),
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,

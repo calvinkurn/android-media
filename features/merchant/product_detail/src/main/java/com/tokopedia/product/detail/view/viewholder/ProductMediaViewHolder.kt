@@ -21,25 +21,14 @@ class ProductMediaViewHolder(private val view: View,
     private val binding = ItemDynamicProductMediaBinding.bind(view)
 
     override fun bind(element: ProductMediaDataModel) {
-        with(binding) {
 
-            val scrollPosition = element.getScrollPosition()
+        setupViewpager(element)
 
-            viewMediaPager.setup(
-                media = element.listOfMedia,
-                listener = listener,
-                componentTrackDataModel = getComponentTrackData(element),
-                initialScrollPosition = scrollPosition,
-                shouldAnimateLabel = element.shouldAnimateLabel,
-                containerType = element.containerType
-            )
+        element.shouldAnimateLabel = false
+        element.shouldUpdateImage = false
 
-            element.shouldAnimateLabel = false
-            element.shouldUpdateImage = false
-
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
@@ -49,14 +38,32 @@ class ProductMediaViewHolder(private val view: View,
             return
         }
 
-        when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
-                binding.viewMediaPager.scrollToPosition(
-                        element.indexOfSelectedVariantOptionId(),
-                        true
-                )
-            }
+        payloads.forEach { processPayload(it as? Int, element) }
+    }
+
+    private fun processPayload(payload: Int?, element: ProductMediaDataModel) = when (payload) {
+        ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
+            binding.viewMediaPager.scrollToPosition(
+                element.indexOfSelectedVariantOptionId(),
+                true
+            )
         }
+        ProductDetailConstant.PAYLOAD_MEDIA_UPDATE -> {
+            setupViewpager(element, true)
+        }
+        else -> {}
+    }
+
+    private fun setupViewpager(element: ProductMediaDataModel, resetPosition: Boolean = false) {
+        val scrollPosition = if (resetPosition) 0 else element.getScrollPosition()
+
+        binding.viewMediaPager.setup(
+            media = element.listOfMedia,
+            listener = listener,
+            componentTrackDataModel = getComponentTrackData(element),
+            initialScrollPosition = scrollPosition,
+            containerType = element.containerType
+        )
     }
 
     fun detachView() {

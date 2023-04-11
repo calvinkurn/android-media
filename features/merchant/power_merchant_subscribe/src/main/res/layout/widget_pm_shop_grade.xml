@@ -211,13 +211,13 @@
             android:id="@+id/tvPmShopGradeStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_pm_status_label_active"
-            android:paddingStart="@dimen/spacing_lvl2"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl1"
+            android:paddingStart="4dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="2dp"
             android:text="@string/pm_active"
             app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGrade"
             app:layout_constraintEnd_toEndOf="parent"
@@ -279,8 +279,8 @@
             tools:text="/100" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:icon_name="CHEVRON_RIGHT" />
     </LinearLayout>
@@ -289,7 +289,7 @@
         android:id="@+id/tvPmShopGradeThreshold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -305,7 +305,7 @@
         android:id="@+id/pmProStatusInfoView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -316,8 +316,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmShopScoreTips"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:visibility="gone"
@@ -332,7 +332,7 @@
         android:id="@+id/tvPmShopScoreTips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:text="@string/power_merchant_performance_tips"
         android:textColor="@color/Unify_G500"
         android:visibility="gone"

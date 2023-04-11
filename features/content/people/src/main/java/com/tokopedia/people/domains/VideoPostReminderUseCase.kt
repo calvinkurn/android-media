@@ -2,15 +2,15 @@ package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.people.model.VideoPostReimderModel
 import javax.inject.Inject
 
 @GqlQuery(VideoPostReminderUseCase.QUERY_NAME, VideoPostReminderUseCase.QUERY)
 class VideoPostReminderUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<VideoPostReimderModel>(graphqlRepository) {
 
     init {

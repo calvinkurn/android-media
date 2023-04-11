@@ -5,8 +5,8 @@ import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 
 data class LayoutMerchantCouponAttr(
         @SerializedName("topAdsJsonParam")
-        val topAdsJsonParam: String? = null,
+        val topAdsJsonParam: String = "",
 
         @SerializedName("CatalogMVCWithProductsList")
-        val catalogMVCWithProductsList: List<CatalogMVCWithProductsListItem?>? = null
+        val catalogMVCWithProductsList: List<CatalogMVCWithProductsListItem> = listOf()
 )

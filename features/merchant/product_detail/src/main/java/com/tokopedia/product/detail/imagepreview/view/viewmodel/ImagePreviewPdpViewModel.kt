@@ -5,9 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -17,34 +14,12 @@ import javax.inject.Inject
 
 class ImagePreviewPdpViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     fun isShopOwner(shopId: String): Boolean = userSessionInterface.isLoggedIn && userSessionInterface.shopId == shopId
-
-    fun addWishList(productId: String, onErrorAddWishList: ((errorMessage: String?) -> Unit)?, onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
-        addWishListUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                onErrorAddWishList?.invoke(errorMessage)
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishlist?.invoke(productId)
-            }
-        })
-    }
 
     fun addWishListV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         launch(dispatcher.main) {
@@ -56,26 +31,6 @@ class ImagePreviewPdpViewModel @Inject constructor(
                 wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
             }
         }
-    }
-
-    fun removeWishList(productId: String, onSuccessRemoveWishlist: ((productId: String?) -> Unit)?, onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
-        removeWishlistUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                // no op
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                onErrorRemoveWishList?.invoke(errorMessage)
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishlist?.invoke(productId)
-            }
-        })
     }
 
     fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {

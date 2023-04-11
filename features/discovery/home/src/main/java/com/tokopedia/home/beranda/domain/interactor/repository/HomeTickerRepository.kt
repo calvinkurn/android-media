@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.di.module.query.HomeTickerQuery
+import com.tokopedia.home.beranda.di.module.query.HomeTickerV2Query
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.home.beranda.domain.model.HomeTickerData
@@ -14,9 +15,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class HomeTickerRepository @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+        private val gqlRepository: GraphqlRepository,
+        private val isUsingV2: Boolean
 ): HomeRepository<HomeTickerData> {
-    val gqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     suspend fun getTickerData(locationParams: String = ""): HomeTickerData {
         val gqlResponse = gqlRepository.response(
@@ -30,7 +31,8 @@ class HomeTickerRepository @Inject constructor(
     }
 
     private fun buildRequest(locationParams: String): GraphqlRequest {
-        return GraphqlRequest(HomeTickerQuery(), HomeTickerData::class.java, mapOf(PARAM_LOCATION to locationParams))
+        val query = if(isUsingV2) HomeTickerV2Query() else HomeTickerQuery()
+        return GraphqlRequest(query, HomeTickerData::class.java, mapOf(PARAM_LOCATION to locationParams))
     }
 
 

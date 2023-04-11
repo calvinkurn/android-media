@@ -35,11 +35,18 @@ class CreateCookieUseCase @Inject constructor(
         return CreateAffiliateCookieRequest(
             param.toCreateCookieAdditionParam(),
             CreateAffiliateCookieRequest.AffiliateDetail(param.affiliateUUID),
-            CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.source is AffiliateSdkPageSource.PDP) AffiliateSdkConstant.PRODUCT else AffiliateSdkConstant.PAGE),
+            CreateAffiliateCookieRequest.CookieLevel(
+                if (param.affiliatePageDetail.source is AffiliateSdkPageSource.PDP) {
+                    AffiliateSdkConstant.PRODUCT
+                } else {
+                    AffiliateSdkConstant.PAGE
+                }
+            ),
             CreateAffiliateCookieRequest.Header(
                 TrackApp.getInstance().gtm.irisSessionId,
                 param.uuid,
-                deviceId
+                deviceId,
+                param.affiliatePageDetail.source.atcSource.source
             ),
             CreateAffiliateCookieRequest.LinkDetail(
                 channel = param.affiliateChannel
@@ -47,6 +54,7 @@ class CreateCookieUseCase @Inject constructor(
             CreateAffiliateCookieRequest.PageDetail(
                 param.affiliatePageDetail.pageId,
                 param.affiliatePageDetail.source.getType(),
+                param.affiliatePageDetail.pageName,
                 param.affiliatePageDetail.siteId,
                 param.affiliatePageDetail.verticalId
             ),
@@ -71,7 +79,6 @@ class CreateCookieUseCase @Inject constructor(
             GQL_Create_Cookie,
             CreateAffiliateCookieResponse::class.java,
             createRequestParam(param, deviceId)
-
         )
     }
 }

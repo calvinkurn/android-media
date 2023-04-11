@@ -17,7 +17,6 @@ object DigitalPDPConstant {
     const val MINIMUM_OPERATOR_PREFIX_LISTRIK = 1
     const val MINIMUM_VALID_NUMBER_LENGTH = 10
     const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-    const val FIXED_PADDING_ADJUSTMENT = 70
     const val DEFAULT_ICON_RES = 0
 
     const val TELCO_PREFERENCES_NAME = "telco_preferences"
@@ -27,6 +26,7 @@ object DigitalPDPConstant {
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     const val REQUEST_CODE_LOGIN = 1010
     const val REQUEST_CODE_LOGIN_ALT = 1011
+    const val REQUEST_CODE_VERIFY_PHONE_NUMBER = 1012
     const val RESULT_CODE_QR_SCAN = 101
 
     const val DELAY_PREFIX_TIME = 200L
@@ -39,4 +39,7 @@ object DigitalPDPConstant {
 
     const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
     const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
+
+    const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"
+    const val APPLINK_OMNI_DATA_CODE = "omni_applink_data_code"
 }

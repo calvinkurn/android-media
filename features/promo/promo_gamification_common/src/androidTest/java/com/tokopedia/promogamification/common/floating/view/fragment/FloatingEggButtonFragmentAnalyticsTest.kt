@@ -11,8 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.promogamification.common.FloatingEggMockResponse
 import com.tokopedia.promogamification.common.R
 import com.tokopedia.promogamification.common.floating.view.activity.FloatingEggActivity

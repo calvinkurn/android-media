@@ -10,7 +10,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class ClaimBenefitMembershipUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<MembershipClaimBenefitResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
@@ -30,6 +30,7 @@ class ClaimBenefitMembershipUseCase @Inject constructor(
               }
             }
         """
+
         @JvmStatic
         fun createRequestParams(questId: Int): RequestParams = RequestParams.create().apply {
             putInt(PARAM_QUEST_ID, questId)

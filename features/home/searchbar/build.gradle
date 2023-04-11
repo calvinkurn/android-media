@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "androidx.navigation.safeargs"
 apply from: '../../../jacoco_task.gradle'
@@ -30,18 +30,19 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)

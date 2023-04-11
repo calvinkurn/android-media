@@ -14,10 +14,12 @@ object ShopPageExceptionHandler {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(ShopPageException(
+                FirebaseCrashlytics.getInstance().recordException(
+                    ShopPageException(
                         message = exceptionMessage,
                         cause = throwable
-                ))
+                    )
+                )
             } else {
                 throwable.printStackTrace()
             }

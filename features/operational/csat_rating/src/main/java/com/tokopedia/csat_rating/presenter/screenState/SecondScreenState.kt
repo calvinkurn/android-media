@@ -11,7 +11,11 @@ class SecondScreenState(private val mCaption: String, private val mQuestion: Str
     }
 
     override fun getSecondEmoji(): Int {
-        return R.drawable.rating_active_2
+        return R.drawable.emoji_active_2
+    }
+
+    override fun getMessageColor(): Int {
+        return R.color.csat_dms_rating_active_2
     }
 
     override fun getMessage(): String {

@@ -104,8 +104,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         endDate = Utils.getEndDate()
         setDateRangeText(TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX)
         initStatisticComponent()
-        selectDate.findViewById<ImageUnify>(R.id.date_image)?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
-        selectDate.findViewById<ImageUnify>(R.id.next_image)?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         selectDate.setOnClickListener {
             getCustomDateText(currentDate.text.toString())
             showBottomSheet()

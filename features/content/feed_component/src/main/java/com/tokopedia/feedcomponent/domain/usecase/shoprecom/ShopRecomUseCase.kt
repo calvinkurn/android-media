@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.domain.usecase.shoprecom
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
+import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -40,6 +40,10 @@ class ShopRecomUseCase @Inject constructor(
         private const val KEY_SCREEN_NAME = "screenName"
         private const val KEY_LIMIT = "limit"
         private const val KEY_CURSOR = "cursor"
+
+        const val VAL_SCREEN_NAME_USER_PROFILE = "user_profile"
+        const val VAL_SCREEN_NAME_FEED_UPDATE = "update_tab"
+        const val VAL_LIMIT = 10
 
         const val QUERY_NAME = "ShopRecommendationUseCaseQuery"
         const val QUERY = """

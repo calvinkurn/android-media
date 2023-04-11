@@ -7,23 +7,24 @@ import com.tokopedia.autocompletecomponent.initialstate.chips.convertToInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.convertToCuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateRequestUtils
-import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateItem
+import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateRequestUtils
+import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertToDynamicInitialStateSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertToPopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.convertToListInitialStateProductListDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.*
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.convertToRecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.convertToSearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
@@ -210,11 +211,13 @@ class InitialStatePresenter @Inject constructor(
                     addCuratedCampaignCard(data, initialStateData)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
-                    val title = RecentSearchTitleDataView(
-                        initialStateData.header,
-                        initialStateData.labelAction
-                    )
-                    data.add(title)
+                    if(initialStateData.header.isNotEmpty()) {
+                        val title = RecentSearchTitleDataView(
+                            initialStateData.header,
+                            initialStateData.labelAction
+                        )
+                        data.add(title)
+                    }
                     addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -262,6 +265,14 @@ class InitialStatePresenter @Inject constructor(
                             )
                             .insertChipWidgetTitle(initialStateData.header)
                     )
+                }
+                InitialStateData.INITIAL_STATE_SEARCHBAR_EDUCATION -> {
+                    initialStateData.convertToSearchBarEducationDataView(
+                        getDimension90(),
+                        keyword,
+                    )?.let {
+                        data.add(it)
+                    }
                 }
                 else -> {
                     if (initialStateData.header.isNotEmpty()) {
@@ -622,21 +633,23 @@ class InitialStatePresenter @Inject constructor(
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
         trackEventItemClicked(item)
+        val view = view ?: return
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     private fun trackEventItemClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         when(item.type) {
             TYPE_SHOP ->
-                view?.trackEventClickRecentShop(
+                view.trackEventClickRecentShop(
                     item,
                     getRecentShopLabelForTracking(item),
                     getUserId(),
                 )
             else ->
-                view?.trackEventClickRecentSearch(
+                view.trackEventClickRecentSearch(
                     item,
                     getItemEventLabelForTracking(item),
                 )
@@ -687,9 +700,11 @@ class InitialStatePresenter @Inject constructor(
 
         this.recentSearchList = null
 
-        view?.trackEventClickSeeMoreRecentSearch(getUserId())
-        view?.dropKeyBoard()
-        view?.renderCompleteRecentSearch(recentSearchDataVisitable)
+        val view = view ?: return
+
+        view.trackEventClickSeeMoreRecentSearch(getUserId())
+        view.dropKeyBoard()
+        view.renderCompleteRecentSearch(recentSearchDataVisitable)
     }
 
     override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
@@ -717,10 +732,11 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
+        val view = view ?: return
         val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
         val baseItemInitialState = curatedCampaignDataView.baseItemInitialState
 
-        view?.trackEventClickCuratedCampaignCard(
+        view.trackEventClickCuratedCampaignCard(
             getUserId(),
             label,
             baseItemInitialState,
@@ -728,31 +744,42 @@ class InitialStatePresenter @Inject constructor(
             baseItemInitialState.campaignCode
         )
 
-        view?.route(baseItemInitialState.applink, searchParameter)
-        view?.finish()
+        view.route(baseItemInitialState.applink, searchParameter)
+        view.finish()
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "po: ${item.position} - applink: ${item.applink}"
-        view?.trackEventClickRecentView(item, label)
+        view.trackEventClickRecentView(item, label)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "po: ${item.position} - applink: ${item.applink}"
-        view?.trackEventClickProductLine(item, getUserId(), label)
+        view.trackEventClickProductLine(item, getUserId(), label)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
-        view?.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
+        view.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
+    }
+
+    override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
+        view.trackEventClickSearchBarEducation(item)
+
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 }

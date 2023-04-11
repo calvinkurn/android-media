@@ -1,11 +1,15 @@
 package com.tokopedia.contactus.createticket.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
@@ -13,7 +17,6 @@ import com.tokopedia.contactus.createticket.model.ImageUpload;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -22,18 +25,12 @@ import java.util.List;
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ViewHolder> {
 
     private static final int VIEW_UPLOAD_BUTTON = 100;
-    private int maxImage = 5;
     private int canUpload = 0;
-
-    public int getMaxImage() {
-        return maxImage;
-    }
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-       private ImageView image;
-       private ImageView deleteButton;
+       private final ImageView image;
+       private final ImageView deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -50,13 +47,11 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
 
     private ProductImageListener listener;
-    private ArrayList<ImageUpload> data;
-    private ArrayList<ImageUpload> deletedImage;
+    private final ArrayList<ImageUpload> data;
 
     public ImageUploadAdapter(Context context) {
         this.context = context;
         this.data = new ArrayList<>();
-        this.deletedImage = new ArrayList<>();
     }
 
     public Context context;
@@ -65,6 +60,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         return new ImageUploadAdapter(context);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
@@ -72,17 +68,15 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case VIEW_UPLOAD_BUTTON:
-                bindUploadButton(holder, position);
-                break;
-            default:
-                bindImage(holder, position);
-                break;
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (getItemViewType(position) == VIEW_UPLOAD_BUTTON) {
+            bindUploadButton(holder, position);
+        } else {
+            bindImage(holder, position);
         }
     }
 
+    @SuppressLint({"DeprecatedMethod", "NotifyDataSetChanged"})
     private void bindImage(ViewHolder holder, final int position) {
 
         try {
@@ -97,12 +91,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         holder.image.setOnClickListener(listener.onImageClicked(position, data.get(position)));
         holder.deleteButton.setVisibility(View.VISIBLE);
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                data.remove(position);
-                notifyDataSetChanged();
-            }
+        holder.deleteButton.setOnClickListener(v -> {
+            data.remove(position);
+            notifyDataSetChanged();
         });
 
         setBorder(holder, position);
@@ -111,9 +102,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(R.color.contact_us_green_500));
+            holder.image.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500));
         } else {
-            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            holder.image.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 
@@ -133,6 +124,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public int getItemViewType(int position) {
+        int maxImage = 5;
         if (position == data.size() && data.size() < maxImage) {
             return VIEW_UPLOAD_BUTTON;
         } else {
@@ -140,35 +132,16 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         }
     }
 
-    public void addList(List<ImageUpload> data) {
-        this.data.clear();
-        this.data.addAll(data);
-        notifyDataSetChanged();
-    }
-
-
-
     public ArrayList<ImageUpload> getList() {
         return this.data;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void addImage(ImageUpload image) {
         data.add(image);
         notifyDataSetChanged();
     }
 
-    public void removeImage(int currentPosition) {
-        data.remove(currentPosition);
-        for (int i = currentPosition; i < data.size(); i++) {
-            data.get(i).setPosition(i);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void setMaxImage(int max) {
-        this.maxImage = max;
-        notifyDataSetChanged();
-    }
 
     public void setListener(ProductImageListener listener) {
         this.listener = listener;
@@ -176,16 +149,6 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public void setCanUpload(boolean canUpload) {
         this.canUpload = canUpload ? 1 : 0;
-    }
-
-
-    public List<ImageUpload> getDeletedList() {
-        return deletedImage;
-    }
-
-    public void setDeletedList(List<ImageUpload> deletedImage) {
-        this.deletedImage.clear();
-        this.deletedImage.addAll(deletedImage);
     }
 
 }

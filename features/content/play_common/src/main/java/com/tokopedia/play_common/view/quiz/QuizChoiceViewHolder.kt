@@ -1,19 +1,18 @@
 package com.tokopedia.play_common.view.quiz
 
-import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.R
+import com.tokopedia.play_common.databinding.ItemQuizOptionBinding
 
 /**
  * @author by astidhiyaa on 08/04/22
  */
-class QuizChoiceViewHolder(
-    itemView: View,
+open class QuizChoiceViewHolder(
+    binding: ItemQuizOptionBinding,
     private val listener: Listener
-) : BaseViewHolder(itemView) {
+) : BaseViewHolder(binding.root) {
 
-    private val widget = itemView.findViewById<QuizChoicesView>(R.id.quiz_option)
+    private val widget = binding.quizOption
 
     fun bind(item: QuizChoicesUiModel){
         widget.setupView(item)

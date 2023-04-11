@@ -16,6 +16,9 @@ data class BundleDetailUiModel(
     var shopInfo: BundleShopUiModel? = null,
     var products: List<BundleProductUiModel> = emptyList(),
     val productSoldInfo: String = "",
-    val useProductSoldInfo: Boolean = false,
+    val useProductSoldInfo: Boolean = true,
     var applink: String = "",
+    var selectedBundleId: String = "0",
+    var selectedBundleApplink: String = "",
+    var bundleType: String = "",
 )

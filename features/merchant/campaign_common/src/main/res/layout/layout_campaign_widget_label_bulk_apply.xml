@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_label_bulk_apply"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/label_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_GN50"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/label_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_campaign_common_widget_bulk_apply_label" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_label_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            tools:text="Atur Sekaligus 5 Produk"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/label_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/chevron_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:tint="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/text_label_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:srcCompat="@drawable/iconunify_chevron_right" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

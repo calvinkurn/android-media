@@ -3,7 +3,7 @@ package com.tokopedia.home_account.explicitprofile
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home_account.explicitprofile.fakes.ExplicitProfileInterceptor
 import com.tokopedia.home_account.explicitprofile.fakes.FakeExplicitProfileActivity

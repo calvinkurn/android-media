@@ -9,6 +9,8 @@ import java.io.File
 
 object LivenessDetectionLogTracker {
 
+    private const val LIMIT_MESSAGE = 1000
+
     enum class LogType(val type: String) {
         SUCCESS("SUCCESS"),
         FAILED("FAILED"),
@@ -23,22 +25,18 @@ object LivenessDetectionLogTracker {
         logType: LogType,
         clazz: String,
         detectionType: Detector.DetectionType? = NONE,
-        actionStatus: Detector.ActionStatus? = null,
-        warnCode: Detector.WarnCode? = null,
         detectionFailedType: Detector.DetectionFailedType? = null,
         message: String? = null,
         throwable: Throwable? = null
     ) {
         ServerLogger.log(
             Priority.P2, "LIVENESS_DETECTION", mapOf(
-                "type" to logType.toString(),
+                "detectionLogType" to logType.toString(), // before use `type`
                 "class" to clazz,
                 "detectionType" to detectionType?.name.orEmpty(),
-                "actionStatus" to actionStatus?.name.orEmpty(),
-                "warnCode" to warnCode?.name.orEmpty(),
                 "detectionFailedType" to detectionFailedType?.name.orEmpty(),
                 "message" to message.orEmpty(),
-                "stackTrace" to throwable?.message.orEmpty()
+                "stackTrace" to throwable?.message?.take(LIMIT_MESSAGE).orEmpty()
             )
         )
 
@@ -63,10 +61,10 @@ object LivenessDetectionLogTracker {
     ) {
         ServerLogger.log(
             Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf(
-                "type" to type.toString(),
+                "errorImageType" to type.toString(), // before use `type`
                 "cachePath" to cachePath.orEmpty(),
                 "fileExists" to "${file?.exists() == true}",
-                "stack_trace" to "${throwable.message}"
+                "stack_trace" to throwable.message?.take(LIMIT_MESSAGE).orEmpty()
             )
         )
 

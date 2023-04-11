@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -18,17 +19,24 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRON
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
+import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.LOG_TYPE
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -112,22 +120,19 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeCard(intent: Intent) {
-        val timeCheckCardDuration = intent.getStringExtra(EMONEY_TIME_CHECK_LOGIC_TAG)
-            ?: context?.resources?.getString(com.tokopedia.emoney.R.string.emoney_nfc_no_need_to_check_logic) ?: ""
-        val startTimeBeforeCallGql = System.currentTimeMillis()
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, startTimeBeforeCallGql, timeCheckCardDuration)
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
                 showLoading(getOperatorName(issuerActive))
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
-                        0, startTimeBeforeCallGql, timeCheckCardDuration)
+                        0)
             } else {
                 val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty(),
@@ -234,9 +239,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        tapcashBalanceViewModel.errorWrite.observe(viewLifecycleOwner, Observer { throwable ->
+        tapcashBalanceViewModel.errorWrite.observe(viewLifecycleOwner, Observer { pair ->
             context?.let { context ->
-                val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, errorHanlderBuilder)
+                updateLogErrorTapcash(pair.second)
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, pair.first, errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty(),
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_write_error_desc)+" "+errorMessage.second,
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
@@ -244,6 +250,17 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         isGlobalErrorShow = false,
                         tapCashWriteFailed = true
                 )
+            }
+        })
+
+        tapcashBalanceViewModel.tapcashLogError.observe(viewLifecycleOwner, Observer {
+            when(it.first) {
+                is Success -> {
+                    // do nothing
+                }
+                is Fail -> {
+                    sendLogDebugTapcash(it.second)
+                }
             }
         })
 
@@ -265,6 +282,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 }
             }
         })
+    }
+
+    private fun updateLogErrorTapcash(param: RechargeEmoneyInquiryLogRequest) {
+        tapcashBalanceViewModel.tapcashErrorLogging(param)
     }
 
     protected open fun processBrizzi(intent: Intent) {
@@ -316,7 +337,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = PendingIntent.getActivity(it, 0, it.intent, 0)
+                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
+                    } else {
+                        PendingIntent.getActivity(it, 0, it.intent, 0)
+                    }
                     nfcAdapter.enableForegroundDispatch(it, pendingIntent,
                             arrayOf<IntentFilter>(), null)
                     nfcDisabledView.visibility = View.GONE
@@ -350,11 +375,22 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
+    private fun sendLogDebugTapcash(param: RechargeEmoneyInquiryLogRequest) {
+        val map = HashMap<String, String>()
+        map.put(ISSUER_KEY, param.log.issueId.toString())
+        map.put(CARD_NUMBER_KEY, param.log.cardNumber)
+        map.put(RC_KEY, param.log.rc)
+        map.put(LOG_TYPE, TAPCASH_ERROR_LOGGER)
+        ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
-
-        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
+        private const val ISSUER_KEY = "issuer_id"
+        private const val CARD_NUMBER_KEY = "card_number"
+        private const val RC_KEY = "rc"
+        private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

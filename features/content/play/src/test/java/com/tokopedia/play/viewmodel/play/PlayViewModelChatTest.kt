@@ -2,11 +2,14 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.play.fake.chat.FakeChatManager
+import com.tokopedia.play.fake.chat.FakeChatStreams
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChatModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEmpty
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,9 +38,20 @@ class PlayViewModelChatTest {
 
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
+    private val mockChatStreams = FakeChatStreams(
+        CoroutineScope(dispatchers.main),
+        dispatchers = dispatchers
+    )
+    private val mockChatManager = FakeChatManager(mockChatStreams)
+
     private val chatStreamsFactory = object : ChatStreams.Factory {
         override fun create(scope: CoroutineScope): ChatStreams {
-            return ChatStreams(scope, dispatchers)
+            return mockChatStreams
+        }
+    }
+    private val chatManagerFactory = object : ChatManager.Factory {
+        override fun create(chatStreams: ChatStreams): ChatManager {
+            return mockChatManager
         }
     }
 
@@ -58,6 +72,7 @@ class PlayViewModelChatTest {
         val robot = createPlayViewModelRobot(
             userSession = userSession,
             dispatchers = dispatchers,
+            chatManagerFactory = chatManagerFactory,
             chatStreamsFactory = chatStreamsFactory,
         ) {
             createPage(channelData)
@@ -96,6 +111,7 @@ class PlayViewModelChatTest {
         val robot = createPlayViewModelRobot(
             userSession = userSession,
             dispatchers = dispatchers,
+            chatManagerFactory = chatManagerFactory,
             chatStreamsFactory = chatStreamsFactory,
         ) {
             createPage(channelData)

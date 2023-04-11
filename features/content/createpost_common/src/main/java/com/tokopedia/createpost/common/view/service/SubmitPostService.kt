@@ -1,43 +1,39 @@
 package com.tokopedia.createpost.common.view.service
 
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
-import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.createpost.*
-import com.tokopedia.createpost.common.*
+import com.tokopedia.createpost.common.DRAFT_ID
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
+import com.tokopedia.createpost.common.di.qualifier.CreatePostCommonDispatchers
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
+import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
+import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
-import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
-import com.tokopedia.createpost.common.view.util.SubmitPostNotificationManager
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import rx.Subscriber
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 
 /**
- * @author by milhamj on 26/02/19.
+ * Revamped By : Jonathan Darwin on October 13, 2022
  */
+@Suppress("LateinitUsage")
 class SubmitPostService : JobIntentServiceX() {
 
     @Inject
@@ -47,16 +43,21 @@ class SubmitPostService : JobIntentServiceX() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var twitterManager: TwitterManager
+    lateinit var sellerAppReviewHelper: com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 
     @Inject
-    lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
+    @SubmitPostCoroutineScope
+    lateinit var scope: CoroutineScope
 
-    private var notificationManager: SubmitPostNotificationManager? = null
+    @Inject
+    @CreatePostCommonDispatchers
+    lateinit var dispatchers: CoroutineDispatchers
+
+    private var postUpdateProgressManager: PostUpdateProgressManager? = null
 
     companion object {
-        private const val JOB_ID = 13131313
-        private const val DURATION = 7
+        private const val JOB_ID = 13131314
+
         fun startService(context: Context, draftId: String) {
             val work = Intent(context, SubmitPostService::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
@@ -66,145 +67,192 @@ class SubmitPostService : JobIntentServiceX() {
     }
 
     override fun onCreate() {
-        super.onCreate()
         initInjector()
+        super.onCreate()
     }
 
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = SaveInstanceCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
-                CreatePostViewModel.TAG,
-                CreatePostViewModel::class.java
+            CreatePostViewModel.TAG,
+            CreatePostViewModel::class.java
         ) ?: return
-        val notifId = Random().nextInt()
-        notificationManager = getNotificationManager(notifId, viewModel)
-        submitPostUseCase.notificationManager = notificationManager
 
-        submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
+        postUpdateProgressManager = getProgressManager(viewModel)
+        postUpdateProgressManager!!.setCreatePostData(viewModel)
+        if (!viewModel.isEditState)
+            postUpdateProgressManager!!.setFirstIcon(viewModel.completeImageList.first().path)
+
+        postUpdateProgressManager?.isEditPostValue(viewModel.isEditState)
+        postUpdateProgressManager?.onAddProgress()
+
+        submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
+
+        scope.launchCatchError(block = {
+            submitPostUseCase.state.collectLatest { state ->
+                when(state) {
+                    is SubmitPostResult.Fail -> {
+                        postUpdateProgressManager?.onFailedPost(
+                            com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                                this@SubmitPostService,
+                                state.throwable,
+                            )
+                        )
+                        stopService()
+                    }
+                    is SubmitPostResult.Success -> {
+                        val result = state.data
+
+                        if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+                            postUpdateProgressManager?.onFailedPost(
+                                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                                    this@SubmitPostService,
+                                    RuntimeException()
+                                )
+                            )
+                            stopService()
+
+                            return@collectLatest
+                        } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
+                            postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+                            stopService()
+
+                            return@collectLatest
+                        }
+
+
+                        withContext(dispatchers.main) {
+                            postUpdateProgressManager?.onSuccessPost()
+                            sendBroadcast()
+                            addFlagOnCreatePostSuccess()
+
+                            stopService()
+                        }
+                    }
+                }
+            }
+        }) {
+            postUpdateProgressManager?.onFailedPost(
+                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                    this@SubmitPostService,
+                    it,
+                )
+            )
+
+            stopService()
+        }
+
+        scope.launch {
+            submitPostUseCase.execute(
                 viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
-                if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
                 else userSession.shopId,
                 viewModel.caption,
-                (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
-                else viewModel.fileImageList).map { it.path to it.type },
+                viewModel.completeImageList.map {
+                    getFileAbsolutePath(it.path)!! to it.type
+                },
                 if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                else viewModel.productIdList
-        ), getSubscriber())
+                else viewModel.productIdList, viewModel.completeImageList,
+                viewModel.mediaWidth,
+                viewModel.mediaHeight
+            )
+        }
+
+
+        /**
+         * The code below will be used when we have migrated
+         * both image & video uploader to uploadpedia
+         */
+//        scope.launchCatchError(block = {
+//            val result = submitPostUseCase.executeOnBackground(
+//                viewModel.postId,
+//                viewModel.authorType,
+//                viewModel.token,
+//                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
+//                else userSession.shopId,
+//                viewModel.caption,
+//                viewModel.completeImageList.map {
+//                    getFileAbsolutePath(it.path)!! to it.type
+//                },
+//                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+//                else viewModel.productIdList, viewModel.completeImageList,
+//                viewModel.mediaWidth,
+//                viewModel.mediaHeight
+//            )
+//
+//            if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+//                postUpdateProgressManager?.onFailedPost(
+//                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+//                        this@SubmitPostServiceNew,
+//                        RuntimeException()
+//                    )
+//                )
+//                return@launchCatchError
+//            } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
+//                postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+//                return@launchCatchError
+//            }
+//
+//
+//            postUpdateProgressManager?.onSuccessPost()
+//            sendBroadcast()
+//            postContentToOtherService(result.feedContentSubmit.meta.content)
+//            addFlagOnCreatePostSuccess()
+//        }) {
+//            postUpdateProgressManager?.onFailedPost(
+//                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+//                    this@SubmitPostServiceNew,
+//                    it,
+//                )
+//            )
+//        }
+    }
+
+    private fun stopService() {
+        stopSelf()
+        scope.cancel()
+    }
+
+    private fun getFileAbsolutePath(path: String): String? {
+        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://"))
+            Uri.parse(path).path
+        else
+            path
     }
 
     private fun initInjector() {
         DaggerCreatePostCommonComponent.builder()
-                .createPostCommonModule(CreatePostCommonModule(this.applicationContext))
-                .build()
-                .inject(this)
+            .createPostCommonModule(CreatePostCommonModule(this.applicationContext))
+            .build()
+            .inject(this)
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+    private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
-    private fun getNotificationManager(notifId: Int, viewModel: CreatePostViewModel): SubmitPostNotificationManager {
-        val authorType = viewModel.authorType
-        val firstImage = viewModel.completeImageList.firstOrNull()?.path ?: ""
+    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
+        val firstImage = ""
+        try {
+            com.tokopedia.createpost.common.view.util.FileUtil.createFilePathFromUri(
+                applicationContext,
+                Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: "")
+            )
+        } catch (e: Exception) {
+            Timber.e("Exception")
+        }
         val maxCount = viewModel.completeImageList.size
-
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : SubmitPostNotificationManager(notifId, maxCount, firstImage, manager,
-                this@SubmitPostService) {
-
-            override fun getSuccessIntent(): PendingIntent {
-                val appLink = when {
-                    GlobalConfig.isSellerApp() -> {
-                        ApplinkConst.SHOP_FEED.replace(SHOP_ID_PARAM, userSession.shopId)
-                    }
-                    isTypeAffiliate(authorType) -> {
-                        ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
-                    }
-                    else -> {
-                        ApplinkConst.FEED
-                    }
-                }
-
-                val intent = RouteManager.getIntent(context, appLink)
-                return PendingIntent.getActivity(context, 0, intent, 0)
-            }
-
-            override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
-                    context.getString(R.string.cp_common_error_create_post)
-                else
-                    errorMessage
-
-
-                val applink = if (authorType == TYPE_AFFILIATE) {
-                    ApplinkConst.AFFILIATE_DRAFT_POST
-                } else {
-                    ApplinkConst.CONTENT_DRAFT_POST
-                }
-
-                val cacheManager = SaveInstanceCacheManager(context, true)
-                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(DURATION.toLong()))
-
-                val intent = RouteManager.getIntent(
-                        context,
-                        applink.replace(DRAFT_ID_PARAM, cacheManager.id ?: "0")
-                                .plus("?$CREATE_POST_ERROR_MSG=$message")
-                )
-
-                return PendingIntent.getActivity(context, 0, intent, 0)
-            }
+        return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
     }
 
-    private fun getSubscriber(): Subscriber<SubmitPostData> {
-        return object : Subscriber<SubmitPostData>() {
-            override fun onNext(submitPostData: SubmitPostData?) {
-                if (submitPostData == null
-                        || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-                    notificationManager?.onFailedPost(ErrorHandler.getErrorMessage(
-                            this@SubmitPostService,
-                            RuntimeException()
-                    ))
-                    return
-                } else if (!TextUtils.isEmpty(submitPostData.feedContentSubmit.error)) {
-                    notificationManager?.onFailedPost(submitPostData.feedContentSubmit.error)
-                    return
-                }
-                notificationManager?.onSuccessPost()
-                sendBroadcast()
-                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
-                addFlagOnCreatePostSuccess()
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                notificationManager?.onFailedPost(ErrorHandler.getErrorMessage(
-                        this@SubmitPostService,
-                        e
-                ))
-            }
-
-            private fun sendBroadcast() {
-                val intent = Intent(BROADCAST_SUBMIT_POST)
-                intent.putExtra(SUBMIT_POST_SUCCESS, true)
-                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-            }
-        }
+    private fun sendBroadcast() {
+        val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
+        intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
     }
-
-    private fun postContentToOtherService(content: Content) {
-        if (twitterManager.shouldPostToTwitter) postToTwitter(content)
-    }
-
-    private fun postToTwitter(content: Content) {
-        GlobalScope.launchCatchError(Dispatchers.IO, block = {
-            twitterManager.postTweet(content.description)
-        }) { Timber.d(it) }
-    }
-
 
     private fun addFlagOnCreatePostSuccess() {
         sellerAppReviewHelper.savePostFeedFlag()

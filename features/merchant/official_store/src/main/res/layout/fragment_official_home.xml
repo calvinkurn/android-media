@@ -14,7 +14,7 @@
         android:id="@+id/statusbar"
         android:background="@color/Unify_N0"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -60,8 +60,8 @@
     <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl7"
-        android:background="@color/Unify_N0"
+        android:layout_height="64dp"
+        android:background="@color/Unify_Background"
         android:minHeight="32dp"
         android:maxHeight="64dp"
         app:tabMode="scrollable"

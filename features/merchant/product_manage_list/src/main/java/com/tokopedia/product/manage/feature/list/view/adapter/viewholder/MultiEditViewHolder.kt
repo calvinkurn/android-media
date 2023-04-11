@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ItemProductManageMultiEditBinding
@@ -16,9 +17,26 @@ class MultiEditViewHolder(itemView: View, private val listener: MenuClickListene
 
     private val binding by viewBinding<ItemProductManageMultiEditBinding>()
 
-    fun bind(titleId: Int) {
+    fun bind(titleId: Int, isShopModerated: Boolean) {
         binding?.textMenu?.text = itemView.context.getString(titleId)
-        itemView.setOnClickListener { listener.onClickMenuItem(titleId) }
+
+        if (isShopModerated && titleId != R.string.product_bs_delete_title) {
+            itemView.setOnClickListener(null)
+            binding?.textMenu?.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifycomponents.R.color.Unify_NN400
+                )
+            )
+        } else {
+            itemView.setOnClickListener { listener.onClickMenuItem(titleId) }
+            binding?.textMenu?.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifycomponents.R.color.Unify_NN950
+                )
+            )
+        }
     }
 
     interface MenuClickListener {

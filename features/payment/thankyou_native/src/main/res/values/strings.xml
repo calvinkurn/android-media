@@ -93,6 +93,7 @@
     <string name="thank_obtained_after_transaction">Didapat setelah transaksi</string>
     <string name="thank_payment_detail">Detail Pembayaran</string>
     <string name="thank_item_purchased">Barang yang dibeli</string>
+    <string name="thank_page_fee_detail_title">Biaya Transaksi</string>
 
 
 
@@ -104,7 +105,7 @@
     <string name="thank_exact_transfer_upto_3_digits"><![CDATA[<ul>
     <li>Transfer tepat hingga <b>3 digit terakhir</b></li>
     <li>Demi keamanan transaksi, <b>jangan berikan bukti transfer</b> pada siapapun.</li>
-    <li>Tidak disarankan transfer melalui LLG/Kliring/SKBNI</li>
+    <li>Tidak disarankan transfer melalui LLG/Kliring/SKNBI</li>
     </ul>]]></string>
 
     <string name="thankyou_bank_account_copied">Nomor Rekening berhasil disalin</string>

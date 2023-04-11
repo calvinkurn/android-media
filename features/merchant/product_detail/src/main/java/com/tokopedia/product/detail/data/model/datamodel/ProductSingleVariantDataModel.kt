@@ -10,12 +10,13 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
  * Created by Yehezkiel on 21/05/21
  */
 data class ProductSingleVariantDataModel(
-        val type: String = "",
-        val name: String = "",
-        var variantLevelOne: VariantCategory? = null,
-        var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
-        var isVariantError: Boolean = false,
-        var isRefreshing: Boolean = false
+    val type: String = "",
+    val name: String = "",
+    var variantLevelOne: VariantCategory? = null,
+    var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
+    var isVariantError: Boolean = false,
+    var isRefreshing: Boolean = false,
+    var thumbnailType: String = "" // single variant for thumbnail variant in pdp
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
@@ -28,8 +29,7 @@ data class ProductSingleVariantDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductSingleVariantDataModel) {
-            isVariantError == newData.isVariantError
-                    && variantLevelOne.hashCode() == newData.variantLevelOne.hashCode()
+            isVariantError == newData.isVariantError && variantLevelOne == newData.variantLevelOne
         } else {
             false
         }
@@ -42,7 +42,10 @@ data class ProductSingleVariantDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductSingleVariantDataModel && isSelectedVariantChanged(newData)) {
-            bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
+            bundle.putInt(
+                ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT
+            )
             bundle
         } else {
             null
@@ -61,4 +64,8 @@ data class ProductSingleVariantDataModel(
         }
         return isChanged
     }
+
+    val isThumbnailType get() = thumbnailType == ProductDetailConstant.THUMB_MINI_VARIANT_OPTIONS
+
+    fun getComponentNameAsThumbnail(): String = name() + " - thumbnail"
 }

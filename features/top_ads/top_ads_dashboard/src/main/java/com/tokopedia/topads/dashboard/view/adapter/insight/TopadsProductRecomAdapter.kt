@@ -80,7 +80,7 @@ class TopadsProductRecomAdapter(
             holder.recommendedBid?.text = recommendationBid
             holder.editBudget?.textFieldInput?.setText(convertToCurrency(recomBid.toLong()))
             holder.cbProductRecom?.isChecked = isChecked
-            setCurrentBid = recomBid.toInt()
+            setCurrentBid = recomBid
             holder.view.setOnClickListener {
                 holder.cbProductRecom?.isChecked = holder.cbProductRecom?.isChecked == false
                 isChecked = holder.cbProductRecom?.isChecked == true
@@ -105,9 +105,9 @@ class TopadsProductRecomAdapter(
                 NumberTextWatcher(holder.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    items[holder.adapterPosition].setCurrentBid = number.toInt()
+                    items[holder.adapterPosition].setCurrentBid = number.toInt().toString()
                     when {
-                        number < items[holder.adapterPosition].recomBid.toDouble() && number > minBid.toInt() -> {
+                        number < items[holder.adapterPosition].recomBid.toDouble() && number > minBid.toFloat() -> {
                             enableButton.invoke(true)
                             holder.editBudget?.setError(false)
                             holder.editBudget?.setMessage(

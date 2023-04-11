@@ -42,9 +42,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBinding,
-                                private val listener: MiniCartListActionListener) :
-        AbstractViewHolder<MiniCartProductUiModel>(viewBinding.root) {
+class MiniCartProductViewHolder(
+    private val viewBinding: ItemMiniCartProductBinding,
+    private val listener: MiniCartListActionListener
+) :
+    AbstractViewHolder<MiniCartProductUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_product
@@ -63,7 +65,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         super.onViewRecycled()
         delayChangeQty?.cancel()
         delayChangeNotes?.cancel()
-        qtyTextWatcher = null
+        if (qtyTextWatcher != null) {
+            viewBinding.qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
+            qtyTextWatcher = null
+        }
     }
 
     override fun bind(element: MiniCartProductUiModel) {
@@ -138,10 +143,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         with(viewBinding) {
             textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix()
 
-            val hasPriceOriginal = element.productOriginalPrice != 0L
-            val hasWholesalePrice = element.productWholeSalePrice != 0L
+            val hasPriceOriginal = element.productOriginalPrice > 0
+            val hasWholesalePrice = element.productWholeSalePrice > 0
             val hasPriceDrop = element.productInitialPriceBeforeDrop > 0 && element.productInitialPriceBeforeDrop > element.productPrice
-            val paddingLeft = if(element.isBundlingItem) {
+            val paddingLeft = if (element.isBundlingItem) {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
             } else {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
@@ -152,7 +157,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 if (element.productSlashPriceLabel.isNotBlank()) {
                     // Slash price
                     renderSlashPriceFromCampaign(element)
-                } else if (element.productInitialPriceBeforeDrop != 0L) {
+                } else if (element.productInitialPriceBeforeDrop > 0) {
                     val wholesalePrice = element.productWholeSalePrice
                     if (wholesalePrice > 0 && wholesalePrice < element.productPrice) {
                         // Wholesale
@@ -161,7 +166,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                         // Price drop
                         renderSlashPriceFromPriceDrop(element)
                     }
-                } else if (element.productWholeSalePrice != 0L) {
+                } else if (element.productWholeSalePrice > 0) {
                     // Wholesale
                     renderSlashPriceFromWholesale(element)
                 }
@@ -205,7 +210,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 constraintSet.applyTo(containerProduct)
             }
 
-            if(element.isBundlingItem) {
+            if (element.isBundlingItem) {
                 adjustProductPriceConstraint()
             }
         }
@@ -256,7 +261,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             val tmpProductInformation = element.productInformation.toMutableList()
             if (element.productWholeSalePrice > 0) {
                 val wholesaleLabel = layoutProductInfo.context?.getString(R.string.mini_cart_label_wholesale_price)
-                        ?: ""
+                    ?: ""
                 tmpProductInformation.add(wholesaleLabel)
             }
             if (tmpProductInformation.isNotEmpty()) {
@@ -315,7 +320,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                             renderProductNotesEmpty(element)
                         }
                         true
-                    } else false
+                    } else {
+                        false
+                    }
                 }
             }
             textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -333,7 +340,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
             textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -347,7 +353,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-
                 }
             })
             adjustButtonDeleteVisibility(element)
@@ -411,7 +416,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(!element.isBundlingItem || element.isLastProductItem) {
+            if (!element.isBundlingItem || element.isLastProductItem) {
                 adjustButtonDeleteConstraint(element)
                 buttonDeleteCart.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -440,7 +445,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes_filled, ConstraintSet.BOTTOM, marginTop)
                 }
                 constraintSet.applyTo(containerProduct)
-            } else if(element.isBundlingItem && element.isLastProductItem) {
+            } else if (element.isBundlingItem && element.isLastProductItem) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes, ConstraintSet.BOTTOM, margin16dp)
@@ -489,7 +494,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             qtyEditorProduct.setValue(productQty)
             qtyTextWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -513,7 +517,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-
                 }
             }
             qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -531,7 +534,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     }
                     qtyEditorProduct.editText.clearFocus()
                     true
-                } else false
+                } else {
+                    false
+                }
             }
             qtyEditorProduct.setAddClickListener {
                 listener.onQuantityPlusClicked()
@@ -599,7 +604,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(!element.isBundlingItem || element.isLastProductItem) {
+            if (!element.isBundlingItem || element.isLastProductItem) {
                 textProductUnavailableAction.text = action.message
                 textProductUnavailableAction.setOnClickListener {
                     if (element.selectedUnavailableActionLink.isNotBlank()) {
@@ -664,9 +669,11 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderBundleQuantity(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(element.isBundlingItem && element.bundleLabelQty > 1) {
+            if (element.isBundlingItem && element.bundleLabelQty > 1) {
                 labelBundleQty.text = itemView.context.getString(
-                    R.string.mini_cart_bundle_qty_label, element.bundleLabelQty)
+                    R.string.mini_cart_bundle_qty_label,
+                    element.bundleLabelQty
+                )
                 labelBundleQty.show()
             } else {
                 labelBundleQty.hide()
@@ -691,7 +698,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderVerticalLine(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(element.isBundlingItem) {
+            if (element.isBundlingItem) {
                 adjustVerticalLine(element)
                 verticalLine.show()
             } else {
@@ -702,7 +709,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderBottomDivider(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(element.showBottomDivider) {
+            if (element.showBottomDivider) {
                 dividerBottom.show()
             } else {
                 dividerBottom.hide()
@@ -713,7 +720,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun adjustVerticalLine(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(element.isLastProductItem) {
+            if (element.isLastProductItem) {
                 val constraint = ConstraintSet()
                 constraint.clone(containerProduct)
                 constraint.connect(
@@ -728,7 +735,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     }
 
     private fun adjustTextNotesConstraint(element: MiniCartProductUiModel) {
-        if(element.isBundlingItem && element.isLastProductItem) {
+        if (element.isBundlingItem && element.isLastProductItem) {
             with(viewBinding) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
@@ -750,7 +757,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     }
 
     private fun adjustVerticalLineConstraint(element: MiniCartProductUiModel) {
-        if(element.isBundlingItem && element.isLastProductItem) {
+        if (element.isBundlingItem && element.isLastProductItem) {
             with(viewBinding) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
@@ -824,15 +831,17 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         with(viewBinding) {
             val lp = containerProduct.layoutParams
 
-            val margin = if(element.showBottomDivider) {
+            val margin = if (element.showBottomDivider) {
                 itemView.context.resources.getDimensionPixelSize(
-                    com.tokopedia.abstraction.R.dimen.dp_0)
+                    com.tokopedia.abstraction.R.dimen.dp_0
+                )
             } else {
                 itemView.context.resources.getDimensionPixelSize(
-                    com.tokopedia.abstraction.R.dimen.dp_16)
+                    com.tokopedia.abstraction.R.dimen.dp_16
+                )
             }
 
-            when(lp) {
+            when (lp) {
                 is ConstraintLayout.LayoutParams -> {
                     containerProduct.layoutParams = lp.apply {
                         bottomMargin = margin

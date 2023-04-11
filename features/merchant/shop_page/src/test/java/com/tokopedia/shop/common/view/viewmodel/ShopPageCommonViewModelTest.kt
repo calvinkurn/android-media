@@ -54,7 +54,7 @@ class ShopPageCommonViewModelTest {
     }
 
     @Test
-    fun  `When change shared product grid type should be successful`(){
+    fun `When change shared product grid type should be successful`() {
         val mockData = ShopProductViewGridType.BIG_GRID
 
         shopChangeProductGridSharedViewModel.changeSharedProductGridType(mockData)
@@ -67,8 +67,8 @@ class ShopPageCommonViewModelTest {
     }
 
     @Test
-    fun  `When set page following status and isFollowing is true`(){
-        val mockData = FollowShop(null, null,null,true,null,null)
+    fun `When set page following status and isFollowing is true`() {
+        val mockData = FollowShop(null, null, null, true, null, null)
 
         shopPageFollowingStatusSharedViewModel.setShopPageFollowingStatus(mockData, context)
 
@@ -80,7 +80,7 @@ class ShopPageCommonViewModelTest {
     }
 
     @Test
-    fun  `When set page following status as null`(){
+    fun `When set page following status as null`() {
         shopPageFollowingStatusSharedViewModel.setShopPageFollowingStatus(null, context)
 
         shopPageFollowingStatusSharedViewModel.shopPageFollowingStatusLiveData.observeAwaitValue()
@@ -90,10 +90,9 @@ class ShopPageCommonViewModelTest {
         }
     }
 
-
     @Test
-    fun  `When set page following status and isFollowing is false`(){
-        val mockData = FollowShop(null, null,null,false,null,null)
+    fun `When set page following status and isFollowing is false`() {
+        val mockData = FollowShop(null, null, null, false, null, null)
 
         shopPageFollowingStatusSharedViewModel.setShopPageFollowingStatus(mockData, context)
 
@@ -105,7 +104,7 @@ class ShopPageCommonViewModelTest {
     }
 
     @Test
-    fun  `When change shared sort data should be successful`(){
+    fun `When change shared sort data should be successful`() {
         val mockData = ShopProductFilterParameter()
 
         shopProductFilterParameterSharedViewModel.changeSharedSortData(mockData)
@@ -134,6 +133,12 @@ class ShopPageCommonViewModelTest {
 
         Assert.assertEquals(mapParameter.containsKey(IS_FULFILLMENT_KEY), false)
         Assert.assertEquals(shopProductFilterParameterSharedViewModel.isFulfillmentFilterActive, false)
+    }
+
+    @Test
+    fun `When change isFulfillmentFilterActive is set to true, then isFulfillmentFilterActive should be true`() {
+        shopProductFilterParameterSharedViewModel.isFulfillmentFilterActive = true
+        Assert.assertEquals(shopProductFilterParameterSharedViewModel.isFulfillmentFilterActive, true)
     }
 
     @Test

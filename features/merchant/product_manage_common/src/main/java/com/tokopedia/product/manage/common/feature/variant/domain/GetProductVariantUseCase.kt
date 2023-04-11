@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,6 +10,7 @@ import com.tokopedia.product.manage.common.feature.variant.data.query.GetProduct
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetProductVariantGqlQuery", GetProductVariant.QUERY)
 class GetProductVariantUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
@@ -23,6 +25,8 @@ class GetProductVariantUseCase @Inject constructor(
         private const val PARAM_EDIT = "edit"
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_BUNDLE = "bundle"
+        private const val PARAM_NOTIFY_ME = "notifyme"
+        private const val PARAM_STOCK_ALERT = "stockAlert"
 
         fun createRequestParams(productId: String,
                                 paramEdit: Boolean = true,
@@ -37,6 +41,8 @@ class GetProductVariantUseCase @Inject constructor(
             val extraInfoParam = RequestParams().apply {
                 putBoolean(PARAM_EVENT, true)
                 putBoolean(PARAM_BUNDLE, isBundling)
+                putBoolean(PARAM_NOTIFY_ME, true)
+                putBoolean(PARAM_STOCK_ALERT, true)
             }.parameters
 
             return RequestParams().apply {
@@ -52,7 +58,7 @@ class GetProductVariantUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(GetProductVariant.QUERY)
+        setGraphqlQuery(GetProductVariantGqlQuery())
         setTypeClass(GetProductVariantResponse::class.java)
     }
 

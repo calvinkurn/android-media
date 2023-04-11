@@ -9,13 +9,13 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.util.AnimationUtils
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
@@ -107,7 +107,7 @@ class QuizWidgetView : ConstraintLayout {
             adapter = quizAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(QuizOptionItemDecoration(context))
-            addOnImpressionListener(impressHolder){
+            addImpressionListener(impressHolder){
                 mListener?.onQuizImpressed()
             }
         }
@@ -152,12 +152,6 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setupQuizForm(listOfChoices: List<QuizChoicesUiModel>) {
         quizAdapter.setItemsAndAnimateChanges(listOfChoices)
-    }
-
-    fun setReward(reward: String){
-        binding.viewQuizReward.root.shouldShowWithAction(reward.isNotBlank()){
-            binding.viewQuizReward.tvGameReward.text = reward
-        }
     }
 
     fun animateAnswer(isCorrect: Boolean){

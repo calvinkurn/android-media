@@ -7,6 +7,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -43,7 +44,7 @@ class LastFilterDataView(
                 title = lastFilterData.title,
                 keyword = keyword,
                 applink = lastFilterData.applink,
-                trackingOption = lastFilterData.trackingOption,
+                trackingOption = lastFilterData.trackingOption.toIntOrZero(),
                 componentId = lastFilterData.componentId,
                 dimension90 = dimension90,
                 valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }

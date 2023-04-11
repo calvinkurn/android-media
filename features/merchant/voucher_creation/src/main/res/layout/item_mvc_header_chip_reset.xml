@@ -4,19 +4,20 @@
     android:id="@+id/chipMvcHeaderReset"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/layout_lvl1"
-    android:layout_marginRight="@dimen/layout_lvl1"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp"
     android:background="@drawable/mvc_rectangle_white_border_grey_radius_16dp">
 
     <ImageView
         android:layout_width="@dimen/mvc_dimen_12dp"
         android:layout_height="@dimen/mvc_dimen_12dp"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="@dimen/mvc_dimen_14dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="@dimen/mvc_dimen_14dp"
         android:foregroundGravity="center"
+        android:contentDescription="@string/image_header_chip_reset_content_description"
         app:srcCompat="@drawable/ic_mvc_close" />
 </LinearLayout>

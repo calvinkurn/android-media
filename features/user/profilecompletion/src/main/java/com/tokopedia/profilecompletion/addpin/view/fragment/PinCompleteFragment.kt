@@ -62,18 +62,18 @@ class PinCompleteFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
-		context?.run {
-			when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
-				SOURCE_CHANGE_PIN -> {
-					titleComplete.text = getString(R.string.change_pin_success)
-					setToolbarTitle(getString(R.string.title_change_pin))
-				}
-				SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
-					titleComplete.text = getString(R.string.change_pin_success)
-					setToolbarTitle(getString(R.string.change_pin_title_setting))
-				}
-			}
-		}
+        context?.run {
+            when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                SOURCE_CHANGE_PIN -> {
+                    titleComplete.text = getString(R.string.change_pin_success)
+                    setToolbarTitle(getString(R.string.title_change_pin))
+                }
+                SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
+                    titleComplete.text = getString(R.string.change_pin_success)
+                    setToolbarTitle(getString(R.string.change_pin_title_setting))
+                }
+            }
+        }
     }
 
     private fun setToolbarTitle(title: String) {
@@ -99,7 +99,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
 
     companion object {
         const val COMPLETE_PICT_URL =
-            "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
+            "https://images.tokopedia.net/android/user/success_update_pin.png"
 
         const val SOURCE_DEFAULT = 0
         const val SOURCE_ADD_PIN = 1

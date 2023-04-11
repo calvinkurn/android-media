@@ -16,12 +16,14 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.utils.date.DateUtil
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 class PlayProductTest {
 
@@ -68,14 +70,15 @@ class PlayProductTest {
                 productList = listOf(),
                 config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
-                    startTime = "",
-                    endTime = "",
-                    serverTime = "",
+                    controlTime = DateUtil.getCurrentDate(),
+                    startTime = null,
+                    endTime = null,
+                    serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
-                    reminder = PlayUpcomingBellStatus.On(3L)
+                    reminder = PlayUpcomingBellStatus.On,
                 )
             )
         }
@@ -114,14 +117,15 @@ class PlayProductTest {
                 productList = listOf(),
                 config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
-                    startTime = "",
-                    endTime = "",
-                    serverTime = "",
+                    controlTime = DateUtil.getCurrentDate(),
+                    startTime = null,
+                    endTime = null,
+                    serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
-                    reminder = PlayUpcomingBellStatus.On(3L)
+                    reminder = PlayUpcomingBellStatus.On,
                 )
             )
         }
@@ -131,7 +135,7 @@ class PlayProductTest {
                 productList = mockProductList
             )
         )
-        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -166,14 +170,15 @@ class PlayProductTest {
                 productList = listOf(),
                 config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
-                    startTime = "",
-                    endTime = "",
-                    serverTime = "",
+                    controlTime = DateUtil.getCurrentDate(),
+                    startTime = null,
+                    endTime = null,
+                    serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
-                    reminder = PlayUpcomingBellStatus.On(3L)
+                    reminder = PlayUpcomingBellStatus.On,
                 )
             )
         }
@@ -183,7 +188,7 @@ class PlayProductTest {
                 productList = mockProductList
             )
         )
-        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -221,11 +226,14 @@ class PlayProductTest {
         every { mockSocket.listenAsFlow() } returns socketFlow
 
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+
         every { mockRepo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(emptyList())
             )
         )
+
+        coEvery { mockRepo.updateCampaignReminderStatus(any()) } returnsArgument 0
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,

@@ -6,46 +6,58 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvDriverCallTitle"
+        android:id="@+id/tokofood_tv_masking_phone_number_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvDriverCallDesc"
+        app:layout_constraintBottom_toTopOf="@id/tokofood_iv_masking_phone_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        tools:text="@string/driver_call_enabled_title_bottomsheet"
-        android:textColor="@color/Unify_N700_96" />
+        android:text="@string/tokofood_masking_phone_number_title"
+        android:textColor="@color/Unify_NN950" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvDriverCallDesc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvDriverCallTitle"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokofood_iv_masking_phone_number"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toBottomOf="@id/tokofood_tv_masking_phone_number_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnDriverCall"
-        app:typographyType="display_3"
+        app:layout_constraintBottom_toTopOf="@id/tokofood_tv_masking_phone_number_desc"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokofood_tv_masking_phone_number_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokofood_iv_masking_phone_number"
+        app:layout_constraintBottom_toTopOf="@id/tokofood_btn_masking_phone_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="paragraph_3"
         app:typographyWeight="reguler"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
-        tools:text="@string/driver_call_enabled_desc_bottomsheet"
+        android:text="@string/tokofood_masking_phone_number_desc"
         android:textColor="@color/Unify_NN600" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnDriverCall"
+        android:id="@+id/tokofood_btn_masking_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvDriverCallDesc"
+        app:layout_constraintTop_toBottomOf="@id/tokofood_tv_masking_phone_number_desc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"
         tools:visibility="visible"
-        android:layout_marginBottom="18dp"
-        android:text="@string/driver_call_now_button"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/tokofood_driver_call_button_text"
         android:textColor="@color/Unify_GN500" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

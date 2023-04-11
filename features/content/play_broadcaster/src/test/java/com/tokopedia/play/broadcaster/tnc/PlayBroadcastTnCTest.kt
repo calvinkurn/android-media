@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,18 +25,27 @@ class PlayBroadcastTnCTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val uiModelBuilder = UiModelBuilder()
+    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockTnCList = List(3) {
+        uiModelBuilder.buildTermsAndConditionUiModel(it.toString())
+    }
+    private val mockConfigTrue = uiModelBuilder.buildConfigurationUiModel(
+        streamAllowed = true,
+    )
+    private val mockConfigFalse = uiModelBuilder.buildConfigurationUiModel(
+        streamAllowed = false,
+        tnc = mockTnCList,
+    )
+
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+    }
 
     @Test
     fun `given seller is not allowed to stream, when get configuration, then seller cannot stream`() {
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-        val mockTnCList = List(3) {
-            uiModelBuilder.buildTermsAndConditionUiModel(it.toString())
-        }
-        val mockConfig = uiModelBuilder.buildConfigurationUiModel(
-            streamAllowed = false,
-            tnc = mockTnCList
-        )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfigFalse
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -44,11 +54,11 @@ class PlayBroadcastTnCTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
             }
 
             state.channel
-                .canStream
+                .streamAllowed
                 .assertEqualTo(false)
 
             state.channel
@@ -59,12 +69,7 @@ class PlayBroadcastTnCTest {
 
     @Test
     fun `given seller is allowed to stream, when get configuration, then seller can stream`() {
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-
-        val mockConfig = uiModelBuilder.buildConfigurationUiModel(
-            streamAllowed = true,
-        )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfigTrue
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -73,11 +78,11 @@ class PlayBroadcastTnCTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
             }
 
             state.channel
-                .canStream
+                .streamAllowed
                 .assertEqualTo(true)
         }
     }

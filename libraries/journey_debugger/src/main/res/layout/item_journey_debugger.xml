@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/journey_text_name"
+            style="@style/TextView.Title.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="EventName" />
+
+        <TextView
+            android:id="@+id/journey_text_timestamp"
+            style="@style/TextView.Micro.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            tools:text="2018-01-01 01:01:01.000" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

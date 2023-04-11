@@ -36,9 +36,9 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.v
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.CoreMatchers.startsWith
-import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 
@@ -200,7 +200,7 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
     private fun SellerReviewRobot.clickQuickFilter() {
         scrollToRecyclerViewItem(R.id.rvRatingDetail, 4)
         onView(
-            Matchers.allOf(
+            CoreMatchers.allOf(
                 isDescendantOfA(withId(R.id.sort_filter_items_wrapper)), withText(
                     startsWith(
                         QUALITY_TOPIC
@@ -214,7 +214,7 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
         scrollToRecyclerViewItem(R.id.rvRatingDetail, 4)
         onView(
             firstView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     isDescendantOfA(withId(R.id.rvRatingDetail)),
                     withId(R.id.rv_review_media_thumbnail),
                     isDisplayed()

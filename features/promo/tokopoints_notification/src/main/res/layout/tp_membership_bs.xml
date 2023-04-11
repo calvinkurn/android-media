@@ -14,7 +14,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/spacing_lvl8"
         android:layout_marginStart="@dimen/spacing_lvl8"
-        tools:src="@color/tkpd_dark_red"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/unify_space_16"/>
 

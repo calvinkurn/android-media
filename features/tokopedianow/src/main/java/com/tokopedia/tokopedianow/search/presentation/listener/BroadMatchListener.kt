@@ -1,26 +1,30 @@
 package com.tokopedia.tokopedianow.search.presentation.listener
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
 interface BroadMatchListener {
 
     fun getRecyclerViewPool(): RecyclerView.RecycledViewPool
 
-    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
+        broadMatchIndex: Int
+    )
 
-    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemClicked(
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
+        broadMatchIndex: Int
+    )
 
     fun onBroadMatchItemATCNonVariant(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     )
 
-    fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
-
-    fun onGetCarouselScrollPosition(adapterPosition: Int): Int
-
-    fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView)
+    fun onBroadMatchSeeAllClicked(
+        title: String,
+        appLink: String
+    )
 }

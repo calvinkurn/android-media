@@ -15,10 +15,20 @@
         app:unify_header_is_show_back_button="false" />
 
     <View
+        android:id="@+id/sahToolbarShadow"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         android:layout_below="@id/sahToolbar"
         android:background="@drawable/sah_shadow" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progressBarContainerSah"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:loader_type="circular"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
@@ -31,7 +41,7 @@
     <View
         android:id="@+id/navBarShadow"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         android:layout_above="@id/sahBottomNav"
         android:background="@drawable/sah_shadow"
         android:rotation="@integer/shadow_inverted_rotation" />
@@ -42,9 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:buttonColor="@color/Unify_N500"
-        app:buttonsHeight="@dimen/shc_dimen_56dp"
+        app:buttonsHeight="56dp"
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
-        tools:layout_height="@dimen/shc_dimen_56dp" />
+        tools:layout_height="56dp" />
 
 </RelativeLayout>

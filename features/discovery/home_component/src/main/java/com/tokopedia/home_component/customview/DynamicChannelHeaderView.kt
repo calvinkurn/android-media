@@ -295,6 +295,6 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     companion object {
-        private const val TITLE_TOP_PADDING = 10f
+        private const val TITLE_TOP_PADDING = 15f
     }
 }

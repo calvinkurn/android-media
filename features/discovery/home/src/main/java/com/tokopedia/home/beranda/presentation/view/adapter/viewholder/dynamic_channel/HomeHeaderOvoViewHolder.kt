@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.databinding.HomeHeaderOvoBinding
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -30,6 +31,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
     private var chooseAddressView: ChooseAddressWidget? = null
     private var containerHeaderImage: ConstraintLayout? = null
     private var headerTopRounded: ConstraintLayout? = null
+    private var viewPullRefresh: LayoutIconPullRefreshView? = null
 
     companion object {
         @LayoutRes
@@ -56,6 +58,12 @@ class HomeHeaderOvoViewHolder(itemView: View,
         }
         if (headerTopRounded == null) {
             headerTopRounded = getParentLayout(binding?.headerTopRounded)
+        }
+        if (viewPullRefresh == null) {
+            viewPullRefresh = getParentLayout(binding?.viewPullRefresh)
+        }
+        viewPullRefresh?.let {
+            listener.pullRefreshIconCaptured(it)
         }
     }
 

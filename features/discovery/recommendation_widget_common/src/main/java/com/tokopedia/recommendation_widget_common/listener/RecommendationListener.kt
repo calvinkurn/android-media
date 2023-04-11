@@ -9,7 +9,6 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 interface RecommendationListener {
     fun onProductClick(item: RecommendationItem, layoutType: String? = null, vararg position: Int)
     fun onProductImpression(item: RecommendationItem)
-    fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean, Throwable?) -> Unit))
     fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean)
     fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
 

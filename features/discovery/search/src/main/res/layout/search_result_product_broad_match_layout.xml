@@ -23,23 +23,36 @@
         app:typographyType="heading_4"
         tools:text="@string/broad_match_title" />
 
+    <ImageView
+        android:id="@+id/searchBroadMatchSubtitleIcon"
+        android:contentDescription="@string/content_desc_search_carousel_icon_subtitle"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/searchBroadMatchTitle"
+        app:layout_constraintLeft_toLeftOf="@id/searchBroadMatchTitle"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchBroadMatchSubtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/searchBroadMatchSeeMore"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="2dp"
+        app:layout_goneMarginStart="0dp"
+        app:layout_constraintRight_toRightOf="@id/searchBroadMatchTitle"
+        app:layout_constraintLeft_toRightOf="@id/searchBroadMatchSubtitleIcon"
         app:layout_constraintTop_toBottomOf="@id/searchBroadMatchTitle"
         app:typographyType="body_3"
-        tools:text="@string/broad_match_title" />
+        tools:text="@string/broad_match_title"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchBroadMatchSeeMore"

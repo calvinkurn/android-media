@@ -9,6 +9,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELEC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ROAMING
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.DEFAULT_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_ROAMING
@@ -26,9 +27,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TAGIHAN
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TOKEN_LISTRIK_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh.getRegisteredNavigationUohOrder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 
@@ -36,6 +35,7 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
+    const val KODE_BAYAR = "kb"
     const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
@@ -44,7 +44,9 @@ object DeeplinkMapperDigital {
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
 
-    const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
+    const val OMNI_CATEGORY_ID = "54"
+    const val OMNI_PRODUCT_ID = "20159"
+    const val OMNI_OPERATOR_ID = "7654"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -70,19 +72,15 @@ object DeeplinkMapperDigital {
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else {
-                    ServerLogger.log(
-                            Priority.P2,
-                            SCALYR_OLD_APPLINK_TAGS,
-                            mapOf(
-                                    "type" to "old applink",
-                                    "data" to deeplink
-                            )
-                    )
                     UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
                 }
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
+            }
+            deeplink.startsWith(ApplinkConst.TELKOMSEL_OMNI) -> {
+                val paymentCode = uri.getQueryParameter(KODE_BAYAR) ?: ""
+                ApplinkConsInternalDigital.CHECKOUT_DIGITAL+"?category_id=$OMNI_CATEGORY_ID&operator_id=$OMNI_OPERATOR_ID&client_number=$paymentCode&product_id=$OMNI_PRODUCT_ID&is_from_widget=true"
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
                 getDigitalSmartcardNavigation(deeplink)
@@ -92,7 +90,7 @@ object DeeplinkMapperDigital {
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
-                else ApplinkConsInternalDigital.SUBHOMEPAGE
+                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
             }
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {

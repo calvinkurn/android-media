@@ -13,11 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="@dimen/unify_space_24"
+        android:layout_marginBottom="24dp"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        android:layout_marginTop="@dimen/unify_space_32"
-        android:layout_marginHorizontal="@dimen/unify_space_64"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="64dp"
         app:layout_constraintBottom_toTopOf="@id/tv_title"
         android:contentDescription="@string/content_desc_success_reso"/>
 
@@ -27,12 +27,12 @@
         android:layout_height="wrap_content"
         android:text="@string/title_success_reso"
         android:textColor="@color/Unify_NN950"
-        android:layout_marginHorizontal="@dimen/unify_space_48"
+        android:layout_marginHorizontal="48dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_success_reso"
         app:layout_constraintBottom_toTopOf="@id/tv_description"
-        android:layout_marginBottom="@dimen/unify_space_8"
+        android:layout_marginBottom="8dp"
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
@@ -43,12 +43,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_go_to_detail"
-        android:layout_marginHorizontal="@dimen/unify_space_48"
+        android:layout_marginHorizontal="48dp"
         app:typographyType="paragraph_2"
         android:textColor="@color/Unify_NN600"
         android:textAlignment="center"
         android:text="@string/description_success_reso"
-        android:layout_marginBottom="@dimen/unify_space_24"
+        android:layout_marginBottom="24dp"
         app:layout_constraintTop_toBottomOf="@id/tv_title"/>
     
     <com.tokopedia.unifycomponents.UnifyButton
@@ -60,19 +60,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/title_btn_detail"
-        android:layout_marginHorizontal="@dimen/unify_space_48"/>
+        android:layout_marginHorizontal="48dp"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_go_to_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unifyButtonVariant="text"
-        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/btn_go_to_detail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/title_btn_home"
-        android:layout_marginHorizontal="@dimen/unify_space_48"/>
+        android:layout_marginHorizontal="48dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

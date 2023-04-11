@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.TokoFoodPromoUiModelMapper
@@ -35,10 +36,11 @@ class TokoFoodPromoViewModel @Inject constructor(
 
     private val _changeRestrictionMessage = MutableLiveData<String>()
 
-    fun loadData() {
+    fun loadData(source: String,
+                 merchantId: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(source, merchantId)
             }.let {
                 if (it.isSuccess()) {
                     when {
@@ -86,10 +88,6 @@ class TokoFoodPromoViewModel @Inject constructor(
             state = UiEvent.EVENT_SHOW_TOASTER,
             data = _changeRestrictionMessage.value
         )
-    }
-
-    companion object {
-        private const val SOURCE = "checkout_page"
     }
 
 }

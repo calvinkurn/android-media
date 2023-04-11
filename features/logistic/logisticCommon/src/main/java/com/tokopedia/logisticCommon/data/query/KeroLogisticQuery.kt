@@ -31,7 +31,7 @@ object KeroLogisticQuery {
             }
           }
         }
-        """.trimIndent()
+    """.trimIndent()
 
     val addressCorner = """
         query keroAddressCorner(${'$'}input: KeroGetAddressInput){
@@ -66,6 +66,7 @@ object KeroLogisticQuery {
               is_corner
               is_state_chosen_address
               radio_button_checked
+              is_shared_address
             }
             token {
               district_recommendation
@@ -187,7 +188,7 @@ object KeroLogisticQuery {
             server_process_time
           }
         }
-        """.trimIndent()
+    """.trimIndent()
 
     val kero_addr_get_default = """
         query KeroAddrGetDefaultAddress(${'$'}source: String!) {
@@ -293,7 +294,6 @@ object KeroLogisticQuery {
             }
         }
     """.trimIndent()
-
 
     val kero_get_address_detail = """
         query getAddressDetail(${'$'}input: KeroGetAddressInput!){

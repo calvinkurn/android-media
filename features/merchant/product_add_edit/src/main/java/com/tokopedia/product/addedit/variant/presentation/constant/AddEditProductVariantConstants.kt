@@ -28,5 +28,8 @@ class AddEditProductVariantConstants {
         const val ALL_MODE = "all"
         const val ALL_VARIANT_SEARCH_CATEGORY_ID = 1
         const val COACHMARK_ADAPTER_POSITION = 1
+        const val REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER = 3
+        const val REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER = 4
+        const val REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER = 5
     }
 }

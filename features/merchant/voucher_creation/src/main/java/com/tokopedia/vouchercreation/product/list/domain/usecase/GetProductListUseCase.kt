@@ -49,7 +49,6 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                 page?.run { add(GoodsFilterInput(id = KEY_PAGE, value = listOf(this.toString()))) }
                 pageSize?.run { add(GoodsFilterInput(id = KEY_PAGE_SIZE, value = listOf(this.toString()))) }
                 add(GoodsFilterInput(id = KEY_STATUS, value = listOf(PRODUCT_STATUS_ACTIVE)))
-                add(GoodsFilterInput(id = KEY_IS_PRE_ORDER_ONLY, value = listOf(VALUE_FALSE)))
             }
 
             return RequestParams.create().apply {

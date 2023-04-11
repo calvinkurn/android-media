@@ -1,10 +1,10 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -76,10 +76,52 @@ data class GetBuyerOrderDetailResponse(
             val addonInfo: AddonInfo? = AddonInfo(),
             @SerializedName("details")
             @Expose
-            val details: Details? = Details()
+            val details: Details? = Details(),
+            @SerializedName("has_reso_status")
+            @Expose
+            val hasResoStatus: Boolean? = false,
+            @SerializedName("has_ppp")
+            @Expose
+            val hasInsurance: Boolean? = false,
+            @SerializedName("additional_data")
+            @Expose
+            val additionalData: BomAdditionalData = BomAdditionalData(),
+            @SerializedName("is_pof")
+            @Expose
+            val isPof: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
+            }
+            fun getPodInfo(): LogisticSectionInfo? {
+                return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.POD_INFO }
+            }
+
+            data class BomAdditionalData(
+                @SerializedName("epharmacy_data")
+                @Expose
+                val epharmacyData: EpharmacyData = EpharmacyData()
+            ) {
+                data class EpharmacyData(
+                    @SerializedName("consultation_date")
+                    @Expose
+                    val consultationDate: String = String.EMPTY,
+                    @SerializedName("consultation_doctor_name")
+                    @Expose
+                    val consultationDoctorName: String = String.EMPTY,
+                    @SerializedName("consultation_expiry_date")
+                    @Expose
+                    val consultationExpiryDate: String = String.EMPTY,
+                    @SerializedName("consultation_name")
+                    @Expose
+                    val consultationName: String = String.EMPTY,
+                    @SerializedName("consultation_patient_name")
+                    @Expose
+                    val consultationPatientName: String = String.EMPTY,
+                    @SerializedName("consultation_prescription_number")
+                    @Expose
+                    val consultationPrescriptionNumber: String = String.EMPTY,
+                )
             }
 
             data class Button(
@@ -184,8 +226,17 @@ data class GetBuyerOrderDetailResponse(
                 val indicatorColor: String = "",
                 @Expose
                 @SerializedName("status_name")
-                val statusName: String = ""
-            )
+                val statusName: String = "",
+                @Expose
+                @SerializedName("labels")
+                val labels: List<Label> = listOf()
+            ) {
+                data class Label(
+                    @Expose
+                    @SerializedName("label")
+                    val label: String = ""
+                )
+            }
 
             data class Payment(
                 @Expose
@@ -196,7 +247,9 @@ data class GetBuyerOrderDetailResponse(
                 val paymentDetails: List<PaymentDetail> = listOf(),
                 @Expose
                 @SerializedName("payment_method")
-                val paymentMethod: PaymentMethod = PaymentMethod()
+                val paymentMethod: PaymentMethod = PaymentMethod(),
+                @SerializedName("payment_refund")
+                val paymentRefund: PaymentRefund? = PaymentRefund()
             ) {
                 data class PaymentAmount(
                     @Expose
@@ -224,6 +277,46 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("value")
                     val value: String = ""
                 )
+
+                data class PaymentRefund(
+                    @SerializedName("summary_info")
+                    val summaryInfo: SummaryInfo? = SummaryInfo(),
+                    @SerializedName("estimate_info")
+                    val estimateInfo: EstimateInfo? = EstimateInfo(),
+                    @SerializedName("total_amount")
+                    val totalAmount: TotalAmount = TotalAmount(),
+                    @SerializedName("is_refunded")
+                    val isRefunded: Boolean = false
+                ) {
+                    data class TotalAmount(
+                        @SerializedName("label")
+                        val label: String = "",
+                        @SerializedName("value")
+                        val value: String = ""
+                    )
+                    data class SummaryInfo(
+                        @SerializedName("details")
+                        val details: List<Detail> = listOf(),
+                        @SerializedName("footer")
+                        val footer: String = "",
+                        @SerializedName("total_amount")
+                        val totalAmount: TotalAmount = TotalAmount()
+                    ) {
+                        data class Detail(
+                            @SerializedName("label")
+                            val label: String = "",
+                            @SerializedName("value")
+                            val value: String = ""
+                        )
+                    }
+
+                    data class EstimateInfo(
+                        @SerializedName("title")
+                        val title: String = "",
+                        @SerializedName("info")
+                        val info: String = ""
+                    )
+                }
             }
 
             data class Shipment(
@@ -346,30 +439,30 @@ data class GetBuyerOrderDetailResponse(
             data class LogisticSectionInfo(
                 @Expose
                 @SerializedName("index")
-                val index: Long,
+                val index: Long = 0L,
                 @Expose
                 @SerializedName("id")
-                val id: String,
+                val id: String = "",
                 @Expose
                 @SerializedName("image_link")
-                val imageUrl: String,
+                val imageUrl: String = "",
                 @Expose
                 @SerializedName("title")
-                val title: String,
+                val title: String = "",
                 @Expose
                 @SerializedName("subtitle")
-                val subtitle: String,
+                val subtitle: String = "",
                 @Expose
                 @SerializedName("action")
-                val action: Action
+                val action: Action = Action()
             ) {
                 data class Action(
                     @Expose
                     @SerializedName("name")
-                    val name: String,
+                    val name: String = "",
                     @Expose
                     @SerializedName("link")
-                    val link: String
+                    val link: String = ""
                 )
             }
 
@@ -389,6 +482,10 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("non_bundles")
                 @Expose
                 val nonBundles: List<NonBundle>? = listOf(),
+                @SerializedName("partial_fulfillment")
+                val partialFulfillment: PartialFulfillment? = PartialFulfillment(),
+                @SerializedName("ticker_info")
+                val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("total_products")
                 @Expose
                 val totalProducts: Long = 0
@@ -417,10 +514,6 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("button")
                         @Expose
                         val button: Button? = null,
-
-                        @SerializedName("bundle_id")
-                        @Expose
-                        val bundleId: String = "0",
 
                         @SerializedName("category_id")
                         @Expose
@@ -591,6 +684,32 @@ data class GetBuyerOrderDetailResponse(
                         )
                     }
                 }
+
+                data class PartialFulfillment(
+                    @SerializedName("fulfilled")
+                    val fulfilled: Fulfilled = Fulfilled(),
+                    @SerializedName("unfulfilled")
+                    val unfulfilled: Unfulfilled = Unfulfilled()
+                ) {
+                    data class Fulfilled(
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Unfulfilled(
+                        @SerializedName("details")
+                        val details: List<NonBundle> = listOf(),
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Header(
+                        @SerializedName("quantity")
+                        val quantity: String = "",
+                        @SerializedName("title")
+                        val title: String = ""
+                    )
+                }
             }
 
             data class AddonInfo(
@@ -671,7 +790,7 @@ data class GetBuyerOrderDetailResponse(
                                 val to: String = "",
                                 @SerializedName("from")
                                 @Expose
-                                val from: String = "",
+                                val from: String = ""
                             )
                         }
                     }

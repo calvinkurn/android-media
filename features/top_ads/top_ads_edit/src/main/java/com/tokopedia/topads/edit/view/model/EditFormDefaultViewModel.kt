@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.*
@@ -44,9 +45,9 @@ class EditFormDefaultViewModel @Inject constructor(
 
     fun validateGroup(
         groupName: String,
-        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit),
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit),
     ) {
-        validGroupUseCase.setParams(groupName)
+        validGroupUseCase.setParams(groupName, Constants.SOURCE_ANDROID_EDIT_GROUP)
         validGroupUseCase.execute(
             {
                 onSuccess(it.topAdsGroupValidateName)

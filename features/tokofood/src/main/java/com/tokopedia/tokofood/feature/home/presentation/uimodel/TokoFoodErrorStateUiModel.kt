@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCommonTypeFactory
+import com.tokopedia.tokofood.common.presentation.adapter.TokoFoodCommonTypeFactory
 
 data class TokoFoodErrorStateUiModel(
     val id: String,

@@ -3,7 +3,9 @@ package com.tokopedia.smartbills
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
@@ -13,8 +15,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -69,11 +71,13 @@ class SmartBillsActivityTest {
                     KEY_DELETE_PRODUCT,
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
+
             addMockResponse(
-                KEY_HIGHLIGHT_CATEGORY,
-                ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
-                MockModelConfig.FIND_BY_CONTAINS)
+                    KEY_HIGHLIGHT_CATEGORY,
+                    ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
+                    MockModelConfig.FIND_BY_CONTAINS)
         }
+        setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -90,12 +94,23 @@ class SmartBillsActivityTest {
     @Test
     fun validateSmartBills() {
         Thread.sleep(3000)
+        validate_ticker_transition()
         validate_onboarding()
         validate_bill_selection()
         validate_bill_detail()
         validate_click_bayar()
         validate_tooltip()
         validate_refresh_action()
+
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            hasAllSuccess()
+        )
+    }
+
+    @Test
+    fun validateSmartBillsAddBills() {
+        closeTicker()
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
@@ -103,9 +118,22 @@ class SmartBillsActivityTest {
         close_highlight_widget()
 
         MatcherAssert.assertThat(
-            cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            cassavaTestRule.validate(SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY),
             hasAllSuccess()
         )
+    }
+
+    private fun validate_ticker_transition() {
+        Thread.sleep(2000)
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.ticker_smart_bills)).check(ViewAssertions.matches(isDisplayed()))
+            .perform(click())
+        closeTicker()
+    }
+
+    private fun closeTicker() {
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(R.id.ticker_content_single), withChild(withText("Sekarang Bayar Sekaligus semua tagihan dan Bayar Otomatis bisa di Kelola Tagihan!")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
     }
 
     private fun validate_onboarding() {
@@ -234,6 +262,12 @@ class SmartBillsActivityTest {
         onView(withId(R.id.icon_highlighted_category_close)).perform(click())
     }
 
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            RollenceKey.KEY_SBM_TRANSITION,
+            RollenceKey.KEY_SBM_TRANSITION)
+    }
+
     @After
     fun cleanUp() {
         Intents.release()
@@ -254,5 +288,6 @@ class SmartBillsActivityTest {
         private const val PATH_HIGHLIGHT_CATEGORY = "highlight_category.json"
 
         private const val SMART_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_test.json"
+        private const val SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_add_bills_test.json"
     }
 }

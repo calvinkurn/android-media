@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_sse_error_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/stfs_bottomsheet_error_product_submission_sse_list_ticker_description"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        tool:listitem="@layout/stfs_item_product_sse_submission_error" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

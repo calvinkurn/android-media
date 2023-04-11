@@ -15,6 +15,7 @@ abstract class AttachmentMenu(
         fun onClickAttachImage(menu: AttachmentMenu)
         fun onClickAttachInvoice(menu: AttachmentMenu)
         fun onClickAttachVoucher(voucherMenu: VoucherMenu)
+        fun onClickAttachVideo(menu: AttachmentMenu)
     }
 
     abstract fun onClick(listener: AttachmentMenuListener)

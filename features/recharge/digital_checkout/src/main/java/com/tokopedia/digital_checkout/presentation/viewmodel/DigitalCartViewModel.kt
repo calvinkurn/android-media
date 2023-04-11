@@ -19,6 +19,7 @@ import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.request.DigitalCrossSellData
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
@@ -31,7 +32,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -115,8 +116,8 @@ class DigitalCartViewModel @Inject constructor(
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
-            digitalGetCartUseCase.execute(
-                DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
+            digitalGetCartUseCase.onExecute(
+                DigitalGetCartUseCase.createParams(categoryId.toIntSafely()),
                 onSuccessGetCart(categoryId, isSpecialProduct),
                 onErrorGetCart()
             )
@@ -138,7 +139,8 @@ class DigitalCartViewModel @Inject constructor(
                 )
                 val requestBodyOtpSuccess = RequestBodyOtpSuccess(
                     DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_OTP_CART_TYPE,
-                    requestCheckoutParam.cartId, attributes
+                    requestCheckoutParam.cartId,
+                    attributes
                 )
                 digitalPatchOtpUseCase.setRequestParams(requestBodyOtpSuccess)
                 digitalPatchOtpUseCase.executeOnBackground()
@@ -151,21 +153,22 @@ class DigitalCartViewModel @Inject constructor(
 
             if (responsePatchOtpSuccess.success) {
                 getCart(
-                    digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage,
+                    digitalCheckoutPassData.categoryId ?: "",
+                    errorNotLoginMessage,
                     isSpecialProduct
                 )
             }
-
         }) {
             _showLoading.postValue(false)
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
-            } else _errorThrowable.postValue(Fail(it))
+            } else {
+                _errorThrowable.postValue(Fail(it))
+            }
         }
     }
 
-    private fun onSuccessGetCart(categoryId: String, isSpecialProduct: Boolean)
-            : (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String, isSpecialProduct: Boolean): (RechargeGetCart.Response) -> Unit {
         return {
             val mappedCartData =
                 DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it, isSpecialProduct)
@@ -192,12 +195,12 @@ class DigitalCartViewModel @Inject constructor(
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
-
-            //set up price and also payment summary based on response from BE
+            // set up price and also payment summary based on response from BE
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(
                 calculateTotalPrice(
-                    pricePlain, mappedCartData.attributes.adminFee,
+                    pricePlain,
+                    mappedCartData.attributes.adminFee,
                     mappedCartData.attributes.isOpenAmount,
                     mappedCartData.attributes.isAdminFeeIncluded
                 )
@@ -222,18 +225,18 @@ class DigitalCartViewModel @Inject constructor(
             }
             _payment.postValue(paymentSummary)
 
-            //render checkout page
+            // render checkout page
             requestCheckoutParam.transactionAmount = pricePlain
             requestCheckoutParam.isInstantCheckout = mappedCartData.isInstantCheckout
             _cartDigitalInfoData.postValue(mappedCartData)
 
-            //render promo
+            // render promo
             val promo = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
             promo?.let {
                 _promoData.postValue(promo)
             }
 
-            //show checkout page
+            // show checkout page
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
         }
@@ -241,7 +244,8 @@ class DigitalCartViewModel @Inject constructor(
 
     fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
         cancelVoucherUseCase.execute(
-            promoCode, onSuccessCancelVoucher(defaultErrorMsg),
+            promoCode,
+            onSuccessCancelVoucher(defaultErrorMsg),
             onErrorCancelVoucher(defaultErrorMsg)
         )
     }
@@ -254,7 +258,9 @@ class DigitalCartViewModel @Inject constructor(
     ): Double {
         return if (isOpenAmount && !isAdminFeeIncluded) {
             totalPrice + adminFee
-        } else totalPrice
+        } else {
+            totalPrice
+        }
     }
 
     private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
@@ -292,7 +298,7 @@ class DigitalCartViewModel @Inject constructor(
                     )
                 )
             } else {
-                //if it is inactive and have promo amount
+                // if it is inactive and have promo amount
                 paymentSummary.addToSummary(
                     SUMMARY_PROMO_CODE_POSITION,
                     Payment(
@@ -315,8 +321,20 @@ class DigitalCartViewModel @Inject constructor(
         _totalPrice.forceRefresh()
     }
 
-    fun onSubscriptionChecked(isChecked: Boolean) {
+    fun onSubscriptionChecked(
+        fintechProduct: FintechProduct,
+        isChecked: Boolean
+    ) {
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, true)
+        updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         requestCheckoutParam.isSubscriptionChecked = isChecked
+    }
+
+    fun updateSubscriptionMetadata(additionalMetadata: String) {
+        val subscriptionProduct = requestCheckoutParam.crossSellProducts.values.firstOrNull {
+            it.isSubscription
+        }
+        subscriptionProduct?.additionalMetadata = additionalMetadata
     }
 
     fun onFintechProductChecked(
@@ -324,23 +342,35 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean,
         inputPrice: Double?
     ) {
-        if (requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && !isChecked) {
-            //remove
-            requestCheckoutParam.fintechProducts.remove(fintechProduct.tierId)
-        } else if (!requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && isChecked) {
-            //add
-            requestCheckoutParam.fintechProducts[fintechProduct.tierId] = fintechProduct
-        }
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false)
+        updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         updateTotalPriceWithFintechProduct(inputPrice)
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+    }
+
+    private fun updateRequestCheckoutParamWithCrossSellData(
+        digitalCrossSellData: DigitalCrossSellData,
+        isChecked: Boolean
+    ) {
+        val fintechProduct = digitalCrossSellData.product
+        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
+        if (requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && !isChecked) {
+            // remove
+            requestCheckoutParam.crossSellProducts.remove(uniqueKey)
+        } else if (!requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && isChecked) {
+            // add
+            requestCheckoutParam.crossSellProducts[uniqueKey] = digitalCrossSellData
+        }
     }
 
     private fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
 
-            requestCheckoutParam.fintechProducts.forEach { fintech ->
-                totalPrice += fintech.value.fintechAmount
+            requestCheckoutParam.crossSellProducts.forEach { crossSell ->
+                if (!crossSell.value.isSubscription) {
+                    totalPrice += crossSell.value.product.fintechAmount
+                }
             }
             _totalPrice.postValue(
                 calculateTotalPrice(
@@ -380,7 +410,7 @@ class DigitalCartViewModel @Inject constructor(
         _payment.postValue(paymentSummary)
     }
 
-    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier, isUseGql: Boolean) {
+    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
         val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
@@ -395,39 +425,37 @@ class DigitalCartViewModel @Inject constructor(
                     val checkoutData = withContext(dispatcher) {
                         digitalCheckoutUseCase.execute(
                             requestCheckoutParams = requestCheckoutParam,
-                            digitalIdentifierParams = digitalIdentifierParam,
-                            fintechProduct = it.attributes.fintechProduct.getOrNull(0),
-                            isUseGql = isUseGql
+                            digitalIdentifierParams = digitalIdentifierParam
                         )
                     }
 
                     _paymentPassData.postValue(checkoutData)
 
-                    requestCheckoutParam.fintechProducts.let { fintech ->
-                        if (fintech.isNotEmpty()) {
-                            fintech.values.forEach {
-                                if (it.info.iconUrl.isNotEmpty()) {
-                                    analytics.eventProceedCheckoutTebusMurah(
-                                        it,
-                                        cartDigitalInfoData.attributes.categoryName,
-                                        userSession.userId
-                                    )
-                                } else {
-                                    analytics.eventProceedCheckoutCrossell(
-                                        it,
-                                        cartDigitalInfoData.attributes.categoryName,
-                                        userSession.userId
-                                    )
-                                }
+                    requestCheckoutParam.crossSellProducts.let { crossSell ->
+                        crossSell.values.forEach {
+                            if (it.isSubscription) return@forEach
+                            if (it.product.info.iconUrl.isNotEmpty()) {
+                                analytics.eventProceedCheckoutTebusMurah(
+                                    it.product,
+                                    cartDigitalInfoData.attributes.categoryName,
+                                    userSession.userId
+                                )
+                            } else {
+                                analytics.eventProceedCheckoutCrossell(
+                                    it.product,
+                                    cartDigitalInfoData.attributes.categoryName,
+                                    userSession.userId
+                                )
                             }
                         }
                     }
-
                 }) {
                     _showLoading.postValue(false)
                     if (it is ResponseErrorException) {
                         _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
-                    } else _errorThrowable.postValue(Fail(it))
+                    } else {
+                        _errorThrowable.postValue(Fail(it))
+                    }
                 }
             }
         }
@@ -445,10 +473,10 @@ class DigitalCartViewModel @Inject constructor(
         }
 
         return PromoDigitalModel(
-            cartPassData?.categoryId?.toIntOrNull() ?: 0,
+            cartPassData?.categoryId?.toIntSafely() ?: 0,
             cartInfoData.attributes.categoryName,
             cartInfoData.attributes.operatorName,
-            cartPassData?.productId?.toIntOrNull() ?: 0,
+            cartPassData?.productId?.toIntSafely() ?: 0,
             cartPassData?.clientNumber ?: "",
             price.toLong()
         )

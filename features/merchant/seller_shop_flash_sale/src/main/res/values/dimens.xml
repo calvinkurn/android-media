@@ -2,7 +2,7 @@
 <resources>
     <dimen name="sfs_1_dp">1dp</dimen>
     <dimen name="sfs_8_dp">8dp</dimen>
-    <dimen name="sfs_calendar_height">400dp</dimen>
+    <dimen name="sfs_calendar_height">600dp</dimen>
     <dimen name="sfs_corner_radius">4dp</dimen>
     <dimen name="sfs_checkmark_height">20dp</dimen>
     <dimen name="sfs_product_image_height">56dp</dimen>

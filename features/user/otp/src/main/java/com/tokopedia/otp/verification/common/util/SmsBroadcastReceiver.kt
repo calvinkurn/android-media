@@ -8,6 +8,7 @@ import android.content.IntentFilter.SYSTEM_HIGH_PRIORITY
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -34,13 +35,13 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
-            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
+            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
 
-            when (status.statusCode) {
+            when (status?.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
-                    val message = extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String
+                    val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
                     val subMessage = message.substringAfter("masuk:")
-                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length as Int
+                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length.orZero()
                     val otp = subMessage.substring(0, otpDigit)
 
                     if(::listener.isInitialized && otp.toIntOrNull() != null) {

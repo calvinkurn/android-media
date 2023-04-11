@@ -20,18 +20,12 @@ class NetworkLogOnNotificationViewHolder(
     }
 
     override fun bind(element: NetworkLogOnNotificationUiModel) {
-        val sharedPref = itemView.context.getSharedPreferences(
-            DevOptConfig.CHUCK_ENABLED,
-            BaseActivity.MODE_PRIVATE
-        )
+        val context = itemView.context
         val cb = itemView.findViewById<CheckboxUnify>(R.id.network_log_on_notification_cb)
-        cb.isChecked = sharedPref.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false)
+
+        cb.isChecked = DevOptConfig.isChuckNotifEnabled(context)
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-            val editor = sharedPref.edit().putBoolean(
-                DevOptConfig.IS_CHUCK_ENABLED,
-                state
-            )
-            editor.apply()
+            DevOptConfig.setChuckNotifEnabled(context, state)
         }
     }
 }

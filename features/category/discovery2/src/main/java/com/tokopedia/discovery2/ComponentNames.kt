@@ -52,6 +52,7 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
     ProductCardCarouselItem("product_card_carousel_item"),
+    ProductCardCarouselItemList("product_card_carousel_item_list"),
 
     // Product Card Sprint Sale
     ProductCardSprintSale("product_card_sprint_sale"),
@@ -61,6 +62,7 @@ enum class ComponentNames(val componentName: String) {
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
     ProductListEmptyState("product_list_empty_state"),
+    ContentCardEmptyState("content_card_empty_state"),
     SaleEndState("sale_end_state"),
 
 //    Product Card Single
@@ -93,6 +95,9 @@ enum class ComponentNames(val componentName: String) {
 
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
+
+    // Promo Featured Products - CLP
+    CLPFeaturedProducts("featured-product"),
 
     //Topads Headline View
     TopadsHeadlineView("topads"),
@@ -127,6 +132,12 @@ enum class ComponentNames(val componentName: String) {
     BannerInfiniteItem("banner_infinite_item"),
 
     ShopCardInfinite("shop_card_infinite"),
+    ProductBundling("product_bundling"),
 
-    ExplicitWidget("explicit_widget")
+    ThematicHeader("thematic_header"),
+
+    ExplicitWidget("explicit_widget"),
+
+    ContentCard("content_card"),
+    ContentCardItem("content_card_item")
 }

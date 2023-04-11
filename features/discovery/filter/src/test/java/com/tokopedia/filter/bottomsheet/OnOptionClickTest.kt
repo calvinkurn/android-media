@@ -3,11 +3,13 @@ package com.tokopedia.filter.bottomsheet
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -38,16 +40,16 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
     }
 
     private fun getSelectedOptionViewModel(
-        filterViewModel: FilterViewModel,
+        filterRefreshable: FilterRefreshable,
         clickedOptionViewModel: OptionViewModel
     ) : OptionViewModel {
-        return filterViewModel.optionViewModelList.first { optionVM ->
+        return filterRefreshable.optionViewModelList.first { optionVM ->
             optionVM.option == clickedOptionViewModel.option
         }
     }
 
-    private fun `When an Option is Clicked And Applied`(filterViewModel: FilterViewModel, clickedOptionViewModel: OptionViewModel) {
-        sortFilterBottomSheetViewModel.onOptionClick(filterViewModel, clickedOptionViewModel)
+    private fun `When an Option is Clicked And Applied`(filterRefreshable: FilterRefreshable, clickedOptionViewModel: OptionViewModel) {
+        sortFilterBottomSheetViewModel.onOptionClick(filterRefreshable, clickedOptionViewModel)
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 
@@ -409,5 +411,44 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         val allOptionViewModelListIsSelected = allOptionViewModelList
             .all { it.isSelected }
         assertTrue(allOptionViewModelListIsSelected)
+    }
+
+    @Test
+    fun `onOptionClicked with given PriceRangeFilterCheckboxDataView to apply filter`() {
+        val existingMapParameter = createMapParameter()
+        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val templatePricingFood = "template_pricing_food"
+        `Given SortFilterBottomSheet view is already created`(existingMapParameter, dynamicFilterModel)
+
+        val sortFilterList = this.sortFilterList!!
+        val selectedFilter = dynamicFilterModel.data.filter.first { it.templateName == templatePricingFood } // Just choose any filter
+        val priceRangeFilter = sortFilterList.findPriceRangeFilterCheckboxDataView(selectedFilter)
+            ?: throw AssertionError("Cannot find selected filter ${selectedFilter.title} in Sort Filter List")
+        val clickedOptionViewModel = priceRangeFilter.optionViewModelList.first { !it.isSelected } // Just choose any un-selected option
+
+        `When an Option is Clicked And Applied`(priceRangeFilter, clickedOptionViewModel)
+
+        val priceRangeFilterCheckboxDataView = this.sortFilterList!!.filterIsInstance<PriceRangeFilterCheckboxDataView>().first()
+        val optionViewModels = selectedFilter.options.take(priceRangeFilterCheckboxDataView.optionViewModelList.size).filterIndexed { index, item ->
+            priceRangeFilterCheckboxDataView.optionViewModelList[index].option.description == item.description
+        }
+
+        `Then assert option list doesn't sort by selected or name`(optionViewModels)
+    }
+
+    private fun `Then assert option list doesn't sort by selected or name`(
+        options: List<Option>
+    ) {
+        this.sortFilterList?.filterIsInstance<PriceRangeFilterCheckboxDataView>()?.first().let { visitable ->
+            assertEquals(visitable?.optionViewModelList?.size, options.size)
+            visitable?.optionViewModelList?.forEachIndexed { index, item ->
+                val option = options[index]
+                assertEquals(option.name, item.option.name)
+                assertEquals(option.description, item.option.description)
+                assertEquals(option.key, item.option.key)
+                assertEquals(option.value, item.option.value)
+                assertEquals(option.inputType, item.option.inputType)
+            }
+        }
     }
 }

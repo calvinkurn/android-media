@@ -13,7 +13,7 @@
         {
           "id": "1999",
           "title": "OTHERS_PG_EVERYDAY_BEFOREIDOL_SLOT1_ALLUSER_04NOV19",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_ec9fdfea-d65c-433d-8d0e-06db70662786.jpg",
+          "image_url": "https://images.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_ec9fdfea-d65c-433d-8d0e-06db70662786.jpg",
           "redirect_url": "https://www.tokopedia.com/discovery/everyday",
           "applink": "tokopedia://discovery/everyday",
           "topads_view_url": "",
@@ -28,7 +28,7 @@
         {
           "id": "1979",
           "title": "MP_PG_SMCREFERRAL_TYPOGRAPHY_ALLUSER_SLOT2_04NOV19",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/1242/banner/2019/11/2/61130029/61130029_9fdb690a-8f8d-482d-96de-0621b75145bf.jpg",
+          "image_url": "https://images.tokopedia.net/img/cache/1242/banner/2019/11/2/61130029/61130029_9fdb690a-8f8d-482d-96de-0621b75145bf.jpg",
           "redirect_url": "https://www.tokopedia.com/seru/referral/kupon-referral-november",
           "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fseru%2Freferral%2Fkupon-referral-november",
           "topads_view_url": "",
@@ -43,7 +43,7 @@
         {
           "id": "2016",
           "title": "OTHERS_OTHERS_BEBASONGKIR_NEWAPPS_SLOT3_04NOV19",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_0eb2e7a0-ea92-45db-9fc8-c2564a737cfc.png",
+          "image_url": "https://images.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_0eb2e7a0-ea92-45db-9fc8-c2564a737cfc.png",
           "redirect_url": "https://www.tokopedia.com/discovery/bebas-ongkir",
           "applink": "tokopedia://discovery/bebas-ongkir",
           "topads_view_url": "",
@@ -58,7 +58,7 @@
         {
           "id": "2005",
           "title": "OTHERS_PG_AKSESORISTEBUSMURAH_SLOT3_ALLUSER_PG1_04NOV19",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/1242/banner/2019/11/4/61130029/61130029_dd095a10-810c-4ca7-a7ce-ea9812b644d9.jpg",
+          "image_url": "https://images.tokopedia.net/img/cache/1242/banner/2019/11/4/61130029/61130029_dd095a10-810c-4ca7-a7ce-ea9812b644d9.jpg",
           "redirect_url": "https://www.tokopedia.com/discovery/produk-gadget",
           "applink": "tokopedia://discovery/produk-gadget",
           "topads_view_url": "",
@@ -73,7 +73,7 @@
         {
           "id": "2017",
           "title": "FT_FT_INSURLATER_SLOT5_ALLUSER_DGFT_04NOV19",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_dfa1fe89-819f-428e-bc1a-ba9adf7958fc.jpg",
+          "image_url": "https://images.tokopedia.net/img/cache/1242/banner/2019/11/3/38974517/38974517_dfa1fe89-819f-428e-bc1a-ba9adf7958fc.jpg",
           "redirect_url": "https://www.tokopedia.com/asuransi/insurlater/",
           "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fasuransi%2Finsurlater%2F",
           "topads_view_url": "",
@@ -93,35 +93,35 @@
           "id": 70,
           "name": "Belanja",
           "url": "https://www.tokopedia.com/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_2249d75f-b1f5-4b42-99d0-0034313d12a7.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_2249d75f-b1f5-4b42-99d0-0034313d12a7.png",
           "applinks": "tokopedia://jump/kategori"
         },
         {
           "id": 71,
           "name": "Tagihan",
           "url": "https://www.tokopedia.com/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/14/20723472/20723472_fcd975fd-3338-4afa-bf07-084ce08f8dfa.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/14/20723472/20723472_fcd975fd-3338-4afa-bf07-084ce08f8dfa.png",
           "applinks": "tokopedia://jump/tagihan"
         },
         {
           "id": 72,
           "name": "Tiket",
           "url": "https://www.tokopedia.com/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_c1f7e32e-a74d-43dc-964e-959f6aec7187.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_c1f7e32e-a74d-43dc-964e-959f6aec7187.png",
           "applinks": "tokopedia://jump/tiket"
         },
         {
           "id": 74,
           "name": "Jual",
           "url": "https://www.tokopedia.com/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_1b68a50f-59a5-4776-80d3-aaea276f514e.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/11/8470985/8470985_1b68a50f-59a5-4776-80d3-aaea276f514e.png",
           "applinks": "tokopedia://jump/jual"
         },
         {
           "id": 273,
           "name": "Keuangan",
           "url": "https://m.tokopedia.com/kategori-lainnya/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/5/9/20179734/20179734_05a21ecf-1f1c-4ebb-abcf-0b6145afc702.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/5/9/20179734/20179734_05a21ecf-1f1c-4ebb-abcf-0b6145afc702.png",
           "applinks": "tokopedia://jump/keuangan"
         }
       ],
@@ -130,70 +130,70 @@
           "id": 391,
           "name": "Semua Kategori",
           "url": "https://m.tokopedia.com/kategori-lainnya",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_5b766f4e-7930-492f-88f1-0c3905a6262c.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_5b766f4e-7930-492f-88f1-0c3905a6262c.png",
           "applinks": "tokopedia://category-explore?type=2&tab=1"
         },
         {
           "id": 395,
           "name": "Belanja",
           "url": "https://m.tokopedia.com/kategori-belanja",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_59e4a6b0-1d70-40fc-b75f-6e26118875a5.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_59e4a6b0-1d70-40fc-b75f-6e26118875a5.png",
           "applinks": "tokopedia://category-explore?type=1"
         },
         {
           "id": 392,
           "name": "Top-Up & Tagihan",
           "url": "https://m.tokopedia.com/top-up-tagihan",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_7f1e5dc0-4fde-4431-b19d-06173a4adba7.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_7f1e5dc0-4fde-4431-b19d-06173a4adba7.png",
           "applinks": "tokopedia://recharge/home"
         },
         {
           "id": 393,
           "name": "Travel & Entertainment",
           "url": "https://m.tokopedia.com/travel-entertainment",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_495f9c87-d649-4fea-86ef-f9d424c99f00.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_495f9c87-d649-4fea-86ef-f9d424c99f00.png",
           "applinks": "tokopedia://travelentertainment/home"
         },
         {
           "id": 394,
           "name": "Keuangan",
           "url": "https://m.tokopedia.com/discovery/keuangan",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_2162206f-5eb0-4e89-9ee9-d9be65a3fc13.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/2/20723472/20723472_2162206f-5eb0-4e89-9ee9-d9be65a3fc13.png",
           "applinks": "tokopedia://discovery/keuangan"
         },
         {
           "id": 85,
           "name": "Handphone & Tablet",
           "url": "https://www.tokopedia.com/p/handphone-tablet",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_e6fcdfd3-313d-4b3d-969d-4e87944b0c29.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_e6fcdfd3-313d-4b3d-969d-4e87944b0c29.png",
           "applinks": "tokopedia://category/65"
         },
         {
           "id": 91,
           "name": "Elektronik",
           "url": "https://www.tokopedia.com/p/elektronik",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_1645f516-76ed-4bd2-a505-0d2c4f14d805.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_1645f516-76ed-4bd2-a505-0d2c4f14d805.png",
           "applinks": "tokopedia://category/60"
         },
         {
           "id": 104,
           "name": "Pulsa",
           "url": "https://www.tokopedia.com/pulsa?ispulsa=1",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_426c7c26-e0e7-47cb-ba5a-52241b625d71.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_426c7c26-e0e7-47cb-ba5a-52241b625d71.png",
           "applinks": "tokopedia://digital/form?category_id=1&menu_id=2"
         },
         {
           "id": 172,
           "name": "Pascabayar",
           "url": "https://www.tokopedia.com/tagihan/pascabayar/?ispulsa=1",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_084574be-ac35-40a3-b186-acf9f45b4d61.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_084574be-ac35-40a3-b186-acf9f45b4d61.png",
           "applinks": "tokopedia://digital/form?category_id=9&menu_id=3"
         },
         {
           "id": 138,
           "name": "Emas",
           "url": "https://www.tokopedia.com/emas/dashboard/",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/1/3127195/3127195_e48c6330-d588-4bca-95f5-c9e5a9fe3e4a.png",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/1/3127195/3127195_e48c6330-d588-4bca-95f5-c9e5a9fe3e4a.png",
           "applinks": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Femas%2Fdashboard%2F"
         }
       ]
@@ -225,7 +225,7 @@
               "price": "Rp 51.750",
               "slashedPrice": "Rp 69.000",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/11/29240564/29240564_16a1c6c7-49dd-41e2-b499-f9d5fedba6bb_1300_1300.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/4/11/29240564/29240564_16a1c6c7-49dd-41e2-b499-f9d5fedba6bb_1300_1300.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_1",
@@ -245,7 +245,7 @@
               "price": "Rp 27.300",
               "slashedPrice": "Rp 36.400",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/5/29240564/29240564_2c2b3591-e2dc-4f0d-8e82-99352caa17d8_1000_1000.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/5/29240564/29240564_2c2b3591-e2dc-4f0d-8e82-99352caa17d8_1000_1000.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_2",
@@ -265,7 +265,7 @@
               "price": "Rp 101.550",
               "slashedPrice": "Rp 135.400",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/8/29240564/29240564_2940b82a-31a9-4000-9841-cdf6cd0d2251_1000_1000.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/8/29240564/29240564_2940b82a-31a9-4000-9841-cdf6cd0d2251_1000_1000.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_3",
@@ -285,7 +285,7 @@
               "price": "Rp 35.250",
               "slashedPrice": "Rp 47.000",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/8/29240564/29240564_4396e7cb-9df0-408c-a010-928c96d986e9_1000_1000.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/8/29240564/29240564_4396e7cb-9df0-408c-a010-928c96d986e9_1000_1000.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_4",
@@ -305,7 +305,7 @@
               "price": "Rp 187.500",
               "slashedPrice": "Rp 250.000",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/9/55280099/55280099_01e0cfed-3c2e-4070-8446-959236a04f65_1000_1000",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/9/55280099/55280099_01e0cfed-3c2e-4070-8446-959236a04f65_1000_1000",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_5",
@@ -325,7 +325,7 @@
               "price": "Rp 141.750",
               "slashedPrice": "Rp 189.000",
               "discount": "25% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/11/29240564/29240564_e3587496-5f9b-49c8-9121-299f205eb19b_1300_1300.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/4/11/29240564/29240564_e3587496-5f9b-49c8-9121-299f205eb19b_1300_1300.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "banner_carousel_6",
@@ -351,7 +351,7 @@
             },
             "applink": "tokopedia://discovery/promo-senin",
             "text_color": "#ffffff",
-            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/11/2/20723472/20723472_d5b69f09-64b8-4692-a29f-b355270864d8.jpg",
+            "image_url": "https://images.tokopedia.net/img/attachment/2019/11/2/20723472/20723472_d5b69f09-64b8-4692-a29f-b355270864d8.jpg",
             "attribution": "OTHERS_PG_KEYSENIN_4NOV19"
           }
         },
@@ -380,7 +380,7 @@
               "price": "Rp 23.000",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/7/6/1880521/1880521_82277e1c-6bfc-44f6-99b0-f01cfcb504d0_700_466.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/7/6/1880521/1880521_82277e1c-6bfc-44f6-99b0-f01cfcb504d0_700_466.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "x",
@@ -400,7 +400,7 @@
               "price": "Rp 11.000",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/9/27/1880521/1880521_e0ad7eb5-cdc0-4690-a0a8-1dec5f10632f_2048_2253.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/9/27/1880521/1880521_e0ad7eb5-cdc0-4690-a0a8-1dec5f10632f_2048_2253.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "x",
@@ -420,7 +420,7 @@
               "price": "Rp 80.000",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/2/21221681/21221681_2da4c22c-2c75-4663-a651-6ce308149130_1500_1810.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/2/21221681/21221681_2da4c22c-2c75-4663-a651-6ce308149130_1500_1810.jpg",
               "label": "",
               "soldPercentage": 0,
               "attribution": "x",
@@ -475,7 +475,7 @@
               "price": "Rp 103.500",
               "slashedPrice": "Rp 115.000",
               "discount": "10% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/7/6967138/6967138_cd84efd8-fa2d-46b8-a372-8b27b3f7dcbf_2048_2048.jpg",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/10/7/6967138/6967138_cd84efd8-fa2d-46b8-a372-8b27b3f7dcbf_2048_2048.jpg",
               "label": "Masih Tersedia",
               "soldPercentage": 0,
               "attribution": "",
@@ -495,7 +495,7 @@
               "price": "Rp 135.000",
               "slashedPrice": "Rp 169.000",
               "discount": "20% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/16/3160448/3160448_4c107012-a6e9-4e81-816d-4e3daf0bb469_1080_1080",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/16/3160448/3160448_4c107012-a6e9-4e81-816d-4e3daf0bb469_1080_1080",
               "label": "Terjual Sebagian",
               "soldPercentage": 35,
               "attribution": "",
@@ -504,7 +504,7 @@
               "cashback": "",
               "freeOngkir": {
                 "isActive": true,
-                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               }
             },
             {
@@ -515,7 +515,7 @@
               "price": "Rp 652.500",
               "slashedPrice": "Rp 720.000",
               "discount": "9% OFF",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/21/3382835/3382835_eaa25868-86f1-4fdf-9400-2c4b9560d2e6_1000_1000",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/10/21/3382835/3382835_eaa25868-86f1-4fdf-9400-2c4b9560d2e6_1000_1000",
               "label": "Terjual Sebagian",
               "soldPercentage": 20,
               "attribution": "",
@@ -524,7 +524,7 @@
               "cashback": "",
               "freeOngkir": {
                 "isActive": true,
-                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               }
             }
           ],
@@ -570,7 +570,7 @@
               "price": "",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_25c98033-f5bc-48fc-b004-50195041e34b.png",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_25c98033-f5bc-48fc-b004-50195041e34b.png",
               "label": "",
               "soldPercentage": 0,
               "attribution": "OS_PG_STATIONARY_4NOV19",
@@ -590,7 +590,7 @@
               "price": "",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_0c17a545-f063-40f6-8750-aa9bfc3ad1c5.png",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_0c17a545-f063-40f6-8750-aa9bfc3ad1c5.png",
               "label": "",
               "soldPercentage": 0,
               "attribution": "OS_PG_STATIONARY_4NOV19",
@@ -610,7 +610,7 @@
               "price": "",
               "slashedPrice": "",
               "discount": "",
-              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_70dfd69e-975d-408e-a0ad-97ea76892a56.png",
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/11/3/20723472/20723472_70dfd69e-975d-408e-a0ad-97ea76892a56.png",
               "label": "",
               "soldPercentage": 0,
               "attribution": "OS_PG_STATIONARY_4NOV19",

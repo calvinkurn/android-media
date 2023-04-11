@@ -12,6 +12,6 @@
 
     <!-- POPUP ADMIN -->
     <string name="dialog_location_admin_title">Admin lokasi tidak bisa atur toko lewat aplikasi</string>
-    <string name="dialog_location_admin_description">Pengaturan toko untuk admin lokasi hanya bisa dilakukan lewat versi desktop. \n \n Kamu bisa akses website Tokopedia Seller di desktop untuk mengatur tokomu, ya!</string>
+    <string name="dialog_location_admin_description"><![CDATA[Pengaturan toko untuk admin lokasi hanya bisa dilakukan lewat versi desktop. \n \n Kamu bisa akses <font color=\"%1$s\"><b>seller.tokopedia.com</b></font> di desktop untuk mengatur tokomu, ya!]]></string>
     <string name="dialog_location_admin_primary_cta">Oke, Saya Mengerti</string>
 </resources>

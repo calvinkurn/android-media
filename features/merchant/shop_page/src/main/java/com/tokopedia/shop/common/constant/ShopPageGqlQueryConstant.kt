@@ -7,7 +7,7 @@ object ShopPageGqlQueryConstant {
                 %1s
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     private val GET_SHOP_PRODUCT_QUERY_REQUEST = """
                status
@@ -16,6 +16,7 @@ object ShopPageGqlQueryConstant {
                   product_id
                   name
                   product_url
+                  app_link
                   stock
                   minimum_order
                   max_order
@@ -73,6 +74,7 @@ object ShopPageGqlQueryConstant {
                   }
                   hasVariant
                   parent_id
+                  show_stockbar
                 }
                 suggestion {
                   text
@@ -81,11 +83,11 @@ object ShopPageGqlQueryConstant {
                   keyword_process
                 }
                 totalData
-        """.trimIndent()
+    """.trimIndent()
 
     private val GET_SHOP_FILTER_PRODUCT_COUNT_QUERY_REQUEST = """
                 totalData
-        """.trimIndent()
+    """.trimIndent()
 
     fun getShopProductQuery() = String.format(BASE_QUERY_GET_SHOP_PRODUCT, GET_SHOP_PRODUCT_QUERY_REQUEST)
     fun getShopFilterProductCountQuery() = String.format(BASE_QUERY_GET_SHOP_PRODUCT, GET_SHOP_FILTER_PRODUCT_COUNT_QUERY_REQUEST)

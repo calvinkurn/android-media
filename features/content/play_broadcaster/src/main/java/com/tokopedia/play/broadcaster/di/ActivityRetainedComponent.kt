@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
@@ -33,7 +35,9 @@ import dagger.Component
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
         PlayBroadcastBindModule::class,
-        PlayBroadcastModule::class
+        PlayBroadcastModule::class,
+        ContentCreationProductTagBindModule::class,
+        UGCOnboardingModule::class
     ]
 )
 @ActivityRetainedScope

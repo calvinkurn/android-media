@@ -34,7 +34,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:scrollHorizontally="true"
-            android:textColor="@color/gf_loader_message_color"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             tools:text="Palai kupon Rp100 asda asd asd sdsaas asd asd asd  asd asd asd " />

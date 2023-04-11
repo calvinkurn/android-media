@@ -33,6 +33,7 @@ import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.setAnnouncementData
+import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
@@ -475,7 +476,21 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             isReviewed && !affiliateIncomeViewModel.getIsBlackListed() && !walletOnHold
     }
 
-    override fun onUserRegistered() {
+    override fun onUserNotRegistered() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onNotEligible() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onUserValidated() {
         isReviewed = true
         initTarikSaldo()
         affiliateIncomeViewModel.getAnnouncementInformation()

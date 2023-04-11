@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.R.id.calendar_card_unify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.di.getSubComponent
@@ -42,7 +44,7 @@ const val TRIPLE_WIDTH_RATIO = 3
 class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var calendarWidgetItemViewModel: CalendarWidgetItemViewModel
-    private var calendarCardUnify: CardUnify = itemView.findViewById(R.id.calendar_card_unify)
+    private var calendarCardUnify: CardUnify = itemView.findViewById(calendar_card_unify)
     private var mNotifyCampaignId = ""
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -52,8 +54,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         calendarWidgetItemViewModel.components.let {
             setView(it.properties, it.data?.firstOrNull())
             it.data?.firstOrNull()?.apply {
-                setUpCalendar(this)
+                setUpCalendar(it, this)
             }
+        }
+    }
+
+    private fun setUpCalendar(componentsItem: ComponentsItem, dataItem: DataItem) {
+        if ((componentsItem.properties?.calendarLayout.equals(Calendar.CAROUSEL)
+                || componentsItem.properties?.calendarLayout.equals(Calendar.GRID)) && componentsItem.properties?.calendarType.equals(Calendar.DYNAMIC)) {
+            setUpCalendarForImageBanner(dataItem)
+        } else {
+            setUpCalendarForMultipleView(dataItem)
         }
     }
 
@@ -69,18 +80,56 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 )
             }
-            else -> {
-                calendarCardUnify.removeAllViews()
-                calendarCardUnify.addView(
-                    LayoutInflater.from(itemView.context).inflate(
-                        R.layout.discovery_calendar_multiple_layout_item,
-                        calendarCardUnify,
-                        false
+            Calendar.GRID, Calendar.CAROUSEL -> {
+                if (properties.calendarType == Calendar.DYNAMIC) {
+                    calendarCardUnify.removeAllViews()
+                    calendarCardUnify.addView(
+                        LayoutInflater.from(itemView.context).inflate(
+                            R.layout.discovery_calendar_carousel_grid_layout_item,
+                            calendarCardUnify,
+                            false
+                        )
                     )
-                )
-                setLayoutWidth(properties, dataItem)
+                    setGridAndCarouselLayoutWidth(properties, dataItem)
+                } else {
+                    setMultipleLayoutView(properties, dataItem)
+                }
+            }
+            else -> {
+                setMultipleLayoutView(properties, dataItem)
             }
         }
+    }
+
+    private fun setGridAndCarouselLayoutWidth(properties: Properties, dataItem: DataItem?) {
+        val width = Resources.getSystem().displayMetrics.widthPixels
+        val layoutParams = calendarCardUnify.layoutParams
+        when (properties.calendarLayout) {
+            Calendar.CAROUSEL -> {
+                layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.calendar_banner_widget_width)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.calendar_banner_widget_height)
+            }
+            Calendar.GRID -> {
+                layoutParams.width = ((width) / 2)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
+            }
+        }
+        if(dataItem?.widgetHomeBanner.isNullOrEmpty()) {
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+        calendarCardUnify.layoutParams = layoutParams
+    }
+
+    private fun setMultipleLayoutView(properties: Properties?, dataItem: DataItem?) {
+        calendarCardUnify.removeAllViews()
+        calendarCardUnify.addView(
+            LayoutInflater.from(itemView.context).inflate(
+                R.layout.discovery_calendar_multiple_layout_item,
+                calendarCardUnify,
+                false
+            )
+        )
+        setLayoutWidth(properties, dataItem)
     }
 
     private fun setLayoutWidth(properties: Properties?, dataItem: DataItem?) {
@@ -139,7 +188,30 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         calendarCardUnify.layoutParams = layoutParams
     }
 
-    private fun setUpCalendar(dataItem: DataItem) {
+    private fun setUpCalendarForImageBanner(dataItem: DataItem) {
+        val widgetHomeBannerImage: ImageUnify = itemView.findViewById(R.id.widget_home_banner)
+        dataItem.apply {
+            if (widgetHomeBanner.isNullOrEmpty()) {
+                widgetHomeBannerImage.gone()
+            } else {
+                widgetHomeBannerImage.show()
+                widgetHomeBannerImage.loadImage(widgetHomeBanner)
+            }
+            calendarCardUnify.setOnClickListener {
+                if (!cta.isNullOrEmpty()) {
+                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT) && !Utils.isFutureSale(
+                            startDate ?: "",
+                            TIMER_DATE_FORMAT)) {
+                        RouteManager.route(itemView.context, cta)
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                            .trackEventClickCalendarWidget(calendarWidgetItemViewModel.components, calendarWidgetItemViewModel.getUserId())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setUpCalendarForMultipleView(dataItem: DataItem) {
         val calendarParent: ConstraintLayout = itemView.findViewById(R.id.calendar_parent)
         val calendarExpiredAlpha: View = itemView.findViewById(R.id.calendar_expired_alpha)
         val calendarDateAlpha: View = itemView.findViewById(R.id.calendar_date_alpha)

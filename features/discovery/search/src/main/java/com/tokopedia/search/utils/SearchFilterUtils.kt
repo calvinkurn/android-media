@@ -4,7 +4,9 @@ import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MANUAL_FILTER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -30,10 +32,14 @@ internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter
     }
 }
 
-internal fun Map<String, String>.addFilterOrigin(): Map<String, String> =
-    toMutableMap().also {
-        it[ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-    }
+internal fun manualFilterToggleMap(): Map<String, String> =
+    mapOf(MANUAL_FILTER to true.toString())
+
+internal fun originFilterMap(): Map<String, String> =
+    mapOf(ORIGIN_FILTER to DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE)
+
+internal fun componentIdMap(componentId: String): Map<String, String> =
+    mapOf(SRP_COMPONENT_ID to componentId)
 
 fun List<Option>?.joinActiveOptionsToString(): String {
     if (this == null || this.isEmpty()) return ""
@@ -65,7 +71,7 @@ private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
                       {
                         "name": "Power Merchant",
                         "key": "goldmerchant",
-                        "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                        "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                         "Description": "",
                         "value": "true",
                         "inputType": "checkbox",
@@ -80,7 +86,7 @@ private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
                       {
                         "name": "Official Store",
                         "key": "official",
-                        "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                        "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                         "Description": "",
                         "value": "true",
                         "inputType": "checkbox",
@@ -311,7 +317,7 @@ private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
                 {
                     "name": "Official Store",
                     "key": "official",
-                    "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                    "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                     "value": "true",
                     "inputType": "checkbox",
                     "totalData": "",
@@ -361,7 +367,7 @@ private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
                 {
                     "name": "Power Merchant",
                     "key": "goldmerchant",
-                    "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                    "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                     "value": "true",
                     "inputType": "checkbox",
                     "totalData": "",
@@ -395,7 +401,7 @@ private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
             {
                 "name": "Official Store",
                 "key": "official",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "true",
                 "inputType": "checkbox",
                 "totalData": "",
@@ -420,7 +426,7 @@ private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
             {
                 "name": "Power Merchant",
                 "key": "goldmerchant",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "true",
                 "inputType": "checkbox",
                 "totalData": "",

@@ -194,13 +194,10 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
         try {
-            val timeCheckCardDuration = intent.getStringExtra(EMONEY_TIME_CHECK_LOGIC_TAG)
-                ?: context?.resources?.getString(com.tokopedia.brizzi.R.string.brizzi_nfc_no_need_to_check_logic) ?: ""
-            val startTimeBeforeCallGql = System.currentTimeMillis()
             brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
                     DigitalBrizziGqlQuery.tokenBrizzi,
                     DigitalBrizziGqlMutation.emoneyLogBrizzi,
-                    needRefreshToken, startTimeBeforeCallGql, timeCheckCardDuration)
+                    needRefreshToken)
         } catch (e: Exception) {
             Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message?: "")
         }
@@ -246,7 +243,11 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = PendingIntent.getActivity(it, 0, it.intent, 0)
+                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
+                    } else {
+                        PendingIntent.getActivity(it, 0, it.intent, 0)
+                    }
                     brizziInstance.nfcAdapter.enableForegroundDispatch(it, pendingIntent,
                             arrayOf<IntentFilter>(), null)
                     nfcDisabledView.visibility = View.GONE
@@ -284,7 +285,6 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         const val REQUEST_CODE_LOGIN = 1980
 
         const val CLASS_NAME = "BrizziCheckBalanceFragment"
-        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
 
         const val ARCHITECTURE_ARM64 = "arm64-v8a"
         const val ARCHITECTURE_ARM32 = "armeabi-v7a"

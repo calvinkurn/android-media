@@ -14,12 +14,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
@@ -29,10 +27,12 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
@@ -41,16 +41,16 @@ import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
-import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.telco_buy_widget
+import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,12 +75,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         set(value) {
             field = value
             value?.run {
-                productId = operator.attributes.defaultProductId.toIntOrZero()
+                productId = operator.attributes.defaultProductId.toIntSafely()
             }
         }
-
-    private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
     override var menuId = TelcoComponentType.TELCO_POSTPAID
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
@@ -247,10 +244,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private fun getCatalogMenuDetail() {
         postpaidClientNumberWidget.setFilterChipShimmer(true)
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
-        getFavoriteNumber(
-            categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
-            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID
-        )
+        getFavoriteNumber(categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()))
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -261,10 +255,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                    menuId = digitalTelcoExtraParam.menuId.toIntSafely()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntSafely()
                 }
                 rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
@@ -294,8 +288,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             override fun onNavigateToContact(isSwitchChecked: Boolean) {
                 val clientNumber = postpaidClientNumberWidget.getInputNumber()
                 navigateContact(
-                    clientNumber, favNumberList,
-                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId),
+                    clientNumber,
+                    arrayListOf(categoryId.toString()),
+                    topupAnalytics.getCategoryName(categoryId),
                     isSwitchChecked
                 )
             }
@@ -522,6 +517,41 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         buyWidget.onBuyButtonLoading(showLoading)
     }
 
+    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
+        view?.let {
+
+            fun redirectError(error: ErrorAtc){
+                if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
+                    }
+                } else {
+                    RouteManager.route(context, error.appLinkUrl)
+                }
+            }
+
+            if (error.appLinkUrl.isNotEmpty()){
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                ) {
+                    redirectError(error)
+                }.show()
+            } else {
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                ).show()
+            }
+
+        }
+    }
+
     override fun onCollapseAppBar() {
         //do nothing
     }
@@ -572,11 +602,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun setFavNumbers(data: TopupBillsFavNumber) {
-        performanceMonitoringStopTrace()
-        favNumberList.addAll(data.favNumberList)
-    }
-
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
         postpaidClientNumberWidget.setFilterChipShimmer(false, true)
@@ -593,7 +618,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 setContactName(data.favoriteNumbers[0].clientName)
             }
         }
-        seamlessFavNumberList.addAll(data.favoriteNumbers)
+        seamlessFavNumberList = data.favoriteNumbers
         postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
@@ -602,7 +627,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun reloadSortFilterChip() {
         getFavoriteNumber(
             categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
-            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID,
             false
         )
     }

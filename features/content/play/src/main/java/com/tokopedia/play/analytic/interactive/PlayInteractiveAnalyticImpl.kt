@@ -5,7 +5,7 @@ import com.tokopedia.play.analytic.KEY_EVENT
 import com.tokopedia.play.analytic.KEY_TRACK_CLICK_CONTENT
 import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,18 +22,18 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
 
     override fun clickFollowShopInteractive(
         interactiveId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         shopId: String,
         channelId: String,
         channelType: PlayChannelType,
         ) {
-        val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
-            is InteractiveUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - $channelType - $interactiveId")
+        val (eventAction, eventLabel) = when(gameType){
+            is GameUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
+            is GameUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - $channelType - $interactiveId")
             else -> Pair("","")
         }
         sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
+            event = if(gameType is GameUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = eventAction,
             eventLabel = eventLabel
@@ -42,26 +42,26 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
 
     override fun impressFollowShopInteractive(
         shopId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         channelId: String,
     ) {
-        if(interactiveType !is InteractiveUiModel.Quiz) return
+        if(gameType !is GameUiModel.Quiz) return
         sendCompleteGeneralEvent(
             event = KEY_TRACK_VIEW_CONTENT_IRIS,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "view - follow quiz popup",
-            eventLabel = "$shopId - $channelId - $userId - ${interactiveType.id}"
+            eventLabel = "$shopId - $channelId - $userId - ${gameType.id}"
         )
     }
 
-    override fun clickWinnerBadge(shopId: String, interactiveType: InteractiveUiModel, interactiveId: String, channelId: String, channelType: PlayChannelType) {
-        val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - $channelType")
+    override fun clickWinnerBadge(shopId: String, gameType: GameUiModel, interactiveId: String, channelId: String, channelType: PlayChannelType) {
+        val (eventAction, eventLabel) = when(gameType){
+            is GameUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - $channelType")
             else -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
         }
 
         sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Giveaway) KEY_TRACK_CLICK_GROUP_CHAT else KEY_TRACK_CLICK_CONTENT,
+            event = if(gameType is GameUiModel.Giveaway) KEY_TRACK_CLICK_GROUP_CHAT else KEY_TRACK_CLICK_CONTENT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = eventAction,
             eventLabel = eventLabel
@@ -150,10 +150,10 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
     override fun clickActiveInteractive(
         interactiveId: String,
         shopId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         channelId: String,
     ) {
-        if(interactiveType !is InteractiveUiModel.Quiz) return
+        if(gameType !is GameUiModel.Quiz) return
         sendCompleteGeneralEvent(
             event = KEY_TRACK_CLICK_CONTENT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,

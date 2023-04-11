@@ -35,12 +35,14 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -63,6 +65,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
@@ -76,6 +81,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    implementation rootProject.ext.firebase.crashlytics
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
@@ -106,7 +116,7 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }

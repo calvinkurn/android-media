@@ -72,6 +72,7 @@ const val IS_ELIGIBLE_FOR_ADDRESS_FEATURE_QUERY = "KeroAddrIsEligibleForAddressF
 const val RATES_DEFAULT_RESPONSE_PATH = "logistic/rates_default_response.json"
 const val RATES_WITH_INSURANCE_RESPONSE_PATH = "logistic/rates_with_insurance_response.json"
 const val RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH = "logistic/rates_no_profile_duration_response.json"
+const val RATES_NO_TICKER_BO_RESPONSE = "logistic/rates_no_ticker_bo_response.json"
 const val RATES_ETA_RESPONSE_PATH = "logistic/rates_eta_response.json"
 const val RATES_ETA_WITH_BOE_RESPONSE_PATH = "logistic/rates_eta_with_boe_response.json"
 

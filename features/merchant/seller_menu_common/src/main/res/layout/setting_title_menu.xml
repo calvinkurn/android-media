@@ -11,9 +11,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/settingTitleIcon"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/layout_lvl2" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/settingTitleText"

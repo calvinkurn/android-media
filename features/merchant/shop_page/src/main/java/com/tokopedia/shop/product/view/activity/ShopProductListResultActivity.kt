@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -84,7 +84,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
 
     private fun getSearchKeywordData(savedInstanceState: Bundle?): String {
         return if (savedInstanceState == null) {
-            when{
+            when {
                 intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
                 intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> getSearchKeywordDataFromQueryParam(intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA))
                 intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
@@ -141,12 +141,14 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         editTextSearch?.setText(keyword)
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)
-        editTextSearch?.setOnClickListener(View.OnClickListener { view: View? ->
-            if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
-            if (null != shopInfo) {
-                if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.onSearchBarClicked()
+        editTextSearch?.setOnClickListener(
+            View.OnClickListener { view: View? ->
+                if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
+                if (null != shopInfo) {
+                    if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.onSearchBarClicked()
+                }
             }
-        })
+        )
         actionUpBtn?.setOnClickListener(View.OnClickListener { view: View? -> finish() })
     }
 
@@ -162,14 +164,18 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     override fun updateUIByShopName(shopName: String) {
-        if (null != editTextSearch) editTextSearch?.hint = getString(R.string.shop_product_search_hint_2,
-                MethodChecker.fromHtml(shopName))
+        if (null != editTextSearch) editTextSearch?.hint = getString(
+            R.string.shop_product_search_hint_2,
+            MethodChecker.fromHtml(shopName)
+        )
     }
 
     override fun updateUIByEtalaseName(etalaseName: String?) {
         if (null != editTextSearch) {
-            editTextSearch?.hint = getString(R.string.shop_product_search_hint_3,
-                    MethodChecker.fromHtml(etalaseName))
+            editTextSearch?.hint = getString(
+                R.string.shop_product_search_hint_3,
+                MethodChecker.fromHtml(etalaseName)
+            )
         }
     }
 
@@ -218,15 +224,28 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val SHOP_ID_OR_DOMAIN_PATH_SEGMENT = 1
         private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
-        fun createIntent(context: Context?, shopId: String?, keyword: String?,
-                         etalaseId: String?, attribution: String?, sortId: String?, shopRef: String?): Intent {
+        fun createIntent(
+            context: Context?,
+            shopId: String?,
+            keyword: String?,
+            etalaseId: String?,
+            attribution: String?,
+            sortId: String?,
+            shopRef: String?
+        ): Intent {
             val intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef)
             intent.putExtra(ShopParamConstant.EXTRA_SORT_ID, sortId)
             return intent
         }
 
-        fun createIntent(context: Context?, shopId: String?, keyword: String?,
-                         etalaseId: String?, attribution: String?, shopRef: String?): Intent {
+        fun createIntent(
+            context: Context?,
+            shopId: String?,
+            keyword: String?,
+            etalaseId: String?,
+            attribution: String?,
+            shopRef: String?
+        ): Intent {
             val intent = Intent(context, ShopProductListResultActivity::class.java)
             intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId)
             intent.putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword)
@@ -236,8 +255,15 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             return intent
         }
 
-        fun createIntentWithSourceRedirection(context: Context?, shopId: String?, keyword: String?,
-                                              etalaseId: String?, attribution: String?, shopRef: String?, sourceRedirection: String?): Intent {
+        fun createIntentWithSourceRedirection(
+            context: Context?,
+            shopId: String?,
+            keyword: String?,
+            etalaseId: String?,
+            attribution: String?,
+            shopRef: String?,
+            sourceRedirection: String?
+        ): Intent {
             val intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef)
             intent.putExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection)
             return intent

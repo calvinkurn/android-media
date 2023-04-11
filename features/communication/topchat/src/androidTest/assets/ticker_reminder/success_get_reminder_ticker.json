@@ -1,0 +1,14 @@
+{
+  "GetReminderTicker": {
+    "featureId": "1",
+    "enable": true,
+    "mainText": "Capek ngetik “Barangnya ready”? 😴",
+    "subText": "Sekarang bisa otomatis! Yuk, jawab pertanyaan pembeli pakai Smart Reply. Coba Smart Reply",
+    "url": "tokopedia://home",
+    "urlLabel": "Coba Smart Reply",
+    "enableClose": true,
+    "regexMessage": "SRW Ticker",
+    "replyId": "1234",
+    "tickerType": "announcement"
+  }
+}

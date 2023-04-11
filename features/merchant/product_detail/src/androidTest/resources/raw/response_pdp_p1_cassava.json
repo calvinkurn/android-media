@@ -412,7 +412,7 @@
                 "defaultChild": "1994427768",
                 "errorCode": 0,
                 "parentID": "1994427767",
-                "sizeChart": "https://ecs7.tokopedia.net/img/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
+                "sizeChart": "https://images.tokopedia.net/img/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
                 "variants": [
                   {
                     "identifier": "colour",
@@ -421,8 +421,8 @@
                       {
                         "hex": "#ffffff",
                         "picture": {
-                          "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg",
-                          "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg"
+                          "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg",
+                          "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg"
                         },
                         "productVariantOptionID": "128374176",
                         "value": "Putih",
@@ -431,8 +431,8 @@
                       {
                         "hex": "#000000",
                         "picture": {
-                          "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg",
-                          "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg"
+                          "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg",
+                          "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg"
                         },
                         "productVariantOptionID": "128374177",
                         "value": "Hitam",
@@ -506,7 +506,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/Tradein@3x.png",
                 "isApplink": true,
                 "title": "Beli dengan Tukar Tambah"
               }
@@ -532,7 +532,7 @@
               {
                 "applink": "tokopedia://fintech/paylater?category=Mesin+Jilid&price=1000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fqa-zxccv01%2Fproduct-test-android-donot-delete-or-edit&userID=132674846",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                 "isApplink": true,
                 "title": "Paylater & Cicilan"
               }
@@ -545,7 +545,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
                 "isApplink": false,
                 "title": "Proteksi Gadget"
               }
@@ -558,7 +558,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
                 "isApplink": false,
                 "title": "Order Prioritas"
               }

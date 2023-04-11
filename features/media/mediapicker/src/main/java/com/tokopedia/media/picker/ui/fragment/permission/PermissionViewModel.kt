@@ -1,16 +1,20 @@
 package com.tokopedia.media.picker.ui.fragment.permission
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.media.picker.utils.permission.PermissionModel
+import com.tokopedia.media.picker.utils.permission.permissions
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import javax.inject.Inject
 
 class PermissionViewModel @Inject constructor(
-    private val cacheManager: ParamCacheManager
-) : ViewModel(), LifecycleObserver {
+    private val cacheManager: PickerCacheManager
+) : ViewModel() {
 
     /*
     * will return a dynamic wording of permission
@@ -22,8 +26,8 @@ class PermissionViewModel @Inject constructor(
     private val _dynamicWording = MutableLiveData<Pair<Int, Int>>()
     val dynamicWording: LiveData<Pair<Int, Int>> get() = _dynamicWording
 
-    private val _permissionList = MediatorLiveData<List<PermissionUiModel>>()
-    val permissionList: LiveData<List<PermissionUiModel>> get() = _permissionList
+    private val _permissionList = MediatorLiveData<List<PermissionModel>>()
+    val permissionList: LiveData<List<PermissionModel>> get() = _permissionList
 
     private val _permissionCodeName = MediatorLiveData<List<String>>()
     val permissionCodeName: LiveData<List<String>> get() = _permissionCodeName
@@ -36,9 +40,8 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun getDynamicPermissionList() {
-        _permissionList.value = PermissionUiModel.getOrCreate(
+        _permissionList.value = permissions(
             cacheManager.get().pageType(),
             cacheManager.get().modeType()
         )

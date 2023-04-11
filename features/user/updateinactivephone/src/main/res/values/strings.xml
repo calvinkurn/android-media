@@ -20,7 +20,7 @@
   <string name="text_onboarding_id_card_description_3">Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
   <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
   <string name="text_form_title">Hasil fotomu</string>
-  <string name="text_form_button">Upload Data</string>
+  <string name="text_form_button">Ajukan Ubah Nomor HP</string>
   <string name="text_form_input_phone_number">Masukan nomor HP baru</string>
   <string name="text_form_input_phone_number_description">Nomor ini akan terhubung dengan akun Tokopedia pilihanmu.</string>
   <string name="text_form_id_card">Kartu Identitas</string>

@@ -25,6 +25,7 @@ data class FeedXProduct(
         var isCashback: Boolean = false,
         @SerializedName("cashbackFmt")
         var cashbackFmt: String = "",
+        @SerializedName("id")
         var id: String = "",
         @SerializedName("isBebasOngkir")
         var isBebasOngkir: Boolean = false,
@@ -52,6 +53,17 @@ data class FeedXProduct(
         var totalSold: Int = 0,
         @SerializedName("webLink")
         var webLink: String = "",
+        //new fields for asgc fst and rs
+        @SerializedName("priceMasked")
+        var priceMasked: Float = 0f,
+        @SerializedName("priceMaskedFmt")
+        var priceMaskedFmt: String = "",
+        @SerializedName("stockWording")
+        val stockWording: String = "",
+        @SerializedName("stockSoldPercentage")
+        val stockSoldPercentage: Float = 0f,
+        @SerializedName("cartable")
+        val cartable: Boolean = false,
 
         //TopadsHeadline
         var variant: Int = 1,
@@ -59,6 +71,7 @@ data class FeedXProduct(
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
+        @SerializedName("shopID")
         var shopID : String = "",
         val isTopads: Boolean = false,
         val adClickUrl: String = "",

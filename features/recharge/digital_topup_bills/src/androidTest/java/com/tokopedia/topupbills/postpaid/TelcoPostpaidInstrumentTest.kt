@@ -14,8 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager

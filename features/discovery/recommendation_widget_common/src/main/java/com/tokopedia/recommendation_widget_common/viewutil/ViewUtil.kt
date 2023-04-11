@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.viewutil
 
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.ColorInt
@@ -11,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by yfsx on 5/3/21.
@@ -40,12 +40,15 @@ object ChannelWidgetUtil {
 
     fun validateHomeComponentDivider(
         dividerType: Int,
+        dividerSize: Int,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
+        dividerTop?.layoutParams?.height = dividerSize.toPx()
+        dividerBottom?.layoutParams?.height = dividerSize.toPx()
         when(dividerType) {
             DIVIDER_NO_DIVIDER -> {
-                dividerTop?.invisible()
+                dividerTop?.gone()
                 dividerBottom?.gone()
             }
             DIVIDER_TOP -> {
@@ -53,7 +56,7 @@ object ChannelWidgetUtil {
                 dividerBottom?.gone()
             }
             DIVIDER_BOTTOM -> {
-                dividerTop?.invisible()
+                dividerTop?.gone()
                 dividerBottom?.visible()
             }
             DIVIDER_TOP_AND_BOTTOM -> {
@@ -64,8 +67,4 @@ object ChannelWidgetUtil {
     }
 }
 
-fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
-
 fun Float.toDpInt(): Int = this.toPx().toInt()
-
-fun Float.toDpFloat(): Float = this.toPx()

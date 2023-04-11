@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="UnusedResources" xmlns:tools="http://schemas.android.com/tools">
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
@@ -12,6 +12,7 @@
     <!--path-->
     <string name="path_tokopedia_now_home" translatable="false">/home</string>
     <string name="path_tokopedia_now_category_list" translatable="false">/category-list</string>
+    <string name="path_tokopedia_now_see_all_category" translatable="false">/see-all-category</string>
     <string name="path_tokopedia_now_sort_filter" translatable="false">/sort-filter</string>
     <string name="path_tokopedia_now_date_filter" translatable="false">/date-filter</string>
     <string name="path_tokopedia_now_search" translatable="false">/search</string>
@@ -19,4 +20,12 @@
     <string name="path_tokopedia_now_repurchase_page" translatable="false">/repurchase-page</string>
     <string name="path_tokopedia_now_category_filter" translatable="false">/category-filter</string>
     <string name="path_tokopedia_now_educational_info" translatable="false">/educational-info</string>
+    <string name="path_tokopedia_now_recipe_detail" translatable="false">/recipe/detail</string>
+    <string name="path_tokopedia_now_recipe_bookmark" translatable="false">/recipe/bookmark</string>
+    <string name="path_tokopedia_now_recipe_home" translatable="false">/recipe/home</string>
+    <string name="path_tokopedia_now_recipe_search" translatable="false">/recipe/search</string>
+    <string name="path_tokopedia_now_recipe_autocomplete" translatable="false">/recipe/auto-complete</string>
+    <string name="path_tokopedia_now_recipe_filter" translatable="false">/recipe/filter</string>
+    <string name="path_tokopedia_now_recipe_similar_product" translatable="false">/recipe/similar-product-bottomsheet</string>
+    <string name="path_tokopedia_now_recipe_ingredient" translatable="false">/recipe/ingredient-bottomsheet</string>
 </resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
+        android:id="@+id/item_shake_shake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:type="TOGGLE"
+        app:title="@string/privacy_center_recommendation_title_shake_shake"
+        app:description="@string/privacy_center_recommendation_subtitle_shake_shake"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
+        android:id="@+id/item_geolocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:type="TOGGLE"
+        app:title="@string/privacy_center_recommendation_title_geolocation"
+        app:description="@string/privacy_center_recommendation_subtitle_geolocation"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_shake_shake"/>
+
+    <com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
+        android:id="@+id/item_recommendation_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:type="TOGGLE"
+        app:title="@string/privacy_center_recommendation_friend_in_feed_title"
+        app:description="@string/privacy_center_recommendation_friend_in_feed_subtitle"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_geolocation"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

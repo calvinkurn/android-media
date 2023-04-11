@@ -130,6 +130,7 @@ class MultipleVariantEditInputBottomSheet(
 
         contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.let { multiLocationTicker ->
             multiLocationTicker.showWithCondition(couldShowMultiLocationTicker)
+            multiLocationTicker.setTextDescription(context?.resources?.getString(R.string.ticker_edit_variant_main_location).toString())
         }
         setChild(contentView)
     }

@@ -1,19 +1,21 @@
 package com.tokopedia.product.detail.data.util
 
 import android.content.Context
-import android.util.AttributeSet
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-class CenterLayoutManager : LinearLayoutManager {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout) {
-        centerSmoothScroller = CenterSmoothScroller(context)
+class CenterLayoutManager(context: Context) : StaggeredGridLayoutManager(SPAN_COUNT, VERTICAL) {
+
+    companion object {
+        const val SPAN_COUNT = 2
     }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    lateinit var centerSmoothScroller: CenterSmoothScroller
+    init {
+        gapStrategy = GAP_HANDLING_NONE
+    }
+
+    private var centerSmoothScroller = CenterSmoothScroller(context)
 
     override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State, position: Int) {
         centerSmoothScroller = CenterSmoothScroller(recyclerView.context)

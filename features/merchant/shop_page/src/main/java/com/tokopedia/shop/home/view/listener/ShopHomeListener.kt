@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.listener;
+package com.tokopedia.shop.home.view.listener
 
 import android.util.SparseIntArray
 

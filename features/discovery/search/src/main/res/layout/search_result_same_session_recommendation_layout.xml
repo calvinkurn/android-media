@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/search_background_same_session_recommendation">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recommendation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Sepertinya kamu tertarik xiaomi redmi 10" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_close"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:icon_name="CLOSE"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_recommendation_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tg_recommendation_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_same_session_recommendation_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_recommendation_title" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_same_session_recommendation_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tg_recommendation_title, btn_close, rv_same_session_recommendation_product " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_hide_recommendation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="@string/search_same_session_recommendation_hide_recommendation" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_undo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:padding="@dimen/unify_space_8"
+        android:text="@string/label_cancel"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tg_hide_recommendation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_same_session_recommendation_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_hide_recommendation"
+        app:layout_constraintVertical_bias="0"
+        tools:itemCount="2" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_same_session_recommendation_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tg_hide_recommendation, btn_undo, rv_same_session_recommendation_feedback " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_selected_feedback_title"
+        android:layout_width="232dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="64dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/tg_selected_feedback_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Makasih buat masukannya, ya!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_selected_feedback_body"
+        android:layout_width="232dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="50dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_selected_feedback_title"
+        app:typographyType="paragraph_3"
+        tools:text="Kami nggak akan tampilin rekomendasi ini dalam 24 jam." />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_same_session_recommendation_selected_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tg_selected_feedback_title, tg_selected_feedback_body " />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

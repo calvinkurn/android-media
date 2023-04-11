@@ -13,7 +13,7 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 
 class BottomSheetWishlistCollectionItemViewHolder(
     private val binding: AddWishlistCollectionItemBinding
@@ -21,7 +21,7 @@ class BottomSheetWishlistCollectionItemViewHolder(
     RecyclerView.ViewHolder(binding.root) {
     fun bind(
         item: BottomSheetWishlistCollectionTypeLayoutData,
-        actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?,
+        actionListener: BottomSheetWishlistCollectionAdapter.ActionListener?,
         source: String
     ) {
         if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
@@ -53,8 +53,12 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 }
 
                 mainCollectionItemName.text = item.dataObject.name
-                mainCollectionTotalItem.text =
-                    "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+
+                var totalItemText = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.indicator.title.isNotEmpty()) {
+                    totalItemText += " \u2022 ${item.dataObject.indicator.title}"
+                }
+                mainCollectionTotalItem.text = totalItemText
 
                 if (item.dataObject.isContainProduct && source != SRC_WISHLIST_COLLECTION_BULK_ADD) {
                     icCheck.visible()

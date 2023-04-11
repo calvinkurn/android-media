@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageMultiEditBinding
@@ -16,7 +15,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class ProductMultiEditBottomSheet(
     private val listener: MultiEditListener,
     private val fm: FragmentManager?
-): BottomSheetUnify() {
+) : BottomSheetUnify() {
 
     companion object {
         private val TAG: String = ProductMultiEditBottomSheet::class.java.simpleName
@@ -34,6 +33,8 @@ class ProductMultiEditBottomSheet(
         showHeader = false
         showCloseIcon = false
     }
+
+    private var isShopModerated = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,16 +71,17 @@ class ProductMultiEditBottomSheet(
     }
 
     private fun setupView() {
-        val adapter = ProductMultiEditAdapter(menuClickListener())
+        val adapter = ProductMultiEditAdapter(menuClickListener(), isShopModerated)
         binding?.rvProductManageMultiEdit?.adapter = adapter
         adapter.menuList = menuList
     }
 
-    fun show() {
+    fun show(isShopModerated: Boolean) {
+        this.isShopModerated = isShopModerated
         fm?.let { show(it, TAG) }
     }
 
-    interface MultiEditListener{
+    interface MultiEditListener {
         fun editMultipleProductsEtalase()
         fun editMultipleProductsInActive()
         fun deleteMultipleProducts()

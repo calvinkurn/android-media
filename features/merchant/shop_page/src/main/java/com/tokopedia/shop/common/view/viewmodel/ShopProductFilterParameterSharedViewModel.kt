@@ -14,7 +14,7 @@ class ShopProductFilterParameterSharedViewModel : ViewModel() {
 
     var isFulfillmentFilterActive: Boolean = false
 
-    fun changeSharedSortData(shopProductFilterParameter: ShopProductFilterParameter){
+    fun changeSharedSortData(shopProductFilterParameter: ShopProductFilterParameter) {
         _sharedSortData.postValue(shopProductFilterParameter)
     }
 

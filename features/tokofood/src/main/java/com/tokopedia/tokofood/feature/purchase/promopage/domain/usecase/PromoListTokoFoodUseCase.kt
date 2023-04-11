@@ -3,12 +3,14 @@ package com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFood
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodResponse
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokoFoodParam
 import javax.inject.Inject
 
 private const val QUERY = """
@@ -95,11 +97,12 @@ class PromoListTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(PromoListTokofood())
     }
 
-    suspend fun execute(source: String): PromoListTokoFood {
+    suspend fun execute(source: String,
+                        merchantId: String): PromoListTokoFood {
         val additionalAttributes = CartAdditionalAttributesTokoFood(
             chosenAddressRequestHelper.getChosenAddress()
         )
-        val param = generateParams(additionalAttributes.generateString(), source)
+        val param = generateParams(additionalAttributes.generateString(), source, merchantId)
         setRequestParams(param)
         val response = executeOnBackground()
         if (response.promoListTokoFood.isSuccess()) {
@@ -113,10 +116,12 @@ class PromoListTokoFoodUseCase @Inject constructor(
         private const val PARAMS_KEY = "params"
 
         private fun generateParams(additionalAttributes: String,
-                                   source: String): Map<String, Any> {
-            val params = CheckoutTokoFoodParam(
+                                   source: String,
+                                   merchantId: String): Map<String, Any> {
+            val params = PromoTokoFoodParam(
                 additionalAttributes = additionalAttributes,
-                source = source
+                source = source,
+                merchantId = merchantId
             )
             return mapOf(PARAMS_KEY to params)
         }

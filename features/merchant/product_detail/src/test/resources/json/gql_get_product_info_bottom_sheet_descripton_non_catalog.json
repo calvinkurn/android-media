@@ -1,0 +1,85 @@
+{
+  "pdpGetDetailBottomSheet": {
+    "bottomsheetData": [
+      {
+        "title": "header",
+        "componentName": "header",
+        "isApplink": false,
+        "isShowable": true,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      },
+      {
+        "title": "Detail produk",
+        "componentName": "detail",
+        "isApplink": false,
+        "isShowable": true,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      },
+      {
+        "title": "Deskripsi produk aaaa astaga hahaa",
+        "componentName": "deskripsi",
+        "isApplink": true,
+        "isShowable": true,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      },
+      {
+        "title": "Panduan ukuran",
+        "componentName": "panduan_ukuran",
+        "isApplink": true,
+        "isShowable": false,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      },
+      {
+        "title": "Panduan perawatan",
+        "componentName": "panduan_perawatan",
+        "isApplink": true,
+        "isShowable": false,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      },
+      {
+        "title": "Informasi penting",
+        "componentName": "informasi_penting",
+        "isApplink": true,
+        "isShowable": false,
+        "value": "",
+        "applink": "",
+        "icon": ""
+      }
+    ],
+    "dataShopNotes": {
+      "shopNotesData": [
+        {
+          "shopNotesID": "1597732",
+          "title": "Honesty Shop 88",
+          "content": "\u003cp\u003eJam Kerja : Senin - Sabtu 09:00-17:00 WIB(lewat dari jam ini chat akan tetap kami balas hanya saja lebih lambat balas nya) kami menjual berbagai produk dengan kualitas terbaik dengan harga termurah kepuasan pelanggan adalah prioritas utama kami Menerima Dropship , Reseller, Pembelian Grosir dan Ecer harap tanyakan stok sebelum Di order Pengiriman setiap hari Barang di kirim malam jam 19:00 sistem resi otomatis\u003c/p\u003e",
+          "isTerms": false,
+          "position": 3,
+          "url": "https://m.tokopedia.com/honestyshop88/note/1597732/honesty-shop-88",
+          "updateTime": "1618395972",
+          "updateTimeUTC": "1618370772"
+        }
+      ],
+      "error": ""
+    },
+    "discussion": {
+      "title": "Ada hal lain yang ingin ditanyakan?",
+      "buttonType": "",
+      "buttonCopy": ""
+    },
+    "error": {
+      "Code": 0,
+      "Message": "",
+      "DevMessage": ""
+    }
+  }
+}

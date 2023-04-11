@@ -18,16 +18,16 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         android:maxLines="1"
         android:text="@string/sah_line_graph_error_message"
         android:textAlignment="center"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:typographyWeight="bold" />
 </LinearLayout>

@@ -11,26 +11,36 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -47,6 +57,9 @@ import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_PRO
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_SIGNATURE
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.databinding.FragmentRechargeCcBinding
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCPromo
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCRecommendation
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
@@ -55,17 +68,21 @@ import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_CC_LE
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MIN_CC_LENGTH
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
+import com.tokopedia.recharge_credit_card.util.RechargeCCMapper
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
+import com.tokopedia.recharge_credit_card.widget.RechargeCCBankListWidget
 import com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
-import com.tokopedia.recharge_credit_card.widget.util.RechargeCCMapper
+import com.tokopedia.recharge_credit_card.widget.util.RechargeCCWidgetMapper
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_recharge_cc.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class RechargeCCFragment :
@@ -73,14 +90,16 @@ class RechargeCCFragment :
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    RechargeCCClientNumberWidget.CreditCardActionListener
-{
+    RechargeCCClientNumberWidget.CreditCardActionListener,
+    RechargeCCBankListWidget.RechargeCCBankListListener {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
     private val keyboardWatcher = DigitalKeyboardWatcher()
+
+    private var binding by autoClearedNullable<FragmentRechargeCcBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -90,6 +109,9 @@ class RechargeCCFragment :
 
     @Inject
     lateinit var creditCardAnalytics: CreditCardAnalytics
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var operatorIdSelected: String = ""
     private var productIdSelected: String = ""
@@ -117,8 +139,11 @@ class RechargeCCFragment :
         }
 
         if (savedInstanceState != null) {
-            checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
-                    DigitalCheckoutPassData::class.java, null)
+            checkoutPassDataState = saveInstanceManager.get(
+                EXTRA_STATE_CHECKOUT_PASS_DATA,
+                DigitalCheckoutPassData::class.java,
+                null
+            )
         }
     }
 
@@ -131,7 +156,8 @@ class RechargeCCFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recharge_cc, container, false)
+        binding = FragmentRechargeCcBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,7 +175,7 @@ class RechargeCCFragment :
             )
         )
 
-        cc_widget_client_number.run {
+        binding?.ccWidgetClientNumber?.run {
             setInputFieldType(InputFieldType.CreditCard)
             setInputFieldStaticLabel(context.getString(R.string.cc_label_input_number))
             setInputFieldListener(this@RechargeCCFragment)
@@ -158,27 +184,25 @@ class RechargeCCFragment :
             setCreditCardATCListener(this@RechargeCCFragment)
         }
 
-        list_bank_btn.setOnClickListener {
-            activity?.let {
-                val bottomSheetBankList = CCBankListBottomSheet(categoryId)
-                bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
-            }
-        }
+        binding?.ccWidgetBankList?.setListener(this@RechargeCCFragment)
         observeData()
         creditCardAnalytics.impressionInitialPage(userSession.userId)
     }
 
     private fun setupKeyboardWatcher() {
-        cc_widget_client_number.rootView?.let {
-            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    // do nothing
-                }
+        binding?.ccWidgetClientNumber?.rootView?.let {
+            keyboardWatcher.listen(
+                it,
+                object : DigitalKeyboardWatcher.Listener {
+                    override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                        // do nothing
+                    }
 
-                override fun onKeyboardHidden() {
-                    // do nothing
+                    override fun onKeyboardHidden() {
+                        // do nothing
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -203,65 +227,98 @@ class RechargeCCFragment :
     }
 
     private fun observeData() {
-        rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
-            if (it.defaultProductId.isEmpty() && it.operatorId.isEmpty()) {
-                cc_widget_client_number.hideOperatorIcon()
-                cc_widget_client_number.setLoading(false)
-                cc_widget_client_number.setErrorInputField(
-                    getString(R.string.cc_bank_is_not_supported))
-            } else {
-                cc_widget_client_number.showOperatorIcon(it.imageUrl)
-            }
-            operatorIdSelected = it.operatorId
-            productIdSelected = it.defaultProductId
-        })
-
-        rechargeCCViewModel.prefixSelect.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is RechargeNetworkResult.Success -> {
-                    rechargeCCViewModel.run {
-                        checkPrefixNumber(cc_widget_client_number.getInputNumber())
-                        cancelValidatorJob()
-                        validateCCNumber(cc_widget_client_number.getInputNumber())
+        rechargeCCViewModel.menuDetail.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is RechargeNetworkResult.Success -> {
+                        renderTicker(it.data.tickers)
+                        if (isEnablePromoRecomSection()) {
+                            renderPromoAndRecommendation(
+                                it.data.recommendations,
+                                it.data.promos
+                            )
+                        }
+                        performanceMonitoring.stopTrace()
+                    }
+                    is RechargeNetworkResult.Fail -> {
+                        // TODO: show global error
                     }
                 }
-                is RechargeNetworkResult.Fail -> {
-                    showErrorToaster(it.error)
+            }
+        )
+        rechargeCCViewModel.creditCardSelected.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.run {
+                    if (it.defaultProductId.isEmpty() && it.operatorId.isEmpty()) {
+                        ccWidgetClientNumber.hideOperatorIcon()
+                        ccWidgetClientNumber.setLoading(false)
+                        ccWidgetClientNumber.setErrorInputField(
+                            getString(R.string.cc_bank_is_not_supported)
+                        )
+                    } else {
+                        ccWidgetClientNumber.showOperatorIcon(it.imageUrl)
+                    }
+                }
+                operatorIdSelected = it.operatorId
+                productIdSelected = it.defaultProductId
+            }
+        )
+
+        rechargeCCViewModel.prefixSelect.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is RechargeNetworkResult.Success -> {
+                        binding?.run {
+                            rechargeCCViewModel.checkPrefixNumber(ccWidgetClientNumber.getInputNumber())
+                            rechargeCCViewModel.cancelValidatorJob()
+                            rechargeCCViewModel.validateCCNumber(ccWidgetClientNumber.getInputNumber())
+                        }
+                    }
+                    is RechargeNetworkResult.Fail -> {
+                        showErrorToaster(it.error)
+                    }
                 }
             }
-        })
+        )
 
-        rechargeCCViewModel.prefixValidation.observe(viewLifecycleOwner, Observer { isValid ->
-            cc_widget_client_number.run {
-                setLoading(false)
-                val clientNumber = getInputNumber()
-                if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
-                    if (isValid && rechargeCCViewModel.creditCardSelected.value?.operatorId?.isEmpty() == false) {
-                        if (!clientNumber.isMasked() &&
-                            !RechargeCCUtil.isCreditCardValid(clientNumber)) {
-                            setErrorInputField(getString(R.string.cc_error_invalid_number))
-                        } else {
-                            clearErrorState()
-                            enablePrimaryButton()
+        rechargeCCViewModel.prefixValidation.observe(
+            viewLifecycleOwner,
+            Observer { isValid ->
+                binding?.ccWidgetClientNumber?.run {
+                    setLoading(false)
+                    val clientNumber = getInputNumber()
+                    if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
+                        if (isValid && rechargeCCViewModel.creditCardSelected.value?.operatorId?.isEmpty() == false) {
+                            if (!clientNumber.isMasked() &&
+                                !RechargeCCUtil.isCreditCardValid(clientNumber)
+                            ) {
+                                setErrorInputField(getString(R.string.cc_error_invalid_number))
+                            } else {
+                                clearErrorState()
+                                enablePrimaryButton()
+                            }
                         }
                     }
                 }
             }
-        })
+        )
 
-        rechargeCCViewModel.tickers.observe(viewLifecycleOwner, Observer {
-            renderTicker(it)
-            performanceMonitoring.stopTrace()
-        })
+        rechargeSubmitCCViewModel.errorSignature.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
+                showErrorToaster(it)
+            }
+        )
 
-        rechargeSubmitCCViewModel.errorSignature.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            showErrorToaster(it)
-        })
-
-        rechargeSubmitCCViewModel.redirectUrl.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            val passData = DigitalCheckoutPassData.Builder()
+        rechargeSubmitCCViewModel.redirectUrl.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
+                val passData = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(categoryId)
                     .instantCheckout("0")
@@ -273,37 +330,40 @@ class RechargeCCFragment :
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .isFromPDP(true)
                     .build()
-            checkoutPassDataState = passData
+                checkoutPassDataState = passData
 
-            navigateToCart(passData)
-        })
+                navigateToCart(passData)
+            }
+        )
 
-        rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            showErrorToaster(it)
-        })
+        rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
+                showErrorToaster(it)
+            }
+        )
 
-        rechargeCCViewModel.favoriteChipsData.observe(viewLifecycleOwner, {
+        rechargeCCViewModel.favoriteChipsData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteChips(it.data)
                 is RechargeNetworkResult.Loading -> {
-                    cc_widget_client_number.setFilterChipShimmer(true)
+                    binding?.ccWidgetClientNumber?.setFilterChipShimmer(true)
                 }
             }
-        })
+        }
 
-        rechargeCCViewModel.autoCompleteData.observe(viewLifecycleOwner, {
+        rechargeCCViewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
             }
-        })
+        }
 
-
-        rechargeCCViewModel.prefillData.observe(viewLifecycleOwner, {
+        rechargeCCViewModel.prefillData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
             }
-        })
+        }
     }
 
     private fun getTickerData() {
@@ -311,24 +371,157 @@ class RechargeCCFragment :
     }
 
     private fun renderTicker(tickers: List<TickerCreditCard>) {
-        if (tickers.isNotEmpty()) {
-            val messages = ArrayList<TickerData>()
-            for (item in tickers) {
-                messages.add(TickerData(item.name, item.content,
-                        when (item.type) {
-                            "warning" -> Ticker.TYPE_WARNING
-                            "info" -> Ticker.TYPE_INFORMATION
-                            "success" -> Ticker.TYPE_ANNOUNCEMENT
-                            "error" -> Ticker.TYPE_ERROR
-                            else -> Ticker.TYPE_INFORMATION
-                        }))
+        binding?.run {
+            if (tickers.isNotEmpty()) {
+                val messages = ArrayList<TickerData>()
+                for (item in tickers) {
+                    messages.add(
+                        TickerData(
+                            item.name,
+                            item.content,
+                            when (item.type) {
+                                "warning" -> Ticker.TYPE_WARNING
+                                "info" -> Ticker.TYPE_INFORMATION
+                                "success" -> Ticker.TYPE_ANNOUNCEMENT
+                                "error" -> Ticker.TYPE_ERROR
+                                else -> Ticker.TYPE_INFORMATION
+                            }
+                        )
+                    )
+                }
+                context?.run {
+                    ccTickerView.addPagerView(TickerPagerAdapter(this, messages), messages)
+                }
+                ccTickerView.visibility = View.VISIBLE
+            } else {
+                ccTickerView.visibility = View.GONE
             }
-            context?.run {
-                cc_ticker_view.addPagerView(TickerPagerAdapter(this, messages), messages)
+        }
+    }
+
+    private fun renderPromoAndRecommendation(recommendations: List<RechargeCCRecommendation>, promos: List<RechargeCCPromo>) {
+        val menuTab = mutableListOf<TopupBillsTabItem>()
+        val isShowTitle = false
+
+        RechargeCCRecommendationFragment(
+            RechargeCCMapper.mapRechargeCCRecomToTopupRecom(recommendations),
+            isShowTitle,
+            getRechargeCCRecentNumberListener()
+        ).also {
+            menuTab.add(TopupBillsTabItem(it, RECENT_TRANSACTION_LABEL))
+        }
+
+        RechargeCCPromoFragment.newInstance(
+            RechargeCCMapper.mapRechargeCCPromoToTopupPromo(promos),
+            isShowTitle,
+            getRechargeCCPromoItemListener()
+        ).also {
+            menuTab.add(TopupBillsTabItem(it, PROMO_LIST_LABEL))
+        }
+
+        binding?.run {
+            val pagerAdapter = TopupBillsProductTabAdapter(this@RechargeCCFragment, menuTab)
+            ccViewPager.adapter = pagerAdapter
+            ccViewPager.offscreenPageLimit = menuTab.size
+            ccTabLayout.customTabMode = TabLayout.MODE_FIXED
+            ccTabLayout.customTabGravity = TabLayout.GRAVITY_FILL
+
+            ccTabLayout.getUnifyTabLayout().removeAllTabs()
+            for (item in menuTab) {
+                ccTabLayout.addNewTab(item.title)
             }
-            cc_ticker_view.visibility = View.VISIBLE
-        } else {
-            cc_ticker_view.visibility = View.GONE
+            ccTabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    if (tab.position == RECENT_TRANSACTION_POSITION) {
+                        creditCardAnalytics.sendClickLastTransactionTabEvent(
+                            rechargeCCViewModel.categoryName,
+                            rechargeCCViewModel.loyaltyStatus
+                        )
+                    } else if (tab.position == PROMO_LIST_POSITION) {
+                        creditCardAnalytics.sendClickPromoTabEvent(
+                            rechargeCCViewModel.categoryName,
+                            rechargeCCViewModel.loyaltyStatus
+                        )
+                    }
+                    ccViewPager.setCurrentItem(tab.position, true)
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    // do nothing
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    // do nothing
+                }
+            })
+            ccViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    ccTabLayout.getUnifyTabLayout().getTabAt(position)?.let {
+                        it.select()
+                    }
+                    super.onPageSelected(position)
+                    val myFragment = childFragmentManager.findFragmentByTag("f$position")
+                    myFragment?.view?.let { updatePagerHeightForChild(it, ccViewPager) }
+                }
+
+                private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
+                    view.post {
+                        if (view != null) {
+                            val wMeasureSpec =
+                                View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                            view.measure(wMeasureSpec, hMeasureSpec)
+
+                            if (pager.layoutParams.height != view.measuredHeight) {
+                                pager.layoutParams = (pager.layoutParams)
+                                    .also { lp ->
+                                        lp.height = view.measuredHeight
+                                    }
+                            }
+                        }
+                    }
+                }
+            })
+
+            ccTabLayout.show()
+            ccViewPager.show()
+        }
+    }
+
+    private fun getRechargeCCRecentNumberListener() = object : TopupBillsRecentNumberListener {
+        override fun onClickRecentNumber(
+            topupBillsRecommendation: TopupBillsRecommendation,
+            categoryId: String,
+            position: Int
+        ) {
+            topupBillsRecommendation.position = position
+            binding?.ccWidgetClientNumber?.run {
+                setInputNumber(topupBillsRecommendation.clientNumber)
+                operatorIdSelected = topupBillsRecommendation.operatorId
+                productIdSelected = topupBillsRecommendation.productId
+                token = topupBillsRecommendation.token
+                dialogConfirmation()
+            }
+            creditCardAnalytics.sendClickLastTransactionListEvent(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                position
+            )
+        }
+
+        override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
+            // do nothing
+        }
+    }
+
+    private fun getRechargeCCPromoItemListener() = object : RechargeCCPromoFragment.RechargeCCPromoItemListener {
+        override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
+            creditCardAnalytics.sendClickSalinPromoDigitalEvent(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                voucherCode,
+                position
+            )
         }
     }
 
@@ -344,7 +537,7 @@ class RechargeCCFragment :
                         validateCCNumber(clientNumber)
                     }
                 } else {
-                    cc_widget_client_number.run {
+                    binding?.ccWidgetClientNumber?.run {
                         clearErrorState()
                         setLoading(false)
                         hideOperatorIcon()
@@ -357,29 +550,53 @@ class RechargeCCFragment :
     private fun showErrorToaster(error: Throwable) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
-            Toaster.build(this, ErrorHandler.getErrorMessage(requireContext(), error),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                this,
+                ErrorHandler.getErrorMessage(requireContext(), error),
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
     private fun dialogConfirmation() {
         if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
-            context?.let {
-                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            binding?.run {
+                val formattedClientNumber = binding?.ccWidgetClientNumber?.getFormattedInputNumber() ?: ""
+                val dialogDesc = if (formattedClientNumber.isMasked()) {
+                    getString(R.string.cc_desc_dialog)
+                } else {
+                    String.format(
+                        CC_DIALOG_BOX_DESC_FORMAT,
+                        getString(R.string.cc_desc_dialog),
+                        formattedClientNumber
+                    )
+                }
+                val dialog = DialogUnify(root.context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.cc_title_dialog))
-                dialog.setDescription(getString(R.string.cc_desc_dialog))
+                dialog.setDescription(MethodChecker.fromHtml(dialogDesc).trim())
                 dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
                 dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
                 dialog.setPrimaryCTAClickListener {
                     dialog.dismiss()
                     creditCardAnalytics.clickToContinueCheckout(
-                            categoryId, operatorIdSelected, userSession.userId)
-                    submitCreditCard(categoryId, operatorIdSelected,
-                            productIdSelected, cc_widget_client_number.getInputNumber())
+                        categoryId,
+                        operatorIdSelected,
+                        userSession.userId
+                    )
+                    submitCreditCard(
+                        categoryId,
+                        operatorIdSelected,
+                        productIdSelected,
+                        binding?.ccWidgetClientNumber?.getInputNumber() ?: ""
+                    )
                 }
                 dialog.setSecondaryCTAClickListener {
                     creditCardAnalytics.clickBackOnConfirmationPage(
-                            categoryId, operatorIdSelected, userSession.userId)
+                        categoryId,
+                        operatorIdSelected,
+                        userSession.userId
+                    )
                     dialog.dismiss()
                 }
                 dialog.show()
@@ -399,8 +616,14 @@ class RechargeCCFragment :
                 val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
                 val clientNumber = it.getString(PARAM_CLIENT_NUMBER) ?: ""
 
-                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(clientNumber, operatorId,
-                        productId, userSession.userId, signature, identifier)
+                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(
+                    clientNumber,
+                    operatorId,
+                    productId,
+                    userSession.userId,
+                    signature,
+                    identifier
+                )
                 rechargeSubmitCCViewModel.submitCreditCard(mapParam)
             }
         } else {
@@ -413,11 +636,20 @@ class RechargeCCFragment :
         showLoading()
         if (userSession.isLoggedIn) {
             val mapParam = if (token.isNotEmpty() && clientNumber.isMasked()) {
-                rechargeSubmitCCViewModel.createMaskedMapParam(clientNumber, operatorId, productId,
-                    userSession.userId, token)
+                rechargeSubmitCCViewModel.createMaskedMapParam(
+                    clientNumber,
+                    operatorId,
+                    productId,
+                    userSession.userId,
+                    token
+                )
             } else {
-                rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
-                    userSession.userId)
+                rechargeSubmitCCViewModel.createMapParam(
+                    clientNumber,
+                    operatorId,
+                    productId,
+                    userSession.userId
+                )
             }
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
@@ -439,25 +671,29 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
-        cc_widget_client_number.run {
+        binding?.ccWidgetClientNumber?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
-                RechargeCCMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
+                RechargeCCWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips)
+            )
         }
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        cc_widget_client_number.setAutoCompleteList(
-            RechargeCCMapper.mapAutoCompletesToWidgetModels(autoComplete))
+        binding?.ccWidgetClientNumber?.setAutoCompleteList(
+            RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
+        )
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        val clientNumber = cc_widget_client_number.getInputNumber()
-        if (clientNumber.isEmpty()) {
-            cc_widget_client_number.run {
-                setContactName(prefill.clientName)
-                setInputNumber(prefill.clientNumber)
-                token = prefill.token
+        binding?.run {
+            val clientNumber = ccWidgetClientNumber.getInputNumber()
+            if (clientNumber.isEmpty()) {
+                ccWidgetClientNumber.run {
+                    setContactName(prefill.clientName)
+                    setInputNumber(prefill.clientNumber)
+                    token = prefill.token
+                }
             }
         }
     }
@@ -468,11 +704,11 @@ class RechargeCCFragment :
     }
 
     private fun hideLoading() {
-        cc_progress_bar.visibility = View.GONE
+        binding?.ccProgressBar?.visibility = View.GONE
     }
 
     private fun showLoading() {
-        cc_progress_bar.visibility = View.VISIBLE
+        binding?.ccProgressBar?.visibility = View.VISIBLE
     }
 
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
@@ -486,15 +722,31 @@ class RechargeCCFragment :
 
     private fun trackAddToCartEvent() {
         val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
-                ?: RechargeCreditCard()
-        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
-                creditCardSelected.prefixName, creditCardSelected.operatorId)
+            ?: RechargeCreditCard()
+        creditCardAnalytics.addToCart(
+            userSession.userId,
+            rechargeCCViewModel.categoryName,
+            categoryId,
+            creditCardSelected.prefixName,
+            creditCardSelected.operatorId
+        )
     }
+
+    //region RechargeCCBankListListener
+    override fun onClickBankList() {
+        activity?.let {
+            val bottomSheetBankList = CCBankListBottomSheet(categoryId)
+            bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
+        }
+    }
+    //endregion
 
     //region CreditCardActionListener
     override fun onClickNextButton(clientNumber: String) {
         creditCardAnalytics.clickToConfirmationPage(
-            categoryId, operatorIdSelected, userSession.userId
+            categoryId,
+            operatorIdSelected,
+            userSession.userId
         )
         dialogConfirmation()
     }
@@ -502,11 +754,18 @@ class RechargeCCFragment :
     override fun onManualInput() {
         token = ""
     }
+
+    override fun onNavigateTokoCardWebView() {
+        // TODO: [Misael] Add tracker here
+    }
+
     //endregion
 
     //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
-        checkPrefixCreditCardNumber(cc_widget_client_number.getInputNumber())
+        binding?.run {
+            checkPrefixCreditCardNumber(ccWidgetClientNumber.getInputNumber())
+        }
     }
 
     override fun onClearInput() {
@@ -526,12 +785,14 @@ class RechargeCCFragment :
     //region FilterChipListener
     override fun onClickIcon(isSwitchChecked: Boolean) {
         // isSwitchChecked is not used here
-        navigateToFavoriteNumberPage(
-            cc_widget_client_number.getInputNumber(),
-            arrayListOf(categoryId),
-            rechargeCCViewModel.categoryName,
-            rechargeCCViewModel.loyaltyStatus
-        )
+        binding?.run {
+            navigateToFavoriteNumberPage(
+                ccWidgetClientNumber.getInputNumber(),
+                arrayListOf(categoryId),
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus
+            )
+        }
     }
 
     override fun onShowFilterChip(isLabeled: Boolean) {
@@ -557,7 +818,7 @@ class RechargeCCFragment :
                 rechargeCCViewModel.categoryName,
                 rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
                 rechargeCCViewModel.loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             creditCardAnalytics.clickFavoriteNumberChips(
@@ -595,11 +856,17 @@ class RechargeCCFragment :
         clientNumber: String,
         dgCategoryIds: ArrayList<String>,
         categoryName: String,
-        loyaltyStatus: String,
+        loyaltyStatus: String
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, arrayListOf(), categoryName, loyaltyStatus
+                it,
+                clientNumber,
+                dgCategoryIds,
+                arrayListOf(),
+                categoryName,
+                loyaltyStatus,
+                FavoriteNumberPageConfig.CREDIT_CARD
             )
             val requestCode = RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
             startActivityForResult(intent, requestCode)
@@ -621,8 +888,14 @@ class RechargeCCFragment :
             }
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
-                    submitCreditCard(categoryId, operatorIdSelected,
-                            productIdSelected, cc_widget_client_number.getInputNumber())
+                    binding?.run {
+                        submitCreditCard(
+                            categoryId,
+                            operatorIdSelected,
+                            productIdSelected,
+                            ccWidgetClientNumber.getInputNumber()
+                        )
+                    }
                 }
             }
 
@@ -643,8 +916,9 @@ class RechargeCCFragment :
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
                             orderClientNumber.operatorId,
-                            orderClientNumber.inputNumberActionTypeIndex,
+                            orderClientNumber.inputNumberActionTypeIndex
                         )
+                        token = orderClientNumber.token
                     } else {
                         handleCallbackAnySavedNumberCancel()
                     }
@@ -665,14 +939,14 @@ class RechargeCCFragment :
         operatorId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        cc_widget_client_number.run {
+        binding?.ccWidgetClientNumber?.run {
             setContactName(clientName)
             setInputNumber(clientNumber)
         }
     }
 
     private fun handleCallbackAnySavedNumberCancel() {
-        cc_widget_client_number.clearFocusAutoComplete()
+        binding?.ccWidgetClientNumber?.clearFocusAutoComplete()
     }
 
     override fun onDestroyView() {
@@ -684,6 +958,10 @@ class RechargeCCFragment :
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_CC_PAGE_PERFORMANCE)
     }
 
+    private fun isEnablePromoRecomSection(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_CC_PROMO_RECOM, true)
+    }
+
     companion object {
 
         const val EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA"
@@ -692,13 +970,26 @@ class RechargeCCFragment :
         private const val MENU_ID = "menu_id"
 
         const val RECHARGE_CC_PAGE_PERFORMANCE = "dg_tagihan_cc_pdp"
+        const val PROMO_LIST_LABEL = "Promo"
+        const val RECENT_TRANSACTION_LABEL = "Transaksi Terakhir"
+        const val RECENT_TRANSACTION_POSITION = 0
+        const val PROMO_LIST_POSITION = 1
 
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
-        fun newInstance(categoryId: String, menuId: String, operatorId: String, productId: String,
-                        signature: String, identifier: String, clientNumber: String): Fragment {
+        const val CC_DIALOG_BOX_DESC_FORMAT = "%s<h3><b>%s</b></h3>"
+
+        fun newInstance(
+            categoryId: String,
+            menuId: String,
+            operatorId: String,
+            productId: String,
+            signature: String,
+            identifier: String,
+            clientNumber: String
+        ): Fragment {
             val fragment = RechargeCCFragment()
             val bundle = Bundle()
             bundle.putString(CATEGORY_ID, categoryId)

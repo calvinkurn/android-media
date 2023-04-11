@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -7,7 +8,10 @@ import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.Discuss
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionAggregateResponse>(graphqlRepository) {
+class GetDiscussionAggregateUseCase @Inject constructor(
+    @ApplicationContext
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<DiscussionAggregateResponse>(graphqlRepository) {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"

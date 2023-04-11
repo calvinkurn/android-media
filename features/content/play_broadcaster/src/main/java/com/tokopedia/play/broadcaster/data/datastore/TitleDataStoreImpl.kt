@@ -1,10 +1,9 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
@@ -15,8 +14,7 @@ import javax.inject.Inject
  */
 class TitleDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-        private val userSession: UserSessionInterface,
+        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 ) : TitleDataStore {
 
     private val _observableTitle: MutableStateFlow<PlayTitleUiModel> = MutableStateFlow(PlayTitleUiModel.NoTitle)
@@ -36,9 +34,9 @@ class TitleDataStoreImpl @Inject constructor(
         _observableTitle.value = PlayTitleUiModel.HasTitle(title)
     }
 
-    override suspend fun uploadTitle(channelId: String, title: String): NetworkResult<Unit> {
+    override suspend fun uploadTitle(authorId: String, channelId: String, title: String): NetworkResult<Unit> {
         return try {
-            uploadTitleToServer(channelId, title)
+            uploadTitleToServer(authorId, channelId, title)
             setTitle(title)
             NetworkResult.Success(Unit)
         } catch (e: Throwable) {
@@ -46,12 +44,12 @@ class TitleDataStoreImpl @Inject constructor(
         }
     }
 
-    private suspend fun uploadTitleToServer(channelId: String, title: String) = withContext(dispatcher.io) {
+    private suspend fun uploadTitleToServer(authorId: String, channelId: String, title: String) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
                             channelId = channelId,
-                            authorId = userSession.shopId,
+                            authorId = authorId,
                             title = title
                     )
             )

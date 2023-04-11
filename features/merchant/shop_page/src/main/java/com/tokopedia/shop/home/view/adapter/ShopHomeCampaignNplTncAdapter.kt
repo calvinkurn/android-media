@@ -5,9 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCampaignNplTncItemViewHolder
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 
-class ShopHomeCampaignNplTncAdapter: RecyclerView.Adapter<ShopHomeCampaignNplTncItemViewHolder>() {
+class ShopHomeCampaignNplTncAdapter : RecyclerView.Adapter<ShopHomeCampaignNplTncItemViewHolder>() {
 
     private var listMessage: List<String> = listOf()
 
@@ -27,5 +26,4 @@ class ShopHomeCampaignNplTncAdapter: RecyclerView.Adapter<ShopHomeCampaignNplTnc
         this.listMessage = listMessage
         notifyDataSetChanged()
     }
-
 }

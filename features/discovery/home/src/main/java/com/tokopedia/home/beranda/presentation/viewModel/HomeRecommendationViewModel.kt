@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,13 +21,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
-        private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsAddressHelper: TopAdsAddressHelper,
-        homeDispatcher: CoroutineDispatchers
-) : BaseViewModel(homeDispatcher.io){
+    private val getHomeRecommendationUseCase: HomeRecommendationFeedUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsAddressHelper: TopAdsAddressHelper,
+    homeDispatcher: CoroutineDispatchers
+) : BaseViewModel(homeDispatcher.io) {
 
     companion object {
         private const val TOPADS_TDN_RECOM_SOURCE = "1"
@@ -47,16 +47,20 @@ class HomeRecommendationViewModel @Inject constructor(
 
     fun loadInitialPage(
         tabName: String,
-        recommendationId: Int, count: Int, locationParam: String = "", tabIndex: Int = 0
+        recommendationId: Int,
+        count: Int,
+        locationParam: String = "",
+        tabIndex: Int = 0,
+        sourceType: String
     ) {
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam)
+            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.executeOnBackground()
-            if(data.homeRecommendations.isEmpty()){
+            if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
-                try{
+                try {
                     val headlineAds = fetchHeadlineAds(tabIndex)
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                     var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
@@ -74,16 +78,16 @@ class HomeRecommendationViewModel @Inject constructor(
                         )
                     }
                     handleTopAdsWidgets(data, topAdsBanner, homeBannerTopAds, headlineAds)
-
-                } catch (e: Exception){
-                    _homeRecommendationLiveData.postValue(data.copy(
-                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
-                    ))
+                } catch (e: Exception) {
+                    _homeRecommendationLiveData.postValue(
+                        data.copy(
+                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
+                        )
+                    )
                 }
-
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
-        }){
+        }) {
             _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationError())))
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
         }
@@ -98,9 +102,9 @@ class HomeRecommendationViewModel @Inject constructor(
         incrementTopadsPage()
         val newList = data.homeRecommendations.toMutableList()
         val headlineData = headlineAds.displayAds.data
-        var position:Int? = null
+        var position: Int? = null
         if (!headlineData.isNullOrEmpty()) {
-            position = headlineData.firstOrNull()?.cpm?.position
+            position = headlineData.first().cpm.position
         }
         if (topAdsBanner.isEmpty()) {
             homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }
@@ -121,9 +125,8 @@ class HomeRecommendationViewModel @Inject constructor(
                         newList[visitableBanner.position + Int.ONE] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
-
                 } else {
-                    if (newList.size > visitableBanner.position){
+                    if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
@@ -158,20 +161,21 @@ class HomeRecommendationViewModel @Inject constructor(
         } else {
             TopAdsHeadlineResponse()
         }
-
     }
 
-    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String = "") {
+    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String = "", sourceType: String) {
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         list.add(loadMoreModel)
-        _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(
+        _homeRecommendationLiveData.postValue(
+            _homeRecommendationLiveData.value?.copy(
                 homeRecommendations = list.copy()
-        ))
+            )
+        )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page, locationParam)
+            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.executeOnBackground()
             list.remove(loadMoreModel)
-            try{
+            try {
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                 val topAdsBanner = topAdsImageViewUseCase.getImageData(
                     topAdsImageViewUseCase.getQueryMap(
@@ -185,8 +189,8 @@ class HomeRecommendationViewModel @Inject constructor(
                     )
                 )
                 incrementTopadsPage()
-                if(topAdsBanner.isEmpty()){
-                    list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel})
+                if (topAdsBanner.isEmpty()) {
+                    list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel })
                 } else {
                     val newList = data.homeRecommendations.toMutableList()
                     topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
@@ -195,23 +199,23 @@ class HomeRecommendationViewModel @Inject constructor(
                     }
                     list.addAll(newList)
                 }
-            }catch (e: Exception){
-                list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel})
+            } catch (e: Exception) {
+                list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel })
             }
             _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = list.copy()))
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
-        }){
+        }) {
             list.remove(loadMoreModel)
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
         }
     }
 
-    fun updateWishlist(id: String, position: Int, isWishlisted: Boolean){
+    fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
-        if(list.getOrNull(position)?.getUniqueIdentity() == id){
+        if (list.getOrNull(position)?.getUniqueIdentity() == id) {
             recommendationItem = list[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
@@ -220,9 +224,9 @@ class HomeRecommendationViewModel @Inject constructor(
                 recommendationItem = (it.value as HomeRecommendationItemDataModel)
             }
         }
-        if(recommendationItemPosition != -1 && recommendationItem != null){
+        if (recommendationItemPosition != -1 && recommendationItem != null) {
             list[recommendationItemPosition] = recommendationItem!!.copy(
-                    product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
+                product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
             )
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
         }
@@ -231,7 +235,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {
             val currentPage = topAdsBannerNextPage.toIntOrZero()
-            (currentPage+1).toString()
+            (currentPage + 1).toString()
         } catch (e: Exception) {
             TOPADS_PAGE_DEFAULT
         }

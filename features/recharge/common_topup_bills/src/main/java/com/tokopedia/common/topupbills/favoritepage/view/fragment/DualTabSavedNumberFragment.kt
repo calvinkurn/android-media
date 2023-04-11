@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favoritepage.view.adapter.TopupBillsPersoSavedNumTabAdapter
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,6 +32,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private var loyaltyStatus: String = ""
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var isSwitchChecked: Boolean = false
+    private var pageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
 
     private var binding: FragmentSavedNumberBinding? = null
     private var pagerAdapter: TopupBillsPersoSavedNumTabAdapter? = null
@@ -58,6 +61,11 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             isSwitchChecked = arguments.getBoolean(ARG_PARAM_IS_SWITCH_CHECKED, false)
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
+
+            val favoriteNumberPageConfig = arguments.getSerializable(ARG_PARAM_PAGE_CONFIG) as? FavoriteNumberPageConfig
+            if (favoriteNumberPageConfig != null) {
+                pageConfig = favoriteNumberPageConfig
+            }
         }
     }
 
@@ -85,9 +93,19 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initPageConfig()
         initViewPager()
         initListener()
         observeData()
+    }
+
+    private fun initPageConfig() {
+        binding?.run {
+            (activity as? BaseToolbarActivity)?.updateTitle(getString(pageConfig.headerTextRes))
+            commonTopupBillsFavoriteNumberClue.text = getString(pageConfig.clueTextRes)
+            commonTopupBillsSavedNumSearchbar.searchBarTextField
+                .hint = getString(pageConfig.searchBarHintRes)
+        }
     }
 
     private fun observeData() {
@@ -117,8 +135,15 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
 
     private fun initViewPager() {
         pagerAdapter = TopupBillsPersoSavedNumTabAdapter(
-            this, clientNumberType, number,
-            dgCategoryIds, dgOperatorIds, currentCategoryName, loyaltyStatus)
+            this,
+            clientNumberType,
+            number,
+            dgCategoryIds,
+            dgOperatorIds,
+            currentCategoryName,
+            loyaltyStatus,
+            pageConfig,
+        )
         binding?.commonTopupBillsSavedNumViewpager?.run {
             adapter = pagerAdapter
             registerOnPageChangeCallback(viewPagerCallback)
@@ -192,7 +217,8 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
         fun newInstance(
             clientNumberType: String, number: String,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            digitalOperatorIds: ArrayList<String>, isSwitchChecked: Boolean, loyaltyStatus: String
+            digitalOperatorIds: ArrayList<String>, isSwitchChecked: Boolean, loyaltyStatus: String,
+            pageConfig: FavoriteNumberPageConfig,
         ): Fragment {
 
             val fragment = DualTabSavedNumberFragment()
@@ -204,6 +230,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
             bundle.putBoolean(ARG_PARAM_IS_SWITCH_CHECKED, isSwitchChecked)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putStringArrayList(ARG_PARAM_DG_OPERATOR_IDS, digitalOperatorIds)
+            bundle.putSerializable(ARG_PARAM_PAGE_CONFIG, pageConfig)
             fragment.arguments = bundle
             return fragment
         }
@@ -215,6 +242,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_IS_SWITCH_CHECKED = "ARG_PARAM_IS_SWITCH_CHECKED"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
+        const val ARG_PARAM_PAGE_CONFIG = "ARG_PARAM_PAGE_CONFIG"
 
         const val POSITION_CONTACT_LIST = 0
         const val POSITION_FAVORITE_NUMBER = 1

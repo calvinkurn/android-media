@@ -8,13 +8,14 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
+import javax.inject.Inject
 
 interface CreateMediaRepository {
     fun image(captureSize: Size?, byteArray: ByteArray?): Flow<File?>
-    fun video(): File
+    fun video(): File?
 }
 
-class CreateMediaRepositoryImpl : CreateMediaRepository {
+class CreateMediaRepositoryImpl @Inject constructor() : CreateMediaRepository {
 
     override fun image(captureSize: Size?, byteArray: ByteArray?): Flow<File?> {
         return flow {
@@ -29,6 +30,7 @@ class CreateMediaRepositoryImpl : CreateMediaRepository {
                     nativeCaptureSize.height
                 )?: return@flow
 
+                // if process save is change, please check editor utils getTokopediaCacheDir() for path checker
                 emit(ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat))
             } catch (e: Throwable) {
                 emit(ImageProcessingUtil.writeImageToTkpdPath(byteArray, compressFormat))

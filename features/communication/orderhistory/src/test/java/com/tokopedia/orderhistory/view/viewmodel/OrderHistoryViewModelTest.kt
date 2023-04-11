@@ -13,8 +13,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -30,7 +28,6 @@ class OrderHistoryViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val productHistoryUseCase: GetProductOrderHistoryUseCase = mockk(relaxed = true)
-    private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
@@ -51,7 +48,6 @@ class OrderHistoryViewModelTest {
         viewModel = OrderHistoryViewModel(
                 CoroutineTestDispatchersProvider,
                 productHistoryUseCase,
-                addWishListUseCase,
                 addToWishlistV2UseCase,
                 addToCartUseCase
         )
@@ -89,16 +85,6 @@ class OrderHistoryViewModelTest {
 
         viewModel.loadProductHistory(Dummy.shopId)
         verify(exactly = 1) { observer.onChanged(Fail(Dummy.errorGetProduct)) }
-    }
-
-    @Test
-    fun addToWishList() {
-        val mockListener: WishListActionListener = mockk(relaxed = true)
-        every { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, any()) } just Runs
-
-        viewModel.addToWishList(Dummy.productId, Dummy.userId, mockListener)
-
-        verify { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, mockListener) }
     }
 
     @Test

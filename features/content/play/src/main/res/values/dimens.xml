@@ -5,7 +5,6 @@
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_12">12dp</dimen>
-    <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_56">56dp</dimen>
@@ -42,34 +41,10 @@
     <dimen name="play_pip_view_radius">6dp</dimen>
 
     <dimen name="play_product_grid_radius">8dp</dimen>
-    <dimen name="play_product_featured_image_height">80dp</dimen>
-    <dimen name="play_product_section_divider">20dp</dimen>
-
-    <dimen name="play_pinned_voucher_radius">8dp</dimen>
-    <dimen name="play_pinned_placeholder_radius">4dp</dimen>
-    <dimen name="play_pinned_placeholder_title_width">110dp</dimen>
-    <dimen name="play_pinned_placeholder_desc_width">80dp</dimen>
-    <dimen name="play_pinned_placeholder_height">10dp</dimen>
 
     <!--Engagement Tools-->
 
-    <dimen name="play_interactive_error_width">152dp</dimen>
-
-    <dimen name="play_interactive_live_height">82dp</dimen>
-
-    <dimen name="play_interactive_tap_action">84dp</dimen>
-    <dimen name="play_interactive_tap_inside_stroke_width">1dp</dimen>
-    <dimen name="play_interactive_tap_timer_radius">14dp</dimen>
-
-    <dimen name="play_interactive_finish_width">152dp</dimen>
-    <dimen name="play_interactive_finish_height">62dp</dimen>
-
     <dimen name="play_interactive_winning_dialog_width">172dp</dimen>
-
-    <dimen name="play_interactive_loader_radius">4dp</dimen>
-    <dimen name="play_interactive_loader_2_width">136dp</dimen>
-    <dimen name="play_interactive_loader_3_width">105dp</dimen>
-    <dimen name="play_interactive_loader_4_width">133dp</dimen>
 
     <dimen name="play_anchor_size">0.1dp</dimen>
 
@@ -90,9 +65,7 @@
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
-    <dimen name="play_offset_10">10dp</dimen>
     <dimen name="play_offset_12">12dp</dimen>
-    <dimen name="play_offset_14">14dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>
 
     <dimen name="play_count_background_radius">16dp</dimen>
@@ -101,6 +74,7 @@
     <dimen name="play_voucher_info_translationY">-2dp</dimen>
     <dimen name="play_product_empty_illustration_width">240dp</dimen>
     <dimen name="play_product_empty_illustration_height">180dp</dimen>
+    <dimen name="play_upcoming_description_top">80dp</dimen>
 
     <!--Product Carousel-->
     <dimen name="play_product_carousel_width">80dp</dimen>
@@ -109,4 +83,6 @@
     <!--Pinned Product-->
     <dimen name="play_product_carousel_pinned_width">280dp</dimen>
     <dimen name="play_product_carousel_pinned_icon_size">12dp</dimen>
+
+    <dimen name="play_engagement_carousel_size">104dp</dimen>
 </resources>

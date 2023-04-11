@@ -28,10 +28,9 @@ object TrackingConstant {
     const val CLICK_PG = "clickPG"
 
     //category
-    const val HOME = "home"
-    const val SELLER_APP = "seller app"
     const val TOP_NAV = "top nav"
     const val BOTTOM_NAV = "bottom nav"
+    const val SELLER_APP_HOME = "seller app - home"
 
     //action
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
@@ -91,6 +90,15 @@ object TrackingConstant {
     const val CLICK_WIDGET_UNIFICATION_EMPTY_STATE = "click widget navigation tab - empty state"
     const val IMPRESSION_WIDGET_UNIFICATION = "impression widget navigation tab"
     const val IMPRESSION_WIDGET_UNIFICATION_SEE_TAB = "impression widget navigation tab - see tab"
+    const val CLICK_POST_WIDGET_DELETE = "click widget post - delete"
+    const val CLICK_POST_WIDGET_SUBMIT_DISMISSAL = "click widget post - submit dismissal"
+    const val CLICK_POST_WIDGET_CANCEL_DISMISSAL = "click widget post - cancel dismissal"
+    const val CLICK_ANNOUNCEMENT_WIDGET_CANCEL_DISMISSAL = "click widget announcement - cancel dismissal"
+    const val CLICK_ANNOUNCEMENT_WIDGET_SUBMIT_DISMISSAL = "click widget announcement - submit dismissal"
+    const val CLICK_ANNOUNCEMENT_WIDGET_DISMISSAL_PROMPT = "click widget announcement - dismissal prompt"
+    const val IMPRESSION_FIRST_TRANSACTION_POPUP = "impression first transaction pop up"
+    const val CLICK_FIRST_TRANSACTION_POPUP_NANTI_SAJA = "click on first transaction pop up - nanti saja"
+    const val CLICK_FIRST_TRANSACTION_POPUP_PROSES_PESANAN = "click on first transaction pop up - proses pesanan"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -118,6 +126,8 @@ object TrackingConstant {
     const val EMPTY_STRING = ""
     const val TOTAL_FINISHED_MISSION = "%d out of %d missions finished"
     const val PG = "Physical Goods"
+    const val DATA_KEY_LOW_STOCK = "lowStock"
+    const val NOTIFY_ME = "notify me"
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"

@@ -1,13 +1,11 @@
 package com.tokopedia.contactus.inboxticket2.view.customview
 
 import android.content.Context
-import android.text.Spanned
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.PopupWindow
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.contactus.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
@@ -70,18 +68,7 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-    fun getScrollListener(): CustomChatWidgetOnScrollListener {
-        return CustomChatWidgetOnScrollListener()
-    }
-
     interface ChatWidgetToolTipListener {
         fun onClickToolTipButton()
-    }
-
-    inner class CustomChatWidgetOnScrollListener() : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            dismiss()
-        }
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.vouchercreation.instrumenttest
 
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse

@@ -2,8 +2,8 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
@@ -17,7 +17,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
@@ -492,9 +491,29 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCart should run and return notNull error from gql`() {
+        val error = dataFactory.getErrorAtcFromGql()
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
+    }
+
+    @Test
+    fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`() {
+        val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test
@@ -504,7 +523,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -516,7 +535,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -526,7 +545,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -560,7 +579,6 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         viewModel.setAutoSelectedDenom(mappedResponse.denomWidgetModel.listDenomData, idDenom)
 
         verifySelectedProductSuccess(selectedDenom)
-
     }
 
     @Test

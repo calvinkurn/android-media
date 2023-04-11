@@ -212,10 +212,10 @@
         ],
         "ppGetItemDetailPage": {
           "program": {
-            "iconURL": "https://ecs7.tokopedia.net/fintech/insurance/icon-proteksi-new.png",
+            "iconURL": "https://images.tokopedia.net/fintech/insurance/icon-proteksi-new.png",
             "isAppLink": true,
             "linkURL": "https://www.tokopedia.com/asuransi/proteksi/kerusakan-total/",
-            "partnerLogo": "https://ecs7.tokopedia.net/fintech/partner/MSIG_logo01.png",
+            "partnerLogo": "https://images.tokopedia.net/fintech/partner/MSIG_logo01.png",
             "partnerText": "Perlindungan Oleh :",
             "protectionAvailable": true,
             "subTitle": "Ganti rugi 70% jika produk rusak total dalam 90 hari",
@@ -227,8 +227,8 @@
         "productView": "15270",
         "ratesEstimate": [],
         "reputationShop": {
-          "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-4.gif",
-          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/diamond-4-hd.gif",
+          "badge": "https://images.tokopedia.net/img/repsys/diamond-4.gif",
+          "badgeHD": "https://images.tokopedia.net/img/repsys/diamond-4-hd.gif",
           "score": "219.445",
           "scoreMap": "19"
         },
@@ -245,35 +245,35 @@
                 "description": "",
                 "imageAttachmentID": 29631241,
                 "reviewID": 316760733,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/26/9ce3ce32-4f9d-46c1-9411-3e3689c36b25.jpg",
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/1/26/9ce3ce32-4f9d-46c1-9411-3e3689c36b25.jpg",
                 "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969283,
                 "reviewID": 319864333,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/9fa6789c-d684-490a-b9de-83e31a221c73.jpg",
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/9fa6789c-d684-490a-b9de-83e31a221c73.jpg",
                 "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969284,
                 "reviewID": 319864333,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/04b2565a-0de2-424b-b4c5-57992de86d45.jpg",
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/04b2565a-0de2-424b-b4c5-57992de86d45.jpg",
                 "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969285,
                 "reviewID": 319864333,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/8a20086b-9462-4e76-bbe5-1964ebce9b5f.jpg",
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/8a20086b-9462-4e76-bbe5-1964ebce9b5f.jpg",
                 "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 30083355,
                 "reviewID": 320926056,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/1/8c3434d9-a2a1-4063-8f72-e2ad5653b878.jpg",
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/2/1/8c3434d9-a2a1-4063-8f72-e2ad5653b878.jpg",
                 "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               }
             ],
@@ -413,7 +413,7 @@
             {
               "awbStatus": 0,
               "code": "sicepat",
-              "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+              "image": "https://images.tokopedia.net/img/kurir-sicepat.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -457,7 +457,7 @@
             {
               "awbStatus": 0,
               "code": "gojek",
-              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "image": "https://images.tokopedia.net/img/kurir-gosend.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -485,7 +485,7 @@
             {
               "awbStatus": 0,
               "code": "jnt",
-              "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+              "image": "https://images.tokopedia.net/img/kurir-jnt.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -505,7 +505,7 @@
             {
               "awbStatus": 0,
               "code": "jne",
-              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "image": "https://images.tokopedia.net/img/kurir-jne.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -541,7 +541,7 @@
             {
               "awbStatus": 0,
               "code": "anteraja",
-              "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+              "image": "https://images.tokopedia.net/img/kurir-anteraja.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -569,7 +569,7 @@
             {
               "awbStatus": 0,
               "code": "grab",
-              "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "image": "https://images.tokopedia.net/img/kurir-grab.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -597,7 +597,7 @@
             {
               "awbStatus": 0,
               "code": "custom_1990266_1990266",
-              "image": "https://ecs7.tokopedia.net/img/kurir-custom.png",
+              "image": "https://images.tokopedia.net/img/kurir-custom.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,

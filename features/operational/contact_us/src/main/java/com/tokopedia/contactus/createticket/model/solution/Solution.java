@@ -13,7 +13,7 @@ public class Solution {
     private String breadcrumb;
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -62,7 +62,7 @@ public class Solution {
      * @return
      *     The id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -71,7 +71,7 @@ public class Solution {
      * @param id
      *     The id
      */
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

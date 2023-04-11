@@ -15,18 +15,18 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlistcommon.data.WishlistV2Params
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
-import com.tokopedia.wishlist.data.model.*
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertWishlistV2IntoWishlistUiModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,6 +42,7 @@ class WishlistV2ViewModel @Inject constructor(
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
     private val atcUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatcher.main) {
+    private var recommSrc = ""
 
     private val _wishlistV2 = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
     val wishlistV2: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
@@ -74,10 +75,18 @@ class WishlistV2ViewModel @Inject constructor(
         launch {
             try {
                 val wishlistV2Response = wishlistV2UseCase.executeSuspend(params).wishlistV2
+                recommSrc = if (wishlistV2Response.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _wishlistV2.value = Success(wishlistV2Response)
-                _wishlistV2Data.value = Success(organizeWishlistV2Data(
-                    convertWishlistV2IntoWishlistUiModel(wishlistV2Response),
-                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData(), isUsingCollection))
+                _wishlistV2Data.value = Success(
+                    organizeWishlistV2Data(
+                        convertWishlistV2IntoWishlistUiModel(wishlistV2Response),
+                        typeLayout,
+                        isAutomaticDelete,
+                        getRecommendationWishlistV2(1, listOf(), recommSrc),
+                        getTopAdsData(),
+                        isUsingCollection
+                    )
+                )
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)
@@ -90,7 +99,7 @@ class WishlistV2ViewModel @Inject constructor(
         launch {
             try {
                 val recommItems =
-                    getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
+                    getRecommendationWishlistV2(page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
                 }
@@ -120,8 +129,9 @@ class WishlistV2ViewModel @Inject constructor(
                 listProductId,
                 userId,
                 mode,
-                additionalParams
-            , "")
+                additionalParams,
+                ""
+            )
         }
     }
 
@@ -134,8 +144,8 @@ class WishlistV2ViewModel @Inject constructor(
                 _deleteWishlistProgressResult.postValue(Fail(Throwable()))
             }
         }, onError = {
-            _deleteWishlistProgressResult.postValue(Fail(it))
-        })
+                _deleteWishlistProgressResult.postValue(Fail(it))
+            })
     }
 
     fun doAtc(atcParams: AddToCartRequestParams) {
@@ -154,19 +164,21 @@ class WishlistV2ViewModel @Inject constructor(
     suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String): WishlistV2RecommendationDataModel {
         val recommendation = singleRecommendationUseCase.getData(
             GetRecommendationRequestParam(
-                        pageNumber = page,
-                        productIds = productIds,
-                        pageName = pageName)
+                pageNumber = page,
+                productIds = productIds,
+                pageName = pageName
+            )
         )
-        return WishlistV2RecommendationDataModel(WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
-            recommendation.recommendationItemList, recommendation.title
+        return WishlistV2RecommendationDataModel(
+            WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
+            recommendation.recommendationItemList,
+            recommendation.title
         )
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel? {
-        var result: TopAdsImageViewModel? = null
-        launchCatchError(dispatcher.io, {
-            result = topAdsImageViewUseCase.getImageData(
+        return try {
+            val queryParams =
                 topAdsImageViewUseCase.getQueryMap(
                     "",
                     WISHLIST_TOPADS_SOURCE,
@@ -175,11 +187,10 @@ class WishlistV2ViewModel @Inject constructor(
                     WISHLIST_TOPADS_DIMENS,
                     ""
                 )
-            ).firstOrNull()
-        }, {
-            result = null
-        })
-        return result
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        } catch (t: Throwable) {
+            null
+        }
     }
 
     companion object {
@@ -189,6 +200,7 @@ class WishlistV2ViewModel @Inject constructor(
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
+        private const val WISHLIST_PAGE_NAME = "wishlist"
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }

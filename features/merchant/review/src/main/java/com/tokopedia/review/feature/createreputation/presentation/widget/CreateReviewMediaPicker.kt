@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
@@ -34,7 +35,6 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
 ) : BaseReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
         const val MAX_MEDIA_COUNT = 5
         private const val MEDIA_SPAN_SIZE_SMALL = 1
         private const val MEDIA_SPAN_SIZE_BIG = MAX_MEDIA_COUNT
@@ -45,6 +45,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private val typeFactory = CreateReviewMediaTypeFactory(mediaPickerListener)
     private val adapter = CreateReviewMediaAdapter(typeFactory)
     private val transitionHandler = TransitionHandler()
+
+    private val itemAnimator by lazy(LazyThreadSafetyMode.NONE) { DefaultItemAnimator() }
 
     override val binding = WidgetCreateReviewMediaPickerBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -63,7 +65,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     }
 
     private fun showMediaPickerUploadingState(
-        uiState: CreateReviewMediaPickerUiState.Uploading
+        uiState: CreateReviewMediaPickerUiState.Uploading,
+        animate: Boolean
     ) {
         val successCount = uiState
             .mediaItems
@@ -72,28 +75,36 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
             }
             .count { it.state == CreateReviewMediaUiModel.State.UPLOADED }
         transitionHandler.transitionToShowMediaPicker(showError = false, showPoem = true)
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
         setupWaitingState(uiState.poem, successCount)
     }
 
     private fun showMediaPickerSuccessUploadState(
-        uiState: CreateReviewMediaPickerUiState.SuccessUpload
+        uiState: CreateReviewMediaPickerUiState.SuccessUpload,
+        animate: Boolean
     ) {
         transitionHandler.transitionToShowMediaPicker(showError = false, showPoem = uiState.poem.id.isMoreThanZero())
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
         setupWaitingState(uiState.poem)
     }
 
     private fun showMediaPickerFailedUploadState(
-        uiState: CreateReviewMediaPickerUiState.FailedUpload
+        uiState: CreateReviewMediaPickerUiState.FailedUpload,
+        animate: Boolean
     ) {
         transitionHandler.transitionToShowMediaPicker(showError = true, showPoem = false)
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
     }
 
     private fun setupMediaPicker(
-        mediaItems: List<CreateReviewMediaUiModel>
+        mediaItems: List<CreateReviewMediaUiModel>,
+        animate: Boolean
     ) {
+        if (animate) {
+            binding.layoutMediaPicker.root.itemAnimator = itemAnimator
+        } else {
+            binding.layoutMediaPicker.root.itemAnimator = null
+        }
         adapter.setMediaReviewData(mediaItems)
     }
 
@@ -109,30 +120,39 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         binding.layoutMediaPickerWaitingState.tvCreateReviewMediaPickerPoem.text = waitingText
     }
 
-    fun updateUi(uiState: CreateReviewMediaPickerUiState, continuation: Continuation<Unit>) {
-        when(uiState) {
+    fun updateUi(
+        uiState: CreateReviewMediaPickerUiState,
+        continuation: Continuation<Unit>? = null,
+        animate: Boolean = true
+    ) {
+        when (uiState) {
             is CreateReviewMediaPickerUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                animateShow(animate = animate, onAnimationEnd = {
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
-                showMediaPickerUploadingState(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                showMediaPickerUploadingState(uiState, animate)
+                animateShow(animate = animate, onAnimationEnd = {
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
-                showMediaPickerSuccessUploadState(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                showMediaPickerSuccessUploadState(uiState, animate)
+                animateShow(animate = animate, onAnimationEnd = {
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
-                showMediaPickerFailedUploadState(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                showMediaPickerFailedUploadState(uiState, animate)
+                animateShow(animate = animate, onAnimationEnd = {
+                    continuation?.resume(Unit)
+                })
+            }
+            CreateReviewMediaPickerUiState.Hidden -> {
+                animateHide(animate = animate, onAnimationEnd = {
+                    continuation?.resume(Unit)
                 })
             }
         }
@@ -142,7 +162,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         mediaPickerListener.listener = newCreateReviewMediaPickerListener
     }
 
-    private inner class LayoutManager(context: Context): GridLayoutManager(context, MAX_MEDIA_COUNT, VERTICAL, false) {
+    private inner class LayoutManager(context: Context) : GridLayoutManager(context, MAX_MEDIA_COUNT, VERTICAL, false) {
 
         private val spanSizeLookup = SpanSizeLookup()
 
@@ -150,9 +170,9 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
             setSpanSizeLookup(spanSizeLookup)
         }
 
-        private inner class SpanSizeLookup: GridLayoutManager.SpanSizeLookup() {
+        private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when(adapter.getItemViewType(position)) {
+                return when (adapter.getItemViewType(position)) {
                     CreateReviewMediaPreviewImageViewHolder.LAYOUT,
                     CreateReviewMediaPreviewVideoViewHolder.LAYOUT,
                     CreateReviewMediaPickerAddSmallViewHolder.LAYOUT -> MEDIA_SPAN_SIZE_SMALL
@@ -165,7 +185,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutMediaPicker.root)
                 addTarget(binding.layoutMediaPickerError.root)
                 addTarget(binding.layoutMediaPickerLoading.root)
@@ -217,7 +237,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         }
     }
 
-    private inner class MediaPickerListener: CreateReviewMediaAdapter.Listener, OnClickListener {
+    private inner class MediaPickerListener : CreateReviewMediaAdapter.Listener, OnClickListener {
         var listener: Listener? = null
 
         override fun onAddMediaClicked(enabled: Boolean) {
@@ -229,7 +249,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         }
 
         override fun onClick(v: View?) {
-            when(v?.id) {
+            when (v?.id) {
                 binding.layoutMediaPickerError.root.id -> listener?.onRetryUploadClicked()
             }
         }

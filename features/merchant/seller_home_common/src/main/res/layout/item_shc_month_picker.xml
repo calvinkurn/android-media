@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl0">
+    android:paddingStart="16dp"
+    android:paddingEnd="0dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcPerMonthLabel"
@@ -23,11 +23,11 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcPerMonth"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,8 +37,8 @@
         android:id="@+id/edtStcPerMonth"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="2dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/radStcPerMonth"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
         android:id="@+id/verLineStcCustom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

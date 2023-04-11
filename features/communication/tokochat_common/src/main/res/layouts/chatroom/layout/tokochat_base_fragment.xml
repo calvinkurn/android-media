@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+        android:id="@+id/tokochat_transaction_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        tools:visibility="visible" />
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatBgImageView
+        android:id="@+id/tokochat_iv_bg_chat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_transaction_order"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tokochat_barrier_reply_chat"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tokochat_chatroom_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_transaction_order"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tokochat_barrier_reply_chat"
+        android:layout_gravity="center"
+        android:clipToPadding="false"
+        android:descendantFocusability="beforeDescendants"
+        android:scrollbars="vertical" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/tokochat_barrier_reply_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="tokochat_reply_box, tokochat_expired_info" />
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
+        android:id="@+id/tokochat_reply_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatExpiredInfoView
+        android:id="@+id/tokochat_expired_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat" />
+
+    <include
+        layout="@layout/tokochat_global_error"
+        android:id="@+id/tokochat_include_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</merge>

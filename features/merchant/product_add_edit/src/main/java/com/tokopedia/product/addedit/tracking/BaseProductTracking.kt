@@ -19,6 +19,7 @@ val KEY_CURRENT_SITE = "currentSite"
 object ProductAddEditTracking {
     var gtmTracker: ContextAnalytics? = null
     const val KEY_SHOP_ID = "shopId"
+    const val KEY_TRACKER_ID = "trackerId"
     const val KEY_SCREEN_NAME = "screenName"
     const val KEY_USER_ID = "userId"
     const val EVENT_CLICK_ADD_PRODUCT = "clickAddProduct"
@@ -32,6 +33,8 @@ object ProductAddEditTracking {
     const val CURRENT_SITE = "tokopediaseller"
     const val BUSINESS_UNIT = "physical goods"
     const val BUSINESS_UNIT_CAPITALIZED_WORD = "Physical Goods"
+    const val EVENT_VIEW_PG_IRIS = "viewPGIris"
+    const val EVENT_CLICK_PG = "clickPG"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {
@@ -138,6 +141,32 @@ object ProductAddEditTracking {
                 KEY_USER_ID to userId
         )
         ProductVariantTracking.getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendAepPgIrisViewEvent(action: String, category: String, label: String, trackerId: String) {
+        val map = mapOf(
+                KEY_EVENT to EVENT_VIEW_PG_IRIS,
+                KEY_ACTION to action,
+                KEY_CATEGORY to category,
+                KEY_LABEL to label,
+                KEY_TRACKER_ID to trackerId,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE
+        )
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendAepPgIrisClickEvent(action: String, category: String, label: String, trackerId: String) {
+        val map = mapOf(
+                KEY_EVENT to EVENT_CLICK_PG,
+                KEY_ACTION to action,
+                KEY_CATEGORY to category,
+                KEY_LABEL to label,
+                KEY_TRACKER_ID to trackerId,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE
+        )
+        getTracker().sendGeneralEvent(map)
     }
 }
 

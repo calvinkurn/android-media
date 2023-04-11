@@ -1,0 +1,108 @@
+{
+  "TokonowGetRecipe": {
+    "header": {
+      "success": true,
+      "processTime": 0.101196216,
+      "message": "Your request has been processed successfully",
+      "statusCode": "200"
+    },
+    "data": {
+      "id": "20",
+      "title": "Test Create Recipe UAM",
+      "status": "Published",
+      "instruction": "\u003cp\u003etest 123\u003c/p\u003e\n",
+      "portion": 32,
+      "duration": 13,
+      "isBookmarked": true,
+      "url": "https://www.tokopedia.com/now/recipe/recipe-3",
+      "category": {
+        "id": "2",
+        "name": "Test Category 1"
+      },
+      "tags": [
+        {
+          "id": "4",
+          "name": "Test Create Tag 3"
+        },
+        {
+          "id": "3",
+          "name": "Test Create Tag 2"
+        },
+        {
+          "id": "2",
+          "name": "Test Create Tag 1"
+        },
+        {
+          "id": "1",
+          "name": "Test Create Tag"
+        }
+      ],
+      "ingredients": [
+        {
+          "id": "11",
+          "name": "Test Create Ingredient 6",
+          "quantity": 12.0,
+          "unit": "kg"
+        }
+      ],
+      "images": [
+        {
+          "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+          "urlThumbnail": ""
+        }
+      ],
+      "videos": [
+        {
+          "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id\u003d3be5201de4ef417087f8aaf7d15bfa7b",
+          "type": "Upload"
+        }
+      ],
+      "medias": [
+        {
+          "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id\u003d3be5201de4ef417087f8aaf7d15bfa7b",
+          "type": "Video"
+        },
+        {
+          "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+          "type": "Image"
+        }
+      ],
+      "products": [
+        {
+          "id": "2148241523",
+          "quantity": 21,
+          "detail": {
+            "name": "kaos testing 112",
+            "url": "https://staging.tokopedia.com/tokonow/kaos-testing-112",
+            "imageUrl": "https://images.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
+            "fmtPrice": "Rp150",
+            "appUrl": "tokopedia://product/2148241523",
+            "slashedPrice": "Rp200",
+            "discountPercentage": 20,
+            "parentProductID": "",
+            "minOrder": 1,
+            "stock": 7,
+            "categoryName": "Dapur",
+            "countReview": "0",
+            "rating": 0,
+            "ratingAverage": "",
+            "shopID": "480552",
+            "maxOrder": 7,
+            "categoryID": "983",
+            "redirectLink": "tokopedia://now/category/983/1223?sc\u003d1225",
+            "labelGroups": [
+              {
+                "title": "Stok Habis",
+                "type": "transparentBlack",
+                "position": "status",
+                "url": ""
+              }
+            ],
+            "labelGroupVariants": []
+          },
+          "similarProducts": []
+        }
+      ]
+    }
+  }
+}

@@ -34,7 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
@@ -92,6 +91,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mRealCode: String? = null
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
 
+    override val activityContext: Context?
+        get() = activity
+
+    override val appContext: Context?
+        get() = activity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -100,8 +105,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
-        val view = inflater.inflate(R.layout.tp_fragment_coupon_detail, container, false)
-        return view
+        return inflater.inflate(R.layout.tp_fragment_coupon_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -214,10 +218,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context? {
-        return activity
-    }
-
     override fun showLoader() {
         container?.displayedChild = CONTAINER_LOADER
     }
@@ -240,10 +240,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun populateDetail(data: CouponValueEntity) {
         container?.postDelayed({ setCouponToUi(data) }, CommonConstant.UI_SETTLING_DELAY_MS2.toLong())
-    }
-
-    override fun getActivityContext(): Context? {
-        return activity
     }
 
     override fun getScreenName(): String {
@@ -369,7 +365,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         hideLoader()
         mCouponName = data.title
         mCTA = data.cta
-        mCode = data.realCode as String
+        mCode = data.realCode
         val description = view?.findViewById<TextView>(R.id.tv_title)
         val label = view?.findViewById<TextView>(R.id.text_time_label)
         val value = view?.findViewById<Typography>(R.id.text_time_value)
@@ -392,28 +388,24 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             btnAction2?.hide()
             ll_bottom_button.hide()
         }
-        if (data.usage != null) {
-            label?.visibility = View.VISIBLE
-            label?.text = data.usage.text
-            value?.visibility = View.VISIBLE
-            imgLabel?.visibility = View.VISIBLE
-            value?.text = data.usage.usageStr.trim { it <= ' ' }
-
-            if (data.usage.btnUsage != null) {
-                if (data.usage.btnUsage.type.equals("invisible", ignoreCase = true)) {
-                    ll_bottom_button.hide()
-                    btnAction2?.visibility = View.GONE
-                } else {
-                    ll_bottom_button.show()
-                    btnAction2?.visibility = View.VISIBLE
-                }
-                if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
-                    btnAction2?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                    btnAction2?.background?.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50), PorterDuff.Mode.SRC_IN)
-                    btnAction2?.isEnabled = false
-                }
-            }
+        label?.visibility = View.VISIBLE
+        label?.text = data.usage.text
+        value?.visibility = View.VISIBLE
+        imgLabel?.visibility = View.VISIBLE
+        value?.text = data.usage.usageStr.trim { it <= ' ' }
+        if (data.usage.btnUsage.type.equals("invisible", ignoreCase = true)) {
+            ll_bottom_button.hide()
+            btnAction2?.visibility = View.GONE
+        } else {
+            ll_bottom_button.show()
+            btnAction2?.visibility = View.VISIBLE
         }
+        if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
+            btnAction2?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            btnAction2?.background?.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50), PorterDuff.Mode.SRC_IN)
+            btnAction2?.isEnabled = false
+        }
+
 
         if (data.minimumUsageLabel.isNullOrEmpty()) {
             textMinExchangeLabel?.hide()
@@ -427,7 +419,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             textMinExchangeLabel?.text = data.minimumUsageLabel
         }
 
-        if (data.usage != null && (data.usage.activeCountDown > 0 || data.usage.expiredCountDown <= 0)) {
+        if (data.usage.activeCountDown > 0 || data.usage.expiredCountDown <= 0) {
             imgLabel?.setColorFilter(ContextCompat.getColor(imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
             imgMinExchange?.setColorFilter(ContextCompat.getColor(imgMinExchange.context, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
@@ -436,7 +428,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
 
         this.mRealCode = data.realCode
-        btnAction2?.setOnClickListener { v ->
+        btnAction2?.setOnClickListener {
 
             if (phoneVerificationState != null && phoneVerificationState == false) {
                 openPhoneVerificationBottomSheet()
@@ -462,7 +454,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
         setupInfoPager(data.howToUse, data.tnc)
 
-        if (data.realCode != null && !data.realCode.isEmpty()) {
+        if (data.realCode.isNotEmpty()) {
             btnAction2?.setText(R.string.tp_label_use)
             btnAction2?.isEnabled = true
             if (btnAction2 != null) {
@@ -530,7 +522,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                             "")
                 }
             })
-            if (swipeDetail.partnerCode != null && !swipeDetail.partnerCode.isEmpty()) {
+            if (swipeDetail.partnerCode.isNotEmpty()) {
                 couponCode = swipeDetail.partnerCode
             }
             showBarCodeView(swipeDetail.note, "", "")
@@ -641,18 +633,18 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun showBarCodeView(note: String?, qrCodeLink: String, barCodeLink: String) {
         barcode_container?.apply {
             visibility = View.GONE
-            if (!qrCodeLink.isEmpty()) {
+            if (qrCodeLink.isNotEmpty()) {
                 btn_qrcode.visibility = View.VISIBLE
                 view_code_separator.visibility = View.VISIBLE
                 text_swipe_note.gravity = Gravity.LEFT
             }
 
-            if (!barCodeLink.isEmpty()) {
+            if (barCodeLink.isNotEmpty()) {
                 btn_barcode.visibility = View.VISIBLE
                 text_swipe_note.gravity = Gravity.LEFT
             }
 
-            if (note != null && !note.isEmpty()) {
+            if (note != null && note.isNotEmpty()) {
                 text_swipe_note.visibility = View.VISIBLE
                 text_swipe_note.text = note
                 text_swipe_note.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))

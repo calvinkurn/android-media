@@ -29,8 +29,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
@@ -74,19 +72,13 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -110,7 +102,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     lateinit var userSession: UserSessionInterface
 
     private val topAdsHeadlineViewModel by lazy {
-        ViewModelProvider(this)[TopAdsHeadlineViewModel::class.java]
+        ViewModelProvider(this,  viewModelFactory)[TopAdsHeadlineViewModel::class.java]
     }
 
     var remoteConfig: RemoteConfig? = null
@@ -636,11 +628,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     private fun getAtcBuyParam(product: ProductData): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = product.productId.toLongOrZero(),
-            shopId = product.shop.id.toInt(),
+            productId = product.productId,
+            shopId = product.shop.id,
             quantity = product.minOrder,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER,
-            warehouseId = product.warehouseId.toIntSafely()
+            warehouseId = product.warehouseId
         )
     }
 
@@ -691,45 +683,28 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         position: Int
     ) {
         context?.let { context ->
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                viewModel.doAddToWishlistV2(product.productId,
-                    object : WishlistV2ActionListener {
-                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                            }
-                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+            viewModel.doAddToWishlistV2(product.productId,
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
                         }
+                        rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+                    }
 
-                        override fun onSuccessAddWishlist(
-                            result: AddToWishlistV2Response.Data.WishlistAddV2,
-                            productId: String
-                        ) {
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-                            }
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                         }
+                    }
 
-                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                        override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
-                    })
-            } else {
-                viewModel.addWishListNormal(product.productId,
-                    object : WishListActionListener {
-                        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                            showErrorMessage(errorMessage ?: "")
-                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
-                        }
-
-                        override fun onSuccessAddWishlist(productId: String?) {
-                            showMessage(R.string.title_success_add_to_wishlist)
-                        }
-
-                        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-                        override fun onSuccessRemoveWishlist(productId: String?) {}
-                    })
-            }
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+                })
         }
     }
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="6dp"
     android:layout_marginLeft="-12dp"
     android:layout_marginRight="-12dp">
 
@@ -33,7 +33,7 @@
         android:id="@+id/tgp_flash_sale_timer_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="3dp"
         android:text="@string/shop_page_label_flash_sale"
         app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="@id/tgp_flash_sale_campaign_name"
@@ -109,7 +109,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_timer_desc">
 
@@ -142,11 +142,11 @@
             android:id="@+id/rv_flash_sale_product_carousel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:clipToPadding="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="2dp"
             />
 

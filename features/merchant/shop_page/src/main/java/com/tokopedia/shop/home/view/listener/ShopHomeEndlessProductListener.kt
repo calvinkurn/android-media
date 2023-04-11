@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.listener;
+package com.tokopedia.shop.home.view.listener
 
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
@@ -34,5 +34,4 @@ interface ShopHomeEndlessProductListener {
         position: Int,
         name: String
     )
-
 }

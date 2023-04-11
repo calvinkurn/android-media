@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.addedit.detail.domain.UniverseSearchResponse
+import com.tokopedia.product.addedit.util.UnitTestFileUtils
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +21,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.io.File
 import java.lang.reflect.Type
 
 @ExperimentalCoroutinesApi
@@ -48,7 +48,6 @@ class GetNameRecommendationUseCaseTest {
 
     @Test
     fun `should success on search name suggestion `() {
-
         getSearchShopProductUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(0, "batik")
 
         runBlocking {
@@ -68,7 +67,6 @@ class GetNameRecommendationUseCaseTest {
     @Test
     @Throws(MessageErrorException::class)
     fun `should error on search name suggestion`() {
-
         getSearchShopProductUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(123, "@/")
 
         runBlocking {
@@ -78,13 +76,12 @@ class GetNameRecommendationUseCaseTest {
         }
     }
 
-
     private fun createMockGraphQlSuccessResponse(): GraphqlResponse {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                GET_SEARCH_NAME_PRODUCT_RECOMMENDATION_SUCCESS.getJsonFromFile(),
-                JsonObject::class.java
+            GET_SEARCH_NAME_PRODUCT_RECOMMENDATION_SUCCESS.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = UniverseSearchResponse::class.java
@@ -97,8 +94,8 @@ class GetNameRecommendationUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                GET_SEARCH_NAME_PRODUCT_RECOMMENDATION_FAILED.getJsonFromFile(),
-                JsonObject::class.java
+            GET_SEARCH_NAME_PRODUCT_RECOMMENDATION_FAILED.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
         val objectType = GraphqlError::class.java
@@ -108,8 +105,6 @@ class GetNameRecommendationUseCaseTest {
     }
 
     private fun String.getJsonFromFile(): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(this)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        return UnitTestFileUtils.getJsonFromAsset(this)
     }
 }

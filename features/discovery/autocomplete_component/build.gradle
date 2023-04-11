@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
@@ -31,7 +30,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -54,7 +53,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
 
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
@@ -88,8 +91,10 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.chips
 
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.mockk
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

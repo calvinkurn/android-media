@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ugc_complete_onboarding_title"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/ugc_complete_onboarding_desc"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/text_field_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/tv_description"
+            app:unify_text_field_append_drawable_icon_1="@drawable/ic_feed_check_green"
+            app:unify_text_field_clearable="true"
+            app:unify_text_field_counter="20"
+            app:unify_text_field_label="@string/ugc_complete_onboarding_username"
+            app:unify_text_field_prepend_text="@string/ugc_complete_onboarding_username_prepend" />
+
+        <include
+            android:id="@+id/layout_tnc"
+            layout="@layout/layout_feed_onboarding_tnc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintTop_toBottomOf="@id/text_field_username" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_continue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:enabled="false"
+            android:text="@string/ugc_onboarding_continue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_tnc" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

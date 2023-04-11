@@ -14,7 +14,6 @@ import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListBinding
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListNoIconBinding
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.PrintingMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -106,7 +105,6 @@ class MenuItemsViewHolder(
         when(menuItem) {
             is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
             is StatisticMenuItemUiModel -> sendEventClickStatisticMenuItem(userSession?.userId.orEmpty())
-            is PrintingMenuItemUiModel -> sendEventClickPrintingMenuItem(userSession?.userId.orEmpty())
             else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }

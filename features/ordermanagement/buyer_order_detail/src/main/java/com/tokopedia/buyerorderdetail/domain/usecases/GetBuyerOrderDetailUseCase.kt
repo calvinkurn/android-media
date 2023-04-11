@@ -1,26 +1,28 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.buyerorderdetail.domain.mapper.GetBuyerOrderDetailMapper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>,
-        private val mapper: GetBuyerOrderDetailMapper
-) {
+    dispatchers: CoroutineDispatchers,
+    private val repository: GraphqlRepository
+) : BaseGraphqlUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers) {
 
-    init {
-        useCase.setTypeClass(GetBuyerOrderDetailResponse.Data::class.java)
-        useCase.setGraphqlQuery(QUERY)
-    }
+    override fun graphqlQuery() = QUERY
 
-    suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
-        useCase.setRequestParams(createRequestParam(params))
-        return mapper.mapDomainModelToUiModel(useCase.executeOnBackground().buyerOrderDetail)
+    override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
+        emit(GetBuyerOrderDetailRequestState.Requesting)
+        emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
+    }.catch {
+        emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
@@ -29,12 +31,23 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         }.parameters
     }
 
+    private suspend fun sendRequest(
+        params: GetBuyerOrderDetailParams
+    ): GetBuyerOrderDetailResponse.Data {
+        return repository.request(
+            graphqlQuery(),
+            createRequestParam(params),
+            getCacheStrategy(params.shouldCheckCache)
+        )
+    }
+
     companion object {
         private const val PARAM_INPUT = "input"
 
-        private val QUERY = """
-            query MPBOMDetail(${'$'}input: BomDetailV2Request!) {
-              mp_bom_detail(input: ${'$'}input) {
+        const val QUERY = """
+            query MPBOMDetail(${'$'}$PARAM_INPUT: BomDetailV2Request!) {
+              mp_bom_detail(input: ${'$'}$PARAM_INPUT) {
+                has_reso_status
                 order_id
                 invoice
                 invoice_url
@@ -45,6 +58,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   id
                   status_name
                   indicator_color
+                  labels {
+                    label
+                  }
                 }
                 ticker_info {
                   text
@@ -112,6 +128,28 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   payment_amount {
                     label
                     value
+                  }
+                  payment_refund {
+                    summary_info {
+                      details {
+                        label
+                        value
+                      }
+                      total_amount {
+                        label
+                        value
+                      }
+                      footer
+                    }
+                    estimate_info {
+                      title
+                      info
+                    }
+                    total_amount {
+                      label
+                      value
+                    }
+                    is_refunded
                   }
                 }
                 button {
@@ -275,6 +313,87 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       total_quantity
                     }
                   }
+                  partial_fulfillment {
+                    fulfilled {
+                      header {
+                        title
+                        quantity
+                      }
+                    }
+                    unfulfilled {
+                      header {
+                        title
+                        quantity
+                      }
+                      details {
+                        order_detail_id
+                        product_id
+                        product_name
+                        product_url
+                        thumbnail
+                        price
+                        price_text
+                        quantity
+                        total_price
+                        total_price_text
+                        notes
+                        category_id
+                        category
+                        button {
+                          key
+                          display_name
+                          type
+                          variant
+                          url
+                          popup {
+                            title
+                            body
+                            action_button {
+                              key
+                              display_name
+                              color
+                              type
+                              uri
+                            }
+                          }
+                        }
+                        addon_summary {
+                          addons {
+                            order_id
+                            id
+                            level
+                            name
+                            price_str
+                            subtotal_price
+                            subtotal_price_str
+                            quantity
+                            type
+                            image_url
+                            metadata {
+                              add_on_note {
+                                from
+                                to
+                                notes
+                                short_notes
+                              }
+                            }
+                            create_time
+                          }
+                          total
+                          total_price
+                          total_price_str
+                          total_quantity
+                        }
+                      }
+                    }
+                  }
+                  ticker_info {
+                    text
+                    action_text
+                    action_key
+                    action_url
+                    type
+                  }
                 }
                 addon_info {
                   label
@@ -307,8 +426,20 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_quantity
                   }
                 }
+                additional_data {
+                  epharmacy_data {
+                    consultation_name
+                    consultation_date
+                    consultation_doctor_name
+                    consultation_prescription_number
+                    consultation_expiry_date
+                    consultation_patient_name
+                  }
+                }
+                is_pof
+                has_ppp
               }
             }
-        """.trimIndent()
+        """
     }
 }
