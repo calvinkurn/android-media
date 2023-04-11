@@ -799,10 +799,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
-            setOnClickListener {
-                analytics.trackClickBiometricLoginBtn()
-                gotoVerifyFingerprint()
-            }
+            analytics.trackClickBiometricLoginBtn()
+            gotoVerifyFingerprint()
         }
     }
 
