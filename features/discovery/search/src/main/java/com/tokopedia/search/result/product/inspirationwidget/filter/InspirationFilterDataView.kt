@@ -25,7 +25,6 @@ class InspirationFilterDataView(
     }
 
     val isTypeRadio: Boolean = SearchConstant.InspirationCard.INPUT_TYPE_RADIO == inputType
-    val isTypeCheckbox: Boolean = SearchConstant.InspirationCard.INPUT_TYPE_CHECKBOX == inputType
 
     companion object {
         fun create(
