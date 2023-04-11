@@ -20,7 +20,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -117,6 +117,6 @@ class AffiliateEducationLandingViewModelTest {
             educationCategoryUseCase.getEducationCategoryTree()
         } returns categoryResponse
         viewModel.getEducationLandingPageData()
-        assertNotNull(viewModel.getEducationPageData().value)
+        assertEquals(7, viewModel.getEducationPageData().value?.size)
     }
 }
