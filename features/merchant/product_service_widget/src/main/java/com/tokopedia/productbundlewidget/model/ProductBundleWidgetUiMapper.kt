@@ -2,7 +2,6 @@ package com.tokopedia.productbundlewidget.model
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_STATUS_ACTIVE
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
