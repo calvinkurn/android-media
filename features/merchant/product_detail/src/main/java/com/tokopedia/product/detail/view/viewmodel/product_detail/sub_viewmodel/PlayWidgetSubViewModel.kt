@@ -24,7 +24,7 @@ import javax.inject.Inject
 class PlayWidgetSubViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     viewModelSlice: ViewModelSlice,
-) : SubViewModel(viewModelSlice), IPlayWidgetSubViewModel, ViewModelSlice {
+) : SubViewModel(viewModelSlice), IPlayWidgetSubViewModel {
     val mediator by lazy { getMediator<GetProductDetailDataMediator>() }
 
     private val _playWidgetModel = MutableLiveData<Result<PlayWidgetState>>()
