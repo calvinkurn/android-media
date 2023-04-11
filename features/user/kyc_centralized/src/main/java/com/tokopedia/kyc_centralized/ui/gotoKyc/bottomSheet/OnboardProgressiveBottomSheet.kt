@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardProgressiveBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
@@ -148,9 +147,11 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 is RegisterProgressiveResult.NotRiskyUser -> {
                     setButtonLoading(false)
                     val parameter = GotoKycMainParam(
+                        projectId = projectId,
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
-                        status = "0"
+                        status = it.status.toString(),
+                        listReason = listOf(it.rejectionReason)
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
