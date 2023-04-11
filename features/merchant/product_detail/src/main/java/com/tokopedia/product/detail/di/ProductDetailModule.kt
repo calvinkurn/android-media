@@ -16,6 +16,9 @@ import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.TkpdViewModelScopeProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.ViewModelScopeProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.ViewModelSlice
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -30,6 +33,18 @@ import dagger.Provides
 
 @Module (includes = [RecommendationCoroutineModule::class, PlayWidgetModule::class, AffiliateCommonSdkModule::class])
 class ProductDetailModule {
+
+    @ProductDetailScope
+    @Provides
+    fun provideTkpdViewModelScopeProvider() = TkpdViewModelScopeProvider()
+
+    @ProductDetailScope
+    @Provides
+    fun provideViewModelScopeProvider(provider: TkpdViewModelScopeProvider) : ViewModelScopeProvider = provider
+
+    @ProductDetailScope
+    @Provides
+    fun provideViewModelSlice(provider: TkpdViewModelScopeProvider) : ViewModelSlice = provider
 
     @ProductDetailScope
     @Provides
