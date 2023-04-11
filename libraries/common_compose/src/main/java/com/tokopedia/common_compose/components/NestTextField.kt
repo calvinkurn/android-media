@@ -48,7 +48,9 @@ fun NestTextField(
                 }
             },
             textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-            modifier = modifier.defaultMinSize(minHeight = 48.dp, minWidth = 75.dp).fillMaxWidth(),
+            modifier = modifier
+                .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
+                .fillMaxWidth(),
             placeholder = placeholder?.let { { NestTypography(text = it) } },
             leadingIcon = generatePrefix(prefix, enabled),
             trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
@@ -76,7 +78,7 @@ fun NestTextField(
                     text = it,
                     modifier = Modifier
                         .weight(1F)
-                        .padding(horizontal = 16.dp),
+                        .padding(start = 28.dp),
                     textStyle = NestTheme.typography.paragraph3.copy(
                         color = generateHelperColor(
                             enabled = enabled,
@@ -90,7 +92,7 @@ fun NestTextField(
                     text = it,
                     modifier = Modifier
                         .weight(1F)
-                        .padding(horizontal = 16.dp),
+                        .padding(start = 28.dp),
                     textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
                 )
             }
@@ -102,7 +104,11 @@ fun NestTextField(
                         .weight(1F)
                         .padding(horizontal = 16.dp),
                     textStyle = NestTheme.typography.paragraph3.copy(
-                        color = if (currentCount >= it) NestTheme.colors.RN._500 else NestTheme.colors.NN._600,
+                        color = generateCounterColor(
+                            counter = it,
+                            currentCount = currentCount,
+                            enabled = enabled
+                        ),
                         textAlign = TextAlign.End
                     )
                 )
@@ -112,13 +118,24 @@ fun NestTextField(
 }
 
 @Composable
-private fun generateHelperColor(enabled: Boolean, error: Boolean): Color {
-    if (!enabled) {
+private fun generateCounterColor(counter: Int, currentCount: Int, enabled: Boolean): Color {
+    return if (!enabled) {
         return NestTheme.colors.NN._400
-    } else if (error) {
-        return NestTheme.colors.RN._500
+    } else if (currentCount >= counter) {
+        NestTheme.colors.RN._500
     } else {
-        return NestTheme.colors.NN._600
+        NestTheme.colors.NN._600
+    }
+}
+
+@Composable
+private fun generateHelperColor(enabled: Boolean, error: Boolean): Color {
+    return if (!enabled) {
+        NestTheme.colors.NN._400
+    } else if (error) {
+        NestTheme.colors.RN._500
+    } else {
+        NestTheme.colors.NN._600
     }
 }
 
