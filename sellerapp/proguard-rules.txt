@@ -140,6 +140,8 @@
     public *;
 }
 
+-keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
+
 -dontwarn android.net.http.**
 -dontwarn org.apache.http.impl.auth.NegotiateScheme
 -dontwarn com.android.internal.http.multipart.MultipartEntity
@@ -212,6 +214,8 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
+# Keep Class com.tokopedia
+-keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 #discovery
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
