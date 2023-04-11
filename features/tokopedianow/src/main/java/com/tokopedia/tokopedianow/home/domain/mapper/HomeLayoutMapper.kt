@@ -738,15 +738,16 @@ object HomeLayoutMapper {
                     false
                 }
             }
-            val productUiModel = productVisitable as ProductCardCompactCarouselItemUiModel
-            val index = productList.indexOf(productVisitable)
+            (productVisitable as? ProductCardCompactCarouselItemUiModel)?.let { productUiModel ->
+                val index = productList.indexOf(productVisitable)
 
-            updateItemById(layout.getVisitableId()) {
-                val newProductUiModel = productUiModel.productCardModel.copy(orderQuantity = quantity)
-                productList[index] = productUiModel.copy(productCardModel = newProductUiModel)
+                updateItemById(layout.getVisitableId()) {
+                    val newProductUiModel = productUiModel.productCardModel.copy(orderQuantity = quantity)
+                    productList[index] = productUiModel.copy(productCardModel = newProductUiModel)
 
-                val newCarouselUiModel = carouselUiModel.copy(carouselItemList = productList)
-                homeLayoutItemUiModel.copy(layout = newCarouselUiModel)
+                    val newCarouselUiModel = carouselUiModel.copy(carouselItemList = productList)
+                    homeLayoutItemUiModel.copy(layout = newCarouselUiModel)
+                }
             }
         }
     }
