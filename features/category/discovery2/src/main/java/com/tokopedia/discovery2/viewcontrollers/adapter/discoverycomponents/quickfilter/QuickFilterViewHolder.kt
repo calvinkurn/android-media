@@ -102,18 +102,18 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 sortFilterItems.add(createDropDownSortFilterItem(filter))
             }
         }
-        quickSortFilter.let { it ->
+        quickSortFilter.let {
             val prop = quickFilterViewModel.components.properties
-            it.filterType = prop?.let { prop->
-                if(prop.filter || prop.sort)  SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
-            }?: SortFilter.TYPE_ADVANCED
+            it.filterType = prop?.let { properties ->
+                if (properties.filter || properties.sort) SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
+            } ?: SortFilter.TYPE_ADVANCED
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
             it.prefixText =
                 when {
                     prop?.fullFilterType == Constant.FullFilterType.CATEGORY -> fragment.getString(R.string.semua_kategori)
                     prop?.chipSize == Constant.ChipSize.LARGE -> ""
-                    else -> fragment.getString(R.string.filter)
+                    else -> fragment.getString(com.tokopedia.filter.R.string.filter)
                 }
             if (prop?.chipSize == Constant.ChipSize.LARGE)
                 it.filterSize = SortFilter.SIZE_LARGE
