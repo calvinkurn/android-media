@@ -77,7 +77,7 @@ fun NestTextField(
                 NestTypography(
                     text = it,
                     modifier = Modifier
-                        .weight(1F)
+                        .weight(4F)
                         .padding(start = 28.dp),
                     textStyle = NestTheme.typography.paragraph3.copy(
                         color = generateHelperColor(
@@ -91,7 +91,7 @@ fun NestTextField(
                 NestTypography(
                     text = it,
                     modifier = Modifier
-                        .weight(1F)
+                        .weight(4F)
                         .padding(start = 28.dp),
                     textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
                 )
@@ -102,7 +102,7 @@ fun NestTextField(
                     text = "$currentCount/$it",
                     modifier = Modifier
                         .weight(1F)
-                        .padding(horizontal = 16.dp),
+                        .padding(end = 28.dp),
                     textStyle = NestTheme.typography.paragraph3.copy(
                         color = generateCounterColor(
                             counter = it,
