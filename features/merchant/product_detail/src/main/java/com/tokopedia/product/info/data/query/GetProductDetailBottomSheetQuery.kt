@@ -35,8 +35,22 @@ object GetProductDetailBottomSheetQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            query $OPERATION_NAME(${'$'}$PRODUCT_ID_PARAM:String,${'$'}$SHOP_ID_PARAM:String,${'$'}$CATALOG_ID_PARAM:String, ${'$'}$GIFTABLE_PARAM:Boolean, ${'$'}$PARENT_ID_PARAM:String, ${'$'}$BOTTOM_SHEET_PARAM:String){
-              pdpGetDetailBottomSheet(productID:${'$'}$PRODUCT_ID_PARAM, shopID:${'$'}$SHOP_ID_PARAM, catalogID:${'$'}$CATALOG_ID_PARAM, isGiftable:${'$'}$GIFTABLE_PARAM, parentID:${'$'}$PARENT_ID_PARAM, bottomsheetParam:${'$'}$BOTTOM_SHEET_PARAM){
+            query $OPERATION_NAME(
+                ${'$'}$PRODUCT_ID_PARAM:String,
+                ${'$'}$SHOP_ID_PARAM:String,
+                ${'$'}$CATALOG_ID_PARAM:String, 
+                ${'$'}$GIFTABLE_PARAM:Boolean, 
+                ${'$'}$PARENT_ID_PARAM:String, 
+                ${'$'}$BOTTOM_SHEET_PARAM:String
+            ){
+              pdpGetDetailBottomSheet(
+                productID:${'$'}$PRODUCT_ID_PARAM, 
+                shopID:${'$'}$SHOP_ID_PARAM, 
+                catalogID:${'$'}$CATALOG_ID_PARAM, 
+                isGiftable:${'$'}$GIFTABLE_PARAM, 
+                parentID:${'$'}$PARENT_ID_PARAM, 
+                bottomsheetParam:${'$'}$BOTTOM_SHEET_PARAM
+              ){
                 bottomsheetData{
                   title
                   componentName
@@ -74,8 +88,8 @@ object GetProductDetailBottomSheetQuery : GqlQueryInterface {
                   DevMessage
                 }
               }
-            }""".trimIndent()
+            }
+    """.trimIndent()
 
     override fun getTopOperationName() = OPERATION_NAME
-
 }

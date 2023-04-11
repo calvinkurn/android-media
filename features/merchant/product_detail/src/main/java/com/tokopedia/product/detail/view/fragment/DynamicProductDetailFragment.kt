@@ -165,6 +165,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasic
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
@@ -1145,6 +1146,27 @@ open class DynamicProductDetailFragment :
             )
             shouldRefreshProductInfoBottomSheet = false
         }
+    }
+
+    override fun onDetailAnnotationClicked(
+        data: ProductDetailInfoContent,
+        trackData: ComponentTrackDataModel?
+    ) {
+        val activity = activity ?: return
+
+        // TODO tracker
+
+        ProductDetailInfoHelper.showBottomSheetInfo(
+            fragmentActivity = activity,
+            daggerComponent = productDaggerComponent,
+            listener = this,
+            p1Data = viewModel.getDynamicProductInfoP1,
+            sizeChartImageUrl = viewModel.variantData?.sizeChart,
+            infoData = pdpUiUpdater?.productDetailInfoData ?: ProductDetailInfoDataModel(),
+            forceRefresh = shouldRefreshProductInfoBottomSheet,
+            isOpenSpecification = false,
+            annotationExtParam = data.extParam
+        )
     }
 
     override fun getParentViewModelStoreOwner(): ViewModelStore {
