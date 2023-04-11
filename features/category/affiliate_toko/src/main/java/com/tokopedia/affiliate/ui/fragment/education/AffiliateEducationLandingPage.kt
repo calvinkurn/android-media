@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -73,7 +74,20 @@ class AffiliateEducationLandingPage :
     }
 
     companion object {
-        fun getFragmentInstance() = AffiliateEducationLandingPage()
+
+        private const val IS_APP_LINK = "isAppLink"
+        private const val IS_HELP_APP_LINK = "isHelpAppLink"
+
+        fun getFragmentInstance(
+            fromAppLink: Boolean = false,
+            fromHelpAppLink: Boolean = false
+        ) = AffiliateEducationLandingPage().apply {
+            arguments = bundleOf(
+                IS_APP_LINK to fromAppLink,
+                IS_HELP_APP_LINK to fromHelpAppLink
+            )
+        }
+
         private val kamusSlug = if (TokopediaUrl.getInstance().GQL.contains("staging")) {
             "imagetest"
         } else {
@@ -97,7 +111,7 @@ class AffiliateEducationLandingPage :
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_edukasi)
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
+                handleBack()
             }
         }
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
@@ -113,6 +127,9 @@ class AffiliateEducationLandingPage :
                 )
             adapter.setVisitables(it)
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
+        }
+        if (arguments?.getBoolean(IS_HELP_APP_LINK, false) == true) {
+            onBantuanClick()
         }
     }
 
@@ -202,6 +219,27 @@ class AffiliateEducationLandingPage :
                     append("?navigation=hide")
                 }
             )
+        }
+    }
+
+    fun handleBack() {
+        if (arguments?.getBoolean(IS_APP_LINK, false) == true) {
+            if (activity?.isTaskRoot == true) {
+                context?.let {
+                    startActivity(
+                        RouteManager.getIntent(
+                            it,
+                            ApplinkConst.HOME
+                        )
+                    ).also {
+                        activity?.finish()
+                    }
+                }
+            } else {
+                activity?.finish()
+            }
+        } else {
+            (activity as? AffiliateActivity)?.handleBackButton(false)
         }
     }
 }

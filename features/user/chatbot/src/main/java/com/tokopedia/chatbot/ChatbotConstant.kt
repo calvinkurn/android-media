@@ -13,7 +13,9 @@ object ChatbotConstant {
     const val MODE_BOT = "bot"
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
-    const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
+
+    // Used for invoice list, button action and dynamic sticky button action
+    const val RENDER_TO_UI_BASED_ON_STATUS = 1
     const val SOURCE_CHATBOT = "chatbot"
 
     object CsatRating {
@@ -55,11 +57,25 @@ object ChatbotConstant {
         const val SESSION_CHANGE = "31"
     }
 
-    object ReplyBoxType {
+    object DynamicAttachment {
         const val DYNAMIC_ATTACHMENT = "34"
         const val TYPE_BIG_REPLY_BOX = 100
         const val REPLY_BOX_TOGGLE_VALUE = 101
-        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, REPLY_BOX_TOGGLE_VALUE)
+        const val MEDIA_BUTTON_TOGGLE = 104
+        const val DYNAMIC_STICKY_BUTTON_RECEIVE = 105
+        const val DYNAMIC_TEXT_SEND = 106
+        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(
+            TYPE_BIG_REPLY_BOX,
+            REPLY_BOX_TOGGLE_VALUE,
+            DYNAMIC_STICKY_BUTTON_RECEIVE,
+            DYNAMIC_TEXT_SEND,
+            MEDIA_BUTTON_TOGGLE
+        )
+        val PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT = listOf<Int>(
+            DYNAMIC_STICKY_BUTTON_RECEIVE,
+            DYNAMIC_TEXT_SEND
+        )
+
     }
 
     object ChatbotUnification {
@@ -89,21 +105,11 @@ object ChatbotConstant {
         // New Relic Key For Logging CSAT Options and Helpfull questions , attachment type 22 and 23
         const val KEY_CSAT = "CHATBOT_CSAT_LOG"
 
-        // Keys for each GQL
-        const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
-        const val KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY = "CHATBOT_SECURE_UPLOAD_AVAILABILITY"
-        const val KEY_CHATBOT_GET_CHATLIST_RATING = "CHATBOT_GET_CHATLIST_RATING"
-        const val KEY_CHATBOT_SUBMIT_CHAT_CSAT = "CHATBOT_SUBMIT_CHAT_CSAT"
-        const val KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION = "CHATBOT_SUBMIT_HELPFULL_QUESTION"
-        const val KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME = "CHATBOT_GET_EXISTING_CHAT_FIRST_TIME"
-        const val KEY_CHATBOT_GET_EXISTING_CHAT_TOP = "CHATBOT_GET_EXISTING_CHAT_TOP"
-        const val KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM = "CHATBOT_GET_EXISTING_CHAT_BOTTOM"
-        const val KEY_CHATBOT_GET_LINK_FOR_REDIRECTION = "CHATBOT_GET_LINK_FOR_REDIRECTION"
-        const val KEY_CHATBOT_TICKER = "CHATBOT_TICKER"
+        // Keys for GQL
         const val KEY_CHATBOT_NEW_SESSION = "CHATBOT_NEW_SESSION"
-        const val KEY_CHATBOT_SEND_RATING = "CHATBOT_SEND_RATING"
-        const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
-        const val KEY_CHATBOT_INVALID_ID_MESSAGE = "CHATBOT_INVALID_ID_MESSAGE"
+
+        // Key for MessageId Error
+        const val CHATBOT_MESSAGE_ID = "CHATBOT_MESSAGE_ID_ERROR"
     }
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
