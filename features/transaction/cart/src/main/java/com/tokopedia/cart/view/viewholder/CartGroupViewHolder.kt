@@ -115,11 +115,21 @@ class CartGroupViewHolder(
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
-        if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
+        if (cartGroupHolderData.isError) {
+            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopId
+            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopName
+            binding.tvShopName.setOnClickListener {
+                actionListener.onCartShopNameClicked(
+                    shopId,
+                    shopName,
+                    cartGroupHolderData.isTokoNow
+                )
+            }
+        }
+        else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
                     cartGroupHolderData.groupAppLink,
-                    cartGroupHolderData.isTokoNow
                 )
             }
         }

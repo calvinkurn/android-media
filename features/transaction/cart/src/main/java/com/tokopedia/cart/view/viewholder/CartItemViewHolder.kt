@@ -338,7 +338,8 @@ class CartItemViewHolder constructor(
             binding.tvShopName.setOnClickListener {
                 actionListener?.onCartShopNameClicked(
                     data.shopHolderData.shopId,
-                    data.shopHolderData.shopName
+                    data.shopHolderData.shopName,
+                    data.shopHolderData.isTokoNow
                 )
             }
             if (shopHolderData.shopTypeInfo.shopBadge.isNotBlank()) {
