@@ -32,7 +32,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_HOME_AND_BROWSE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -102,7 +102,7 @@ class HomeProductCarouselChipsAnalytics(
         position: Int,
         channelId: String,
         chipName: String,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         val index = position.getTrackerPosition().toString()
         val productCard = product.productCardModel
@@ -143,7 +143,7 @@ class HomeProductCarouselChipsAnalytics(
         position: Int,
         channelId: String,
         chipName: String,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         val index = position.getTrackerPosition().toString()
         val productCard = product.productCardModel
@@ -189,7 +189,7 @@ class HomeProductCarouselChipsAnalytics(
         carousel: HomeProductCarouselChipsUiModel
     ) {
         val productList = carousel.carouselItemList
-            .filterIsInstance<TokoNowProductCardCarouselItemUiModel>()
+            .filterIsInstance<ProductCardCompactCarouselItemUiModel>()
         val product = productList[position]
         val index = position.getTrackerPosition().toString()
         val productCard = product.productCardModel

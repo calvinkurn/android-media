@@ -1239,7 +1239,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackCarouselChipAddToCart(productId: String, quantity: Int, cartId: String) {
         homeLayoutItemList.getProductCarouselChipByProductId(productId)?.let { carousel ->
             val productList = carousel.carouselItemList
-                .filterIsInstance<TokoNowProductCardCarouselItemUiModel>()
+                .filterIsInstance<ProductCardCompactCarouselItemUiModel>()
             val product = productList.first { it.getProductId() == productId }
             val position = productList.indexOf(product)
 

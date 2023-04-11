@@ -25,7 +25,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouseBasicListener {
+    ProductCardCompactCarouselView.ProductCardCarouseBasicListener {
 
     companion object {
         private const val FIRST_ITEM_POSITION = 0

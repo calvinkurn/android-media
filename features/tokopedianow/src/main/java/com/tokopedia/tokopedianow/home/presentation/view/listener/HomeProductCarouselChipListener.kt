@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -21,7 +21,7 @@ class HomeProductCarouselChipListener(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         viewModel.onCartQuantityChanged(
@@ -47,7 +47,7 @@ class HomeProductCarouselChipListener(
         position: Int,
         channelId: String,
         chipName: String,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         RouteManager.route(context, product.appLink)
         analytics.trackProductCardClick(position, channelId, chipName, product)
@@ -57,7 +57,7 @@ class HomeProductCarouselChipListener(
         position: Int,
         channelId: String,
         chipName: String,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         analytics.trackProductCardImpression(position, channelId, chipName, product)
     }

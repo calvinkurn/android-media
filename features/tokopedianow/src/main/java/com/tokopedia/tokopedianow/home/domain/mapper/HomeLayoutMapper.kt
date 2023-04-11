@@ -38,7 +38,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToC
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
@@ -542,10 +542,10 @@ object HomeLayoutMapper {
                         .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
                     val cartProductIds = miniCartItems.map { it.productId }
 
-                    val deletedProducts: MutableList<TokoNowProductCardCarouselItemUiModel> = mutableListOf()
+                    val deletedProducts: MutableList<ProductCardCompactCarouselItemUiModel> = mutableListOf()
 
                     layout.carouselItemList.forEach {
-                        if ((it is TokoNowProductCardCarouselItemUiModel) && it.getProductId() !in cartProductIds) {
+                        if ((it is ProductCardCompactCarouselItemUiModel) && it.getProductId() !in cartProductIds) {
                             deletedProducts.add(it)
                         }
                     }
@@ -732,13 +732,13 @@ object HomeLayoutMapper {
             val carouselUiModel = layout as HomeProductCarouselChipsUiModel
             val productList = carouselUiModel.carouselItemList.toMutableList()
             val productVisitable = productList.firstOrNull {
-                if (it is TokoNowProductCardCarouselItemUiModel) {
+                if (it is ProductCardCompactCarouselItemUiModel) {
                     it.getProductId() == productId
                 } else {
                     false
                 }
             }
-            val productUiModel = productVisitable as TokoNowProductCardCarouselItemUiModel
+            val productUiModel = productVisitable as ProductCardCompactCarouselItemUiModel
             val index = productList.indexOf(productVisitable)
 
             updateItemById(layout.getVisitableId()) {

@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationSt
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -111,7 +111,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     shopId = "5",
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
@@ -269,7 +269,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     shopId = "3",
                     shopType = "",
                     appLink = "tokopedia://product/detail/2",
@@ -467,7 +467,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     shopId = "5",
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
@@ -676,7 +676,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     shopId = "2",
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
@@ -693,7 +693,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     ),
                     parentId = "1"
                 ),
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     shopId = "5",
                     shopType = "",
                     appLink = "tokopedia://product/detail/2",

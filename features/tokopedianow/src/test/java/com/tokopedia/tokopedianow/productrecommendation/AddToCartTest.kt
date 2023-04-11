@@ -231,7 +231,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
     }
 
     @Test
-    fun `while adding product to cart if product is not TokoNowProductCardCarouselItemUiModel, it will do nothing`() {
+    fun `while adding product to cart if product is not ProductCardCompactCarouselItemUiModel, it will do nothing`() {
         coroutineTestRule.runBlockingTest {
             val position = productModels.size - 1
             val quantity = 0

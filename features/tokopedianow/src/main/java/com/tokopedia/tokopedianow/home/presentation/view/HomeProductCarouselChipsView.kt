@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.adapter.TokoNowChipListAdapter
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipListAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.decoration.ChipListHorizontalDecoration
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouseBasicListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCarouselChipsViewBinding
@@ -26,7 +26,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs),
-    TokoNowProductCardCarouseBasicListener, ChipListener {
+    ProductCardCompactCarouselView.ProductCardCarouseBasicListener, ChipListener {
 
     companion object {
         private const val FIRST_POSITION_INDEX = 0
@@ -61,7 +61,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         channelId: String,
         chipList: List<TokoNowChipUiModel> = emptyList(),
         carouselItems: List<Visitable<*>> = listOf(),
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+        seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null,
         header: TokoNowDynamicHeaderUiModel? = null,
         state: TokoNowProductRecommendationState = TokoNowProductRecommendationState.LOADING
     ) {
@@ -129,21 +129,21 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onClickProductCard(position, channelId, getSelectedChipName(), product)
     }
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductCardImpressed(position, channelId, getSelectedChipName(), product)
     }
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         listener?.onProductCardQuantityChanged(position, product, quantity)
@@ -151,7 +151,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onClickVariantAddToCart(product.getProductId(), product.shopId)
     }
@@ -176,7 +176,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     interface HomeProductCarouselChipsViewListener {
         fun onProductCardQuantityChanged(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             quantity: Int
         )
         fun onClickVariantAddToCart(
@@ -187,13 +187,13 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
             position: Int,
             channelId: String,
             chipName: String,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onProductCardImpressed(
             position: Int,
             channelId: String,
             chipName: String,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onClickChipItem(channelId: String, headerName: String, chip: TokoNowChipUiModel)
         fun onWidgetImpressed()
