@@ -4217,6 +4217,14 @@ class ShipmentFragment :
         shipmentAdapter.updateShipmentCartItemGroup(shipmentCartItemModel)
     }
 
+    override fun setShipmentNewUpsellLoading(isLoading: Boolean) {
+        val index = shipmentAdapter.getShipmentDataList().indexOfFirst { it is ShipmentNewUpsellModel }
+        if (index != RecyclerView.NO_POSITION) {
+            (shipmentAdapter.getShipmentDataList()[index] as? ShipmentNewUpsellModel)?.isLoading = isLoading
+            shipmentAdapter.notifyItemChanged(index)
+        }
+    }
+
     private fun sendAnalyticsEpharmacyClickPembayaran() {
         val shipmentDataList = shipmentAdapter.getShipmentDataList()
         for (i in shipmentDataList.indices.reversed()) {

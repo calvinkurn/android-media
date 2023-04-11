@@ -10,6 +10,7 @@
         android:id="@+id/talkReplyReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:text="@string/report_bottom_sheet_text"
         android:textColor="@color/Unify_NN950"
         android:visibility="gone"
@@ -22,7 +23,6 @@
         android:id="@+id/divider_talk_reply_report"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/talkReplyReport"
         tools:visibility="visible" />
@@ -31,7 +31,8 @@
         android:id="@+id/talkReplyBlock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="@string/block_bottom_sheet_text"
         android:textColor="@color/Unify_NN950"
         android:visibility="gone"
@@ -44,7 +45,6 @@
         android:id="@+id/divider_talk_reply_block"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/talkReplyBlock"
         tools:visibility="visible" />
@@ -53,7 +53,8 @@
         android:id="@+id/talkReplyDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:textColor="@color/Unify_NN950"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,6 +62,7 @@
         app:layout_goneMarginTop="16dp"
         app:typographyType="display_2"
         app:typographyWeight="bold"
+        tools:text="@string/delete_question_bottom_sheet"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

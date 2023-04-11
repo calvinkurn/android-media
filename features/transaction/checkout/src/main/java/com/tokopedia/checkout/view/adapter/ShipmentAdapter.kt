@@ -15,6 +15,7 @@ import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
 import com.tokopedia.checkout.databinding.ItemUpsellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
+import com.tokopedia.checkout.utils.ShipmentRollenceUtil
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -41,6 +42,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder
@@ -189,7 +191,11 @@ class ShipmentAdapter @Inject constructor(
             }
 
             is ShipmentNewUpsellModel -> {
-                return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
+                return if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
+                    ShipmentNewUpsellImprovementViewHolder.LAYOUT
+                } else {
+                    ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
+                }
             }
 
             is ShipmentCartItemTopModel -> {
@@ -278,6 +284,10 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
                 return ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener)
+            }
+
+            ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
+                return ShipmentNewUpsellImprovementViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentCartItemTopViewHolder.LAYOUT -> {
@@ -376,6 +386,10 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
                 (holder as ShipmentNewUpsellViewHolder).bind(data as ShipmentNewUpsellModel)
+            }
+
+            ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
+                (holder as ShipmentNewUpsellImprovementViewHolder).bind(data as ShipmentNewUpsellModel)
             }
 
             ShipmentCartItemTopViewHolder.LAYOUT -> {

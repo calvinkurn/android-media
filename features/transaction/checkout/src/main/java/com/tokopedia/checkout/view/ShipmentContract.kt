@@ -189,6 +189,7 @@ interface ShipmentContract {
         fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
         fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
         fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel)
+        fun setShipmentNewUpsellLoading(isLoading: Boolean)
     }
 
     interface AnalyticsActionListener {

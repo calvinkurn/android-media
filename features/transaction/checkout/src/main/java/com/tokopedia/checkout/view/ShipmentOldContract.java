@@ -209,6 +209,8 @@ public interface ShipmentOldContract {
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
+
+        void setShipmentNewUpsellLoading(boolean isLoading);
     }
 
     interface AnalyticsActionListener {

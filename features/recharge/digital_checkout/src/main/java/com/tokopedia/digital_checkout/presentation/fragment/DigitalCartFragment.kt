@@ -80,7 +80,6 @@ import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -240,9 +239,7 @@ class DigitalCartFragment :
         passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
         addToCartViewModel.addToCart(
             passData,
-            getDigitalIdentifierParam(),
-            digitalSubscriptionParams,
-            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            getDigitalIdentifierParam()
         )
     }
 
@@ -473,10 +470,7 @@ class DigitalCartFragment :
                         it.checkoutBottomViewWidget.getCrossSellConsentPayload()
                     )
                 }
-                viewModel.proceedToCheckout(
-                    getDigitalIdentifierParam(),
-                    remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
-                )
+                viewModel.proceedToCheckout(getDigitalIdentifierParam())
             }
 
             it.checkoutBottomViewWidget.setOnClickConsentListener { url ->
