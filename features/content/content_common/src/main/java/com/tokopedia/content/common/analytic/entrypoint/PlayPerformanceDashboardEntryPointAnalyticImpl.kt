@@ -23,6 +23,7 @@ import com.tokopedia.content.common.analytic.utils.convertToPromotion
 import com.tokopedia.content.common.analytic.utils.currentSite
 import com.tokopedia.content.common.analytic.utils.getAccountType
 import com.tokopedia.content.common.analytic.utils.getTrackerId
+import com.tokopedia.content.common.analytic.utils.sessionIris
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -41,6 +42,8 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
 ) : PlayPerformanceDashboardEntryPointAnalytic {
+    
+    private val userSessionId = userSession.userId 
 
     /**
      * row 1
@@ -53,9 +56,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41752", "41736")
             )
         )
@@ -72,9 +75,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41753", "41737")
             )
         )
@@ -91,9 +94,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("", "41738")
             )
         )
@@ -110,9 +113,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41755", "41739")
             )
         )
@@ -129,9 +132,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41756", "41740")
             )
         )
@@ -148,9 +151,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41757", "41741")
             )
         )
@@ -167,9 +170,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)} - $channelId",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41758", "41742")
             )
         )
@@ -186,9 +189,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)} - $channelId",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41759", "41743")
             )
         )
@@ -205,9 +208,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41760", "41744")
             )
         )
@@ -224,9 +227,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41754", "41745")
             )
         )
@@ -243,9 +246,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41762", "41746")
             )
         )
@@ -262,9 +265,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41763", "41747")
             )
         )
@@ -281,9 +284,9 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
                 KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSessionId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41764", "41748")
             )
         )
@@ -320,8 +323,8 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
             hashMapOf(
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to currentSite,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userSession.userId,
+                KEY_SESSION_IRIS to sessionIris,
+                KEY_USER_ID to userSessionId,
                 KEY_TRACKER_ID to getTrackerId("41765", "41749")
             )
         )
