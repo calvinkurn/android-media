@@ -47,7 +47,7 @@ interface FeedListener {
     /**
      * Video
      */
-    fun getVideoPlayer(): FeedExoPlayer
+    fun getVideoPlayer(id: String): FeedExoPlayer
 
     fun detachPlayer(player: FeedExoPlayer)
 

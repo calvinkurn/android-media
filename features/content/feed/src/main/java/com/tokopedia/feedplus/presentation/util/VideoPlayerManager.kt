@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.presentation.util
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by kenny.hadisaputra on 03/04/23
@@ -11,19 +11,18 @@ class VideoPlayerManager(
     private val context: Context,
 ) {
 
-    private val videoMap = mutableMapOf<FeedExoPlayer, Boolean>()
+    private val videoMap = ConcurrentHashMap<FeedExoPlayer, String>()
 
-    fun occupy(): FeedExoPlayer {
+    fun occupy(id: String): FeedExoPlayer {
         val player = getOrCreatePlayer()
-        videoMap[player] = true
-
-        Log.d("VideoPlayerFactory", "${videoMap.entries.size} Video Player")
+        videoMap[player] = id
 
         return player
     }
     
     fun detach(player: FeedExoPlayer) {
-        videoMap[player] = false
+        player.stop()
+        videoMap[player] = ""
     }
 
     private fun release(player: FeedExoPlayer) {
@@ -35,16 +34,28 @@ class VideoPlayerManager(
         videoMap.keys.forEach { release(it) }
     }
 
+    fun pause(id: String) {
+        videoMap.entries.firstOrNull {
+            it.value == id
+        }?.key?.pause()
+    }
+
+    fun resume(id: String) {
+        videoMap.entries.firstOrNull {
+            it.value == id
+        }?.key?.resume(shouldReset = false)
+    }
+
     private fun getOrCreatePlayer(): FeedExoPlayer {
         return getUnoccupiedPlayer() ?: run {
             val player = createPlayer()
-            videoMap[player] = false
+            videoMap[player] = ""
             player
         }
     }
 
     private fun getUnoccupiedPlayer(): FeedExoPlayer? {
-        return videoMap.entries.firstOrNull { !it.value }?.key
+        return videoMap.entries.firstOrNull { it.value.isEmpty() }?.key
     }
 
     private fun createPlayer(): FeedExoPlayer {

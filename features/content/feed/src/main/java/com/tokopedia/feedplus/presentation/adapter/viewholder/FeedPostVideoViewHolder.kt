@@ -113,10 +113,12 @@ class FeedPostVideoViewHolder(
             }
             if (payloads.contains(FEED_POST_SELECTED)) {
                 campaignView.startAnimation()
-                mVideoPlayer?.resume(shouldReset = true)
+                mVideoPlayer?.resume()
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 mVideoPlayer?.pause()
+                mVideoPlayer?.reset()
+
                 campaignView.resetView()
                 hideClearView()
             }
@@ -211,7 +213,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
-        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer()
+        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
         mVideoPlayer = videoPlayer
 
         videoPlayer.stop()
