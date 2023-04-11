@@ -29,6 +29,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.debugToolsDependencies.chuck

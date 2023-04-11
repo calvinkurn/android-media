@@ -4,23 +4,26 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
-import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
-import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
+import com.tokopedia.shopadmin.common.util.AdminFeature
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
 
 object SellerMenuList {
@@ -29,7 +32,8 @@ object SellerMenuList {
 
     fun create(context: Context,
                userSession: UserSessionInterface,
-               mapper: AdminPermissionMapper): List<Visitable<*>> {
+               mapper: AdminPermissionMapper
+    ): List<Visitable<*>> {
         val isShopOwner = userSession.isShopOwner
         val menuList = mutableListOf<Visitable<*>>()
         val buyerInfoMenu = createBuyerInfoMenu(context, isShopOwner, mapper)
@@ -127,7 +131,7 @@ object SellerMenuList {
                 if (isShopOwner) {
                     mapper.mapFeatureToDestination(context, feature)
                 } else {
-                    AdminRoleAuthorizeActivity.createIntent(context, feature)
+                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, feature)
                 }
         context.startActivity(intent)
     }

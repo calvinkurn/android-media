@@ -51,4 +51,6 @@
 
     <!-- Shop Admin Redirection -->
     <string name="error_message_shop_admin_redirection">Gagal memuat konten. Coba lagi, ya.</string>
+    <string name="admin_error_refresh_page">Refresh Halaman</string>
+
 </resources>

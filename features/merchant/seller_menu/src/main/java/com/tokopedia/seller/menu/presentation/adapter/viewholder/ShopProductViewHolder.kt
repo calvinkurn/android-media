@@ -9,9 +9,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.databinding.ItemSellerMenuProductSectionBinding
 import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
+import com.tokopedia.shopadmin.common.util.AdminFeature
 
 class ShopProductViewHolder(
         itemView: View,

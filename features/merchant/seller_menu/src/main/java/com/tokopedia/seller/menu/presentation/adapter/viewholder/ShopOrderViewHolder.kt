@@ -10,9 +10,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.databinding.ItemSellerMenuOrderSectionBinding
 import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
+import com.tokopedia.shopadmin.common.util.AdminFeature
 
 class ShopOrderViewHolder(
     itemView: View,

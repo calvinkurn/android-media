@@ -1,9 +1,10 @@
-package com.tokopedia.seller.menu.presentation.viewmodel
+package com.tokopedia.shopadmin.feature.authorize
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
+import com.tokopedia.shopadmin.feature.authorize.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,12 +40,13 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = AdminRoleAuthorizeViewModel(
+        viewModel =
+            AdminRoleAuthorizeViewModel(
                 authorizeAccessUseCase,
                 userSession,
                 mapper,
                 CoroutineTestDispatchersProvider
-        )
+            )
         viewModel.isRoleAuthorizedLiveData.observeForever(isRoleAuthorizedObserver)
         viewModel.isLoadingLiveData.observeForever(isLoadingLiveDataObserver)
     }

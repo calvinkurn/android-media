@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.presentation.util
+package com.tokopedia.shopadmin.common.util
 
 import android.content.Context
 import android.content.Intent
@@ -9,22 +9,21 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.review.ReviewApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.seller.menu.R
-import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.shopadmin.common.R
+import com.tokopedia.url.TokopediaUrl
+import java.util.*
 import javax.inject.Inject
 
-class AdminPermissionMapper @Inject constructor(private val userSession: UserSessionInterface) {
+class AdminPermissionMapper @Inject constructor() {
 
     companion object {
         private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
-        private const val SCREEN_NAME = "MA - Akun Toko"
+        private const val RESO_INBOX_SELLER = "resolution-center/inbox/seller/mobile"
     }
 
     fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
@@ -72,8 +71,8 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
                 }
             }
             AdminFeature.COMPLAINT -> {
-                String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
-                        SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER).let { resolutionInboxApplink ->
+                String.format(
+                    APPLINK_FORMAT, ApplinkConst.WEBVIEW, TokopediaUrl.getInstance().SELLER, RESO_INBOX_SELLER).let { resolutionInboxApplink ->
                     RouteManager.getIntent(context, resolutionInboxApplink)
                 }
             }
@@ -111,7 +110,7 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
             AdminFeature.MANAGE_SHOP -> R.string.admin_title_shop_setting
             AdminFeature.STATISTIC -> R.string.admin_title_statistic
             AdminFeature.ADS_AND_PROMOTION -> R.string.admin_title_ads_and_promotion
-            else -> return ""
+            else -> return String.EMPTY
         }.let { stringResId ->
             return context?.getString(stringResId).orEmpty()
         }
@@ -120,7 +119,20 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
     private fun getSellerMigrationIntent(context: Context,
                                          @SellerMigrationFeatureName featureName: String,
                                          appLinks: ArrayList<String>): Intent =
-            SellerMigrationActivity.createIntent(context, featureName, SCREEN_NAME, appLinks)
+            RouteManager.getIntent(
+                context,
+                String.format(
+                    Locale.getDefault(),
+                    "%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s",
+                    ApplinkConst.SELLER_MIGRATION,
+                    featureName
+                )
+            ).apply {
+                putStringArrayListExtra(
+                    SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
+                    appLinks
+                )
+            }
 
     private fun getReputationIntent(context: Context): Intent {
         val appLink = UriUtil.buildUriAppendParam(
