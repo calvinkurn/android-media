@@ -1,20 +1,18 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail.base
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 
 class TkpdViewModelScopeProvider : ViewModelScopeProvider {
-    private var viewModel: ViewModel? = null
+    private var provider: (() -> CoroutineScope)? = null
 
-    override fun register(viewModel: ViewModel) {
-        this.viewModel = viewModel
+    override fun register(provider: () -> CoroutineScope) {
+        this.provider = provider
     }
 
     override val vmScope: CoroutineScope?
-        get() = viewModel?.viewModelScope
+        get() = provider?.invoke()
 
     override fun close() {
-        viewModel = null
+        provider = null
     }
 }

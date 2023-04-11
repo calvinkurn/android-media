@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail.base
 
-import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
 import java.io.Closeable
 
 interface ViewModelScopeProvider : Closeable, ViewModelSlice {
-    fun register(viewModel: ViewModel)
+    fun register(provider: () -> CoroutineScope)
 }
