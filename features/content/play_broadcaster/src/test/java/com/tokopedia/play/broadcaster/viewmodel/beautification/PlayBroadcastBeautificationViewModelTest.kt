@@ -368,7 +368,7 @@ class PlayBroadcastBeautificationViewModelTest {
     }
 
     @Test
-    fun `playBroadcaster_beautification_selectFaceFilter_none`() {
+    fun `playBroadcaster_beautification_selectFaceFilter_removeEffect`() {
 
         val mockSelectedFaceFilterPosition = 0
 
