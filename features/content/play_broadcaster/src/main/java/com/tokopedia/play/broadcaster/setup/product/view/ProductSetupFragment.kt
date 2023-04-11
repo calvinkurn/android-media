@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
@@ -23,7 +24,8 @@ import javax.inject.Inject
  */
 @Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
-    private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory
+    private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
+    private val productSetupProductAnalytic: PlayBroSetupProductAnalytic,
 ) : Fragment(), ViewModelFactoryProvider {
 
     private var mDataSource: DataSource? = null
@@ -65,6 +67,7 @@ class ProductSetupFragment @Inject constructor(
         }
 
         override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
+            mListener?.onProductSetupDismissed()
             bottomSheet.dismiss()
             removeFragment()
         }
@@ -91,6 +94,8 @@ class ProductSetupFragment @Inject constructor(
 
         if (savedInstanceState != null) return
 
+        productSetupProductAnalytic.setSelectedAccount(mDataSource?.getSelectedAccount().orUnknown())
+
         if (mDataSource?.getProductSectionList()?.isEmpty() == true) {
             openProductChooser(ChooserSource.Preparation)
         } else {
@@ -103,19 +108,9 @@ class ProductSetupFragment @Inject constructor(
         when (childFragment) {
             is ProductChooserBottomSheet -> {
                 childFragment.setListener(productChooserListener)
-                childFragment.setDataSource(object : ProductChooserBottomSheet.DataSource {
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return mDataSource?.getSelectedAccount().orUnknown()
-                    }
-                })
             }
             is ProductSummaryBottomSheet -> {
                 childFragment.setListener(productSummaryListener)
-                childFragment.setDataSource(object : ProductSummaryBottomSheet.DataSource {
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return mDataSource?.getSelectedAccount().orUnknown()
-                    }
-                })
             }
             is ProductPickerUGCBottomSheet -> {
                 childFragment.setListener(productPickerUGCListener)
@@ -232,5 +227,6 @@ class ProductSetupFragment @Inject constructor(
 
     interface Listener {
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
+        fun onProductSetupDismissed() {}
     }
 }

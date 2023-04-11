@@ -169,11 +169,7 @@ class EditorActivity : BaseEditorActivity() {
             }
 
             exception?.let {
-                Toast.makeText(
-                    this,
-                    resources.getString(editorR.string.editor_activity_general_error),
-                    Toast.LENGTH_LONG
-                ).show()
+                showErrorGeneralToaster(this)
                 newRelicLog(
                     mapOf(
                         FAILED_SAVE_FIELD to "${it.message}"

@@ -1,6 +1,7 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.GetCartCountUseCase
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetChatHistoryUseCase
@@ -22,6 +23,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
+    private val getCartCountUseCase: GetCartCountUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
     private val channelMapper: PlayChannelDetailsWithRecomMapper,
@@ -73,5 +75,9 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         )
 
         uiMapper.mapHistoryChat(response)
+    }
+
+    override suspend fun getCartCount(): Int = withContext(dispatchers.io) {
+        return@withContext getCartCountUseCase.executeOnBackground()
     }
 }
