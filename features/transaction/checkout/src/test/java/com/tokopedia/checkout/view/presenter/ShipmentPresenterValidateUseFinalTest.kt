@@ -100,7 +100,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         // Given
         val message = "error"
         val tmpCartString = "123-abc"
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = tmpCartString)
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = tmpCartString)
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
@@ -135,7 +135,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         // Given
         val tmpCartString = "123-abc"
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = tmpCartString
+            cartStringGroup = tmpCartString
         )
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
@@ -494,12 +494,12 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             shouldStopInValidateUsePromo = false
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "123",
+            cartStringGroup = "123",
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-            cartItemModels = listOf(CartItemModel(cartString = "123"))
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")

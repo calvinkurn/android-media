@@ -1076,10 +1076,10 @@ class ShipmentFragment :
                 val shouldValidatePromo =
                     !isForceReloadRates && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
-                    val cartString = shipmentCartItemModel.cartString
+                    val cartString = shipmentCartItemModel.cartStringGroup
                     val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
                     for (ordersItem in validateUsePromoRequest.orders) {
-                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString) {
+                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                             if (!ordersItem.codes.contains(courierItemData.selectedShipper.logPromoCode)) {
                                 ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
                                 ordersItem.boCode = courierItemData.selectedShipper.logPromoCode!!
@@ -1102,7 +1102,7 @@ class ShipmentFragment :
                     if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
                         for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                             for (order in validateUsePromoRequest.orders) {
-                                if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
                                     !tmpShipmentCartItemModel.isFreeShippingPlus
                                 ) {
                                     order.codes.remove(tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode)
@@ -1158,7 +1158,7 @@ class ShipmentFragment :
                         shipmentCartItemModel
                     )
                     shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(
-                        shipmentCartItemModel.cartString,
+                        shipmentCartItemModel.cartStringGroup,
                         shipmentCartItemModel.boCode
                     )
                     shipmentCartItemModel.boCode = ""
@@ -1344,11 +1344,11 @@ class ShipmentFragment :
                 if (obj[i] is ShipmentCartItemModel) {
                     val shipmentCartItemModel = obj[i] as ShipmentCartItemModel
                     if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(
-                            shipmentCartItemModel.cartString
-                        ) && !reloadedUniqueIds!!.contains(shipmentCartItemModel.cartString)
+                            shipmentCartItemModel.cartStringGroup
+                        ) && !reloadedUniqueIds!!.contains(shipmentCartItemModel.cartStringGroup)
                     ) {
                         prepareReloadRates(i, false)
-                    } else if (!reloadedUniqueIds!!.contains(shipmentCartItemModel.cartString)) {
+                    } else if (!reloadedUniqueIds!!.contains(shipmentCartItemModel.cartStringGroup)) {
                         prepareReloadRates(i, true)
                     }
                 }
@@ -2272,14 +2272,14 @@ class ShipmentFragment :
             courierData,
             logisticPromo
         )
-        val cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)!!.cartString
+        val cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)!!.cartStringGroup
         if (!flagNeedToSetPinpoint) {
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)!!
             val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
             if (promoCode.isNotEmpty()) {
                 for (order in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup == shipmentCartItemModel.cartString && !order.codes.contains(
+                    if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
                             promoCode
                         )
                     ) {
@@ -2296,7 +2296,7 @@ class ShipmentFragment :
             if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
                 for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                     for (order in validateUsePromoRequest.orders) {
-                        if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
                             !tmpShipmentCartItemModel.isFreeShippingPlus
                         ) {
                             order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
@@ -2306,7 +2306,7 @@ class ShipmentFragment :
                 }
             }
             for (ordersItem in validateUsePromoRequest.orders) {
-                if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString) {
+                if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
                     ordersItem.shippingId = courierItemData.shipperId
                     ordersItem.freeShippingMetadata = courierItemData.freeShippingMetadata
@@ -2450,7 +2450,7 @@ class ShipmentFragment :
                         if (validateUsePromoRequest != null) {
                             if (shipmentCartItemModel.isFreeShippingPlus) {
                                 for (ordersItem in validateUsePromoRequest.orders) {
-                                    if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString && ordersItem.codes.size > 0) {
+                                    if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup && ordersItem.codes.size > 0) {
                                         ordersItem.codes.remove(promoLogisticCode)
                                         ordersItem.boCode = ""
                                     }
@@ -2649,18 +2649,18 @@ class ShipmentFragment :
                     shipmentCartItemModel.isLeasingProduct,
                     pslCode,
                     products,
-                    shipmentCartItemModel.cartString,
+                    shipmentCartItemModel.cartStringGroup,
                     shipmentCartItemModel.isOrderPrioritasDisable,
                     isTradeInByDropOff,
                     shipmentCartItemModel.isFulfillment,
                     shipmentCartItemModel.shipmentCartData.preOrderDuration,
                     shipmentPresenter.generateRatesMvcParam(
-                        shipmentCartItemModel.cartString
+                        shipmentCartItemModel.cartStringGroup
                     ),
                     shipmentPresenter.cartDataForRates,
                     false,
                     shipmentCartItemModel.fulfillmentId.toString(),
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                     if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
                 )
             }
@@ -2723,12 +2723,12 @@ class ShipmentFragment :
                     shipmentCartItemModel.shopShipmentList,
                     false,
                     shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
-                    shipmentCartItemModel.cartString,
+                    shipmentCartItemModel.cartStringGroup,
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
                     cartPosition > -1,
                     skipMvc,
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                     if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
                 )
             }
@@ -2774,9 +2774,9 @@ class ShipmentFragment :
                 shipperId, spId, itemPosition, shipmentDetailData,
                 shipmentCartItemModel, shopShipmentList, true,
                 shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
-                shipmentCartItemModel.cartString, isTradeInDropOff,
+                shipmentCartItemModel.cartStringGroup, isTradeInDropOff,
                 shipmentAdapter.addressShipmentData, false, false,
-                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
             )
         }
@@ -3257,7 +3257,7 @@ class ShipmentFragment :
         for (voucherOrder in voucherOrdersItemUiModels) {
             if (voucherOrder.success && voucherOrder.type == "logistic") {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
-                    if (shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
+                    if (shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         val log = VoucherLogisticItemUiModel()
                         log.code = voucherOrder.code
                         log.couponDesc = voucherOrder.titleDescription
@@ -3278,7 +3278,7 @@ class ShipmentFragment :
                 }
             } else if (!voucherOrder.success && isNullOrEmpty(voucherOrder.type)) {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
-                    if (shipmentCartItemModel.cartString == voucherOrder.cartStringGroup && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == voucherOrder.code) {
+                    if (shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == voucherOrder.code) {
                         resetCourier(shipmentCartItemModel)
                     }
                 }
@@ -3299,12 +3299,12 @@ class ShipmentFragment :
     }
 
     override fun resetCourier(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (index, _) = shipmentAdapter.getShipmentCartItemByCartString(shipmentCartItemModel.cartString)
+        val (index, _) = shipmentAdapter.getShipmentCartItemByCartString(shipmentCartItemModel.cartStringGroup)
         if (index != -1) {
             val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
             if (validateUsePromoRequest != null) {
                 for (order in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup == shipmentCartItemModel.cartString && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+                    if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
                         val redStateBBOCode =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
                         order.codes.remove(redStateBBOCode)
@@ -3501,7 +3501,7 @@ class ShipmentFragment :
         shipmentCartItemTopModel: ShipmentCartItemTopModel
     ) {
         val (index, shipmentCartItems) = shipmentAdapter.getShipmentCartItemGroupByCartString(
-            shipmentCartItemTopModel.cartString
+            shipmentCartItemTopModel.cartStringGroup
         )
         if (index != RecyclerView.NO_POSITION) {
             val cartItemExpandModelIndex = shipmentCartItems.indexOfLast { it is CartItemExpandModel }
@@ -3667,7 +3667,7 @@ class ShipmentFragment :
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET)
-            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(cartItemModel.cartString)
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(cartItemModel.cartStringGroup)
         }
     }
 
@@ -3678,7 +3678,7 @@ class ShipmentFragment :
     override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>) {
         val listCartString = ArrayList<String>()
         for (cartItemModel in cartItemModelList) {
-            listCartString.add(cartItemModel.cartString)
+            listCartString.add(cartItemModel.cartStringGroup)
         }
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString())
     }
@@ -3871,7 +3871,7 @@ class ShipmentFragment :
                 val shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier
                 val shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier
                 shipmentPresenter.setScheduleDeliveryMapData(
-                    shipmentCartItemModel.cartString,
+                    shipmentCartItemModel.cartStringGroup,
                     ShipmentScheduleDeliveryMapData(
                         donePublisher,
                         shouldStopInClearCache,
@@ -3910,7 +3910,7 @@ class ShipmentFragment :
                     val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
                     if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
                         for (order in validateUsePromoRequest.orders) {
-                            if (order.cartStringGroup == shipmentCartItemModel.cartString && !order.codes.contains(
+                            if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
                                     newCourierItemData.selectedShipper.logPromoCode
                                 )
                             ) {
@@ -3927,7 +3927,7 @@ class ShipmentFragment :
                     if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty()) {
                         for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                             for (order in validateUsePromoRequest.orders) {
-                                if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                                if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
                                     !tmpShipmentCartItemModel.isFreeShippingPlus
                                 ) {
                                     order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
@@ -3937,7 +3937,7 @@ class ShipmentFragment :
                         }
                     }
                     for (ordersItem in validateUsePromoRequest.orders) {
-                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString) {
+                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                             ordersItem.spId = selectedShipper.shipperProductId
                             ordersItem.shippingId = selectedShipper.shipperId
                             ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
@@ -3951,7 +3951,7 @@ class ShipmentFragment :
                     }
                     shipmentPresenter.doValidateUseLogisticPromo(
                         position,
-                        shipmentCartItemModel.cartString,
+                        shipmentCartItemModel.cartStringGroup,
                         validateUsePromoRequest,
                         selectedShipper.logPromoCode!!,
                         false
@@ -4138,7 +4138,7 @@ class ShipmentFragment :
                 if (shipmentDataList[i] is ShipmentCartItemModel) {
                     val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
                     for (uniqueId in unappliedBoPromoUniqueIds) {
-                        if (shipmentCartItemModel.cartString == uniqueId &&
+                        if (shipmentCartItemModel.cartStringGroup == uniqueId &&
                             (shipmentCartItemModel.selectedShipmentDetailData == null || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier == null)
                         ) {
                             firstFoundPosition = i
@@ -4158,7 +4158,7 @@ class ShipmentFragment :
     override fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int {
         for (i in shipmentAdapter.getShipmentDataList().indices) {
             val adapterItem = shipmentAdapter.getShipmentDataList()[i]
-            if (adapterItem is ShipmentCartItemModel && adapterItem.cartString == uniqueId) {
+            if (adapterItem is ShipmentCartItemModel && adapterItem.cartStringGroup == uniqueId) {
                 return i
             }
         }

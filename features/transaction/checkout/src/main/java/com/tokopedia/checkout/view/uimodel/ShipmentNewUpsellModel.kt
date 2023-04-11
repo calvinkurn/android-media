@@ -15,5 +15,5 @@ data class ShipmentNewUpsellModel(
     var additionalVerticalId: String = "",
     var transactionType: String = "",
     var hasSeenUpsell: Boolean = false, // flag for impression tracker
-    var isLoading: Boolean = false,
+    var isLoading: Boolean = false
 )

@@ -23,8 +23,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     fun `WHEN generate enhanced ecommerce data with no Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be none other`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
 
@@ -44,8 +44,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be bebas ongkir`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "", freeShippingName = VALUE_BEBAS_ONGKIR))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR))
             }
         )
 
@@ -65,8 +65,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir Extra THEN enhanced ecommerce product data dimension83 should be bebas ongkir ekstra`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "", freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA))
             }
         )
 
@@ -92,8 +92,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventLabel = "eventLabel"
         val step = "4"
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
         presenter.setListShipmentCrossSellModel(arrayListOf())
@@ -136,8 +136,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventLabel = "eventLabel"
         val step = "2"
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
         presenter.setListShipmentCrossSellModel(arrayListOf())
@@ -184,8 +184,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventLabel = "eventLabel"
         val step = "2"
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
         presenter.setListShipmentCrossSellModel(arrayListOf())
@@ -228,8 +228,8 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventLabel = "eventLabel"
         val step = "4"
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
         presenter.setListShipmentCrossSellModel(arrayListOf())

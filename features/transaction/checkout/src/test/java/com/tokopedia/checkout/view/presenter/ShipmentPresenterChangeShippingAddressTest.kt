@@ -23,11 +23,11 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                ShipmentCartItemModel(cartString = "").apply {
+                ShipmentCartItemModel(cartStringGroup = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
                         add(
                             CartItemModel(
-                                cartString = "",
+                                cartStringGroup = "",
                                 quantity = 1,
                                 productId = 1,
                                 noteToSeller = "note",
@@ -136,11 +136,11 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                ShipmentCartItemModel(cartString = "").apply {
+                ShipmentCartItemModel(cartStringGroup = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
                         add(
                             CartItemModel(
-                                cartString = "",
+                                cartStringGroup = "",
                                 quantity = 1,
                                 productId = 1,
                                 noteToSeller = "note",

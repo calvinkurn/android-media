@@ -58,7 +58,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
             )
         }
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "",
+            cartStringGroup = "",
             ratesValidationFlow = true
         )
         val shopShipmentList = ArrayList<ShopShipment>()
@@ -127,7 +127,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
             )
         }
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "",
+            cartStringGroup = "",
             ratesValidationFlow = true
         )
         val shopShipmentList = ArrayList<ShopShipment>()
@@ -194,7 +194,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
             )
         }
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "",
+            cartStringGroup = "",
             ratesValidationFlow = true
         )
         val shopShipmentList = ArrayList<ShopShipment>()

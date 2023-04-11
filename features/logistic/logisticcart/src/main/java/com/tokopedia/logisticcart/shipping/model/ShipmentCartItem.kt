@@ -6,5 +6,5 @@ package com.tokopedia.logisticcart.shipping.model
 // 3. CartItemExpandModel (optional, only if has more than 1 cart item)
 // 4. ShipmentCartItemModel
 interface ShipmentCartItem {
-    val cartString: String
+    val cartStringGroup: String
 }

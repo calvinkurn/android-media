@@ -19,14 +19,14 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
         val productId = 300L
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = productId
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = productId + 1
                     )
                 )

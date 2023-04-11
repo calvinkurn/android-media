@@ -22,10 +22,10 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         quantity = 1,
                         price = 99750.0
                     )
@@ -52,10 +52,10 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         quantity = 1,
                         price = 99750.0
                     )
@@ -76,10 +76,10 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         val expectedEgoldValue = 250L
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         quantity = 1,
                         price = 99750.0
                     )
@@ -106,10 +106,10 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         val expectedEgoldValue = 5700L
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         quantity = 1,
                         price = 50300.0
                     )

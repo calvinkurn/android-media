@@ -24,8 +24,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
     fun `WHEN cancel upsell THEN should try clear all BO`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -90,8 +90,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -151,8 +151,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
             }
         )
@@ -210,8 +210,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
             }
@@ -270,8 +270,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
             }
         )
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
@@ -328,8 +328,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -388,8 +388,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "cartString").apply {
-                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
+            ShipmentCartItemModel(cartStringGroup = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }

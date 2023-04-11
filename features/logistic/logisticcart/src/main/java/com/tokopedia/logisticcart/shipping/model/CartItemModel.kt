@@ -76,7 +76,7 @@ data class CartItemModel(
     val addOnDefaultFrom: String = "",
     val addOnDefaultTo: String = "",
     val isTokoCabang: Boolean = false,
-    override val cartString: String,
+    override val cartStringGroup: String,
     val warehouseId: String = "",
     val ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     val cartItemPosition: Int = 0,

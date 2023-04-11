@@ -178,7 +178,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     fun `WHEN set prescription ids THEN should set upload prescription image count`() {
         // Given
         presenter.shipmentCartItemModelList = arrayListOf(
-            ShipmentCartItemModel(cartString = "")
+            ShipmentCartItemModel(cartStringGroup = "")
         )
         val prescriptions = arrayListOf("123", "456")
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
@@ -223,22 +223,22 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         // Given
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 isError = true,
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 isError = true,
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 isError = false,
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 isError = false,
                 hasEthicalProducts = false
             )
@@ -491,11 +491,11 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -503,16 +503,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386
                     )
                 ),
@@ -614,11 +614,11 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -717,16 +717,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389389,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -734,16 +734,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -751,15 +751,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389384
                     )
                 )
@@ -999,16 +999,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389389,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1016,16 +1016,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1033,16 +1033,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389384,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1050,34 +1050,34 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554233,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389383
                     )
                 ),
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554234,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389382
                     )
                 ),
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554235,
                 isError = true,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389381,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
@@ -1086,12 +1086,12 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554236,
                 isError = true,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389380
                     )
@@ -1317,47 +1317,47 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389389
                     )
                 ),
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386
                     )
                 ),
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389384
                     )
                 ),
@@ -1418,64 +1418,64 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389389
                     )
                 ),
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386
                     )
                 ),
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389384
                     )
                 ),
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554233,
                 isError = true,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389385
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389384
                     )
@@ -1483,18 +1483,18 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554234,
                 isError = true,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389385,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         isError = true,
                         productId = 2150389384
                     )
@@ -1594,11 +1594,11 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1606,16 +1606,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386
                     )
                 ),
@@ -1623,11 +1623,11 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasNonEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554233,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385
                     )
                 ),
@@ -1825,16 +1825,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389388,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389389,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1842,16 +1842,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389387,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389386,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1860,15 +1860,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             ShipmentCartItemModel(
                 shopId = 6554232,
-                cartString = "",
+                cartStringGroup = "",
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389385,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389384,
                         ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
@@ -1876,22 +1876,22 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554233,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389383
                     )
                 ),
                 hasEthicalProducts = false
             ),
             ShipmentCartItemModel(
-                cartString = "",
+                cartStringGroup = "",
                 shopId = 6554234,
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 2150389382
                     )
                 ),

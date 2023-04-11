@@ -87,10 +87,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             )
 
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = cartString
+            cartStringGroup = cartString
         )
         val shipmentCartItemModel2 = ShipmentCartItemModel(
-            cartString = cartString + "2"
+            cartStringGroup = cartString + "2"
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
 
@@ -139,7 +139,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             )
 
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = cartString
+            cartStringGroup = cartString
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
@@ -192,7 +192,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             )
 
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = cartString
+            cartStringGroup = cartString
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 

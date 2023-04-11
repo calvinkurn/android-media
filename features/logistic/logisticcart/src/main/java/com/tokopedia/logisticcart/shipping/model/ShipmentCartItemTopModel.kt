@@ -31,5 +31,5 @@ data class ShipmentCartItemTopModel(
     val uiGroupType: Int = 0,
     val groupInfoBadgeUrl: String = "",
 
-    override val cartString: String
+    override val cartStringGroup: String
 ) : ShipmentCartItem

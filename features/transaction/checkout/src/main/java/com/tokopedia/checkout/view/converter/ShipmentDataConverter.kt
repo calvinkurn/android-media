@@ -219,7 +219,7 @@ class ShipmentDataConverter @Inject constructor() {
             }
             val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
             val shipmentCartItemModel = ShipmentCartItemModel(
-                cartString = groupShop.cartString,
+                cartStringGroup = groupShop.cartString,
                 groupType = groupShop.groupType,
                 uiGroupType = groupShop.uiGroupType,
                 groupInfoName = groupShop.groupInfoName,
@@ -318,7 +318,7 @@ class ShipmentDataConverter @Inject constructor() {
             // top
             val shipmentCartItemTopModel =
                 ShipmentCartItemTopModel(
-                    cartString = groupShop.cartString,
+                    cartStringGroup = groupShop.cartString,
                     isError = shipmentCartItemModel.isError,
                     errorTitle = shipmentCartItemModel.errorTitle,
                     errorDescription = shipmentCartItemModel.errorDescription,
@@ -355,7 +355,7 @@ class ShipmentDataConverter @Inject constructor() {
             if (shipmentCartItemModel.cartItemModels.size > 1) {
                 shipmentCartItemModels.add(
                     CartItemExpandModel(
-                        cartString = shipmentCartItemModel.cartString,
+                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
                         cartSize = shipmentCartItemModel.cartItemModels.size
                     )
                 )
@@ -510,7 +510,7 @@ class ShipmentDataConverter @Inject constructor() {
     ): CartItemModel {
         val ppp = product.purchaseProtectionPlanData
         return CartItemModel(
-            cartString = groupShop.cartString,
+            cartStringGroup = groupShop.cartString,
             shouldShowShopInfo = product.shouldShowShopInfo,
             shopTypeInfoData = product.shopTypeInfoData,
             cartStringOrder = groupShopV2.cartStringOrder,

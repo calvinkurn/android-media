@@ -71,7 +71,7 @@ class ShipmentPresenterValidateUseCourierPromoTest : BaseShipmentPresenterTest()
         val position = 0
         val noToast = true
 
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = cartString)
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = cartString)
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             validateUseModel

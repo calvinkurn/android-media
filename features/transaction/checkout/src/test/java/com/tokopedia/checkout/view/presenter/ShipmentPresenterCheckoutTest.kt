@@ -56,8 +56,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun checkoutSuccess_ShouldGoToPaymentPage() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -96,8 +96,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun checkoutErrorEmptyRequest_ShouldShowError() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -157,8 +157,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun checkoutFailedPriceValidation_ShouldRenderCheckoutPriceUpdate() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -197,8 +197,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         val errorMessage = "backend error message"
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -235,8 +235,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun `WHEN checkout failed without error message from backend THEN should show error and reload page`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -275,8 +275,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun `WHEN checkout failed with exception THEN should show error and reload page`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -534,9 +534,9 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = false
                     }
                 )
@@ -546,9 +546,9 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             }
         )
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = true
                     }
                 )
@@ -596,9 +596,9 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = false
                     }
                 )
@@ -608,12 +608,12 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             }
         )
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = true
                     },
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = false
                     }
                 )
@@ -623,9 +623,9 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             }
         )
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = arrayListOf(
-                    CartItemModel(cartString = "").apply {
+                    CartItemModel(cartStringGroup = "").apply {
                         isError = true
                         isShopError = true
                     }
@@ -668,8 +668,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         presenter.shipmentDonationModel = ShipmentDonationModel(isChecked = true)
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -709,8 +709,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         presenter.shipmentDonationModel = ShipmentDonationModel(isChecked = false)
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -749,8 +749,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun `WHEN checkout with purchase protection checked is success THEN should go to payment page`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -791,8 +791,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun `WHEN checkout error with prompt THEN should show prompt`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -832,10 +832,10 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Given
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
                     CartItemModel(
-                        cartString = "239594-0-301643",
+                        cartStringGroup = "239594-0-301643",
                         cartId = 88
                     )
                 )
@@ -858,7 +858,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             view.updateAddOnsData(
                 AddOnsDataModel(),
                 0,
-                shipmentCartItemModelList[0].cartItemModels[0].cartString
+                shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup
             )
         }
     }
@@ -869,7 +869,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
-                cartString = "239594-0-301643",
+                cartStringGroup = "239594-0-301643",
                 addOnsOrderLevelModel = AddOnsDataModel()
             )
         )
@@ -911,7 +911,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartString)
+            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartStringGroup)
         }
     }
 
@@ -921,7 +921,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
-                cartString = "239594-0-301643",
+                cartStringGroup = "239594-0-301643",
                 addOnsOrderLevelModel = AddOnsDataModel()
             )
         )
@@ -969,7 +969,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartString)
+            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartStringGroup)
         }
     }
 
@@ -977,8 +977,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     fun checkoutSuccess_CrossSellModelChecked() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
-                cartItemModels = listOf(CartItemModel(cartString = ""))
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )
@@ -1303,8 +1303,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "239594-0-301643", isTokoNow = true).apply {
-                cartItemModels = listOf(CartItemModel(cartString = "239594-0-301643"))
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643", isTokoNow = true).apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "239594-0-301643"))
                 selectedShipmentDetailData = ShipmentDetailData(
                     selectedCourier = CourierItemData()
                 )

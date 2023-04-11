@@ -103,7 +103,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     }
                     groupOrder = GroupOrder(
                         groupType = shipmentCartItemModel.groupType,
-                        cartStringGroup = shipmentCartItemModel.cartString,
+                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
                         shippingInfo = shippingInfoCheckoutRequest,
                         dropship = Dropship(
                             isDropship = if (shipmentDetailData.useDropshipper == true) 1 else 0,

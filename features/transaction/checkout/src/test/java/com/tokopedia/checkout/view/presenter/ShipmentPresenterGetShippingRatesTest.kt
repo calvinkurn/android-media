@@ -55,7 +55,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
                 isFulfillment = false
             )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -116,7 +116,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
                 isFulfillment = false
             )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -188,7 +188,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
                 isFulfillment = false
             )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -268,7 +268,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             spId,
             itemPosition,
             shipmentDetailData,
-            ShipmentCartItemModel(cartString = "", orderNumber = itemPosition),
+            ShipmentCartItemModel(cartStringGroup = "", orderNumber = itemPosition),
             shopShipmentList,
             isInitialLoad,
             products,
@@ -289,7 +289,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             spId,
             itemPosition,
             shipmentDetailData,
-            ShipmentCartItemModel(cartString = "", orderNumber = itemPosition),
+            ShipmentCartItemModel(cartStringGroup = "", orderNumber = itemPosition),
             shopShipmentList,
             isInitialLoad,
             products,

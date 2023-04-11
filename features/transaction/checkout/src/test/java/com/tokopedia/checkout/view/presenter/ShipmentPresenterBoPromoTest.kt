@@ -65,11 +65,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val itemAdapterPosition = 0
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = null,
             cartItemModels = listOf(
-                CartItemModel(cartString = "111-111-111")
+                CartItemModel(cartStringGroup = "111-111-111")
             )
         )
         every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
@@ -92,11 +92,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val itemAdapterPosition = 0
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE"),
             cartItemModels = listOf(
-                CartItemModel(cartString = "111-111-111")
+                CartItemModel(cartStringGroup = "111-111-111")
             )
         )
         every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
@@ -120,7 +120,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "BOCODE")
         )
@@ -157,7 +157,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Given
         val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartString = "")
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartStringGroup = "")
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
@@ -179,8 +179,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -275,7 +275,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val promoCode = "BOCODE"
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartString = "")
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartStringGroup = "")
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -305,12 +305,12 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN clear BO promo while user has active BO promoin checkout page and user success to clear used BO promo THEN call unapply BO promo`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "111-111-111").apply {
+            ShipmentCartItemModel(cartStringGroup = "111-111-111").apply {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TESTBO1"
                 )
             },
-            ShipmentCartItemModel(cartString = "222-222-222").apply {
+            ShipmentCartItemModel(cartStringGroup = "222-222-222").apply {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TESTBO2"
                 )
@@ -331,8 +331,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId("111-111-111") } returns 1
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId("222-222-222") } returns 2
         every { view.getShipmentCartItemModel(1) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             ),
@@ -341,8 +341,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         every { view.getShipmentCartItemModel(2) } returns ShipmentCartItemModel(
-            cartString = "222-222-222",
-            cartItemModels = listOf(CartItemModel(cartString = "222-222-222")),
+            cartStringGroup = "222-222-222",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "222-222-222")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 2)
             ),
@@ -374,7 +374,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has active BO promo in checkout page and user failed to clear used BO promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "111-111-111").apply {
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                 code = "TESTBO"
             )
@@ -404,10 +404,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then clear all promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "111-111-111").apply {
             voucherLogisticItemUiModel = null
             cartItemModels = listOf(
-                CartItemModel(cartString = "111-111-111")
+                CartItemModel(cartStringGroup = "111-111-111")
             )
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -435,10 +435,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then apply new promo THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "111-111-111").apply {
             voucherLogisticItemUiModel = null
             cartItemModels = listOf(
-                CartItemModel(cartString = "111-111-111")
+                CartItemModel(cartStringGroup = "111-111-111")
             )
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -466,10 +466,10 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BO promo with cart item unique_id different from validateUse unique_id THEN don't call unapply BO promo`() {
         // Given
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "111-111-111").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "111-111-111").apply {
             voucherLogisticItemUiModel = null
             cartItemModels = listOf(
-                CartItemModel(cartString = "111-111-111")
+                CartItemModel(cartStringGroup = "111-111-111")
             )
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -723,8 +723,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -788,7 +788,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "333-333-333",
+                cartStringGroup = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TEST3"
                 )
@@ -796,8 +796,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -843,13 +843,13 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         val shipmentCartItemModels = listOf(
             ShipmentCartItemModel(
-                cartString = "333-333-333",
+                cartStringGroup = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TEST3"
                 )
             ),
             ShipmentCartItemModel(
-                cartString = "555-555-555",
+                cartStringGroup = "555-555-555",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TEST5"
                 )
@@ -858,8 +858,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = shipmentCartItemModels
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -923,8 +923,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -978,8 +978,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1033,8 +1033,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1088,8 +1088,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1134,8 +1134,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = listOf()
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1179,14 +1179,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "111-111-111",
+                cartStringGroup = "111-111-111",
                 voucherLogisticItemUiModel = null
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1236,7 +1236,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
-                cartString = "111-111-111",
+                cartStringGroup = "111-111-111",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TEST1"
                 )
@@ -1244,8 +1244,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartString = "111-111-111")),
+            cartStringGroup = "111-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -1287,17 +1287,17 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN create product for rates with cart item valid THEN products should not be empty`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = false,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = false,
                     productId = 2,
                     isFreeShipping = true,
@@ -1318,17 +1318,17 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN create product for rates with cart item partially error THEN products should not be empty`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = true,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = false,
                     productId = 2,
                     isFreeShipping = true,
@@ -1349,17 +1349,17 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN create product for rates with cart item all error THEN products should be empty`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "111-111-111",
+            cartStringGroup = "111-111-111",
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = true,
                     productId = 1,
                     isFreeShipping = true,
                     isFreeShippingExtra = true
                 ),
                 CartItemModel(
-                    cartString = "111-111-111",
+                    cartStringGroup = "111-111-111",
                     isError = true,
                     productId = 2,
                     isFreeShipping = true,
@@ -1413,7 +1413,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "1",
+            cartStringGroup = "1",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = ShipmentDetailData(
@@ -1461,7 +1461,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "",
+            cartStringGroup = "",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = ShipmentDetailData(
@@ -1507,7 +1507,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "1",
+            cartStringGroup = "1",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = null

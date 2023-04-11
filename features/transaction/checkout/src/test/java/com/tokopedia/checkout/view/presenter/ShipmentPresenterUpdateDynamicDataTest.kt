@@ -148,11 +148,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 )
             }
@@ -177,7 +177,7 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         // Then
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
         verify {
-            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartString)
+            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
     }
@@ -193,11 +193,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 )
             }
@@ -221,7 +221,7 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartString)
+            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
     }
@@ -245,11 +245,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 )
             }
@@ -337,11 +337,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
-                cartString = "239594-0-301643",
+                cartStringGroup = "239594-0-301643",
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 ),
                 addOnWordingModel = AddOnWordingModel(
@@ -448,11 +448,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
-                cartString = "239594-0-301643",
+                cartStringGroup = "239594-0-301643",
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 ),
                 addOnWordingModel = AddOnWordingModel(
@@ -495,11 +495,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
-            ShipmentCartItemModel(cartString = "239594-0-301643").apply {
+            ShipmentCartItemModel(cartStringGroup = "239594-0-301643").apply {
                 cartItemModels = arrayListOf(
                     CartItemModel(
                         cartId = 88,
-                        cartString = "239594-0-301643"
+                        cartStringGroup = "239594-0-301643"
                     )
                 )
             }

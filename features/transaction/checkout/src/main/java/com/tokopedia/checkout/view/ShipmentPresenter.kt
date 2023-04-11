@@ -776,7 +776,7 @@ class ShipmentPresenter @Inject constructor(
                 if (view != null) {
                     view?.stopEmbraceTrace()
                     if (isReloadData) {
-                    view?.setShipmentNewUpsellLoading(false)
+                        view?.setShipmentNewUpsellLoading(false)
                         view?.setHasRunningApiCall(false)
                         view?.hideLoading()
                     } else {
@@ -1795,7 +1795,7 @@ class ShipmentPresenter @Inject constructor(
                     )
             ) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
-                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.uniqueId) {
                         if (view != null) {
                             view?.resetCourier(shipmentCartItemModel)
                             view?.logOnErrorApplyBo(
@@ -1824,7 +1824,7 @@ class ShipmentPresenter @Inject constructor(
             }
             if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals("red", ignoreCase = true)) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
-                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         if (view != null) {
                             view?.resetCourier(shipmentCartItemModel)
                             view?.logOnErrorApplyBo(
@@ -1844,7 +1844,7 @@ class ShipmentPresenter @Inject constructor(
             // then should reset courier and not apply the BO
             // this should be a rare case
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == cartString) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == cartString) {
                     if (view != null) {
                         view?.resetCourier(shipmentCartItemModel)
                         view?.logOnErrorApplyBo(
@@ -1872,7 +1872,7 @@ class ShipmentPresenter @Inject constructor(
                 orderFound = true
                 if (voucherOrder.messageUiModel.state != "red") {
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
-                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.cartStringGroup) {
+                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                             if (view != null) {
                                 view?.setSelectedCourier(
                                     cartItemPosition,
@@ -1888,7 +1888,7 @@ class ShipmentPresenter @Inject constructor(
             }
             if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals("red", ignoreCase = true)) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
-                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                    if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.uniqueId) {
                         if (view != null) {
                             view?.resetCourier(shipmentCartItemModel)
                             view?.logOnErrorApplyBo(
@@ -1908,7 +1908,7 @@ class ShipmentPresenter @Inject constructor(
             // then should reset courier and not apply the BO
             // this should be a rare case
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == cartString) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == cartString) {
                     if (view != null) {
                         view?.resetCourier(shipmentCartItemModel)
                         view?.logOnErrorApplyBo(
@@ -2199,7 +2199,7 @@ class ShipmentPresenter @Inject constructor(
                 courierData.selectedShipper.shipperProductId.toLong()
             shipmentStateShippingInfoData.ratesFeature = ratesFeature
             val shipmentStateShopProductData = ShipmentStateShopProductData()
-            shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartString
+            shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartStringGroup
             shipmentStateShopProductData.finsurance =
                 if (shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance != null &&
                     shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance!!
@@ -2348,8 +2348,8 @@ class ShipmentPresenter @Inject constructor(
         val clearOrders = ArrayList<ClearPromoOrder>()
         clearOrders.add(
             ClearPromoOrder(
-                shipmentCartItemModel.cartString,
-                shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
+                shipmentCartItemModel.cartStringGroup,
+                shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                 promoCodeList,
                 shipmentCartItemModel.shopId,
                 shipmentCartItemModel.isProductIsPreorder,
@@ -2385,14 +2385,14 @@ class ShipmentPresenter @Inject constructor(
                     view?.onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo)
                 }
                 val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-                    shipmentCartItemModel.cartString
+                    shipmentCartItemModel.cartStringGroup
                 )
                 if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
                     shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
                 }
             } catch (t: Throwable) {
                 val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-                    shipmentCartItemModel.cartString
+                    shipmentCartItemModel.cartStringGroup
                 )
                 if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
                     shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
@@ -2431,13 +2431,13 @@ class ShipmentPresenter @Inject constructor(
                     hasPromo = true
                 } else if (shipmentCartItemModelList.isNotEmpty()) {
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
-                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == notEligiblePromo.uniqueId) {
+                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == notEligiblePromo.uniqueId) {
                             val codes = ArrayList<String>()
                             codes.add(notEligiblePromo.promoCode)
                             clearOrders.add(
                                 ClearPromoOrder(
                                     notEligiblePromo.uniqueId,
-                                    shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
+                                    shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                                     codes,
                                     shipmentCartItemModel.shopId,
                                     shipmentCartItemModel.isProductIsPreorder,
@@ -2497,7 +2497,7 @@ class ShipmentPresenter @Inject constructor(
                     } else {
                         var cartItemModel: ShipmentCartItemModel? = null
                         for (shipmentCartItemModel in shipmentCartItemModelList) {
-                            if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartString == voucherOrder.uniqueId) {
+                            if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.uniqueId) {
                                 cartItemModel = shipmentCartItemModel
                                 break
                             }
@@ -2508,7 +2508,7 @@ class ShipmentPresenter @Inject constructor(
                             clearOrders.add(
                                 ClearPromoOrder(
                                     voucherOrder.uniqueId,
-                                    cartItemModel.shipmentCartData.boMetadata!!.boType,
+                                    cartItemModel.shipmentCartData.boMetadata.boType,
                                     codes,
                                     cartItemModel.shopId,
                                     cartItemModel.isProductIsPreorder,
@@ -2552,7 +2552,7 @@ class ShipmentPresenter @Inject constructor(
                 boCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                 clearOrders.add(
                     ClearPromoOrder(
-                        shipmentCartItemModel.cartString,
+                        shipmentCartItemModel.cartStringGroup,
                         shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                         boCodes,
                         shipmentCartItemModel.shopId,
@@ -2999,7 +2999,7 @@ class ShipmentPresenter @Inject constructor(
                         var productErrorCount = 0
                         var firstProductErrorIndex = -1
                         val position = view?.getShipmentCartItemModelAdapterPositionByUniqueId(
-                            shipmentCartItemModel.cartString
+                            shipmentCartItemModel.cartStringGroup
                         ) ?: 0
                         if (position > 0) {
                             for (epharmacyGroup in groupsData.epharmacyGroups!!) {
@@ -3178,7 +3178,7 @@ class ShipmentPresenter @Inject constructor(
                     var productErrorCount = 0
                     var firstProductErrorIndex = -1
                     val position = view?.getShipmentCartItemModelAdapterPositionByUniqueId(
-                        shipmentCartItemModel.cartString
+                        shipmentCartItemModel.cartStringGroup
                     ) ?: 0
                     if (position > 0) {
                         for (result in results) {
@@ -3349,14 +3349,14 @@ class ShipmentPresenter @Inject constructor(
                     val cartItemModelList = shipmentCartItemModel.cartItemModels
                     for (i in cartItemModelList.indices) {
                         val cartItemModel = cartItemModelList[i]
-                        val keyProductLevel = "${cartItemModel.cartString}-${cartItemModel.cartId}"
+                        val keyProductLevel = "${cartItemModel.cartStringGroup}-${cartItemModel.cartId}"
                         if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
                             val addOnsDataModel = cartItemModel.addOnProductLevelModel
                             setAddOnsData(
                                 addOnsDataModel,
                                 addOnResult,
                                 0,
-                                cartItemModel.cartString,
+                                cartItemModel.cartStringGroup,
                                 cartItemModel.cartId
                             )
                         }
@@ -3369,7 +3369,7 @@ class ShipmentPresenter @Inject constructor(
     override fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartString + "-0").equals(
+                if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartStringGroup + "-0").equals(
                         addOnResult.addOnKey,
                         ignoreCase = true
                     )
@@ -3379,7 +3379,7 @@ class ShipmentPresenter @Inject constructor(
                         addOnsDataModel,
                         addOnResult,
                         1,
-                        shipmentCartItemModel.cartString,
+                        shipmentCartItemModel.cartStringGroup,
                         0L
                     )
                 }
@@ -3449,7 +3449,7 @@ class ShipmentPresenter @Inject constructor(
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            unprocessedUniqueIds.add(shipmentCartItemModel.cartString)
+            unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
         }
         // loop to list voucher orders to be applied this will be used later
         val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
@@ -3465,14 +3465,14 @@ class ShipmentPresenter @Inject constructor(
         }
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null &&
-                unprocessedUniqueIds.contains(shipmentCartItemModel.cartString)
+                unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
             ) {
                 doUnapplyBo(
-                    shipmentCartItemModel.cartString,
+                    shipmentCartItemModel.cartStringGroup,
                     shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                 )
-                unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartString)
-                reloadedUniqueIds.add(shipmentCartItemModel.cartString)
+                unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                reloadedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
             }
         }
         if (unappliedBoPromoUniqueIds.size > 0) {
@@ -3506,7 +3506,7 @@ class ShipmentPresenter @Inject constructor(
         promoCodes.add(promoCode)
         clearOrders.add(
             ClearPromoOrder(
-                shipmentCartItemModel.cartString,
+                shipmentCartItemModel.cartStringGroup,
                 shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                 promoCodes,
                 shipmentCartItemModel.shopId,
@@ -3579,7 +3579,7 @@ class ShipmentPresenter @Inject constructor(
         val selectedShipmentDetailData =
             view?.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
         val products = getProductForRatesRequest(shipmentCartItemModel)
-        val cartString = shipmentCartItemModel.cartString
+        val cartString = shipmentCartItemModel.cartStringGroup
         val isTradeInDropOff = view?.isTradeInByDropOff ?: false
         val shippingParam = getShippingParam(
             selectedShipmentDetailData,
@@ -3587,7 +3587,7 @@ class ShipmentPresenter @Inject constructor(
             cartString,
             isTradeInDropOff,
             recipientAddressModel,
-            if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartString else "",
+            if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
             if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
         )
         val counter = if (codData == null) -1 else codData!!.counterCod
@@ -3742,9 +3742,9 @@ class ShipmentPresenter @Inject constructor(
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                     for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartString && order.codes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
                             doUnapplyBo(
-                                shipmentCartItemModel.cartString,
+                                shipmentCartItemModel.cartStringGroup,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                             )
                         }
@@ -3777,8 +3777,8 @@ class ShipmentPresenter @Inject constructor(
                     boCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                     clearOrders.add(
                         ClearPromoOrder(
-                            shipmentCartItemModel.cartString,
-                            shipmentCartItemModel.shipmentCartData.boMetadata!!.boType,
+                            shipmentCartItemModel.cartStringGroup,
+                            shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                             boCodes,
                             shipmentCartItemModel.shopId,
                             shipmentCartItemModel.isProductIsPreorder,
@@ -3943,7 +3943,7 @@ class ShipmentPresenter @Inject constructor(
     private fun checkUnCompletedPublisher() {
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             val mapData = getScheduleDeliveryMapData(
-                shipmentCartItemModel.cartString
+                shipmentCartItemModel.cartStringGroup
             )
             if (mapData != null && !mapData.donePublisher.hasCompleted()) {
                 mapData.donePublisher.onCompleted()
@@ -3960,7 +3960,7 @@ class ShipmentPresenter @Inject constructor(
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
                     for (ordersItem in validateUsePromoRequest.orders) {
-                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartString) {
+                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                             for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
                                 if (ordersItem.uniqueId == cartStringOrder) {
                                     val productDetailsItems = ArrayList<ProductDetailsItem>()
@@ -4053,12 +4053,12 @@ class ShipmentPresenter @Inject constructor(
                         ordersItem.codes = listOrderCodes
                         ordersItem.uniqueId = cartStringOrder
                         ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
-                        ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata!!.boType
+                        ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata.boType
                         ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
                         ordersItem.poDuration =
                             shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
                         ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
-                        ordersItem.cartStringGroup = shipmentCartItemModel.cartString
+                        ordersItem.cartStringGroup = shipmentCartItemModel.cartStringGroup
                         setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
                         listOrderItem.add(ordersItem)
                     }
@@ -4228,7 +4228,7 @@ class ShipmentPresenter @Inject constructor(
                         listCodes.add(code)
                     }
                     ordersItem.codes = listCodes
-                    ordersItem.cartStringGroup = shipmentCartItemModel.cartString
+                    ordersItem.cartStringGroup = shipmentCartItemModel.cartStringGroup
                     ordersItem.uniqueId = cartStringOrder
                     ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
                     ordersItem.boType = shipmentCartItemModel.shipmentCartData.boMetadata.boType

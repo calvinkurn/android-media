@@ -44,7 +44,7 @@ data class ShipmentCartItemModel(
     val addOnDefaultTo: String = "",
 
     // Cart item state
-    override val cartString: String,
+    override val cartStringGroup: String,
     val shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",

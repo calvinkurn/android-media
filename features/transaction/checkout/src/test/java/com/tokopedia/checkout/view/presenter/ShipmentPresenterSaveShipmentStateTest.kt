@@ -24,10 +24,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         every { view.isTradeInByDropOff } returns false
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 1
                     )
                 )
@@ -75,10 +75,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         every { view.isTradeInByDropOff } returns false
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 1,
                         isPreOrder = true,
                         preOrderDurationDay = 2
@@ -127,10 +127,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         every { view.isTradeInByDropOff } returns true
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(cartString = "").apply {
+            ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
-                        cartString = "",
+                        cartStringGroup = "",
                         productId = 1,
                         isPreOrder = true,
                         preOrderDurationDay = 2
@@ -178,10 +178,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "").apply {
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "",
+                    cartStringGroup = "",
                     productId = 1
                 )
             )
@@ -226,10 +226,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "").apply {
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "",
+                    cartStringGroup = "",
                     productId = 1
                 )
             )
@@ -258,10 +258,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "").apply {
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "",
+                    cartStringGroup = "",
                     productId = 1
                 )
             )
@@ -323,10 +323,10 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "").apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "").apply {
             cartItemModels = listOf(
                 CartItemModel(
-                    cartString = "",
+                    cartStringGroup = "",
                     productId = 1
                 )
             )
