@@ -23,5 +23,5 @@ object ApplinkConstInternalDeals {
 
     const val DEALS_PRODUCT_DETAIL_PAGE = "$INTERNAL_DEALS/pdp-new"
 
-    const val DEALS_PROMO = "tokopedia://promoNative?menuID=4&categoryID=371"
+    const val DEALS_PROMO = "tokopedia://discovery/deals?activeTab=7&componentID=588"
 }

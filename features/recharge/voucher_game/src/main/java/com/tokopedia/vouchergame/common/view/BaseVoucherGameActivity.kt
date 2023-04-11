@@ -67,7 +67,7 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+        RouteManager.route(this, "tokopedia://discovery/deals?activeTab=7&componentID=588")
     }
 
     override fun onHelpClicked() {
