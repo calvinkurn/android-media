@@ -6,13 +6,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
-class ValidateUseTest : BaseCartTest() {
+class GetLastApplyTest : BaseCartTest() {
 
     @Test
     fun `WHEN get last apply success THEN should update promo button state`() {
@@ -33,7 +31,7 @@ class ValidateUseTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN validate use failed THEN should update promo button state to inactive`() {
+    fun `WHEN get last apply failed THEN should update promo button state to inactive`() {
         // GIVEN
         val exception = CartResponseErrorException("error message")
 
@@ -49,7 +47,7 @@ class ValidateUseTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN validate use failed THEN should show error and update promo button state to inactive`() {
+    fun `WHEN get last apply failed THEN should show error and update promo button state to inactive`() {
         // GIVEN
         val exception = AkamaiErrorException("error message")
 

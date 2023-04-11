@@ -180,8 +180,9 @@ object CartUiModelMapper {
                 uiGroupType = availableGroup.uiGroupType
                 groupName = availableGroup.groupInformation.name
                 groupBadge = availableGroup.groupInformation.badgeUrl
+                groupAppLink = availableGroup.groupInformation.appLink
 //                isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = availableGroup.shipmentInformation.shopLocation
+                fulfillmentName = availableGroup.groupInformation.description
 //                fulfillmentBadgeUrl = cartData.tokoCabangInfo.badgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
@@ -229,11 +230,12 @@ object CartUiModelMapper {
 //                    availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)
 //                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
 //                        ?: "0"
-                boCode =
-                    cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
-                        it.cartStringGroup == cartString && it.shippingId > 0 &&
-                            it.spId > 0 && it.type == "logistic"
-                    }?.code ?: ""
+                val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
+                    it.cartStringGroup == cartString && it.shippingId > 0 &&
+                        it.spId > 0 && it.type == "logistic"
+                }
+                boCode = lastApplyData?.code ?: ""
+                boUniqueId = lastApplyData?.uniqueId ?: ""
                 coachmarkPlus = CartShopCoachmarkPlusData(
                     isShown = cartData.coachmark.plus.isShown && (firstPlusAvailableGroupIndex == index),
                     title = cartData.coachmark.plus.title,
@@ -510,6 +512,7 @@ object CartUiModelMapper {
                 isError = false
             }
             shopHolderData = shopData
+            originWarehouseIds = product.originWarehouseIds
             needPrescription = product.ethicalDrug.needPrescription
             butuhResepText = product.ethicalDrug.text
             butuhResepIconUrl = product.ethicalDrug.iconUrl

@@ -4,7 +4,7 @@ const val CART_REVAMP_V4_QUERY =
     """
         query cartRevampV4(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          cart_revamp_v4(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
+          cart_revamp_v4(lang: ${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params: ${'$'}additional_params) {
             error_message
             status
             data {
@@ -124,11 +124,13 @@ const val CART_REVAMP_V4_QUERY =
                   message
                 }
                 available_group {
-                  group_type // new owoc
-                  ui_group_type // new owoc
+                  group_type
+                  ui_group_type
                   group_information {
-                    name // new owoc
-                    badge_url // new owoc
+                    name
+                    badge_url
+                    app_link
+                    description
                   }
                   group_shop_v2_cart {
                     cart_string_order
@@ -186,7 +188,6 @@ const val CART_REVAMP_V4_QUERY =
                       }
                     }
                     cart_details {
-                      origin_warehouse_ids // new owoc
                       bundle_detail {
                         bundle_description
                         bundle_group_id
@@ -208,6 +209,7 @@ const val CART_REVAMP_V4_QUERY =
                         bundle_grayscale_icon_url
                       }
                       products {
+                        origin_warehouse_ids
                         checkbox_state
                         cart_id
                         product_information
@@ -342,7 +344,7 @@ const val CART_REVAMP_V4_QUERY =
                       errors
                       messages
                     }
-                  } // new owoc
+                  }
                   add_on {
                     ticker_text
                     icon_url
@@ -495,7 +497,7 @@ const val CART_REVAMP_V4_QUERY =
                   promo_codes
                   cart_string
                   cart_details {
-                    origin_warehouse_ids // new owoc
+                    origin_warehouse_ids
                     bundle_detail {
                       bundle_description
                       bundle_group_id
@@ -821,4 +823,4 @@ const val CART_REVAMP_V4_QUERY =
             }
           }
         }
-        """
+"""

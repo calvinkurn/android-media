@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class Product(
+    @SerializedName("origin_warehouse_ids")
+    val originWarehouseIds: List<Int> = emptyList(),
     @SerializedName("checkbox_state")
     val isCheckboxState: Boolean = false,
     @SerializedName("cart_id")

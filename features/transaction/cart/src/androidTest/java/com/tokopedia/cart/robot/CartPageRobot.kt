@@ -128,7 +128,7 @@ class CartPageRobot {
 
                     override fun perform(uiController: UiController?, view: View) {
                         val cartGroupHolderData = availableCartList[shopIndex] as CartGroupHolderData
-                        assertEquals(cartGroupHolderData.groupName, view.findViewById<Typography>(R.id.tv_shop_name).text)
+                        assertEquals(cartGroupHolderData.groupInformation.name, view.findViewById<Typography>(R.id.tv_shop_name).text)
                         assertEquals(cartGroupHolderData.fulfillmentName, view.findViewById<Typography>(R.id.tv_fulfill_district).text)
                         assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
                         assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
