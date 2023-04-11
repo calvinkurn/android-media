@@ -1,15 +1,15 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 data class HomeProductRecomUiModel(
     val id: String,
     val title: String,
-    val productList: List<TokoNowProductCardCarouselItemUiModel>,
-    val seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+    val productList: List<ProductCardCompactCarouselItemUiModel>,
+    val seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null,
     val headerModel: TokoNowDynamicHeaderUiModel? = null,
     val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel()
 ) : HomeLayoutUiModel(id) {

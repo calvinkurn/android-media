@@ -2,30 +2,30 @@ package com.tokopedia.shop.settings.notes.view.activity
 
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.databinding.ActivityShopSettingsNoteBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
-import java.util.*
 
 /**
  * Deeplink: SHOP_SETTINGS_NOTES
  */
-class ShopSettingsNotesActivity : BaseSimpleActivity(),
-        ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
-        ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {
+class ShopSettingsNotesActivity :
+    BaseSimpleActivity(),
+    ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
+    ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {
 
-    var binding : ActivityShopSettingsNoteBinding? = null
+    var binding: ActivityShopSettingsNoteBinding? = null
 
     private val reorderFragment: ShopSettingsNotesReorderFragment
         get() = supportFragmentManager
-                .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG) as ShopSettingsNotesReorderFragment
+            .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG) as ShopSettingsNotesReorderFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +39,8 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     override fun inflateFragment() {
         val newFragment = newFragment
         supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view, newFragment, tagFragment)
-                .commit()
+            .replace(R.id.parent_view, newFragment, tagFragment)
+            .commit()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -141,5 +141,4 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         }
         return null
     }
-
 }

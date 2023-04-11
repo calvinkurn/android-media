@@ -3,16 +3,15 @@ package com.tokopedia.product.addedit.category.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.globalerror.GlobalError
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.core.common.category.view.model.CategoryViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,7 +31,6 @@ import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 
 class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCategoryViewHolder.CategoryItemViewHolderListener {
@@ -40,11 +38,11 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
     companion object {
         @JvmStatic
         fun newInstance(selectedCategory: Long) =
-                AddEditProductCategoryFragment().apply {
-                    arguments = Bundle().apply {
-                        putLong(INIT_SELECTED, selectedCategory)
-                    }
+            AddEditProductCategoryFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(INIT_SELECTED, selectedCategory)
                 }
+            }
     }
 
     @Inject

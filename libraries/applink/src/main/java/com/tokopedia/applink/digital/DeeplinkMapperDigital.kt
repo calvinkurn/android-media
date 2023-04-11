@@ -28,8 +28,6 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TOKEN_L
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh.getRegisteredNavigationUohOrder
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 
@@ -49,8 +47,6 @@ object DeeplinkMapperDigital {
     const val OMNI_CATEGORY_ID = "54"
     const val OMNI_PRODUCT_ID = "20159"
     const val OMNI_OPERATOR_ID = "7654"
-
-    const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -76,14 +72,6 @@ object DeeplinkMapperDigital {
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else {
-                    ServerLogger.log(
-                            Priority.P2,
-                            SCALYR_OLD_APPLINK_TAGS,
-                            mapOf(
-                                    "type" to "old applink",
-                                    "data" to deeplink
-                            )
-                    )
                     UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
                 }
             }
