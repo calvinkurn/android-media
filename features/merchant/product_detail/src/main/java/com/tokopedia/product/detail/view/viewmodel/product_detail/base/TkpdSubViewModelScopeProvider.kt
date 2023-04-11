@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.base
 
 import kotlinx.coroutines.CoroutineScope
 
-class TkpdViewModelScopeProvider : ViewModelScopeProvider {
+class TkpdSubViewModelScopeProvider: SubViewModelScopeProvider {
     private var provider: (() -> CoroutineScope)? = null
 
-    override fun register(provider: () -> CoroutineScope) {
+    override fun registerProvider(provider: () -> CoroutineScope) {
         this.provider = provider
     }
 

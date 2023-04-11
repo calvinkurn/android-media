@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * Separate event and state according to their respective contexts.
  */
 @Suppress("LateinitUsage")
-abstract class SubViewModel(viewModelSlice: ViewModelSlice): ViewModelSlice by viewModelSlice {
+abstract class SubViewModel(subViewModelScope: SubViewModelScope): SubViewModelScope by subViewModelScope {
 
     // an interface to access data to outer class
     private var mMediator: SubViewModelMediator? = null

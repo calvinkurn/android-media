@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.ViewModelSlice
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -31,8 +31,8 @@ import javax.inject.Inject
 class ProductRecommSubViewModel @Inject constructor(
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
     private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>,
-    viewModelSlice: ViewModelSlice,
-) : SubViewModel(viewModelSlice), IProductRecommSubViewModel {
+    subViewModelScope: SubViewModelScope,
+) : SubViewModel(subViewModelScope), IProductRecommSubViewModel {
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()

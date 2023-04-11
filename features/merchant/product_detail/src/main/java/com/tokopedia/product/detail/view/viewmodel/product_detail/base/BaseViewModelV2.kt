@@ -10,15 +10,17 @@ import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModelV2(
     private val baseDispatcher: CoroutineDispatcher,
-    viewModelScopeProvider: ViewModelScopeProvider,
+    subViewModelScopeProvider: SubViewModelScopeProvider,
 ) : ViewModel(), CoroutineScope {
 
     init {
-        registerScopeProvider(viewModelScopeProvider)
+        registerSubViewModelScopeProvider(subViewModelScopeProvider)
     }
 
-    private fun registerScopeProvider(viewModelScopeProvider: ViewModelScopeProvider) {
-        viewModelScopeProvider.register { viewModelScope }
+    private fun registerSubViewModelScopeProvider(
+        subViewModelScopeProvider: SubViewModelScopeProvider
+    ) {
+        subViewModelScopeProvider.registerProvider { viewModelScope }
     }
 
     override val coroutineContext: CoroutineContext

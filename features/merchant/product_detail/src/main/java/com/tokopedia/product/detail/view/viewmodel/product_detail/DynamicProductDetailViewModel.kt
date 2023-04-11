@@ -78,7 +78,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.BaseViewModelV2
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.ViewModelScopeProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScopeProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
@@ -148,8 +148,8 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
     productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel,
-    viewModelScopeProvider: ViewModelScopeProvider,
-) : BaseViewModelV2(dispatcher.main, viewModelScopeProvider),
+    subViewModelScopeProvider: SubViewModelScopeProvider,
+) : BaseViewModelV2(dispatcher.main, subViewModelScopeProvider),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     GetProductDetailDataMediator {

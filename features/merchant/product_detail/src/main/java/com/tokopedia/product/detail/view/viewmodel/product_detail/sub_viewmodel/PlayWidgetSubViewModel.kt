@@ -9,7 +9,7 @@ import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IPlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.ViewModelSlice
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class PlayWidgetSubViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
-    viewModelSlice: ViewModelSlice,
-) : SubViewModel(viewModelSlice), IPlayWidgetSubViewModel {
+    subViewModelScope: SubViewModelScope,
+) : SubViewModel(subViewModelScope), IPlayWidgetSubViewModel {
     val mediator by lazy { getMediator<GetProductDetailDataMediator>() }
 
     private val _playWidgetModel = MutableLiveData<Result<PlayWidgetState>>()
