@@ -273,6 +273,13 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun removeFaceFilter() {
+        FaceFilterType.values().forEach { type ->
+            mRenderManager?.updateComposerNodes(
+                assetHelper.customFaceDir,
+                type.key,
+                0f
+            )
+        }
         mRenderManager?.removeComposerNodes(arrayOf(assetHelper.customFaceDir))
         mSavedComposeNode.update { clearFaceFilter() }
     }
