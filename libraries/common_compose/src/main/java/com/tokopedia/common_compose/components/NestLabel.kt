@@ -87,7 +87,16 @@ private fun NestLabelType.toBackgroundColor(): Color {
         NestLabelType.HIGHLIGHT_DARK_TEAL -> NestTheme.colors.TN._500
         NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
 
-        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) ImageLabelColorDark else ImageLabelColorLight
+        NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> {
+            val imageLabelColorDark = Color(0xB3E4EBF5) //NN100 70%
+            val imageLabelColorLight = Color(0xB32E3137) //NN900 70%
+
+            if (isSystemInDarkTheme()) {
+                imageLabelColorDark
+            } else {
+                imageLabelColorLight
+            }
+        }
     }
 }
 
@@ -241,15 +250,5 @@ private fun NestLabelOnDevicesPreview() {
         }
     }
 }
-
-//endregion
-
-//region Custom colors for NestLabel
-
-//NN100 70%
-private val ImageLabelColorDark = Color(0xB3E4EBF5)
-
-//NN900 70%
-private val ImageLabelColorLight = Color(0xB32E3137)
 
 //endregion
