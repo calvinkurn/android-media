@@ -9,7 +9,7 @@ class EmoneyInquiryResponse(
         val emoneyInquiry: EmoneyInquiry
 )
 
-class EmoneyInquiry(
+data class EmoneyInquiry(
         @SerializedName("id")
         @Expose
         val id: String = "",
@@ -25,7 +25,7 @@ class EmoneyInquiry(
         val isCheckSaldoTapcash : Boolean = false
 )
 
-class AttributesEmoneyInquiry(
+data class AttributesEmoneyInquiry(
         @SerializedName("button_text")
         @Expose
         val buttonText: String = "",
@@ -51,7 +51,7 @@ class AttributesEmoneyInquiry(
 
 )
 
-class EmoneyInquiryError(
+data class EmoneyInquiryError(
         @SerializedName("id")
         @Expose
         val id: String = "",

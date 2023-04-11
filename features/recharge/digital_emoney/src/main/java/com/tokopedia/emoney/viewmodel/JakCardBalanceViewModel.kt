@@ -1,7 +1,6 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
@@ -93,8 +92,8 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processInitLoad(selectResponseString: String, cardNumber: String, lastBalance: Int, cryptogram: String) {
-        if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
+    fun processInitLoad(selectResponseString: String, cardNumber: String, lastBalance: Int, cryptogram: String) {
+        if (isIsoDepInitialized() && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val initLoadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
                 val initLoadResponse = isoDep.transceive(initLoadRequest)
@@ -138,8 +137,8 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processLoad(topUpJakCardResponse: JakCardResponse, topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String, lastBalance: Int) {
-        if (::isoDep.isInitialized && isoDep.isConnected && cryptogram.isNotEmpty()) {
+    fun processLoad(topUpJakCardResponse: JakCardResponse, topUpCardData: String, cryptogram: String, stan: String, refNo: String, amount: Int, cardNumber: String, lastBalance: Int) {
+        if (isIsoDepInitialized() && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
                 val loadRequest = NFCUtils.stringToByteArrayRadix(cryptogram)
                 val loadResponse = isoDep.transceive(loadRequest)
@@ -156,10 +155,10 @@ class JakCardBalanceViewModel @Inject constructor(
                         topUpCardData
                     )
                     val separatedCheckBalanceString = separateWithSuccessCode(NFCUtils.toHex(checkBalanceAfterLoadResponse))
-                    val lastBalanceAfterUpdate = convertHexBalanceToIntBalance(separatedCheckBalanceString)
                     if (NFCUtils.isCommandFailed(checkBalanceAfterLoadResponse)) {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
+                        val lastBalanceAfterUpdate = convertHexBalanceToIntBalance(separatedCheckBalanceString)
                         getTopUpConfirmationProcess(topUpJakCardResponse, topUpConfirmationCardData, cardNumber, lastBalanceAfterUpdate, amount, stan, refNo)
                     }
                 }
@@ -170,6 +169,8 @@ class JakCardBalanceViewModel @Inject constructor(
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
+
+    fun isIsoDepInitialized(): Boolean = ::isoDep.isInitialized
 
     private fun getTopUpConfirmationProcess(topUpJakCardResponse: JakCardResponse, topUpConfirmationCardData: String, cardNumber: String, lastBalanceAfterUpdate: Int, amount: Int, stan: String, refNo: String) {
         launchCatchError(block = {
