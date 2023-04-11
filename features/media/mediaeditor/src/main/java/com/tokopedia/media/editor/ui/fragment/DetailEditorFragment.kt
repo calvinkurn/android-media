@@ -755,6 +755,10 @@ class DetailEditorFragment @Inject constructor(
         var latestBrightnessIndex = -1
         var latestContrastIndex = -1
 
+        var tempWatermarkIndex = -1
+        var tempMirrorIndex = -1
+        var isRotatedWatermark = false
+
         detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
             if (editorDetailUi.cropRotateValue.isCrop) cropScale =
                 editorDetailUi.cropRotateValue.scale
@@ -762,16 +766,29 @@ class DetailEditorFragment @Inject constructor(
             if (editorDetailUi.isToolBrightness()) latestBrightnessIndex = index
 
             if (editorDetailUi.isToolContrast()) latestContrastIndex = index
+
+            if (editorDetailUi.isToolRotate() || editorDetailUi.isToolCrop()) {
+                tempMirrorIndex = index
+            }
+
+            if (editorDetailUi.isToolWatermark()) tempWatermarkIndex = index
         }
 
+        isRotatedWatermark = tempWatermarkIndex < tempMirrorIndex
+
         implementBrightnessAndContrast(latestBrightnessIndex, latestContrastIndex)
+
+        // need to provide sequence for watermark that implemented before rotate
+        if (isRotatedWatermark && !data.isToolWatermark()) {
+            implementPreviousWatermark(data)
+        }
 
         if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
             manualCropBitmap(data.cropRotateValue)
         }
 
-        // need to provide sequence for watermark that implemented before / after rotate
-        if (!data.isToolWatermark()) {
+        // need to provide sequence for watermark that implemented after rotate
+        if (!isRotatedWatermark && !data.isToolWatermark()) {
             implementPreviousWatermark(data)
         }
 
