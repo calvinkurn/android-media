@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
 
 
@@ -195,7 +194,7 @@ private fun GhostInvertedButton(
         ),
         buttonHeight = size.toHeightDp(),
         buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._1000),
-        progressBarColor = Color.White,
+        progressBarColor = NestTheme.colors.NN._1000,
         onClick = onClick
     )
 }
@@ -311,11 +310,13 @@ private fun Size.toCornerRadius(): Dp {
 //region Preview
 @Preview(
     showSystemUi = true,
+    name = "Light Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     device = "spec:width=411dp,height=891dp"
 )
 @Preview(
     showSystemUi = true,
+    name = "Dark Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
     backgroundColor = 0xFF222329,
@@ -343,7 +344,7 @@ private fun NestButtonPreview() {
             NestTypography(text = "Text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
             NestButtonTextPreview()
 
-            NestTypography(text = "Filled - Various Sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestTypography(text = "Button sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
             NestButtonSizesPreview()
         }
     }
