@@ -4,18 +4,34 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 
+/**
+ * [BaseViewModelV2] is a class for easier implementation of [SubViewModel] support
+ */
 open class BaseViewModelV2(
     baseDispatcher: CoroutineDispatcher,
-    subViewModelScopeProvider: SubViewModelScopeProvider,
-) : BaseViewModel(baseDispatcher) {
+    private val subViewModelProvider: SubViewModelProvider
+) : BaseViewModel(baseDispatcher), SubViewModelMediator {
 
     init {
-        registerSubViewModelScopeProvider(subViewModelScopeProvider)
+        registerSubViewModelProvider(subViewModelProvider)
     }
 
-    private fun registerSubViewModelScopeProvider(
-        subViewModelScopeProvider: SubViewModelScopeProvider
+    /**
+     * register all properties in provider scope
+     * @param subViewModelProvider
+     */
+    private fun registerSubViewModelProvider(
+        subViewModelProvider: SubViewModelProvider
     ) {
-        subViewModelScopeProvider.register { viewModelScope }
+        subViewModelProvider.registerScope { viewModelScope }
+        subViewModelProvider.registerMediator { this }
+    }
+
+    /**
+     * release memory usage in sub-view-model provider
+     */
+    override fun onCleared() {
+        subViewModelProvider.close()
+        super.onCleared()
     }
 }

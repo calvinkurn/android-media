@@ -78,10 +78,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.BaseViewModelV2
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScopeProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -146,10 +144,10 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: ProductRecommSubViewModel,
-    playWidgetSubViewModel: PlayWidgetSubViewModel,
-    subViewModelScopeProvider: SubViewModelScopeProvider,
-) : BaseViewModelV2(dispatcher.main, subViewModelScopeProvider),
+    productRecommSubViewModel: IProductRecommSubViewModel,
+    playWidgetSubViewModel: IPlayWidgetSubViewModel,
+    subViewModelProvider: SubViewModelProvider
+) : BaseViewModelV2(dispatcher.main, subViewModelProvider),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     GetProductDetailDataMediator {
@@ -289,7 +287,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     override fun getVariant(): ProductVariant? = variantData
 
     init {
-        playWidgetSubViewModel.register(mediator = this)
         iniQuantityFlow()
     }
 

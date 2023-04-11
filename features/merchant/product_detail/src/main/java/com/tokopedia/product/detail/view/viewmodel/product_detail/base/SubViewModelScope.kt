@@ -4,4 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 
 interface SubViewModelScope {
     val viewModelScope: CoroutineScope?
+
+    val mediator: SubViewModelMediator?
 }
