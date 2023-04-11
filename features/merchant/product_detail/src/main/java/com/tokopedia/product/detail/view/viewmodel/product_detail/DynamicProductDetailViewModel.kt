@@ -3,8 +3,6 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -79,6 +77,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.BaseViewModelV2
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScopeProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
@@ -147,8 +147,9 @@ class DynamicProductDetailViewModel @Inject constructor(
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
     productRecommSubViewModel: ProductRecommSubViewModel,
-    playWidgetSubViewModel: PlayWidgetSubViewModel
-) : BaseViewModel(dispatcher.main),
+    playWidgetSubViewModel: PlayWidgetSubViewModel,
+    subViewModelScopeProvider: SubViewModelScopeProvider,
+) : BaseViewModelV2(dispatcher.main, subViewModelScopeProvider),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     GetProductDetailDataMediator {
@@ -288,8 +289,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     override fun getVariant(): ProductVariant? = variantData
 
     init {
-        productRecommSubViewModel.register(scope = viewModelScope)
-        playWidgetSubViewModel.register(scope = viewModelScope, mediator = this)
+        playWidgetSubViewModel.register(mediator = this)
         iniQuantityFlow()
     }
 
