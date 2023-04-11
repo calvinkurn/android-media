@@ -363,17 +363,13 @@ object TokonowWarehouseMapper {
 ## Action Items
 
 - <!--start status:YELLOW-->PLANNING<!--end status--> `greater_city_id` value can be 
-
-
-	- `null` (means LCA greater-city still not updated / refreshed from BE (*during release/rollout or related cache still null*)),
-	- `0` means related cityID/districtID not belongs to any greaterCity
-	- `> 0` means related greaterCityID exist
-- <!--start status:YELLOW-->PLANNING<!--end status--> `greater_city_name` value can be 
-
-
-	- `null` (means LCA greater-city still not updated / refreshed from BE (*during release/rollout or related cache still null*)),
-	- `""` means related cityID/districtID not belongs to any greaterCity,
-	- `"[greater_city_name]" (not empty)` means related greaterCityID exist
+  - `null` (means LCA greater-city still not updated / refreshed from BE (*during release/rollout or related cache still null*)),
+  - `0` means related cityID/districtID not belongs to any greaterCity
+  - `> 0` means related greaterCityID exist
+- <!--start status:YELLOW-->PLANNING<!--end status--> `greater_city_name` value can be
+  - `null` (means LCA greater-city still not updated / refreshed from BE (*during release/rollout or related cache still null*)),
+  - `""` means related cityID/districtID not belongs to any greaterCity,
+  - `"[greater_city_name]" (not empty)` means related greaterCityID exist
 
 ## Useful Links
 
