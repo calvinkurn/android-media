@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_sse_logging.*
 import javax.inject.Inject
@@ -33,7 +35,7 @@ class SSELoggingFragment: Fragment() {
 
     private val adapter: SSELogAdapter by lazy { SSELogAdapter() }
 
-    private lateinit var etSSELogSearch: SearchInputView
+    private lateinit var etSSELogSearch: SearchBarUnify
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvSSELog: RecyclerView
     private lateinit var tvNoData: Typography
@@ -96,13 +98,13 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun initListener() {
-        etSSELogSearch.setListener(object: SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
+        etSSELogSearch.searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 loadData()
+                return@setOnEditorActionListener true
             }
-
-            override fun onSearchTextChanged(text: String?) {}
-        })
+            return@setOnEditorActionListener false
+        }
 
         swipeRefresh.setOnRefreshListener {
             loadData()
@@ -110,7 +112,7 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun loadData() {
-        val query = etSSELogSearch.searchText
+        val query = etSSELogSearch.searchBarTextField.text.toString()
 
         swipeRefresh.isRefreshing = true
         viewModel.getLog(query)

@@ -3,16 +3,14 @@ package com.tokopedia.analyticsdebugger.websocket.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.ProgressBar
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
@@ -20,16 +18,16 @@ import com.tokopedia.analyticsdebugger.databinding.FragmentWebsocketLoggingBindi
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
 import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipGroup
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import com.tokopedia.analyticsdebugger.websocket.ui.viewmodel.WebSocketLoggingViewModel
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
@@ -124,13 +122,14 @@ class WebSocketLoggingFragment : Fragment() {
             adapter = this@WebSocketLoggingFragment.adapter
         }
 
-        binding?.etWebsocketLogSearch?.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(text.toString()))
+        binding?.etWebsocketLogSearch?.searchBarTextField?.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                textView.hideKeyboard()
+                viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(textView.text.toString()))
+                return@setOnEditorActionListener true
             }
-
-            override fun onSearchTextChanged(text: String?) {}
-        })
+            return@setOnEditorActionListener false
+        }
     }
 
     private fun initObserver() {
@@ -165,7 +164,7 @@ class WebSocketLoggingFragment : Fragment() {
         binding?.rvWebsocketLog?.addOnScrollListener(scrollListener)
 
         binding?.swipeRefreshWebSocketLog?.setOnRefreshListener {
-            val action = binding?.etWebsocketLogSearch?.searchText.toString()
+            val action = binding?.etWebsocketLogSearch?.searchBarTextField?.text.toString()
             viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(action))
 
             binding?.swipeRefreshWebSocketLog?.isRefreshing = false
@@ -180,7 +179,7 @@ class WebSocketLoggingFragment : Fragment() {
 
         binding?.chipGroupWebsocketLog?.setOnCheckedListener(object : ChipGroup.Listener {
             override fun onChecked(model: ChipModel) {
-                val action = binding?.etWebsocketLogSearch?.searchText.toString()
+                val action = binding?.etWebsocketLogSearch?.searchBarTextField?.text.toString()
                 viewModel.submitAction(WebSocketLoggingAction.SelectSource(model.value, action))
             }
         })
