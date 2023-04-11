@@ -3,7 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.unifyDependencies.global_error

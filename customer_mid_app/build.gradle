@@ -82,7 +82,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
-    implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
