@@ -87,7 +87,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private var userReportTimeMillis: Date = Date()
 
     var mListener: Listener? = null
-    private var mChannelId = ""
 
     private val seePerformanceAction by lazy {
         PlayMoreActionUiModel(
@@ -104,7 +103,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
             onClick = {
                 playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointGroupChatRoom(
                     playViewModel.shopId,
-                    mChannelId,
+                    playViewModel.channelId,
                 )
                 mListener?.onSeePerformanceClicked(this)
             },
@@ -130,7 +129,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
             onClick = {
                 playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointChannelPage(
                     playViewModel.shopId,
-                    mChannelId,
+                    playViewModel.channelId,
                 )
                 RouteManager.route(
                     requireContext(),
@@ -285,7 +284,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             playViewModel.uiState.withCache().collectLatest {
                 val cachedState = it
-                mChannelId = it.value.channel.channelInfo.id
 
                 if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(
                     isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned
