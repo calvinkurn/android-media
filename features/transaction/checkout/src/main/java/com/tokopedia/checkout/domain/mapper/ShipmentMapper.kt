@@ -263,8 +263,8 @@ class ShipmentMapper @Inject constructor() {
         shopTypeInfoData: ShopTypeInfoData
     ): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
-        var firstErrorIndex = -1
-        // todo: fix first error index
+        var firstErrorIndex = 0
+        var hasError = false
         groupShop.cartDetails.forEachIndexed { index, cartDetail ->
             cartDetail.products.forEachIndexed { productIndex, product ->
                 val productResult = Product(
@@ -287,7 +287,7 @@ class ShipmentMapper @Inject constructor() {
                     }
                     isError = product.errors.isNotEmpty() ||
                         shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
-                        cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
+                        (cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty())
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
                         ""
                     } else if (product.errors.isNotEmpty()) {
@@ -299,10 +299,10 @@ class ShipmentMapper @Inject constructor() {
                         ""
                     }
                     errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
-                    if (isError) {
-                        if (firstErrorIndex == -1) {
-                            firstErrorIndex = productListResult.size
-                        }
+                    if (isError && !hasError) {
+                        hasError = true
+                    } else if (!hasError) {
+                        firstErrorIndex += 1
                     }
                     productId = product.productId
                     cartId = product.cartId
@@ -374,7 +374,11 @@ class ShipmentMapper @Inject constructor() {
                 productListResult.add(productResult)
             }
         }
-        return productListResult to firstErrorIndex
+        return productListResult to if (hasError) {
+            firstErrorIndex
+        } else {
+            -1
+        }
     }
 
     private fun mapAnalyticsProductCheckoutData(

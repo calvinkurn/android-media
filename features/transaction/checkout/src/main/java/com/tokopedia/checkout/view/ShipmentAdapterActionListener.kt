@@ -75,7 +75,7 @@ interface ShipmentAdapterActionListener {
         itemPosition: Int,
         shipmentDetailData: ShipmentDetailData,
         shipmentCartItemModel: ShipmentCartItemModel,
-        shopShipmentList: List<ShopShipment>?,
+        shopShipmentList: List<ShopShipment>,
         isTradeInDropOff: Boolean
     )
 

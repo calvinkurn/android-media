@@ -176,7 +176,7 @@ interface ShipmentContract {
 
         fun onNeedUpdateViewItem(position: Int)
         fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>)
-        fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
+        fun getShipmentCartItemModelAdapterPositionByCartStringGroup(cartStringGroup: String): Int
         fun getShipmentCartItemModel(position: Int): ShipmentCartItemModel?
         fun getShipmentDetailData(
             shipmentCartItemModel: ShipmentCartItemModel,
@@ -393,9 +393,9 @@ interface ShipmentContract {
         val shipmentUpsellModel: ShipmentUpsellModel
         val shipmentNewUpsellModel: ShipmentNewUpsellModel
         fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Pair<ArrayList<String>, ArrayList<String>>
-        fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
+        fun clearOrderPromoCodeFromLastValidateUseRequest(cartStringGroup: String, promoCode: String)
         fun validateClearAllBoPromo()
-        fun doUnapplyBo(uniqueId: String, promoCode: String)
+        fun doUnapplyBo(cartStringGroup: String, promoCode: String)
         fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product>
 //        fun processBoPromoCourierRecommendation(
 //            itemPosition: Int,

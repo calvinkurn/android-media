@@ -298,7 +298,6 @@ class ShipmentDataConverter @Inject constructor() {
                 shipmentCartItemModel.shopLocation = groupShop.fulfillmentName
             }
             setCartItemModelError(shipmentCartItemModel)
-            // todo: fix group shop
             if (shipmentCartItemModel.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,

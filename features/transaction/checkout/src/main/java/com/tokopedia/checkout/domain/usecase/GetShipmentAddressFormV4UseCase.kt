@@ -185,8 +185,8 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
               },
               "errors": [],
               "errors_unblocking": [],
-              "shipping_id": 0,
-              "sp_id": 0,
+              "shipping_id": 23,
+              "sp_id": 45,
               "scheduled_delivery": {
                 "timeslot_id": 0,
                 "schedule_date": "",

@@ -2182,7 +2182,7 @@ class ShipmentFragment :
         selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     ) {
-        onLogisticPromoChosenNew(shippingCourierUiModels, courierData, recipientAddressModel, cartPosition, serviceData, flagNeedToSetPinpoint, promoCode, selectedServiceId, logisticPromo)
+        onLogisticPromoChosenNew(courierData, cartPosition, flagNeedToSetPinpoint, promoCode, logisticPromo)
 //        checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode)
 //        setStateLoadingCourierStateAtIndex(cartPosition, true)
 //        val courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(
@@ -2250,14 +2250,10 @@ class ShipmentFragment :
     }
 
     private fun onLogisticPromoChosenNew(
-        shippingCourierUiModels: List<ShippingCourierUiModel>,
         courierData: ShippingCourierUiModel,
-        recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
-        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         promoCode: String,
-        selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     ) {
         // do not set courier to shipment item before success validate use
@@ -2698,11 +2694,11 @@ class ShipmentFragment :
     }
 
     private fun reloadCourier(
-        shipmentCartItemModel: ShipmentCartItemModel?,
+        shipmentCartItemModel: ShipmentCartItemModel,
         cartPosition: Int,
         skipMvc: Boolean
     ) {
-        if (shipmentCartItemModel?.selectedShipmentDetailData != null) {
+        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
             if (shipmentCartItemModel.selectedShipmentDetailData!!.shopId == null) {
                 shipmentCartItemModel.selectedShipmentDetailData!!.shopId =
                     shipmentCartItemModel.shopId.toString()
@@ -2760,10 +2756,10 @@ class ShipmentFragment :
         itemPosition: Int,
         shipmentDetailData: ShipmentDetailData,
         shipmentCartItemModel: ShipmentCartItemModel,
-        shopShipmentList: List<ShopShipment>?,
+        shopShipmentList: List<ShopShipment>,
         isTradeInDropOff: Boolean
     ) {
-        if (shopShipmentList != null && shopShipmentList.isNotEmpty()) {
+        if (shopShipmentList.isNotEmpty()) {
             shipmentDetailData.isTradein = isTradeIn
             shipmentPresenter.processGetCourierRecommendation(
                 shipperId, spId, itemPosition, shipmentDetailData,
@@ -4184,10 +4180,10 @@ class ShipmentFragment :
         }
     }
 
-    override fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int {
+    override fun getShipmentCartItemModelAdapterPositionByCartStringGroup(cartStringGroup: String): Int {
         for (i in shipmentAdapter.getShipmentDataList().indices) {
             val adapterItem = shipmentAdapter.getShipmentDataList()[i]
-            if (adapterItem is ShipmentCartItemModel && adapterItem.cartStringGroup == uniqueId) {
+            if (adapterItem is ShipmentCartItemModel && adapterItem.cartStringGroup == cartStringGroup) {
                 return i
             }
         }
