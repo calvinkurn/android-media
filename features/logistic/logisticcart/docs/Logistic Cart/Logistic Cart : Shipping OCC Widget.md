@@ -50,7 +50,9 @@ This custom view has functionality to select shipping `duration` and `courier` w
 
 ## Flow Diagram
 
-![](../res/shippingoccwidget/shipping_widget_occ_drawio.png)## How-to
+![](../res/shippingoccwidget/shipping_widget_occ_drawio.png)
+
+## How-to
 
 #### 1. Add dependencies
 
