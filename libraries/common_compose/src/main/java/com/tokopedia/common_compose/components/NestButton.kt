@@ -112,7 +112,6 @@ private fun GhostButton(
     onClick: () -> Unit
 ) {
     val ghostTextStyle = NestTheme.typography.display2.copy(
-        color = NestTheme.colors.GN._500,
         fontWeight = FontWeight.ExtraBold,
         fontSize = size.toFontSize()
     )
@@ -124,9 +123,15 @@ private fun GhostButton(
         isLoading = isLoading,
         textStyle = ghostTextStyle,
         buttonCornerRadius = size.toCornerRadius(),
-        buttonColors = ButtonDefaults.outlinedButtonColors(),
+        buttonColors = ButtonDefaults.outlinedButtonColors(
+            contentColor = NestTheme.colors.GN._500,
+            disabledContentColor = NestTheme.colors.NN._400
+        ),
         buttonHeight = size.toHeightDp(),
-        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.GN._500),
+        buttonBorderStroke = BorderStroke(
+            width = 1.dp,
+            color = if (isEnabled) NestTheme.colors.GN._500 else NestTheme.colors.NN._100
+        ),
         progressBarColor = NestTheme.colors.GN._500,
         onClick = onClick,
     )
@@ -155,10 +160,13 @@ private fun GhostAlternateButton(
         buttonCornerRadius = size.toCornerRadius(),
         buttonColors = ButtonDefaults.outlinedButtonColors(
             contentColor = NestTheme.colors.NN._600,
-            disabledContentColor = NestTheme.colors.NN._600
+            disabledContentColor = NestTheme.colors.NN._400
         ),
         buttonHeight = size.toHeightDp(),
-        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300),
+        buttonBorderStroke = BorderStroke(
+            width = 1.dp,
+            color = if (isEnabled) NestTheme.colors.NN._300 else NestTheme.colors.NN._100
+        ),
         progressBarColor = NestTheme.colors.NN._300,
         onClick = onClick,
     )
@@ -190,10 +198,13 @@ private fun GhostInvertedButton(
             backgroundColor = Color.Transparent,
             contentColor = NestTheme.colors.NN._1000,
             disabledBackgroundColor = Color.Transparent,
-            disabledContentColor = NestTheme.colors.NN._1000
+            disabledContentColor = NestTheme.colors.NN._400
         ),
         buttonHeight = size.toHeightDp(),
-        buttonBorderStroke = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._1000),
+        buttonBorderStroke = BorderStroke(
+            width = 1.dp,
+            color = if (isEnabled) NestTheme.colors.NN._1000 else NestTheme.colors.NN._100
+        ),
         progressBarColor = NestTheme.colors.NN._1000,
         onClick = onClick
     )
