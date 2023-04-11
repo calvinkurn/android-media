@@ -5,14 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import java.util.Locale
 
 class ItemProductDetailInfoViewHolder(
     private val binding: ItemInfoProductDetailBinding,
@@ -72,23 +71,29 @@ class ItemProductDetailInfoViewHolder(
         data: ProductDetailInfoContent,
         trackData: ComponentTrackDataModel?
     ) {
-        when (data.title.lowercase(Locale.getDefault())) {
-            ProductDetailCommonConstant.KEY_CATEGORY -> {
+        data.routeOnClick(object : ProductDetailInfoNavigator {
+            override fun onCategory(appLink: String) {
                 listener.onCategoryClicked(
                     url = data.applink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
-            ProductDetailCommonConstant.KEY_ETALASE -> {
+
+            override fun onEtalase(appLink: String) {
                 listener.onEtalaseClicked(
                     url = data.applink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
-            else -> {
+
+            override fun onCatalog(appLink: String, subTitle: String) {
+                // no-ops, on bottom sheet only
+            }
+
+            override fun onAppLink(appLink: String) {
                 listener.goToApplink(data.applink)
             }
-        }
+        })
     }
 
     companion object {

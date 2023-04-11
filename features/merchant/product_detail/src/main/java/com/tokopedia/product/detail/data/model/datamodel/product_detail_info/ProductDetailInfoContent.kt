@@ -20,4 +20,30 @@ data class ProductDetailInfoContent(
     val showAtBottomSheet: Boolean = true,
     val key: String = "",
     val extParam: String = ""
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+        const val KEY_ETALASE = "etalase"
+        const val KEY_CATEGORY = "kategori"
+        const val KEY_CATALOG = "katalog"
+    }
+
+    fun routeOnClick(
+        navigator: ProductDetailInfoNavigator
+    ) {
+        when (key) {
+            KEY_CATEGORY -> {
+                navigator.onCategory(applink)
+            }
+            KEY_ETALASE -> {
+                navigator.onEtalase(applink)
+            }
+            KEY_CATALOG -> {
+                navigator.onCatalog(applink, subtitle)
+            }
+            else -> {
+                navigator.onAppLink(applink)
+            }
+        }
+    }
+}
