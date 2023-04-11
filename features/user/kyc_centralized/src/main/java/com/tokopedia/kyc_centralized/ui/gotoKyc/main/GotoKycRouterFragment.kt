@@ -64,6 +64,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     encryptedName = data?.encryptedName.orEmpty(),
                     isAccountLinked = data?.isAccountLinked.orFalse(),
                     isKtpTaken = data?.isKtpTaken.orFalse(),
+                    isSelfieTaken = data?.isSelfieTaken.orFalse(),
                     sourcePage = data?.sourcePage.orEmpty()
                 )
                 gotoOnboardBenefitGotoKyc(parameter)

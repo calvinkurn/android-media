@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
@@ -92,12 +91,12 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is AccountLinkingStatusResult.NotLinked -> {
-                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
-                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
                     activity?.finish()
                 }
             }
@@ -177,6 +176,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             )
 
             tvSubtitle.text = getString(R.string.goto_kyc_bridging_done_gopay_subtitle)
+            tvTitle.show()
+            tvSubtitle.show()
+            ivBridgingAccountLinking.show()
+            btnConfirm.show()
+            unifyToolbar.show()
 
             layoutDoneGopay.root.show()
             layoutNotDoneGopay.root.hide()
@@ -200,6 +204,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             )
 
             tvSubtitle.text = getString(R.string.goto_kyc_bridging_not_done_gopay_subtitle)
+            tvSubtitle.show()
+            tvTitle.show()
+            ivBridgingAccountLinking.show()
+            btnConfirm.show()
+            unifyToolbar.show()
 
             layoutDoneGopay.root.hide()
             layoutNotDoneGopay.root.show()

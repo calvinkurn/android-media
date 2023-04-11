@@ -78,5 +78,8 @@ object KYCConstant {
         const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
     }
 
-    const val RESULT_FINISH = 99
+    object ActivityResult {
+        const val RESULT_FINISH = 99
+        const val ACCOUNT_NOT_LINKED = 98
+    }
 }

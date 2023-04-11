@@ -11,6 +11,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.gojek.kyc.sdk.core.extensions.isKtpExist
+import com.gojek.kyc.sdk.core.extensions.isSelfieExist
+import com.gojek.onekyc.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -18,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
@@ -41,6 +43,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[GotoKycTransparentViewModel::class.java]
     }
 
+    @Inject
+    lateinit var oneKycSdk: OneKycSdk
+
+    private var isKtpCaptured = false
+    private var isSelfieCaptured = false
+
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         activity?.setResult(result.resultCode)
         activity?.finish()
@@ -61,6 +69,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
         validationParameter(projectId = projectId, source = source)
         initObserver()
+
+        isKtpCaptured = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
+        isSelfieCaptured = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
     }
 
     private fun validationParameter(projectId: String?, source: String?) {
@@ -96,7 +107,11 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    viewModel.checkEligibility()
+                    if (it.isAccountLinked) {
+                        viewModel.checkEligibility()
+                    } else {
+                        handleNonProgressiveFlow()
+                    }
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
@@ -147,7 +162,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true,
+                isKtpTaken = isKtpCaptured,
+                isSelfieTaken = isSelfieCaptured,
                 sourcePage = viewModel.source
             )
             gotoOnboardBenefit(parameter)
@@ -156,8 +172,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 source = viewModel.source,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true,
-                isSelfieTaken = true
+                isKtpTaken = isKtpCaptured,
+                isSelfieTaken = isSelfieCaptured
             )
         }
     }

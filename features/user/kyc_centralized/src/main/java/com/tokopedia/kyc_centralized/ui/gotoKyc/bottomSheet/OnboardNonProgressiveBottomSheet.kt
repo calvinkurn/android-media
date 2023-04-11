@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
@@ -28,8 +30,9 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var isSelfieTaken = false
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        activity?.setResult(result.resultCode)
-        activity?.finish()
+        if (result.resultCode != KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED) {
+            binding?.layoutAccountLinking?.root?.hide()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

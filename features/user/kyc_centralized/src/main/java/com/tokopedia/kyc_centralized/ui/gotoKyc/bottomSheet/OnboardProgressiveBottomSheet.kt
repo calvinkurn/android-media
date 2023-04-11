@@ -47,7 +47,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
             }
-            KYCConstant.RESULT_FINISH -> {
+            KYCConstant.ActivityResult.RESULT_FINISH -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             }
