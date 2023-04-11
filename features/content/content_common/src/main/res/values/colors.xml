@@ -6,4 +6,5 @@
 
     <!--Vertical Swipe-->
     <color name="play_dms_vertical_swipe_overlay">#99212121</color>
+    <color name="play_dms_vertical_swipe_description">#F5FFFFFF</color>
 </resources>
