@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -67,8 +68,8 @@ public class ContactUsActivity extends BaseSimpleActivity implements
 
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            while (getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStackImmediate();
+            while (this.getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                this.getSupportFragmentManager().popBackStackImmediate();
             }
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
@@ -100,16 +101,18 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         ContactUsFaqFragment fragment;
-        if (getFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName()) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName()) == null) {
             fragment = ContactUsFaqFragment.createInstance(bundle);
         } else {
             fragment = (ContactUsFaqFragment) getSupportFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName());
         }
 
-        listener = fragment.getBackButtonListener();
-        fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        if (fragment != null) {
+            listener = fragment.getBackButtonListener();
+            fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
+            fragmentTransaction.commit();
+        }
 
         setTitle();
     }
@@ -130,7 +133,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     @Override
     public void onGoToCreateTicket(Bundle bundle) {
         bundleCreateTicket = bundle;
-        if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.contactus_slide_in_left, 0, 0, R.animator.contactus_slide_out_right);
@@ -144,8 +147,8 @@ public class ContactUsActivity extends BaseSimpleActivity implements
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 1) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
         } else {
@@ -163,7 +166,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_view);
         if (fragment!=null){
             outState.putString(CURRENT_FRAGMENT_BACKSTACK, fragment.getTag());

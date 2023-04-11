@@ -30,7 +30,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         val repo = NotificationGeneralPromptSharedPreferences(activity.applicationContext)
         val prompt = NotificationGeneralPrompt(
             isNotificationPermissionDenied,
-            notificationGeneralPromptView(activity),
+            notificationGeneralPromptView(activity, ""),
             repo,
             FirebaseRemoteConfigImpl(activity.applicationContext)
         )
@@ -70,11 +70,13 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         else
             false
 
-    private fun notificationGeneralPromptView(activity: FragmentActivity) =
+    fun notificationGeneralPromptView(activity: FragmentActivity, pageName: String) =
         object : NotificationGeneralPromptView {
-            override fun show() {
+            override fun show(isReminderPrompt: Boolean) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    NotificationGeneralPromptBottomSheet().show(
+                    val generalPromptBottomSheet = NotificationGeneralPromptBottomSheet()
+                    generalPromptBottomSheet.initVariables(isReminderPrompt, pageName)
+                    generalPromptBottomSheet.show(
                         activity.supportFragmentManager,
                         NotificationGeneralPromptBottomSheet.TAG
                     )

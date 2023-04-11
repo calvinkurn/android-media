@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.data.repository
 
+import android.content.Context
 import android.graphics.RectF
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
+import com.tokopedia.media.editor.utils.showErrorGeneralToaster
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.OverlayView
 import javax.inject.Inject
@@ -26,7 +29,9 @@ interface RotateFilterRepository {
     var initialScale: Float
 }
 
-class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository {
+class RotateFilterRepositoryImpl @Inject constructor(
+    @ApplicationContext val context: Context
+) : RotateFilterRepository {
     override var previousDegree = 0f
     override var sliderValue = 0f
     override var rotateNumber = 0
@@ -126,7 +131,12 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         normalizeDegree: Float,
         imageRatio: Pair<Float, Float>?
     ) {
-        cropImageView.postRotate(normalizeDegree)
+        try {
+            cropImageView.postRotate(normalizeDegree)
+        } catch (e: Exception) {
+            showErrorGeneralToaster(context, e.message)
+            return
+        }
 
         // isRatioRotated = false mean initial ratio going to rotate 90 degree
         var newScale = initialRatioZoom
