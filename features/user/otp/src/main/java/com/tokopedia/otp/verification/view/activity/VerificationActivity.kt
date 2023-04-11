@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
-import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
@@ -21,6 +21,7 @@ import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneS
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
 import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
+import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -45,8 +46,12 @@ open class VerificationActivity : BaseOtpActivity() {
     lateinit var userSession: UserSessionInterface
 
     var isResetPin2FA = false
+    var isDefaultOtp = false
+
     var otpData = OtpData()
     private var isLoginRegisterFlow = false
+
+    var otpCache: DefaultOtpUiModel? = null
 
     override fun getTagFragment(): String = TAG
 
@@ -123,6 +128,17 @@ open class VerificationActivity : BaseOtpActivity() {
         return bundle
     }
 
+    fun createBundleForDefaultOtp(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true, isDefaultOtpFlow: Boolean): Bundle {
+        return Bundle().apply {
+            putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
+            modeListData?.let {
+                putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
+            }
+            putBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, isMoreThanOne)
+        }
+    }
+
     fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
         if(supportFragmentManager.isStateSaved || fragment.isAdded) {
             return
@@ -146,6 +162,12 @@ open class VerificationActivity : BaseOtpActivity() {
 
     fun goToVerificationPage(modeListData: ModeListData, isMoreThanOne: Boolean = true) {
         val bundle = createBundle(modeListData, isMoreThanOne)
+        val fragment = generateVerificationFragment(modeListData, bundle)
+        doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    fun goToVerificationPageDefaultFlow(modeListData: ModeListData, isMoreThanOne: Boolean = true) {
+        val bundle = createBundleForDefaultOtp(modeListData, isMoreThanOne, true)
         val fragment = generateVerificationFragment(modeListData, bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }

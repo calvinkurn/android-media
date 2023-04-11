@@ -17,7 +17,7 @@ class RechargeCCRecommendationFragment(
     private val recommendations: List<TopupBillsRecommendation>,
     private val isShowTitle: Boolean,
     private val listener: TopupBillsRecentNumberListener
-): BaseDaggerFragment() {
+) : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentRechargeCcRecommendationBinding>()
 
@@ -58,10 +58,16 @@ class RechargeCCRecommendationFragment(
     }
 
     private fun showEmptyState() {
-        binding?.recentTransactionEmptyStateWidget?.show()
+        binding?.run {
+            recentTransactionWidget.hide()
+            recentTransactionEmptyStateWidget.show()
+        }
     }
 
     private fun hideEmptyState() {
-        binding?.recentTransactionEmptyStateWidget?.hide()
+        binding?.run {
+            recentTransactionWidget.show()
+            recentTransactionEmptyStateWidget.hide()
+        }
     }
 }

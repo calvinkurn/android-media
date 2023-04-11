@@ -74,7 +74,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -405,7 +405,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onClickProductRecom(
         channelId: String,
         headerName: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val productId = recommendationItem.productCardModel.productId
@@ -438,7 +438,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onImpressProductRecom(
         channelId: String,
         headerName: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val productId = recommendationItem.productCardModel.productId
@@ -532,7 +532,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int,
         cartId: String
     ) {
@@ -574,7 +574,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val item = productItemDataLayer(
