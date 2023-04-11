@@ -13,15 +13,15 @@ import kotlin.coroutines.CoroutineContext
  * [SubViewModel] is separating the UI logic in the main viewmodel into a smaller viewmodel by delegating the sub-viewmodel.
  * Separate event and state according to their respective contexts.
  */
-@Suppress("LateinitUsage")
-abstract class SubViewModel(subViewModelScope: SubViewModelScope): SubViewModelScope by subViewModelScope {
+abstract class SubViewModel(
+    subViewModelScope: SubViewModelScope,
+): SubViewModelScope by subViewModelScope {
 
     // an interface to access data to outer class
     private var mMediator: SubViewModelMediator? = null
 
     /***
      * a sub-viewmodel must be registered before use
-     * @param scope
      * @param mediator
      */
     fun register(mediator: SubViewModelMediator? = null) {
@@ -30,7 +30,7 @@ abstract class SubViewModel(subViewModelScope: SubViewModelScope): SubViewModelS
 
     /***
      * helper function to process something in a coroutine
-     * @param context by default [mCoroutineScope.coroutineContext]
+     * @param context by default [vmScope.coroutineContext]
      * @param block
      */
     protected fun launch(
