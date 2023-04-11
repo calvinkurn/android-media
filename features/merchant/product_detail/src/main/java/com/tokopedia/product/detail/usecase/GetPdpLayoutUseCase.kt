@@ -38,7 +38,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
                   }
                   isGiftable
