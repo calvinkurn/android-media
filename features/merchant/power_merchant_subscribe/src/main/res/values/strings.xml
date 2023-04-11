@@ -201,7 +201,8 @@
     <string name="pm_membership_next_grade_title">Capai Level %1$d untuk jadi %2$s dengan memenuhi target ini!</string>
     <string name="pm_tnc_description_pm_deactivation"><![CDATA[Dengan kembali jadi Regular Merchant, saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku]]></string>
     <string name="pm_new_label">Baru</string>
-    <string name="pm_cancel_pm_deactivation_message">Permintaan untuk berhenti dari program Power Merchant dibatalkan.</string>
+    <string name="pm_cancel_pm_deactivation_message">Permintaan untuk berhenti jadi Power Merchant dibatalkan.</string>
+    <string name="pm_cancel_pm_pro_deactivation_message">Permintaan untuk berhenti jadi Power Merchant PRO dibatalkan.</string>
     <string name="pm_header_terms_status">Capai target ke <b>Power Merchant PRO!</b></string>
     <string name="pm_active_cta_if_pm_not_active">Jika Power Merchant Tidak Aktif?</string>
     <string name="pm_active_cta_if_pm_not_active_desc">Tingkatkan skor <b>min. 60</b> agar PM aktif lagi. Jika ingin menjadi PM PRO, jaga skor <b>min. 70</b> sampai <b>Senin</b> pertama bulan depan.</string>

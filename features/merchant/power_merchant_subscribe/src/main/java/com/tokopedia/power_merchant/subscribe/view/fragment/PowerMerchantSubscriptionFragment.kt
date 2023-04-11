@@ -424,7 +424,7 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun observePmActivationStatus() {
-        mViewModel.pmActivationStatus.observeOnce(this.viewLifecycleOwner, {
+        mViewModel.pmActivationStatus.observeOnce(this.viewLifecycleOwner) {
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
@@ -433,11 +433,11 @@ open class PowerMerchantSubscriptionFragment :
                     logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVATION_ERROR, it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observePmCancelDeactivationSubmission() {
-        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner, {
+        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner) {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
                 is Fail -> {
@@ -448,7 +448,7 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
             }
-        })
+        }
     }
 
     private fun setOnCancelDeactivationFailed(throwable: Throwable) {
@@ -468,7 +468,11 @@ open class PowerMerchantSubscriptionFragment :
         view?.run {
             Toaster.toasterCustomBottomHeight =
                 context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).orZero()
-            val message = context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
+            val message = if (data.currentShopTier == PMConstant.ShopTierType.POWER_MERCHANT_PRO) {
+                context?.getString(R.string.pm_cancel_pm_pro_deactivation_message).orEmpty()
+            } else {
+                context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
+            }
             Toaster.build(
                 rootView,
                 message,
