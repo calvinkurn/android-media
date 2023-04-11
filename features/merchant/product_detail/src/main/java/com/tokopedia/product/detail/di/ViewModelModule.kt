@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScopeProvider
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.TkpdSubViewModelScopeProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScopeProviderImpl
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewViewModel
 import dagger.Binds
@@ -21,7 +21,7 @@ abstract class ViewModelModule {
     @ProductDetailScope
     @Binds
     internal abstract fun bindSubViewModelScopeProvider(
-        provider: TkpdSubViewModelScopeProvider
+        provider: SubViewModelScopeProviderImpl
     ): SubViewModelScopeProvider
 
     @ProductDetailScope

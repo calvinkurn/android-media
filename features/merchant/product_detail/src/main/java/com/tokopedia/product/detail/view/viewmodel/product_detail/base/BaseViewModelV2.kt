@@ -16,6 +16,6 @@ open class BaseViewModelV2(
     private fun registerSubViewModelScopeProvider(
         subViewModelScopeProvider: SubViewModelScopeProvider
     ) {
-        subViewModelScopeProvider.registerProvider { viewModelScope }
+        subViewModelScopeProvider.register { viewModelScope }
     }
 }

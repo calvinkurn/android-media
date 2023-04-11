@@ -4,5 +4,5 @@ import kotlinx.coroutines.CoroutineScope
 import java.io.Closeable
 
 interface SubViewModelScopeProvider : Closeable, SubViewModelScope {
-    fun registerProvider(provider: () -> CoroutineScope)
+    fun register(provider: () -> CoroutineScope)
 }

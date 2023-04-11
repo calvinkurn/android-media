@@ -30,14 +30,14 @@ abstract class SubViewModel(
 
     /***
      * helper function to process something in a coroutine
-     * @param context by default [vmScope.coroutineContext]
+     * @param context by default [viewModelScope.coroutineContext]
      * @param block
      */
     protected fun launch(
-        context: CoroutineContext? = vmScope?.coroutineContext,
+        context: CoroutineContext? = viewModelScope?.coroutineContext,
         block: suspend CoroutineScope.() -> Unit
     ) {
-        val scope = vmScope ?: return
+        val scope = viewModelScope ?: return
         scope.launch(context = context ?: scope.coroutineContext) {
             block()
         }
