@@ -2015,7 +2015,8 @@ class CartListPresenter @Inject constructor(
                             shopId = order.shopId,
                             warehouseId = order.warehouseId,
                             isPo = order.isPo,
-                            poDuration = order.poDuration.toString()
+                            poDuration = order.poDuration.toString(),
+                            cartStringGroup = order.cartStringGroup
                         )
                     }
                 )
@@ -2296,11 +2297,17 @@ class CartListPresenter @Inject constructor(
                                 ClearPromoOrder(
                                     uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
-                                    codes = if (it.cartStringOrder == group.boUniqueId) mutableListOf(group.boCode) else mutableListOf(),
+                                    codes = if (it.cartStringOrder == group.boUniqueId || it.needToMoveBoData) {
+                                        mutableListOf(group.boCode)
+                                    }
+                                    else {
+                                        mutableListOf() 
+                                    },
                                     shopId = it.shopId.toLongOrZero(),
                                     isPo = group.isPo,
                                     poDuration = it.poDuration,
-                                    warehouseId = group.warehouseId
+                                    warehouseId = group.warehouseId,
+                                    cartStringGroup = group.cartString
                                 )
                             }
                         )

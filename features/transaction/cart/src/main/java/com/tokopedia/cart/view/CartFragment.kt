@@ -1205,7 +1205,8 @@ class CartFragment :
                                         poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1252,7 +1253,8 @@ class CartFragment :
                                         poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1302,7 +1304,8 @@ class CartFragment :
                                         poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
