@@ -46,11 +46,11 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 **With Pinpoint**
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.22.02.png)
+![](../res/editnewaddress/navigation_with_pinpoint.png)
 
 **Without Pinpoint**
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.10.png)![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.31.png)
+![](../res/editnewaddress/navigation_without_pinpoint.png)![](../res/editnewaddress/navigation_without_pinpoint_two.png)
 
 ## Tech Stack
 
@@ -63,7 +63,7 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 ## Flow Diagram
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.24.12.png)
+![](../res/editnewaddress/flow_diagram.png)
 
 ## How-to
 

@@ -16,7 +16,7 @@ labels:
 
 <!--toc-->
 
-## Release Notes (max 5 latest release notes)
+## Release Notes
 
 <!--start expand:10 Dec 2019 (MA-3.55)-->
 ###### [First Release](https://tokopedia.atlassian.net/browse/AN-2795)
@@ -56,4 +56,4 @@ labels:
 
 `tokopedia-android-internal://logistic/dropoff/`
 
-![](res/image-20221215-053222.png)
+![](res/navigation.png)

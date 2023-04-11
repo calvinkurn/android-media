@@ -32,7 +32,7 @@ Today, activation page can be found in SellerApp and only handle COD Activation 
 
 Can be accessed only in seller app
 
-![](res/image-20221213-091233.png)
+![](res/navigation.png)
 
 ## How-to
 

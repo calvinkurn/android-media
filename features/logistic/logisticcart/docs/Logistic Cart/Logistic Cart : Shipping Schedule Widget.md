@@ -42,32 +42,32 @@ This custom view has functionality to select schedule delivery when the buyer wa
 
 - Available 2 hours option, but not available schedule delivery option
 
-![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.22.49.png)![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.34.26.png)
+![](../res/shippingschedulewidget/widget_with_no_available_schedule_delivery_option.png)![](../res/shippingschedulewidget/flow_diagram.png)
 - Available 2 hours option, schedule delivery not available in warehouse (hide schedule delivery widget and show existing widget for 2 hours)
 
-![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.56.22.png)
+![](../res/shippingschedulewidget/schedule_delivery_not_available_in_warehouse.png)
 
 - Available for 2 hours and schedule delivery option
 
-![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.24.20.png)
+![](../res/shippingschedulewidget/both_option_available.png)
 
 - Available for 2 hours and schedule delivery option, but not meet minimum purchase for free ongkir
 
-![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.28.24.png)![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.28.42.png)
+![](../res/shippingschedulewidget/not_meet_min_transaction_requirement.png)![](../res/shippingschedulewidget/not_meet_min_transaction_requirement_two.png)
 
 - Available for 2 hours and schedule delivery option, but not have free ongkir quota anymore
 
-![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.31.35.png)![](../res/shippingschedulewidget/Screen Shot 2022-11-07 at 08.32.07.png)
+![](../res/shippingschedulewidget/no_free_ongkir_kuota.png)![](../res/shippingschedulewidget/no_free_ongkir_kuota_two.png)
 
 ## Navigation
 
 This widget will show on checkout page when product tokopedia now and support schedule delivery.
 
-![](../res/shippingschedulewidget/Screen Shot 2023-01-30 at 09.44.37.png)
+![](../res/shippingschedulewidget/navigation.png)
 
 ## Flow Diagram
 
-![](../res/shippingschedulewidget/schedule delivery widget.drawio.png)
+![](../res/shippingschedulewidget/schedule_delivery_widget_drawio.png)
 
 ## How-to
 

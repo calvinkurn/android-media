@@ -38,30 +38,30 @@ This custom view has functionality to select shipping `duration` and `courier` w
 
 - No pinpoints yet
 
-![](../res/shippingwidget/Screen Shot 2023-01-30 at 13.39.49.png)
+![](../res/shippingwidget/no_pinpoint.png)
 - Not selected delivery yet
 
-![](../res/shippingwidget/Screen Shot 2022-09-21 at 14.50.11.png)
+![](../res/shippingwidget/no_selected_delivery.png)
 
 - Product from tokonow
 
-![](../res/shippingwidget/Screen Shot 2022-09-21 at 14.50.28.png)
+![](../res/shippingwidget/tokonow.png)
 
 - Use Bebas Ongkir
 
-![](../res/shippingwidget/Screen Shot 2022-09-21 at 14.51.25.png)
+![](../res/shippingwidget/bebas_ongkir.png)
 
 - Use delivery arrived 4 hours (Dilayani Tokopedia)
 
-![](../res/shippingwidget/Screen Shot 2022-09-21 at 14.50.47.png)
+![](../res/shippingwidget/dilayani_tokopedia.png)
 
 - Normal Shipping
 
-![](../res/shippingwidget/Screen Shot 2022-09-21 at 14.50.38.png)
+![](../res/shippingwidget/normal_shipping.png)
 
 ## Flow Diagram
 
-![](../res/shippingwidget/shipping widget checkout.drawio.png)
+![](../res/shippingwidget/shipping_widget_checkout_drawio.png)
 
 ## How-to
 

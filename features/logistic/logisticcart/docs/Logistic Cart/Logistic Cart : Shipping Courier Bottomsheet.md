@@ -36,11 +36,11 @@ So we need to maintain two different bottomsheets when there are changes. theref
 This bottomsheet is used to select courier on the checkout and occ page  
 
 
-![](../res/shippingcourierbottomsheet/Screen Shot 2023-02-02 at 13.17.34.png)
+![](../res/shippingcourierbottomsheet/project_description.png)
 
 ## Flow Diagram
 
-![](../res/shippingcourierbottomsheet/shipping courier.drawio.png)
+![](../res/shippingcourierbottomsheet/shipping_courier_drawio.png)
 
 ## How-to
 

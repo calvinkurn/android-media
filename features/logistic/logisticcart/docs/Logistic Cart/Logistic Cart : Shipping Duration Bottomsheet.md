@@ -33,11 +33,11 @@ Previously the shipping duration bottomsheet was separated between checkout & oc
 
 This bottomsheet is used to select the delivery duration on the checkout and occ page
 
-![](../res/shippingdurationbottomsheet/WhatsApp Image 2023-01-31 at 11.14.38 AM.jpeg)
+![](../res/shippingdurationbottomsheet/project_description.jpeg)
 
 ## Flow Diagram
 
-![](../res/shippingdurationbottomsheet/shipping duration.drawio.png)
+![](../res/shippingdurationbottomsheet/shipping_duration_drawio.png)
 
 ## How-to
 
@@ -123,7 +123,7 @@ ShippingDurationBottomsheet.show(
 
 ### LogisticPromoUiModel
 
-![](../res/shippingdurationbottomsheet/Screenshot 2023-03-29 at 09.49.01.png)
+![](../res/shippingdurationbottomsheet/logistic_promo_ui.png)
 
 | **Variable name** | **Type** | **Description** | **Mapping from RatesV3** |
 | --- | --- | --- | --- |

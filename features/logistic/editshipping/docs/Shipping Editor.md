@@ -4,15 +4,15 @@ labels:
 ---
 
 
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status--> |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) |
-| Product Manager | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)  |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | - |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | **Multi-Loc**PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit>  |
-| Module Location | `features/logistic/editshipping` |
+| **Status** | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
+| --- |----------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)          |
+| Product Manager | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)          |
+| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                 |
+| Release date | -                                                                                                              |
+| Module type | <!--start status:YELLOW-->FEATURE<!--end status-->                                                             |
+| Product PRD | **Multi-Loc**<br />PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit> |
+| Module Location | `features/logistic/editshipping`                                                                               |
 
 <!--toc-->
 
@@ -34,13 +34,19 @@ Tokopedia facilitates seller to set up courier with a feature called `Shipping E
 
 Shipping Editor on **Single-Loc** handle shop edit address and courier selection in one page. Meanwhile, Shipping Editor on **Multi-Loc** only handle courier selection, but having interconnection with shop edit address in another page.
 
-![](res/image-20221206-025159.png)## Navigation
+![](res/loc_shipping_editor.png)
+
+## Navigation
 
 - Both pages can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
 
-![](res/image-20221206-025748.png)## Flow Diagram
+![](res/navigation.png)
 
-![](res/image-20230106-021614.png)## Tech Stack
+## Flow Diagram
+
+![](res/flow_diagram.png)
+
+## Tech Stack
 
 - Shipping Editor (Single - Loc)
 

@@ -37,20 +37,20 @@ This custom view has functionality to select shipping `duration` and `courier` w
 
 - Use Bebas Ongkir
 
-![](../res/shippingoccwidget/Screen Shot 2022-09-22 at 13.44.06.png)
+![](../res/shippingoccwidget/bebas_ongkir.png)
 - Use delivery arrived 4 hours (Dilayani Tokopedia)
 
-![](../res/shippingoccwidget/Screen Shot 2022-09-22 at 13.46.38.png)
+![](../res/shippingoccwidget/delivery_four_hours.png)
 - Normal Shipping
 
-![](../res/shippingoccwidget/Screen Shot 2022-09-22 at 13.41.00.png)
+![](../res/shippingoccwidget/normal_shipping.png)
 - Normal Shipping With Bebas Ongkir Ticker
 
-![](../res/shippingoccwidget/Screen Shot 2022-09-22 at 13.43.17.png)
+![](../res/shippingoccwidget/bebas_ongkir_ticker.png)
 
 ## Flow Diagram
 
-![](../res/shippingoccwidget/shipping widget occ.drawio.png)## How-to
+![](../res/shippingoccwidget/shipping_widget_occ_drawio.png)## How-to
 
 #### 1. Add dependencies
 

@@ -38,7 +38,7 @@ Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied 
 
 - Normal Flow
 
-![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 09.31.40.png)
+![](../res/shippingschedulebottomsheet/project_description_normal_flow.png)
 - User not meet minimum purchase OR User does not have free ongkir quota anymore
 
 ![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)![](../res/shippingschedulebottomsheet/jadwal_tersedia_kuota_ongkir_habis.png)
@@ -50,7 +50,7 @@ Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied 
 
 This bottomsheet will show when click icon chevron right on schedule delivery option widget
 
-![](../res/shippingschedulebottomsheet/Screen Shot 2023-01-30 at 10.51.49.png)
+![](../res/shippingschedulebottomsheet/navigation.png)
 
 ## How-to
 
@@ -102,9 +102,9 @@ Model for showing schedule delivery bottomsheet
 
 | **Variable name** | **Type** | **Description**                                                                                                                                                                                                                                                                                                       |
 | --- | --- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| date | `ChooseDateUiModel` | Show list of dates for schedule delivery. ![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 12.38.40.png)Shown time slot list is from `date.content` that has one of the time slot selected (`date.content.isSelected`) ![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 12.39.45.png) |
-| availableTitle | `TitleSectionUiModel` | Section title for available time slot ![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 12.37.13.png)                                                                                                                                                                                                                                                                                |
-| unavailableTitle | `TitleSectionUiModel` | Section title for unavailable time slot ![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 12.37.20.png)                                                                                                                                                                                                                                                                              |
+| date | `ChooseDateUiModel` | Show list of dates for schedule delivery. ![](../res/shippingschedulebottomsheet/list_date_schedule_delivery.png)Shown time slot list is from `date.content` that has one of the time slot selected (`date.content.isSelected`) ![](../res/shippingschedulebottomsheet/time_slot_list.png) |
+| availableTitle | `TitleSectionUiModel` | Section title for available time slot ![](../res/shippingschedulebottomsheet/available_time_slot.png)                                                                                                                                                                                                                                                                                |
+| unavailableTitle | `TitleSectionUiModel` | Section title for unavailable time slot ![](../res/shippingschedulebottomsheet/unavailable_time_slot.png)                                                                                                                                                                                                                                                                              |
 | infoUiModel | `BottomSheetInfoUiModel` | Data for bottom sheet schedule delivery info                                                                                                                                                                                                                                                                          |
 
 ### ChooseDateUiModel
