@@ -161,7 +161,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         )
     }
 
-    interface TokoNowProductCardCarouseBasicListener: TokoNowProductCardCarouselListener {
+    interface ProductCardCarouseBasicListener: TokoNowProductCardCarouselListener {
         override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {}
     }
 }
