@@ -4313,6 +4313,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
         platformFeeModel.setLoading(true);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        showLoaderTotalPayment();
         updateCost();
 
         new Handler().postDelayed(() -> getPlatformFeeData(), 500);
@@ -4356,6 +4357,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        hideLoaderTotalPayment();
         updateCost();
     }
 
@@ -4364,7 +4366,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
         platformFeeModel.setLoading(true);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        showLoaderTotalPayment();
         updateCost();
+    }
+
+    public void showLoaderTotalPayment() {
+        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
+        shipmentButtonPaymentModel.setLoading(true);
+        onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
+    }
+
+    public void hideLoaderTotalPayment() {
+        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
+        shipmentButtonPaymentModel.setLoading(false);
+        onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -4373,6 +4388,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         platformFeeModel.setShowTicker(true);
         platformFeeModel.setTicker(ticker);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        hideLoaderTotalPayment();
         updateCost();
     }
 }

@@ -90,6 +90,8 @@ class GetPlatformFeeCheckoutUseCase @Inject constructor(
                         code
                         title
                         fee
+                        range_min
+                        range_max
                         tooltip_info
                         show_tooltip
                         show_slashed
