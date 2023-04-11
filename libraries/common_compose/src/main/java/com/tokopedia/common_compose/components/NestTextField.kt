@@ -35,7 +35,8 @@ fun NestTextField(
     error: String? = null,
     onValueChanged: (String) -> Unit = {},
     counter: Int? = null,
-    helper: String? = null
+    helper: String? = null,
+    skeleton: Boolean = false
 ) {
     Column {
         OutlinedTextField(
