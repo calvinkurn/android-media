@@ -39,10 +39,8 @@ labels:
 
 - Autocomplete Fragment
 - Dropoff Picker
-
-
-	- Map Fragment
-	- BottomSheet Nearby Location
+  - Map Fragment
+  - BottomSheet Nearby Location
 
 ### GQL
 
