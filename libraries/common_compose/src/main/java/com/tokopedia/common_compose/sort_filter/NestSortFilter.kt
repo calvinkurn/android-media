@@ -7,73 +7,96 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.NestChip
+import com.tokopedia.common_compose.components.NestChips
 import com.tokopedia.common_compose.components.Size
 import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.iconunify.R
 
-data class SortFilter(val title: String, val isSelected: Boolean, val onClick: () -> Unit)
+data class SortFilter(
+    val title: String,
+    val isSelected: Boolean,
+    val showChevron: Boolean = false,
+    val onClick: () -> Unit
+)
 
 @Composable
 fun NestSortFilter(
     modifier: Modifier = Modifier,
+    size: Size = Size.SMALL,
     items: ArrayList<SortFilter>,
-    onClearFilter: () -> Unit,
-    showClearFilterIcon: Boolean
+    showClearFilterIcon: Boolean,
+    onClearFilter: () -> Unit
 ) {
     // Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
-    LazyRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (showClearFilterIcon) item { ClearSortFilterItem(onClick = onClearFilter) }
-        items(items) {
-            NestChip(
-                text = it.title,
-                isSelected = it.isSelected,
-                size = Size.SMALL,
-                showChevron = true,
-                onClick = it.onClick
-            )
+    Row {
+        if (showClearFilterIcon) PrefixFilterItem(
+            modifier = Modifier.padding(end = 12.dp),
+            size = size,
+            painterId = R.drawable.iconunify_close,
+            onClick = onClearFilter
+        )
+        LazyRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(items) {
+                NestChips(
+                    text = it.title,
+                    isSelected = it.isSelected,
+                    size = size,
+                    showChevron = it.showChevron,
+                    onClick = it.onClick
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun ClearSortFilterItem(
-    iconVector: ImageVector = Icons.Outlined.Close,
+private fun PrefixFilterItem(
+    modifier: Modifier = Modifier,
+    size: Size = Size.SMALL,
+    painterId: Int = R.drawable.iconunify_sort_filter,
     text: String? = null,
     onClick: () -> Unit = {}
 ) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
     val backgroundColor = NestTheme.colors.NN._0
     val borderColor = NestTheme.colors.NN._200
+    val height = when (size) {
+        Size.SMALL -> 32.dp
+        Size.MEDIUM -> 40.dp
+        Size.LARGE -> 48.dp
+    }
     Surface(
         color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, borderColor),
-        modifier = Modifier
-            .height(32.dp)
+        modifier = modifier
+            .height(height)
             .clickable { onClick() }
     ) {
-        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
-                modifier = Modifier.padding(end = 4.dp),
-                imageVector = iconVector,
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = painterId),
                 contentDescription = "Clear Filter Icon",
                 tint = LocalNestColor.current.NN._500
             )
             if (text != null) {
-                Text(text = text)
+                Text(modifier = Modifier.padding(start = 4.dp), text = text)
             }
         }
     }
@@ -83,7 +106,10 @@ private fun ClearSortFilterItem(
 @Composable
 fun PrefixSortFilterPreview() {
     NestTheme {
-        ClearSortFilterItem(iconVector = Icons.Default.Settings, text = "Filter")
+        Row {
+            PrefixFilterItem(text = "Filter")
+            PrefixFilterItem(painterId = R.drawable.iconunify_close)
+        }
     }
 }
 
@@ -92,15 +118,27 @@ fun PrefixSortFilterPreview() {
 @Composable
 fun NestSortFilterPreview() {
     val items = arrayListOf(
-        SortFilter("Lokasi", true, onClick = {}),
+        SortFilter("Lokasi", true, showChevron = true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
+    var size by remember { mutableStateOf(Size.SMALL) }
     NestTheme {
-        NestSortFilter(
-            modifier = Modifier,
-            items = items,
-            onClearFilter = {},
-            showClearFilterIcon = true
-        )
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = size == Size.SMALL, onCheckedChange = { size = Size.SMALL })
+                Text("S", fontWeight = FontWeight.Bold)
+                Checkbox(checked = size == Size.MEDIUM, onCheckedChange = { size = Size.MEDIUM })
+                Text("M", fontWeight = FontWeight.Bold)
+                Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
+                Text("L", fontWeight = FontWeight.Bold)
+            }
+            NestSortFilter(
+                modifier = Modifier,
+                size = size,
+                items = items,
+                showClearFilterIcon = true,
+                onClearFilter = {}
+            )
+        }
     }
 }

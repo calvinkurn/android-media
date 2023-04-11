@@ -20,7 +20,7 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
-fun NestChip(
+fun NestChips(
     modifier: Modifier = Modifier,
     text: String,
     isSelected: Boolean,
@@ -72,8 +72,8 @@ fun NestChip(
                 textStyle = NestTheme.typography.display2.copy(color = textColor),
                 maxLines = maxLines
             )
-            Spacer(modifier = Modifier.width(10.dp))
             if (showChevron) {
+                Spacer(modifier = Modifier.width(10.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_chevron_down),
                     contentDescription = "Dropdown Icon",
@@ -103,8 +103,8 @@ fun PreviewChip() {
                 Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                 Text("L", fontWeight = FontWeight.Bold)
             }
-            NestChip(text = "Normal", isSelected = active, size = size) { active = !active }
-            NestChip(text = "Chevron", isSelected = false, size = size, showChevron = true)
+            NestChips(text = "Normal", isSelected = active, size = size) { active = !active }
+            NestChips(text = "Chevron", isSelected = false, size = size, showChevron = true)
         }
     }
 }
