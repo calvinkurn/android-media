@@ -215,7 +215,7 @@ class DeveloperOptionAdapter(
     /**
      * To Show Login Helper at the top
      **/
-    private val topItems = mutableListOf(
+    private val topHiddenItems = mutableListOf(
         LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER))
     )
 
@@ -231,7 +231,7 @@ class DeveloperOptionAdapter(
         if (isAuthorized.not()) {
             defaultItems.addAll(generalItems)
         } else {
-            defaultItems.addAll(topItems)
+            defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
