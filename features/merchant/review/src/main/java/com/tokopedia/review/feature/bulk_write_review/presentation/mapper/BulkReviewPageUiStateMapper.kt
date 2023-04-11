@@ -15,6 +15,7 @@ class BulkReviewPageUiStateMapper @Inject constructor(
 ) {
     fun map(
         shouldCancelBulkReview: Boolean,
+        shouldSubmitReview: Boolean,
         submitBulkReviewRequestState: BulkReviewSubmitRequestState,
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState,
@@ -29,6 +30,7 @@ class BulkReviewPageUiStateMapper @Inject constructor(
                     getFormRequestState.throwable
                 )
                 is BulkReviewGetFormRequestState.Complete.Success -> mapOnGetFormSuccess(
+                    shouldSubmitReview,
                     submitBulkReviewRequestState,
                     bulkReviewVisitableList,
                     bulkReviewStickyButtonUiState,
@@ -40,6 +42,7 @@ class BulkReviewPageUiStateMapper @Inject constructor(
     }
 
     private fun mapOnGetFormSuccess(
+        shouldSubmitReview: Boolean,
         submitBulkReviewRequestState: BulkReviewSubmitRequestState,
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState,
@@ -48,6 +51,7 @@ class BulkReviewPageUiStateMapper @Inject constructor(
         return when (badRatingCategoryRequestState) {
             is BulkReviewGetBadRatingCategoryRequestState.Complete.Error -> mapOnBulkReviewPageError(badRatingCategoryRequestState.throwable)
             is BulkReviewGetBadRatingCategoryRequestState.Complete.Success -> mapOnBulkReviewPageSuccess(
+                shouldSubmitReview,
                 submitBulkReviewRequestState,
                 bulkReviewVisitableList,
                 bulkReviewStickyButtonUiState
@@ -65,11 +69,20 @@ class BulkReviewPageUiStateMapper @Inject constructor(
     }
 
     private fun mapOnBulkReviewPageSuccess(
+        shouldSubmitReview: Boolean,
         submitBulkReviewRequestState: BulkReviewSubmitRequestState,
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState
     ): BulkReviewPageUiState {
         return if (
+            shouldSubmitReview &&
+            submitBulkReviewRequestState is BulkReviewSubmitRequestState.Requesting
+        ) {
+            BulkReviewPageUiState.Submitting(
+                items = bulkReviewVisitableList,
+                stickyButtonUiState = bulkReviewStickyButtonUiState
+            )
+        } else if (
             submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success && submitBulkReviewRequestState.result.success
         ) {
             BulkReviewPageUiState.Submitted(userName = userSession.name)

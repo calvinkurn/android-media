@@ -297,6 +297,7 @@ class BulkReviewViewModel @Inject constructor(
         get() = _badRatingCategoryBottomSheetToasterQueue
     val bulkReviewPageUiState = combine(
         shouldCancelBulkReview,
+        shouldSubmitReview,
         submitBulkReviewRequestState,
         bulkReviewVisitableList,
         bulkReviewStickyButtonUiState,

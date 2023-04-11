@@ -15,6 +15,11 @@ sealed interface BulkReviewPageUiState {
         val stickyButtonUiState: BulkReviewStickyButtonUiState
     ) : BulkReviewPageUiState
 
+    data class Submitting(
+        val items: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
+        val stickyButtonUiState: BulkReviewStickyButtonUiState
+    ) : BulkReviewPageUiState
+
     data class Error(
         val throwable: Throwable?
     ) : BulkReviewPageUiState
