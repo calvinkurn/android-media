@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProviderImpl
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -83,8 +84,13 @@ class PlayWidgetSubViewModelTest {
     fun beforeTest() {
         MockKAnnotations.init(this)
 
-        viewModel = PlayWidgetSubViewModel(playWidgetTools = playWidgetTools)
-        viewModel.register(CoroutineScope(CoroutineTestDispatchersProvider.main), mediator)
+        viewModel = PlayWidgetSubViewModel(
+            playWidgetTools = playWidgetTools,
+            subViewModelScope = SubViewModelProviderImpl().apply {
+                registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
+                registerMediator { this@PlayWidgetSubViewModelTest.mediator }
+            }
+        )
     }
 
     @After
@@ -119,7 +125,7 @@ class PlayWidgetSubViewModelTest {
         val expectedResponse = PlayWidget()
 
         coEvery {
-            viewModel.mediator.getVariant()
+            viewModel.productDetailMediator.getVariant()
         } returns ProductVariant(parentId = "1")
 
         coEvery {
@@ -135,8 +141,8 @@ class PlayWidgetSubViewModelTest {
         } returns playWidgetExpectedState
 
         viewModel.getPlayWidgetData()
-        coVerify { viewModel.mediator.getVariant() }
-        assert(viewModel.mediator.getVariant() != null)
+        coVerify { viewModel.productDetailMediator.getVariant() }
+        assert(viewModel.productDetailMediator.getVariant() != null)
     }
 
     @Test
@@ -145,13 +151,13 @@ class PlayWidgetSubViewModelTest {
         val expectedResponse = PlayWidget()
 
         coEvery {
-            viewModel.mediator.getP1()
+            viewModel.productDetailMediator.getP1()
         } returns DynamicProductInfoP1(
             basic = BasicInfo(category = Category(detail = listOf(Category.Detail())))
         )
 
         coEvery {
-            viewModel.mediator.getVariant()
+            viewModel.productDetailMediator.getVariant()
         } returns ProductVariant(parentId = "1", children = listOf(VariantChild()))
 
         coEvery {
@@ -168,9 +174,9 @@ class PlayWidgetSubViewModelTest {
 
         viewModel.getPlayWidgetData()
 
-        coVerify { viewModel.mediator.getP1() }
-        coVerify { viewModel.mediator.getVariant() }
-        assert(viewModel.mediator.getP1()?.basic?.category != null)
+        coVerify { viewModel.productDetailMediator.getP1() }
+        coVerify { viewModel.productDetailMediator.getVariant() }
+        assert(viewModel.productDetailMediator.getP1()?.basic?.category != null)
     }
 
     @Test

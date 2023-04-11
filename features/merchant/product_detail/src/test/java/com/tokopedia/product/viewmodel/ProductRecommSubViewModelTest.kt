@@ -6,6 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProviderImpl
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -64,10 +65,11 @@ class ProductRecommSubViewModelTest {
 
         viewModel = ProductRecommSubViewModel(
             getRecommendationUseCase = { getRecommendationUseCase },
-            getProductRecommendationUseCase = { getProductRecommendationUseCase }
-        ).apply {
-            register(CoroutineScope(CoroutineTestDispatchersProvider.main))
-        }
+            getProductRecommendationUseCase = { getProductRecommendationUseCase },
+            subViewModelScope = SubViewModelProviderImpl().apply {
+                registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
+            }
+        )
     }
 
     @After
@@ -443,6 +445,102 @@ class ProductRecommSubViewModelTest {
         }
 
         assertTrue((viewModel.loadTopAdsProduct.value as Success).data.tid == "1")
+    }
+    // endregion
+
+    // region vertical recomm
+    @Test
+    fun `verify vertical recommendation when return empty list, will be fail`() {
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId
+        )
+
+        assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify vertical recommendation throw error, will be fail`() {
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        assertEquals(pageName, captured.pageName)
+        assertEquals(pageNumber, captured.pageNumber)
+        assertEquals(listOf(productId), captured.productIds)
+
+        assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageName = "pdp_8_vertical"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = null,
+            page = null
+        )
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        assertEquals(pageName, captured.pageName)
+        assertEquals(1, captured.pageNumber)
+        assertEquals(listOf(""), captured.productIds)
+
+        assertTrue(viewModel.verticalRecommendation.value is Success)
     }
     // endregion
 }

@@ -24,7 +24,7 @@ abstract class ViewModelModule {
 
     @ProductDetailScope
     @Binds
-    internal abstract fun bindSubViewModelScopeProvider(
+    internal abstract fun bindSubViewModelProvider(
         provider: SubViewModelProviderImpl
     ): SubViewModelProvider
 
@@ -36,7 +36,7 @@ abstract class ViewModelModule {
 
     @ProductDetailScope
     @Binds
-    internal abstract fun bindRecomSubViewModel(
+    internal abstract fun bindProductRecommSubViewModel(
         subViewModel: ProductRecommSubViewModel
     ): IProductRecommSubViewModel
 

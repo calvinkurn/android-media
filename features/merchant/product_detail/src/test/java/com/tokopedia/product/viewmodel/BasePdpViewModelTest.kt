@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
@@ -131,6 +132,15 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
+    @RelaxedMockK
+    lateinit var productRecommSubViewModel: ProductRecommSubViewModel
+
+    @RelaxedMockK
+    lateinit var playWidgetSubViewModel: PlayWidgetSubViewModel
+
+    @RelaxedMockK
+    lateinit var subViewModelProvider: SubViewModelProvider
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -194,13 +204,9 @@ abstract class BasePdpViewModelTest {
             remoteConfigInstance,
             userSessionInterface,
             { affiliateCookieHelper },
-            productRecommSubViewModel = ProductRecommSubViewModel(
-                getRecommendationUseCase = { getRecommendationUseCase },
-                getProductRecommendationUseCase = { getProductRecommendationUseCase }
-            ),
-            playWidgetSubViewModel = PlayWidgetSubViewModel(
-                playWidgetTools = playWidgetTools
-            )
+            productRecommSubViewModel = productRecommSubViewModel,
+            playWidgetSubViewModel = playWidgetSubViewModel,
+            subViewModelProvider = subViewModelProvider
         )
     }
 }

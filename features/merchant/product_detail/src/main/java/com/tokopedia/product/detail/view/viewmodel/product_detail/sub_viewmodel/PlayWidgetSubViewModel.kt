@@ -28,7 +28,7 @@ class PlayWidgetSubViewModel @Inject constructor(
     subViewModelScope: SubViewModelScope
 ) : SubViewModel(subViewModelScope), IPlayWidgetSubViewModel {
 
-    private val productDetailMediator: GetProductDetailDataMediator by getMediator()
+    val productDetailMediator: GetProductDetailDataMediator by getMediator()
 
     private val _playWidgetModel = MutableLiveData<Result<PlayWidgetState>>()
     override val playWidgetModel: LiveData<Result<PlayWidgetState>>
