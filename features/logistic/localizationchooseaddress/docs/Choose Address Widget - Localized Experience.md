@@ -51,10 +51,8 @@ This UI Component will be created by Logistic FE, so the lifecycle and the funct
 - A consumer page will have to just add this component to their page and implement the [callback/listener](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience#Choose-Address-Listener).
 - A [callback/listener](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience#Choose-Address-Listener) will be available for the consumer. So every time this widget needs to be updated/refreshed, the callback/delegate will be triggered, letting the consumer know and ideally handling their own refresh layout logic.
 - We will provide [Local Cache Model](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience#Local-Cache-Model) to be consumed by each page. Local Chosen Address data will be fetched every time host fragment bind the Local Choose Address Widget with `chooseAddressWidget.bindChooseAddress(this)`
-
-
-	- By default widget will get data from device’s shared preference
-	- If device doesn’t have local chosen address data (indicated by `LocalCacheModel.address_id == 0`), widget will fetch data from BE [keroAddrGetStateChosenAddress](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1145635698/GQL+Get+State+Chosen+Address)
+  - By default widget will get data from device’s shared preference
+  - If device doesn’t have local chosen address data (indicated by `LocalCacheModel.address_id == 0`), widget will fetch data from BE [keroAddrGetStateChosenAddress](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1145635698/GQL+Get+State+Chosen+Address)
 
 ## Tech Stack
 
