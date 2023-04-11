@@ -16,7 +16,7 @@ labels:
 
 <!--toc-->
 
-## Release Notes (max 5 latest release notes)
+## Release Notes
 
 <!--start expand:ETA 24 Feb 2023 (MA-3.209)-->
 Move shipping widget from module OCC (One Click Checkout) to logistic cart

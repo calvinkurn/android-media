@@ -49,7 +49,9 @@ For detail about navigation can see this [figma](https://www.figma.com/file/e3yg
 ![](../res/addnewaddress/Screen%20Shot%202023-02-16%20at%2009.21.11.png)  
 **Negative Flow**
 
-![](../res/addnewaddress/Screen%20Shot%202023-02-16%20at%2009.22.23.png)## Tech Stack
+![](../res/addnewaddress/Screen%20Shot%202023-02-16%20at%2009.22.23.png)
+
+## Tech Stack
 
 - MVVM
 - ViewBinding
@@ -58,7 +60,9 @@ For detail about navigation can see this [figma](https://www.figma.com/file/e3yg
 
 ## Flow Diagram
 
-![](../res/addnewaddress/Screen%20Shot%202021-04-22%20at%2008.23.24.png)## How-to
+![](../res/addnewaddress/Screen%20Shot%202021-04-22%20at%2008.23.24.png)
+
+## How-to
 
 To go to the add new address revamp, we can use the applink below
 

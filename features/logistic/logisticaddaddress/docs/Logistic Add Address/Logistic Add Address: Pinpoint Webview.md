@@ -21,7 +21,8 @@ labels:
 
 #### Pinpoint Webview Page
 
-![](../res/pinpointwebview/pinpoint_webview.png)This is a custom web view page that shows pinpoint from `tokopedia.com/pin-point-web-view`. This page is made as a substitute of the native pinpoint page since native pinpoint page doesn’t work in android devices that don’t have Google Play Services.
+![](../res/pinpointwebview/pinpoint_webview.png)
+This is a custom web view page that shows pinpoint from `tokopedia.com/pin-point-web-view`. This page is made as a substitute of the native pinpoint page since native pinpoint page doesn’t work in android devices that don’t have Google Play Services.
 
 ## Navigation
 

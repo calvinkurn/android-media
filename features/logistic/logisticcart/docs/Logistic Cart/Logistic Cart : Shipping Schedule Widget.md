@@ -20,7 +20,7 @@ labels:
 
 <!--toc-->
 
-## Release Notes (max 5 latest release notes)
+## Release Notes
 
 <!--start expand:ETA 24 Feb 2023 (MA-3.209)-->
 
@@ -63,9 +63,13 @@ This custom view has functionality to select schedule delivery when the buyer wa
 
 This widget will show on checkout page when product tokopedia now and support schedule delivery.
 
-![](../res/shippingschedulewidget/Screen Shot 2023-01-30 at 09.44.37.png)## Flow Diagram
+![](../res/shippingschedulewidget/Screen Shot 2023-01-30 at 09.44.37.png)
 
-![](../res/shippingschedulewidget/schedule delivery widget.drawio.png)## How-to
+## Flow Diagram
+
+![](../res/shippingschedulewidget/schedule delivery widget.drawio.png)
+
+## How-to
 
 #### 1. Add dependencies
 

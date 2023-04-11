@@ -18,7 +18,7 @@ labels:
 
 <!--toc-->
 
-## Release Notes (max 5 latest release notes)
+## Release Notes
 
 <!--start expand:ETA 24 Feb 2023 (MA-3.209)-->
 
@@ -38,15 +38,21 @@ Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied 
 
 - Normal Flow
 
-![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 09.31.40.png)- User not meet minimum purchase OR User does not have free ongkir quota anymore
+![](../res/shippingschedulebottomsheet/Screen Shot 2022-11-08 at 09.31.40.png)
+- User not meet minimum purchase OR User does not have free ongkir quota anymore
 
-![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)![](../res/shippingschedulebottomsheet/jadwal_tersedia_kuota_ongkir_habis.png)- User click info icon
+![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)![](../res/shippingschedulebottomsheet/jadwal_tersedia_kuota_ongkir_habis.png)
+- User click info icon
 
-![](../res/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)## Navigation
+![](../res/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)
+
+## Navigation
 
 This bottomsheet will show when click icon chevron right on schedule delivery option widget
 
-![](../res/shippingschedulebottomsheet/Screen Shot 2023-01-30 at 10.51.49.png)## How-to
+![](../res/shippingschedulebottomsheet/Screen Shot 2023-01-30 at 10.51.49.png)
+
+## How-to
 
 **1. Add dependencies**  
 Add `logisticCart` dependency to your module's `build.gradle`

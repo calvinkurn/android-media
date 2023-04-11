@@ -17,7 +17,7 @@ labels:
 <!--toc-->
 
   
-Release Notes (max 5 latest release notes)
+Release Notes
 
 <!--start expand:ETA 24 Feb 2023 (MA-3.209)-->
 Unify shipping courier bottomsheet checkout & occ
@@ -36,9 +36,13 @@ So we need to maintain two different bottomsheets when there are changes. theref
 This bottomsheet is used to select courier on the checkout and occ page  
 
 
-![](../res/shippingcourierbottomsheet/Screen Shot 2023-02-02 at 13.17.34.png)## Flow Diagram
+![](../res/shippingcourierbottomsheet/Screen Shot 2023-02-02 at 13.17.34.png)
 
-![](../res/shippingcourierbottomsheet/shipping courier.drawio.png)## How-to
+## Flow Diagram
+
+![](../res/shippingcourierbottomsheet/shipping courier.drawio.png)
+
+## How-to
 
 1. **Add dependencies**  
 Add `logisticCart` dependency to your module's `build.gradle`

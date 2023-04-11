@@ -32,7 +32,9 @@ Today, activation page can be found in SellerApp and only handle COD Activation 
 
 Can be accessed only in seller app
 
-![](res/image-20221213-091233.png)## How-to
+![](res/image-20221213-091233.png)
+
+## How-to
 
 To go to COD activation page, you can call  internal applink `tokopedia-android-internal://marketplace/shop-settings-cod`
 
@@ -51,4 +53,3 @@ To go to COD activation page, you can call  internal applink `tokopedia-android-
 | --- | --- | --- |
 | `shopFeatureData` | [Shop Feature Query](/wiki/spaces/MC/pages/622891217/Shop+Feature+Query)  | Get Shop Feature Data |
 | `updateShopFeature` | [Update Shop Feature](/wiki/spaces/MC/pages/617913598/Update+Shop+Feature)  | Update Shop FeatureSend param with- `type`: 1 (cod activation)<br/> |
-

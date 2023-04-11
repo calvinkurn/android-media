@@ -17,7 +17,7 @@ labels:
 <!--toc-->
 
   
-Release Notes (max 5 latest release notes)
+Release Notes
 
 <!--start expand:ETA 24 Feb 2023 (MA-3.209)-->
 Unify shipping duration bottomsheet checkout & occ
@@ -33,9 +33,13 @@ Previously the shipping duration bottomsheet was separated between checkout & oc
 
 This bottomsheet is used to select the delivery duration on the checkout and occ page
 
-![](../res/shippingdurationbottomsheet/WhatsApp Image 2023-01-31 at 11.14.38 AM.jpeg)## Flow Diagram
+![](../res/shippingdurationbottomsheet/WhatsApp Image 2023-01-31 at 11.14.38 AM.jpeg)
 
-![](../res/shippingdurationbottomsheet/shipping duration.drawio.png)## How-to
+## Flow Diagram
+
+![](../res/shippingdurationbottomsheet/shipping duration.drawio.png)
+
+## How-to
 
 1. **Add dependencies**  
 Add `logisticCart` dependency to your module's `build.gradle`

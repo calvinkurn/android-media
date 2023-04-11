@@ -34,7 +34,7 @@ NOW! 15
 
 ### Background
 
-![](res/WhatsApp Image 2023-02-13 at 2.51.48 PM (1).jpeg)To deliver greater customer experience, Tokopedia wants to localize its front funnel (Home, Search and Discovery) so that products that cannot be delivered to a user's default address do not appear upon discovery. This is especially important since Tokopedia is growing its F&B categories and many F&B merchants which provide perishable products (example: frozen food, vegetables, meat, fruits) tend to only deliver within their city and exclusively ship with Instant and Same-Day Delivery.
+![](res/home_page_choose_address.jpeg)To deliver greater customer experience, Tokopedia wants to localize its front funnel (Home, Search and Discovery) so that products that cannot be delivered to a user's default address do not appear upon discovery. This is especially important since Tokopedia is growing its F&B categories and many F&B merchants which provide perishable products (example: frozen food, vegetables, meat, fruits) tend to only deliver within their city and exclusively ship with Instant and Same-Day Delivery.
 
 Building the capabilities to choose an address in the very beginning of a buyer's journey to have localized experience tailored based on that chosen address, can avoid situations where buyers cannot checkout the items they have added to cart due to the merchants' coverage is outside buyer's destination address, in the very end of their journey, therefore saving buyer time from eventual disappointment, and improve discoverability for relevant merchants, especially those offering perishable FMCG products
 
@@ -61,7 +61,7 @@ This UI Component will be created by Logistic FE, so the lifecycle and the funct
 
 ## Flow Diagram
 
-![](res/image-20210112-011912.png)![](res/choose_address (1).png)## How-to
+![](res/image-20210112-011912.png)![](res/choose_address.png)## How-to
 
 ### **Choose Address Dependency**
 

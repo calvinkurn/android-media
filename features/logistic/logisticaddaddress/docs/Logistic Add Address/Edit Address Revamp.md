@@ -46,10 +46,13 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 **With Pinpoint**
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.22.02.png)  
+![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.22.02.png)
+
 **Without Pinpoint**
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.10.png)![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.31.png)## Tech Stack
+![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.10.png)![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.23.31.png)
+
+## Tech Stack
 
 **After Revamp**
 
@@ -60,7 +63,9 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 ## Flow Diagram
 
-![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.24.12.png)## How-to
+![](../res/editnewaddress/Screen Shot 2023-02-24 at 09.24.12.png)
+
+## How-to
 
 To go to the edit address revamp, we can use the applink below with param `address_id`
 
