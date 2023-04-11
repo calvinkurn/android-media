@@ -415,7 +415,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         val promoTestSubscriber = TestSubscriber.create<Boolean>()
         val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
-        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        presenter.logisticPromoDonePublisher = logisticPromoDonePublisher
         logisticPromoDonePublisher.subscribe(promoTestSubscriber)
 
         // When
@@ -447,7 +447,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         val promoTestSubscriber = TestSubscriber.create<Boolean>()
         val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
-        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        presenter.logisticPromoDonePublisher = logisticPromoDonePublisher
         logisticPromoDonePublisher.subscribe(promoTestSubscriber)
 
         // When

@@ -276,7 +276,7 @@ class ShipmentPresenter @Inject constructor(
 
     override var logisticDonePublisher: PublishSubject<Boolean>? = null
 
-    private var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
+    var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData> = HashMap()
 
@@ -3540,6 +3540,7 @@ class ShipmentPresenter @Inject constructor(
         val lastApplyUiModel = lastApplyData.value
         val voucherOrders = lastApplyUiModel.voucherOrders.toMutableList()
         for (voucherOrder in voucherOrders) {
+            // todo: cart string group
             if (voucherOrder.uniqueId == uniqueId && voucherOrder.code == promoCode) {
                 voucherOrders.remove(voucherOrder)
                 break
@@ -3736,9 +3737,9 @@ class ShipmentPresenter @Inject constructor(
     override fun validateClearAllBoPromo() {
         if (lastValidateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
-                if (shipmentCartItemModel is ShipmentCartItemModel) {
+                if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                     for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartString && order.codes.isEmpty() && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartString && order.codes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartString,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
@@ -3923,10 +3924,6 @@ class ShipmentPresenter @Inject constructor(
 
     override fun isUsingDynamicDataPassing(): Boolean {
         return isUsingDdp
-    }
-
-    fun setLogisticPromoDonePublisher(logisticPromoDonePublisher: PublishSubject<Boolean>?) {
-        this.logisticPromoDonePublisher = logisticPromoDonePublisher
     }
 
     private fun getScheduleDeliveryMapData(cartString: String): ShipmentScheduleDeliveryMapData? {
