@@ -709,7 +709,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check promo appLink then should return empty in customerapp`() {
-        val expected = INTERNAL_CATEGORY_DETAIL
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
         assertEqualsDeepLinkMapper(ApplinkConst.PROMO, expected)
         assertEqualsDeepLinkMapper(ApplinkConst.PROMO_LIST, expected)
     }

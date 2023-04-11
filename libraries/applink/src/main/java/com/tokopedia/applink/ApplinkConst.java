@@ -485,6 +485,7 @@ public interface ApplinkConst {
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
+    String DISCOVERY_DEALS = "tokopedia://discovery/deals";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";

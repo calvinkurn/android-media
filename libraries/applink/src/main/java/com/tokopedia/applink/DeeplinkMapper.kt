@@ -431,7 +431,7 @@ object DeeplinkMapper {
         ),
         DLP(
             Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
-            targetDeeplink = { _, _, deeplink, _ -> getDiscoveryDeeplink(deeplink) }
+            targetDeeplink = { _, _, _, _ -> getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS) }
         ),
         DLP.matchPattern(
             ApplinkConst.PROMO_DETAIL,
