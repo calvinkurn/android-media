@@ -34,14 +34,12 @@ import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
@@ -63,7 +61,6 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTok
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -85,7 +82,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -99,7 +95,8 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
+class DigitalPDPTokenListrikFragment :
+    BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
@@ -107,8 +104,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
-{
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -280,7 +276,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
                     if (denomData.data.listDenomData.isEmpty()) {
                         showEmptyState()
-                    } else hideEmptyState()
+                    } else {
+                        hideEmptyState()
+                    }
 
                     if (selectedPositionDenom == null) {
                         onHideBuyWidget()
@@ -310,7 +308,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct,
-                        atcData.data.channelId,
+                        atcData.data.channelId
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -370,7 +368,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
                         loyaltyStatus,
-                        userSession.userId,
+                        userSession.userId
                     )
                     showMoreInfoBottomSheet(listInfo, title)
                 }
@@ -380,7 +378,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            activity, throwable, ErrorHandler.Builder().build()
+            activity,
+            throwable,
+            ErrorHandler.Builder().build()
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
@@ -468,7 +468,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             for (item in tickers) {
                 messages.add(
                     TickerData(
-                        item.name, item.content,
+                        item.name,
+                        item.content,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -482,8 +483,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             binding?.rechargePdpTokenListrikTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                        this@DigitalPDPTokenListrikFragment.requireContext(), messages
-                    ), messages
+                        this@DigitalPDPTokenListrikFragment.requireContext(),
+                        messages
+                    ),
+                    messages
                 )
                 show()
             }
@@ -568,8 +571,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else setupDynamicScrollViewPadding()
+            }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -639,7 +642,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun renderProduct() {
         binding?.run {
             if (rechargePdpTokenListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX_LISTRIK) {
-
                 /* validate client number */
                 viewModel.run {
                     cancelValidatorJob()
@@ -659,7 +661,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 hideEmptyState()
 
                 if (!viewModel.isEligibleToBuy) onHideBuyWidget()
-
             } else {
                 viewModel.run {
                     cancelRecommendationJob()
@@ -718,7 +719,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
             getRechargeCatalogInputMultiTab(
-                menuId, selectedOperatorKey,
+                menuId,
+                selectedOperatorKey,
                 binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: ""
             )
         }
@@ -766,9 +768,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             setAddToCartLoading()
             addToCart(
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams(),
-                userSession.userId,
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+                userSession.userId
             )
         }
     }
@@ -785,20 +785,21 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
         binding?.rechargePdpTokenListrikClientNumberWidget
             ?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
-                        this
-                    )
-                    binding?.run {
-                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                            rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
-                        } ?: 0
-                        val dynamicPadding = defaultPadding + extraPadding
-                        rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
+                            this
+                        )
+                        binding?.run {
+                            val defaultPadding: Int = rechargePdpTokenListrikClientNumberWidget.height
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
+                            rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                        }
                     }
-                }
-            })
+                })
     }
 
     private fun handleCallbackSavedNumber(
@@ -844,7 +845,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
+                it,
+                clientNumber,
+                dgCategoryIds,
+                dgOperatorIds,
+                categoryName,
+                loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -895,7 +901,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
         val intent = RouteManager.getIntent(
             context,
-            ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT
+            ApplinkConstInternalMarketplace.QR_SCANNEER,
+            PARAM_NEED_RESULT
         )
         intent.putExtra(
             EXTRA_UPDATED_TITLE,
@@ -932,6 +939,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
+        hideKeyboard()
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
@@ -939,7 +947,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 DigitalPDPCategoryUtil.getOperatorName(favorite.operatorId),
                 loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             digitalPDPAnalytics.clickFavoriteNumberChips(
@@ -964,7 +972,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             val dgOperatorIds: ArrayList<String> =
                 ArrayList(viewModel.operatorList.map { it.id })
             navigateToContact(
-                clientNumber, dgCategoryIds, dgOperatorIds,
+                clientNumber,
+                dgCategoryIds,
+                dgOperatorIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId)
             )
         }
@@ -994,10 +1004,13 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     //region RechargeDenomGridListener
     override fun onDenomGridClicked(
-        denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int,
         productListTitle: String,
         isShowBuyWidget: Boolean
     ) {
+        hideKeyboard()
         if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
@@ -1041,7 +1054,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
-            denom, userSession.userId.generateRechargeCheckoutToken(),
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
             binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "",
             operatorId
         )
@@ -1179,8 +1193,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
             val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
                 as Throwable
-            if (!throwable.message.isNullOrEmpty())
+            if (!throwable.message.isNullOrEmpty()) {
                 showErrorToaster(throwable)
+            }
         }
     }
 

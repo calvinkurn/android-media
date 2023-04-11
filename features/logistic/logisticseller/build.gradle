@@ -46,6 +46,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
+    implementation projectOrAar(rootProject.ext.features.logisticCommon)
+
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -56,8 +58,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

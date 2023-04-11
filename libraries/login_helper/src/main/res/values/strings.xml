@@ -1,0 +1,9 @@
+<resources>
+    <string name="login_helper_header_title">Login Helper</string>
+    <string name="login_helper_env_staging">Staging</string>
+    <string name="login_helper_env_prod">Production</string>
+    <string name="login_helper_total_users">Total Users </string>
+    <string name="login_helper_warning_chip_click">Environment already set</string>
+    <string name="login_helper_enter_email">Enter Email</string>
+    <string name="login_helper_app_restart">Please restart the app</string>
+</resources>

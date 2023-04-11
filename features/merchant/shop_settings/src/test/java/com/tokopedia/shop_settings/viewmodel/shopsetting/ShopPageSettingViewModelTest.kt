@@ -10,11 +10,14 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.settings.setting.data.ShopSettingAccess
 import com.tokopedia.shop.settings.setting.view.viewmodel.ShopPageSettingViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -46,7 +49,7 @@ class ShopPageSettingViewModelTest {
 
     private lateinit var privateAdminAccessListField: Field
 
-    private lateinit var viewModel : ShopPageSettingViewModel
+    private lateinit var viewModel: ShopPageSettingViewModel
 
     private val dispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
@@ -171,16 +174,22 @@ class ShopPageSettingViewModelTest {
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
         verifyAllCheckAdminUseCasesShouldBeCalled()
-        assert(viewModel.shopSettingAccessLiveData.value == Success(
-            ShopSettingAccess(
-                mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible
+        assert(
+            viewModel.shopSettingAccessLiveData.value == Success(
+                ShopSettingAccess(
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible
+                )
             )
-        ))
+        )
     }
 
-
     @Test
-    fun `check whether access related use cases is called if user is not shop owner, shop info returns exception and admin access list is empty`()  {
+    fun `check whether access related use cases is called if user is not shop owner, shop info returns exception and admin access list is empty`() {
         val mockShopId = "123"
         val mockShopDomain = "domain"
         everyGetProviderUseCase()
@@ -197,7 +206,7 @@ class ShopPageSettingViewModelTest {
     }
 
     @Test
-    fun `check isShopOwner returns exception so shop info response should be failed`()  {
+    fun `check isShopOwner returns exception so shop info response should be failed`() {
         val mockShopId = "123"
         val mockShopDomain = "domain"
 
@@ -212,7 +221,6 @@ class ShopPageSettingViewModelTest {
         assert(viewModel.shopInfoResp.value is Fail)
     }
 
-
     @Test
     fun `check whether shopSettingAccess post Success value if response is success`() {
         val mockShopId = "123"
@@ -226,11 +234,18 @@ class ShopPageSettingViewModelTest {
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
         verifyAllCheckAdminUseCasesShouldBeCalled()
-        assert(viewModel.shopSettingAccessLiveData.value == Success(
+        assert(
+            viewModel.shopSettingAccessLiveData.value == Success(
                 ShopSettingAccess(
-                        mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible,
+                    mockIsEligible
                 )
-        ))
+            )
+        )
     }
 
     @Test
@@ -254,7 +269,7 @@ class ShopPageSettingViewModelTest {
             authorizeAccessUseCaseProvider.get()
         } returns authorizeAccessUseCase
     }
-    
+
     private fun everyCheckAdminShouldSuccess(isEligible: Boolean = true) {
         coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
     }
@@ -268,6 +283,4 @@ class ShopPageSettingViewModelTest {
             authorizeAccessUseCase.execute(any())
         }
     }
-
-
 }

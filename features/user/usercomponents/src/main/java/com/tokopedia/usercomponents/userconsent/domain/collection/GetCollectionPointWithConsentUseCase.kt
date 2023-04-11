@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import javax.inject.Inject
 
 class GetCollectionPointWithConsentUseCase @Inject constructor(
@@ -35,6 +36,7 @@ class GetCollectionPointWithConsentUseCase @Inject constructor(
                     purposeType
                     attributes {
                       uiName
+                      dataElementType
                     }
                   }
                   notices {
@@ -51,6 +53,15 @@ class GetCollectionPointWithConsentUseCase @Inject constructor(
                     tncPageID
                     externalPartyPrivacyPolicy
                     externalPartyTnC
+                    statementWording {
+                      template
+                      attributes {
+                        key
+                        type
+                        text
+                        link
+                      }
+                    }
                   }
                   needConsent
                 }  

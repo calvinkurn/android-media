@@ -41,5 +41,4 @@ class CartRecentViewViewHolder(private val binding: ItemCartRecentViewBinding, v
             element.hasSentImpressionAnalytics = true
         }
     }
-
 }

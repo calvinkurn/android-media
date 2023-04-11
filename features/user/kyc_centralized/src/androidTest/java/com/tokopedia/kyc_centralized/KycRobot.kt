@@ -21,7 +21,7 @@ class KycRobot {
     }
 
     fun atInfoClickNext() {
-        onView(withId(R.id.buttonAction)).perform(click())
+        onView(withId(R.id.kyc_benefit_btn)).perform(click())
     }
 
     fun atKtpIntroClickNext() {

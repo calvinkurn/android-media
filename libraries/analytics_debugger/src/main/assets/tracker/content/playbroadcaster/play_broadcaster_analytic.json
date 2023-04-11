@@ -5,12 +5,13 @@
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - simpan",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "30206|26705"
     },
     {
       "event": "clickSellerBroadcast",
@@ -85,22 +86,35 @@
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - cover thumbnail to add cover",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "30214|26713"
+    },
+    {
+      "event": "clickSellerBroadcast",
+      "eventAction": "click - simpan cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26715"
     },
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - edit cover",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "30216|26716"
     },
     {
       "event": "(clickSellerBroadcast|clickPG)",
@@ -559,17 +573,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "impression - product tag carousel",
-      "event": "viewSellerBroadcastIris",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "scroll - product tag carousel",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
@@ -747,6 +750,17 @@
       "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
+    },
+    {
+      "event": "viewPGIris",
+      "eventAction": "impressed - product carousel",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "26735",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

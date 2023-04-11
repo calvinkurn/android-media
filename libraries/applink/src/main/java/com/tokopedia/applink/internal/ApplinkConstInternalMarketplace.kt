@@ -50,6 +50,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_AR = "$INTERNAL_MARKETPLACE/productar/{product_id}/"
 
     const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
+    const val POST_ATC = "$INTERNAL_MARKETPLACE/post-atc/{productId}/"
 
     // AtcVariantActivity
     @JvmField
@@ -76,7 +77,7 @@ object ApplinkConstInternalMarketplace {
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
-    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{isVariant}/"
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{isVariant}/"
 
     // CampaignStockActivity
     const val RESERVED_STOCK_BASE = "$INTERNAL_MARKETPLACE/reserved-stock"

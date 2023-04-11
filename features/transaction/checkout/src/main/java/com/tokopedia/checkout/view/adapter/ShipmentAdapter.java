@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.utils.ShipmentRollenceUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -35,6 +36,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
@@ -109,6 +111,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
     private CompositeSubscription compositeSubscription;
+    private CompositeSubscription scheduleDeliverySubscription;
 
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
@@ -169,7 +172,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         } else if (item instanceof ShipmentNewUpsellModel) {
-            return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
+            if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
+                return ShipmentNewUpsellImprovementViewHolder.LAYOUT;
+            } else {
+                return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
+            }
         }
 
         return super.getItemViewType(position);
@@ -183,7 +190,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
-            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener);
+            if (scheduleDeliverySubscription == null || scheduleDeliverySubscription.isUnsubscribed()) {
+                scheduleDeliverySubscription = new CompositeSubscription();
+            }
+            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, scheduleDeliverySubscription);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, layoutInflater);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
@@ -215,6 +225,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
+            return new ShipmentNewUpsellImprovementViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -256,6 +268,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
+        } else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
+            ((ShipmentNewUpsellImprovementViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
 
@@ -279,6 +293,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clearCompositeSubscription() {
         if (compositeSubscription != null) {
             compositeSubscription.clear();
+        }
+        if (scheduleDeliverySubscription != null) {
+            scheduleDeliverySubscription.clear();
         }
     }
 
@@ -378,14 +395,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean validateLoadingItem(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.isStateLoadingCourierState();
+    }
+
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
             int cartItemErrorCounter = 0;
+            boolean hasLoadingItem = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
+                        if (!hasLoadingItem) {
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel);
+                        }
                         cartItemCounter++;
                     }
                 }
@@ -396,7 +421,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
             }
@@ -647,47 +672,46 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
             Object errorSelectedShipmentData = null;
+            boolean isPrescriptionFrontEndValidationError = false;
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object shipmentData = shipmentDataList.get(i);
                 if (shipmentData instanceof ShipmentCartItemModel) {
-                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
-                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
-                        if (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
-                                TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone()) ||
-                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperNameValid() ||
-                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentData;
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) {
+                        if (TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName()) ||
+                                TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone()) ||
+                                !shipmentCartItemModel.getSelectedShipmentDetailData().isDropshipperNameValid() ||
+                                !shipmentCartItemModel.getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
                             availableCheckout = false;
                             errorPosition = i;
                             errorSelectedShipmentData = shipmentData;
+                            break;
+                        }
+                    }
+                    if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() &&
+                            uploadPrescriptionUiModel.getFrontEndValidation() &&
+                            shipmentCartItemModel.getHasEthicalProducts() && !shipmentCartItemModel.isError()) {
+                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                            if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                                boolean prescriptionIdsEmpty = shipmentCartItemModel.getPrescriptionIds().isEmpty();
+                                boolean consultationEmpty = (TextUtils.isEmpty(shipmentCartItemModel.getTokoConsultationId()) ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getPartnerConsultationId()) ||
+                                        shipmentCartItemModel.getTokoConsultationId().equals("0") ||
+                                        shipmentCartItemModel.getPartnerConsultationId().equals("0") ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getConsultationDataString()));
+                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                    isPrescriptionFrontEndValidationError = true;
+                                    availableCheckout = false;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
-
-            boolean isPrescriptionFrontEndValidationError = false;
-            if (availableCheckout) {
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    Object shipmentData = shipmentDataList.get(i);
-                    if (shipmentData instanceof UploadPrescriptionUiModel) {
-                        if (((UploadPrescriptionUiModel) shipmentData).getFrontEndValidation()
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() != null
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() == 0) {
-                            isPrescriptionFrontEndValidationError = true;
-                            errorPosition = i;
-                            errorSelectedShipmentData = shipmentData;
-                        } else {
-                            isPrescriptionFrontEndValidationError = false;
-                        }
-                    }
-                }
-            }
-
-            if (isPrescriptionFrontEndValidationError) {
-                shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
-            } else {
-                shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
-            }
+            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition, isPrescriptionFrontEndValidationError);
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
@@ -699,7 +723,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
+            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition, false);
         }
     }
 
@@ -753,6 +777,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(newCourierItemData);
@@ -764,6 +789,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
@@ -962,10 +988,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     } else if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getShipperPrice();
+                                .getSelectedCourier().getSelectedShipper().getShipperPrice();
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourier().getInsurancePrice();
+                                    .getSelectedCourier().getSelectedShipper().getInsurancePrice();
                         }
                         if (isOrderPriority != null && isOrderPriority) {
                             orderPriorityFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
@@ -1092,13 +1118,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnOrderLevelPosition() {
+    public int getAddOnOrderLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                    if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                        return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                        if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                            return i;
+                        }
                     }
                 }
             }
@@ -1106,15 +1134,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnProductLevelPosition() {
+    public int getAddOnProductLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
-                    for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                        if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
-                            if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                                return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
+                        for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
+                            if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
+                                if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                                    return i;
+                                }
                             }
                         }
                     }

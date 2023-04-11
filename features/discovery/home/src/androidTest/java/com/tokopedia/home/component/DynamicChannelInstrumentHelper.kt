@@ -2,6 +2,7 @@ package com.tokopedia.home.component
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -32,6 +33,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -69,12 +71,14 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/cam
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+private const val TAG = "HomeDCCassavaTest"
 
 /**
  * Created by yfsx on 2/9/21.
@@ -285,7 +289,7 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
 fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
@@ -294,7 +298,11 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+}
+
+fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickAndCloseOnEachTodoWidget(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_todo_widget_rv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -327,6 +335,42 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
                 ViewActions.click()
             )
         )
+}
+
+fun clickAndCloseOnEachTodoWidget(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    val tempStoreDesc = childRecyclerView.contentDescription
+    childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
+
+    var childItemCount = childRecyclerView.adapter!!.itemCount
+    if (fixedItemPositionLimit > 0) {
+        childItemCount = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCount) {
+        try {
+            Espresso.onView(
+                allOf(
+                    ViewMatchers.withId(recyclerViewId),
+                    ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
+                )
+            ).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.cta_todo_widget)
+                )
+            ).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
+                )
+            )
+        } catch (e: PerformException) {
+            Log.e(TAG, "clickAndCloseOnEachTodoWidget: ", e)
+        }
+    }
+
+    childRecyclerView.contentDescription = tempStoreDesc
 }
 
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {

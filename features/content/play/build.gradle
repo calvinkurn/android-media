@@ -80,6 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -95,6 +96,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.dynamicAnimation
+    implementation rootProject.ext.miscDependencies.window
 
     implementation rootProject.ext.networkDependencies.glide
 

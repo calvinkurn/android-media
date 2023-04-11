@@ -74,20 +74,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
-        android:id="@+id/form_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
-        android:visibility="gone"/>
-
-    <com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-        android:id="@+id/form_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
-        android:visibility="gone" />
-
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
         android:layout_width="0dp"

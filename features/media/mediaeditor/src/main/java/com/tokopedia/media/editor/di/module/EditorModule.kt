@@ -86,6 +86,12 @@ abstract class EditorModule {
 
     @Binds
     @ActivityScope
+    internal abstract fun provideBitmapCreationRepository(
+        repository: BitmapCreationRepositoryImpl
+    ): BitmapCreationRepository
+
+    @Binds
+    @ActivityScope
     internal abstract fun provideSaveEditorHomeAnalytics(
         analytics: EditorHomeAnalyticsImpl
     ): EditorHomeAnalytics

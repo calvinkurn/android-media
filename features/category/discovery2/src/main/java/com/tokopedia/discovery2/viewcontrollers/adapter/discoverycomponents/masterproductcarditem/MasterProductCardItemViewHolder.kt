@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -17,6 +18,8 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
@@ -73,6 +76,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardGridView?.setNotifyMeOnClickListener {
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
+                showNotificationReminderPrompt()
             }
 
             masterProductCardGridView?.setAddVariantClickListener {
@@ -88,6 +92,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         productCardView.setOnClickListener {
             handleUIClick(it)
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "kejarDiskon"
+        masterProductCardItemViewModel.getProductDataItem()?.notifyMe?.let { notifyMeStatus ->
+            if (!notifyMeStatus) {
+                (fragment as DiscoveryFragment).activity?.let {
+                    val view = NotificationGeneralPromptLifecycleCallbacks()
+                        .notificationGeneralPromptView(it, pageName)
+                    NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
+                }
+            }
         }
     }
 
@@ -154,12 +171,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun populateData(productCardModel: ProductCardModel) {
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
-                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
-            productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+            || productCardName == ComponentNames.ProductCardCarouselItemList.componentName) {
             masterProductCardGridView?.let {
+                productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            masterProductCardListView?.let {
+                it.applyCarousel()
+                productCardView.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } else {
             setProductViewDimens()
@@ -238,7 +262,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         when (view) {
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
-                masterProductCardItemViewModel.navigate(fragment.context, dataItem?.applinks)
+                var applink = dataItem?.applinks ?: ""
+                if ((fragment as DiscoveryFragment).isAffiliateInitialized)
+                    applink =
+                        fragment.createAffiliateLink(applink)
+                masterProductCardItemViewModel.navigate(fragment.context, applink)
                 sendClickEvent()
             }
         }
@@ -285,7 +313,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->
-                    if (productId.isNotEmpty())
+                    if (productId.isNotEmpty()) {
                         (fragment as DiscoveryFragment).addOrUpdateItemCart(
                             DiscoATCRequestParams(
                                 parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
@@ -297,6 +325,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                 requestingComponent = masterProductCardItemViewModel.components
                             )
                         )
+                    }
                 }
             }
         } else {
