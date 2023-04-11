@@ -1,6 +1,7 @@
 package com.tokopedia.otp.common.analytics
 
 import android.os.Build
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
@@ -803,6 +804,40 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
             Label.LABEL_OTP_PAGE
         )
+    }
+
+    /**
+     * tracker for default otp method, when clicking footer text 'Pakai Metode SMS'
+     * on [com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment]
+     */
+    fun trackClickUseWithOtpSms() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_ACCOUNT,
+            Category.CATEGORY_MAIN_OTP_PAGE,
+            Action.ACTION_CLICK_USE_OTP_SMS,
+            Label.LABEL_EMPTY
+        )
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    /**
+     * tracker for default otp method, when clicking footer text 'Pakai Metode Lain'
+     * on [com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment]
+     */
+    fun trackClickUseWithOthersMethod() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_ACCOUNT,
+            Category.CATEGORY_MAIN_OTP_PAGE,
+            Action.ACION_CLICK_CHOOSE_OTHER_METHOD,
+            Label.LABEL_EMPTY
+        )
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     private fun getLabelWithOtpMethod(labelType: TrackerLabelType, otpData: OtpData, otpModeListData: ModeListData, message: String = ""): String {
