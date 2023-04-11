@@ -15,6 +15,7 @@ import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
 import com.tokopedia.checkout.databinding.ItemUpsellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
+import com.tokopedia.checkout.utils.ShipmentRollenceUtil
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -190,10 +191,10 @@ class ShipmentAdapter @Inject constructor(
             }
 
             is ShipmentNewUpsellModel -> {
-                if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
-                    return ShipmentNewUpsellImprovementViewHolder.LAYOUT
+                return if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
+                    ShipmentNewUpsellImprovementViewHolder.LAYOUT
                 } else {
-                    return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
+                    ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
                 }
             }
 
