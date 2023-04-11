@@ -42,7 +42,8 @@ data class FaceFilterUiModel(
 
     fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
         return copy(
-            value = newValueFromSlider.toFuzzyPercent()
+            value = newValueFromSlider.toFuzzyPercent(),
+            isChecked = newValueFromSlider > 0,
         )
     }
 
