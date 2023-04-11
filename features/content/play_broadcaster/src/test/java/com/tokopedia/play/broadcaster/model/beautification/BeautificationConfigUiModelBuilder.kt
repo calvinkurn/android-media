@@ -31,7 +31,7 @@ class BeautificationConfigUiModelBuilder {
                 maxValue = 1.0,
                 defaultValue = 0.1 * it,
                 value = 0.1 * it,
-                isChecked = true,
+                isChecked = it != 0,
                 isSelected = false,
             )
         },
