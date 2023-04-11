@@ -11,6 +11,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ValidateUsePromoRevampUseCase @Inject constructor(
@@ -44,7 +45,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
     @GqlQuery(QUERY_VALIDATE_USE, VALIDATE_USE_QUERY)
     override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
         val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
-
+        delay(5_000)
 //        val request = GraphqlRequest(ValidateUseQuery(), ValidateUseResponse::class.java, getParams(param))
 //        val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
         val validateUseGqlResponse = Gson().fromJson(

@@ -27,7 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
@@ -137,17 +136,13 @@ import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eve
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.ARGS_APPLIED_MVC_CART_STRINGS
-import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
@@ -161,7 +156,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOK
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
-import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -175,6 +169,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Avail
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -3112,21 +3107,55 @@ class ShipmentFragment :
     }
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?) {
-        if (lastApplyUiModel == null) return
-        val validateUseRequestParam = shipmentPresenter.generateValidateUsePromoRequest()
-        val promoRequestParam = shipmentPresenter.generateCouponListRecommendationRequest()
-        val intent =
-            RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
-        setChosenAddressForTradeInDropOff(intent)
-        setPromoExtraMvcLockCourierFlow(intent)
-        startActivityForResult(intent, REQUEST_CODE_PROMO)
-        if (isTradeIn) {
-            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
-        }
+//        if (lastApplyUiModel == null) return
+//        val validateUseRequestParam = shipmentPresenter.generateValidateUsePromoRequest()
+//        val promoRequestParam = shipmentPresenter.generateCouponListRecommendationRequest()
+//        val intent =
+//            RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+//        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+//        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+//        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+//        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
+//        setChosenAddressForTradeInDropOff(intent)
+//        setPromoExtraMvcLockCourierFlow(intent)
+//        startActivityForResult(intent, REQUEST_CODE_PROMO)
+//        if (isTradeIn) {
+//            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
+//        }
+        onResultFromPromo(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(
+                    ARGS_VALIDATE_USE_DATA_RESULT,
+                    ValidateUsePromoRevampUiModel().apply {
+                        promoUiModel = PromoUiModel(
+                            voucherOrderUiModels = listOf(
+                                PromoCheckoutVoucherOrdersItemUiModel(
+                                    code = "BOINTRAISLANDQA10",
+                                    cartStringGroup = "6370771-0-6595013-174524131",
+                                    shippingId = 23,
+                                    spId = 45,
+                                    type = "logistic",
+                                    messageUiModel = com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel(state = "green")
+                                )
+                            )
+                        )
+                    }
+                )
+                putExtra(
+                    ARGS_LAST_VALIDATE_USE_REQUEST,
+                    ValidateUsePromoRequest().apply {
+                        orders = listOf(
+                            OrdersItem(
+                                shippingId = 23,
+                                codes = mutableListOf("BOINTRAISLANDQA10"),
+                                cartStringGroup = "6370771-0-6595013-174524131"
+                            )
+                        )
+                    }
+                )
+            }
+        )
     }
 
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
