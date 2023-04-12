@@ -21,7 +21,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
 
 @Composable
-fun PrefixFilterItem(
+internal fun PrefixFilterItem(
     modifier: Modifier = Modifier,
     size: Size = Size.DEFAULT,
     selectedSize: Int = 0,
