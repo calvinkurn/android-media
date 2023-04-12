@@ -337,8 +337,8 @@
     <string name="editproduct_input_price_percent_placeholder">Potongan</string>
     <string name="editproduct_input_shoploc_placeholder">Pilih lokasi</string>
     <string name="editproduct_input_shoploc_message">Hanya bisa pilih satu lokasi</string>
-    <string name="editproduct_input_stock_placeholder">Stok Campaign</string>
-    <string name="editproduct_input_max_transaction_placeholder">Maks. Pembelian</string>
+    <string name="editproduct_input_stock_placeholder">Stok campaign</string>
+    <string name="editproduct_input_max_transaction_placeholder">Maks. pembelian</string>
     <string name="editproduct_input_max_transaction_message">Batas maks. pembelian produk</string>
     <string name="editproduct_button_save_text">Simpan</string>
     <string name="editproduct_button_save_and_next_text">Simpan dan Lanjut</string>

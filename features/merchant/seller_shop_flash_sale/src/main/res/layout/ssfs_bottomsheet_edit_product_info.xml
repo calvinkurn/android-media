@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
-            android:gravity="center"
+            android:gravity="top"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/switchPrice">
 
@@ -99,6 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
                 app:tfl_append_text="@string/editproduct_switch_text_percent"
                 app:tfl_enable_editing="false"
                 app:tfl_placeholder_text="@string/editproduct_input_price_percent_placeholder" />
