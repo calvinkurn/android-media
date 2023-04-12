@@ -315,11 +315,9 @@ class ContentCommentBottomSheet @Inject constructor(
                         )
                     }
                     CommentEvent.ShowKeyboard -> {
-                        binding.newComment.requestFocus()
                         showKeyboard(true)
                     }
                     CommentEvent.HideKeyboard -> {
-                        binding.rvComment.clearFocus()
                         binding.newComment.setText("")
                         showKeyboard(false)
                     }
@@ -341,7 +339,6 @@ class ContentCommentBottomSheet @Inject constructor(
                             event.parentItem.commentType.parentId
                         }
                         binding.newComment.setText(mention)
-                        binding.newComment.requestFocus()
                         showKeyboard(true)
                     }
                 }
@@ -442,8 +439,16 @@ class ContentCommentBottomSheet @Inject constructor(
             binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (needToShow) {
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
+            binding.newComment.apply {
+                isFocusable = true
+                isFocusableInTouchMode = true
+            }
         } else {
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
+            binding.newComment.apply {
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
         }
     }
 
