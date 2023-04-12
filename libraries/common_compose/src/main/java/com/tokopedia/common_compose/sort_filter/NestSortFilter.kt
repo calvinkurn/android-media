@@ -80,62 +80,6 @@ data class SortFilter(
 
 enum class Size { DEFAULT, LARGE }
 
-@Composable
-private fun PrefixFilterItem(
-    modifier: Modifier = Modifier,
-    size: Size = Size.DEFAULT,
-    selectedSize: Int = 0,
-    painterId: Int = R.drawable.iconunify_sort_filter,
-    text: String? = null,
-    onClick: () -> Unit = {}
-) {
-    // Implementation are specifically to cater SELECTED and NORMAL type chips only
-    val backgroundColor = NestTheme.colors.NN._0
-    val borderColor = NestTheme.colors.NN._200
-    val height = when (size) {
-        Size.DEFAULT -> 32.dp
-        Size.LARGE -> 48.dp
-    }
-    Surface(color = backgroundColor,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, borderColor),
-        modifier = modifier
-            .height(height)
-            .clickable { onClick() }) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (selectedSize > 0) {
-                NestNotification(text = selectedSize.toString(), colorType = Color.SECONDARY)
-            } else {
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    painter = painterResource(id = painterId),
-                    contentDescription = "Clear Filter Icon",
-                    tint = LocalNestColor.current.NN._500
-                )
-            }
-            if (text != null) {
-                Text(modifier = Modifier.padding(start = 4.dp), text = text)
-            }
-        }
-    }
-}
-
-@Preview(name = "Prefix Sortfilter")
-@Preview(name = "Prefix Sortfilter (Dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PrefixSortFilterPreview() {
-    NestTheme {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            PrefixFilterItem(text = "Filter")
-            PrefixFilterItem(text = "Filter", selectedSize = 3)
-            PrefixFilterItem(painterId = R.drawable.iconunify_close)
-        }
-    }
-}
-
 @Preview(name = "Sort Filter")
 @Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
