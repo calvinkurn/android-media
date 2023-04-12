@@ -82,9 +82,9 @@
                 android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:icon_name="SEARCH"
                 app:icon_color_light_enable="@color/Unify_N700_68"
-                app:icon_color_night_enable="@color/Unify_N700_68" />
+                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_name="SEARCH" />
 
         </RelativeLayout>
 
@@ -100,9 +100,9 @@
 
         <LinearLayout
             android:id="@+id/detail_address_layout"
-            android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -114,9 +114,9 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_detail_address"
-                    android:contentDescription="@string/content_desc_et_detail_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_et_detail_address"
                     android:enabled="true"
                     android:focusable="true"
                     android:imeOptions="actionDone"
@@ -168,18 +168,17 @@
 
         </LinearLayout>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_choose_location"
-            android:contentDescription="@string/content_desc_btn_choose_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="30dp"
-            android:foreground="?selectableItemBackground"
+            android:contentDescription="@string/content_desc_btn_choose_location"
             android:text="@string/choose_this_location"
-            android:textAllCaps="false"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary" />
+            android:textStyle="bold"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
     </LinearLayout>
 
@@ -224,9 +223,9 @@
                 android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:icon_name="SEARCH"
                 app:icon_color_light_enable="@color/Unify_N700_68"
-                app:icon_color_night_enable="@color/Unify_N700_68" />
+                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_name="SEARCH" />
 
         </RelativeLayout>
 
