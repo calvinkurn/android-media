@@ -50,95 +50,90 @@ fun NestTextField(
     error: String? = null,
     onValueChanged: (String) -> Unit = {},
     counter: Int? = null,
-    helper: String? = null,
-    skeleton: Boolean = false
+    helper: String? = null
 ) {
     Column {
-        if (skeleton) {
-            NestTextFieldSkeleton(modifier)
-        } else {
-            OutlinedTextField(
-                value = value,
-                onValueChange = {
-                    if (counter != null) {
-                        if (it.length <= counter) onValueChanged(it)
-                    } else {
-                        onValueChanged(it)
-                    }
-                },
-                textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-                modifier = modifier
-                    .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
-                    .fillMaxWidth(),
-                placeholder = placeholder?.let { { NestTypography(text = it) } },
-                leadingIcon = generatePrefix(prefix, enabled),
-                trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
-                label = label?.let {
-                    {
-                        NestTypography(text = it)
-                    }
-                },
-                enabled = enabled,
-                singleLine = true,
-                isError = !error.isNullOrEmpty(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = NestTheme.colors.NN._300,
-                    focusedBorderColor = NestTheme.colors.GN._500,
-                    errorBorderColor = NestTheme.colors.RN._500,
-                    disabledBorderColor = NestTheme.colors.NN._200,
-                    disabledTextColor = NestTheme.colors.NN._400,
-                    textColor = NestTheme.colors.NN._950
-                ),
-                shape = RoundedCornerShape(8.dp)
-            )
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                helper?.takeIf { error.isNullOrEmpty() }?.let {
-                    NestTypography(
-                        text = it,
-                        modifier = Modifier
-                            .weight(4F)
-                            .padding(start = 28.dp),
-                        textStyle = NestTheme.typography.paragraph3.copy(
-                            color = generateHelperColor(
-                                enabled = enabled,
-                                error = !error.isNullOrEmpty()
-                            )
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                if (counter != null) {
+                    if (it.length <= counter) onValueChanged(it)
+                } else {
+                    onValueChanged(it)
+                }
+            },
+            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
+            modifier = modifier
+                .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
+                .fillMaxWidth(),
+            placeholder = placeholder?.let { { NestTypography(text = it) } },
+            leadingIcon = generatePrefix(prefix, enabled),
+            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
+            label = label?.let {
+                {
+                    NestTypography(text = it)
+                }
+            },
+            enabled = enabled,
+            singleLine = true,
+            isError = !error.isNullOrEmpty(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = NestTheme.colors.NN._300,
+                focusedBorderColor = NestTheme.colors.GN._500,
+                errorBorderColor = NestTheme.colors.RN._500,
+                disabledBorderColor = NestTheme.colors.NN._200,
+                disabledTextColor = NestTheme.colors.NN._400,
+                textColor = NestTheme.colors.NN._950
+            ),
+            shape = RoundedCornerShape(8.dp)
+        )
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            helper?.takeIf { error.isNullOrEmpty() }?.let {
+                NestTypography(
+                    text = it,
+                    modifier = Modifier
+                        .weight(4F)
+                        .padding(start = 28.dp),
+                    textStyle = NestTheme.typography.paragraph3.copy(
+                        color = generateHelperColor(
+                            enabled = enabled,
+                            error = !error.isNullOrEmpty()
                         )
                     )
-                }
-                error?.let {
-                    NestTypography(
-                        text = it,
-                        modifier = Modifier
-                            .weight(4F)
-                            .padding(start = 28.dp),
-                        textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
+                )
+            }
+            error?.let {
+                NestTypography(
+                    text = it,
+                    modifier = Modifier
+                        .weight(4F)
+                        .padding(start = 28.dp),
+                    textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
+                )
+            }
+            counter?.let {
+                val currentCount = value.length
+                NestTypography(
+                    text = "$currentCount/$it",
+                    modifier = Modifier
+                        .weight(1F)
+                        .padding(end = 28.dp),
+                    textStyle = NestTheme.typography.paragraph3.copy(
+                        color = generateCounterColor(
+                            counter = it,
+                            currentCount = currentCount,
+                            enabled = enabled
+                        ),
+                        textAlign = TextAlign.End
                     )
-                }
-                counter?.let {
-                    val currentCount = value.length
-                    NestTypography(
-                        text = "$currentCount/$it",
-                        modifier = Modifier
-                            .weight(1F)
-                            .padding(end = 28.dp),
-                        textStyle = NestTheme.typography.paragraph3.copy(
-                            color = generateCounterColor(
-                                counter = it,
-                                currentCount = currentCount,
-                                enabled = enabled
-                            ),
-                            textAlign = TextAlign.End
-                        )
-                    )
-                }
+                )
             }
         }
     }
 }
 
 @Composable
-fun NestTextFieldSkeleton(modifier: Modifier) {
+fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
     Column(modifier.padding(horizontal = 16.dp)) {
         Box(
             modifier = modifier
@@ -165,7 +160,6 @@ fun NestTextFieldSkeleton(modifier: Modifier) {
     }
 }
 
-@Composable
 fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
     val transition = rememberInfiniteTransition()
     val translateAnimation by transition.animateFloat(
@@ -425,8 +419,5 @@ fun NestTextFieldWithPrefixPreview() {
 @Preview(name = "Text Field (skeleton)")
 @Composable
 fun NestTextFieldSkeletonPreview() {
-    NestTextField(
-        value = "value",
-        skeleton = true
-    )
+    NestTextFieldSkeleton()
 }
