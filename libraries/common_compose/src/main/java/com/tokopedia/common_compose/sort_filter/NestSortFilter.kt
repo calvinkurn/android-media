@@ -41,7 +41,7 @@ fun NestSortFilter(
     }
     Row(modifier = modifier) {
         val closeVisible by remember(items) {
-            mutableStateOf(showClearFilterIcon && items.any { it.isSelected })
+            derivedStateOf {  showClearFilterIcon && items.any { it.isSelected } }
         }
         AnimatedVisibility(closeVisible) {
             PrefixFilterItem(
