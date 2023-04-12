@@ -134,12 +134,11 @@ class AffiliateEducationSeeAllFragment :
         educationVM?.getEducationCategoryChip()?.observe(viewLifecycleOwner) {
             categoryChipAdapter.setVisitables(it)
             view?.findViewById<RecyclerView>(R.id.rv_education_category_chip)?.let { rv ->
-                rv.post {
-                    rv.smoothScrollToPosition(
-                        categoryChipAdapter.list.indexOfFirst { visitable ->
-                            (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
-                        }
-                    )
+                val index = categoryChipAdapter.list.indexOfFirst { visitable ->
+                    (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
+                }
+                if (index >= 0) {
+                    rv.post { rv.smoothScrollToPosition(index) }
                 }
                 sendEducationSeeAllImpressions(categoryChipAdapter.list)
             }
