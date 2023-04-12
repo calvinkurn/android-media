@@ -2297,7 +2297,7 @@ class CartListPresenter @Inject constructor(
                                 ClearPromoOrder(
                                     uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
-                                    codes = if (it.cartStringOrder == group.boUniqueId || it.needToMoveBoData) {
+                                    codes = if (it.cartStringOrder == group.boUniqueId) {
                                         mutableListOf(group.boCode)
                                     }
                                     else {

@@ -14,6 +14,5 @@ data class CartPromoHolderData(
     var poDuration: String = "",
     var boCode: String = "",
     var boUniqueId: String = "",
-    var hasSelectedProduct: Boolean = false,
-    var needToMoveBoData: Boolean = false
+    var hasSelectedProduct: Boolean = false
 )

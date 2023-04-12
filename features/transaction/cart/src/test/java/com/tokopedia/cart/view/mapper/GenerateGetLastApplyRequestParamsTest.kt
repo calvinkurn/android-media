@@ -198,21 +198,21 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
                         uniqueId = "222222-KEY",
-                        code = "",
-                        shippingId = 3,
-                        spId = 4,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -305,15 +305,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -326,7 +326,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTCODE"),
+                        codes = mutableListOf(),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -334,7 +334,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -365,35 +365,35 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
                         uniqueId = "111111-KEY",
-                        code = "",
-                        shippingId = 3,
-                        spId = 4,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
                         uniqueId = "222222-KEY",
-                        code = "",
-                        shippingId = 5,
-                        spId = 6,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -487,15 +487,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -508,7 +508,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTCODE"),
+                        codes = mutableListOf(),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -516,7 +516,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -547,14 +547,14 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
                         uniqueId = "111111-KEY",
                         code = "TESTMVC",
-                        shippingId = 0,
-                        spId = 0,
+                        shippingId = 1,
+                        spId = 2,
                         type = "",
                         boCampaignId = "0",
                         shippingSubsidy = 0,
@@ -566,18 +566,32 @@ class GenerateGetLastApplyRequestParamsTest {
                     ),
                     VoucherOrders(
                         uniqueId = "222222-KEY",
-                        code = "",
-                        shippingId = 3,
-                        spId = 4,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
+                        cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
+                    ),
+                    VoucherOrders(
+                        uniqueId = "222222-KEY",
+                        code = "TESTMVC2",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "",
+                        boCampaignId = "0",
+                        shippingSubsidy = 0,
+                        benefitClass = "",
+                        shippingPrice = 0.0,
+                        etaText = "",
                         shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    )
+                    ),
                 )
             )
         )
@@ -668,15 +682,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE", "TESTMVC2"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -689,7 +703,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTCODE", "TESTMVC"),
+                        codes = mutableListOf("TESTMVC"),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -697,7 +711,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -728,7 +742,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -747,16 +761,16 @@ class GenerateGetLastApplyRequestParamsTest {
                     ),
                     VoucherOrders(
                         uniqueId = "111111-KEY",
-                        code = "",
-                        shippingId = 3,
-                        spId = 4,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -775,16 +789,16 @@ class GenerateGetLastApplyRequestParamsTest {
                     ),
                     VoucherOrders(
                         uniqueId = "222222-KEY",
-                        code = "",
-                        shippingId = 5,
-                        spId = 6,
-                        type = "",
+                        code = "TESTCODE",
+                        shippingId = 1,
+                        spId = 2,
+                        type = "logistic",
                         boCampaignId = "10",
                         shippingSubsidy = 10000,
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -878,15 +892,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -899,7 +913,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTMVC2", "TESTCODE"),
+                        codes = mutableListOf("TESTMVC2"),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -907,7 +921,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -931,14 +945,16 @@ class GenerateGetLastApplyRequestParamsTest {
                     code = "",
                     shippingId = 1,
                     spId = 2,
-                    type = ""
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "222222-KEY",
                     code = "",
                     shippingId = 3,
                     spId = 4,
-                    type = ""
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
             )
         )
@@ -1084,7 +1100,7 @@ class GenerateGetLastApplyRequestParamsTest {
             ), getLastApplyPromoRequest
         )
     }
-    
+
     @Test
     fun `WHEN promoData is promoUiModel and with BO should generate correct params`() {
         // GIVEN
@@ -1271,21 +1287,24 @@ class GenerateGetLastApplyRequestParamsTest {
                     code = "TESTCODE",
                     shippingId = 1,
                     spId = 2,
-                    type = "logistic"
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "111111-KEY",
-                    code = "",
-                    shippingId = 3,
-                    spId = 4,
-                    type = ""
+                    code = "TESTCODE",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "222222-KEY",
-                    code = "",
-                    shippingId = 5,
-                    spId = 6,
-                    type = ""
+                    code = "TESTCODE",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
             )
         )
@@ -1297,27 +1316,28 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
+                    codes = mutableListOf("TESTCODE"),
                     uniqueId = "000000-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 OrdersItem(
-                    boCampaignId = 0,
-                    shippingSubsidy = 0,
+                    boCampaignId = 10,
+                    shippingSubsidy = 10000,
                     benefitClass = "",
-                    shippingPrice = 0.0,
+                    shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 OrdersItem(
-                    boCampaignId = 0,
-                    shippingSubsidy = 0,
+                    boCampaignId = 10,
+                    shippingSubsidy = 10000,
                     benefitClass = "",
-                    shippingPrice = 0.0,
+                    shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1411,15 +1431,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1432,7 +1452,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTCODE"),
+                        codes = mutableListOf(),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -1440,7 +1460,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1463,21 +1483,32 @@ class GenerateGetLastApplyRequestParamsTest {
                     code = "TESTCODE",
                     shippingId = 1,
                     spId = 2,
-                    type = "logistic"
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "111111-KEY",
                     code = "TESTMVC",
                     shippingId = 1,
                     spId = 2,
-                    type = ""
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "222222-KEY",
-                    code = "",
-                    shippingId = 3,
-                    spId = 4,
-                    type = ""
+                    code = "TESTCODE",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
+                ),
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    uniqueId = "222222-KEY",
+                    code = "TESTMVC2",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
             )
         )
@@ -1489,18 +1520,19 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     codes = mutableListOf("TESTCODE", "TESTMVC"),
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 OrdersItem(
-                    boCampaignId = 0,
-                    shippingSubsidy = 0,
+                    boCampaignId = 10,
+                    shippingSubsidy = 10000,
                     benefitClass = "",
-                    shippingPrice = 0.0,
+                    shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
+                    codes = mutableListOf("TESTMVC2"),
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1593,15 +1625,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE", "TESTMVC2"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1614,7 +1646,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTCODE", "TESTMVC"),
+                        codes = mutableListOf("TESTMVC"),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -1622,7 +1654,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1646,28 +1678,48 @@ class GenerateGetLastApplyRequestParamsTest {
                     code = "TESTCODE",
                     shippingId = 1,
                     spId = 2,
-                    type = "logistic"
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "000000-KEY",
                     code = "TESTMVC",
                     shippingId = 1,
                     spId = 2,
-                    type = ""
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
+                ),
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    uniqueId = "111111-KEY",
+                    code = "TESTCODE",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "111111-KEY",
                     code = "TESTMVC2",
-                    shippingId = 3,
-                    spId = 4,
-                    type = ""
+                    shippingId = 1,
+                    spId = 2,
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
+                ),
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    uniqueId = "222222-KEY",
+                    code = "TESTCODE",
+                    shippingId = 1,
+                    spId = 2,
+                    type = "logistic",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     uniqueId = "222222-KEY",
                     code = "",
-                    shippingId = 5,
-                    spId = 6,
-                    type = ""
+                    shippingId = 1,
+                    spId = 2,
+                    type = "",
+                    cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
             )
         )
@@ -1679,27 +1731,27 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "000000-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 OrdersItem(
-                    boCampaignId = 0,
-                    shippingSubsidy = 0,
+                    boCampaignId = 10,
+                    shippingSubsidy = 10000,
                     benefitClass = "",
-                    shippingPrice = 0.0,
+                    shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
                 OrdersItem(
-                    boCampaignId = 0,
-                    shippingSubsidy = 0,
+                    boCampaignId = 10,
+                    shippingSubsidy = 10000,
                     benefitClass = "",
-                    shippingPrice = 0.0,
+                    shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
+                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1793,15 +1845,15 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
-                        codes = mutableListOf(),
-                        shippingId = 0,
-                        spId = 0,
-                        boCampaignId = 0,
-                        shippingSubsidy = 0,
+                        codes = mutableListOf("TESTCODE"),
+                        shippingId = 1,
+                        spId = 2,
+                        boCampaignId = 10,
+                        shippingSubsidy = 10000,
                         benefitClass = "",
-                        shippingPrice = 0.0,
+                        shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1814,7 +1866,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
-                        codes = mutableListOf("TESTMVC2", "TESTCODE"),
+                        codes = mutableListOf("TESTMVC2"),
                         shippingId = 1,
                         spId = 2,
                         boCampaignId = 10,
@@ -1822,7 +1874,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
+                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
