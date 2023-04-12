@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CatalogLibraryResponse(
-    @SerializedName("categoryListCatalogLibraryPage",alternate = ["categoryListByBrand"])
+    @SerializedName("categoryListCatalogLibraryPage", alternate = ["categoryListByBrand"])
     @Expose
     val categoryList: CategoryListLibraryPage = CategoryListLibraryPage()
 ) {

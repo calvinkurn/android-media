@@ -8,7 +8,7 @@ data class CatalogBrandCategoryDM(
     val name: String = "",
     val type: String = "",
     val catalogLibraryDataList: ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData>?,
-    var selectedCategoryId : String = ""
+    var selectedCategoryId: String = ""
 ) : BaseCatalogLibraryDM {
 
     override fun type() = type

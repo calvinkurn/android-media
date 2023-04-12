@@ -4,13 +4,13 @@ import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 
-data class  CatalogLihatDM(
+data class CatalogLihatDM(
     val name: String = "",
     val type: String = "",
     val catalogLibraryDataList: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData?,
     val isAsc: Boolean,
-    val isTypeList : Boolean = false,
-    val activeCategoryId : String = ""
+    val isTypeList: Boolean = false,
+    val activeCategoryId: String = ""
 ) : BaseCatalogLibraryDM {
 
     override fun type() = type

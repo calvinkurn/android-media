@@ -12,8 +12,8 @@ data class CatalogLihatListItemDM(
     val rootCategoryName: String,
     val isGrid: Boolean,
     val isAsc: Boolean,
-    val activeCategoryId : String = "",
-    val isLastItem : Boolean = false
+    val activeCategoryId: String = "",
+    val isLastItem: Boolean = false
 ) : BaseCatalogLibraryDM {
 
     override fun type() = type
