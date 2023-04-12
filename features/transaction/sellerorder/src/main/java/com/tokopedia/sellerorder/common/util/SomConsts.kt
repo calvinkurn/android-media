@@ -37,6 +37,7 @@ object SomConsts {
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
     const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
+    const val DETAIL_POF_DATA_TYPE = "pof_data"
 
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
@@ -62,6 +63,7 @@ object SomConsts {
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
     const val KEY_RETURN_TO_SHIPPER = "confirm_return"
+    const val KEY_SEARCH_NEW_DRIVER = "search_new_driver"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"

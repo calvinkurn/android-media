@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.WidgetButtonRetakePreviewBinding
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 class RetakeActionButtonWidget @JvmOverloads constructor(
     context: Context,
@@ -13,24 +14,38 @@ class RetakeActionButtonWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attributeSet, defStyleAttr) {
 
-    private val binding: WidgetButtonRetakePreviewBinding =
-        WidgetButtonRetakePreviewBinding.inflate(
-            LayoutInflater.from(context)
-        ).also {
-            addView(it.root)
-        }
+    private var binding: WidgetButtonRetakePreviewBinding
 
-    fun commonMode() {
+    init {
+        binding = WidgetButtonRetakePreviewBinding.inflate(
+            LayoutInflater.from(context)
+        )
+
+        addView(binding.root)
+    }
+
+    fun setModeUi(media: MediaUiModel) {
+        val isVideoFromCamera = media.file?.isVideo() == true && media.isCacheFile
+        val isImageFromCamera = media.file?.isImage() == true && media.isCacheFile
+
+        when {
+            isVideoFromCamera -> videoMode()
+            isImageFromCamera -> photoMode()
+            else -> commonMode()
+        }
+    }
+
+    private fun commonMode() {
         binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_image)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_common)
     }
 
-    fun videoMode() {
+    private fun videoMode() {
         binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_video)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_video)
     }
 
-    fun photoMode() {
+    private fun photoMode() {
         binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_camera)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_image)
     }

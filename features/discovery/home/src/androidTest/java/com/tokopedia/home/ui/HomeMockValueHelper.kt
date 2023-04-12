@@ -15,7 +15,7 @@ object HomeMockValueHelper {
     const val MOCK_ATF_COUNT = 5
     const val MOCK_ATF_ERROR_POSITION_COUNT = 1
     const val MOCK_ATF_ERROR_COUNT = 3
-    const val MOCK_DYNAMIC_CHANNEL_COUNT = 37
+    const val MOCK_DYNAMIC_CHANNEL_COUNT = 38
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
     private const val MOCK_DISABLE_REMOVE_PAGINATION = "false"
@@ -29,7 +29,7 @@ object HomeMockValueHelper {
         walletAppRollence: Boolean = true,
         paymentAbcRollence: Boolean = true,
         navigationNewRollence: Boolean = true
-        ) {
+    ) {
         if (balanceWidgetRollence) {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,
@@ -51,7 +51,7 @@ object HomeMockValueHelper {
         val remoteConfig = FirebaseRemoteConfigImpl(
             InstrumentationRegistry.getInstrumentation().context
         )
-        val remoteConfigValue = if(isUsingQueryV2) MOCK_ENABLE_DYNAMIC_CHANNEL_QUERY_V2 else MOCK_DISABLE_DYNAMIC_CHANNEL_QUERY_V2
+        val remoteConfigValue = if (isUsingQueryV2) MOCK_ENABLE_DYNAMIC_CHANNEL_QUERY_V2 else MOCK_DISABLE_DYNAMIC_CHANNEL_QUERY_V2
         remoteConfig.setString(RemoteConfigKey.HOME_DC_USE_QUERY_V2, remoteConfigValue)
     }
 }
