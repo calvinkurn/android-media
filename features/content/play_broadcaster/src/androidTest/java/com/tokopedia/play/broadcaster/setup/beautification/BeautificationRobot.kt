@@ -109,8 +109,14 @@ class BeautificationRobot {
         delay(1000)
     }
 
-    fun clickBeautificationCustomFaceTab() = chainable {
+    fun clickCloseBeautificationCoachMark() = chainable {
+        click(com.tokopedia.coachmark.R.id.simple_ic_close) {
+            inRoot(RootMatchers.isPlatformPopup())
+        }
+    }
 
+    fun clickBeautificationCustomFaceTab() = chainable {
+        click(context.getString(R.string.play_broadcaster_face_tab))
     }
 
     fun clickBeautificationPresetTab() = chainable {
@@ -121,10 +127,8 @@ class BeautificationRobot {
         clickItemRecyclerView(R.id.recycler_view, position)
     }
 
-    fun clickCloseBeautificationCoachMark() = chainable {
-        click(com.tokopedia.coachmark.R.id.simple_ic_close) {
-            inRoot(RootMatchers.isPlatformPopup())
-        }
+    fun clickResetFilter() = chainable {
+        click(R.id.tv_bottom_sheet_action)
     }
 
     fun performDelay(delayInMillis: Long = 500) = chainable {

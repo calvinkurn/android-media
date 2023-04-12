@@ -98,4 +98,12 @@ class BeautificationAnalyticTest {
             .clickBeautificationPresetTab()
             .verifyEventAction("click - beauty filter tab")
     }
+
+    @Test
+    fun testAnalytic_clickBeautyFilterReset() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickResetFilter()
+            .verifyEventAction("click - beauty filter reset")
+    }
 }
