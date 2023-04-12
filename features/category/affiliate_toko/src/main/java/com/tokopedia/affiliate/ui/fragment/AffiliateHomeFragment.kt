@@ -616,8 +616,9 @@ class AffiliateHomeFragment :
     }
 
     private fun partialReset() {
-        adapter.list.removeAll(adapter.list.subList(PARTIAL_RESET_LENGTH, adapter.list.size))
-        adapter.notifyItemRangeRemoved(PARTIAL_RESET_LENGTH, listSize - PARTIAL_RESET_LENGTH)
+        val index = adapter.list.indexOfFirst { it is AffiliatePerformaSharedProductCardsModel }
+        adapter.list.removeAll { it is AffiliatePerformaSharedProductCardsModel }
+        adapter.notifyItemRangeRemoved(index, listSize - index)
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
         isNoMoreData = false
