@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -57,7 +58,9 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-internal class ShopListFragment:
+internal class ShopListFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+):
     TkpdBaseV4Fragment(),
     ShopListener,
     EmptyStateListener,
@@ -72,14 +75,16 @@ internal class ShopListFragment:
         private const val SEARCH_SHOP_TRACE = "search_shop_trace"
 
         @JvmStatic
-        fun newInstance(searchComponent: SearchComponent?): ShopListFragment {
-            return ShopListFragment().apply { searchComponent?.inject(this) }
+        fun newInstance(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+        ): ShopListFragment {
+            return fragmentFactory.instantiate(
+                classLoader,
+                ShopListFragment::class.java.name,
+            ) as ShopListFragment
         }
     }
-
-    @Inject
-    @Suppress("LateinitUsage")
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val searchShopViewModel: SearchShopViewModel? by viewModels { viewModelFactory }
     private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }

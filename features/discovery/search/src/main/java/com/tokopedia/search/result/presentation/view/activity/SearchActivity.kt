@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -94,6 +95,10 @@ class SearchActivity : BaseActivity(),
     @Suppress("LateinitUsage")
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    @Suppress("LateinitUsage")
+    lateinit var fragmentFactory: FragmentFactory
+
     private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
     private var searchComponent: SearchComponent? = null
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
@@ -102,12 +107,14 @@ class SearchActivity : BaseActivity(),
         startMonitoring(SEARCH_RESULT_TRACE)
         startPreparePagePerformanceMonitoring()
 
+        getExtrasFromIntent(intent)
+        initActivityOnCreate()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
 
         setStatusBarColor()
-        getExtrasFromIntent(intent)
-        initActivityOnCreate()
         proceed()
         handleIntent()
     }
@@ -364,14 +371,16 @@ class SearchActivity : BaseActivity(),
             MPSPagerAdapter(
                 supportFragmentManager,
                 searchFragmentTitles,
-                searchComponent,
+                classLoader,
+                supportFragmentManager.fragmentFactory,
             )
         else
             SearchSectionPagerAdapter(
                 supportFragmentManager,
                 searchFragmentTitles,
                 searchParameter,
-                searchComponent,
+                classLoader,
+                supportFragmentManager.fragmentFactory,
             )
 
     private fun addFragmentTitlesToList(searchSectionItemList: MutableList<String>) {

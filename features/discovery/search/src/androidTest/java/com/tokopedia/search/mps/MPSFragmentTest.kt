@@ -3,6 +3,8 @@ package com.tokopedia.search.mps
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -13,13 +15,15 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.R
-import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
+import com.tokopedia.search.result.mps.MPSViewModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
-import com.tokopedia.search.result.presentation.view.activity.SearchComponent
-import com.tokopedia.search.utils.createFakeBaseAppComponent
 import com.tokopedia.search.utils.rawToObject
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,6 +34,7 @@ class MPSFragmentTest {
 
     private val context: Context
         get() = InstrumentationRegistry.getInstrumentation().context!!
+    private val trackingQueue = mockk<TrackingQueue>(relaxed = true)
 
     private inline fun <reified F : Fragment> launchFragmentInContainer(
         crossinline instantiate: () -> F
@@ -37,18 +42,21 @@ class MPSFragmentTest {
         themeResId = R.style.DiscoveryTheme,
         instantiate = instantiate
     )
-
-    private fun searchComponent(mpsState: MPSState): SearchComponent =
-        DaggerMPSFragmentTestComponent.builder()
-            .baseAppComponent(createFakeBaseAppComponent(context))
-            .searchContextModule(SearchContextModule(context))
-            .fakeMPSViewModelModule(FakeMPSViewModelModule(mpsState))
-            .build()
+    private fun viewModelFactory(mpsState: MPSState) : ViewModelProvider.Factory {
+        return object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val mutableStateFlow = MutableStateFlow(mpsState)
+                return mockk<MPSViewModel>(relaxed = true) {
+                    every { stateFlow } returns mutableStateFlow
+                } as T
+            }
+        }
+    }
 
     @Test
     fun loading() {
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(MPSState()))
+            MPSFragment(viewModelFactory(MPSState()), trackingQueue)
         }
 
         onView(withId(R.id.mpsLoadingView)).check(matches(isDisplayed()))
@@ -61,7 +69,7 @@ class MPSFragmentTest {
         val mpsStateSuccess = MPSState().success(mpsModel)
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
         }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
@@ -73,7 +81,7 @@ class MPSFragmentTest {
         val mpsStateError = MPSState().error(Error("test exception"))
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateError))
+            MPSFragment(viewModelFactory(mpsStateError), trackingQueue)
         }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
@@ -87,7 +95,7 @@ class MPSFragmentTest {
         val mpsStateError = MPSState().success(mpsModel).errorLoadMore(Error("test exception"))
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateError))
+            MPSFragment(viewModelFactory(mpsStateError), trackingQueue)
         }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
@@ -99,7 +107,7 @@ class MPSFragmentTest {
         val mpsStateSuccess = MPSState().success(mpsModel)
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
         }
 
         onView(withId(R.id.mpsEmptyStateKeywordImage)).check(matches(isDisplayed()))
@@ -114,7 +122,7 @@ class MPSFragmentTest {
         )).success(mpsModel)
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
         }
 
         onView(withId(R.id.mpsEmptyStateFilterImage)).check(matches(isDisplayed()))
@@ -126,7 +134,7 @@ class MPSFragmentTest {
         val mpsStateSuccess = MPSState().success(mpsModel).openBottomSheetFilter()
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
         }
 
         onView(withId(R.id.progressBarSortFilterBottomSheet)).check(matches(isDisplayed()))
@@ -142,7 +150,7 @@ class MPSFragmentTest {
             .setBottomSheetFilterModel(dynamicFilterModel)
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
         }
 
         onView(withId(R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
@@ -159,7 +167,7 @@ class MPSFragmentTest {
             ))
 
         launchFragmentInContainer {
-            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
         }
 
         Thread.sleep(3_000)

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.search.di.module.CartLocalCacheHandlerModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
+import com.tokopedia.search.di.module.SearchFragmentModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
@@ -30,6 +31,7 @@ import dagger.Component
         CartLocalCacheHandlerModule::class,
         SearchContextModule::class,
         TrackingQueueModule::class,
+        SearchFragmentModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

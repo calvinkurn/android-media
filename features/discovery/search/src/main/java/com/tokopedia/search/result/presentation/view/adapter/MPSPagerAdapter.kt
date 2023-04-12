@@ -3,17 +3,18 @@ package com.tokopedia.search.result.presentation.view.adapter
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.bottomsheet.MPSShimmeringFragment
-import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 
 internal class MPSPagerAdapter(
     fragmentManager: FragmentManager,
     private val titleList: List<String>,
-    private val searchComponent: SearchComponent?,
+    private val classLoader: ClassLoader,
+    private val fragmentFactory: FragmentFactory,
 ): FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
     private var mpsShimmeringFragment: MPSShimmeringFragment? = null
@@ -30,11 +31,11 @@ internal class MPSPagerAdapter(
     }
 
     private fun createMPSBottomSheetFragment(): MPSShimmeringFragment {
-        return MPSShimmeringFragment.newInstance(searchComponent)
+        return MPSShimmeringFragment.newInstance(classLoader, fragmentFactory)
     }
 
     private fun createMPSFragment(): MPSFragment {
-        return MPSFragment.newInstance(searchComponent)
+        return MPSFragment.newInstance(classLoader, fragmentFactory)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

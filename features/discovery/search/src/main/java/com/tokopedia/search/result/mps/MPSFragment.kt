@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
+import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
@@ -35,21 +37,16 @@ import javax.inject.Inject
 import kotlin.reflect.KProperty1
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener as EndlessScrollListener
 
-class MPSFragment:
+class MPSFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val trackingQueue: TrackingQueue,
+):
     TkpdBaseV4Fragment(),
     SearchView,
     ChooseAddressListener,
     FragmentProvider,
     BackToTopView,
     ListListener {
-
-    @Inject
-    @Suppress("LateinitUsage")
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    @Suppress("LateinitUsage")
-    lateinit var trackingQueue: TrackingQueue
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private var binding: SearchMpsFragmentLayoutBinding? by autoClearedNullable()
@@ -196,8 +193,15 @@ class MPSFragment:
 
     companion object {
 
-        internal fun newInstance(searchComponent: SearchComponent?) = MPSFragment().apply {
-            searchComponent?.inject(this)
+        @JvmStatic
+        internal fun newInstance(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+        ): MPSFragment {
+            return fragmentFactory.instantiate(
+                classLoader,
+                MPSFragment::class.java.name,
+            ) as MPSFragment
         }
     }
 }
