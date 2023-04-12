@@ -66,7 +66,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            if (isAccountLinked) {
+            if (isAccountLinked or (binding?.layoutAccountLinking?.root?.isShown == false)) {
                 //TODO goto take picture or KTP
             } else {
                 val parameter = GotoKycMainParam(
