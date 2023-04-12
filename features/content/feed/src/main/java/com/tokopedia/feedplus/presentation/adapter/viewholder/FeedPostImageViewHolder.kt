@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -390,7 +391,7 @@ class FeedPostImageViewHolder(
 
     private fun runAutoSwipe() {
         scope.launch {
-            while (isAutoSwipeOn) {
+            while (isAutoSwipeOn && isActive) {
                 delay(THREE_SECONDS)
                 val index = layoutManager.findFirstVisibleItemPosition()
                 if ((index + PRODUCT_COUNT_ONE) < adapter?.data?.size.orZero()) {
