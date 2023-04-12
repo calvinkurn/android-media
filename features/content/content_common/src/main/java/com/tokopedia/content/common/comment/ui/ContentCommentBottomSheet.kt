@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.icu.text.BreakIterator
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -35,7 +36,6 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -108,21 +108,24 @@ class ContentCommentBottomSheet @Inject constructor(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
+                val newLength = p0.toString().getGraphemeLength()
+                val isBtnEnabled = p0.isNullOrBlank() || newLength > 140
                 binding.ivCommentSend.background.setTint(
-                    if (!p0.isNullOrBlank()) {
+                    if (isBtnEnabled) {
+                        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+                    } else {
                         MethodChecker.getColor(
                             requireContext(),
                             unifyR.color.Unify_GN500
                         )
-                    } else {
-                        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
                     }
                 )
+                binding.ivCommentSend.isClickable = !isBtnEnabled
 
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length > MAX_CHAR) {
+                if (newLength > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
                         CommentException.SendCommentFailed.message,
@@ -132,14 +135,14 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val prevLength = binding.newComment.length()
                 val selEnd = binding.newComment.selectionEnd
-                val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
+                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from text end
 
                 val newText =
-                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = p0.length.orZero())
+                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = newLength.orZero())
                 binding.newComment.setText(newText)
 
                 val currentLength = binding.newComment.length()
-                if (distanceFromEnd > 0 && distanceFromEnd < currentLength) {
+                if (distanceFromEnd in 1 until currentLength) {
                     binding.newComment.setSelection(selEnd)
                 } else {
                     binding.newComment.setSelection(currentLength)
@@ -162,6 +165,16 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
+
+    fun String.getGraphemeLength(): Int {
+        val it: BreakIterator = BreakIterator.getCharacterInstance()
+        it.setText(this)
+        var count = 0
+        while (it.next() != BreakIterator.DONE) {
+            count++
+        }
+        return count
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -285,15 +298,23 @@ class ContentCommentBottomSheet @Inject constructor(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
                             actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message)
-                                    .orFalse()
-                            ) "" else getString(R.string.feed_content_coba_lagi_text),
+                                .orFalse()
+                            ) {
+                                ""
+                            } else {
+                                getString(R.string.feed_content_coba_lagi_text)
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
                             type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
-                                    .orFalse()
-                            ) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+                                .orFalse()
+                            ) {
+                                Toaster.TYPE_ERROR
+                            } else {
+                                Toaster.TYPE_NORMAL
+                            }
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
@@ -323,8 +344,11 @@ class ContentCommentBottomSheet @Inject constructor(
                         val mention = TagMentionBuilder.createNewMentionTag(
                             event.parentItem
                         )
-                        binding.newComment.tag = if (event.parentItem.commentType.isParent)
-                            event.parentItem.id else event.parentItem.commentType.parentId
+                        binding.newComment.tag = if (event.parentItem.commentType.isParent) {
+                            event.parentItem.id
+                        } else {
+                            event.parentItem.commentType.parentId
+                        }
                         binding.newComment.setText(mention)
                         binding.newComment.requestFocus()
                         showKeyboard(true)
@@ -518,7 +542,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private fun handleSendComment() {
         showKeyboard(false)
-        if (binding.newComment.length() > MAX_CHAR) {
+        val newLength = binding.newComment.text.toString().getGraphemeLength()
+        if (newLength > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
                 CommentException.SendCommentFailed.message,

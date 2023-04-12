@@ -54,8 +54,8 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
                 }
 
                 override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
-                    hideAnimated()
                     mAnimator = null
+                    hideAnimated()
                 }
             })
             startAnimator(animator)

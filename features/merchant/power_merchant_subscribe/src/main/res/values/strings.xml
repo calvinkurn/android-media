@@ -169,7 +169,6 @@
     <string name="pm_benefit_product_bundling"><![CDATA[<b>%1$d</b> kuota Paket Bundling]]></string>
     <string name="pm_benefit_special_release"><![CDATA[Gabung Rilisan Spesial <b>%1$d kali</b>/bulan]]></string>
     <string name="pm_benefit_top_ads"><![CDATA[Ekstra kredit TopAds <b>%1$s</b> dan Broadcast Chat hingga <b>%2$s</b>]]></string>
-    <string name="pm_benefit_reward">Reward untuk Seller dengan pertumbuhan terbaik</string>
     <string name="pm_grade_benefit_widget_section">Keuntungan yang bertambah sesuai level:</string>
     <string name="pm_grade_benefit_ticker_pm_passed">Selamat! Kamu sudah melewati level ini dan berhak mendapatkan paket keuntungan lebih di PM PRO %1$s.</string>
     <string name="pm_grade_benefit_ticker_pm_pro_not_eligible">Raih Level %1$d untuk mendapatkan paket keuntungan PM PRO %2$s, ya.</string>
