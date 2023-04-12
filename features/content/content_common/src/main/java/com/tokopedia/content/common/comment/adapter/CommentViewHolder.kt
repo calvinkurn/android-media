@@ -51,8 +51,8 @@ class CommentViewHolder {
         }
 
         interface Listener {
-            fun onReplyClicked(item: CommentUiModel)
-            fun onLongClicked(item: CommentUiModel)
+            fun onReplyClicked(item: CommentUiModel.Item)
+            fun onLongClicked(item: CommentUiModel.Item)
         }
     }
 
