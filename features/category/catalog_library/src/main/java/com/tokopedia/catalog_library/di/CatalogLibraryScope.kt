@@ -1,6 +1,5 @@
 package com.tokopedia.catalog_library.di
 
-
 import javax.inject.Scope
 
 @Scope

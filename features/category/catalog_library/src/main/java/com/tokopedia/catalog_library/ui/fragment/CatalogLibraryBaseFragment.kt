@@ -13,13 +13,13 @@ abstract class CatalogLibraryBaseFragment : BaseDaggerFragment() {
 
     @JvmField
     @Inject
-    var remoteConfig : RemoteConfig? = null
+    var remoteConfig: RemoteConfig? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_CATALOG_LIBRARY_PAGE, false) == true) {
             activity?.finish()
-            RouteManager.route(activity,LINK_CATALOG_LIBRARY_LITE)
+            RouteManager.route(activity, LINK_CATALOG_LIBRARY_LITE)
         }
     }
 }

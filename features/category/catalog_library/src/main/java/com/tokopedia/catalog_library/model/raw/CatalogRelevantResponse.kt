@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 data class CatalogRelevantResponse(
     @SerializedName("catalogGetRelevant")
     @Expose
-    val catalogGetRelevant : CatalogGetRelevant = CatalogGetRelevant()
+    val catalogGetRelevant: CatalogGetRelevant = CatalogGetRelevant()
 ) {
-    data class CatalogGetRelevant (
-        @SerializedName("catalogs" )
+    data class CatalogGetRelevant(
+        @SerializedName("catalogs")
         @Expose
-        val catalogsList : ArrayList<Catalogs> = arrayListOf()
+        val catalogsList: ArrayList<Catalogs> = arrayListOf()
     )
-    data class Catalogs (
+    data class Catalogs(
         @SerializedName("id")
         @Expose
         val id: String? = "",
@@ -34,6 +34,6 @@ data class CatalogRelevantResponse(
         val url: String? = "",
         @SerializedName("brand")
         @Expose
-        val brand: String? = "",
+        val brand: String? = ""
     )
 }

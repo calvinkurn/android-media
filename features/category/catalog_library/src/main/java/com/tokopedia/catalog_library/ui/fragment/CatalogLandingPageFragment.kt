@@ -24,7 +24,6 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,7 +32,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -58,7 +56,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     @Inject
     @JvmField
     var trackingQueue: TrackingQueue? = null
-
 
     private val landingPageViewModel by lazy {
         viewModelFactory?.let {
@@ -205,7 +202,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         globalError?.show()
         globalError?.errorAction?.setOnClickListener {
             catalogLandingRecyclerView?.show()
-            global_error_page.hide()
+            globalError?.hide()
             addShimmer()
             updateUi()
             getDataFromViewModel()
