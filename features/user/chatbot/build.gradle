@@ -69,6 +69,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex

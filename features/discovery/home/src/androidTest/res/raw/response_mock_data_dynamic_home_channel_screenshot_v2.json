@@ -6715,6 +6715,70 @@
                         "attribution": "",
                         "gradientColor": []
                     }
+                },
+                {
+                    "id": 6999442,
+                    "dividerType": 0,
+                    "groupId": 57,
+                    "galaxyAttribution": "PG",
+                    "persona": "",
+                    "brandId": "",
+                    "categoryPersona": "",
+                    "name": "Todo Widget Test",
+                    "layout": "todo_widget_carousel",
+                    "type": "inspiration",
+                    "pageName": "Todo Widget",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "persoType": 1,
+                    "campaignCode": "",
+                    "hasCloseButton": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 60682,
+                        "name": "Todo Widget Test",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "backColor": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "couponCode": ""
+                        },
+                        "applink": "",
+                        "textColor": "",
+                        "imageUrl": "",
+                        "attribution": "",
+                        "gradientColor": [
+                            "#FFFFFF"
+                        ]
+                    }
                 }
             ]
         }

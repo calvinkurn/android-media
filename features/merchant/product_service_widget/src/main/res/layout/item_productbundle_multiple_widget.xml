@@ -66,7 +66,7 @@
             app:typographyType="small" />
 
         <include
-            android:id="@+id/bundle_widget_header_footer"
+            android:id="@+id/bundle_widget_footer"
             layout="@layout/productbundle_widget_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,6 +75,23 @@
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_discount_bundle" />
+
+        <include
+            android:id="@+id/bundle_widget_minimal_footer"
+            layout="@layout/productbundle_widget_minimal_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_discount_bundle" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/bundle_widget_maximal_footer"
+            app:constraint_referenced_ids="tv_bundle_display_price,label_discount_bundle,tv_bundle_original_price,bundle_widget_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

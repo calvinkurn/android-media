@@ -22,4 +22,6 @@
 
     <string name="dilayani_tokopedia_title" translatable="false">Dilayani Tokopedia</string>
 
+    <string name="path_find_new_driver" translatable="false">/findnewdriver</string>
+
 </resources>

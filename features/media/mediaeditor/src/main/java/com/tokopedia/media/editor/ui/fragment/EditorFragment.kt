@@ -27,11 +27,7 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.checkMemoryOverflow
-import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.showErrorLoadToaster
-import com.tokopedia.media.editor.utils.showMemoryLimitToast
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -126,44 +122,33 @@ class EditorFragment @Inject constructor(
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
             val filePath = data.getOriginalUrl()
-            var memoryOverflow: Boolean
 
-            val imageSize = getImageSize(filePath).apply {
-                val usageEstimation = first * second * PIXEL_BYTE_SIZE
-                memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
-            }
-
-            if (memoryOverflow) {
-                activity?.showMemoryLimitToast(imageSize)
-                return
-            } else {
-                loadImageWithEmptyTarget(requireContext(),
-                    filePath,
-                    properties = {
-                        listener(
-                            onError = {
-                                it?.let { exception ->
-                                    loader?.dismiss()
-                                    viewBinding?.mainEditorFragmentLayout?.let { view ->
-                                        showErrorLoadToaster(view, exception.message ?: "")
-                                    }
-
+            loadImageWithEmptyTarget(requireContext(),
+                filePath,
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                loader?.dismiss()
+                                viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
                                 }
+
                             }
+                        }
+                    )
+                },
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        imageCrop(bitmap, data.getOriginalUrl())
+                        thumbnailDrawerComponent.refreshItem(
+                            currentProcess,
+                            viewModel.editStateList.values.toList()
                         )
+                        iterateCrop(listData, currentProcess + 1)
                     },
-                    mediaTarget = MediaBitmapEmptyTarget(
-                        onReady = { bitmap ->
-                            imageCrop(bitmap, data.getOriginalUrl())
-                            thumbnailDrawerComponent.refreshItem(
-                                currentProcess,
-                                viewModel.editStateList.values.toList()
-                            )
-                            iterateCrop(listData, currentProcess + 1)
-                        },
-                        onCleared = {}
-                    ))
-            }
+                    onCleared = {}
+                ))
         } else {
             iterateCrop(listData, currentProcess + 1)
         }
@@ -177,6 +162,9 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
+        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
+            activity?.finish()
+        }
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,
