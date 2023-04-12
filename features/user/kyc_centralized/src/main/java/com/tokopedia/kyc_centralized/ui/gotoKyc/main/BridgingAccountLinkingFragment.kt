@@ -72,13 +72,15 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     }
 
     private fun gotoAccountLinking() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_LD,
-                BACK_BTN_APPLINK
-            )
+        if (viewModel.accountLinkingStatus.value !is AccountLinkingStatusResult.Linked) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_LD,
+                    BACK_BTN_APPLINK
+                )
+            }
+            startAccountLinkingForResult.launch(intent)
         }
-        startAccountLinkingForResult.launch(intent)
     }
 
     private fun initObserver() {

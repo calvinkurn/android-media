@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,8 +31,19 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var isSelfieTaken = false
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode != KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED) {
-            binding?.layoutAccountLinking?.root?.hide()
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
+            KYCConstant.ActivityResult.RESULT_FINISH -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+            KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED -> {}
+            else -> {
+                binding?.layoutAccountLinking?.root?.hide()
+            }
         }
     }
 
