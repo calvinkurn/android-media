@@ -53,7 +53,7 @@ class AffiliateEducationSearchFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initInject()
+        updateSearchKeyword()
     }
 
     override fun onCreateView(
@@ -95,6 +95,7 @@ class AffiliateEducationSearchFragment :
                 ) {
                     affiliateEducationSearchViewModel?.searchKeyword?.value =
                         searchTextField.text.toString()
+                    searchTextField.onEditorAction(EditorInfo.IME_ACTION_DONE)
                     return true
                 }
                 return false
@@ -220,8 +221,11 @@ class AffiliateEducationSearchFragment :
     }
 
     override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateEducationSearchViewModel =
-            viewModel as AffiliateEducationSearchViewModel
+        affiliateEducationSearchViewModel = viewModel as AffiliateEducationSearchViewModel
+    }
+
+    private fun updateSearchKeyword() {
+        affiliateEducationSearchViewModel?.searchKeyword?.value = arguments?.getString(SEARCH_KEYWORD)
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory? {

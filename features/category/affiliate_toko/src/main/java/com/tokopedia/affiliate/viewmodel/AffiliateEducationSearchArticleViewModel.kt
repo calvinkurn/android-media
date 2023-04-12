@@ -199,6 +199,9 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                                     }
                                 )
                             } else {
+//                                if(categoryId == (category?.id)) {
+//                                    category?.isSelected = true
+//                                }
                                 AffiliateEduCategoryChipModel(category)
                             }
                         }

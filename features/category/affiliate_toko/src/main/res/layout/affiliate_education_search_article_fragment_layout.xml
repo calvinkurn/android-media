@@ -33,6 +33,7 @@
         android:id="@+id/eta_empty_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/Illustration.png"
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStateTitle="@string/affiliate_education_search_empty_state_title"

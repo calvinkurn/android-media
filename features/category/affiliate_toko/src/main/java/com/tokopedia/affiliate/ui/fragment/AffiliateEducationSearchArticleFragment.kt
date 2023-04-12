@@ -113,7 +113,8 @@ class AffiliateEducationSearchArticleFragment :
         }
         setObservers()
         setUpRecyclerView()
-        affiliateEducationSearchArticleViewModel?.fetchSearchData(identifier, searchKeyword)
+//        affiliateEducationSearchArticleViewModel?.fetchSearchData(identifier, affiliateEducationSearchSharedViewModel?.searchKeyword?.value)
+
     }
 
     private fun setUpRecyclerView() {

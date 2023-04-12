@@ -143,19 +143,21 @@ class AffiliateEducationLandingPage :
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
         searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString()
-                    .isNullOrEmpty()
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && searchTextField.text.toString().trim()
+                        .isNotEmpty()
                 ) {
                     context?.let {
                         startActivity(
                             AffiliateEducationSearchActivity.createIntent(
                                 it,
-                                searchTextField.text.toString()
+                                searchTextField.text.toString().trim()
                             )
                         )
                     }
                     searchBar.searchBarTextField.text.clear()
                     return true
+                } else {
+                    searchTextField.text.clear()
                 }
                 return false
             }
