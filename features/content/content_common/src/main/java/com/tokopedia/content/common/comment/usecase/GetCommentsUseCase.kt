@@ -3,6 +3,7 @@ package com.tokopedia.content.common.comment.usecase
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.uimodel.CommentType
+import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -40,7 +41,7 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
             PARAM_ID to source.id,
             PARAM_CONTENT_TYPE to source.type,
             PARAM_CURSOR to cursor,
-            PARAM_LIMIT to if(commentType is CommentType.Parent) PARAM_LIMIT_PARENT_VALUE else PARAM_LIMIT_CHILD_VALUE,
+            PARAM_LIMIT to if(commentType.isParent) PARAM_LIMIT_PARENT_VALUE else PARAM_LIMIT_CHILD_VALUE,
             PARAM_COMMENT_ID to commentType.parentId
         )
 

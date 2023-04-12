@@ -106,7 +106,7 @@ class CommentUiModelMapper @Inject constructor() {
     companion object {
         private const val DAY = "hari"
         private const val HOUR = "jam"
-        private const val MINUTE = "minute"
+        private const val MINUTE = "menit"
         private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
     }
 }

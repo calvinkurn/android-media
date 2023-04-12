@@ -147,7 +147,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             }
         }
 
-        if (param.commentType is CommentType.Parent) {
+        if (param.commentType.isParent) {
             handleParent()
         } else {
             handleChild()
