@@ -12,7 +12,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.databinding.BsProductMediaRecomBinding
@@ -37,8 +36,6 @@ class ProductMediaRecomBottomSheetManager(
     companion object {
         const val TAG = "ProductMediaRecomBottomSheet"
     }
-
-    private val bottomSheet by lazyThreadSafetyNone { BottomSheet() }
 
     fun updateState(state: ProductMediaRecomBottomSheetState) {
         when (state) {
@@ -70,7 +67,12 @@ class ProductMediaRecomBottomSheetManager(
         return fragmentManager.findFragmentByTag(TAG) as? BottomSheet
     }
 
+    private fun getOrCreateProductMediaRecomBottomSheet(): BottomSheet {
+        return getProductMediaRecomBottomSheet() ?: BottomSheet()
+    }
+
     private fun updateProductMediaRecomBottomSheet(action: BottomSheet.() -> Unit) {
+        val bottomSheet = getOrCreateProductMediaRecomBottomSheet()
         if (bottomSheet.isAdded) {
             action(bottomSheet)
             bottomSheet.setListener(listener)
