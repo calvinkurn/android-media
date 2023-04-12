@@ -148,7 +148,13 @@ class RotateFilterRepositoryImpl @Inject constructor(
 
             if (rotatedRatioZoom == 0f) {
                 val newTargetWidth = cropOverlay.cropViewRect
-                rotatedRatioZoom = if (newTargetWidth == originalTargetWidth) {
+
+                // cannot compare directly, need tolerance value since Ucrop overlay size can return diff rect value after each init
+                // cropOverlay.setTargetAspectRatio => will re-init the overlay size
+                val diffWidth = abs(newTargetWidth.width() - originalTargetWidth.width())
+                val diffHeight = abs(newTargetWidth.width() - originalTargetWidth.width())
+
+                rotatedRatioZoom = if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
                     initialScale
                 } else {
                     (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
@@ -199,5 +205,6 @@ class RotateFilterRepositoryImpl @Inject constructor(
 
     companion object {
         private const val CROP_VIEW_ZOOM_DELAY = 500L
+        private const val TOLERANCE_SIZE_VALUE = 5 // in pixel
     }
 }
