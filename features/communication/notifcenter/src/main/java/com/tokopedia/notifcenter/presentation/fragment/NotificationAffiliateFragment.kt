@@ -296,7 +296,8 @@ open class NotificationAffiliateFragment :
                 override fun onFilterChanged(filterType: Long, filterName: String) {
                     viewModel.filter = filterType
                     loadInitialData()
-                    rvAdapter?.affiliateBannerPair = null // reset education position on filter change
+                    rvAdapter?.affiliateBannerPair =
+                        null // reset education position on filter change
                     analytic.trackFilterClick(
                         filterType,
                         filterName,
@@ -476,18 +477,11 @@ open class NotificationAffiliateFragment :
     }
 
     private fun getArticleEventUrl(slug: String): String {
-        val EDUCATION_ARTICLE_DETAIL_STAGING_URL =
-            "https://affiliate-staging.tokopedia.com/edu/"
-        val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
         return String.format(
             Locale.getDefault(),
             "%s?url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
-            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-                EDUCATION_ARTICLE_DETAIL_STAGING_URL
-            } else {
-                EDUCATION_ARTICLE_DETAIL_PROD_URL
-            },
+            TokopediaUrl.getInstance().AFFILIATE + "/edu/",
             slug
         )
     }
