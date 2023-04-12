@@ -244,7 +244,11 @@ class FeedPostVideoViewHolder(
                 !videoPlayer.getExoPlayer().playWhenReady
         }
 
-        videoPlayer.start(element.media[0].mediaUrl, false, playWhenReady = false)
+        videoPlayer.start(
+            element.media.firstOrNull()?.mediaUrl.orEmpty(),
+            false,
+            playWhenReady = false,
+        )
     }
 
     private fun showLoading() {

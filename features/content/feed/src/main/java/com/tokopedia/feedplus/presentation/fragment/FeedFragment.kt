@@ -150,8 +150,7 @@ class FeedFragment :
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
-//            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
-            postId = "223259185"
+            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
         )
 
         initView()

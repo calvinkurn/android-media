@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -58,11 +57,6 @@ class FeedExoPlayer(val context: Context) {
                         exoPlayer.duration
                     )
                 }
-            }
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                super.onPlayerError(error)
-                Log.d("FeedExoPlayer", "Player Error: $error")
             }
         })
     }
