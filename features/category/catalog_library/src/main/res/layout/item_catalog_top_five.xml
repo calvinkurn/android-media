@@ -19,6 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0"
+            android:scaleType="fitCenter"
             app:unify_image_type="rect" />
 
         <com.tokopedia.unifyprinciples.Typography

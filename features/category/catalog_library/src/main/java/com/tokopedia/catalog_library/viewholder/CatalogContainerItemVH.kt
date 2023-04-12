@@ -6,11 +6,10 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.internal.ViewUtils.dpToPx
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
+import com.tokopedia.catalog_library.adapter.decoration.GridSpacingItemDecoration
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
@@ -18,12 +17,13 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDM
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogContainerItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogContainerDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogContainerDM>(view) {
 
     private val title: Typography by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.container_titile)
@@ -74,10 +74,10 @@ class CatalogContainerItemVH(
 
         val params = LinearLayout.LayoutParams(title.layoutParams)
         params.setMargins(
-            dpToPx(title.context, element.marginForTitle.start).toInt(),
-            dpToPx(title.context, element.marginForTitle.top).toInt(),
-            dpToPx(title.context, element.marginForTitle.end).toInt(),
-            dpToPx(title.context, element.marginForTitle.bottom).toInt()
+            element.marginForTitle.start.toPx(),
+            element.marginForTitle.top.toPx(),
+            element.marginForTitle.end.toPx(),
+            element.marginForTitle.bottom.toPx()
         )
         title.layoutParams = params
         title.requestLayout()
@@ -86,6 +86,7 @@ class CatalogContainerItemVH(
     private fun renderRecyclerView(element: CatalogContainerDM) {
         containerRV.apply {
             layoutManager = if (element.isGrid) {
+                addItemDecoration(GridSpacingItemDecoration(CatalogLihatVH.COLUMN_COUNT, 0.toPx(), false))
                 GridLayoutManager(itemView.context, element.columnCount)
             } else {
                 LinearLayoutManager(itemView.context, element.orientationRecyclerView, false)
@@ -98,15 +99,13 @@ class CatalogContainerItemVH(
             val params: LinearLayout.LayoutParams =
                 LinearLayout.LayoutParams(containerRV.layoutParams)
             params.setMargins(
-                element.marginForTitle.start,
-                element.marginForTitle.top,
-                element.marginForTitle.end,
-                element.marginForTitle.bottom
+                element.marginForRV.start.toPx(),
+                element.marginForRV.top.toPx(),
+                element.marginForRV.end.toPx(),
+                element.marginForRV.bottom.toPx()
             )
             containerRV.layoutParams = params
             containerRV.requestLayout()
         }
-
-
     }
 }

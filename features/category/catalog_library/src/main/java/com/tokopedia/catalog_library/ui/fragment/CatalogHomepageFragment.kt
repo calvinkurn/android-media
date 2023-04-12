@@ -18,10 +18,7 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.util.ActionKeys
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
+import com.tokopedia.catalog_library.util.*
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -30,15 +27,16 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
+class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
 
     private var catalogHomeRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
+    private val trackingSet = HashSet<String>()
 
     companion object {
         fun getInstance(): CatalogHomepageFragment {
@@ -49,22 +47,26 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
+
+    @Inject
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var trackingQueue: TrackingQueue? = null
+
     private val homepageViewModel by lazy {
         viewModelFactory?.let {
             ViewModelProvider(this, it).get(CatalogHomepageVM::class.java)
         }
     }
+
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
             this
         )
     }
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-    private val specialTrackingSet = HashSet<String>()
-    private val relevantTrackingSet = HashSet<String>()
-    private val catalogsTrackingSet = HashSet<String>()
 
     private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
@@ -74,7 +76,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForHomePage()
+            it.shimmerForHomePage()
         }
 
     override var baseRecyclerView: RecyclerView?
@@ -117,9 +119,9 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         homepageViewModel?.getPopularBrands()
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override var source: String = CatalogLibraryConstant.SOURCE_HOMEPAGE
+
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         DaggerCatalogLibraryComponent.builder()
@@ -177,20 +179,31 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             catalogHomeRecyclerView?.show()
             globalError?.hide()
             getDataFromViewModel()
+            getProducts()
         }
     }
 
     override fun onLihatSemuaTextClick(applink: String) {
         super.onLihatSemuaTextClick(applink)
-        AnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
-            UserSession(context).userId
-        )
+        if (applink.contains(CatalogLibraryConstant.APP_LINK_POPULAR_BRANDS)) {
+            CatalogAnalyticsHomePage.sendClickLihatSemuaOnPopularBrandsEvent(
+                userSessionInterface?.userId ?: ""
+            )
+        } else {
+            CatalogAnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
+                userSessionInterface?.userId ?: ""
+            )
+        }
         RouteManager.route(context, applink)
     }
 
-    override fun onPopularBrandsLihatSemuaClick(applink: String) {
-        super.onPopularBrandsLihatSemuaClick(applink)
-        RouteManager.route(context, applink)
+    override fun onPopularBrandsHomeClick(brandName: String, brandId: String, position: String) {
+        super.onPopularBrandsHomeClick(brandName, brandId, position)
+        RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_BRANDS}$brandId/$brandName")
+        CatalogAnalyticsHomePage.sendClickBrandOnPopularBrandsEvent(
+            "$brandName - $brandId - $position",
+            userSessionInterface?.userId ?: ""
+        )
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -212,58 +225,45 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
         }
-
-        if (productsList.isEmpty()) {
-            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
-        } else {
-            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
-        }
         updateUi()
     }
 
     override fun onShimmerAdded() {
+        catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
+        updateUi()
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
-        // TODO shimmer remove or show whole error logic
-        onError(throwable)
-    }
-
-    override fun specialCategoryImpression(
-        creativeSlot: Int,
-        itemId: String,
-        itemName: String,
-        userId: String
-    ) {
-        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES}-$creativeSlot"
-        if (!specialTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnSpecialCategoriesEvent(
-                trackingQueue,
-                creativeSlot,
-                itemId,
-                itemName,
-                userId
-            )
-            specialTrackingSet.add(uniqueTrackingKey)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        updateUi()
+        if (productCount == 0) {
+            onError(throwable)
         }
     }
 
-    override fun relevantCategoryImpression(
+    override fun categoryHorizontalCarouselImpression(
+        creativeName: String,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
-        userId: String
+        userId: String,
+        trackerId: String,
+        eventAction: String
     ) {
-        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS}-$creativeSlot"
-        if (!relevantTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
+        val uniqueTrackingKey = "$eventAction-$creativeSlot"
+        if (!trackingSet.contains(uniqueTrackingKey)) {
+            CatalogAnalyticsHomePage.sendImpressionOnCatalogsEvent(
+                trackerId,
+                eventAction,
+                creativeName,
                 trackingQueue,
                 creativeSlot,
                 itemId,
                 itemName,
                 userId
             )
-            relevantTrackingSet.add(uniqueTrackingKey)
+            trackingSet.add(uniqueTrackingKey)
         }
     }
 
@@ -274,20 +274,19 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         userId: String
     ) {
         val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST}-$position"
-        if (!catalogsTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnCatalogListEvent(
+        if (!trackingSet.contains(uniqueTrackingKey)) {
+            CatalogAnalyticsHomePage.sendImpressionOnCatalogListEvent(
                 trackingQueue,
-                catgoryName,
                 product,
                 position,
                 userId
             )
-            catalogsTrackingSet.add(uniqueTrackingKey)
+            trackingSet.add(uniqueTrackingKey)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 }

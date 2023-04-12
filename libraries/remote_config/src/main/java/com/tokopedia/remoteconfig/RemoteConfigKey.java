@@ -37,6 +37,7 @@ public class RemoteConfigKey {
     public static final String APP_SHOW_AFFILIATES_BUTTON = "old_home_account_show_affiliates";
     public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
     public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
+    public static final String DISABLE_CATALOG_LIBRARY_PAGE = "android_main_app_disable_catalog_library";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";

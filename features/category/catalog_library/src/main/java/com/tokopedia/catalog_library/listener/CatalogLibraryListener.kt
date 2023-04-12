@@ -1,5 +1,7 @@
 package com.tokopedia.catalog_library.listener
 
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
+import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 
 interface CatalogLibraryListener {
@@ -7,21 +9,35 @@ interface CatalogLibraryListener {
     fun onLihatSemuaTextClick(applink: String) {}
     fun onProductCardClicked(applink: String?) {}
     fun onCategoryItemClicked(categoryIdentifier: String?) {}
-    fun onPopularBrandsLihatSemuaClick(applink: String){}
+    fun onCategoryItemClicked(categoryIdentifier: String?, categoryName: String = "") {}
+    fun onPopularBrandsHomeClick(brandName: String, brandId: String, position: String) {}
+    fun onPopularBrandsLihatSemuaClick(
+        brandName: String,
+        brandId: String,
+        position: String,
+        eventAction: String,
+        trackerId: String
+    ) {}
+    fun onPopularBrandsClick(
+        brandName: String,
+        brandId: String,
+        position: String,
+        catalogName: String,
+        catalogId: String,
+        applink: String
+    ) {}
+    fun onBrandCategoryTabSelected(categoryName: String, categoryId: String, position: Int) {}
+    fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean = false) {}
+    fun onBrandCategoryArrowClick() {}
 
-    fun specialCategoryImpression(
+    fun categoryHorizontalCarouselImpression(
+        creativeName: String,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
-        userId: String
-    ) {
-    }
-
-    fun relevantCategoryImpression(
-        creativeSlot: Int,
-        itemId: String,
-        itemName: String,
-        userId: String
+        userId: String,
+        trackerId: String,
+        eventAction: String
     ) {
     }
 
@@ -52,6 +68,10 @@ interface CatalogLibraryListener {
     }
 
     fun categoryListImpression(
+        trackerId: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -62,4 +82,8 @@ interface CatalogLibraryListener {
         userId: String
     ) {
     }
+
+    fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {}
+
+    fun onImpressedPopularPageItems(it: CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands, position: Int) {}
 }

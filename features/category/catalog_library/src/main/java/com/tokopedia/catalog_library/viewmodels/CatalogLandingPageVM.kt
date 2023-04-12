@@ -9,6 +9,7 @@ import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
+import com.tokopedia.catalog_library.util.CatalogLibraryResponseException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,7 +37,7 @@ class CatalogLandingPageVM @Inject constructor(
         catalogTopFiveUseCase.cancelJobs()
         catalogTopFiveUseCase.getCatalogProductsData(
             ::onAvailableCatalogTopFiveData,
-            ::onFailLandingPageData,
+            ::onFailLandingPageDataTopFive,
             categoryId,
             sortType,
             rows
@@ -51,7 +52,7 @@ class CatalogLandingPageVM @Inject constructor(
         catalogMostViralUseCase.cancelJobs()
         catalogMostViralUseCase.getCatalogProductsData(
             ::onAvailableCatalogMostViralData,
-            ::onFailLandingPageData,
+            ::onFailLandingPageDataMostViral,
             categoryId,
             sortType,
             rows
@@ -60,7 +61,8 @@ class CatalogLandingPageVM @Inject constructor(
 
     private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse, page: Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
-            onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
+            onFailLandingPageData(CatalogLibraryResponseException("No Catalog Landing Page Data",
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE))
         } else {
             catalogListResponse.let {
                 _catalogLandingPageLiveData.postValue(Success(mapCatalogTopFiveData(it)))
@@ -71,7 +73,8 @@ class CatalogLandingPageVM @Inject constructor(
 
     private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse, page: Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
-            onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
+            onFailLandingPageData(CatalogLibraryResponseException("No Catalog Landing Page Data",
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL))
         } else {
             catalogListResponse.let {
                 _catalogLandingPageLiveData.postValue(Success(mapCatalogMostViralData(it)))
@@ -81,6 +84,16 @@ class CatalogLandingPageVM @Inject constructor(
 
     private fun onFailLandingPageData(throwable: Throwable) {
         _catalogLandingPageLiveData.postValue(Fail(throwable))
+    }
+
+    private fun onFailLandingPageDataMostViral(throwable: Throwable) {
+        _catalogLandingPageLiveData.postValue(Fail(CatalogLibraryResponseException(throwable.message ?: ""
+            ,CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL)))
+    }
+
+    private fun onFailLandingPageDataTopFive(throwable: Throwable) {
+        _catalogLandingPageLiveData.postValue(Fail(CatalogLibraryResponseException(throwable.message ?: ""
+            ,CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE)))
     }
 
     private fun mapCatalogTopFiveData(data: CatalogListResponse): CatalogLibraryDataModel {

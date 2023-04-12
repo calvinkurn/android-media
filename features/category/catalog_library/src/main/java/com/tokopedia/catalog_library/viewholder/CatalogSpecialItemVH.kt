@@ -1,12 +1,14 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDM
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
+import com.tokopedia.catalog_library.util.EventKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -15,7 +17,7 @@ import com.tokopedia.user.session.UserSession
 class CatalogSpecialItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogSpecialDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogSpecialDM>(view) {
 
     private var dataModel: CatalogSpecialDM? = null
 
@@ -54,7 +56,7 @@ class CatalogSpecialItemVH(
     private fun specialLayoutClicked(specialDataListItem: CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData?) {
         catalogLibraryListener.onCategoryItemClicked((specialDataListItem?.id.toString()))
 
-        AnalyticsHomePage.sendClickCategoryOnSpecialCategoriesEvent(
+        CatalogAnalyticsHomePage.sendClickCategoryOnSpecialCategoriesEvent(
             specialDataListItem?.name ?: "",
             specialDataListItem?.id.toString(),
             UserSession(itemView.context).userId
@@ -63,11 +65,14 @@ class CatalogSpecialItemVH(
 
     override fun onViewAttachedToWindow() {
         dataModel?.specialDataListItem?.let {
-            catalogLibraryListener.specialCategoryImpression(
+            catalogLibraryListener.categoryHorizontalCarouselImpression(
+                EventKeys.CREATIVE_NAME_SPECIAL_VALUE,
                 layoutPosition + 1,
                 dataModel?.specialDataListItem?.id.toString(),
                 dataModel?.specialDataListItem?.name ?: "",
-                UserSession(itemView.context).userId
+                UserSession(itemView.context).userId,
+                TrackerId.IMPRESSION_ON_SPECIAL_CATEGORIES,
+                ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES
             )
         }
     }

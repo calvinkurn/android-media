@@ -17,7 +17,8 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         categoryId: String,
         sortType: Int,
         rows: Int,
-        page: Int = 1
+        page: Int = 1,
+        brandId: String = "",
     ) {
         try {
             this.setTypeClass(CatalogListResponse::class.java)
@@ -26,7 +27,8 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                     categoryId,
                     sortType,
                     rows,
-                    page
+                    page,
+                    brandId
                 )
             )
             this.setGraphqlQuery(GqlCatalogList())
@@ -47,18 +49,23 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         categoryId: String,
         sortType: Int,
         rows: Int,
-        page: Int
+        page: Int,
+        brandId : String
     ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[CATEGORY_ID] = categoryId
         requestMap[SORT_TYPE] = sortType.toString()
         requestMap[ROWS] = rows.toString()
         requestMap[PAGE] = page.toString()
+        if(brandId.isNotBlank()){
+            requestMap[BRAND_ID] = brandId
+        }
         return requestMap
     }
 
     companion object {
         const val CATEGORY_ID = "category_id"
+        const val BRAND_ID = "brand_id"
         const val SORT_TYPE = "sortType"
         const val ROWS = "rows"
         const val PAGE = "page"
