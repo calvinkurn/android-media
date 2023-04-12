@@ -73,13 +73,11 @@ class TokoChatMenuLayout : ConstraintLayout {
     private fun hideMenu() {
         attachmentMenu?.hide()
         hide()
-        listener?.onAttachmentMenuHidden()
     }
 
     private fun showMenu() {
         attachmentMenu?.show()
         show()
-        listener?.onAttachmentShowed()
     }
 
     enum class ChatMenuType {

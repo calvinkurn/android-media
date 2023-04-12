@@ -136,14 +136,6 @@ open class TokoChatFragment :
         getComponent(TokoChatComponent::class.java).inject(this)
     }
 
-    override fun onAttachmentShowed() {
-        // TODO: tracker
-    }
-
-    override fun onAttachmentMenuHidden() {
-        // TODO: tracker
-    }
-
     override fun onClickAttachmentButton() {
         baseBinding?.tokochatLayoutMenu?.toggleAttachmentMenu(
             TokoChatMenuLayout.ChatMenuType.ATTACHMENT_MENU,
@@ -988,6 +980,14 @@ open class TokoChatFragment :
             imageView = imageView,
             isFromRetry = isFromRetry
         )
+        if (isFromRetry) {
+            tokoChatAnalytics.clickRetryImage(
+                attachmentId = element.imageId,
+                orderId = viewModel.tkpdOrderId,
+                role = tokoChatAnalytics.getStringRole(element.isSender),
+                source = viewModel.source
+            )
+        }
     }
 
     override fun onImageDelivered(element: TokoChatImageBubbleUiModel) {
@@ -1106,7 +1106,7 @@ open class TokoChatFragment :
                     attachmentId = element.imageId,
                     orderStatus = state,
                     orderId = viewModel.tkpdOrderId,
-                    role = TokoChatAnalyticsConstants.BUYER,
+                    role = tokoChatAnalytics.getStringRole(element.isSender),
                     source = viewModel.source
                 )
             } else {
@@ -1114,7 +1114,7 @@ open class TokoChatFragment :
                     attachmentId = element.imageId,
                     orderStatus = state,
                     orderId = viewModel.tkpdOrderId,
-                    role = TokoChatAnalyticsConstants.BUYER,
+                    role = tokoChatAnalytics.getStringRole(element.isSender),
                     source = viewModel.source
                 )
             }
@@ -1126,7 +1126,7 @@ open class TokoChatFragment :
             element.imageId,
             getOrderState(),
             viewModel.tkpdOrderId,
-            TokoChatAnalyticsConstants.BUYER,
+            tokoChatAnalytics.getStringRole(element.isSender),
             viewModel.source
         )
         context?.let {
@@ -1139,7 +1139,7 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                TokoChatAnalyticsConstants.BUYER,
+                tokoChatAnalytics.getStringRole(element.isSender),
                 viewModel.source
             )
         }
@@ -1221,6 +1221,11 @@ open class TokoChatFragment :
 
     override fun onClickImageAttachment() {
         context?.let {
+            tokoChatAnalytics.clickAddImageAttachment(
+                orderId = viewModel.tkpdOrderId,
+                role = TokoChatAnalyticsConstants.BUYER,
+                source = viewModel.source
+            )
             val intent = MediaPicker.intent(it) {
                 pageSource(PageSource.TokoChat)
                 modeType(ModeType.IMAGE_ONLY)

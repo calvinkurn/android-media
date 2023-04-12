@@ -14,6 +14,7 @@ object TokoChatAnalyticsConstants {
     const val SOURCE = "source"
 
     const val BUYER = "buyer"
+    const val DRIVER = "driver"
     const val TRACKER_ID = "trackerId"
 
     const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
@@ -57,4 +58,10 @@ object TokoChatAnalyticsConstants {
 
     const val IMPRESSION_ON_IMAGE_PREVIEW = "impression on image preview"
     const val TRACKER_ID_39079 = "39079"
+
+    const val CLICK_ADD_IMAGE_ATTACHMENT = "click add image attachment"
+    const val TRACKER_ID_43070 = "43070"
+
+    const val CLICK_RETRY_IMAGE = "click retry image"
+    const val TRACKER_ID_43073 = "43073"
 }
