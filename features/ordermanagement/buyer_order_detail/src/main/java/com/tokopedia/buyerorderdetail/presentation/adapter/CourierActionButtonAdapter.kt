@@ -56,9 +56,6 @@ class CourierActionButtonAdapter(
                 button?.let {
                     when (it.actionValue) {
                         Action.URL.value -> {
-                            navigator.openWebView(it.value, shouldRefreshWhenBack = true)
-                        }
-                        Action.APPLINK.value -> {
                             navigator.openAppLink(it.value, shouldRefreshWhenBack = true)
                         }
                         Action.ACTION.value -> {
@@ -73,7 +70,6 @@ class CourierActionButtonAdapter(
 
         enum class Action(val value: String) {
             URL("URL"),
-            APPLINK("APPLINK"),
             ACTION("ACTION")
         }
 
