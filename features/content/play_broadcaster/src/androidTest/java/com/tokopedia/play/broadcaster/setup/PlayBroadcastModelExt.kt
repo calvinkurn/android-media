@@ -161,7 +161,6 @@ fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
 }
 
 fun buildBeautificationConfig(
-    faceFiltersSize: Int = 5,
     presetsSize: Int = 5,
     presetActivePosition: Int = 1,
     assetStatus: BeautificationAssetStatus = BeautificationAssetStatus.Available,
@@ -170,9 +169,15 @@ fun buildBeautificationConfig(
         licenseLink = "licenseLink",
         modelLink = "modelLink",
         customFaceAssetLink = "customFaceAssetLink",
-        faceFilters = List(faceFiltersSize) {
+        faceFilters = List(4) {
             FaceFilterUiModel(
-                id = if (it == 0) "none" else it.toString(),
+                id = when (it) {
+                    0 -> "none"
+                    1 -> "sharpen"
+                    2 -> "buffing"
+                    3 -> "toning"
+                    else -> ""
+                },
                 name = "Face Filter $it",
                 active = it == 1,
                 minValue = 0.0,

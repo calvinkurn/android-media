@@ -109,6 +109,10 @@ class BeautificationRobot {
         delay(1000)
     }
 
+    fun clickCustomFace(position: Int) = chainable {
+        clickItemRecyclerView(R.id.recycler_view, position)
+    }
+
     fun clickCloseBeautificationCoachMark() = chainable {
         click(com.tokopedia.coachmark.R.id.simple_ic_close) {
             inRoot(RootMatchers.isPlatformPopup())

@@ -74,4 +74,20 @@ class BeautificationAnalyticTest {
             .clickBeautificationMenu()
             .verifyOpenScreen("/play broadcast - beauty filter creation bottomsheet")
     }
+
+    @Test
+    fun testAnalytic_clickCustomFace() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickCustomFace(1)
+            .verifyEventAction("click - custom face shaping")
+    }
+
+    @Test
+    fun testAnalytic_clickNoneCustomFace() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickCustomFace(0)
+            .verifyEventAction("click - none beauty effects")
+    }
 }
