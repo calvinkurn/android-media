@@ -801,6 +801,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             show()
             analytics.trackClickBiometricLoginBtn()
             gotoVerifyFingerprint()
+
+            setOnClickListener {
+                analytics.trackClickBiometricLoginBtn()
+                gotoVerifyFingerprint()
+            }
         }
     }
 
