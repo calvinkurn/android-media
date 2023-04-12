@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel
+package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

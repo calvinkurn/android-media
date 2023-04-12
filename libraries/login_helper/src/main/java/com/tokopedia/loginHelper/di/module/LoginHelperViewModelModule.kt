@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.LoginHelperAccountSettingsViewModel
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperAddEditAccountViewModel
-import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperSearchAccountViewModel
+import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
 import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap

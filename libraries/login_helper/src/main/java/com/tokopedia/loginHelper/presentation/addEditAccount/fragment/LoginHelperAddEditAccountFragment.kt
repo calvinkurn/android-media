@@ -7,7 +7,7 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 
 class LoginHelperAddEditAccountFragment: BaseDaggerFragment() {
     override fun getScreenName(): String {
-        return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_accounts_header_title)
+        return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_add_edit_header_title)
             .toBlankOrString()
     }
 
