@@ -62,4 +62,12 @@ object ShopPageConstant {
         const val WARNING = "warning"
         const val INFO = "info"
     }
+
+    object ShopTierType {
+        const val NA = -1
+        const val REGULAR_MERCHANT = 0
+        const val POWER_MERCHANT = 1
+        const val OFFICIAL_STORE = 2
+        const val POWER_MERCHANT_PRO = 3
+    }
 }

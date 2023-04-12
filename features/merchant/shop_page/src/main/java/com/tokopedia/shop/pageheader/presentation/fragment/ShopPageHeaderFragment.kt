@@ -1633,7 +1633,7 @@ class ShopPageHeaderFragment :
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
         isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.url
+        createPostUrl = shopPageHeaderP1Data.feedUrl
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial

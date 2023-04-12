@@ -61,7 +61,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
@@ -91,7 +91,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
     private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-    private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
+    private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
     private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
     private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
     private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
@@ -157,6 +157,12 @@ class ShopPageHeaderViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
+    /*
+    Function getNewShopPageTabData is expected to perform faster than
+    older version due to:
+    1. Remove the usages of getIsShopOfficialRequest, getIsShopPowerMerchantRequest & getShopInfoTopContentDataRequest
+    2. We only use ShopInfo data to identify whether the Shop is RM, PM, or OS
+     */
     fun getNewShopPageTabData(
         shopId: String,
         shopDomain: String,
@@ -174,11 +180,11 @@ class ShopPageHeaderViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getNewShopP1Data(
-                        shopId,
-                        shopDomain,
-                        isRefresh,
-                        extParam,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        shopDomain = shopDomain,
+                        isRefresh = isRefresh,
+                        extParam = extParam,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -198,9 +204,9 @@ class ShopPageHeaderViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getShopPageHeaderData(
-                        shopId,
-                        isRefresh,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        isRefresh = isRefresh,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -220,13 +226,13 @@ class ShopPageHeaderViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getProductListData(
-                        shopId,
-                        page,
-                        itemPerPage,
-                        shopProductFilterParameter,
-                        keyword,
-                        etalaseId,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        page = page,
+                        itemPerPage = itemPerPage,
+                        shopProductFilterParameter = shopProductFilterParameter,
+                        keyword = keyword,
+                        etalaseId = etalaseId,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -249,11 +255,10 @@ class ShopPageHeaderViewModel @Inject constructor(
                     shopPageP1Data.postValue(
                         Success(
                             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
-                                shopPageHeaderP1Data.isShopOfficialStore,
-                                shopPageHeaderP1Data.isShopPowerMerchant,
-                                shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
-                                shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderWidgetData
+                                shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
+                                shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
+                                feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
                             )
                         )
                     )
@@ -322,9 +327,9 @@ class ShopPageHeaderViewModel @Inject constructor(
         extParam: String,
         widgetUserAddressLocalData: LocalCacheModel
     ): NewShopPageHeaderP1 {
-        val useCase = newGetShopPageP1DataUseCase.get()
+        val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = NewGetShopPageP1DataUseCase.createParams(
+        useCase.params = GetShopPageP1DataUseCase.createParams(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
