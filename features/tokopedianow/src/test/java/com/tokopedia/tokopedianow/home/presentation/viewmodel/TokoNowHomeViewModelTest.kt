@@ -20,6 +20,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -30,13 +31,12 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -791,7 +791,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     title = "Product Recommendation",
                     productList = listOf(),
                     realTimeRecom = realTimeRecom,
-                    seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+                    seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                         headerName = "Product Recommendation"
                     ),
                     headerModel = TokoNowDynamicHeaderUiModel(
@@ -1179,7 +1179,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val productList = listOf(
-            TokoNowProductCardCarouselItemUiModel(
+            ProductCardCompactCarouselItemUiModel(
                 productCardModel = TokoNowProductCardViewUiModel(
                     productId = "2",
                     usePreDraw = true,
@@ -1200,7 +1200,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Lagi Diskon",
             productList = productList,
             realTimeRecom = realTimeRecom,
-            seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+            seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 headerName = "Lagi Diskon"
             ),
             headerModel = TokoNowDynamicHeaderUiModel(

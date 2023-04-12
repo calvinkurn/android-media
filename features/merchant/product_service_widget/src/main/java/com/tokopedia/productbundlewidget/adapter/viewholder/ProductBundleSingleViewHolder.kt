@@ -7,10 +7,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product_service_widget.R
+import com.tokopedia.product_service_widget.databinding.ItemProductbundleSingleWidgetBinding
 import com.tokopedia.productbundlewidget.adapter.ProductBundleSingleAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.*
@@ -20,8 +24,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.product_service_widget.R
-import com.tokopedia.product_service_widget.databinding.ItemProductbundleSingleWidgetBinding
 
 class ProductBundleSingleViewHolder(
     itemView: View,
@@ -55,8 +57,8 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
-            typographyBundleProductSavingAmount = bundleWidgetHeaderFooter.tvSavingAmountPriceWording
-            buttonAtc = bundleWidgetHeaderFooter.btnBundleAtc
+            typographyBundleProductSavingAmount = bundleWidgetFooter.tvSavingAmountPriceWording
+            buttonAtc = bundleWidgetFooter.btnBundleAtc
             labelBundleDiscount = labelDiscountBundle
             imageBundleProduct = ivBundleImage
             rvBundleDetails = rvBundleSinglePackage
@@ -68,6 +70,8 @@ class ProductBundleSingleViewHolder(
     fun bind(bundle: BundleUiModel) {
         val bundleDetail = bundle.bundleDetails.firstOrNull() ?: BundleDetailUiModel()
         val product = bundleDetail.products.firstOrNull() ?: BundleProductUiModel()
+
+        initFooterStyle(bundle)
 
         // bundle card item details
         renderBundlePriceDetails(bundleDetail)
@@ -84,6 +88,29 @@ class ProductBundleSingleViewHolder(
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, product)
+    }
+
+    private fun initFooterStyle(bundle: BundleUiModel) {
+        val isMinimalMode = bundle.bundleName.isEmpty()
+        val isWideMode = containerWidgetParams.isMoreThanZero()
+        viewBinding?.apply {
+            bundleWidgetMaximalFooter.isVisible = !isMinimalMode
+            bundleWidgetMinimalFooter.root.isVisible = isMinimalMode
+            if (isWideMode) {
+                bundleWidgetMinimalFooter.tvBundleDisplayPrice.layoutParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.MATCH_PARENT,
+                    FlexboxLayout.LayoutParams.MATCH_PARENT
+                )
+            }
+            if (isMinimalMode) {
+                bundleWidgetMinimalFooter.let {
+                    typographyBundleProductDisplayPrice = it.tvBundleDisplayPrice
+                    typographyBundleProductOriginalPrice = it.tvBundleOriginalPrice
+                    labelBundleDiscount = it.labelDiscountBundle
+                    buttonAtc = it.btnBundleAtc
+                }
+            }
+        }
     }
 
     private fun initListener(

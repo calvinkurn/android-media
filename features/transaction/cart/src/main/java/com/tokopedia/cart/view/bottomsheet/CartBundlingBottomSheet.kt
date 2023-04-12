@@ -146,6 +146,10 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             override fun onError(it: Throwable) {
                 renderError()
             }
+
+            override fun onBundleEmpty() {
+                renderError()
+            }
         })
         binding?.productBundleWidget?.getBundleData(bundleParam)
         binding?.productBundleWidget?.visible()
