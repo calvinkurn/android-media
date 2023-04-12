@@ -59,7 +59,7 @@ fun NestChips(
         color = backgroundColor,
         shape = RoundedCornerShape(cornerRadius),
         border = BorderStroke(1.dp, borderColor),
-        modifier = Modifier
+        modifier = modifier
             .height(height)
     ) {
         Row(
