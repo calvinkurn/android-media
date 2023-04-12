@@ -79,7 +79,6 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:paddingStart="8dp"
-                android:drawableEnd="@drawable/iconunify_copy"
                 app:drawableTint="@color/Unify_GN500"
                 android:textColor="@color/Unify_GN500"
                 android:background="@drawable/bg_coupon_code"

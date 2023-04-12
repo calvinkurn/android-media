@@ -262,6 +262,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
         tv_coupon_title = view.findViewById(R.id.tv_coupon_title)
         tv_code = view.findViewById(R.id.tv_code)
+        tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
+            context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) }, null)
         tv_dynamic_infos = view.findViewById(R.id.tv_dynamic_infos)
         btn_action_claim = view.findViewById(R.id.btn_action_claim)
 
