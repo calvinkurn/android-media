@@ -1,9 +1,12 @@
 package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
@@ -18,8 +22,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,12 +55,7 @@ fun NestTextField(
 ) {
     Column {
         if (skeleton) {
-            Box(
-                modifier = modifier
-                    .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
-                    .fillMaxWidth()
-                    .background(Color.LightGray, RoundedCornerShape(8.dp))
-            )
+            NestTextFieldSkeleton(modifier)
         } else {
             OutlinedTextField(
                 value = value,
@@ -133,28 +137,58 @@ fun NestTextField(
     }
 }
 
-val shimmerColors = listOf(
-    Color.LightGray.copy(alpha = 0.9f),
-    Color.LightGray.copy(alpha = 0.4f),
-)
-@
-val transition = rememberInfiniteTransition()
-val translateAnimation by transition.animateFloat(
-    initialValue = 0f,
-    targetValue = 400f,
-    animationSpec = infiniteRepeatable(
-        tween(durationMillis = 1500, easing = LinearOutSlowInEasing),
-        RepeatMode.Restart
-    ),
-)
+@Composable
+fun NestTextFieldSkeleton(modifier: Modifier) {
+    Column(modifier.padding(horizontal = 16.dp)) {
+        Box(
+            modifier = modifier
+                .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
+                .fillMaxWidth()
+                .shimmerBackground(RoundedCornerShape(8.dp))
+        )
+        Row(modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp)) {
+            Box(
+                modifier = modifier
+                    .height(12.dp)
+                    .weight(3F)
+                    .padding(end = 8.dp)
+                    .shimmerBackground(RoundedCornerShape(8.dp))
+            )
+            Box(
+                modifier = modifier
+                    .height(12.dp)
+                    .weight(1F)
+                    .padding(start = 8.dp)
+                    .shimmerBackground(RoundedCornerShape(8.dp))
+            )
+        }
+    }
+}
 
-
-val brush = Brush.linearGradient(
-    colors = shimmerColors,
-    start = Offset(translateAnimation, translateAnimation),
-    end = Offset(translateAnimation + 100f, translateAnimation + 100f),
-    tileMode = TileMode.Mirror,
-)
+@Composable
+fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
+    val transition = rememberInfiniteTransition()
+    val translateAnimation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1000, easing = LinearEasing),
+            RepeatMode.Restart
+        )
+    )
+    val shimmerColors = listOf(
+        Color(0xFFD6DFEB),
+        Color(0xFFE4EBF5),
+        Color(0xFFD6DFEB)
+    )
+    val brush = Brush.linearGradient(
+        colors = shimmerColors,
+        start = Offset(translateAnimation, translateAnimation),
+        end = Offset(translateAnimation + 100f, translateAnimation + 30f),
+        tileMode = TileMode.Clamp
+    )
+    return@composed this.then(background(brush, shape))
+}
 
 @Composable
 private fun generateCounterColor(counter: Int, currentCount: Int, enabled: Boolean): Color {
