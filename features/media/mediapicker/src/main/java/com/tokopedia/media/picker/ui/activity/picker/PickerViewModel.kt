@@ -73,10 +73,10 @@ class PickerViewModel @Inject constructor(
         }
 
     fun navigateToEditorPage(result: PickerResult) {
-        viewModelScope.launch {
-            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
-            _editorParam.value = data
-        }
+        val editorParam = param.get().getEditorParam() ?: EditorParam()
+        val data = Pair(result, editorParam)
+
+        _editorParam.value = data
     }
 
     fun setPickerParam(pickerParam: PickerParam?) {

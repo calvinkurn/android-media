@@ -157,10 +157,12 @@ open class PermissionFragment @Inject constructor(
             setOverlayClose(false)
 
             setPrimaryCTAClickListener {
-                permissionManager?.requestPermissions(
-                    permissionCodeNameList,
-                    PERMISSION_REQUEST_CODE
-                )
+                if (isAdded) {
+                    permissionManager?.requestPermissions(
+                        permissionCodeNameList,
+                        PERMISSION_REQUEST_CODE
+                    )
+                }
 
                 dismiss()
             }

@@ -11,8 +11,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
@@ -68,11 +69,34 @@ open class GalleryFragment @Inject constructor(
         )
     }
 
+    private val mLayoutManager by lazy {
+        GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
+    }
+
     private val featureAdapter by lazy {
         MediaGalleryAdapter(this)
     }
 
     private var uiModel = GalleryUiModel()
+
+    private val endlessScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : EndlessRecyclerViewScrollListener(mLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                // indicates the pagination isn't album changed
+                uiModel.hasChangeAlbum = false
+
+                val hasNextPage = if (uiModel.bucketCount.isMoreThanZero()) {
+                    featureAdapter.itemCount < uiModel.bucketCount
+                } else {
+                    true // force as true for recent media
+                }
+
+                if (hasNextPage) {
+                    viewModel.loadMedia(uiModel.bucketId, totalItemsCount)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,11 +144,14 @@ open class GalleryFragment @Inject constructor(
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            val (id, name) = AlbumActivity.getIntentResult(data)
+            val (id, name, count) = AlbumActivity.getIntentResult(data)
             albumSelector.setAlbumName(name)
+
             uiModel.hasChangeAlbum = true
+            uiModel.bucketCount = count
             uiModel.bucketId = id
 
+            endlessScrollListener.resetState()
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -177,13 +204,16 @@ open class GalleryFragment @Inject constructor(
 
     private fun initObservable() {
         viewModel.medias.observe(viewLifecycleOwner) {
-            if (uiModel.hasChangeAlbum) {
-                featureAdapter.setItemsAndAnimateChanges(it)
+            if (it.isNotEmpty()) {
+                if (uiModel.hasChangeAlbum) {
+                    featureAdapter.setItemsAndAnimateChanges(it)
 
-                // force move to top every single bucketId has changed
-                binding?.lstMedia?.smoothScrollToPosition(0)
-            } else {
-                featureAdapter.addItemsAndAnimateChanges(it)
+                    // force move to top every single bucketId has changed
+                    binding?.lstMedia?.smoothScrollToPosition(0)
+                } else {
+                    featureAdapter.addItemsAndAnimateChanges(it)
+                    endlessScrollListener.updateStateAfterGetData()
+                }
             }
         }
 
@@ -235,8 +265,6 @@ open class GalleryFragment @Inject constructor(
     }
 
     private fun setupRecyclerView() {
-        val layoutManager = GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
-
         binding?.lstMedia?.let {
             // item decoration
             it.addItemDecoration(GridItemDecoration(requireContext(), SPAN_COUNT_SIZE))
@@ -244,27 +272,11 @@ open class GalleryFragment @Inject constructor(
             // common config
             it.setHasFixedSize(true)
             it.isNestedScrollingEnabled = false
-            it.layoutManager = layoutManager
+            it.layoutManager = mLayoutManager
             it.adapter = featureAdapter
 
             // scroll listener
-            it.addOnScrollListener(onRecyclerViewScrollListener(layoutManager))
-        }
-    }
-
-    private fun onRecyclerViewScrollListener(layoutManager: GridLayoutManager) = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            val totalItemCount = layoutManager.itemCount
-            val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-
-            if (viewModel.isFetchMediaLoading.value == false && lastVisibleItemPosition == totalItemCount - 1) {
-                // indicates the pagination isn't album changed
-                uiModel.hasChangeAlbum = false
-
-                val pageIndex = layoutManager.findLastCompletelyVisibleItemPosition() + 1
-                viewModel.loadMedia(uiModel.bucketId, pageIndex)
-            }
+            it.addOnScrollListener(endlessScrollListener)
         }
     }
 
