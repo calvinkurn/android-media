@@ -4214,6 +4214,7 @@ open class ShopPageHomeFragment :
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
+                coachMark.isOutsideTouchable = true
                 coachMark.showCoachMark(ArrayList(coachMarkItems))
             }
         }
