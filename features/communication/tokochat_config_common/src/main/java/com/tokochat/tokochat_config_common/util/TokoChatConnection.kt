@@ -11,8 +11,6 @@ import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +29,8 @@ object TokoChatConnection {
 
     @Volatile
     private var hasBeenInitialized: Boolean = false
+
+    const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
     @JvmStatic
     fun init(context: Context, isFromLoginFlow: Boolean = false) {
@@ -134,10 +134,10 @@ object TokoChatConnection {
 
     fun isTokoChatActive(): Boolean {
         return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_TOKOCHAT,
-                ""
-            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT && !GlobalConfig.isSellerApp()
+            tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
+                TOKOCHAT_REMOTE_CONFIG,
+                true
+            ) == true && !GlobalConfig.isSellerApp()
         } catch (e: Throwable) {
             false
         }

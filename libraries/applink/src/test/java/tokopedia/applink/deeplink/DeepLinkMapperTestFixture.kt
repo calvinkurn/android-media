@@ -5,15 +5,16 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.applink.DLP
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.account.DeeplinkMapperAccount
+import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkClass
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -36,11 +37,12 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        mockkObject(FirebaseRemoteConfigInstance.get(mockk(relaxed = true)))
         setAllowingDebugToolsFalse()
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
     }
 
-    open fun setAllowingDebugToolsFalse(){
+    open fun setAllowingDebugToolsFalse() {
         GlobalConfig.DEBUG = false
         GlobalConfig.ENABLE_DISTRIBUTION = false
     }
@@ -86,10 +88,12 @@ open class DeepLinkMapperTestFixture {
         }
     }
 
-    protected fun tokochatRollenceEnabler(result: String = RollenceKey.KEY_ROLLENCE_TOKOCHAT) {
+    protected fun tokoChatRemoteConfigEnabler(
+        key: String = DeeplinkMapperCommunication.TOKOCHAT_REMOTE_CONFIG,
+        result: Boolean = true
+    ) {
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_TOKOCHAT, "")
+            FirebaseRemoteConfigInstance.get(any()).getBoolean(key)
         } returns result
     }
 }

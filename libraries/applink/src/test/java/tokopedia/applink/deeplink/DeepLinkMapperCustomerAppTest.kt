@@ -2547,7 +2547,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check tokochat applink customerapp`() {
         val expectedDeepLink = ApplinkConstInternalCommunication.TOKO_CHAT
-        tokochatRollenceEnabler()
+        tokoChatRemoteConfigEnabler()
         assertEqualsDeepLinkMapper(ApplinkConst.TOKO_CHAT, expectedDeepLink)
     }
 
@@ -2556,16 +2556,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParams = "?orderId=F-123&tokochatSource=tokofood"
         val deepLink = "${ApplinkConst.TOKO_CHAT}$queryParams"
         val expectedDeepLink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$queryParams"
-        tokochatRollenceEnabler()
+        tokoChatRemoteConfigEnabler()
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 
     @Test
-    fun `check tokochat applink customerapp with rollence turn off`() {
+    fun `check tokochat applink customerapp with remote config turn off`() {
         val queryParams = "orderId=F-123&tokochatSource=tokofood"
         val deepLink = "${ApplinkConst.TOKO_CHAT}?$queryParams"
         val expectedDeepLink = "${ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD}&$queryParams"
-        tokochatRollenceEnabler("")
+        tokoChatRemoteConfigEnabler(result = false)
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 

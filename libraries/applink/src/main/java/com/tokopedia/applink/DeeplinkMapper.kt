@@ -631,7 +631,7 @@ object DeeplinkMapper {
             UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0))
         }),
         DLP.exact(ApplinkConst.PRIVACY_CENTER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.TOKO_CHAT) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(deeplink) },
+        DLP.startWith(ApplinkConst.TOKO_CHAT) { ctx, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(ctx, deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
     )

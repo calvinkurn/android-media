@@ -1,22 +1,23 @@
 package com.tokopedia.applink.communication
 
+import android.content.Context
 import androidx.annotation.VisibleForTesting
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
+    const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
     /**
      * Tokochat mapper with remote config
      */
-    fun getRegisteredNavigationTokoChat(deeplink: String): String {
-        return if (isTokoChatRollenceActive()) {
+    fun getRegisteredNavigationTokoChat(context: Context, deeplink: String): String {
+        return if (isTokoChatRollenceActive(context)) {
             deeplink.replace(
                 DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
                 ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION + "/"
@@ -27,14 +28,12 @@ object DeeplinkMapperCommunication {
     }
 
     @VisibleForTesting
-    fun isTokoChatRollenceActive(): Boolean {
+    fun isTokoChatRollenceActive(context: Context): Boolean {
         return try {
-            RemoteConfigInstance
-                .getInstance()
-                .abTestPlatform.getString(
-                    RollenceKey.KEY_ROLLENCE_TOKOCHAT,
-                    ""
-                ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+            FirebaseRemoteConfigInstance.get(context).getBoolean(
+                TOKOCHAT_REMOTE_CONFIG,
+                true
+            )
         } catch (throwable: Throwable) {
             true
         }
