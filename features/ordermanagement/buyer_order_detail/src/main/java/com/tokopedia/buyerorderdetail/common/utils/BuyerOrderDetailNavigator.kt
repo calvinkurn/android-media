@@ -37,10 +37,6 @@ class BuyerOrderDetailNavigator(
         private const val BUYER_MODE = 1
     }
 
-    private fun composeCallIntentData(phoneNumber: String): Uri {
-        return Uri.parse("$TELEPHONY_URI$phoneNumber")
-    }
-
     private fun applyTransition() {
         activity.overridePendingTransition(
             com.tokopedia.resources.common.R.anim.slide_right_in_medium,

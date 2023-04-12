@@ -59,7 +59,7 @@ class CourierActionButtonAdapter(
                             navigator.openAppLink(it.value, shouldRefreshWhenBack = true)
                         }
                         Action.ACTION.value -> {
-                            if (it.value == CALL_DRIVER) {
+                            if (it.key == CALL_DRIVER) {
                                 navigator.goToCallingPage(button.value)
                             }
                         }
