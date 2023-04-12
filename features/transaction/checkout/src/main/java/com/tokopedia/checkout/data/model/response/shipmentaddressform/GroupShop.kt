@@ -70,7 +70,7 @@ data class GroupShop2(
     @SerializedName("group_information")
     val groupInformation: GroupInformation = GroupInformation(),
     @SerializedName("group_shop_v2_saf")
-    val groupShopV2: GroupShopV2 = GroupShopV2(),
+    val groupShopV2: List<GroupShopV2> = emptyList(),
     @SerializedName("add_ons")
     val addOns: AddOnsResponse = AddOnsResponse(),
     @SerializedName("errors")

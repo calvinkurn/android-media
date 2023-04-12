@@ -35,16 +35,17 @@ import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -421,15 +422,15 @@ class CartListPresenter @Inject constructor(
                     updateCartUseCase.execute(onSuccess = {}, onError = {})
                     return@let
                 } else {
-                    updateCartUseCase.setParams(updateCartRequestList)
-                    updateCartUseCase.execute(
-                        onSuccess = { updateCartV2Data ->
-                            onSuccessUpdateCartForCheckout(updateCartV2Data, cartItemDataList)
-                        },
-                        onError = { throwable ->
-                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
-                        }
-                    )
+//                    updateCartUseCase.setParams(updateCartRequestList)
+//                    updateCartUseCase.execute(
+//                        onSuccess = { updateCartV2Data ->
+                    onSuccessUpdateCartForCheckout(UpdateCartV2Data(data = Data(status = true)), cartItemDataList)
+//                        },
+//                        onError = { throwable ->
+//                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
+//                        }
+//                    )
                 }
             } else {
                 if (!fireAndForget) {
@@ -957,8 +958,7 @@ class CartListPresenter @Inject constructor(
                             cartListView.showToastMessageRed(data.message)
                         }
                     }
-                }
-                catch (t: Throwable) {
+                } catch (t: Throwable) {
                     view?.let { cartListView ->
                         Timber.e(t)
                         cartListView.showToastMessageRed(t)
@@ -1818,7 +1818,7 @@ class CartListPresenter @Inject constructor(
 
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
-        
+
         launch(dispatchers.io) {
             try {
                 val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
@@ -1905,7 +1905,7 @@ class CartListPresenter @Inject constructor(
     }
 
     override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        launch (dispatchers.io) {
+        launch(dispatchers.io) {
             try {
                 lastValidateUseRequest = promoRequest
                 val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
@@ -1916,7 +1916,7 @@ class CartListPresenter @Inject constructor(
                 )
                 isLastApplyResponseStillValid = false
                 view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-            } catch(t: Throwable) {
+            } catch (t: Throwable) {
                 if (t is AkamaiErrorException) {
                     view?.showToastMessageRed(t)
                 }
@@ -2089,7 +2089,7 @@ class CartListPresenter @Inject constructor(
                     it.showToastMessageGreen(data.followShop?.message ?: "")
                     processInitialGetCartData("0", false, false)
                 }
-            } catch(t: Throwable) {
+            } catch (t: Throwable) {
                 view?.let {
                     Timber.e(t)
                     it.hideProgressLoading()
@@ -2145,7 +2145,7 @@ class CartListPresenter @Inject constructor(
                     destinationLongitude = lca?.long
                     destinationLatitude = lca?.lat
                     destinationPostalCode = lca?.postal_code
-                    // TODO: Fix Param 
+                    // TODO: Fix Param
 //                    originDistrictId = cartGroupHolderData.districtId
 //                    originLongitude = cartGroupHolderData.longitude
 //                    originLatitude = cartGroupHolderData.latitude
@@ -2153,10 +2153,10 @@ class CartListPresenter @Inject constructor(
                     weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
-                    // TODO: Fix Param 
+                    // TODO: Fix Param
 //                    shopId = cartGroupHolderData.shopId
 //                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
-                    // TODO: replace uniqueId 
+                    // TODO: replace uniqueId
                     uniqueId = cartGroupHolderData.cartString
                     isFulfillment = cartGroupHolderData.isFulfillment
                     boMetadata = cartGroupHolderData.boMetadata

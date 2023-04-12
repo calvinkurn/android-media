@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
@@ -46,7 +47,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData =
             shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        presenter.setShipmentButtonPaymentModel(ShipmentButtonPaymentModel())
+        presenter.shipmentButtonPayment.value = ShipmentButtonPaymentModel()
 
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns cartShipmentAddressFormData
         every {
@@ -59,12 +60,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -76,20 +71,20 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
     }
 
-//    @Test
-//    fun firstLoadCheckoutPage_ShouldShipmentAddressFormEmpty() {
-//        // Given
-//        coEvery { getShipmentAddressFormV4UseCase(any()) } returns null
-//        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
-//
-//        // When
-//        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
-//
-//        // Then
-//        verifyOrder {
-//            view.onShipmentAddressFormEmpty()
-//        }
-//    }
+    @Test
+    fun firstLoadCheckoutPageWithNoAddress_ShouldShipmentAddressFormEmpty() {
+        // Given
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData(groupAddress = emptyList())
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(false, false, false)
+
+        // Then
+        verifyOrder {
+            view.onShipmentAddressFormEmpty()
+        }
+    }
 
     @Test
     fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
@@ -106,12 +101,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -138,12 +127,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -164,12 +147,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -191,12 +168,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             false,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -221,12 +192,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -256,12 +221,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -292,12 +251,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -330,12 +283,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -372,12 +319,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -387,7 +328,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoMatchedAddress(any(), any())
+            view.renderCheckoutPageNoMatchedAddress(any())
             view.stopTrace()
         }
     }
@@ -406,12 +347,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -421,7 +356,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoMatchedAddress(any(), defaultAddressState)
+            view.renderCheckoutPageNoMatchedAddress(defaultAddressState)
             view.stopTrace()
         }
     }
@@ -450,12 +385,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -493,12 +422,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -532,17 +455,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
         // Then
-        assertEquals(lastApplyUiModel, presenter.lastApplyData)
+        assertEquals(lastApplyUiModel, presenter.lastApplyData.value)
     }
 
     @Test
@@ -565,12 +482,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -595,12 +506,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -625,12 +530,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -658,12 +557,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -693,12 +586,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -728,12 +615,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -760,12 +641,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -793,12 +668,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -819,10 +688,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             userAddress = UserAddress(state = 0)
             groupShop = listOf(
                 GroupShop(
-                    products = listOf(
-                        Product(
-                            purchaseProtectionPlanData = purchaseProtectionPlanData,
-                            productCatId = productCatId
+                    groupShopData = listOf(
+                        GroupShopV2(
+                            products = listOf(
+                                Product(
+                                    purchaseProtectionPlanData = purchaseProtectionPlanData,
+                                    productCatId = productCatId
+                                )
+                            )
                         )
                     )
                 )
@@ -838,12 +711,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -861,37 +728,17 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
     }
 
     @Test
-    fun `GIVEN null shipment button data WHEN get shipment button data THEN should return new shipment button data`() {
-        // Given
-        presenter.setShipmentButtonPaymentModel(null)
-
-        // Then
-//        assertEquals(0, presenter.shipmentButtonPayment.value)
-        assertEquals("-", presenter.shipmentButtonPayment.value.totalPrice)
-    }
-
-    @Test
     fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
         // Given
-        presenter.setShipmentButtonPaymentModel(
+        presenter.shipmentButtonPayment.value =
             ShipmentButtonPaymentModel(
                 totalPrice = "Rp1.000"
 //                quantity = 1
             )
-        )
 
         // Then
 //        assertEquals(1, presenter.shipmentButtonPayment.value.quantity)
         assertEquals("Rp1.000", presenter.shipmentButtonPayment.value.totalPrice)
-    }
-
-    @Test
-    fun `GIVEN null shipment cost data WHEN get shipment cost data THEN should return new shipment cost data`() {
-        // Given
-        presenter.setShipmentCostModel(null)
-
-        // Then
-        assertEquals(ShipmentCostModel(), presenter.getShipmentCostModel())
     }
 
     @Test
@@ -900,10 +747,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         val shipmentCostModel = ShipmentCostModel(
             totalPrice = 1000.0
         )
-        presenter.setShipmentCostModel(shipmentCostModel)
+        presenter.shipmentCostModel.value = shipmentCostModel
 
         // Then
-        assertEquals(shipmentCostModel, presenter.getShipmentCostModel())
+        assertEquals(shipmentCostModel, presenter.shipmentCostModel.value)
     }
 
     @Test
@@ -941,12 +788,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -969,12 +810,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -997,12 +832,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -1032,12 +861,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -1071,12 +894,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -1084,7 +901,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         assert(presenter.shipmentTickerErrorModel.errorMessage == errorTicker)
         assert(presenter.shipmentTickerErrorModel.isError)
         assert(!presenter.shipmentDonationModel!!.isEnabled)
-        assert(!presenter.egoldAttributeModel!!.isEnabled)
+        assert(!presenter.egoldAttributeModel.value!!.isEnabled)
     }
 
     @Test
@@ -1097,12 +914,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -1138,12 +949,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
             false
         )
 
@@ -1183,18 +988,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         // When
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         // Then
@@ -1227,7 +1027,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
 
         // Then
         verify {
-//            getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }

@@ -24,9 +24,8 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
     fun `WHEN cancel upsell THEN should try clear all BO`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -43,11 +42,12 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 any()
             )
         } just Runs
+        presenter.isPlusSelected = false
 
         // When
         presenter.cancelUpsell(
-            true, false, false, true,
-            false, null, "", "",
+            true,
+            true,
             false
         )
 
@@ -81,23 +81,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -148,23 +142,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
             }
         )
@@ -213,23 +201,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
             }
@@ -279,23 +261,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
             }
         )
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
@@ -343,23 +319,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
@@ -409,23 +379,17 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
+        presenter.isPlusSelected = true
 
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            true
+            false
         )
 
         presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel().apply {
-                cartItemModels = listOf(CartItemModel())
-                cartString = "cartString"
+            ShipmentCartItemModel(cartString = "cartString").apply {
+                cartItemModels = listOf(CartItemModel(cartString = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }

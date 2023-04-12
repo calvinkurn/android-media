@@ -36,26 +36,26 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             shopId = "1"
             isBlackbox = true
             preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
                 isFulfillment = false
-            }
+            )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -71,7 +71,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc
+            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
         )
 
         // Then
@@ -97,26 +97,26 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             shopId = "1"
             isBlackbox = true
             preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
                 isFulfillment = false
-            }
+            )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -138,7 +138,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc
+            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
         )
 
         // Then
@@ -169,26 +169,26 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             shopId = "1"
             isBlackbox = true
             preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
                 isFulfillment = false
-            }
+            )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = "")
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -204,7 +204,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc
+            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
         )
 
         // Then
@@ -228,24 +228,24 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             shopId = "1"
             isBlackbox = true
             preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
                 isFulfillment = false
-            }
+            )
         }
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
@@ -268,7 +268,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             spId,
             itemPosition,
             shipmentDetailData,
-            ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            ShipmentCartItemModel(cartString = "", orderNumber = itemPosition),
             shopShipmentList,
             isInitialLoad,
             products,
@@ -276,7 +276,9 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             isTradeInDropOff,
             recipientAddressModel,
             isForceReload,
-            skipMvc
+            skipMvc,
+            "",
+            emptyList()
         )
 
         itemPosition++
@@ -287,7 +289,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             spId,
             itemPosition,
             shipmentDetailData,
-            ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            ShipmentCartItemModel(cartString = "", orderNumber = itemPosition),
             shopShipmentList,
             isInitialLoad,
             products,
@@ -295,7 +297,9 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             isTradeInDropOff,
             recipientAddressModel,
             isForceReload,
-            skipMvc
+            skipMvc,
+            "",
+            emptyList()
         )
 
         // Then

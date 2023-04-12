@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
+import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
@@ -71,11 +72,9 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxUnitFun = true)
     lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
 
-    @MockK
-    lateinit var ratesStatesConverter: RatesResponseStateConverter
+    private val ratesStatesConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
-    @MockK
-    lateinit var shippingCourierConverter: ShippingCourierConverter
+    private val shippingCourierConverter: ShippingCourierConverter = ShippingCourierConverter()
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
@@ -83,17 +82,17 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxed = true)
     lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
     lateinit var releaseBookingUseCase: ReleaseBookingUseCase
 
     @MockK(relaxed = true)
-    lateinit var view: ShipmentContract.View
+    lateinit var view: ShipmentFragment
 
     @MockK(relaxed = true)
     lateinit var getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase

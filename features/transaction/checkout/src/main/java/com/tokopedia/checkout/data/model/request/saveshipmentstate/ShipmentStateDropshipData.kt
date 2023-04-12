@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ShipmentStateDropshipData(
     @SerializedName("name")
-    var name: String? = null,
+    var name: String = "",
     @SerializedName("telp_no")
-    var telpNo: String? = null
+    var telpNo: String = ""
 )

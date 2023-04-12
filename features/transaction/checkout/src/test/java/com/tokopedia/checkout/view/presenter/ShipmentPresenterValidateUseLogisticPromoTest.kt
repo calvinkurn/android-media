@@ -67,13 +67,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString + "2",
+                    cartStringGroup = cartString + "2",
                     code = promoCode,
                     messageUiModel = MessageUiModel(state = "green", text = errorMessage)
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "merchant",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     code = promoCode + "m",
                     messageUiModel = MessageUiModel(state = "green", text = errorMessage)
                 )
@@ -86,12 +86,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
-        val shipmentCartItemModel2 = ShipmentCartItemModel().apply {
-            this.cartString = cartString + "2"
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
+        val shipmentCartItemModel2 = ShipmentCartItemModel(
+            cartString = cartString + "2"
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
 
         // When
@@ -125,7 +125,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     code = promoCode,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
                 )
@@ -138,9 +138,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
@@ -174,12 +174,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     messageUiModel = MessageUiModel(state = "green")
                 ),
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "global",
-                    uniqueId = cartString,
+                    cartStringGroup = cartString,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
                 )
             )
@@ -191,9 +191,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 promoUiModel = promoUiModel
             )
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = cartString
+        )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
@@ -236,6 +236,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
     }
@@ -288,6 +289,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
         }
     }
 
@@ -313,6 +315,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
         }
     }
 
@@ -383,6 +386,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
@@ -411,7 +415,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         val promoTestSubscriber = TestSubscriber.create<Boolean>()
         val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
-        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        presenter.logisticPromoDonePublisher = logisticPromoDonePublisher
         logisticPromoDonePublisher.subscribe(promoTestSubscriber)
 
         // When
@@ -443,7 +447,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         val promoTestSubscriber = TestSubscriber.create<Boolean>()
         val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
-        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        presenter.logisticPromoDonePublisher = logisticPromoDonePublisher
         logisticPromoDonePublisher.subscribe(promoTestSubscriber)
 
         // When
@@ -456,6 +460,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()

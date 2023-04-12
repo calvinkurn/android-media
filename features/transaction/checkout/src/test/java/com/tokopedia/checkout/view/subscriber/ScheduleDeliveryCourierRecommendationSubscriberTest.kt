@@ -26,6 +26,7 @@ class ScheduleDeliveryCourierRecommendationSubscriberTest {
     fun `WHEN SAF chosen schedule delivery is no more available, schedule delivery data in shipmentCartItemData should reset`() {
         // Data from SAF
         shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "",
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
             validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
@@ -62,6 +63,7 @@ class ScheduleDeliveryCourierRecommendationSubscriberTest {
     fun `WHEN SAF chosen schedule delivery no more available and recommend true, schedule delivery data in shipmentCartItemData should be replace with courierItemData`() {
         // Data from SAF
         shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "",
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
             validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"

@@ -13,10 +13,9 @@ data class GroupShop(
     var hasUnblockingError: Boolean = false,
     var unblockingErrorMessage: String = "",
     var firstProductErrorIndex: Int = -1,
-    var shop: Shop = Shop(),
     var addOns: AddOnsDataModel = AddOnsDataModel(),
+    var groupShopData: List<GroupShopV2> = emptyList(),
     var shopShipments: List<ShopShipment> = emptyList(),
-    var products: List<Product> = emptyList(),
     var shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",
@@ -39,5 +38,20 @@ data class GroupShop(
     var boMetadata: BoMetadata = BoMetadata(),
     var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData(),
     var scheduleDelivery: ScheduleDeliveryData = ScheduleDeliveryData(),
-    var ratesValidationFlow: Boolean = false
-) : Parcelable
+    var ratesValidationFlow: Boolean = false,
+
+    // new
+    val groupType: Int = 0,
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = ""
+) : Parcelable {
+
+    companion object {
+        const val GROUP_TYPE_NORMAL = 0
+        const val GROUP_TYPE_OWOC = 1
+
+        const val UI_GROUP_TYPE_NORMAL = 0
+        const val UI_GROUP_TYPE_OWOC = 1
+    }
+}

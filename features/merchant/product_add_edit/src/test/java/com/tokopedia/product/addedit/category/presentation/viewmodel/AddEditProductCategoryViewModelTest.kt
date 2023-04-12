@@ -18,8 +18,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.AfterEach
-import rx.Observable
-import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 class AddEditProductCategoryViewModelTest {
@@ -36,8 +34,8 @@ class AddEditProductCategoryViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = AddEditProductCategoryViewModel(
-                CoroutineTestDispatchersProvider,
-                getCategoryLiteTreeUseCase
+            CoroutineTestDispatchersProvider,
+            getCategoryLiteTreeUseCase
         )
     }
 
@@ -55,7 +53,7 @@ class AddEditProductCategoryViewModelTest {
 
             viewModel.getCategoryLiteTree()
 
-            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any())}
+            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any()) }
             Assert.assertTrue(viewModel.categoryLiteTree.value is Success)
         }
     }
@@ -69,7 +67,7 @@ class AddEditProductCategoryViewModelTest {
 
             viewModel.getCategoryLiteTree()
 
-            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any())}
+            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any()) }
             Assert.assertTrue(viewModel.categoryLiteTree.value is Fail)
         }
     }

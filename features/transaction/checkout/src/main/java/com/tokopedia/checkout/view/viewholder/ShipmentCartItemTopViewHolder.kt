@@ -1,13 +1,12 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentGroupHeaderBinding
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_NORMAL
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -15,7 +14,7 @@ import java.util.*
 
 class ShipmentCartItemTopViewHolder(
     itemView: View,
-    private val listener: Listener? = null
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -31,35 +30,35 @@ class ShipmentCartItemTopViewHolder(
         ItemShipmentGroupHeaderBinding.bind(itemView)
 
     fun bind(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
-        renderShop(shipmentCartItemTopModel.shipmentCartItemModel)
-        renderFulfillment(shipmentCartItemTopModel.shipmentCartItemModel)
-        renderErrorAndWarning(shipmentCartItemTopModel.shipmentCartItemModel)
-        renderCustomError(shipmentCartItemTopModel.shipmentCartItemModel)
+        renderShop(shipmentCartItemTopModel)
+        renderFulfillment(shipmentCartItemTopModel)
+        renderErrorAndWarning(shipmentCartItemTopModel)
+        renderCustomError(shipmentCartItemTopModel)
     }
 
-    private fun renderShop(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderShop(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         with(binding.containerSellerInfo) {
-            if (shipmentCartItemModel.orderNumber > 0) {
+            if (shipmentCartItemTopModel.orderNumber > 0) {
                 textOrderNumber.text = itemView.context.getString(
                     R.string.label_order_counter,
-                    shipmentCartItemModel.orderNumber
+                    shipmentCartItemTopModel.orderNumber
                 )
                 textOrderNumber.visible()
             } else {
                 textOrderNumber.gone()
             }
-            if (!shipmentCartItemModel.preOrderInfo.isNullOrBlank()) {
-                labelPreOrder.text = shipmentCartItemModel.preOrderInfo
+            if (shipmentCartItemTopModel.preOrderInfo.isNotBlank()) {
+                labelPreOrder.text = shipmentCartItemTopModel.preOrderInfo
                 labelPreOrder.visible()
                 separatorPreOrder.visible()
             } else {
                 labelPreOrder.gone()
                 separatorPreOrder.gone()
             }
-            val freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl
-            if (!freeShippingBadgeUrl.isNullOrBlank()) {
+            val freeShippingBadgeUrl = shipmentCartItemTopModel.freeShippingBadgeUrl
+            if (freeShippingBadgeUrl.isNotBlank()) {
                 imgFreeShipping.setImageUrl(freeShippingBadgeUrl)
-                if (shipmentCartItemModel.isFreeShippingPlus) {
+                if (shipmentCartItemTopModel.isFreeShippingPlus) {
                     imgFreeShipping.contentDescription =
                         itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus)
                 } else {
@@ -68,69 +67,72 @@ class ShipmentCartItemTopViewHolder(
                 }
                 imgFreeShipping.visible()
                 separatorFreeShipping.visible()
-                if (!shipmentCartItemModel.hasSeenFreeShippingBadge && shipmentCartItemModel.isFreeShippingPlus) {
-                    shipmentCartItemModel.hasSeenFreeShippingBadge = true
-                    listener?.onViewFreeShippingPlusBadge()
+                if (!shipmentCartItemTopModel.hasSeenFreeShippingBadge && shipmentCartItemTopModel.isFreeShippingPlus) {
+                    shipmentCartItemTopModel.hasSeenFreeShippingBadge = true
+                    listener.onViewFreeShippingPlusBadge()
                 }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
             }
-            if (!shipmentCartItemModel.shopAlertMessage.isNullOrBlank()) {
-                labelIncidentShopLevel.text = shipmentCartItemModel.shopAlertMessage
+            if (shipmentCartItemTopModel.shopAlertMessage.isNotBlank()) {
+                labelIncidentShopLevel.text = shipmentCartItemTopModel.shopAlertMessage
                 labelIncidentShopLevel.visible()
                 separatorIncidentShopLevel.visible()
             } else {
                 labelIncidentShopLevel.gone()
                 separatorIncidentShopLevel.gone()
             }
-            var hasTradeInItem = false
-            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                if (cartItemModel.isValidTradeIn) {
-                    hasTradeInItem = true
-                    break
-                }
-            }
-            if (hasTradeInItem) {
+            if (shipmentCartItemTopModel.hasTradeInItem) {
                 tvTradeInLabel.visible()
             } else {
                 tvTradeInLabel.gone()
             }
-            if (shipmentCartItemModel.shopTypeInfoData.shopBadge.isNotEmpty()) {
-                imgShopBadge.setImageUrl(shipmentCartItemModel.shopTypeInfoData.shopBadge)
+            if (shipmentCartItemTopModel.groupInfoBadgeUrl.isNotEmpty()) {
+                imgShopBadge.setImageUrl(shipmentCartItemTopModel.groupInfoBadgeUrl)
+                imgShopBadge.visible()
+                if (shipmentCartItemTopModel.uiGroupType == UI_GROUP_TYPE_NORMAL) {
+                    imgShopBadge.contentDescription = itemView.context.getString(
+                        com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                        shipmentCartItemTopModel.shopTypeInfoData.title.lowercase(
+                            Locale.getDefault()
+                        )
+                    )
+                }
+            } else if (shipmentCartItemTopModel.shopTypeInfoData.shopBadge.isNotEmpty()) {
+                imgShopBadge.setImageUrl(shipmentCartItemTopModel.shopTypeInfoData.shopBadge)
                 imgShopBadge.visible()
                 imgShopBadge.contentDescription = itemView.context.getString(
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
-                    shipmentCartItemModel.shopTypeInfoData.title.lowercase(
+                    shipmentCartItemTopModel.shopTypeInfoData.title.lowercase(
                         Locale.getDefault()
                     )
                 )
             } else {
                 imgShopBadge.gone()
             }
-            val shopName = shipmentCartItemModel.shopName
-            tvShopName.text = shopName
-            if (shipmentCartItemModel.enablerLabel.isBlank()) {
+            tvShopName.text = shipmentCartItemTopModel.shopName
+            if (shipmentCartItemTopModel.enablerLabel.isBlank()) {
                 labelEpharmacy.gone()
             } else {
-                labelEpharmacy.setLabel(shipmentCartItemModel.enablerLabel)
+                labelEpharmacy.setLabel(shipmentCartItemTopModel.enablerLabel)
                 labelEpharmacy.visible()
             }
         }
     }
 
-    private fun renderFulfillment(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderFulfillment(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         with(binding.containerSellerInfo) {
-            if (!shipmentCartItemModel.shopLocation.isNullOrBlank()) {
-                val fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl
-                if (shipmentCartItemModel.isFulfillment && !fulfillmentBadgeUrl.isNullOrBlank()) {
+            if (shipmentCartItemTopModel.shopLocation.isNotBlank()) {
+                val fulfillmentBadgeUrl = shipmentCartItemTopModel.fulfillmentBadgeUrl
+                if (shipmentCartItemTopModel.isFulfillment && fulfillmentBadgeUrl.isNotBlank()) {
                     iuImageFulfill.setImageUrl(fulfillmentBadgeUrl)
                     iuImageFulfill.visible()
                 } else {
                     iuImageFulfill.gone()
                 }
                 tvFulfillDistrict.visible()
-                tvFulfillDistrict.text = shipmentCartItemModel.shopLocation
+                tvFulfillDistrict.text = shipmentCartItemTopModel.shopLocation
             } else {
                 iuImageFulfill.gone()
                 tvFulfillDistrict.gone()
@@ -138,25 +140,25 @@ class ShipmentCartItemTopViewHolder(
         }
     }
 
-    private fun renderErrorAndWarning(shipmentCartItemModel: ShipmentCartItemModel) {
-        if (shipmentCartItemModel.isError) {
+    private fun renderErrorAndWarning(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
+        if (shipmentCartItemTopModel.isError) {
             binding.containerSellerInfo.root.alpha = VIEW_ALPHA_DISABLED
             binding.containerWarningAndError.root.visible()
         } else {
             binding.containerSellerInfo.root.alpha = VIEW_ALPHA_ENABLED
             binding.containerWarningAndError.root.gone()
         }
-        renderError(shipmentCartItemModel)
-        renderWarningCloseable(shipmentCartItemModel)
+        renderError(shipmentCartItemTopModel)
+        renderWarningCloseable(shipmentCartItemTopModel)
     }
 
-    private fun renderError(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderError(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         with(binding.containerWarningAndError) {
-            if (shipmentCartItemModel.isError) {
-                val errorTitle = shipmentCartItemModel.errorTitle
-                val errorDescription = shipmentCartItemModel.errorDescription
-                if (!errorTitle.isNullOrEmpty()) {
-                    if (!errorDescription.isNullOrEmpty()) {
+            if (shipmentCartItemTopModel.isError) {
+                val errorTitle = shipmentCartItemTopModel.errorTitle
+                val errorDescription = shipmentCartItemTopModel.errorDescription
+                if (errorTitle.isNotEmpty()) {
+                    if (errorDescription.isNotEmpty()) {
                         tickerError.tickerTitle = errorTitle
                         tickerError.setTextDescription(errorDescription)
                         tickerError.setDescriptionClickEvent(object : TickerCallback {
@@ -169,32 +171,23 @@ class ShipmentCartItemTopViewHolder(
                             }
                         })
                     } else {
-                        if (shipmentCartItemModel.isCustomEpharmacyError) {
+                        if (shipmentCartItemTopModel.isCustomEpharmacyError) {
                             tickerError.setHtmlDescription(
                                 "$errorTitle ${itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix)}"
                             )
                             tickerError.setDescriptionClickEvent(object : TickerCallback {
                                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                    listener?.onClickLihatOnTickerOrderError(
-                                        shipmentCartItemModel.shopId.toString(),
-                                        errorTitle
+                                    listener.onClickLihatOnTickerOrderError(
+                                        shipmentCartItemTopModel.shopId.toString(),
+                                        errorTitle,
+                                        shipmentCartItemTopModel
                                     )
-                                    if (!shipmentCartItemModel.isStateAllItemViewExpanded) {
-                                        shipmentCartItemModel.isTriggerScrollToErrorProduct = true
-                                        shipmentCartItemModel.isStateAllItemViewExpanded = true
-                                        listener?.onErrorShouldExpandProduct(shipmentCartItemModel)
-                                        return
-                                    }
-                                    listener?.onErrorShouldScrollToProduct(shipmentCartItemModel)
                                 }
 
                                 override fun onDismiss() {
                                     // no op
                                 }
                             })
-                            if (shipmentCartItemModel.isTriggerScrollToErrorProduct) {
-                                listener?.onErrorShouldScrollToProduct(shipmentCartItemModel)
-                            }
                         } else {
                             tickerError.setTextDescription(errorTitle)
                             tickerError.setDescriptionClickEvent(object : TickerCallback {
@@ -225,15 +218,12 @@ class ShipmentCartItemTopViewHolder(
         }
     }
 
-    private fun renderWarningCloseable(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderWarningCloseable(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         with(binding) {
-            if (!shipmentCartItemModel.isError && !TextUtils.isEmpty(
-                    shipmentCartItemModel.shopTicker
-                )
-            ) {
+            if (!shipmentCartItemTopModel.isError && shipmentCartItemTopModel.shopTicker.isNotEmpty()) {
                 tickerWarningCloseable.tickerTitle =
-                    shipmentCartItemModel.shopTickerTitle
-                tickerWarningCloseable.setHtmlDescription(shipmentCartItemModel.shopTicker)
+                    shipmentCartItemTopModel.shopTickerTitle
+                tickerWarningCloseable.setHtmlDescription(shipmentCartItemTopModel.shopTicker)
                 tickerWarningCloseable.visible()
                 tickerWarningCloseable.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -241,7 +231,7 @@ class ShipmentCartItemTopViewHolder(
                     }
 
                     override fun onDismiss() {
-                        shipmentCartItemModel.shopTicker = ""
+                        shipmentCartItemTopModel.shopTicker = ""
                         tickerWarningCloseable.gone()
                     }
                 })
@@ -251,33 +241,25 @@ class ShipmentCartItemTopViewHolder(
         }
     }
 
-    private fun renderCustomError(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderCustomError(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         with(binding.containerWarningAndError) {
             if ((
-                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                    !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
+                !shipmentCartItemTopModel.isError && shipmentCartItemTopModel.isHasUnblockingError &&
+                    shipmentCartItemTopModel.unblockingErrorMessage.isNotEmpty()
                 ) &&
-                shipmentCartItemModel.firstProductErrorIndex > -1
+                shipmentCartItemTopModel.firstProductErrorIndex > -1
             ) {
-                val errorMessage = shipmentCartItemModel.unblockingErrorMessage ?: ""
+                val errorMessage = shipmentCartItemTopModel.unblockingErrorMessage
                 binding.containerWarningAndError.root.visibility = View.VISIBLE
                 tickerError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
                 tickerError.setDescriptionClickEvent(object : TickerCallback {
 
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        listener?.onClickLihatOnTickerOrderError(
-                            shipmentCartItemModel.shopId.toString(),
-                            errorMessage
+                        listener.onClickLihatOnTickerOrderError(
+                            shipmentCartItemTopModel.shopId.toString(),
+                            errorMessage,
+                            shipmentCartItemTopModel
                         )
-                        if (!shipmentCartItemModel.isStateAllItemViewExpanded) {
-                            tickerError.setOnClickListener {
-                                shipmentCartItemModel.isTriggerScrollToErrorProduct =
-                                    true
-                                listener?.onErrorShouldExpandProduct(shipmentCartItemModel)
-                            }
-                            return
-                        }
-                        listener?.onErrorShouldScrollToProduct(shipmentCartItemModel)
                     }
 
                     override fun onDismiss() {
@@ -289,9 +271,6 @@ class ShipmentCartItemTopViewHolder(
                 tickerError.closeButtonVisibility = View.GONE
                 tickerError.visibility = View.VISIBLE
                 layoutError.visibility = View.VISIBLE
-                if (shipmentCartItemModel.isTriggerScrollToErrorProduct) {
-                    listener?.onErrorShouldScrollToProduct(shipmentCartItemModel)
-                }
             }
         }
     }
@@ -300,10 +279,6 @@ class ShipmentCartItemTopViewHolder(
 
         fun onViewFreeShippingPlusBadge()
 
-        fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String)
-
-        fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel)
-
-        fun onErrorShouldScrollToProduct(shipmentCartItemModel: ShipmentCartItemModel)
+        fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String, shipmentCartItemTopModel: ShipmentCartItemTopModel)
     }
 }

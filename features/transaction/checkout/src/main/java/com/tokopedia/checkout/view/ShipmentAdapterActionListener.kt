@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -98,7 +99,11 @@ interface ShipmentAdapterActionListener {
     val currentFragmentManager: FragmentManager
     fun scrollToPositionWithOffset(position: Int, dy: Float)
     fun scrollToPositionWithOffset(position: Int)
-    fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String)
+    fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        shipmentCartItemTopModel: ShipmentCartItemTopModel
+    )
     fun onClickRefreshErrorLoadCourier()
     fun onViewErrorInCourierSection(errorMessage: String)
     fun onClickSetPinpoint(position: Int)

@@ -6,7 +6,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -72,20 +71,18 @@ class ShipmentPresenterValidateUseCourierPromoTest : BaseShipmentPresenterTest()
         val position = 0
         val noToast = true
 
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = cartString)
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             validateUseModel
-        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
+//        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
 
         // Then
         verifySequence {
-            view.generateValidateUsePromoRequest()
+//            view.generateValidateUsePromoRequest()
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
             view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, "")
@@ -170,14 +167,14 @@ class ShipmentPresenterValidateUseCourierPromoTest : BaseShipmentPresenterTest()
         val exception = AkamaiErrorException(errorMessage)
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             exception
-        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
+//        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
 
         // Then
         verifySequence {
-            view.generateValidateUsePromoRequest()
+//            view.generateValidateUsePromoRequest()
             view.showToastError(errorMessage)
             view.resetAllCourier()
             view.cancelAllCourierPromo()

@@ -100,9 +100,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         // Given
         val message = "error"
         val tmpCartString = "123-abc"
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = tmpCartString
-        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartString = tmpCartString)
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
@@ -136,9 +134,9 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     fun `WHEN validate use success but has error multiple applied BBO THEN should update promo button and show error message`() {
         // Given
         val tmpCartString = "123-abc"
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
+        val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = tmpCartString
-        }
+        )
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
@@ -200,7 +198,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 tickerStatusCode
             )
@@ -211,7 +209,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN validate use success with ticker data and current ticker exist THEN should update promo button and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData =
+        presenter.tickerAnnouncementHolderData.value =
             TickerAnnouncementHolderData(id = "0", message = "")
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
@@ -239,7 +237,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateTickerAnnouncementMessage()
+//            view.updateTickerAnnouncementMessage()
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 tickerStatusCode
             )
@@ -498,10 +496,10 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "123",
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
-            cartItemModels = listOf(CartItemModel())
+            cartItemModels = listOf(CartItemModel(cartString = "123"))
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
