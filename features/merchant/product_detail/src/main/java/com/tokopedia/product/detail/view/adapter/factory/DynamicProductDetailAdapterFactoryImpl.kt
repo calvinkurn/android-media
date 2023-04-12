@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -82,6 +83,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.PdpRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
@@ -248,6 +250,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductShopReviewViewHolder.LAYOUT
     }
 
+    override fun type(data: PdpRecomWidgetDataModel): Int {
+        return PdpRecomWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -255,6 +261,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 view,
                 listener
             )
+            PdpRecomWidgetViewHolder.LAYOUT -> PdpRecomWidgetViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
                 view,
                 listener
