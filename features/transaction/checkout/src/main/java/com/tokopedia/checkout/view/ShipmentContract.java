@@ -16,7 +16,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
-import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -213,11 +213,11 @@ public interface ShipmentContract {
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
 
-        void showPlatformFeeSkeletonLoading();
+        void showPaymentFeeSkeletonLoading();
 
-        void showPlatformFeeTickerFailedToLoad(String ticker);
+        void showPaymentFeeTickerFailedToLoad(String ticker);
 
-        void showPlatformFeeData(PaymentFeeGqlResponse platformFeeData);
+        void showPaymentFeeData(PaymentFeeGqlResponse platformFeeData);
     }
 
     interface AnalyticsActionListener {
@@ -475,7 +475,7 @@ public interface ShipmentContract {
 
         void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
 
-        void getDynamicPlatformFee(PlatformFeeRequest platformFeeRequest);
+        void getDynamicPaymentFee(PaymentFeeCheckoutRequest paymentFeeCheckoutRequest);
 
         CheckoutPlatformFeeData getShipmentPlatformFeeData();
     }

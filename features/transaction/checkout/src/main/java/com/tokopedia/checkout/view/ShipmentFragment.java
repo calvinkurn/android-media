@@ -87,8 +87,8 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFee;
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
-import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
-import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -4286,13 +4286,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void checkPlatformFee() {
-        ShipmentPlatformFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
+        ShipmentPaymentFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
         if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
         && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
             shipmentAdapter.setPlatformFeeData(platformFeeModel);
             updateCost();
         } else {
-            getPlatformFeeData();
+            getPaymentFee();
         }
     }
 
@@ -4310,17 +4310,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void refetchPlatformFee() {
-        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
         platformFeeModel.setLoading(true);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         showLoaderTotalPayment();
         updateCost();
 
-        new Handler().postDelayed(() -> getPlatformFeeData(), 500);
+        new Handler().postDelayed(() -> getPaymentFee(), 500);
     }
 
     @Override
-    public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPlatformFeeModel platformFeeModel) {
+    public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel) {
         View childView = View.inflate(getContext(), R.layout.bottom_sheet_platform_fee_info, null);
         Typography tvPlatformFeeInfo = childView.findViewById(R.id.tv_platform_fee_info);
         tvPlatformFeeInfo.setText(platformFeeModel.getTooltip());
@@ -4332,18 +4332,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         bottomSheetUnify.show(getChildFragmentManager(), null);
     }
 
-    private void getPlatformFeeData() {
-        PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
-        platformFeeRequest.setGatewayCode("");
-        platformFeeRequest.setProfileCode(shipmentPresenter.getShipmentPlatformFeeData().getProfileCode());
-        platformFeeRequest.setPaymentAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
-        platformFeeRequest.setAdditionalData(shipmentPresenter.getShipmentPlatformFeeData().getAdditionalData());
-        shipmentPresenter.getDynamicPlatformFee(platformFeeRequest);
+    private void getPaymentFee() {
+        PaymentFeeCheckoutRequest paymentFeeCheckoutRequest = new PaymentFeeCheckoutRequest();
+        paymentFeeCheckoutRequest.setGatewayCode("");
+        paymentFeeCheckoutRequest.setProfileCode(shipmentPresenter.getShipmentPlatformFeeData().getProfileCode());
+        paymentFeeCheckoutRequest.setPaymentAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
+        paymentFeeCheckoutRequest.setAdditionalData(shipmentPresenter.getShipmentPlatformFeeData().getAdditionalData());
+        shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest);
     }
 
     @Override
-    public void showPlatformFeeData(PaymentFeeGqlResponse platformFeeData) {
-        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+    public void showPaymentFeeData(PaymentFeeGqlResponse platformFeeData) {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
         for (PaymentFee paymentFee : platformFeeData.getResponse().getData()) {
             if (paymentFee.getCode().equalsIgnoreCase(PLATFORM_FEE_CODE)) {
                 platformFeeModel.setTitle(paymentFee.getTitle());
@@ -4362,8 +4362,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showPlatformFeeSkeletonLoading() {
-        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+    public void showPaymentFeeSkeletonLoading() {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
         platformFeeModel.setLoading(true);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         showLoaderTotalPayment();
@@ -4383,8 +4383,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showPlatformFeeTickerFailedToLoad(String ticker) {
-        ShipmentPlatformFeeModel platformFeeModel = new ShipmentPlatformFeeModel();
+    public void showPaymentFeeTickerFailedToLoad(String ticker) {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
         platformFeeModel.setShowTicker(true);
         platformFeeModel.setTicker(ticker);
         shipmentAdapter.setPlatformFeeData(platformFeeModel);

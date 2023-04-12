@@ -2,8 +2,9 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -14,8 +15,6 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.CartItemModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -25,16 +24,13 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldCl
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterReleaseBookingTest {
+class ShipmentPresenterPlatformFeeTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
@@ -59,9 +55,6 @@ class ShipmentPresenterReleaseBookingTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -93,23 +86,26 @@ class ShipmentPresenterReleaseBookingTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK
+    @MockK(relaxed = true)
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK(relaxed = true)
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
     private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
-    private var shipmentMapper = ShipmentMapper()
+    private var platformFeeParams = PaymentFeeCheckoutRequest()
 
     private lateinit var presenter: ShipmentPresenter
 
@@ -150,44 +146,25 @@ class ShipmentPresenterReleaseBookingTest {
     }
 
     @Test
-    fun `WHEN release booking THEN should hit release booking use case with first productId`() {
+    fun getDynamicPlatformFee() {
         // Given
-        every { releaseBookingUseCase.execute(any()) } returns Observable.just(
-            ReleaseBookingResponse()
-        )
-        val productId = 300L
-        presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(
-                cartItemModels = listOf(
-                    CartItemModel(
-                        productId = productId
-                    ),
-                    CartItemModel(
-                        productId = productId + 1
-                    )
-                )
-            )
-        )
+        val platformFee = PaymentFeeGqlResponse(PaymentFeeResponse(success = true))
+
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            firstArg<(PaymentFeeGqlResponse) -> Unit>().invoke(platformFee)
+        }
 
         // When
-        presenter.releaseBooking()
+        presenter.getDynamicPaymentFee(platformFeeParams)
 
         // Then
-        verify { releaseBookingUseCase.execute(productId) }
-    }
-
-    @Test
-    fun `GIVEN no cart item WHEN release booking THEN should not hit release booking use case`() {
-        // Given
-        every { releaseBookingUseCase.execute(any()) } returns Observable.just(
-            ReleaseBookingResponse()
-        )
-        presenter.shipmentCartItemModelList = emptyList()
-
-        // When
-        presenter.releaseBooking()
-
-        // Then
-        verify(inverse = true) { releaseBookingUseCase.execute(any()) }
+        verifyOrder {
+            view.showPaymentFeeData(platformFee)
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
-import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,12 +12,12 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetPlatformFeeCheckoutUseCase @Inject constructor(
+class GetPaymentFeeCheckoutUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : UseCase<PaymentFeeGqlResponse>() {
     private var params: Map<String, Any?>? = null
 
-    fun setParams(request: PlatformFeeRequest) {
+    fun setParams(request: PaymentFeeCheckoutRequest) {
         params = mapOf(
             PROFILE_CODE_PARAM to request.profileCode,
             GATEWAY_CODE_PARAM to request.gatewayCode,
@@ -25,7 +25,7 @@ class GetPlatformFeeCheckoutUseCase @Inject constructor(
         )
     }
 
-    @GqlQuery(QUERY_GET_PLATFORM_FEE, QUERY)
+    @GqlQuery(QUERY_GET_PAYMENT_FEE, QUERY)
     override suspend fun executeOnBackground(): PaymentFeeGqlResponse {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
@@ -33,7 +33,7 @@ class GetPlatformFeeCheckoutUseCase @Inject constructor(
 
         val response = graphqlRepository.response(listOf(
                 GraphqlRequest(
-                        GetPlatformFeeCheckoutQuery(),
+                        GetPaymentFeeCheckoutQuery(),
                         PaymentFeeGqlResponse::class.java,
                         params
                 )
@@ -76,7 +76,7 @@ class GetPlatformFeeCheckoutUseCase @Inject constructor(
         private const val PROFILE_CODE_PARAM = "profileCode"
         private const val GATEWAY_CODE_PARAM = "gatewayCode"
         private const val PAYMENT_AMOUNT_PARAM = "paymentAmount"
-        private const val QUERY_GET_PLATFORM_FEE = "GetPlatformFeeCheckoutQuery"
+        private const val QUERY_GET_PAYMENT_FEE = "GetPaymentFeeCheckoutQuery"
 
         private const val QUERY = """
             query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String, ${"$"}paymentAmount: Float!) {

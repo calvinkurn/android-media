@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
-import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -197,7 +197,7 @@ class ShipmentCostViewHolder(
         mLoaderPlatformFeeValue.gone()
     }
 
-    private fun renderPlatformFee(platformFeeModel: ShipmentPlatformFeeModel) {
+    private fun renderPlatformFee(platformFeeModel: ShipmentPaymentFeeModel) {
         if (platformFeeModel.isLoading) {
             mTickerPlatformFeeInfo.gone()
             mTvPlatformFeeLabel.gone()

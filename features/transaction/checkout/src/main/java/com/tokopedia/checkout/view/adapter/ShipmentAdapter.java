@@ -24,7 +24,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentPlatformFeeModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
@@ -1338,7 +1338,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         lastApplyUiModel = LastApplyUiMapper.INSTANCE.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel);
     }
 
-    public void setPlatformFeeData(ShipmentPlatformFeeModel platformFeeModel) {
+    public void setPlatformFeeData(ShipmentPaymentFeeModel platformFeeModel) {
         if (shipmentCostModel != null) {
             shipmentCostModel.setDynamicPlatformFee(platformFeeModel);
         }

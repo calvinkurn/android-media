@@ -108,7 +108,7 @@ class ShipmentPresenterGetShippingRatesTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
-    private lateinit var dynamicPlatformFeeUseCase: GetPlatformFeeCheckoutUseCase
+    private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()
@@ -148,7 +148,7 @@ class ShipmentPresenterGetShippingRatesTest {
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase,
-            dynamicPlatformFeeUseCase
+            dynamicPaymentFeeCheckoutUseCase
         )
         presenter.attachView(view)
     }

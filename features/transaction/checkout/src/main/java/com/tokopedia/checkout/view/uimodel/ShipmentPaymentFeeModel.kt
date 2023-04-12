@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ShipmentPlatformFeeModel(
+data class ShipmentPaymentFeeModel(
         var title: String = "",
         var fee: Double = 0.0,
         var isShowSlashed: Boolean = false,

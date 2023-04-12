@@ -54,10 +54,10 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
-import com.tokopedia.checkout.domain.usecase.GetPlatformFeeCheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
@@ -221,7 +221,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
-    private final GetPlatformFeeCheckoutUseCase getPlatformFeeCheckoutUseCase;
+    private final GetPaymentFeeCheckoutUseCase getPaymentFeeCheckoutUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -299,7 +299,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              EligibleForAddressUseCase eligibleForAddressUseCase,
                              GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
                              UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase,
-                             GetPlatformFeeCheckoutUseCase platformFeeUseCase) {
+                             GetPaymentFeeCheckoutUseCase platformFeeUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -325,7 +325,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
         this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
-        this.getPlatformFeeCheckoutUseCase = platformFeeUseCase;
+        this.getPaymentFeeCheckoutUseCase = platformFeeUseCase;
     }
 
     @Override
@@ -351,8 +351,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (updateDynamicDataPassingUseCase != null) {
             updateDynamicDataPassingUseCase.cancelJobs();
         }
-        if (getPlatformFeeCheckoutUseCase != null) {
-            getPlatformFeeCheckoutUseCase.cancelJobs();
+        if (getPaymentFeeCheckoutUseCase != null) {
+            getPaymentFeeCheckoutUseCase.cancelJobs();
         }
         ratesPublisher = null;
         logisticDonePublisher = null;
@@ -3442,24 +3442,24 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void getDynamicPlatformFee(PlatformFeeRequest request) {
-        getView().showPlatformFeeSkeletonLoading();
+    public void getDynamicPaymentFee(PaymentFeeCheckoutRequest request) {
+        getView().showPaymentFeeSkeletonLoading();
 
-        getPlatformFeeCheckoutUseCase.setParams(request);
-        getPlatformFeeCheckoutUseCase.execute(
+        getPaymentFeeCheckoutUseCase.setParams(request);
+        getPaymentFeeCheckoutUseCase.execute(
                 platformFeeData -> {
                     if (getView() != null) {
                         if (platformFeeData.getResponse().getSuccess()) {
-                            getView().showPlatformFeeData(platformFeeData);
+                            getView().showPaymentFeeData(platformFeeData);
                         } else {
-                            getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
+                            getView().showPaymentFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
                         }
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
-                        getView().showPlatformFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
+                        getView().showPaymentFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
                     }
                     return Unit.INSTANCE;
                 }

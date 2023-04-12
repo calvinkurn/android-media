@@ -36,5 +36,5 @@ data class ShipmentCostModel(
     var cashbackAmount: Int = 0,
     var totalAddOnPrice: Double = 0.0,
     var hasAddOn: Boolean = false,
-    var dynamicPlatformFee: ShipmentPlatformFeeModel = ShipmentPlatformFeeModel()
+    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel()
 ) : Parcelable
