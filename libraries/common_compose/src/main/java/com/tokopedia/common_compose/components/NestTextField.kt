@@ -9,6 +9,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -33,6 +39,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +62,13 @@ fun NestTextField(
     onValueChanged: (String) -> Unit = {},
     counter: Int? = null,
     helper: String? = null,
-    onClearable: (() -> Unit)? = null
+    onClear: (() -> Unit)? = null,
+    readOnly: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    onFocusChangeListener: ((FocusState) -> Unit)? = null
 ) {
     Column {
         OutlinedTextField(
@@ -70,10 +83,10 @@ fun NestTextField(
             textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
             modifier = modifier
                 .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth().onFocusChanged { onFocusChangeListener?.invoke(it) },
             placeholder = placeholder?.let { { NestTypography(text = it) } },
             leadingIcon = generatePrefix(prefix, enabled),
-            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled, onClearable),
+            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled, onClear),
             label = label?.let {
                 {
                     NestTypography(text = it)
@@ -90,7 +103,12 @@ fun NestTextField(
                 disabledTextColor = NestTheme.colors.NN._400,
                 textColor = NestTheme.colors.NN._950
             ),
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            readOnly = readOnly,
+            visualTransformation = visualTransformation,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            interactionSource = interactionSource
         )
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             helper?.takeIf { error.isNullOrEmpty() }?.let {
@@ -234,12 +252,12 @@ private fun generateLeadingIcon(
     icon2: @Composable (() -> Unit)? = null,
     suffix: String? = null,
     enabled: Boolean,
-    onClearable: (() -> Unit)? = null
+    onClear: (() -> Unit)? = null
 ): @Composable (() -> Unit)? {
-    if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty() || onClearable != null) {
+    if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty() || onClear != null) {
         return {
             Row {
-                onClearable?.let {
+                onClear?.let {
                     Icon(
                         painter = painterResource(id = R.drawable.iconunify_clear_small),
                         contentDescription = "tips icon",
@@ -439,5 +457,5 @@ fun NestTextFieldSkeletonPreview() {
 @Preview(name = "Text Field (clearable)")
 @Composable
 fun NestTextFieldClearablePreview() {
-    NestTextField(value = "aaa", onClearable = {})
+    NestTextField(value = "aaa", onClear = {})
 }
