@@ -162,7 +162,6 @@ fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
 
 fun buildBeautificationConfig(
     presetsSize: Int = 5,
-    presetActivePosition: Int = 1,
     assetStatus: BeautificationAssetStatus = BeautificationAssetStatus.Available,
 ): BeautificationConfigUiModel {
     return BeautificationConfigUiModel(
@@ -192,7 +191,7 @@ fun buildBeautificationConfig(
             PresetFilterUiModel(
                 id = if (it == 0) "none" else it.toString(),
                 name = "Preset $it",
-                active = it == presetActivePosition,
+                active = false,
                 minValue = 0.0,
                 maxValue = 1.0,
                 defaultValue = 0.1 * it,

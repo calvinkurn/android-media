@@ -128,6 +128,10 @@ class BeautificationRobot {
         clickItemRecyclerView(R.id.recycler_view, position)
     }
 
+    fun clickPreset(position: Int) = chainable {
+        clickItemRecyclerView(R.id.recycler_view, position)
+    }
+
     fun clickResetFilter() = chainable {
         click(R.id.tv_bottom_sheet_action)
     }
@@ -140,8 +144,16 @@ class BeautificationRobot {
         slide(R.id.slider_beautification, value)
     }
 
+    fun clickToasterCTA() = chainable {
+        click(com.tokopedia.unifycomponents.R.id.snackbar_btn)
+    }
+
     fun performDelay(delayInMillis: Long = 500) = chainable {
         delay(delayInMillis)
+    }
+
+    fun mock(action: () -> Unit) = chainable {
+        action()
     }
 
     fun verifyEventAction(eventAction: String) = chainable {

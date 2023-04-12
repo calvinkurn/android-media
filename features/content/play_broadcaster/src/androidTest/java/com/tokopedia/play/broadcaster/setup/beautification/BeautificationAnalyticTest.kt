@@ -2,6 +2,9 @@ package com.tokopedia.play.broadcaster.setup.beautification
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.play.broadcaster.setup.buildBeautificationConfig
+import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import org.junit.Before
@@ -135,5 +138,81 @@ class BeautificationAnalyticTest {
             .clickResetFilter()
             .clickYesResetFilter()
             .verifyEventAction("click - yes reset filter")
+    }
+
+    @Test
+    fun testAnalytic_clickPresetMakeup() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .clickPreset(1)
+            .verifyEventAction("click - preset makeup")
+    }
+
+    @Test
+    fun testAnalytic_clickNonePreset() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .clickPreset(0)
+            .verifyEventAction("click - none reset preset makeup")
+    }
+
+    @Test
+    fun testAnalytic_clickDownloadPreset() {
+        coEvery {
+            beautificationRobot.mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            beautificationConfig = buildBeautificationConfig(
+                assetStatus = BeautificationAssetStatus.NotDownloaded
+            )
+        )
+
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .clickPreset(1)
+            .verifyEventAction("click - download asset preset makeup")
+    }
+
+    @Test
+    fun testAnalytic_clickRetryDownloadPreset() {
+        coEvery {
+            beautificationRobot.mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            beautificationConfig = buildBeautificationConfig(
+                assetStatus = BeautificationAssetStatus.NotDownloaded
+            )
+        )
+
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .mock {
+                coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns false
+            }
+            .clickPreset(1)
+            .clickToasterCTA()
+            .verifyEventAction("click - retry download preset makeup")
+    }
+
+    @Test
+    fun testAnalytic_viewFailDownloadPreset() {
+        coEvery {
+            beautificationRobot.mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            beautificationConfig = buildBeautificationConfig(
+                assetStatus = BeautificationAssetStatus.NotDownloaded
+            )
+        )
+
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .mock {
+                coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns false
+            }
+            .clickPreset(1)
+            .verifyEventAction("view - failed download preset makeup")
     }
 }
