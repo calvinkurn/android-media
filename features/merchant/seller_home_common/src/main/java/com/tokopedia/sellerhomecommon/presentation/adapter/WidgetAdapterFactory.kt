@@ -41,4 +41,6 @@ interface WidgetAdapterFactory {
     fun type(calendarWidgetUiModel: CalendarWidgetUiModel): Int
 
     fun type(unificationWidgetUiModel: UnificationWidgetUiModel): Int
+
+    fun type(richListWidget: RichListWidgetUiModel): Int
 }

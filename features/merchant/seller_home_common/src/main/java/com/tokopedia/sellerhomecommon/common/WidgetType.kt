@@ -22,6 +22,7 @@ object WidgetType {
     const val MILESTONE = "milestone"
     const val CALENDAR = "calendar"
     const val UNIFICATION = "navigationTab"
+    const val RICH_LIST = "richlist"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
@@ -44,7 +45,8 @@ object WidgetType {
             RECOMMENDATION,
             MILESTONE,
             CALENDAR,
-            UNIFICATION
+            UNIFICATION,
+            RICH_LIST
         )
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -77,6 +78,7 @@ class LayoutMapper @Inject constructor(
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
                             WidgetType.UNIFICATION -> mapToUnificationWidget(it, isFromCache)
+                            WidgetType.RICH_LIST -> mapToRichListWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -101,6 +103,31 @@ class LayoutMapper @Inject constructor(
             ShopStateUiModel.HAS_ORDER -> ShopStateUiModel.HasOrder
             else -> ShopStateUiModel.None
         }
+    }
+
+    private fun mapToRichListWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): RichListWidgetUiModel {
+        return RichListWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
+        )
     }
 
     private fun mapToUnificationWidget(

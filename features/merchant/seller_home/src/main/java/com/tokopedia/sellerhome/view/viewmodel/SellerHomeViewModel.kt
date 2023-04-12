@@ -26,6 +26,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
@@ -44,6 +45,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
@@ -99,6 +102,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
+    private val getRichListDataUseCase: Lazy<GetRichListDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
@@ -151,6 +155,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
     private val _calendarWidgetData = MutableLiveData<Result<List<CalendarDataUiModel>>>()
     private val _unificationWidgetData = MutableLiveData<Result<List<UnificationDataUiModel>>>()
+    private val _richListWidgetData = MutableLiveData<Result<List<RichListDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
     private val _submitWidgetDismissal = MutableLiveData<Result<WidgetDismissalResultUiModel>>()
@@ -194,6 +199,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _calendarWidgetData
     val unificationWidgetData: LiveData<Result<List<UnificationDataUiModel>>>
         get() = _unificationWidgetData
+    val richListWidgetData: LiveData<Result<List<RichListDataUiModel>>>
+        get() = _richListWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
@@ -425,6 +432,14 @@ class SellerHomeViewModel @Inject constructor(
             getLayoutWithLazyLoad(useCase, _unificationWidgetData)
         }, onError = {
             _unificationWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getLeaderboardWidgetData(mWidgets: List<RichListWidgetUiModel>) {
+        launchCatchError(block = {
+            val useCase = getRichListDataUseCase.get()
+        }, onError = {
+
         })
     }
 
