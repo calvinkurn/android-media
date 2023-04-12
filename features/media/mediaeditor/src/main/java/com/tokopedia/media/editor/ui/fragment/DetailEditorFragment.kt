@@ -120,6 +120,10 @@ class DetailEditorFragment @Inject constructor(
 
     private var isAddLogoTipsShowed = false
 
+    // flag to decide watermark implementation sequence before / after CropRotate
+    // and used on watermark observer as flag for
+    private var isRotatedWatermark = false
+
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
@@ -543,13 +547,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
             watermarkBitmap?.let {
-                // if watermark tool just implement the result, on another tools need to neutralize rotate value
-                val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
-                    it
-                } else {
-                    neutralizeWatermarkResult(it)
-                }
-                getImageView()?.setImageBitmap(usedImage)
+                getImageView()?.setImageBitmap(it)
             } ?: kotlin.run {
                 showErrorGeneralToaster(context)
             }
@@ -677,10 +675,10 @@ class DetailEditorFragment @Inject constructor(
             }
 
             getBitmap()?.let { bitmap ->
-                val finalBitmap = if (!data.isToolCrop() && !data.isToolRotate()) {
+                val finalBitmap = if (isRotatedWatermark || (!data.isToolCrop() && !data.isToolRotate())) {
                     bitmap
                 } else {
-                    watermarkRotateBitmap(detailUiModel.cropRotateValue, bitmap)
+                    watermarkRotateBitmap(detailUiModel.cropRotateValue, bitmap, true)
                 }
 
                 WatermarkType.map(it.watermarkType)?.let { type ->
@@ -733,12 +731,13 @@ class DetailEditorFragment @Inject constructor(
         )
     }
 
-    // neutralize rotate value on watermark result
-    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap? {
+    // neutralize rotate bitmap
+    // rotate can effect the bitmap size, neutralize do clip the size back to its original size
+    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap, isInverse: Boolean = true): Bitmap? {
         watermarkRotateBitmap(
             data.cropRotateValue,
             watermarkBitmap,
-            isInverse = true
+            isInverse
         )?.let { neutralizeBitmap ->
             val cropX = (neutralizeBitmap.width - globalWidth) / 2
             val cropY = (neutralizeBitmap.height - globalHeight) / 2
@@ -755,9 +754,8 @@ class DetailEditorFragment @Inject constructor(
         var latestBrightnessIndex = -1
         var latestContrastIndex = -1
 
-        var tempWatermarkIndex = -1
-        var tempMirrorIndex = -1
-        var isRotatedWatermark = false
+        var tempWatermarkIndex = 99
+        var tempCropRotateIndex = 99
 
         detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
             if (editorDetailUi.cropRotateValue.isCrop) cropScale =
@@ -768,33 +766,51 @@ class DetailEditorFragment @Inject constructor(
             if (editorDetailUi.isToolContrast()) latestContrastIndex = index
 
             if (editorDetailUi.isToolRotate() || editorDetailUi.isToolCrop()) {
-                tempMirrorIndex = index
+                tempCropRotateIndex = index
             }
 
             if (editorDetailUi.isToolWatermark()) tempWatermarkIndex = index
         }
 
-        isRotatedWatermark = tempWatermarkIndex < tempMirrorIndex
+        // get sequence between watermark state & crop rotate state
+        isRotatedWatermark = tempWatermarkIndex < tempCropRotateIndex
 
         implementBrightnessAndContrast(latestBrightnessIndex, latestContrastIndex)
 
-        // need to provide sequence for watermark that implemented before rotate
-        if (isRotatedWatermark && !data.isToolWatermark()) {
-            implementPreviousWatermark(data)
+        // if watermark didn't need to be rotated following product image
+        if (!data.isToolWatermark()) {
+            val isCropRotate = (data.isToolRotate() || data.isToolCrop())
+
+            if (isCropRotate) { // if crop / rotate
+                if (data.watermarkMode != null) { // if have watermark state
+                    implementPreviousWatermark(data)
+
+                    if (!isRotatedWatermark) { // if watermark didn't included on product image rotate
+                        getBitmap()?.let {
+                            getImageView()?.setImageBitmap(neutralizeWatermarkResult(it, false))
+                        }
+                    }
+                }
+            } else if (isRotatedWatermark) { // if watermark included on product image rotate (for non ucrop)
+                implementPreviousWatermark(data)
+            }
         }
 
-        if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
-            manualCropBitmap(data.cropRotateValue)
-        }
+        // non ucrop state implementation
+        if (!data.isToolCrop() && !data.isToolRotate()){
+            if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
+                manualCropBitmap(data.cropRotateValue)
+            }
 
-        // need to provide sequence for watermark that implemented after rotate
-        if (!isRotatedWatermark && !data.isToolWatermark()) {
-            implementPreviousWatermark(data)
-        }
-
-        if ((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
-            implementPreviousStateRotate(data.cropRotateValue)
-            if (cropScale != 0f) viewModel.rotateInitialScale = cropScale
+            // if watermark didn't need to be rotated following product image (non ucrop)
+            if (!isRotatedWatermark && !data.isToolWatermark()) {
+                implementPreviousWatermark(data)
+            }
+        } else { // ucrop state implementation
+            if (data.cropRotateValue.imageWidth != 0) {
+                implementPreviousStateRotate(data.cropRotateValue)
+                if (cropScale != 0f) viewModel.rotateInitialScale = cropScale
+            }
         }
 
         implementedBaseBitmap = getBitmap()
