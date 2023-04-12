@@ -191,7 +191,7 @@
         app:layout_constraintStart_toStartOf="@id/daily_budget_desc"
         app:layout_constraintTop_toBottomOf="@id/daily_budget_desc"
         android:layout_marginTop="4dp"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/lihat_pengaturan_grup_barrier"

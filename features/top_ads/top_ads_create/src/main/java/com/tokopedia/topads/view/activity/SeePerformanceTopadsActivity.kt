@@ -267,29 +267,41 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             it.response?.data?.get(0)?.groupBidSetting?.productBrowse?.toLong() ?: 0
                         )
                     )
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
-                    if (it.response?.data?.get(0)?.groupPriceDaily == 0f) {
-                        getString(R.string.tidak_dibatasi)
-                    } else {
-                        "Rp ${
-                            convertToCurrency(
-                                it.response?.data?.get(
-                                    0
-                                )?.groupPriceDaily?.toLong() ?: 0
-                            )
-                        }"
+
+                it.response?.data?.get(0)?.groupPriceDaily?.apply {
+                    when(this){
+                        0f -> {
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = getString(R.string.tidak_dibatasi)
+                        }
+                        else -> {
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = "Rp ${
+                                convertToCurrency(
+                                    it.response?.data?.get(
+                                        0
+                                    )?.groupPriceDaily?.toLong() ?: 0
+                                )
+                            }"
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
+                                String.format(
+                                    "%s dari %s",
+                                    it.response?.data?.get(0)?.groupPriceDailySpentFmt,
+                                    convertToCurrency(
+                                        it.response?.data?.get(
+                                            0
+                                        )?.groupPriceDaily?.toLong() ?: 0
+                                    )
+                                )
+
+                            /** ProgressBar unify needs to be updated when rendered on screen */
+                            val dailySpentPercent = (100 * convertMoneyToValue(it.response?.data?.get(0)?.groupPriceDailySpentFmt ?: "")/this).toInt()
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpentPercent)
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
+                                4.toPx().toFloat()
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
+                                4.toPx().toFloat()
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
+                        }
                     }
-                if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
-                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
-                        String.format(
-                            "%s dari %s",
-                            it.response?.data?.get(0)?.groupPriceDailySpentFmt,
-                            convertToCurrency(
-                                it.response?.data?.get(
-                                    0
-                                )?.groupPriceDaily?.toLong() ?: 0
-                            )
-                        )
                 }
             }
         }
@@ -338,7 +350,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         convertToCurrency(it.data.dailyBudget.toLong())
                     )
                 if(it.data.dailyBudget.isMoreThanZero())
-                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(it.data.dailyUsage / it.data.dailyBudget)
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(100 * it.data.dailyUsage / it.data.dailyBudget)
                 else
                     mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(0)
             }
@@ -350,24 +362,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 2 -> getString(R.string.topads_ads_performance_in_search_filter_title)
                 3 -> getString(R.string.topads_ads_performance_in_recommendation_filter_title)
                 else -> ""
-            }
-        }
-    }
-
-    /** ProgressBar unify needs to be updated when rendered on screen */
-    private fun updateManualGrupIklanProgressBar(){
-        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupPriceDaily.let {
-            if(it != null && it > 0) {
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.VISIBLE
-                val dailySpent = convertMoneyToValue(seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupPriceDailySpentFmt ?: "")
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpent/it.toInt())
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
-                    4.toPx().toFloat()
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
-                    4.toPx().toFloat()
-            }
-            else {
-                mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
             }
         }
     }
@@ -516,7 +510,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility =
                 if (mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
-            updateManualGrupIklanProgressBar()
+            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility =
+                if (mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
             if (mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.rotation == ROTATION_0) {
                 mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.animate()
