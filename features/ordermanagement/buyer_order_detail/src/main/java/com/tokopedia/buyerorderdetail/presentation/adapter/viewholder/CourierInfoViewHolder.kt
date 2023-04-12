@@ -2,11 +2,9 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailShipmentInfoCourierBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -49,8 +47,9 @@ class CourierInfoViewHolder(
                     if (oldItem.isFreeShipping != newItem.isFreeShipping || oldItem.boBadgeUrl != newItem.boBadgeUrl) {
                         setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
-                    if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping
-                        || oldItem.etaChanged != newItem.etaChanged || oldItem.etaUserInfo != newItem.etaUserInfo) {
+                    if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping ||
+                        oldItem.etaChanged != newItem.etaChanged || oldItem.etaUserInfo != newItem.etaUserInfo
+                    ) {
                         setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged, newItem.etaUserInfo)
                     }
                     if (oldItem.pod != newItem.pod) {
@@ -108,17 +107,13 @@ class CourierInfoViewHolder(
 
     private fun setupPodImage(pod: ShipmentInfoUiModel.CourierInfoUiModel.Pod) = binding?.run {
         ivBuyerOrderDetailPodPicture.loadImagePod(
-            context = root.context,
             accessToken = pod.accessToken,
             url = pod.podPictureUrl,
-            drawableImagePlaceholder = ContextCompat.getDrawable(
-                root.context,
-                com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder
-            ),
-            drawableImageError = ContextCompat.getDrawable(
-                root.context,
-                com.tokopedia.unifycomponents.R.drawable.imagestate_error
-            )
+            drawableImagePlaceholder =
+            com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder,
+            drawableImageError =
+            com.tokopedia.unifycomponents.R.drawable.imagestate_error
+
         )
     }
 

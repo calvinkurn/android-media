@@ -26,14 +26,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_name)
     }
 
-    fun getProductNameExistErrorMessage(): String? {
-        return getString(R.string.error_product_name_exist)
-    }
-
-    fun getProductNameBannedErrorMessage(): String? {
-        return getString(R.string.error_product_name_banned)
-    }
-
     // product price string properties
 
     fun getPriceTipsMessage(): String {
@@ -98,14 +90,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_stock).orEmpty()
     }
 
-    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String {
-        return try {
-            context?.getString(R.string.error_minimum_stock_quantity, minStock)
-        } catch (e: Resources.NotFoundException) {
-            null
-        }.orEmpty()
-    }
-
     fun getMaxLimitProductStockErrorMessage(maxStock: String?): String {
         return context?.getString(R.string.error_available_stock_quantity_exceeding_max_limit, maxStock.orEmpty()).orEmpty()
     }
@@ -114,10 +98,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     fun getEmptyOrderQuantityErrorMessage(): String? {
         return getString(R.string.error_empty_minimum_order)
-    }
-
-    fun getMinLimitOrderQuantityErrorMessage(): String? {
-        return getString(R.string.error_minimum_order_cant_be_zero)
     }
 
     fun getMinOrderExceedLimitQuantityErrorMessage(): String? {
@@ -129,10 +109,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     }
 
     // product SKU string properties
-
-    fun getEmptyProductSkuErrorMessage(): String? {
-        return getString(R.string.error_product_sku_space_exist)
-    }
 
     // pre order string properties
 
@@ -237,5 +213,4 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getGqlErrorMessage(): String? {
         return getString(R.string.error_gql_failed)
     }
-
 }

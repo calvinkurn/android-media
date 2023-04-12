@@ -335,6 +335,7 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOFOOD);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
+        moduleNameList.add(DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
         }
@@ -459,7 +460,9 @@ public class MainParentActivity extends BaseActivity implements
                     if (oldArgs == null) {
                         oldArgs = new Bundle();
                     }
-                    oldArgs.putAll(getIntent().getExtras());
+                    if (getIntent().getExtras() != null) {
+                        oldArgs.putAll(getIntent().getExtras());
+                    }
                     fragment.setArguments(oldArgs);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();

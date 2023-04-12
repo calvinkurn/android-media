@@ -289,14 +289,19 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
-        feedMainViewModel.metaData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> initMetaView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.metaData.collectLatest {
+                    when (it) {
+                        is Success -> initMetaView(it.data)
+                        is Fail -> Toast.makeText(
+                            requireContext(),
+                            it.throwable.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> {}
+                    }
+                }
             }
         }
     }
@@ -424,41 +429,41 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-            .setCreateContentView(
-                if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
-                    binding.btnFeedCreatePost
-                } else {
-                    null
-                }
-            )
-            .setProfileEntryPointView(
-                if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                    binding.feedUserProfileImage
-                } else {
-                    null
-                }
-            )
-            .setListener(object : ImmersiveFeedOnboarding.Listener {
-                override fun onStarted() {
-                }
-
-                override fun onCompleteCreateContentOnboarding() {
-                    feedMainViewModel.setHasShownCreateContent()
-                }
-
-                override fun onCompleteProfileEntryPointOnboarding() {
-                    feedMainViewModel.setHasShownProfileEntryPoint()
-                }
-
-                override fun onFinished(isForcedDismiss: Boolean) {
-                    if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                }
-            })
-            .build()
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(ONBOARDING_SHOW_DELAY)
             mOnboarding?.dismiss()
+            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+                .setCreateContentView(
+                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                        binding.btnFeedCreatePost
+                    } else {
+                        null
+                    }
+                )
+                .setProfileEntryPointView(
+                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                        binding.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setListener(object : ImmersiveFeedOnboarding.Listener {
+                    override fun onStarted() {
+                    }
+
+                    override fun onCompleteCreateContentOnboarding() {
+                        feedMainViewModel.setHasShownCreateContent()
+                    }
+
+                    override fun onCompleteProfileEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onFinished(isForcedDismiss: Boolean) {
+                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                    }
+                }).build()
+
             mOnboarding?.show()
         }
 
@@ -636,5 +641,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         const val TAB_TYPE_FOLLOWING = "following"
 
         private const val COACHMARK_START_DELAY_IN_SEC = 1
+
+        private const val ONBOARDING_SHOW_DELAY = 500L
     }
 }

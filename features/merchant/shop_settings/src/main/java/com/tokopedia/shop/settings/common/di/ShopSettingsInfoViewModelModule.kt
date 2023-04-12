@@ -20,5 +20,4 @@ abstract class ShopSettingsInfoViewModelModule {
     @IntoMap
     @ViewModelKey(ShopSettingsInfoViewModel::class)
     internal abstract fun shopSettingsInfoViewModel(viewModel: ShopSettingsInfoViewModel): ViewModel
-
 }
