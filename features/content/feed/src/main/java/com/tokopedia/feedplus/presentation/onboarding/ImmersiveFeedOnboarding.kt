@@ -21,12 +21,12 @@ class ImmersiveFeedOnboarding private constructor(
 
     suspend fun show() {
         val coachMarkItems = buildList {
-            if (createContentView != null) {
-                add(createContentCoachMarkItem(createContentView))
-            }
-
             if (profileEntryPointView != null) {
                 add(profileEntryPointCoachMarkItem(profileEntryPointView))
+            }
+
+            if (createContentView != null) {
+                add(createContentCoachMarkItem(createContentView))
             }
         }
 
