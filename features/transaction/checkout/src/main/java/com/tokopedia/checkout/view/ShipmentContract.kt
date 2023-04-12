@@ -24,7 +24,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.GroupProduct
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -82,12 +81,6 @@ interface ShipmentContract {
         fun renderCheckoutCartError(message: String)
         fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData)
         fun renderPrompt(prompt: Prompt)
-        fun renderPromoCheckoutFromCourierSuccess(
-            validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
-            itemPosition: Int,
-            noToast: Boolean
-        )
-
         fun renderErrorCheckPromoShipmentData(message: String?)
         fun renderEditAddressSuccess(latitude: String, longitude: String)
         fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean)
@@ -105,30 +98,14 @@ interface ShipmentContract {
             isBoAutoApplyFlow: Boolean
         )
 
-        fun cancelAllCourierPromo()
-        fun updateCourierBottomssheetHasData(
-            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-            cartPosition: Int,
-            shipmentCartItemModel: ShipmentCartItemModel?,
-            preOrderModel: PreOrderModel?
-        )
-
-        fun updateCourierBottomsheetHasNoData(
-            cartPosition: Int,
-            shipmentCartItemModel: ShipmentCartItemModel?
-        )
-
         fun navigateToSetPinpoint(message: String, locationPass: LocationPass?)
 
         val activityContext: Activity?
-        fun setCourierPromoApplied(itemPosition: Int)
         fun stopTrace()
         fun stopEmbraceTrace()
         fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean)
         fun resetCourier(position: Int)
 
-//        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest
-//        fun generateCouponListRecommendationRequest(): PromoRequest
         fun clearTotalBenefitPromoStacking()
         fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
             transactionId: String,
@@ -286,12 +263,6 @@ interface ShipmentContract {
             validateUsePromoRequest: ValidateUsePromoRequest,
             promoCode: String,
             showLoading: Boolean
-        )
-
-        fun processCheckPromoCheckoutCodeFromSelectedCourier(
-            promoCode: String?,
-            itemPosition: Int,
-            noToast: Boolean
         )
 
         fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel)

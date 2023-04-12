@@ -116,7 +116,6 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.CourierItemData.Companion.clone
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -1010,24 +1009,6 @@ class ShipmentFragment :
         )
     }
 
-    override fun renderPromoCheckoutFromCourierSuccess(
-        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
-        itemPosition: Int,
-        noToast: Boolean
-    ) {
-        if (!noToast && !shipmentAdapter.isCourierPromoStillExist) {
-            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                showToastNormal(validateUsePromoRevampUiModel.message[0])
-            }
-        }
-        setCourierPromoApplied(itemPosition)
-        updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel, true)
-    }
-
-    override fun setCourierPromoApplied(itemPosition: Int) {
-        shipmentAdapter.setCourierPromoApplied(itemPosition)
-    }
-
     override fun renderErrorCheckPromoShipmentData(message: String?) {
         showToastError(message)
         shipmentAdapter.resetCourierPromoState()
@@ -1114,7 +1095,6 @@ class ShipmentFragment :
                         true
                     )
                 }
-                checkCourierPromo(courierItemData, itemPosition)
                 shipmentAdapter.setSelectedCourier(
                     itemPosition,
                     courierItemData,
@@ -1165,10 +1145,6 @@ class ShipmentFragment :
                 shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
             }
         }
-    }
-
-    override fun cancelAllCourierPromo() {
-        shipmentAdapter.cancelAllCourierPromo()
     }
 
     override fun navigateToSetPinpoint(message: String, locationPass: LocationPass?) {
@@ -1842,7 +1818,6 @@ class ShipmentFragment :
             pslCode,
             shipmentCartItemModel
         )
-        shipmentAdapter.cancelAllCourierPromo()
     }
 
     override fun onDataEnableToCheckout() {
@@ -2329,12 +2304,12 @@ class ShipmentFragment :
     }
 
     override fun onShippingDurationChoosen(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
         selectedCourier: ShippingCourierUiModel?,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
         selectedServiceId: Int,
-        serviceData: ServiceData?,
+        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         isDurationClick: Boolean,
         isClearPromo: Boolean
@@ -2352,24 +2327,24 @@ class ShipmentFragment :
     }
 
     private fun onShippingDurationChoosen(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
         recommendedCourier: CourierItemData?,
         recipientAddressModel: RecipientAddressModel?,
         cartItemPosition: Int,
         selectedServiceId: Int,
-        serviceData: ServiceData?,
+        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         isDurationClick: Boolean,
         isClearPromo: Boolean,
         skipCheckAllCourier: Boolean
     ) {
         if (isTradeIn) {
-            checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData!!.serviceName)
+            checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData.serviceName)
         }
-        sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData!!.serviceName)
+        sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData.serviceName)
         // Has courier promo means that one of duration has promo, not always current selected duration.
         // It's for analytics purpose
-        if (shippingCourierUiModels!!.isNotEmpty()) {
+        if (shippingCourierUiModels.isNotEmpty()) {
             val serviceDataTracker = shippingCourierUiModels[0].serviceData
             sendAnalyticsOnClickDurationThatContainPromo(
                 serviceDataTracker.isPromo == 1,
@@ -2471,22 +2446,8 @@ class ShipmentFragment :
                         recommendedCourier,
                         cartItemPosition
                     )
-                    if (!TextUtils.isEmpty(recommendedCourier.promoCode) && isDurationClick) {
-                        checkCourierPromo(recommendedCourier, cartItemPosition)
-                    }
                 }
             }
-        }
-    }
-
-    private fun checkCourierPromo(courierItemData: CourierItemData?, itemPosition: Int) {
-        if (!TextUtils.isEmpty(courierItemData!!.promoCode)) {
-            val promoCode = courierItemData.promoCode
-            shipmentPresenter.processCheckPromoCheckoutCodeFromSelectedCourier(
-                promoCode,
-                itemPosition,
-                false
-            )
         }
     }
 
@@ -2561,7 +2522,6 @@ class ShipmentFragment :
                     shippingCourierList
             }
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
-            checkCourierPromo(courierItemData, cartItemPosition)
         }
     }
 
@@ -2773,17 +2733,6 @@ class ShipmentFragment :
         }
     }
 
-    override fun onCourierPromoCanceled(shipperName: String?, promoCode: String?) {
-        if (shipmentAdapter.isCourierPromoStillExist) {
-            showToastError(
-                String.format(
-                    getString(com.tokopedia.logisticcart.R.string.message_cannot_apply_courier_promo),
-                    shipperName
-                )
-            )
-        }
-    }
-
     override fun onPurchaseProtectionLogicError() {
         val message = getString(R.string.error_dropshipper)
         showToastError(message)
@@ -2840,25 +2789,25 @@ class ShipmentFragment :
         }
     }
 
-    override fun updateCourierBottomsheetHasNoData(
-        cartPosition: Int,
-        shipmentCartItemModel: ShipmentCartItemModel?
-    ) {
-        shippingCourierBottomsheet?.setShippingCourierViewModels(null, cartPosition, null)
-    }
-
-    override fun updateCourierBottomssheetHasData(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        cartPosition: Int,
-        shipmentCartItemModel: ShipmentCartItemModel?,
-        preOrderModel: PreOrderModel?
-    ) {
-        shippingCourierBottomsheet?.setShippingCourierViewModels(
-            shippingCourierUiModels,
-            cartPosition,
-            preOrderModel
-        )
-    }
+//    override fun updateCourierBottomsheetHasNoData(
+//        cartPosition: Int,
+//        shipmentCartItemModel: ShipmentCartItemModel?
+//    ) {
+//        shippingCourierBottomsheet?.setShippingCourierViewModels(null, cartPosition, null)
+//    }
+//
+//    override fun updateCourierBottomssheetHasData(
+//        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+//        cartPosition: Int,
+//        shipmentCartItemModel: ShipmentCartItemModel?,
+//        preOrderModel: PreOrderModel?
+//    ) {
+//        shippingCourierBottomsheet?.setShippingCourierViewModels(
+//            shippingCourierUiModels,
+//            cartPosition,
+//            preOrderModel
+//        )
+//    }
 
     override fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean) {
         if (position != 0) {

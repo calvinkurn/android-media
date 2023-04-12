@@ -79,7 +79,6 @@ interface ShipmentAdapterActionListener {
         isTradeInDropOff: Boolean
     )
 
-    fun onCourierPromoCanceled(shipperName: String?, promoCode: String?)
     fun onPurchaseProtectionLogicError()
     fun onPurchaseProtectionChangeListener(position: Int)
     fun navigateToProtectionMore(cartItemModel: CartItemModel)

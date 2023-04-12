@@ -896,14 +896,6 @@ class ShipmentAdapter @Inject constructor(
                     newCourierItemData.isHideChangeCourierCard
                 shipmentCartItemModel.durationCardDescription =
                     newCourierItemData.durationCardDescription
-                val oldCourierItemData =
-                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
-                checkAppliedCourierPromo(
-                    position,
-                    oldCourierItemData,
-                    newCourierItemData,
-                    shipmentCartItemModel
-                )
                 shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier =
                     newCourierItemData
                 if (!newCourierItemData.isAllowDropshiper) {
@@ -943,66 +935,6 @@ class ShipmentAdapter @Inject constructor(
             updateShippingCompletionTickerVisibility()
         }
         return shipmentCartItemModel
-    }
-
-    private fun checkAppliedCourierPromo(
-        position: Int,
-        oldCourierItemData: CourierItemData?,
-        newCourierItemData: CourierItemData,
-        shipmentCartItemModel: ShipmentCartItemModel?
-    ) {
-        // Do this section if toggle year end promo is on
-        if (shipmentCartItemModel!!.selectedShipmentDetailData!!.selectedCourier != null) {
-            // Check if promo applied on current selected courier
-            if (shipmentCartItemModel.selectedShipmentDetailData!!.isCourierPromoApplied && TextUtils.isEmpty(
-                    newCourierItemData.promoCode
-                )
-            ) {
-                shipmentCartItemModel.selectedShipmentDetailData!!.isCourierPromoApplied = false
-                // If applied on current selected courier but not on new selected courier then
-                // check all item if promo still exist
-                var courierPromoStillExist = false
-                for (i in shipmentDataList.indices) {
-                    if (i != position && shipmentDataList[i] is ShipmentCartItemModel) {
-                        val model = shipmentDataList[i] as ShipmentCartItemModel?
-                        if (model!!.selectedShipmentDetailData != null && model.selectedShipmentDetailData!!.isCourierPromoApplied) {
-                            courierPromoStillExist = true
-                            break
-                        }
-                    }
-                }
-                // If courier promo not exist anymore, cancel promo
-                if (!courierPromoStillExist) {
-                    shipmentAdapterActionListener.onCourierPromoCanceled(
-                        oldCourierItemData!!.name,
-                        oldCourierItemData.promoCode
-                    )
-                }
-            }
-        }
-    }
-
-    val isCourierPromoStillExist: Boolean
-        get() {
-            var courierPromoStillExist = false
-            for (i in shipmentDataList.indices) {
-                if (shipmentDataList[i] is ShipmentCartItemModel) {
-                    val model = shipmentDataList[i] as ShipmentCartItemModel?
-                    if (model!!.selectedShipmentDetailData != null && model.selectedShipmentDetailData!!.isCourierPromoApplied) {
-                        courierPromoStillExist = true
-                        break
-                    }
-                }
-            }
-            return courierPromoStillExist
-        }
-
-    fun cancelAllCourierPromo() {
-        for (shipmentCartItemModel in shipmentCartItemModelList!!) {
-            if (shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.isCourierPromoApplied) {
-                shipmentCartItemModel.selectedShipmentDetailData!!.isCourierPromoApplied = false
-            }
-        }
     }
 
     fun setShippingCourierViewModels(
@@ -1170,15 +1102,6 @@ class ShipmentAdapter @Inject constructor(
             }
         }
         return true
-    }
-
-    fun setCourierPromoApplied(position: Int) {
-        if (shipmentDataList[position] is ShipmentCartItemModel) {
-            val shipmentCartItemModel = shipmentDataList[position] as ShipmentCartItemModel?
-            if (shipmentCartItemModel!!.selectedShipmentDetailData != null) {
-                shipmentCartItemModel.selectedShipmentDetailData!!.isCourierPromoApplied = true
-            }
-        }
     }
 
     fun getShipmentCartItemGroupByCartString(cartString: String): Pair<Int, List<ShipmentCartItem>> {

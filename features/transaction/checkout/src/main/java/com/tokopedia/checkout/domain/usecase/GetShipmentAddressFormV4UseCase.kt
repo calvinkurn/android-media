@@ -193,7 +193,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
                 "validation_metadata": ""
               },
               "rates_validation_flow": false,
-              "bo_code": "",
+              "bo_code": "BOINTRAISLANDQA10",
               "is_insurance": true,
               "is_fulfillment_service": false,
               "toko_cabang": {
@@ -810,8 +810,8 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
               },
               "errors": [],
               "errors_unblocking": ["testing123"],
-              "shipping_id": 0,
-              "sp_id": 0,
+              "shipping_id": 23,
+              "sp_id": 45,
               "scheduled_delivery": {
                 "timeslot_id": 0,
                 "schedule_date": "",

@@ -96,20 +96,20 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.setOnDismissListener { bottomSheet = null }
     }
 
-    fun setShippingCourierViewModels(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        cartPosition: Int,
-        preOrderModel: PreOrderModel?
-    ) {
-        hideLoading()
-        if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
-            mCourierModelList = shippingCourierUiModels
-            mPreOrderModel = preOrderModel
-            setupRecyclerView(cartPosition)
-        } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
-        }
-    }
+//    fun setShippingCourierViewModels(
+//        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+//        cartPosition: Int,
+//        preOrderModel: PreOrderModel?
+//    ) {
+//        hideLoading()
+//        if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
+//            mCourierModelList = shippingCourierUiModels
+//            mPreOrderModel = preOrderModel
+//            setupRecyclerView(cartPosition)
+//        } else if (activity != null) {
+//            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
+//        }
+//    }
 
     private fun initializeInjector() {
         val component = DaggerShippingCourierComponent.builder()
@@ -140,8 +140,8 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
-            } else {
-                showLoading()
+            } else if (activity != null) {
+                showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
             }
         }
     }

@@ -11,12 +11,12 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 interface ShippingDurationBottomsheetListener {
 
     fun onShippingDurationChoosen(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
         selectedCourier: ShippingCourierUiModel?,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
         selectedServiceId: Int,
-        serviceData: ServiceData?,
+        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         isDurationClick: Boolean,
         isClearPromo: Boolean
