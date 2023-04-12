@@ -29,5 +29,4 @@ interface ChatbotComponent {
     fun inject(chatbotProvideRatingFragment : ChatBotProvideRatingFragment)
 
     fun inject(chatbotOnboardingActivity: ChatbotOnboardingActivity)
-
 }

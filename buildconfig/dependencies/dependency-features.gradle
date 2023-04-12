@@ -90,6 +90,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             productCard                     : ":features:discovery:productcard",
             productCardOptions              : ":features:discovery:productcard_options",
+            productCardCompact              : ":features:discovery:productcard_compact",
             carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
             similarSearch                   : ":features:discovery:similarsearch",
@@ -120,6 +121,7 @@ ext {
 
             logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dilayanitokopedia               : ":features:logistic:dilayanitokopedia",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticseller		          : ":features:logistic:logisticseller",

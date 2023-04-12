@@ -17,7 +17,7 @@ internal class NotificationGeneralPrompt(
         repository.saveLastShownTimeStamp(System.currentTimeMillis())
         repository.incrementShownCount()
 
-        view.show()
+        view.show(false)
     }
 
     private fun shouldShowPrompt() =

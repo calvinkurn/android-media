@@ -62,6 +62,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PINPOINT
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ADD_ON_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
@@ -126,6 +127,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHL
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CAMPAIGN_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
@@ -230,6 +232,8 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
+    const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
+    const val DF_CAMPAIGN_LIST = "df_campaign_list"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -332,6 +336,17 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SHOP_EDIT_ADDRESS) }, DF_BASE, R.string.path_edit_shop_address))
             add(DFP({ it.startsWith(SELLER_WAREHOUSE_DATA) }, DF_BASE, R.string.path_shop_settings_address))
             add(DFP({ it.startsWith(ADD_ADDRESS_V3) }, DF_BASE, R.string.path_add_address_v3))
+            add(
+                DFP(
+                    {
+                        it.startsWith(ApplinkConstInternalDilayaniTokopedia.HOME) ||
+                            it.startsWith(ApplinkConstInternalDilayaniTokopedia.SEARCH) ||
+                            it.startsWith(ApplinkConst.DilayaniTokopedia.HOME)
+                    },
+                    DF_DILAYANI_TOKOPEDIA, R.string.dilayani_tokopedia_title
+                )
+            )
+            add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
@@ -727,6 +742,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWithPattern(SELLER_MVC_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_detail))
+            add(DFP({ it.startsWith(CAMPAIGN_LIST) || it.startsWith(SellerApp.CAMPAIGN_LIST) }, DF_CAMPAIGN_LIST, R.string.title_campaign_list))
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))

@@ -39,6 +39,7 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PA
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
@@ -111,6 +112,9 @@ class PlayBroadcastActivity : BaseActivity(),
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var hydraConfigStore: HydraConfigStore
+
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
@@ -148,7 +152,11 @@ class PlayBroadcastActivity : BaseActivity(),
         inject()
         setFragmentFactory()
         startPageMonitoring()
+        if (savedInstanceState != null) {
+            hydraConfigStore.setChannelId(savedInstanceState.getString(CHANNEL_ID).orEmpty())
+        }
         super.onCreate(savedInstanceState)
+        setupBroadcaster()
         initViewModel()
         observeUiState()
         observeConfiguration()
@@ -191,16 +199,16 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
-            viewModel.saveState(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
+            viewModel.saveState(outState)
         } catch (e: Throwable) {}
         super.onSaveInstanceState(outState)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (isRequiredPermissionGranted()) createBroadcaster()
+            if (isRequiredPermissionGranted()) createBroadcaster(viewModel.broadcastingConfig)
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -244,7 +252,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         surfaceHolder = holder
         if (!::broadcaster.isInitialized) return
-        createBroadcaster()
+        createBroadcaster(viewModel.broadcastingConfig)
     }
 
     override fun surfaceChanged(
@@ -282,29 +290,26 @@ class PlayBroadcastActivity : BaseActivity(),
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
+    private fun setupBroadcaster() {
+        broadcaster = broadcasterFactory.create(
+            activityContext = this,
+            handler = Handler(Looper.getMainLooper()),
+            callback = this,
+            remoteConfig = remoteConfig,
+        )
+    }
+
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
-                        initBroadcaster(event.data)
-                        createBroadcaster()
+                        createBroadcaster(event.data)
                     }
                     else -> {}
                 }
             }
         }
-    }
-
-    private fun initBroadcaster(config: BroadcastingConfigUiModel) {
-        val handler = Handler(Looper.getMainLooper())
-        broadcaster = broadcasterFactory.create(
-            activityContext = this,
-            handler = handler,
-            callback = this,
-            remoteConfig = remoteConfig,
-            broadcastingConfigUiModel = config,
-        )
     }
 
     private fun initView() {
@@ -602,20 +607,26 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun createBroadcaster() {
+    private fun createBroadcaster(broadcastingConfigUiModel: BroadcastingConfigUiModel) {
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            initBroadcasterWithDelay(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize, broadcastingConfigUiModel)
         } else showPermissionPage()
     }
 
     private fun initBroadcasterWithDelay(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        broadcastingConfigUiModel: BroadcastingConfigUiModel,
     ) {
         lifecycleScope.launch(dispatcher.main) {
             delay(INIT_BROADCASTER_DELAY)
+            broadcaster.setConfig(
+                audioRate = broadcastingConfigUiModel.audioRate,
+                videoRate = broadcastingConfigUiModel.videoBitrate,
+                videoFps = broadcastingConfigUiModel.fps
+            )
             broadcaster.create(holder, surfaceSize)
         }
     }

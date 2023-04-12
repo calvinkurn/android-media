@@ -21,15 +21,18 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -46,7 +49,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
@@ -58,6 +61,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShopInfoFragment :
@@ -208,14 +213,12 @@ class ShopInfoFragment :
     }
 
     private fun observeShopBadgeReputation() {
-        shopViewModel?.shopBadgeReputation?.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it is Success) {
-                    showShopBadgeReputation(it.data)
-                }
+        shopViewModel?.shopBadgeReputation?.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> showShopBadgeReputation(result.data)
+                is Fail -> showToasterError(result.throwable)
             }
-        )
+        }
     }
 
     private fun observerMessageIdOnChatExist() {
@@ -286,7 +289,10 @@ class ShopInfoFragment :
             observe(shopNoteResp) {
                 when (it) {
                     is Success -> renderListNote(it.data)
-                    is Fail -> hideNoteLoading()
+                    is Fail -> {
+                        hideNoteLoading()
+                        showToasterError(it.throwable)
+                    }
                 }
             }
         }
@@ -294,13 +300,10 @@ class ShopInfoFragment :
 
     private fun observeShopInfo() {
         shopViewModel?.shopInfo?.let { shopInfo ->
-            observe(shopInfo) {
-                this@ShopInfoFragment.shopInfo = it
-                customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
-                showShopInfo()
-                setReportStoreView()
-                if (!isOfficial) {
-                    getShopBadgeReputation()
+            observe(shopInfo) { result ->
+                when(result) {
+                    is Success -> renderShopInfo(result.data)
+                    is Fail -> showError(result.throwable)
                 }
             }
         }
@@ -335,6 +338,16 @@ class ShopInfoFragment :
 
             getShopNotes(shopId)
             setReportStoreView()
+
+            registerGlobalErrorClickListener(shopId)
+        }
+    }
+
+    private fun registerGlobalErrorClickListener(shopId: String) {
+        fragmentShopInfoBinding?.globalError?.setActionClickListener {
+            getShopInfo(shopId)
+            getShopNotes(shopId)
+            getShopBadgeReputation()
         }
     }
 
@@ -518,6 +531,51 @@ class ShopInfoFragment :
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 .show()
+        }
+    }
+
+    private fun renderShopInfo(shopInfo: ShopInfoData) {
+        this@ShopInfoFragment.shopInfo = shopInfo
+        customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
+        showShopInfo()
+        setReportStoreView()
+        if (!isOfficial) {
+            getShopBadgeReputation()
+        }
+
+        fragmentShopInfoBinding?.run {
+            nestedScrollView.visible()
+            containerReport.visible()
+            globalError.gone()
+        }
+    }
+    private fun showError(error: Throwable) {
+        fragmentShopInfoBinding?.run {
+            nestedScrollView.gone()
+            containerReport.gone()
+
+            if (error is UnknownHostException || error is SocketTimeoutException) {
+                globalError.setType(GlobalError.NO_CONNECTION)
+            } else {
+                globalError.setType(GlobalError.SERVER_ERROR)
+            }
+
+            globalError.visible()
+        }
+    }
+
+    private fun showToasterError(error: Throwable) {
+        if (error is UnknownHostException || error is SocketTimeoutException) return
+
+        val errorMessage = ErrorHandler.getErrorMessage(activity ?: return, error)
+
+        Toaster.build(
+            view ?: return,
+            errorMessage,
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_ERROR
+        ).apply {
+            show()
         }
     }
 }

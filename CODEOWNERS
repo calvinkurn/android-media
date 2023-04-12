@@ -16,6 +16,7 @@
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
+/features/discovery/productcard_compact/                @tokopedia/android-minionsolo-dev
 /features/discovery/shopwidget/                    	    @tokopedia/android-miniondave-dev
 /features/discovery/search/                         	@tokopedia/android-miniondave-dev
 /features/discovery/filter/                         	@tokopedia/android-miniondave-dev
@@ -198,6 +199,7 @@
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
+/features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
@@ -343,6 +345,7 @@
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
 /libraries/logger/										@tokopedia/android-core-dev
+/libraries/login_helper/                                @tokopedia/android-minionmark-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/network/                                     @tokopedia/android-core-dev

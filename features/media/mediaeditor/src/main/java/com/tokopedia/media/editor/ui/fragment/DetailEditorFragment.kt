@@ -38,22 +38,14 @@ import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
-import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.editor.utils.getRunnable
-import com.tokopedia.media.editor.utils.checkMemoryOverflow
-import com.tokopedia.media.editor.utils.delay
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.showErrorLoadToaster
-import com.tokopedia.media.editor.utils.showMemoryLimitToast
-import com.tokopedia.media.editor.utils.validateImageSize
+import com.tokopedia.media.editor.utils.*
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -169,26 +161,31 @@ class DetailEditorFragment @Inject constructor(
                 rotateNumber = rotateNumber,
                 initialRotateNumber = initialRotateNumber,
                 data
-            ) {
-                data.resultUrl = viewModel.saveImageCache(
-                    it,
-                    sourcePath = data.originalUrl
-                )?.path
+            ) { processedData ->
+                viewModel.getProcessedBitmap(processedData)?.let {
+                    data.resultUrl = viewModel.saveImageCache(
+                        it,
+                        sourcePath = data.originalUrl
+                    )?.path
 
-                if (data.addLogoValue != EditorAddLogoUiModel()) {
-                    // crop current overlay
-                    val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
-                    val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
+                    if (data.addLogoValue != EditorAddLogoUiModel()) {
+                        // crop current overlay
+                        val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
+                        val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
 
-                    if (!isWidthSame || !isHeightSame) {
-                        updateAddLogoOverlay(Pair(it.width, it.height)) {
+                        if (!isWidthSame || !isHeightSame) {
+                            updateAddLogoOverlay(Pair(it.width, it.height)) {
+                                finishPage()
+                            }
+                        } else {
                             finishPage()
                         }
                     } else {
                         finishPage()
                     }
-                } else {
-                    finishPage()
+                } ?: run {
+                    showErrorGeneralToaster(context)
+                    activity?.finish()
                 }
             }
         } else {
@@ -248,7 +245,7 @@ class DetailEditorFragment @Inject constructor(
                 data.removeBackgroundColor = removeBgType
 
                 if (removeBgType == REMOVE_BG_TYPE_DEFAULT) {
-                    loadImageWithEmptyTarget(requireContext(),
+                    loadUrlImage(
                         it,
                         {},
                         mediaTarget = MediaBitmapEmptyTarget(
@@ -358,11 +355,13 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLogoChosen(bitmap: Bitmap) {
-        viewBinding?.imgPreviewOverlay?.apply {
-            show()
-            setImageBitmap(validateImageSize(bitmap))
-            isEdited = true
+    override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
+        viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
+            viewBinding?.imgPreviewOverlay?.apply {
+                show()
+                setImageBitmap(validateImageSize(overlayBitmap))
+                isEdited = true
+            }
         }
     }
 
@@ -408,7 +407,8 @@ class DetailEditorFragment @Inject constructor(
     private fun observeBrightness() {
         viewModel.brightnessFilter.observe(viewLifecycleOwner) { colorFilter ->
             getImageView()?.let {
-                val bitmap = implementedBaseBitmap ?: it.drawable.toBitmap()
+                val bitmap = (implementedBaseBitmap ?: it.drawable?.toBitmap()) ?: return@let
+
                 val fastBitmapDrawable = FastBitmapDrawable(validateImageSize(bitmap))
                 fastBitmapDrawable.colorFilter = colorFilter
 
@@ -429,7 +429,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             it?.let {
-                loadImageWithEmptyTarget(requireContext(),
+                loadUrlImage(
                     it.path,
                     {},
                     mediaTarget = MediaBitmapEmptyTarget(
@@ -442,22 +442,24 @@ class DetailEditorFragment @Inject constructor(
                                 val color =
                                     ContextCompat.getColor(requireContext(), backgroundColor)
 
-                                val backgroundBitmap = Bitmap.createBitmap(
-                                    resultBitmap.width,
-                                    resultBitmap.height,
-                                    resultBitmap.config
-                                )
-                                backgroundBitmap.eraseColor(color)
+                                viewModel.bitmapCreation(
+                                    BitmapCreation.emptyBitmap(
+                                        resultBitmap.width,
+                                        resultBitmap.height,
+                                        resultBitmap.config
+                                    )
+                                )?.let { backgroundBitmap ->
+                                    backgroundBitmap.eraseColor(color)
 
-                                val canvas = Canvas(backgroundBitmap)
-                                canvas.drawBitmap(resultBitmap, 0f, 0f, null)
+                                    val canvas = Canvas(backgroundBitmap)
+                                    canvas.drawBitmap(resultBitmap, 0f, 0f, null)
 
-                                getImageView()?.setImageBitmap(
-                                    backgroundBitmap
-                                )
+                                    getImageView()?.setImageBitmap(
+                                        backgroundBitmap
+                                    )
+                                    isEdited = true
+                                }
                             }
-
-                            isEdited = true
                         }
                     )
                 )
@@ -540,13 +542,17 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
-            // if watermark tool just implement the result, on another tools need to neutralize rotate value
-            val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
-                watermarkBitmap
-            } else {
-                neutralizeWatermarkResult(watermarkBitmap)
+            watermarkBitmap?.let {
+                // if watermark tool just implement the result, on another tools need to neutralize rotate value
+                val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
+                    it
+                } else {
+                    neutralizeWatermarkResult(it)
+                }
+                getImageView()?.setImageBitmap(usedImage)
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
-            getImageView()?.setImageBitmap(usedImage)
         }
     }
 
@@ -678,14 +684,16 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 WatermarkType.map(it.watermarkType)?.let { type ->
-                    viewModel.setWatermark(
-                        finalBitmap,
-                        type,
-                        detailUiModel = detailUiModel,
-                        useStorageColor = true
-                    )
+                    finalBitmap?.let { finalBitmapReady ->
+                        viewModel.setWatermark(
+                            finalBitmapReady,
+                            type,
+                            detailUiModel = detailUiModel,
+                            useStorageColor = true
+                        )
 
-                    watermarkComponent.setWatermarkTypeSelected(type)
+                        watermarkComponent.setWatermarkTypeSelected(type)
+                    }
                 }
             }
         }
@@ -695,7 +703,7 @@ class DetailEditorFragment @Inject constructor(
         rotateValue: EditorCropRotateUiModel,
         source: Bitmap,
         isInverse: Boolean = false
-    ): Bitmap {
+    ): Bitmap? {
         var finalRotateDegree = rotateValue.let {
             it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
         }
@@ -719,17 +727,27 @@ class DetailEditorFragment @Inject constructor(
             globalWidth = source.width
             globalHeight = source.height
         }
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+
+        return viewModel.bitmapCreation(
+            BitmapCreation.cropBitmap(source, 0, 0, source.width, source.height, matrix, true)
+        )
     }
 
     // neutralize rotate value on watermark result
-    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap {
-        val neutralizeBitmap =
-            watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
+    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap? {
+        watermarkRotateBitmap(
+            data.cropRotateValue,
+            watermarkBitmap,
+            isInverse = true
+        )?.let { neutralizeBitmap ->
+            val cropX = (neutralizeBitmap.width - globalWidth) / 2
+            val cropY = (neutralizeBitmap.height - globalHeight) / 2
 
-        val cropX = (neutralizeBitmap.width - globalWidth) / 2
-        val cropY = (neutralizeBitmap.height - globalHeight) / 2
-        return Bitmap.createBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+            return viewModel.bitmapCreation(
+                BitmapCreation.cropBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+            )
+        }
+        return null
     }
 
     private fun readPreviousState() {
@@ -808,48 +826,55 @@ class DetailEditorFragment @Inject constructor(
 
             val mirrorMatrix = Matrix()
             mirrorMatrix.preScale(cropRotateData.scaleX, cropRotateData.scaleY)
-            val mirroredBitmap =
-                Bitmap.createBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+
+            val mirroredBitmap = viewModel.bitmapCreation(
+                BitmapCreation.cropBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+            ) ?: return@let
 
             // get processed, since data param is set to be null then other data value is not necessary
-            val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
-                mirroredBitmap,
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                finalRotationDegree,
-                cropRotateData.rotateDegree,
-                cropRotateData.orientationChangeNumber,
-                null,
-                0f,
-                0f,
-                0f,
-                isRotate = false,
-                isCrop = false,
-                1f,
-                1f
+            val bitmapResult = viewModel.getProcessedBitmap(
+                ProcessedBitmapModel(
+                    mirroredBitmap,
+                    offsetX,
+                    offsetY,
+                    imageWidth,
+                    imageHeight,
+                    finalRotationDegree,
+                    cropRotateData.rotateDegree,
+                    cropRotateData.orientationChangeNumber
+                )
             )
 
-
-            viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
+            if (bitmapResult == null) {
+                showErrorGeneralToaster(context)
+                activity?.finish()
+            } else {
+                viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
+            }
         }
     }
 
     private fun setWatermarkDrawerItem(bitmap: Bitmap) {
-        val bitmapResult = viewModel.setWatermarkFilterThumbnail(
-            bitmap
-        )
+        val bitmapResult = viewModel.setWatermarkFilterThumbnail(bitmap)
 
         watermarkComponent.getButtonRef().apply {
             val roundedCorner =
                 requireContext().resources.getDimension(editorR.dimen.editor_watermark_rounded)
 
-            first.loadImageRounded(bitmapResult.first, roundedCorner) {
-                centerCrop()
+            bitmapResult.first?.let {
+                first.loadImageRounded(it, roundedCorner) {
+                    centerCrop()
+                }
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
-            second.loadImageRounded(bitmapResult.second, roundedCorner) {
-                centerCrop()
+
+            bitmapResult.second?.let {
+                second.loadImageRounded(it, roundedCorner) {
+                    centerCrop()
+                }
+            } ?: kotlin.run {
+                showErrorGeneralToaster(context)
             }
         }
     }
@@ -945,17 +970,8 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
-        var memoryOverflow: Boolean
-
-        val imageSize = getImageSize(url).apply {
-            val usageEstimation = first * second * PIXEL_BYTE_SIZE
-            memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
-        }
-
-        if (memoryOverflow) {
-            activity?.showMemoryLimitToast(imageSize)
-        } else {
-            loadImageWithEmptyTarget(requireContext(),
+        context?.let {
+            loadUrlImage(
                 url,
                 properties = {
                     listener(
@@ -1007,7 +1023,8 @@ class DetailEditorFragment @Inject constructor(
                         onImageReady()
                     },
                     onCleared = {}
-                ))
+                )
+            )
         }
     }
 
@@ -1120,20 +1137,20 @@ class DetailEditorFragment @Inject constructor(
         newSize: Pair<Int, Int>,
         onFinish: (filePath: String) -> Unit
     ) {
-        loadImageWithEmptyTarget(requireContext(),
+        loadUrlImage(
             data.addLogoValue.logoUrl,
             {},
             MediaBitmapEmptyTarget(
                 onReady = { logoBitmap ->
-                    viewModel.saveImageCache(
-                        addLogoComponent.generateOverlayImage(
-                            logoBitmap,
-                            newSize,
-                            isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
-                        ), sourcePath = PNG_KEY
-                    )?.let { fileResult ->
-                        data.addLogoValue.overlayLogoUrl = fileResult.path
-                        onFinish(fileResult.path)
+                    viewModel.generateAddLogoOverlay(
+                        logoBitmap,
+                        newSize,
+                        isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
+                    )?.let {
+                        viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
+                            data.addLogoValue.overlayLogoUrl = fileResult.path
+                            onFinish(fileResult.path)
+                        }
                     }
                 }
             ))
@@ -1217,6 +1234,18 @@ class DetailEditorFragment @Inject constructor(
     private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
         data.cropRotateValue.cropRatio = newRatioPair
         isEdited = true
+    }
+
+    private fun loadUrlImage(
+        url: String,
+        properties: Properties.() -> Unit = {},
+        mediaTarget: MediaBitmapEmptyTarget<Bitmap>
+    ) {
+        if (!viewModel.isImageOverFlow(url)) {
+            context?.let {
+                loadImageWithEmptyTarget(it, url, properties, mediaTarget)
+            }
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME

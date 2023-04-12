@@ -96,8 +96,8 @@ class SelectVariantViewModel @Inject constructor(
     }
 
     private fun isVariantEligible(variantId : Long, validatedVariants: List<Product.Variant>): Pair<Boolean, String> {
-        val matchedVariant = validatedVariants.find { variant -> variant.variantProductId == variantId }
-        return Pair(matchedVariant?.isEligible.orTrue(), matchedVariant?.reason.orEmpty())
+        val matchedVariant = validatedVariants.find { variant -> variant.variantProductId == variantId } ?: return Pair(false, "")
+        return Pair(matchedVariant.isEligible, matchedVariant.reason)
     }
 
     private fun findUpdatedVariantNames(response: VariantResult): List<Variant> {
