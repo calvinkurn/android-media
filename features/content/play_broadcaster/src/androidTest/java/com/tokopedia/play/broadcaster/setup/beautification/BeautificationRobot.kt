@@ -91,6 +91,13 @@ class BeautificationRobot {
 
         coEvery { mockBroadcaster.setFaceFilter(any(), any()) } returns true
         coEvery { mockBroadcaster.setPreset(any(), any()) } returns true
+
+        coEvery {
+            mockContentCoachMarkSharedPref.hasBeenShown(
+                ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter,
+                any(),
+            )
+        } returns true
     }
 
     fun launch() = chainable {

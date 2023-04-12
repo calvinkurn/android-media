@@ -60,4 +60,18 @@ class BeautificationAnalyticTest {
             .clickCloseBeautificationCoachMark()
             .verifyEventAction("click - close beautification coachmark")
     }
+
+    @Test
+    fun testAnalytic_openScreenBeautificationEntryPointOnPreparationPage() {
+        beautificationRobot.launch()
+            .performDelay()
+            .verifyOpenScreen("/play broadcast - beautification filter entry point")
+    }
+
+    @Test
+    fun testAnalytic_openScreenBeautificationBottomSheet() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .verifyOpenScreen("/play broadcast - beauty filter creation bottomsheet")
+    }
 }
