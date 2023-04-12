@@ -74,6 +74,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -1914,6 +1915,7 @@ class CartListPresenter @Inject constructor(
                         promoUiModel = getLastApplyResponse.promoUiModel
                     }
                 )
+                syncCartGroupShopBoCodeWithPromoUiModel(getLastApplyResponse.promoUiModel)
                 isLastApplyResponseStillValid = false
                 view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
             } catch (t: Throwable) {
@@ -1950,6 +1952,7 @@ class CartListPresenter @Inject constructor(
                         updateCartDataResponse.updateCartData?.let { updateCartData ->
                             if (updateCartData.isSuccess) {
                                 updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                    syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
                                     setLastApplyNotValid()
                                     setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
                                     setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
@@ -2332,5 +2335,22 @@ class CartListPresenter @Inject constructor(
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             hasCheckedProductWithBundle && !hasCheckedBundleProduct
+    }
+    
+    private fun syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel: PromoUiModel) {
+        view?.let { cartListView ->
+            val groupDataList = cartListView.getAllGroupDataList()
+            promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+                if (
+                    voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && 
+                    voucherOrder.type == "logistic" && voucherOrder.messageUiModel.state == "green"
+                ) {
+                    groupDataList.firstOrNull { it.cartString == voucherOrder.cartStringGroup }?.apply {
+                        boCode = voucherOrder.code
+                        boUniqueId = voucherOrder.uniqueId
+                    }
+                }
+            }
+        }
     }
 }

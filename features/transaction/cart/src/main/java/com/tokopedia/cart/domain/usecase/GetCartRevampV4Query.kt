@@ -497,7 +497,6 @@ const val CART_REVAMP_V4_QUERY =
                   promo_codes
                   cart_string
                   cart_details {
-                    origin_warehouse_ids
                     bundle_detail {
                       bundle_description
                       bundle_group_id
