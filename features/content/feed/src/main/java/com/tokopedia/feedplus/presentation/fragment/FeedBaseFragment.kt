@@ -81,7 +81,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     @Inject
     lateinit var router: Router
 
-    private var adapter: FeedPagerAdapter? = null
+    private val adapter by lazy {
+        FeedPagerAdapter(
+            childFragmentManager,
+            lifecycle,
+            appLinkExtras = arguments ?: Bundle.EMPTY
+        )
+    }
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
@@ -174,7 +180,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onDestroyView() {
         _binding = null
-        adapter = null
         super.onDestroyView()
     }
 
@@ -227,6 +232,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun setupView() {
+        binding.vpFeedTabItemsContainer.adapter = adapter
+
         if (isJustLoggedIn) {
             showJustLoggedInToaster()
             feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
@@ -512,14 +519,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initTabsView(data: List<FeedDataModel>) {
-        adapter = FeedPagerAdapter(
-            childFragmentManager,
-            lifecycle,
-            data,
-            appLinkExtras = arguments ?: Bundle.EMPTY
-        )
-
-        binding.vpFeedTabItemsContainer.adapter = adapter
+        adapter.setTabsList(data)
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
