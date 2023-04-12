@@ -42,7 +42,7 @@ data class CatalogBrandsPopularResponse(
             @SerializedName("catalogs")
             @Expose
             val catalogs: ArrayList<Catalogs> = arrayListOf()
-        ){
+        ) {
             data class Catalogs(
                 @SerializedName("id")
                 @Expose

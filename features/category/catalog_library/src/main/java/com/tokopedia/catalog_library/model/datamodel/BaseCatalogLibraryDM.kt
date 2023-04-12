@@ -8,5 +8,5 @@ interface BaseCatalogLibraryDM : Visitable<CatalogHomepageAdapterFactory> {
     fun type(): String
     fun name(): String
     fun equalsWith(newData: BaseCatalogLibraryDM): Boolean
-    fun getChangePayload(newData: BaseCatalogLibraryDM) : Bundle?
+    fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle?
 }

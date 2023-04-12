@@ -6,7 +6,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 data class CatalogShimmerDM(
     val name: String = "",
     val type: String = "",
-    val shimmerType : Int
+    val shimmerType: Int
 ) : BaseCatalogLibraryDM {
     override fun type() = type
 

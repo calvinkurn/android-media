@@ -6,7 +6,7 @@ import dagger.Component
 
 @CatalogLibraryScope
 @Component(modules = [CatalogLibraryModule::class,
-    ViewModelModule::class],
+    CatalogLibraryViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface CatalogLibraryComponent {
     fun inject(catalogHomepageFragment: CatalogHomepageFragment)
