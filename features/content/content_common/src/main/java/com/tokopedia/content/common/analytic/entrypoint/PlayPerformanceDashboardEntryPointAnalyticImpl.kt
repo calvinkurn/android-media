@@ -43,7 +43,8 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
 ) : PlayPerformanceDashboardEntryPointAnalytic {
     
-    private val userSessionId = userSession.userId 
+    private val userSessionId: String
+        get() = userSession.userId
 
     /**
      * row 1
