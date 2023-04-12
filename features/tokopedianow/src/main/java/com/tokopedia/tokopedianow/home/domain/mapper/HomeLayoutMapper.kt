@@ -171,10 +171,7 @@ object HomeLayoutMapper {
             add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
         }
 
-        response.filter {
-            println(it.layout)
-            SUPPORTED_LAYOUT_TYPES.contains(it.layout)
-        }.forEach { layoutResponse ->
+        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
                 mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel)?.let { item ->
                     add(item)
