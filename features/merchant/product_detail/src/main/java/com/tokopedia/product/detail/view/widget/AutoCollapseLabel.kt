@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -36,6 +37,8 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private const val IDLE_DURATION = 3000L
         private const val PADDING_HORIZONTAL_TEXT_WITH_ICON = 8
         private const val PADDING_HORIZONTAL_ICON_ONLY = 5
+        private const val BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON = 6
+        private const val BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY = 20
         private const val PROPERTY_NAME_ALPHA = "alpha"
         private const val PROPERTY_NAME_MAX_WIDTH = "maxWidth"
     }
@@ -74,7 +77,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
     }
 
     inner class ViewAnimator {
-        private var showAnimator: AnimatorSet? = null
+        private var showAnimator: Animator? = null
         private var showAnimatorListener: Animator.AnimatorListener? = null
         private var hideAnimator: Animator? = null
         private var hideAnimatorListener: Animator.AnimatorListener? = null
@@ -102,32 +105,24 @@ class AutoCollapseLabel @JvmOverloads constructor(
             collapseAnimator?.start()
         }
 
-        private fun createShowAnimator() = AnimatorSet().apply {
+        private fun createShowAnimator() = binding.root.createAlphaAnimator(
+            binding.root.alpha,
+            MAX_ALPHA
+        ).apply {
             duration = ANIMATION_DURATION
             interpolator = DecelerateInterpolator()
-            playTogether(
-                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(
-                    binding.bgAutoCollapseLabelTextWithIcon.alpha,
-                    MAX_ALPHA
-                ),
-                binding.containerAutoCollapse.createAlphaAnimator(
-                    binding.containerAutoCollapse.alpha,
-                    MAX_ALPHA
-                )
-            )
             showAnimatorListener = addListener(
                 onStart = ::onStartShowAnimator,
                 onEnd = ::onEndShowAnimator
             )
         }
 
-        private fun createHideAnimator() = ValueAnimator.ofFloat(
-            MAX_ALPHA,
+        private fun createHideAnimator() = binding.root.createAlphaAnimator(
+            binding.root.alpha,
             MIN_ALPHA
         ).apply {
             duration = ANIMATION_DURATION
             interpolator = AccelerateInterpolator()
-            addUpdateListener { update -> applyHideAnimatorUpdate(update.animatedValue as Float) }
             hideAnimatorListener = addListener(onEnd = ::onEndHideAnimator)
         }
 
@@ -139,20 +134,15 @@ class AutoCollapseLabel @JvmOverloads constructor(
                     binding.tvAutoCollapseLabel.width,
                     Int.ZERO
                 ),
-                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(
-                    binding.bgAutoCollapseLabelTextWithIcon.alpha,
-                    MIN_ALPHA
+                binding.root.animateBackgroundDrawableRadius(
+                    binding.root.getBackgroundDrawableCornerRadius(
+                        BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
+                    ),
+                    BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY.toPx().toFloat()
                 ),
-                binding.bgAutoCollapseLabelIconOnly.createAlphaAnimator(
-                    binding.bgAutoCollapseLabelIconOnly.alpha,
-                    MAX_ALPHA
-                ),
-                binding.containerAutoCollapse.createAlphaAnimator(
-                    binding.containerAutoCollapse.alpha,
-                    MAX_ALPHA
-                ),
-                binding.containerAutoCollapse.createHorizontalPaddingAnimator(
-                    binding.containerAutoCollapse.paddingStart,
+                binding.root.createAlphaAnimator(binding.root.alpha, MAX_ALPHA),
+                binding.root.createHorizontalPaddingAnimator(
+                    binding.root.paddingStart,
                     PADDING_HORIZONTAL_ICON_ONLY.toPx()
                 )
             )
@@ -185,8 +175,10 @@ class AutoCollapseLabel @JvmOverloads constructor(
             show()
             binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
             binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
-            binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
-            binding.containerAutoCollapse.updateContainerHorizontalPadding(
+            binding.root.setBackgroundDrawableCornerRadius(
+                BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
+            )
+            binding.root.updateContainerHorizontalPadding(
                 PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx()
             )
         }
@@ -210,23 +202,15 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private fun View.updateContainerHorizontalPadding(padding: Int) {
             setPadding(
                 padding,
-                binding.containerAutoCollapse.paddingTop,
+                binding.root.paddingTop,
                 padding,
-                binding.containerAutoCollapse.paddingBottom
+                binding.root.paddingBottom
             )
         }
 
         private fun applyHideAnimatorUpdate(alpha: Float) {
-            binding.bgAutoCollapseLabelTextWithIcon.alpha = min(
-                binding.bgAutoCollapseLabelTextWithIcon.alpha,
-                alpha
-            )
-            binding.bgAutoCollapseLabelIconOnly.alpha = min(
-                binding.bgAutoCollapseLabelIconOnly.alpha,
-                alpha
-            )
-            binding.containerAutoCollapse.alpha = min(
-                binding.containerAutoCollapse.alpha,
+            binding.root.alpha = min(
+                binding.root.alpha,
                 alpha
             )
         }
@@ -243,6 +227,33 @@ class AutoCollapseLabel @JvmOverloads constructor(
             return ValueAnimator.ofInt(start, end).apply {
                 addUpdateListener { updateContainerHorizontalPadding(it.animatedValue as Int) }
             }
+        }
+
+        private fun View.animateBackgroundDrawableRadius(start: Float, end: Float): Animator {
+            return ValueAnimator.ofFloat(start, end).apply {
+                addUpdateListener { newValue ->
+                    setBackgroundDrawableCornerRadius(newValue.animatedValue as Float)
+                }
+            }
+        }
+
+        /*
+            We save the background drawable corner radius on the tag attribute, this is because we
+            can't access background drawable radius value prior to android 24
+         */
+        private fun View.setBackgroundDrawableCornerRadius(value: Float) {
+            val drawable = background as? GradientDrawable
+            drawable?.cornerRadius = value
+            background = drawable
+            tag = value
+        }
+
+        /*
+            We save the background drawable corner radius on the tag attribute, this is because we
+            can't access background drawable radius value prior to android 24
+         */
+        private fun View.getBackgroundDrawableCornerRadius(defaultValue: Float): Float {
+            return (tag as? Float) ?: defaultValue
         }
     }
 }
