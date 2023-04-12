@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(
@@ -38,7 +39,7 @@ class ShopInfoViewModel @Inject constructor(
     private fun isUserLogin(): Boolean = userSessionInterface.isLoggedIn
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
-    val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopInfo = MutableLiveData<Result<ShopInfoData>>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
@@ -56,9 +57,11 @@ class ShopInfoViewModel @Inject constructor(
                 }
 
                 val shopInfoData = getShopInfo.mapToShopInfoData()
-                shopInfo.postValue(shopInfoData)
+                shopInfo.postValue(Success(shopInfoData))
             }
-        }) {}
+        }, onError = { error ->
+            shopInfo.postValue(Fail(error))
+        })
     }
 
     fun getShopNotes(shopId: String) {

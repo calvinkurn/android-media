@@ -4,14 +4,16 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ShopSettingsEtalaseAddEditViewModelTest: ShopSettingsEtalaseTestFixture() {
+class ShopSettingsEtalaseAddEditViewModelTest : ShopSettingsEtalaseTestFixture() {
 
     @Test
     fun `add etalase should be successful`() {

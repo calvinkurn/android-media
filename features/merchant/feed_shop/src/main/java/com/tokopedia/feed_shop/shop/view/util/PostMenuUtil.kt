@@ -3,7 +3,6 @@ package com.tokopedia.feed_shop.shop.view.util
 import android.content.Context
 import com.tokopedia.design.component.Menus
 import com.tokopedia.feed_shop.R
-import java.util.*
 
 /**
  * @author by milhamj on 13/11/18.
@@ -42,7 +41,7 @@ fun createBottomMenu(
         )
     }
     menus.itemMenuList = menuList
-    menus.setActionText(context.getString(com.tokopedia.design.R.string.button_cancel))
+    menus.setActionText(context.getString(R.string.feed_shop_button_cancel))
     menus.setOnActionClickListener { menus.dismiss() }
     menus.setOnItemMenuClickListener { itemMenus, _ ->
         when (itemMenus.title) {
