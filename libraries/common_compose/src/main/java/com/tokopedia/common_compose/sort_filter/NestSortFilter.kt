@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,14 +25,14 @@ import com.tokopedia.common_compose.components.NestNotification
 import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
-import kotlin.math.sign
 
 @Composable
 fun NestSortFilter(
     modifier: Modifier = Modifier,
     size: Size = Size.DEFAULT,
-    items: ArrayList<SortFilter>,
+    items: List<SortFilter>,
     showClearFilterIcon: Boolean,
+    onItemClicked: (SortFilter) -> Unit,
     onClearFilter: () -> Unit
 ) {
     val chipSize = when (size) {
@@ -39,12 +40,17 @@ fun NestSortFilter(
         Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
     }
     Row(modifier = modifier) {
-        if (showClearFilterIcon) PrefixFilterItem(
-            modifier = Modifier.padding(end = 12.dp),
-            size = size,
-            painterId = R.drawable.iconunify_close,
-            onClick = onClearFilter
-        )
+        val closeVisible by remember(items) {
+            mutableStateOf(showClearFilterIcon && items.any { it.isSelected })
+        }
+        AnimatedVisibility(closeVisible) {
+            PrefixFilterItem(
+                modifier = Modifier.padding(end = 12.dp),
+                size = size,
+                painterId = R.drawable.iconunify_close,
+                onClick = onClearFilter
+            )
+        }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -55,7 +61,7 @@ fun NestSortFilter(
                     isSelected = it.isSelected,
                     size = chipSize,
                     showChevron = it.showChevron,
-                    onClick = it.onClick
+                    onClick = { onItemClicked(it) }
                 )
             }
         }
@@ -131,13 +137,18 @@ fun PrefixSortFilterPreview() {
 @Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestSortFilterPreview() {
-    val items = arrayListOf(
-        SortFilter("Terrible", true, showChevron = true, onClick = {}),
-        SortFilter("Bad", false, onClick = {}),
-        SortFilter("Medium", false, onClick = {}),
-        SortFilter("Good", false, onClick = {}),
-        SortFilter("Impressive", false, onClick = {}),
-    )
+    var items by remember {
+        mutableStateOf(
+            listOf(
+                SortFilter("Terrible", true, showChevron = true, onClick = {}),
+                SortFilter("Bad", false, onClick = {}),
+                SortFilter("Medium", false, onClick = {}),
+                SortFilter("Good", false, onClick = {}),
+                SortFilter("Impressive", false, onClick = {}),
+            )
+        )
+    }
+
     var size by remember { mutableStateOf(Size.DEFAULT) }
     NestTheme {
         Surface {
@@ -158,7 +169,13 @@ fun NestSortFilterPreview() {
                     size = size,
                     items = items,
                     showClearFilterIcon = true,
-                    onClearFilter = {})
+                    onItemClicked = { sf ->
+                        items = items.map {
+                            if (it == sf) it.copy(isSelected = it.isSelected.not())
+                            else it
+                        }
+                    },
+                    onClearFilter = { items = items.map { it.copy(isSelected = false) } })
             }
         }
     }
