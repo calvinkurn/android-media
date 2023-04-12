@@ -12,6 +12,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse.TokonowBundleWidget
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse.TokonowBundleWidget.Data
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData.BundleDetail
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMediumWidget
@@ -40,6 +45,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.data.BundleWidgetDataFactory
+import com.tokopedia.tokopedianow.data.BundleWidgetDataFactory.createBundleUiModel
 import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createCatalogCouponList
 import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createChannelLayout
 import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createLayoutListUiModel
@@ -74,6 +81,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOK
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleListItemUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -156,6 +164,154 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when fetching bundle then receiving success result, expected result should return homeLayout with bundle widget`() {
+        //create dummy data
+        val bundleWidgetId = "222332"
+        val productBundle = ProductBundleRecomResponse(
+            TokonowBundleWidget(
+                Data(
+                    widgetData = listOf(
+                        WidgetData(
+                            bundleDetails = listOf(
+                                BundleDetail(
+                                    bundleID = "12231212"
+                                ),
+                                BundleDetail(
+                                    bundleID = "12231233"
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = BundleWidgetDataFactory.createBundleResponseList(
+                id = bundleWidgetId
+            )
+        )
+        onGetProductBundleRecom_thenReturn(productBundle)
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = LocalCacheModel()
+        )
+
+        //prepare model for expectedResult
+        val expectedResult = HomeLayoutListUiModel(
+            items = listOf(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createBundleUiModel(
+                    id = bundleWidgetId,
+                    bundleIds = mapToProductBundleListItemUiModel(
+                        widgetData = productBundle.tokonowBundleWidget.data.widgetData
+                    )
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetTickerUseCaseCalled()
+        verifyGetProductBundleRecomUseCaseCalled()
+        verifyGetHomeLayoutResponseSuccess(expectedResult)
+    }
+
+    @Test
+    fun `when fetching bundle then receiving success result with empty bundle id list, expected result should return homeLayout without bundle widget`() {
+        //create dummy data
+        val productBundle = ProductBundleRecomResponse(TokonowBundleWidget())
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
+        onGetProductBundleRecom_thenReturn(productBundle)
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = LocalCacheModel()
+        )
+
+        //prepare model for expectedResult
+        val expectedResult = HomeLayoutListUiModel(
+            items = listOf(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeTickerDataModel(),
+                createDynamicLegoBannerDataModel(
+                    "34923",
+                    "",
+                    "Lego Banner"
+                ),
+                createCategoryGridDataModel(
+                    "11111",
+                    "Category Tokonow",
+                    null,
+                    TokoNowLayoutState.HIDE
+                ),
+                createSliderBannerDataModel(
+                    "2222",
+                    "",
+                    "Banner Tokonow"
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetTickerUseCaseCalled()
+        verifyGetProductBundleRecomUseCaseCalled()
+        verifyGetHomeLayoutResponseSuccess(expectedResult)
+    }
+
+    @Test
+    fun `when fetching bundle but failed then expected result should return homeLayout without bundle widget`() {
+        //create dummy data
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
+        onGetProductBundleRecom_thenReturn(Exception())
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        //prepare model for expectedResult
+        val expectedResult = HomeLayoutListUiModel(
+            items = listOf(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeTickerDataModel(),
+                createDynamicLegoBannerDataModel(
+                    "34923",
+                    "",
+                    "Lego Banner"
+                ),
+                createCategoryGridDataModel(
+                    "11111",
+                    "Category Tokonow",
+                    null,
+                    TokoNowLayoutState.HIDE
+                ),
+                createSliderBannerDataModel(
+                    "2222",
+                    "",
+                    "Banner Tokonow"
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetTickerUseCaseCalled()
+        verifyGetProductBundleRecomUseCaseCalled()
+        verifyGetHomeLayoutResponseSuccess(expectedResult)
     }
 
     @Test

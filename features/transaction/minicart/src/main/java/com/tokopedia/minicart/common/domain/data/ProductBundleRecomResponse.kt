@@ -8,82 +8,82 @@ data class ProductBundleRecomResponse(
 ) {
     data class TokonowBundleWidget(
         @SerializedName("data")
-        val data: Data,
+        val data: Data = Data(),
         @SerializedName("header")
-        val header: Header
+        val header: Header = Header()
     ) {
         data class Data(
             @SerializedName("widgetData")
-            val widgetData: List<WidgetData>,
+            val widgetData: List<WidgetData> = emptyList(),
             @SerializedName("widgetName")
-            val widgetName: String
+            val widgetName: String = ""
         ) {
             data class WidgetData(
                 @SerializedName("bundleDetails")
-                val bundleDetails: List<BundleDetail>,
+                val bundleDetails: List<BundleDetail> = emptyList(),
                 @SerializedName("bundleGroupID")
-                val bundleGroupID: String,
+                val bundleGroupID: String = "",
                 @SerializedName("bundleName")
-                val bundleName: String,
+                val bundleName: String = "",
                 @SerializedName("bundleProducts")
-                val bundleProducts: List<BundleProduct>,
+                val bundleProducts: List<BundleProduct> = emptyList(),
                 @SerializedName("bundleType")
-                val bundleType: String,
+                val bundleType: String = "",
                 @SerializedName("shopID")
-                val shopID: String,
+                val shopID: String = "",
                 @SerializedName("warehouseID")
-                val warehouseID: String
+                val warehouseID: String = ""
             ) {
                 data class BundleDetail(
                     @SerializedName("bundleID")
-                    val bundleID: String,
+                    val bundleID: String = "",
                     @SerializedName("discountPercentage")
-                    val discountPercentage: Int,
+                    val discountPercentage: Int = 0,
                     @SerializedName("displayPrice")
-                    val displayPrice: String,
+                    val displayPrice: String = "",
                     @SerializedName("displayPriceRaw")
-                    val displayPriceRaw: Long,
+                    val displayPriceRaw: Long = 0,
                     @SerializedName("isPO")
-                    val isPO: Boolean,
+                    val isPO: Boolean = false,
                     @SerializedName("isProductsHaveVariant")
-                    val isProductsHaveVariant: Boolean,
+                    val isProductsHaveVariant: Boolean = false,
                     @SerializedName("minOrder")
-                    val minOrder: Int,
+                    val minOrder: Int = 0,
                     @SerializedName("minOrderWording")
-                    val minOrderWording: String,
+                    val minOrderWording: String = "",
                     @SerializedName("originalPrice")
-                    val originalPrice: String,
+                    val originalPrice: String = "",
                     @SerializedName("originalPriceRaw")
-                    val originalPriceRaw: Int,
+                    val originalPriceRaw: Int = 0,
                     @SerializedName("preorderInfo")
-                    val preorderInfo: String,
+                    val preorderInfo: String = "",
                     @SerializedName("savingAmountWording")
-                    val savingAmountWording: String
+                    val savingAmountWording: String = ""
                 )
 
                 data class BundleProduct(
                     @SerializedName("productID")
-                    val productID: String,
+                    val productID: String = "",
                     @SerializedName("appLink")
-                    val appLink: String,
+                    val appLink: String = "",
                     @SerializedName("imageUrl")
-                    val imageUrl: String,
+                    val imageUrl: String = "",
                     @SerializedName("productName")
-                    val productName: String,
+                    val productName: String = "",
                     @SerializedName("webLink")
-                    val webLink: String
+                    val webLink: String = ""
                 )
             }
         }
         data class Header(
             @SerializedName("messages")
-            val messages: String,
+            val messages: String = "",
             @SerializedName("error_code")
-            val errorCode: String,
+            val errorCode: String = "",
             @SerializedName("process_time")
-            val processTime: Double,
+            val processTime: Double = 0.0,
             @SerializedName("reason")
-            val reason: String
+            val reason: String = ""
         )
     }
 }

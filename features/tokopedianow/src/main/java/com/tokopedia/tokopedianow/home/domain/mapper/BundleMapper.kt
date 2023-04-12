@@ -17,7 +17,7 @@ object BundleMapper {
         widgetResponse: ProductBundleRecomResponse
     ) = item.copy(bundleIds = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData))
 
-    private fun mapToProductBundleListItemUiModel(
+    fun mapToProductBundleListItemUiModel(
         widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>
     ): List<String> {
         val bundleIds = mutableListOf<String>()
