@@ -131,6 +131,8 @@ class FeedXCard(
         const val TYPE_FEED_ASGC_SHOP_FLASH_SALE = "asgc_flash_sale_toko"
         const val TYPE_FEED_ASGC_SPECIAL_RELEASE = "asgc_rilisan_spesial"
 
+        const val TYPE_FEED_TOP_ADS = "topads_headline"
+
         const val TYPE_MEDIA_IMAGE = "image"
         const val TYPE_MEDIA_VIDEO = "video"
         const val TYPE_MEDIA_YOUTUBE = "youtube"
@@ -232,7 +234,7 @@ class FeedXMedia(
 
 class FeedXMediaTagging(
     @SerializedName("tagIndex")
-    val tagIndex: Int = 0,
+    val tagIndex: Int = 0
 )
 
 class FeedXMediaRatio(

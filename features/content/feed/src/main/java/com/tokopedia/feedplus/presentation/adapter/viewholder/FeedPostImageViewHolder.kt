@@ -31,8 +31,15 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -40,12 +47,15 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 @SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
-    private val parentToBeDisabled: ViewParent?,
+    parentToBeDisabled: ViewParent?,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
+    private val scope = CoroutineScope(Dispatchers.Main)
+
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+    private var adapter: FeedPostImageAdapter? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
@@ -57,6 +67,10 @@ class FeedPostImageViewHolder(
         binding.root
     )
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+
+    private var firstX = 0f
+    private var secondX = 0f
+    private var isAutoSwipeOn = true
 
     init {
         with(binding) {
@@ -146,8 +160,28 @@ class FeedPostImageViewHolder(
                 }
 
                 rvFeedPostImageContent.setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            firstX = event.x
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            secondX = event.x
+                            val deltaX = secondX - firstX
+                            if (abs(deltaX) > MINIMUM_DISTANCE_SWIPE) {
+                                isAutoSwipeOn = false
+                            }
+                        }
+                    }
                     postGestureDetector.onTouchEvent(event)
                 }
+                rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            updateProductTagText(element)
+                            updateCampaignAvailability(element)
+                        }
+                    }
+                })
             }
         }
     }
@@ -158,18 +192,72 @@ class FeedPostImageViewHolder(
             if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
                 setLikeUnlike(it.like)
             }
-        }
 
-        if (payloads.contains(FEED_POST_CLEAR_MODE)) {
-            showClearView()
+            if (payloads.contains(FEED_POST_CLEAR_MODE)) {
+                showClearView()
+            }
+            if (payloads.contains(FEED_POST_SELECTED)) {
+                campaignView.startAnimation()
+                sendImpressionTracker(it)
+                updateProductTagText(it)
+
+                isAutoSwipeOn = true
+                runAutoSwipe()
+            }
+            if (payloads.contains(FEED_POST_NOT_SELECTED)) {
+                campaignView.resetView()
+                hideClearView()
+
+                isAutoSwipeOn = false
+            }
         }
-        if (payloads.contains(FEED_POST_SELECTED)) {
-            campaignView.startAnimation()
+    }
+
+    private fun updateProductTagText(element: FeedCardImageContentModel) {
+        val index = layoutManager.findFirstVisibleItemPosition()
+        if (index in PRODUCT_COUNT_ZERO until element.media.size) {
+            element.media[index].let {
+                if (it.tagging.isNotEmpty()) {
+                    if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
+                        productTagView.bindText(
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            PRODUCT_COUNT_ONE
+                        )
+                    } else {
+                        productTagView.bindText(
+                            element.products,
+                            element.totalProducts
+                        )
+                    }
+                }
+            }
         }
-        if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-            campaignView.resetView()
-            hideClearView()
+    }
+
+    private fun updateCampaignAvailability(element: FeedCardImageContentModel) {
+        val index = layoutManager.findFirstVisibleItemPosition()
+        if (index in PRODUCT_COUNT_ZERO until element.media.size) {
+            element.media[index].let {
+                if (it.tagging.isNotEmpty()) {
+                    if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
+                        campaignView.bindProduct(
+                            element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]
+                        )
+                    }
+                }
+            }
         }
+    }
+
+    private fun sendImpressionTracker(element: FeedCardImageContentModel) {
+        listener.onTopAdsImpression(
+            adViewUrl = element.adViewUrl,
+            id = element.id,
+            shopId = element.author.id,
+            uri = element.adViewUri,
+            fullEcs = element.author.logoUrl,
+            position = absoluteAdapterPosition
+        )
     }
 
     private fun renderLikeView(
@@ -218,7 +306,6 @@ class FeedPostImageViewHolder(
             products = model.products,
             totalProducts = model.totalProducts
         )
-
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -228,6 +315,7 @@ class FeedPostImageViewHolder(
             hasVoucher = model.hasVoucher,
             totalProducts = model.totalProducts
         )
+        updateProductTagText(model)
     }
 
     private fun bindIndicators(imageSize: Int) {
@@ -245,7 +333,7 @@ class FeedPostImageViewHolder(
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {
         with(binding) {
-            val adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
+            adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
             rvFeedPostImageContent.adapter = adapter
         }
     }
@@ -301,9 +389,27 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun runAutoSwipe() {
+        scope.launch {
+            while (isAutoSwipeOn && isActive) {
+                delay(THREE_SECONDS)
+                val index = layoutManager.findFirstVisibleItemPosition()
+                if ((index + PRODUCT_COUNT_ONE) < adapter?.data?.size.orZero()) {
+                    binding.rvFeedPostImageContent.smoothScrollToPosition(index + PRODUCT_COUNT_ONE)
+                } else {
+                    binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
+                }
+            }
+        }
+    }
+
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
+
+        private const val MINIMUM_DISTANCE_SWIPE = 100
+
+        private const val THREE_SECONDS = 3000L
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post

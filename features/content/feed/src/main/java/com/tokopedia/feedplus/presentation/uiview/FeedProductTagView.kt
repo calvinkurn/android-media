@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.show
 class FeedProductTagView(
     private val binding: FeedProductTagViewBinding, private val listener: FeedListener
 ) {
-
     fun bindData(
         postId: String,
         author: FeedAuthorModel,
@@ -23,6 +22,28 @@ class FeedProductTagView(
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        totalProducts: Int
+    ) {
+        with(binding) {
+            bindText(products, totalProducts)
+
+            root.setOnClickListener {
+                listener.onProductTagViewClicked(
+                    postId,
+                    author,
+                    postType,
+                    isFollowing,
+                    campaign,
+                    hasVoucher,
+                    products,
+                    totalProducts
+                )
+            }
+        }
+    }
+
+    fun bindText(
         products: List<FeedCardProductModel>,
         totalProducts: Int
     ) {
@@ -45,19 +66,6 @@ class FeedProductTagView(
                         root.context.getString(R.string.feeds_tag_product_text, totalProducts)
                     root.show()
                 }
-            }
-
-            root.setOnClickListener {
-                listener.onProductTagViewClicked(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    totalProducts
-                )
             }
         }
     }
