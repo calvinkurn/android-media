@@ -6,7 +6,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.loginHelper.presentation.LoginHelperActivity"
+            android:name="com.tokopedia.loginHelper.presentation.home.LoginHelperActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

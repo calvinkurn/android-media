@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.fragment
+package com.tokopedia.loginHelper.presentation.home.fragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -26,12 +26,12 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
-import com.tokopedia.loginHelper.presentation.adapter.LoginHelperRecyclerAdapter
-import com.tokopedia.loginHelper.presentation.adapter.viewholder.LoginHelperClickListener
-import com.tokopedia.loginHelper.presentation.viewmodel.LoginHelperViewModel
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperAction
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperEvent
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.loginHelper.presentation.home.adapter.LoginHelperRecyclerAdapter
+import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHelperClickListener
+import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
 import com.tokopedia.loginHelper.util.showToaster
 import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.sessioncommon.data.LoginToken

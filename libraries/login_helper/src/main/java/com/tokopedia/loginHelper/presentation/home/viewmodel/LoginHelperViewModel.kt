@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.viewmodel
+package com.tokopedia.loginHelper.presentation.home.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -15,9 +15,9 @@ import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperAction
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperEvent
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.loginHelper.util.exception.ErrorGetAdminTypeException
 import com.tokopedia.loginHelper.util.exception.GoToActivationPageException

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.loginHelper.di.module.LoginHelperModule
 import com.tokopedia.loginHelper.di.module.LoginHelperViewModelModule
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
-import com.tokopedia.loginHelper.presentation.fragment.LoginHelperFragment
+import com.tokopedia.loginHelper.presentation.home.fragment.LoginHelperFragment
 import dagger.Component
 
 @LoginHelperScope

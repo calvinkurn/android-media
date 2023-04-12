@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.adapter.listener
+package com.tokopedia.loginHelper.presentation.home.adapter.listener
 
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
 

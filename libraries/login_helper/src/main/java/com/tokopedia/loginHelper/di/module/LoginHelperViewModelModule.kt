@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
-import com.tokopedia.loginHelper.presentation.viewmodel.LoginHelperViewModel
+import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 

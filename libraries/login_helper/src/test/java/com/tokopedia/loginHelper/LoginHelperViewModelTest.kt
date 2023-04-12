@@ -5,9 +5,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
-import com.tokopedia.loginHelper.presentation.viewmodel.LoginHelperViewModel
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperAction
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperEvent
+import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo

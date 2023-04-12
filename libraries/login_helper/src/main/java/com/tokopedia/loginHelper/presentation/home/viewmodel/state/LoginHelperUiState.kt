@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.viewmodel.state
+package com.tokopedia.loginHelper.presentation.home.viewmodel.state
 
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel

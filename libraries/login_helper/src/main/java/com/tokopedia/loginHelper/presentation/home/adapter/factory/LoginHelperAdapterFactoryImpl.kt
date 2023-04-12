@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.adapter.factory
+package com.tokopedia.loginHelper.presentation.home.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
-import com.tokopedia.loginHelper.presentation.adapter.viewholder.LoginDataViewHolder
-import com.tokopedia.loginHelper.presentation.adapter.viewholder.LoginHeaderViewHolder
-import com.tokopedia.loginHelper.presentation.adapter.viewholder.LoginHelperClickListener
+import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginDataViewHolder
+import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHeaderViewHolder
+import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHelperClickListener
 
-class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListener) : BaseAdapterTypeFactory(), LoginHelperAdapterFactory {
+class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListener) : BaseAdapterTypeFactory(),
+    LoginHelperAdapterFactory {
     override fun type(model: UserDataUiModel): Int {
         return LoginDataViewHolder.RES_LAYOUT
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.viewmodel.state
+package com.tokopedia.loginHelper.presentation.home.viewmodel.state
 
 sealed class LoginHelperAction {
     object TapBackAction : LoginHelperAction()

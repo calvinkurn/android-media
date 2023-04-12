@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.presentation.adapter.viewholder
+package com.tokopedia.loginHelper.presentation.home.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
