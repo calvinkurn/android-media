@@ -45,7 +45,6 @@ import kotlin.math.roundToInt
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
