@@ -2490,8 +2490,23 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
      },
      {
-          "destination_activity": "com.tokopedia.loginHelper.presentation.LoginHelperActivity",
+          "destination_activity": "com.tokopedia.loginHelper.presentation.home.LoginHelperActivity",
           "deeplink": "tokopedia-android-internal://global/login-helper",
           "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
+     },
+     {
+          "destination_activity": "com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity",
+          "deeplink": "tokopedia-android-internal://global/login-helper-search-account",
+          "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER_SEARCH_ACCOUNT"
+     },
+     {
+          "destination_activity": "com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity",
+          "deeplink": "tokopedia-android-internal://global/login-helper-accounts-settings",
+          "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS"
+     },
+     {
+          "destination_activity": "com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity",
+          "deeplink": "tokopedia-android-internal://global/login-helper-add-edit-account",
+          "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER_ADD_EDIT_ACCOUNT"
      }
 ]

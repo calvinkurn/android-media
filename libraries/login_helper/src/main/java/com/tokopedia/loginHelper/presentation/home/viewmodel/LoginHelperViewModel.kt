@@ -90,6 +90,9 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.SaveUserDetailsFromAssets -> {
                 storeUserDetailsInState(event.userDetails)
             }
+            is LoginHelperEvent.GoToAccountsSetting -> {
+                handleGoToAccountSettings()
+            }
         }
     }
 
@@ -232,6 +235,10 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun handleBackButtonTap() {
         _uiAction.tryEmit(LoginHelperAction.TapBackAction)
+    }
+
+    private fun handleGoToAccountSettings() {
+        _uiAction.tryEmit(LoginHelperAction.GoToAccountSettings)
     }
 
     private fun queryForGivenEmail(email: String) {

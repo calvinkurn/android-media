@@ -13,4 +13,6 @@ sealed class LoginHelperEvent {
     object GoToLoginPage : LoginHelperEvent()
     object LogOutUser : LoginHelperEvent()
     data class SaveUserDetailsFromAssets(val userDetails: LoginDataResponse) : LoginHelperEvent()
+
+    object GoToAccountsSetting : LoginHelperEvent()
 }

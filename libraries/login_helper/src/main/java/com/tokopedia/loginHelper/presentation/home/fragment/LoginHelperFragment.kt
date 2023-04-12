@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
@@ -78,9 +79,16 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             handleChipClick()
             bindSearch()
         }
+        setUpClickListener()
         observeUiState()
         observeUiAction()
         setEnvValue()
+    }
+
+    private fun setUpClickListener() {
+        binding?.btnGoToSettings?.setOnClickListener {
+            viewModel.processEvent(LoginHelperEvent.GoToAccountsSetting)
+        }
     }
 
     private fun observeUiState() {
@@ -112,11 +120,16 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         when (action) {
             is LoginHelperAction.TapBackAction -> backToPreviousScreen()
             is LoginHelperAction.GoToLoginPage -> goToLoginPage()
+            is LoginHelperAction.GoToAccountSettings -> goToLoginHelperAccountSettings()
         }
     }
 
     private fun goToLoginPage() {
         RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
+    }
+
+    private fun goToLoginHelperAccountSettings() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
     }
 
     private fun setEnvTypeChip(envType: LoginHelperEnvType) {
