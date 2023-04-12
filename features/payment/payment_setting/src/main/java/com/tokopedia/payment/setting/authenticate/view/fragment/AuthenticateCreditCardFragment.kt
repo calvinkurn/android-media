@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.authenticate.analytics.PaymentSettingAuthenticateAnalytics
 import com.tokopedia.payment.setting.authenticate.model.AuthException
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
@@ -33,10 +34,13 @@ import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
 
 class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCard,
-        AuthenticateCCAdapterFactory>() {
+    AuthenticateCCAdapterFactory>() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var analytics: PaymentSettingAuthenticateAnalytics
 
     private val viewModel: AuthenticateCCViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -57,8 +61,11 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         super.onViewCreated(view, savedInstanceState)
         buttonUse.setOnClickListener {
             showProgressLoading()
-            viewModel.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(),
-                    true, null)
+            viewModel.updateWhiteList(
+                (adapter as AuthenticateCreditCardAdapter).getSelectedState(),
+                true,
+                null
+            )
         }
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
@@ -70,24 +77,28 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         updateVisibilityButtonUse()
         observeViewModel()
+        analytics.sendEventViewVerificationMethod()
     }
 
-
     private fun observeViewModel() {
-        viewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.whiteListResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
                 when (it) {
                     is Success -> onCheckWhiteListSuccess(it.data)
                     is Fail -> onUpdateWhiteListError(it.throwable)
                 }
-
-        })
-        viewModel.whiteListStatusResultLiveData.observe(viewLifecycleOwner, Observer{
-            when (it) {
-                is Success -> onUpdateWhiteListSuccess(it.data)
-                is Fail -> onUpdateWhiteListError(it.throwable)
             }
-        })
-
+        )
+        viewModel.whiteListStatusResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onUpdateWhiteListSuccess(it.data)
+                    is Fail -> onUpdateWhiteListError(it.throwable)
+                }
+            }
+        )
     }
 
     private fun onCheckWhiteListSuccess(data: List<TypeAuthenticateCreditCard>) {
@@ -114,13 +125,13 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
 
     override fun onItemClicked(t: TypeAuthenticateCreditCard?) {
         (adapter as AuthenticateCreditCardAdapter).selectAuth(t)
+        analytics.sendEventClickVerificationMethod()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<TypeAuthenticateCreditCard, AuthenticateCCAdapterFactory> {
         val authenticateCreditCardAdapter = AuthenticateCreditCardAdapter(adapterTypeFactory)
         authenticateCreditCardAdapter.setOnAdapterInteractionListener(this)
         return authenticateCreditCardAdapter
-
     }
 
     override fun getScreenName(): String {
@@ -200,14 +211,16 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
                 if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID)) {
                     val uuid = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
                     showProgressLoading()
-                    viewModel.updateWhiteList(AuthenticateCCViewModel.SINGLE_AUTH_VALUE,
-                            false, uuid)
+                    viewModel.updateWhiteList(
+                        AuthenticateCCViewModel.SINGLE_AUTH_VALUE,
+                        false,
+                        uuid
+                    )
                 }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
@@ -217,10 +230,10 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         context?.let { context ->
             showProgressLoading()
             viewModel.checkWhiteList(
-                    context.getString(R.string.payment_authentication_title_1),
-                    context.getString(R.string.payment_authentication_description_1),
-                    context.getString(R.string.payment_authentication_title_2),
-                    context.getString(R.string.payment_authentication_description_2)
+                context.getString(R.string.payment_authentication_title_1),
+                context.getString(R.string.payment_authentication_description_1),
+                context.getString(R.string.payment_authentication_title_2),
+                context.getString(R.string.payment_authentication_description_2)
             )
         }
     }

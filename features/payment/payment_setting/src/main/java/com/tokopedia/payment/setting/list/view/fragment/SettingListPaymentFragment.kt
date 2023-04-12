@@ -27,8 +27,8 @@ import com.tokopedia.payment.setting.list.model.SettingBannerModel
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.list.view.adapter.SettingListActionListener
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
+import com.tokopedia.payment.setting.list.view.listener.SettingListActionListener
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,9 +36,9 @@ import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 import javax.inject.Inject
 
-
-class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
-        SettingListActionListener {
+class SettingListPaymentFragment :
+    BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
+    SettingListActionListener {
 
     private var paymentSignature: PaymentSignature? = null
 
@@ -72,6 +72,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
         view.authenticateCreditCard.setOnClickListener {
+            analytics.sendEventClickAuthenticate()
             activity?.run {
                 showLoadingDialog()
                 settingsListViewModel.checkVerificationPhone()
@@ -80,17 +81,19 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         observeViewModel()
     }
 
-
     private fun observeViewModel() {
-        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                hideLoadingDialog()
-                onSuccessVerifPhone()
-            } else {
-                hideLoadingDialog()
-                onNeedVerifPhone()
+        settingsListViewModel.phoneVerificationStatusLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it) {
+                    hideLoadingDialog()
+                    onSuccessVerifPhone()
+                } else {
+                    hideLoadingDialog()
+                    onNeedVerifPhone()
+                }
             }
-        })
+        )
 
         settingsListViewModel.bannerAndCardListResultLiveData.observe(viewLifecycleOwner) {
             val cardListResult = it.first
@@ -130,6 +133,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             }
             is SettingListCardCounterModel -> {}
             else -> {
+                analytics.sendEventClickCard()
                 activity?.run {
                     this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, data), REQUEST_CODE_DETAIL_CREDIT_CARD)
                 }
@@ -169,16 +173,21 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun onClickAddCard() {
+        analytics.sendEventClickAddCard()
         activity?.run {
             paymentSignature?.let { paymentSignature ->
                 this@SettingListPaymentFragment
-                        .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
+                    .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
             }
         }
     }
 
     override fun onViewBanner(element: SettingBannerModel) {
         sendEventViewBanner(element)
+    }
+
+    override fun onPaymentListImpressed() {
+        analytics.sendEventViewListCreditOrDebitCard()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -202,7 +211,12 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
         adapter.clearAllElements()
-        if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
+
+        val cardSize = list.size - list.filter {
+            it is SettingListCardCounterModel || it is SettingBannerModel
+        }.size
+
+        if (cardSize in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
         super.renderList(list)
@@ -287,5 +301,4 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             return SettingListPaymentFragment()
         }
     }
-
 }

@@ -5,10 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.util.getSpacedTextPayment
 import kotlinx.android.synthetic.main.item_setting_list_payment.view.*
 
-class SettingListPaymentViewHolder(itemView : View?) : AbstractViewHolder<SettingListPaymentModel>(itemView) {
+class SettingListPaymentViewHolder(
+    itemView: View?
+) : AbstractViewHolder<SettingListPaymentModel>(itemView) {
 
     override fun bind(element: SettingListPaymentModel?) {
         if (element == null) return
@@ -18,7 +19,7 @@ class SettingListPaymentViewHolder(itemView : View?) : AbstractViewHolder<Settin
         itemView.cardNumber.text = itemView.context.getString(
             R.string.payment_label_card_info_setting,
             getCardType(element.isDebitOnline),
-            element.maskedNumber?.takeLast(CARD_NUMBER_SHOWN_DIGIT),
+            element.maskedNumber?.takeLast(CARD_NUMBER_SHOWN_DIGIT)
         )
     }
 
