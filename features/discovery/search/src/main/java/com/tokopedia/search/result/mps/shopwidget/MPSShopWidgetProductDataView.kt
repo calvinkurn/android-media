@@ -42,7 +42,7 @@ data class MPSShopWidgetProductDataView(
             "brand", "none / other",
             "category", "none / other",
             "variant", "none / other",
-            "list", "/searchmps - organic - component: {component_id}",
+            "list", "/searchmps - organic - component: $componentId",
             "position", position,
         )
 
