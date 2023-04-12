@@ -354,10 +354,6 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>android_main_app_enabled_umrah</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_main_app_enable_new_shop_page</key>
         <value>true</value>
     </entry>
