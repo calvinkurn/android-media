@@ -12,6 +12,7 @@ interface FeedListener {
     fun onReminderClicked(campaignId: Long, setReminder: Boolean)
     fun onTimerFinishUpcoming()
     fun onTimerFinishOnGoing()
+    fun onTopAdsImpression(adViewUrl: String, id: String, shopId: String, uri: String, fullEcs: String?, position: Int)
 
     fun onProductTagButtonClicked(
         postId: String,

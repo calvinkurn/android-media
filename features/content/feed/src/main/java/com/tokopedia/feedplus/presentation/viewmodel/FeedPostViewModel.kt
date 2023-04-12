@@ -12,7 +12,9 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
@@ -27,6 +29,22 @@ import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,6 +66,8 @@ class FeedPostViewModel @Inject constructor(
     private val userFollowUseCase: ProfileFollowUseCase,
     private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
+    private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+    private val topAdsAddressHelper: TopAdsAddressHelper,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -69,6 +89,8 @@ class FeedPostViewModel @Inject constructor(
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private var cursor = ""
+    private var currentTopAdsPage = 0
+    private var shouldFetchTopAds = true
 
     fun fetchFeedPosts(
         source: String,
@@ -79,6 +101,7 @@ class FeedPostViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
+                shouldFetchTopAds = true
                 cursor = _feedHome.value?.cursor.orEmpty()
 
                 val relevantPostsDeferred = async {
@@ -208,32 +231,57 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postId: String): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createPostDetailParams(postId)
-        )
-    }
+    fun fetchTopAdsData() {
+        viewModelScope.launch {
+            feedHome.value?.let {
+                if (it is Success && shouldFetchTopAds) {
+                    shouldFetchTopAds = false
 
-    private suspend fun getFeedPosts(
-        source: String,
-        cursor: String = ""
-    ): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParams(
-                source,
-                cursor
-            )
-        )
-    }
+                    val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
+                    val topAdsAddressData = topAdsAddressHelper.getAddressData()
+                    val indexToRemove = mutableListOf<Int>()
 
-    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
-        try {
-            checkCampaignReminderUseCase(
-                checkCampaignReminderUseCase.createParams(campaignId)
-            ).isAvailable
-        } catch (e: Throwable) {
-            false
+                    val newItems = it.data.items.mapIndexed { index, item ->
+                        when {
+                            item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
+                                val topAdsDeferred = async {
+                                    topAdsHeadlineUseCase.setParams(
+                                        UrlParamHelper.generateUrlParamString(
+                                            defaultTopAdsUrlParams.apply {
+                                                put(PARAM_PAGE, ++currentTopAdsPage)
+                                            }
+                                        ),
+                                        topAdsAddressData
+                                    )
+                                    val data = topAdsHeadlineUseCase.executeOnBackground()
+                                    if (data.displayAds.data.isNotEmpty()) {
+                                        val cpmModel = data.displayAds
+                                        transformCpmToFeedTopAds(item, cpmModel)
+                                    } else {
+                                        // Error fetch TopAds, should remove the view
+                                        indexToRemove.add(index)
+                                        item.copy(isFetched = true)
+                                    }
+                                }
+                                topAdsDeferred.await()
+                            }
+                            else -> item
+                        }
+                    }.toMutableList()
+
+                    indexToRemove.forEach { indexNumber ->
+                        newItems.removeAt(indexNumber)
+                    }
+
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = newItems
+                        )
+                    )
+                }
+            }
         }
+    }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
         _suspendedFollowData.value =
@@ -313,6 +361,33 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getRelevantPosts(postId: String): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createPostDetailParams(postId)
+        )
+    }
+
+    private suspend fun getFeedPosts(
+        source: String,
+        cursor: String = ""
+    ): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createParams(
+                source,
+                cursor
+            )
+        )
+    }
+
+    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
+        try {
+            checkCampaignReminderUseCase(
+                checkCampaignReminderUseCase.createParams(campaignId)
+            ).isAvailable
+        } catch (e: Throwable) {
+            false
+        }
+
     private fun mapLikeResponse(likeAction: FeedLikeAction, rowNumber: Int) =
         LikeFeedDataModel(
             rowNumber = rowNumber,
@@ -376,6 +451,17 @@ class FeedPostViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getTopAdsParams(): MutableMap<String, Any> =
+        mutableMapOf(
+            PARAM_DEVICE to VALUE_DEVICE,
+            PARAM_EP to VALUE_EP,
+            PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+            PARAM_ITEM to VALUE_ITEM,
+            PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
+            PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+            PARAM_USER_ID to userSession.userId
+        )
 
     private val Result<FeedModel>.cursor: String
         get() = when (this) {

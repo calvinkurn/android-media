@@ -90,7 +90,7 @@ dari Feed.</string>
     <string name="feed_clear_mode">Mode Nonton</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai %s.</string>
     <string name="feeds_tag_product_99_more_text">Cek 99+ Produk</string>
-    <string name="feeds_tag_product_text">Cek %s Produk</string>
+    <string name="feeds_tag_product_text">Cek %d Produk</string>
     <string name="feeds_add_to_cart_success_text">1 barang berhasil ditambahkan ke keranjang</string>
     <string name="feeds_add_to_cart_toaster_action_text">Lihat</string>
     <string name="feed_share_title">%s post</string>
