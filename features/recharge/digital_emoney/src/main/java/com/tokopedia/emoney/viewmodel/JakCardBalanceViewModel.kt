@@ -1,7 +1,9 @@
 package com.tokopedia.emoney.viewmodel
 
+import android.annotation.SuppressLint
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
@@ -33,6 +35,7 @@ class JakCardBalanceViewModel @Inject constructor(
     val jakCardInquiry: LiveData<EmoneyInquiry>
         get() = jakCardInquiryMutable
 
+    @Suppress("LateinitUsage")
     lateinit var isoDep: IsoDep
 
     fun processJakCardTagIntent(isoDep: IsoDep) {
@@ -64,6 +67,7 @@ class JakCardBalanceViewModel @Inject constructor(
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
         } else {
@@ -198,6 +202,7 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("Method Call Prohibited")
     private fun convertHexBalanceToIntBalance(hexBalance: String): Int {
         return hexBalance.toInt(RADIX_BALANCE)
     }

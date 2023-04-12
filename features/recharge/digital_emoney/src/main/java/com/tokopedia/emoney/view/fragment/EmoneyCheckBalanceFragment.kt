@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
@@ -47,9 +48,6 @@ import javax.inject.Inject
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
-    private lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
-    private lateinit var jakcardBalanceViewModel: JakCardBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     val errorHanlderBuilder = ErrorHandler.Builder().apply {
@@ -62,19 +60,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initiateViewModel()
-    }
-
-    protected open fun initiateViewModel() {
-        activity?.let {
-            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
-            emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
-            tapcashBalanceViewModel = viewModelProvider.get(TapcashBalanceViewModel::class.java)
-            jakcardBalanceViewModel = viewModelProvider.get(JakCardBalanceViewModel::class.java)
-        }
-    }
+    private val emoneyBalanceViewModel by viewModels<EmoneyBalanceViewModel> { viewModelFactory }
+    private val tapcashBalanceViewModel by viewModels<TapcashBalanceViewModel> { viewModelFactory }
+    private val jakcardBalanceViewModel by viewModels<JakCardBalanceViewModel> { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

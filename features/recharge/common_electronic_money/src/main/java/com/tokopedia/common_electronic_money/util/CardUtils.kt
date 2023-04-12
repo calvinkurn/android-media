@@ -114,7 +114,6 @@ class CardUtils {
                 }
             } catch (e: Exception){
                 FirebaseCrashlytics.getInstance().recordException(e)
-                e.printStackTrace()
             }
             return false
         }
