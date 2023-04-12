@@ -45,7 +45,7 @@ fun NestSortFilter(
         }
         AnimatedVisibility(closeVisible) {
             PrefixFilterItem(
-                modifier = Modifier.padding(end = 12.dp),
+                modifier = Modifier.padding(end = 4.dp),
                 size = size,
                 painterId = R.drawable.iconunify_close,
                 onClick = onClearFilter
@@ -53,7 +53,7 @@ fun NestSortFilter(
         }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(items) {
                 NestChips(
