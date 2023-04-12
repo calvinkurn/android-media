@@ -177,10 +177,10 @@ class OptInConfirmationBottomSheet : BottomSheetUnify() {
         private const val ARGS_IS_PM_PRO = "arg_is_pm_pro"
         private const val TAG = "OptInConfirmationBottomSheet"
 
-        fun newInstance(isPmPro: Boolean): OptInConfirmationBottomSheet {
+        fun newInstance(isPmProActive: Boolean): OptInConfirmationBottomSheet {
             return OptInConfirmationBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putBoolean(ARGS_IS_PM_PRO, isPmPro)
+                    putBoolean(ARGS_IS_PM_PRO, isPmProActive)
                 }
             }
         }

@@ -215,8 +215,8 @@ open class PowerMerchantSubscriptionFragment :
                 val params = UriUtil.uriQueryParamsToMap(it)
                 val showPopupValue = params[PowerMerchantDeepLinkMapper.QUERY_PARAM_SHOW_POPUP]
                 showPopupValue?.let { showPopup ->
-                    val isPmPro = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-                    val bottomSheet = OptInConfirmationBottomSheet.newInstance(isPmPro)
+                    val isPmProActive = data.pmStatus.isPowerMerchantPro()
+                    val bottomSheet = OptInConfirmationBottomSheet.newInstance(isPmProActive)
                     bottomSheet.setOptInListener(this)
                     bottomSheet.show(childFragmentManager)
                 }
@@ -467,12 +467,14 @@ open class PowerMerchantSubscriptionFragment :
 
         view?.run {
             Toaster.toasterCustomBottomHeight =
-                context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).orZero()
-            val message = if (data.currentShopTier == PMConstant.ShopTierType.POWER_MERCHANT_PRO) {
-                context?.getString(R.string.pm_cancel_pm_pro_deactivation_message).orEmpty()
-            } else {
-                context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
-            }
+                context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+                    .orZero()
+            val message =
+                if (pmBasicInfo?.pmStatus?.isPowerMerchantPro() == true) {
+                    context?.getString(R.string.pm_cancel_pm_pro_deactivation_message).orEmpty()
+                } else {
+                    context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
+                }
             Toaster.build(
                 rootView,
                 message,
