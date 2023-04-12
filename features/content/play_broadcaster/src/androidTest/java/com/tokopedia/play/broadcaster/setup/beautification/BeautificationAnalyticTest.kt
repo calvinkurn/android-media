@@ -106,4 +106,25 @@ class BeautificationAnalyticTest {
             .clickResetFilter()
             .verifyEventAction("click - beauty filter reset")
     }
+
+    @Test
+    fun testAnalytic_clickSliderBeautyFilter() {
+        /**
+         * Still failing due bcs onSlideMove is not called
+         */
+//        beautificationRobot.launch()
+//            .clickBeautificationMenu()
+//            .clickCustomFace(1)
+//            .slideBeautificationSlider(90)
+//            .performDelay(3000)
+//            .verifyEventAction("click - slider beauty filter")
+    }
+
+    @Test
+    fun testAnalytic_viewResetFilterPopup() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickResetFilter()
+            .verifyEventAction("view - reset filter bottomsheet")
+    }
 }

@@ -4,13 +4,18 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.google.android.material.slider.Slider
 import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -36,6 +41,10 @@ fun clickWithMatcher(
     vararg matchers: Matcher<View>
 ) {
     onView(allOf(matchers.toList())).perform(click())
+}
+
+fun slide(@IdRes id: Int, value: Int) {
+    select(id).perform(setSliderValue(value))
 }
 
 fun type(@IdRes id: Int, text: String) {
@@ -127,6 +136,23 @@ fun <T: View> verify(
                 } ?: false
             }
         }))
+}
+
+fun setSliderValue(value: Int): ViewAction {
+    return object : ViewAction {
+        override fun getDescription(): String {
+            return "Set Slider value to $value"
+        }
+
+        override fun getConstraints(): Matcher<View> {
+            return isAssignableFrom(RangeSliderUnify::class.java)
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val seekBar = view as RangeSliderUnify
+            seekBar.setInitialValue(value)
+        }
+    }
 }
 
 private fun select(@IdRes id: Int): ViewInteraction {

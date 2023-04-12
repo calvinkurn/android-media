@@ -9,6 +9,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemRecyclerView
+import com.tokopedia.content.test.util.slide
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
@@ -129,6 +130,10 @@ class BeautificationRobot {
 
     fun clickResetFilter() = chainable {
         click(R.id.tv_bottom_sheet_action)
+    }
+
+    fun slideBeautificationSlider(value: Int) = chainable {
+        slide(R.id.slider_beautification, value)
     }
 
     fun performDelay(delayInMillis: Long = 500) = chainable {

@@ -18,6 +18,8 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoContrib
+
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {
