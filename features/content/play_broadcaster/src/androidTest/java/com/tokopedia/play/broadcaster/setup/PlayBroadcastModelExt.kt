@@ -10,6 +10,10 @@ import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import java.util.*
 
@@ -88,6 +92,7 @@ fun buildConfigurationUiModel(
     countDown: Long = 0L,
     scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
     tnc: List<TermsAndConditionUiModel> = emptyList(),
+    beautificationConfig: BeautificationConfigUiModel = buildBeautificationConfig(),
 ) = ConfigurationUiModel(
     streamAllowed = streamAllowed,
     shortVideoAllowed = shortVideoAllowed,
@@ -99,6 +104,7 @@ fun buildConfigurationUiModel(
     countDown = countDown,
     scheduleConfig = scheduleConfig,
     tnc = tnc,
+    beautificationConfig = beautificationConfig,
 )
 
 private fun buildDurationConfigUiModel(
@@ -151,5 +157,46 @@ fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
         videoBitrate = "123",
         videoWidth = "123",
         videoHeight = "123",
+    )
+}
+
+fun buildBeautificationConfig(
+    faceFiltersSize: Int = 5,
+    presetsSize: Int = 5,
+    presetActivePosition: Int = 1,
+    assetStatus: BeautificationAssetStatus = BeautificationAssetStatus.Available,
+): BeautificationConfigUiModel {
+    return BeautificationConfigUiModel(
+        licenseLink = "licenseLink",
+        modelLink = "modelLink",
+        customFaceAssetLink = "customFaceAssetLink",
+        faceFilters = List(faceFiltersSize) {
+            FaceFilterUiModel(
+                id = if (it == 0) "none" else it.toString(),
+                name = "Face Filter $it",
+                active = it == 1,
+                minValue = 0.0,
+                maxValue = 1.0,
+                defaultValue = 0.1 * it,
+                value = 0.1 * it,
+                isChecked = it != 0,
+                isSelected = false,
+            )
+        },
+        presets = List(presetsSize) {
+            PresetFilterUiModel(
+                id = if (it == 0) "none" else it.toString(),
+                name = "Preset $it",
+                active = it == presetActivePosition,
+                minValue = 0.0,
+                maxValue = 1.0,
+                defaultValue = 0.1 * it,
+                value = 0.1 * it,
+                iconUrl = "iconUrl $it",
+                assetLink = "assetLink $it",
+                assetStatus = if (it == 0) BeautificationAssetStatus.Available else assetStatus,
+                isSelected = false,
+            )
+        }
     )
 }

@@ -1,6 +1,8 @@
-package com.tokopedia.play.broadcaster.shorts.di
+package com.tokopedia.play.broadcaster.setup.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.effect.EffectManager
+import com.tokopedia.effect.EffectManagerImpl
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.effect.util.asset.manager.AssetManager
@@ -17,9 +19,12 @@ import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSen
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
@@ -28,145 +33,142 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
-import com.tokopedia.play.broadcaster.data.config.AccountConfigStore
-import com.tokopedia.play.broadcaster.data.config.AccountConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStore
-import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStore
-import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
-import com.tokopedia.play.broadcaster.data.config.ProductConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
-import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
-import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
-import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
-import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
-import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
-import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
-import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
+import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
+import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
+import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManagerImpl
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
+import com.tokopedia.play_common.util.device.PlayDeviceSpecImpl
 import dagger.Binds
 import dagger.Module
 
 /**
- * Created By : Jonathan Darwin on December 12, 2022
+ * Created By : Jonathan Darwin on April 12, 2023
  */
 @Module
-abstract class PlayShortsBindTestModule {
+abstract class PlayBroadcastBindTestModule {
 
+    /**
+     * Pref
+     */
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindPermissionSharedPrefs(sharedPref: HydraSharedPreferences): PermissionSharedPreferences
 
+    /**
+     * Util
+     */
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
 
-    /** Analytic */
+    /**
+     * Analytic
+     */
     @Binds
-    @PlayShortsScope
-    abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
-
-    @Binds
-    @PlayShortsScope
-    abstract fun bindPlayShortsProductPickerUGCAnalytic(analytic: PlayShortsProductPickerUGCAnalytic): ContentProductTagAnalytic
-
-    @Binds
-    @PlayShortsScope
-    abstract fun bindPlayShortsAnalyticSender(analyticSender: PlayShortsAnalyticSenderImpl): PlayShortsAnalyticSender
-
-    @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindInteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindSetupMenuAnalytic(setupMenuAnalytic: PlayBroSetupMenuAnalyticImpl): PlayBroSetupMenuAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindSetupTitleAnalytic(setupTitleAnalytic: PlayBroSetupTitleAnalyticImpl): PlayBroSetupTitleAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindSetupCoverAnalytic(setupCoverAnalytic: PlayBroSetupCoverAnalyticImpl): PlayBroSetupCoverAnalytic
 
     @Binds
-    @PlayShortsScope
-    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): PlayBroSetupProductAnalytic
+    @ActivityRetainedScope
+    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayBroSetupProductAnalyticImpl): PlayBroSetupProductAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindSummaryAnalytic(summaryAnalytic: PlayBroadcastSummaryAnalyticImpl): PlayBroadcastSummaryAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindScheduleAnalytic(scheduleAnalytic: PlayBroScheduleAnalyticImpl): PlayBroScheduleAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): PlayBroadcastPinProductAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindPinUGCAnalytic(ugcAnalytic: PlayBroadcastAccountAnalyticImpl): PlayBroadcastAccountAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
 
     @Binds
-    @PlayShortsScope
-    abstract fun bindPlayBroadcastBeautificationAnalytic(playBroadcastBeautificationAnalytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+    @ActivityRetainedScope
+    abstract fun bindProductPickerUGCAnalytic(productPickerUGCAnalytic: ProductPickerUGCAnalytic): ContentProductTagAnalytic
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
+    abstract fun bindPlayBroCoverPickerAnalytic(analytic: PlayBroCoverPickerAnalyticImpl): PlayBroCoverPickerAnalytic
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindPlayBroadcastBeautificationAnalytic(analytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+
+    @Binds
+    @ActivityRetainedScope
     abstract fun bindPlayBroadcasterAnalyticSender(analytic: PlayBroadcasterAnalyticSenderImpl): PlayBroadcasterAnalyticSender
 
-    /** Play Broadcaster Config Store */
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
-    abstract fun bindChannelConfigStore(configStore: ChannelConfigStoreImpl): ChannelConfigStore
+    abstract fun bindLogger(logger: PlayLoggerImpl): PlayLogger
 
-    @Binds
-    @PlayShortsScope
-    abstract fun bindProductConfigStore(configStore: ProductConfigStoreImpl): ProductConfigStore
+    /**
+     * Pusher
+     */
 
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
-    abstract fun bindTitleConfigStore(configStore: TitleConfigStoreImpl): TitleConfigStore
+    abstract fun bindPlayBroadcastTimer(broadcastTimer: PlayBroadcastTimerImpl): PlayBroadcastTimer
 
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
-    abstract fun bindBroadcastingConfigStore(configStore: BroadcastingConfigStoreImpl): BroadcastingConfigStore
+    abstract fun bindPlayCountUp(playCountUpImpl: PlayCountUpImpl): PlayCountUp
 
+    /**
+     * Scale
+     */
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
-    abstract fun bindBroadcastScheduleConfigStore(configStore: BroadcastScheduleConfigStoreImpl): BroadcastScheduleConfigStore
+    abstract fun bindBroadcasterFrameScalingManager(broadcasterFrameScalingManager: BroadcasterFrameScalingManagerImpl): BroadcasterFrameScalingManager
 
+    /**
+     * Device Spec
+     */
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
-    abstract fun bindBroadcastUGCConfigStore(configStore: AccountConfigStoreImpl): AccountConfigStore
-
-    @Binds
-    @PlayShortsScope
-    abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+    abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
 
     /**
      * Beautification
      */
+    @ActivityRetainedScope
     @Binds
-    @PlayShortsScope
     abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
 
     @Binds
-    @PlayShortsScope
+    @ActivityRetainedScope
     abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

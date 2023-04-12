@@ -8,6 +8,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
@@ -33,7 +34,7 @@ class PlayShortsSetupProductUGCAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val cassavaValidator = PlayShortsCassavaValidator(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 

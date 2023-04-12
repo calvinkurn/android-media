@@ -113,6 +113,7 @@ class SwitchAccountRobot(
         pinProductAnalytic = mockk(relaxed = true),
         accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
         shortsEntryPointAnalytic = mockk(relaxed = true),
+        beautificationAnalytic = mockk(relaxed = true),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
@@ -166,6 +167,8 @@ class SwitchAccountRobot(
                     userSession = mockk(relaxed = true),
                     coachMarkSharedPref = mockk(relaxed = true),
                     playShortsEntryPointRemoteConfig = mockk(relaxed = true),
+                    beautificationUiBridge = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

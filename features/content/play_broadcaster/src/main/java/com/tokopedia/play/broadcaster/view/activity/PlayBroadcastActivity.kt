@@ -43,6 +43,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
@@ -314,7 +315,8 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun inject() {
-        retainedComponent.inject(this)
+        val component = PlayBroadcastInjector.get() ?: retainedComponent
+        component.inject(this)
     }
 
     private fun initViewModel() {
