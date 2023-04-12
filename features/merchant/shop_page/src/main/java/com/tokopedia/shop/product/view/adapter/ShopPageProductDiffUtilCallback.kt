@@ -2,7 +2,11 @@ package com.tokopedia.shop.product.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop.product.view.datamodel.*
+import com.tokopedia.shop.product.view.datamodel.ShopProductChangeGridSectionUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseHighlightUiModel
 
 class ShopPageProductDiffUtilCallback(
     private val oldItems: List<Visitable<*>>,
