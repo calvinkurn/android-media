@@ -21,6 +21,8 @@ interface ActionListener {
     fun onClickShopNow()
 
     fun getDefaultCartErrorMessage(): String
+    
+    fun onCartGroupNameClicked(appLink: String)
 
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 

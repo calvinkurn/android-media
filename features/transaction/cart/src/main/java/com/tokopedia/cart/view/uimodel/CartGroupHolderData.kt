@@ -8,11 +8,11 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 data class CartGroupHolderData(
     var groupType: Int = 0,
     var uiGroupType: Int = 0,
-    var groupInformation: GroupInformation = GroupInformation(),
     var cartString: String = "",
 //    var shopId: String = "",
     var groupName: String = "",
     var groupBadge: String = "",
+    var groupAppLink: String = "",
 //    var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     var isFulfillment: Boolean = false,
     var fulfillmentName: String = "",
@@ -53,6 +53,7 @@ data class CartGroupHolderData(
     var isPo: Boolean = false,
 //    var poDuration: String = "",
     var boCode: String = "",
+    var boUniqueId: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
 ) {
@@ -69,11 +70,11 @@ data class CartGroupHolderData(
         return CartGroupHolderData(
             groupType = this.groupType,
             uiGroupType = this.uiGroupType,
-            groupInformation = this.groupInformation,
             cartString = this.cartString,
 //            shopId = this.shopId,
             groupName = this.groupName,
             groupBadge = this.groupBadge,
+            groupAppLink = this.groupAppLink,
 //            shopTypeInfo = this.shopTypeInfo,
             isFulfillment = this.isFulfillment,
             fulfillmentName = this.fulfillmentName,
@@ -110,7 +111,8 @@ data class CartGroupHolderData(
             warehouseId = this.warehouseId,
             isPo = this.isPo,
 //            poDuration = this.poDuration,
-            boCode = this.boCode
+            boCode = this.boCode,
+            boUniqueId = this.boUniqueId
         )
     }
     

@@ -114,9 +114,8 @@ class CartGroupViewHolder(
     }
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
-        val groupName = cartGroupHolderData.groupName
-        binding.tvShopName.text = Utils.getHtmlFormat(groupName)
-        if (!cartGroupHolderData.isTypeOWOC()) {
+        binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
+        if (cartGroupHolderData.isError) {
             val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopId
             val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopName
             binding.tvShopName.setOnClickListener {
@@ -125,10 +124,14 @@ class CartGroupViewHolder(
                     shopName,
                     cartGroupHolderData.isTokoNow
                 )
-            }   
+            }
         }
-        else {
-            binding.tvShopName.setOnClickListener(null)
+        else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
+            binding.tvShopName.setOnClickListener {
+                actionListener.onCartGroupNameClicked(
+                    cartGroupHolderData.groupAppLink,
+                )
+            }
         }
     }
 
