@@ -50,7 +50,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
     }
 
     fun showView() {
-        if (canShow) animator.animateShow()
+        if (canShow) {
+            if (collapsed()) {
+                animator.animateShowCollapsed(0L)
+            } else {
+                animator.animateShowExpanded()
+            }
+        }
     }
 
     fun hideView() {
@@ -62,6 +68,11 @@ class AutoCollapseLabel @JvmOverloads constructor(
         binding.ivAutoCollapseLabel.loadImage(recomData.getIconUrl(context))
     }
 
+    private fun collapsed(): Boolean {
+        return binding.tvAutoCollapseLabel.ellipsize == null &&
+            binding.tvAutoCollapseLabel.maxWidth == Int.ZERO
+    }
+
     inner class ViewAnimator {
         private var showAnimator: AnimatorSet? = null
         private var showAnimatorListener: Animator.AnimatorListener? = null
@@ -70,7 +81,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private var collapseAnimator: AnimatorSet? = null
         private var collapseAnimatorListener: Animator.AnimatorListener? = null
 
-        fun animateShow() {
+        fun animateShowExpanded() {
             cancelAnimators()
 
             showAnimator = createShowAnimator()
@@ -84,10 +95,10 @@ class AutoCollapseLabel @JvmOverloads constructor(
             hideAnimator?.start()
         }
 
-        private fun animateCollapse() {
+        fun animateShowCollapsed(delay: Long) {
             cancelAnimators()
 
-            collapseAnimator = createCollapseAnimator()
+            collapseAnimator = createCollapseAnimator(delay)
             collapseAnimator?.start()
         }
 
@@ -95,8 +106,14 @@ class AutoCollapseLabel @JvmOverloads constructor(
             duration = ANIMATION_DURATION
             interpolator = DecelerateInterpolator()
             playTogether(
-                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA),
-                binding.containerAutoCollapse.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA)
+                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(
+                    binding.bgAutoCollapseLabelTextWithIcon.alpha,
+                    MAX_ALPHA
+                ),
+                binding.containerAutoCollapse.createAlphaAnimator(
+                    binding.containerAutoCollapse.alpha,
+                    MAX_ALPHA
+                )
             )
             showAnimatorListener = addListener(
                 onStart = ::onStartShowAnimator,
@@ -114,18 +131,28 @@ class AutoCollapseLabel @JvmOverloads constructor(
             hideAnimatorListener = addListener(onEnd = ::onEndHideAnimator)
         }
 
-        private fun createCollapseAnimator() = AnimatorSet().apply {
+        private fun createCollapseAnimator(delay: Long) = AnimatorSet().apply {
             duration = ANIMATION_DURATION
-            startDelay = IDLE_DURATION
+            startDelay = delay
             playTogether(
                 binding.tvAutoCollapseLabel.createMaxWidthAnimator(
                     binding.tvAutoCollapseLabel.width,
                     Int.ZERO
                 ),
-                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(MAX_ALPHA, MIN_ALPHA),
-                binding.bgAutoCollapseLabelIconOnly.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA),
+                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(
+                    binding.bgAutoCollapseLabelTextWithIcon.alpha,
+                    MIN_ALPHA
+                ),
+                binding.bgAutoCollapseLabelIconOnly.createAlphaAnimator(
+                    binding.bgAutoCollapseLabelIconOnly.alpha,
+                    MAX_ALPHA
+                ),
+                binding.containerAutoCollapse.createAlphaAnimator(
+                    binding.containerAutoCollapse.alpha,
+                    MAX_ALPHA
+                ),
                 binding.containerAutoCollapse.createHorizontalPaddingAnimator(
-                    PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
+                    binding.containerAutoCollapse.paddingStart,
                     PADDING_HORIZONTAL_ICON_ONLY.toPx()
                 )
             )
@@ -166,7 +193,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
         @Suppress("UNUSED_PARAMETER")
         private fun onEndShowAnimator(animator: Animator) {
-            animateCollapse()
+            animateShowCollapsed(IDLE_DURATION)
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -176,6 +203,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
         @Suppress("UNUSED_PARAMETER")
         private fun onStartCollapseAnimator(animator: Animator) {
+            show()
             binding.tvAutoCollapseLabel.ellipsize = null
         }
 
