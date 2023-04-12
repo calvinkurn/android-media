@@ -5,7 +5,7 @@ import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.view.comment.CommentIconUiView
 import com.tokopedia.play.util.CachedState
-import com.tokopedia.play.util.isAnyChanged
+import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 
@@ -27,11 +27,9 @@ class CommentIconUiComponent(
     )
 
     override fun render(state: CachedState<PlayViewerNewUiState>) {
-        // ToDo: add comment counter value
-        if (state.isAnyChanged({ it.channel }, { it.partner })) {
-            view.show(state.value.channel.channelInfo.channelType.isVod && state.value.partner.type != PartnerType.Tokopedia)
-            // view.setCounter("")
-        }
+        if (state.isNotChanged { it.channel }) return
+        view.show(state.value.channel.channelInfo.channelType.isVod && state.value.partner.type != PartnerType.Tokopedia && state.value.channel.commentConfig.shouldShow)
+        view.setCounter(state.value.channel.commentConfig.total)
     }
 
     sealed interface Event {
