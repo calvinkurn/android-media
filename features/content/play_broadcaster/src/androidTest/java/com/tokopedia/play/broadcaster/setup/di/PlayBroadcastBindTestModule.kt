@@ -138,11 +138,6 @@ abstract class PlayBroadcastBindTestModule {
     /**
      * Pusher
      */
-
-    @ActivityRetainedScope
-    @Binds
-    abstract fun bindPlayBroadcastTimer(broadcastTimer: PlayBroadcastTimerImpl): PlayBroadcastTimer
-
     @ActivityRetainedScope
     @Binds
     abstract fun bindPlayCountUp(playCountUpImpl: PlayCountUpImpl): PlayCountUp

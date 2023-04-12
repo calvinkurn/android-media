@@ -4,6 +4,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.play.broadcaster.setup.buildBeautificationConfig
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
+import com.tokopedia.play.broadcaster.setup.channelPausedResponse
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
@@ -136,7 +138,7 @@ class BeautificationAnalyticTest {
         beautificationRobot.launch()
             .clickBeautificationMenu()
             .clickResetFilter()
-            .clickYesResetFilter()
+            .clickDialogPrimaryCTA()
             .verifyEventAction("click - yes reset filter")
     }
 
@@ -239,5 +241,41 @@ class BeautificationAnalyticTest {
             .clickCustomFace(1)
             .clickToasterCTA()
             .verifyEventAction("click - failed apply beauty filter")
+    }
+
+    @Test
+    fun testAnalytic_clickBeautificationEntryPointOnLivePage() {
+
+        coEvery {
+            beautificationRobot.mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            channelStatus = ChannelStatus.Pause
+        )
+
+        coEvery {
+            beautificationRobot.mockGetChannelUseCase.executeOnBackground()
+        } returns channelPausedResponse
+
+        beautificationRobot.launch()
+            .clickDialogPrimaryCTA()
+            .clickBeautificationMenuOnLivePage()
+            .verifyEventAction("click - beauty filter ongoing livestream")
+    }
+
+    @Test
+    fun testAnalytic_viewBeautificationEntryPointOnLivePage() {
+        coEvery {
+            beautificationRobot.mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            channelStatus = ChannelStatus.Pause
+        )
+
+        coEvery {
+            beautificationRobot.mockGetChannelUseCase.executeOnBackground()
+        } returns channelPausedResponse
+
+        beautificationRobot.launch()
+            .clickDialogPrimaryCTA()
+            .verifyEventAction("view - beauty filter ongoing livestream")
     }
 }

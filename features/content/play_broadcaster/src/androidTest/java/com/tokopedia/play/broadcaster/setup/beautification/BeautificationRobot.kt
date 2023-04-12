@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastActivityLauncher
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.setup.accountListResponse
 import com.tokopedia.play.broadcaster.setup.buildBroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
@@ -52,12 +53,15 @@ class BeautificationRobot {
     val mockBroadcaster: Broadcaster = mockk(relaxed = true)
     val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
 
     private val playBroadcastTestModule = PlayBroadcastTestModule(
         activityContext = context,
         mockUserSession = mockUserSession,
         mockBroadcaster = mockBroadcaster,
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
+        mockBroadcastTimer = mockBroadcastTimer,
+        mockGetChannelUseCase = mockGetChannelUseCase,
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(
@@ -76,6 +80,7 @@ class BeautificationRobot {
 
     fun setUp() {
         coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockBroadcastTimer.isPastPauseDuration } returns false
 
         coEvery { mockRepo.getAccountList() } returns accountListResponse()
         coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns buildBroadcastingConfigUiModel()
@@ -136,7 +141,7 @@ class BeautificationRobot {
         click(R.id.tv_bottom_sheet_action)
     }
 
-    fun clickYesResetFilter() = chainable {
+    fun clickDialogPrimaryCTA() = chainable {
         click(com.tokopedia.dialog.R.id.dialog_btn_primary)
     }
 
@@ -150,6 +155,10 @@ class BeautificationRobot {
 
     fun performDelay(delayInMillis: Long = 500) = chainable {
         delay(delayInMillis)
+    }
+
+    fun clickBeautificationMenuOnLivePage() = chainable {
+        click(R.id.ic_face_filter)
     }
 
     fun mock(action: () -> Unit) = chainable {

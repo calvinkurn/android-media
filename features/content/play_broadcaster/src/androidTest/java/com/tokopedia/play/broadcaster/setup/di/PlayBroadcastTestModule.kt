@@ -25,6 +25,8 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
@@ -57,6 +59,8 @@ class PlayBroadcastTestModule(
     private val mockUserSession: UserSessionInterface,
     private val mockBroadcaster: Broadcaster,
     private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val mockBroadcastTimer: PlayBroadcastTimer,
+    private val mockGetChannelUseCase: GetChannelUseCase,
 ) {
 
     @Provides
@@ -74,6 +78,14 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideContentCoachMarkSharedPref(): ContentCoachMarkSharedPref = mockCoachMarkSharedPref
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideBroadcastTimer(): PlayBroadcastTimer = mockBroadcastTimer
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideGetChannelUseCase(): GetChannelUseCase = mockGetChannelUseCase
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {

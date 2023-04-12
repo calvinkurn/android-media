@@ -81,6 +81,17 @@ val channelResponse = GetChannelResponse.Channel(
     )
 )
 
+val channelPausedResponse = GetChannelResponse.Channel(
+    basic = GetChannelResponse.ChannelBasic(
+        coverUrl = "https://tokopedia.com",
+        channelId = "12345",
+        status = GetChannelResponse.ChannelBasicStatus(
+            id = "3",
+            text = "pause",
+        )
+    )
+)
+
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
     shortVideoAllowed: Boolean = false,
