@@ -847,6 +847,10 @@ class AtcVariantBottomSheet :
                 sharedData?.trackerListNamePdp ?: "",
                 sharedData?.showQtyEditor ?: false
             )
+
+            with(viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category) {
+                mAnalyticsListener?.onButtonActionClicked(variantId = this?.id.orEmpty(), variantName =  this?.name.orEmpty())
+            }
         }
     }
 
@@ -1086,7 +1090,7 @@ interface AtcVariantBottomSheetListener {
  */
 interface AtcVariantAnalyticsListener {
     // [PLAY] row 13,16,61,62,63 https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
-    fun onButtonActionClicked()
+    fun onButtonActionClicked(variantId: String, variantName: String)
     fun clickActionFromToaster(message: String) // Click Lihat Keranjang from toaster
     fun impressErrorToaster(message: String) // Impress toaster [Belum pilih varian]
 }

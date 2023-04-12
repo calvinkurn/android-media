@@ -722,8 +722,10 @@ class PlayFragment @Inject constructor(
     //endregion
 
     // Global Variant Bottom Sheet
-    override fun onButtonActionClicked() {
-        TODO("Not yet implemented")
+    override fun onButtonActionClicked(variantId: String, variantName: String) {
+        //click
+        //if(sectionInfo.config.type != ProductSectionType.Active) clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+        //else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
     }
 
     override fun clickActionFromToaster(message: String) {
