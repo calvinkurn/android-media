@@ -12,11 +12,11 @@ data class FeedXGetActivityProductsResponse(
     @SerializedName("products")
     val products: List<FeedXProduct> = emptyList(),
     @SerializedName("isFollowed")
-    val isFollowed: Boolean,
+    val isFollowed: Boolean = false,
     @SerializedName("contentType")
-    val contentType: String,
+    val contentType: String = "",
     @SerializedName("campaign")
-    val campaign: FeedXCampaign,
+    val campaign: FeedXCampaign = FeedXCampaign(),
     @SerializedName("nextCursor")
     val nextCursor: String = "",
     @SerializedName("hasVoucher")

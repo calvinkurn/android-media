@@ -130,4 +130,6 @@ dari Feed.</string>
 
     <string name="feed_video_duration_separator">/</string>
 
+    <string name="feed_product_list_bottom_sheet_title">Produk pilihan</string>
+
 </resources>

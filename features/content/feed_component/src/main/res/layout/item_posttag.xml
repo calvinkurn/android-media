@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
     android:orientation="vertical"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    app:layout_constraintHeight_max="wrap"
+    app:layout_constraintHeight_percent="0.8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cardTitlePostTag"
@@ -20,11 +21,11 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:text="@string/content_product_bs_title"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/content_product_bs_title"
+        tools:visibility="visible" />
 
     <com.tokopedia.mvcwidget.views.MvcView
         android:id="@+id/merchant_voucher_widget_post_tag"
@@ -33,10 +34,10 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardTitlePostTag"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardTitlePostTag"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPosttag"
@@ -47,10 +48,9 @@
         android:paddingStart="16dp"
         android:paddingLeft="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:ignore="RtlSymmetry"
-        tools:listitem="@layout/item_producttag_list_new"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/merchant_voucher_widget_post_tag"
-        />
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/item_producttag_list_new" />
 </androidx.constraintlayout.widget.ConstraintLayout>

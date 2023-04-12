@@ -313,6 +313,7 @@ class FeedPostImageViewHolder(
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
+            products = model.products,
             totalProducts = model.totalProducts
         )
         updateProductTagText(model)

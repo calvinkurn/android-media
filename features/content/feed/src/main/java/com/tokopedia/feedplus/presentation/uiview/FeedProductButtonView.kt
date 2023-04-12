@@ -4,6 +4,7 @@ import com.tokopedia.content.common.databinding.ViewProductSeeMoreBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -23,6 +24,7 @@ class FeedProductButtonView(
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
         totalProducts: Int
     ) {
         with(binding) {
@@ -47,7 +49,8 @@ class FeedProductButtonView(
                     postType,
                     isFollowing,
                     campaign,
-                    hasVoucher
+                    hasVoucher,
+                    products
                 )
             }
             tvPlayProductCount.setOnClickListener {
@@ -57,7 +60,8 @@ class FeedProductButtonView(
                     postType,
                     isFollowing,
                     campaign,
-                    hasVoucher
+                    hasVoucher,
+                    products
                 )
             }
         }

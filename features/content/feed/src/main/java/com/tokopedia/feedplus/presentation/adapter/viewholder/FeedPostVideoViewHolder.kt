@@ -192,6 +192,7 @@ class FeedPostVideoViewHolder(
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
+            products = data.products,
             totalProducts = data.totalProducts
         )
     }

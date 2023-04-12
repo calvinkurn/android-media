@@ -23,7 +23,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedPro
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
@@ -31,13 +30,14 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHolder.Listener {
 
-    private var binding: ItemPosttagBinding? = null
+    private var _binding: ItemPosttagBinding? = null
+    private val binding: ItemPosttagBinding
+        get() = _binding!!
 
     private var viewModelFactory: ViewModelProvider.Factory? = null
     private var viewModel: FeedProductItemInfoViewModel? = null
@@ -66,41 +66,40 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ItemPosttagBinding.inflate(inflater, container, false)
+        _binding = ItemPosttagBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.content_product_bs_title))
-        setChild(generateDynamicView())
+        setChild(binding.root)
+//        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun generateDynamicView(): View?{
-        val height = (getDeviceHeight() * 0.8).toInt().toPx()
-
-        val customHeightView = binding?.root
-        customHeightView?.layoutParams =
-            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
-
-        return customHeightView
-    }
+//    private fun generateDynamicView(): View?{
+//        val height = (getDeviceHeight() * 0.8).toInt().toPx()
+//
+//        val customHeightView = binding?.root
+//        customHeightView?.layoutParams =
+//            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+//
+//        return customHeightView
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val rvLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        binding?.rvPosttag?.run {
+        binding.rvPosttag.apply {
             show()
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
             layoutManager = rvLayoutManager
             setPadding(0, 0, 0, 0)
             addOnScrollListener(getRecyclerViewListener())
-
         }
 
         activity?.let {
@@ -113,7 +112,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
         }
 
         viewModel?.fetchMerchantVoucherSummary(shopId)
-        viewModel?.fetchFeedXProductsData(postId)
+        if (listProducts.isNotEmpty()) {
+            viewModel?.showProductsFromPost(listProducts)
+        } else {
+            viewModel?.fetchFeedXProductsData(postId)
+        }
+
         observeMVC()
         observeFeedXActivityProducts()
 
@@ -129,10 +133,10 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
         }
     }
 
-    private fun getDeviceHeight(): Float {
-        val displayMetrics = context?.resources?.displayMetrics
-        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
-    }
+//    private fun getDeviceHeight(): Float {
+//        val displayMetrics = context?.resources?.displayMetrics
+//        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
+//    }
 
     private fun observeMVC() {
         viewModel?.run {
@@ -140,7 +144,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
                 when (it) {
                     is Success -> {
                         if (it.data.animatedInfoList?.isNotEmpty() == true) {
-                            binding?.merchantVoucherWidgetPostTag?.setData(
+                            binding.merchantVoucherWidgetPostTag.setData(
                                 mvcData = MvcData(
                                     it.data.animatedInfoList
                                 ),
@@ -148,31 +152,34 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
                                 source = MvcSource.FEED_BOTTOM_SHEET,
                                 mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
                             )
-                            binding?.merchantVoucherWidgetPostTag?.show()
+                            binding.merchantVoucherWidgetPostTag.show()
                         } else {
-                            binding?.merchantVoucherWidgetPostTag?.hide()
+                            binding.merchantVoucherWidgetPostTag.hide()
                         }
                     }
                     is Fail -> {
-                        binding?.merchantVoucherWidgetPostTag?.hide()
+                        binding.merchantVoucherWidgetPostTag.hide()
                     }
                 }
             }
         }
     }
+
     private fun observeFeedXActivityProducts() {
         viewModel?.run {
             feedProductsResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is FeedXProductResult.Success -> {
-                       setAdapter(it.feedXGetActivityProductsResponse.products)
+                        setAdapter(it.feedXGetActivityProductsResponse.products)
                     }
                     is FeedXProductResult.LoadingState -> {
                         //TODO add loading state
                     }
                     is FeedXProductResult.Error -> {
                         //TODO add error state
-
+                    }
+                    FeedXProductResult.SuccessWithNoData -> {
+                        //TODO add no data state
                     }
                 }
             }
@@ -203,7 +210,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
     }
 
     private fun setAdapter(products: List<FeedXProduct>) {
-        binding?.rvPosttag?.adapter = adapter
+        binding.rvPosttag.adapter = adapter
         adapter?.setItemsAndAnimateChanges(mapPostTag(products))
     }
 
@@ -401,7 +408,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
         product: ProductPostTagModelNew
     ) {
         listener?.onAddToCartButtonClicked(
-           product
+            product
         )
     }
 
