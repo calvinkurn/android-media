@@ -67,8 +67,6 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
         const val IC_PM_PRO_UPGRADE_LEVEL =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
-        const val IC_PM_CASH_BACK =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
         const val IC_PM_FLASH_SALE =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
         const val IC_PM_PRODUCT_BUNDLING =

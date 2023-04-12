@@ -1,15 +1,16 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
+import android.annotation.SuppressLint
 import android.os.Build
-import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.ItemShipperProductNameBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.kotlin.extensions.view.gone
 
 class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) :
     RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
@@ -32,7 +33,15 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         parent: ViewGroup,
         viewType: Int
     ): ShipperProductOnDemandViewHolder {
-        return ShipperProductOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipper_product_name))
+        return ShipperProductOnDemandViewHolder(
+            ItemShipperProductNameBinding.inflate(
+                LayoutInflater.from(
+                    parent.context
+                ),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -45,15 +54,17 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
 
     override fun onViewRecycled(holder: ShipperProductOnDemandViewHolder) {
         super.onViewRecycled(holder)
-        holder.shipperProductCb.setOnCheckedChangeListener(null)
+        holder.setCheckBoxListener(null)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addData(data: List<ShipperProductModel>) {
         shipperProduct.clear()
         shipperProduct.addAll(data)
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateChecked(checked: Boolean) {
         shipperProduct.filter { it.isAvailable }.forEach {
             it.isActive = checked
@@ -61,15 +72,14 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        private val shipperProductName =
-            itemView.findViewById<Typography>(R.id.shipper_product_name)
-        val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
-        private val divider = itemView.findViewById<View>(R.id.divider_shipment)
-
+    inner class ShipperProductOnDemandViewHolder(private val binding: ItemShipperProductNameBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bindData(data: ShipperProductModel) {
             setItemData(data)
+        }
+
+        fun setCheckBoxListener(listener: CompoundButton.OnCheckedChangeListener?) {
+            binding.shipperProductCb.setOnCheckedChangeListener(listener)
         }
 
         private fun setItemData(data: ShipperProductModel) {
@@ -81,39 +91,39 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         }
 
         private fun setCheckBoxListener(data: ShipperProductModel) {
-            shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
+            binding.shipperProductCb.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
                 activeProductChecker(isChecked)
             }
         }
 
         private fun setShipperProductName(data: ShipperProductModel) {
-            shipperProductName.text = data.shipperProductName
+            binding.shipperProductName.text = data.shipperProductName
         }
 
         private fun setDivider(data: ShipperProductModel) {
             val lastItem = shipperProduct.last()
             if (data == lastItem) {
-                divider.visibility = View.GONE
+                binding.dividerShipment.gone()
             }
         }
 
         private fun setCheckBoxCheckedState(data: ShipperProductModel) {
             if (data.isAvailable) {
-                shipperProductCb.isEnabled = true
-                shipperProductCb.isChecked = data.isActive
+                binding.shipperProductCb.isEnabled = true
+                binding.shipperProductCb.isChecked = data.isActive
             } else {
-                shipperProductCb.isEnabled = false
+                binding.shipperProductCb.isEnabled = false
             }
         }
 
         private fun setShipperProductEnableState(data: ShipperProductModel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (data.isAvailable) {
-                    itemView.rootView.foreground =
+                    binding.root.foreground =
                         MethodChecker.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
                 } else {
-                    itemView.rootView.foreground =
+                    binding.root.foreground =
                         MethodChecker.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 }
             }

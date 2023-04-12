@@ -13,15 +13,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
-import com.tokopedia.product.detail.postatc.base.CommonTracker
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
-import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.tracker.CommonTracker
+import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
+import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
@@ -41,8 +42,6 @@ import javax.inject.Inject
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
-
-        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
 
         const val TAG = "post_atc_bs"
 
@@ -257,10 +256,16 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
+        }
         goToProduct(productId)
     }
 
     override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
+        }
     }
 
     /**

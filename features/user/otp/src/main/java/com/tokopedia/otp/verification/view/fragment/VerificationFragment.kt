@@ -505,7 +505,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 viewBound.pin?.isError = false
             }
         }
-
         setFooterText()
     }
 
@@ -550,7 +549,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     open fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
-
         val otpMsg = getString(R.string.resend_otp)
         val start = message.indexOf(otpMsg)
         val end = start + otpMsg.length
@@ -629,8 +627,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     open fun setRunningCountdownText(countdown: Int) {
         val text = String.format(
-                getString(R.string.verification_coundown_text),
-                countdown
+            getString(R.string.verification_coundown_text),
+            countdown
         )
         viewBound.pin?.pinMessage = MethodChecker.fromHtml(text)
     }

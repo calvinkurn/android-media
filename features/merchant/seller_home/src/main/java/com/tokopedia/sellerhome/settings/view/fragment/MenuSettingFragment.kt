@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -60,7 +60,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -443,27 +442,29 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun showLogoutDialog() {
         context?.let {
-            AlertDialog.Builder(it).apply {
-                try {
-                    setIcon(logoutIconDrawable)
-                } catch (e: Exception) {
-                    Timber.e(e)
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.run {
+                setTitle(it.getString(R.string.seller_home_logout_title))
+                setDescription(it.getString(R.string.seller_home_logout_confirm))
+                setPrimaryCTAText(it.getString(R.string.seller_home_logout_button))
+                setPrimaryCTAClickListener {
+                    doLogout(dialog)
                 }
-
-                setTitle(context.getString(R.string.seller_home_logout_title))
-                setMessage(context.getString(R.string.seller_home_logout_confirm))
-                setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                    val progressDialog = showProgressDialog()
-                    dialogInterface.dismiss()
-                    RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
-                    progressDialog.dismiss()
-                    activity?.finish()
+                setSecondaryCTAText(it.getString(R.string.seller_home_cancel))
+                setSecondaryCTAClickListener {
+                    dialog.dismiss()
                 }
-                setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                }
-            }.show()
+                show()
+            }
         }
+    }
+
+    private fun doLogout(dialog: DialogUnify) {
+        val progressDialog = showProgressDialog()
+        dialog.dismiss()
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
+        progressDialog.dismiss()
+        activity?.finish()
     }
 
     private fun showProgressDialog(): ProgressDialog {

@@ -45,12 +45,12 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun closeBottomSheet() {
         if (activity is InboxDetailActivity) {
-            ContactUsTracking.sendGTMInboxTicket(context, "",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickReason,
                     "Closing Reason Pop Up")
         } else {
-            ContactUsTracking.sendGTMInboxTicket(context, "",
+            ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickFilter,
                     "Closing Status Pop Up")

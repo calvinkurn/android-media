@@ -1,9 +1,11 @@
 package com.tokopedia.editshipping.ui.customview;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.ShippingInfoBottomSheetBinding;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -11,18 +13,13 @@ import com.tokopedia.unifyprinciples.Typography;
  */
 public class ShippingInfoBottomSheet {
 
-    Typography courierInformation;
-    Typography serviceNameTextView;
-
     public ShippingInfoBottomSheet(String information, String serviceName, Context activity) {
         BottomSheetDialog dialog = new BottomSheetDialog(activity);
-        dialog.setContentView(R.layout.shipping_info_bottom_sheet);
+        ShippingInfoBottomSheetBinding binding = ShippingInfoBottomSheetBinding.inflate(LayoutInflater.from(activity));
+        dialog.setContentView(binding.getRoot());
 
-        courierInformation = (Typography) dialog.findViewById(R.id.courier_information);
-        serviceNameTextView =(Typography) dialog.findViewById(R.id.courier_name_service);
-
-        courierInformation.setText(information);
-        serviceNameTextView.setText(serviceName);
+        binding.courierInformation.setText(information);
+        binding.courierNameService.setText(serviceName);
         dialog.show();
     }
 
