@@ -109,6 +109,14 @@ class BeautificationRobot {
         delay(1000)
     }
 
+    fun clickBeautificationCustomFaceTab() = chainable {
+
+    }
+
+    fun clickBeautificationPresetTab() = chainable {
+        click(context.getString(R.string.play_broadcaster_makeup_tab))
+    }
+
     fun clickCustomFace(position: Int) = chainable {
         clickItemRecyclerView(R.id.recycler_view, position)
     }

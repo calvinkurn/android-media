@@ -90,4 +90,12 @@ class BeautificationAnalyticTest {
             .clickCustomFace(0)
             .verifyEventAction("click - none beauty effects")
     }
+
+    @Test
+    fun testAnalytic_clickBeautificationTab() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickBeautificationPresetTab()
+            .verifyEventAction("click - beauty filter tab")
+    }
 }
