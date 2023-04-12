@@ -1049,59 +1049,13 @@ class ShipmentFragment :
             if (isTradeInDropOff) {
                 shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData)
             } else {
-                val shouldValidatePromo =
-                    !isForceReloadRates && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                if (shouldValidatePromo) {
-                    val cartString = shipmentCartItemModel.cartStringGroup
-                    val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
-                    for (ordersItem in validateUsePromoRequest.orders) {
-                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
-                            if (!ordersItem.codes.contains(courierItemData.selectedShipper.logPromoCode)) {
-                                ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
-                                ordersItem.boCode = courierItemData.selectedShipper.logPromoCode!!
-                            }
-                            ordersItem.shippingId = courierItemData.selectedShipper.shipperId
-                            ordersItem.spId = courierItemData.selectedShipper.shipperProductId
-                            ordersItem.freeShippingMetadata =
-                                courierItemData.selectedShipper.freeShippingMetadata
-                            ordersItem.boCampaignId = courierItemData.selectedShipper.boCampaignId
-                            ordersItem.shippingSubsidy =
-                                courierItemData.selectedShipper.shippingSubsidy
-                            ordersItem.benefitClass = courierItemData.selectedShipper.benefitClass
-                            ordersItem.shippingPrice =
-                                courierItemData.selectedShipper.shippingRate.toDouble()
-                            ordersItem.etaText = courierItemData.selectedShipper.etaText!!
-                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
-                        }
-                    }
-                    val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
-                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
-                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                            for (order in validateUsePromoRequest.orders) {
-                                if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                    !tmpShipmentCartItemModel.isFreeShippingPlus
-                                ) {
-                                    order.codes.remove(tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode)
-                                    order.boCode = ""
-                                }
-                            }
-                        }
-                    }
-                    shipmentPresenter.doValidateUseLogisticPromo(
-                        itemPosition,
-                        cartString,
-                        validateUsePromoRequest,
-                        courierItemData.selectedShipper.logPromoCode!!,
-                        true
-                    )
-                }
                 shipmentAdapter.setSelectedCourier(
                     itemPosition,
                     courierItemData,
                     false,
-                    shouldValidatePromo
+                    false
                 )
-                if (!shouldValidatePromo && shipmentPresenter.logisticDonePublisher != null) {
+                if (shipmentPresenter.logisticDonePublisher != null) {
                     shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
                     shipmentPresenter.logisticDonePublisher?.onCompleted()
                 }

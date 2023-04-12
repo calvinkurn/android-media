@@ -80,6 +80,7 @@ data class CartItemModel(
     val warehouseId: String = "",
     val ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     val cartItemPosition: Int = 0,
+    var isLastItemInOrder: Boolean = false,
     val addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel(),
 
     // new

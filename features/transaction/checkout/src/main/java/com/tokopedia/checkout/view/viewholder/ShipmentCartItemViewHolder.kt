@@ -350,8 +350,18 @@ class ShipmentCartItemViewHolder(
             ).removeDecimalSuffix()
             binding.textBundleSlashPrice.paintFlags =
                 binding.textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            productContainerLayoutParams.bottomMargin = 0
-            productInfoLayoutParams.bottomMargin = 0
+            productContainerLayoutParams.bottomMargin =
+                if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_FOOTER) {
+                    bottomMargin
+                } else {
+                    0
+                }
+            productInfoLayoutParams.bottomMargin =
+                if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_FOOTER) {
+                    bottomMargin
+                } else {
+                    0
+                }
         } else {
             ivProductImageLayoutParams.leftMargin = 0
             tvOptionalNoteToSellerLayoutParams.leftMargin = 0
@@ -362,6 +372,10 @@ class ShipmentCartItemViewHolder(
             } else {
                 binding.vSeparatorMultipleProductSameStore.show()
             }
+            productContainerLayoutParams.bottomMargin = bottomMargin
+            productInfoLayoutParams.bottomMargin = bottomMargin
+        }
+        if (cartItemModel.isLastItemInOrder) {
             productContainerLayoutParams.bottomMargin = bottomMargin
             productInfoLayoutParams.bottomMargin = bottomMargin
         }

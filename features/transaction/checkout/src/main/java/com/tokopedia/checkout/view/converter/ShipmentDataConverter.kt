@@ -213,6 +213,7 @@ class ShipmentDataConverter @Inject constructor() {
                 cartItemModels.addAll(productList)
                 cartItemIndex += productList.size
             }
+            cartItemModels.lastOrNull()?.isLastItemInOrder = true
             val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
             val shipmentCartItemModel = ShipmentCartItemModel(
                 cartStringGroup = groupShop.cartString,

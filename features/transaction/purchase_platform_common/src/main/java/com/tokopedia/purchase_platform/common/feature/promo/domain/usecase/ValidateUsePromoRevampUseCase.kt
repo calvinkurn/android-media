@@ -50,7 +50,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
 //        val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
         val validateUseGqlResponse = Gson().fromJson(
             """
-                {
+{
       "validate_use_promo_revamp": {
         "status": "OK",
         "message": [],
@@ -78,24 +78,24 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
           "is_tokopedia_gerai": false,
           "voucher_orders": [
             {
-              "code": "BOINTRAISLANDQA10",
+              "code": "BONOWSELLY",
               "success": true,
-              "unique_id": "6370771-0-6595013-125529137",
-              "cart_string_group": "6370771-0-6595013-174524131",
-              "shipping_id": 23,
-              "sp_id": 45,
+              "unique_id": "11530573-0-12941756-61465344",
+              "cart_string_group": "11530573-0-12941756-61465344",
+              "shipping_id": 29,
+              "sp_id": 58,
               "cart_id": 0,
               "order_id": 0,
-              "shop_id": 6370771,
+              "shop_id": 11530573,
               "is_po": 0,
               "duration": "0",
-              "warehouse_id": 6595013,
-              "address_id": 125529137,
+              "warehouse_id": 12941756,
+              "address_id": 61465344,
               "type": "logistic",
               "cashback_wallet_amount": 0,
-              "discount_amount": 11500,
+              "discount_amount": 17000,
               "invoice_description": "",
-              "title_description": "Bebas Ongkir 50k Targeting",
+              "title_description": "NOW! BEBAS ONGKIR hingga Rp75.000",
               "message": {
                 "state": "green",
                 "color": "#ade3af",
@@ -103,14 +103,14 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
               },
               "benefit_details": [
                 {
-                  "code": "BOINTRAISLANDTST10",
+                  "code": "BONOWSELLY",
                   "type": "",
                   "order_id": 1,
-                  "unique_id": "6370771-0-6595013-125529137",
-                  "discount_amount": 11500,
+                  "unique_id": "11530573-0-12941756-61465344",
+                  "discount_amount": 17000,
                   "discount_details": [
                     {
-                      "amount": 11500,
+                      "amount": 17000,
                       "data_type": "total_shipping_price"
                     }
                   ],
@@ -118,11 +118,39 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
                   "cashback_details": [],
                   "promo_type": {
                     "is_bebas_ongkir": true,
-                    "is_exclusive_shipping": true
+                    "is_exclusive_shipping": false
                   },
                   "benefit_product_details": [
                     {
-                      "product_id": 688020593,
+                      "product_id": 2770799122,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 1928749260,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 1928767512,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 1928767021,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 2399808496,
                       "cashback_amount": 0,
                       "cashback_amount_idr": 0,
                       "discount_amount": 0,
@@ -136,14 +164,14 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
           "benefit_details": [],
           "benefit_summary_info": {
             "final_benefit_text": "Total benefit anda: ",
-            "final_benefit_amount": 11500,
-            "final_benefit_amount_str": "Rp11.500",
+            "final_benefit_amount": 17000,
+            "final_benefit_amount_str": "Rp17.000",
             "summaries": [
               {
                 "description": "Total diskon: ",
                 "type": "discount",
-                "amount_str": "Rp11.500",
-                "amount": 11500,
+                "amount_str": "Rp17.000",
+                "amount": 17000,
                 "section_name": "Discount",
                 "section_description": "",
                 "details": [
@@ -151,8 +179,8 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
                     "section_name": "",
                     "description": "Total Potongan Ongkos Kirim ",
                     "type": "shipping_discount",
-                    "amount": 11500,
-                    "amount_str": "Rp11.500",
+                    "amount": 17000,
+                    "amount_str": "Rp17.000",
                     "points": 0,
                     "points_str": ""
                   }
@@ -168,9 +196,29 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
           },
           "tracking_details": [
             {
-              "product_id": 688020593,
-              "promo_codes_tracking": "BOINTRAISLANDTST10",
-              "promo_details_tracking": "L:3:11500:green"
+              "product_id": 1928767021,
+              "promo_codes_tracking": "BONOWSELLY",
+              "promo_details_tracking": "L:3:3400:green"
+            },
+            {
+              "product_id": 2399808496,
+              "promo_codes_tracking": "BONOWSELLY",
+              "promo_details_tracking": "L:3:3400:green"
+            },
+            {
+              "product_id": 2770799122,
+              "promo_codes_tracking": "BONOWSELLY",
+              "promo_details_tracking": "L:3:3400:green"
+            },
+            {
+              "product_id": 1928749260,
+              "promo_codes_tracking": "BONOWSELLY",
+              "promo_details_tracking": "L:3:3400:green"
+            },
+            {
+              "product_id": 1928767512,
+              "promo_codes_tracking": "BONOWSELLY",
+              "promo_details_tracking": "L:3:3400:green"
             }
           ],
           "tokopoints_detail": {
@@ -181,14 +229,14 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
             }
           },
           "ticker_info": {
-            "unique_id": "6370771-0-6595013-125529137",
-            "status_code": 700001,
-            "message": "Yay, ongkir untuk pesanan dalam transaksi ini ditanggung Tokopedia!"
+            "unique_id": "",
+            "status_code": 0,
+            "message": ""
           },
           "additional_info": {
             "message_info": {
-              "message": "Kamu bisa hemat Rp11.500",
-              "detail": "1 promo dipakai"
+              "message": "Makin hemat pakai promo",
+              "detail": ""
             },
             "error_detail": {
               "message": ""
@@ -198,15 +246,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
               "message": "",
               "detail": ""
             },
-            "usage_summaries": [
-              {
-                "description": "Bebas Ongkir",
-                "type": "bebas_ongkir",
-                "amount_str": "Rp11.500",
-                "amount": 11500,
-                "currency_details_str": ""
-              }
-            ],
+            "usage_summaries": [],
             "sp_ids": [],
             "promo_sp_ids": [],
             "poml_auto_applied": false
