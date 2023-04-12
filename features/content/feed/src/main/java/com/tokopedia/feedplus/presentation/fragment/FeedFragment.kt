@@ -150,7 +150,8 @@ class FeedFragment :
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
-            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
+//            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
+            postId = "223259185"
         )
 
         initView()
@@ -539,7 +540,7 @@ class FeedFragment :
                     } else {
                         adapter?.updateList(it.data.items)
                         if (it.data.pagination.totalData == it.data.items.size) {
-                            notifyItemSelected(0)
+                            view?.post { notifyItemSelected(0) }
                         }
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
