@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.postatc.view
 
 import android.content.DialogInterface
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,14 +32,12 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
@@ -65,8 +62,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                 putString(ARG_PAGE_SOURCE, pageSource)
             }
         }
-
-        private const val PEEK_HEIGHT_RATIO = 0.7
     }
 
     @Inject
@@ -120,14 +115,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        customPeekHeight =
-            (Resources.getSystem().displayMetrics.heightPixels * PEEK_HEIGHT_RATIO).roundToInt()
-                .toDp()
         clearContentPadding = true
+        isHideable = true
         showKnob = true
         showHeader = false
-        isDragable = true
-        isHideable = true
 
         binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
             setupView(it)

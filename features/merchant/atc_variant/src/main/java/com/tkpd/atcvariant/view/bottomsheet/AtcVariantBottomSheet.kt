@@ -638,6 +638,7 @@ class AtcVariantBottomSheet :
         val context = context ?: return false
         val productId = adapter.getHeaderDataModel()?.productId ?: return false
 
+        dismiss()
         PostAtcHelper.start(
             context,
             productId,
@@ -867,7 +868,8 @@ class AtcVariantBottomSheet :
 
     private fun doAddWishlistV2(productId: String) {
         viewModel.addWishlistV2(
-            productId, userSessionInterface.userId,
+            productId,
+            userSessionInterface.userId,
             object : WishlistV2ActionListener {
                 override fun onErrorAddWishList(
                     throwable: Throwable,
