@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:gravity="center_vertical|start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_width="match_parent"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_sheet_close"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_color_light_enable="@color/Unify_N400"
+            app:icon_name="CLOSE"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sheet_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/play_bottom_sheet_title_margin_start"
+            android:layout_marginLeft="@dimen/play_bottom_sheet_title_margin_start"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Barang &amp; Promo Pilihan"
+            />
+
+    </LinearLayout>
+
+</merge>
