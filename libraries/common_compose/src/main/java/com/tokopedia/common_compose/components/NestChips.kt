@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -87,24 +88,32 @@ fun NestChips(
 enum class Size { SMALL, MEDIUM, LARGE }
 
 
-@Preview(showBackground = true)
+@Preview("chip preview")
+@Preview("chip preview (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewChip() {
     NestTheme {
-        var active by remember { mutableStateOf(false) }
-        var size by remember { mutableStateOf(Size.SMALL) }
+        Surface {
+            var active by remember { mutableStateOf(false) }
+            var size by remember { mutableStateOf(Size.SMALL) }
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = size == Size.SMALL, onCheckedChange = { size = Size.SMALL })
-                Text("S", fontWeight = FontWeight.Bold)
-                Checkbox(checked = size == Size.MEDIUM, onCheckedChange = { size = Size.MEDIUM })
-                Text("M", fontWeight = FontWeight.Bold)
-                Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
-                Text("L", fontWeight = FontWeight.Bold)
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = size == Size.SMALL, onCheckedChange = { size = Size.SMALL })
+                    Text("S", fontWeight = FontWeight.Bold)
+                    Checkbox(
+                        checked = size == Size.MEDIUM,
+                        onCheckedChange = { size = Size.MEDIUM })
+                    Text("M", fontWeight = FontWeight.Bold)
+                    Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
+                    Text("L", fontWeight = FontWeight.Bold)
+                }
+                NestChips(text = "Normal", isSelected = active, size = size) { active = !active }
+                NestChips(text = "Chevron", isSelected = false, size = size, showChevron = true)
             }
-            NestChips(text = "Normal", isSelected = active, size = size) { active = !active }
-            NestChips(text = "Chevron", isSelected = false, size = size, showChevron = true)
         }
     }
 }
