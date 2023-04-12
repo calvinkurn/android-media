@@ -1,10 +1,9 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
@@ -46,8 +45,5 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     protected String getString(@StringRes int stringRes, String value) {
         return itemView.getContext().getString(stringRes, value);
-    }
-
-    public void onViewAttachedToWindow() {
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 
-object AnalyticsCategoryLandingPage {
+object CatalogAnalyticsCategoryLandingPage {
 
     private fun getIrisSessionId(): String {
         return TrackApp.getInstance().gtm.irisSessionId
@@ -21,7 +21,7 @@ object AnalyticsCategoryLandingPage {
     }
 
     fun sendImpressionOnTopCatalogsInCategoryEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         categoryName: String,
         categoryId: String,
         catalogName: String,
@@ -54,7 +54,7 @@ object AnalyticsCategoryLandingPage {
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
                 EventKeys.KEY_ECOMMERCE to hashMapOf(
@@ -101,7 +101,7 @@ object AnalyticsCategoryLandingPage {
     }
 
     fun sendImpressionOnCatalogListEvent(
-        trackingQueue: TrackingQueue,
+        trackingQueue: TrackingQueue?,
         categoryName: String,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
@@ -144,7 +144,7 @@ object AnalyticsCategoryLandingPage {
             TrackerConstant.USERID,
             userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     /**
@@ -215,7 +215,10 @@ object AnalyticsCategoryLandingPage {
     }
 
     fun sendClickCatalogOnCatalogListEvent(
-        categoryName: String,
+        eventLabel: String,
+        eventAction: String,
+        eventCategory: String,
+        trackerId: String,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
         userId: String
@@ -230,13 +233,13 @@ object AnalyticsCategoryLandingPage {
         }
         val bundle = Bundle().apply {
             putString(EventKeys.KEY_EVENT, EventKeys.SELECT_CONTENT)
-            putString(EventKeys.KEY_EVENT_CATEGORY, CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE)
-            putString(EventKeys.KEY_EVENT_ACTION, ActionKeys.CLICK_ON_CATALOG_LIST_IN_CATEGORY)
+            putString(EventKeys.KEY_EVENT_CATEGORY, eventCategory)
+            putString(EventKeys.KEY_EVENT_ACTION, eventAction)
             putString(
                 EventKeys.KEY_EVENT_LABEL,
-                "category: $categoryName - ${product.categoryID} - catalog: ${product.name} - ${product.id}"
+                eventLabel
             )
-            putString(EventKeys.TRACKER_ID, TrackerId.CLICK_ON_CATALOG_LIST_IN_CATEGORY)
+            putString(EventKeys.TRACKER_ID, trackerId)
             putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
             putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
             putString(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_HOME)

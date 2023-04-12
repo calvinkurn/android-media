@@ -2,13 +2,10 @@ package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDM
-import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -17,7 +14,7 @@ import com.tokopedia.user.session.UserSession
 class CatalogProductItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogProductDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogProductDM>(view) {
 
     private var dataModel: CatalogProductDM? = null
 
@@ -43,29 +40,57 @@ class CatalogProductItemVH(
 
     override fun bind(element: CatalogProductDM?) {
         dataModel = element
+        renderProductPrice()
+        renderProductImage()
+        renderProductTitle()
+        setUpClick()
+    }
+    private fun renderProductTitle() {
+        productTitle.text = dataModel?.catalogProduct?.name ?: ""
+    }
+
+    private fun renderProductPrice() {
         productPrice.text = String.format(
             itemView.context.getString(R.string.product_price),
             dataModel?.catalogProduct?.marketPrice?.minFmt,
             dataModel?.catalogProduct?.marketPrice?.maxFmt
         )
+    }
 
+    private fun renderProductImage() {
         dataModel?.catalogProduct?.imageUrl?.let { iconUrl ->
             productImage.loadImage(iconUrl)
         }
-        productTitle.text = element?.catalogProduct?.name ?: ""
+    }
+
+    private fun setUpClick() {
         productLayout.setOnClickListener {
             dataModel?.catalogProduct?.let { it1 ->
                 when (dataModel?.source) {
                     CatalogLibraryConstant.SOURCE_HOMEPAGE -> {
-                        AnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
+                        CatalogAnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
                             it1,
                             layoutPosition - 2,
                             UserSession(itemView.context).userId
                         )
                     }
                     CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
-                        AnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
-                            dataModel?.categoryName ?: "",
+                        CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
+                            "category: ${dataModel?.categoryName} - ${it1.categoryID} - catalog: ${it1.name} - ${it1.id}",
+                            ActionKeys.CLICK_ON_CATALOG_LIST_IN_CATEGORY,
+                            CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
+                            TrackerId.CLICK_ON_CATALOG_LIST_IN_CATEGORY,
+                            it1,
+                            layoutPosition - 2,
+                            UserSession(itemView.context).userId
+                        )
+                    }
+                    CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE -> {
+                        CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
+                            "category: ${dataModel?.categoryName} - ${it1.categoryID} - catalog: ${it1.name} - ${it1.id}",
+                            ActionKeys.CLICK_ON_CATALOG,
+                            CategoryKeys.CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
+                            TrackerId.CLICK_ON_CATALOG_LIST_IN_BRAND,
                             it1,
                             layoutPosition - 2,
                             UserSession(itemView.context).userId
@@ -89,6 +114,14 @@ class CatalogProductItemVH(
                     )
                 }
                 CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
+                    catalogLibraryListener.catalogProductsCategoryLandingImpression(
+                        dataModel?.categoryName ?: "",
+                        it,
+                        layoutPosition - 2,
+                        UserSession(itemView.context).userId
+                    )
+                }
+                CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE -> {
                     catalogLibraryListener.catalogProductsCategoryLandingImpression(
                         dataModel?.categoryName ?: "",
                         it,

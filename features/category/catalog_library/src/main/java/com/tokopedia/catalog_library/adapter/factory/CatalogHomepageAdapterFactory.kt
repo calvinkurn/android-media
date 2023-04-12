@@ -1,8 +1,8 @@
 package com.tokopedia.catalog_library.adapter.factory
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.model.datamodel.*
+import com.tokopedia.catalog_library.viewholder.CatalogLibraryAbstractViewHolder
 
 interface CatalogHomepageAdapterFactory {
 
@@ -22,5 +22,8 @@ interface CatalogHomepageAdapterFactory {
     fun type(data: CatalogContainerDM): Int
     fun type(data: CatalogProductLoadMoreDM): Int
 
-    fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
+    fun type(data: CatalogBrandCategoryDM): Int
+    fun type(data: CatalogLihatListItemDM): Int
+
+    fun createViewHolder(view: View, type: Int): CatalogLibraryAbstractViewHolder<*>
 }

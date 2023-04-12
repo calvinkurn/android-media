@@ -4,15 +4,12 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME
-import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME_RELEVANT_VALUE
-import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_NAME_SPECIAL_VALUE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.CREATIVE_SLOT
 import com.tokopedia.catalog_library.util.EventKeys.Companion.INDEX
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_BRAND
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_CATEGORY
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_ID
 import com.tokopedia.catalog_library.util.EventKeys.Companion.ITEM_NAME
-import com.tokopedia.catalog_library.util.EventKeys.Companion.KEY_ECOMMERCE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PRICE
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PRODUCT_VIEW
 import com.tokopedia.catalog_library.util.EventKeys.Companion.PROMOTIONS
@@ -24,7 +21,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 
-object AnalyticsHomePage {
+object CatalogAnalyticsHomePage {
 
     private fun getIrisSessionId(): String {
         return TrackApp.getInstance().gtm.irisSessionId
@@ -34,8 +31,11 @@ object AnalyticsHomePage {
         return TrackApp.getInstance().gtm
     }
 
-    fun sendImpressionOnSpecialCategoriesEvent(
-        trackingQueue: TrackingQueue,
+    fun sendImpressionOnCatalogsEvent(
+        trackerId : String,
+        eventAction : String,
+        creativeName : String,
+        trackingQueue: TrackingQueue?,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
@@ -45,29 +45,29 @@ object AnalyticsHomePage {
         val promotionMap = HashMap<String, Any>()
 
         promotionMap[ITEM_ID] = itemId
-        promotionMap[CREATIVE_NAME] = CREATIVE_NAME_SPECIAL_VALUE
+        promotionMap[CREATIVE_NAME] = creativeName
         promotionMap[CREATIVE_SLOT] = (creativeSlot).toString()
         promotionMap[ITEM_NAME] = itemName
         list.add(promotionMap)
         val eventModel = EventModel(
             PROMO_VIEW,
             CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
-            ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES,
+            eventAction,
             ""
         )
-        eventModel.key = "${ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES}-$creativeSlot"
+        eventModel.key = "${eventAction}-$creativeSlot"
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_SPECIAL_CATEGORIES
+        customDimensionMap[EventKeys.TRACKER_ID] = trackerId
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
-                KEY_ECOMMERCE to hashMapOf(
+                EventKeys.KEY_ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to list
                     )
@@ -75,73 +75,10 @@ object AnalyticsHomePage {
             ),
             customDimensionMap
         )
-    }
-
-    fun sendImpressionOnRelevantCatalogsEvent(
-        trackingQueue: TrackingQueue,
-        creativeSlot: Int,
-        itemId: String,
-        itemName: String,
-        userId: String
-    ) {
-        val list = ArrayList<Map<String, Any>>()
-        val promotionMap = HashMap<String, Any>()
-
-        promotionMap[ITEM_ID] = itemId
-        promotionMap[CREATIVE_NAME] = CREATIVE_NAME_RELEVANT_VALUE
-        promotionMap[CREATIVE_SLOT] = (creativeSlot).toString()
-        promotionMap[ITEM_NAME] = itemName
-        list.add(promotionMap)
-        val eventModel = EventModel(
-            PROMO_VIEW,
-            CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
-            ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS,
-            ""
-        )
-        eventModel.key = "${ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS}-$creativeSlot"
-        val customDimensionMap = HashMap<String, Any>()
-        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
-        customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        customDimensionMap[EventKeys.KEY_USER_ID] = userId
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_RELEVANT_CATALOGS
-        customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
-        customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
-
-        trackingQueue.putEETracking(
-            eventModel,
-            hashMapOf(
-                KEY_ECOMMERCE to hashMapOf(
-                    PROMO_VIEW to hashMapOf(
-                        PROMOTIONS to list
-                    )
-                )
-            ),
-            customDimensionMap
-        )
-    }
-
-    fun sendImpressionOnPopularBrandsEvent(
-        userId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.VIEW_ITEM)
-            .setEventAction(ActionKeys.IMPRESSION_ON_POPULAR_BRANDS)
-            .setEventCategory(CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE)
-            .setEventLabel("")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.IMPRESSION_ON_POPULAR_BRANDS)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_HOME)
-//            .setCustomProperty(EventKeys.PROMOTIONS, promotions)
-            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
-            .setUserId(userId)
-            .build()
-            .send()
     }
 
     fun sendImpressionOnCatalogListEvent(
-        trackingQueue: TrackingQueue,
-        categoryName: String,
+        trackingQueue: TrackingQueue?,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
         userId: String
@@ -174,7 +111,7 @@ object AnalyticsHomePage {
             ),
             TrackerConstant.USERID, userId
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(dataLayer)
+        trackingQueue?.putEETracking(dataLayer)
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.tokopedia.catalog_library.model.raw.gql
 
 const val GQL_CATALOG_LIST: String =
-    """query catalogGetList(${'$'}category_id: String!, ${'$'}sortType: String!, ${'$'}rows: String!, ${'$'}page: String!) {
-    catalogGetList(category_id: ${'$'}category_id, sortType: ${'$'}sortType, rows: ${'$'}rows, page: ${'$'}page) {
+    """query catalogGetList(${'$'}category_id: String!, ${'$'}sortType: String!, ${'$'}rows: String!, ${'$'}page: String!,${'$'}brand_id: String!) {
+    catalogGetList(category_id: ${'$'}category_id, sortType: ${'$'}sortType, rows: ${'$'}rows, page: ${'$'}page,brand_id: ${'$'}brand_id) {
         header{
           code
           message

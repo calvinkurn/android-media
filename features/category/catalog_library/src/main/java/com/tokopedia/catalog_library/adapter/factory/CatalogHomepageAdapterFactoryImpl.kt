@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.adapter.factory
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.viewholder.*
@@ -39,7 +38,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
     }
 
     override fun type(data: CatalogLihatItemDM): Int {
-        return CatalogLihatItemVH.LAYOUT
+        return CatalogLihatGridItemVH.LAYOUT
     }
 
     override fun type(data: CatalogTopFiveDM): Int {
@@ -62,7 +61,15 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogProductLoadMoreVH.LAYOUT
     }
 
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
+    override fun type(data: CatalogBrandCategoryDM): Int {
+        return CatalogBrandCategoryItemVH.LAYOUT
+    }
+
+    override fun type(data: CatalogLihatListItemDM): Int {
+        return CatalogLihatListItemVH.LAYOUT
+    }
+
+    override fun createViewHolder(view: View, type: Int): CatalogLibraryAbstractViewHolder<*> {
         return when (type) {
             CatalogTopFiveItemVH.LAYOUT -> CatalogTopFiveItemVH(
                 view,
@@ -89,11 +96,19 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 catalogLibraryListener
             )
             CatalogLihatVH.LAYOUT -> CatalogLihatVH(view, catalogLibraryListener, recycledViewPool)
-            CatalogLihatItemVH.LAYOUT -> CatalogLihatItemVH(
+            CatalogLihatGridItemVH.LAYOUT -> CatalogLihatGridItemVH(
+                view,
+                catalogLibraryListener
+            )
+            CatalogLihatListItemVH.LAYOUT -> CatalogLihatListItemVH(
                 view,
                 catalogLibraryListener
             )
             CatalogProductItemVH.LAYOUT -> CatalogProductItemVH(
+                view,
+                catalogLibraryListener
+            )
+            CatalogBrandCategoryItemVH.LAYOUT -> CatalogBrandCategoryItemVH(
                 view,
                 catalogLibraryListener
             )
@@ -105,7 +120,8 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 view
             )
             CatalogShimmerVH.LAYOUT -> CatalogShimmerVH(view)
-            else -> super.createViewHolder(view, type)
+
+            else -> super.createViewHolder(view, type) as CatalogLibraryAbstractViewHolder<*>
         }
     }
 }

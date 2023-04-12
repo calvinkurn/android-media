@@ -16,14 +16,15 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogBrandCategoryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.util.*
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
+import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandLandingPage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_CATEGORY_HEADER
+import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -38,14 +39,16 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
+class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
 
     private var globalError: GlobalError? = null
+    private var brandIdStr = ""
+    private var brandNameStr = ""
     private var categoryIdStr = ""
-    private var categoryName = ""
+    private var categoryNameStr = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
+    private var header: HeaderUnify? = null
     private val productsTrackingSet = HashSet<String>()
-    private val topCatalogsTrackingSet = HashSet<String>()
 
     @JvmField
     @Inject
@@ -59,10 +62,9 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     @JvmField
     var trackingQueue: TrackingQueue? = null
 
-
-    private val landingPageViewModel by lazy {
+    private val brandLandingPageViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLandingPageVM::class.java)
+            ViewModelProvider(this, it).get(CatalogLihatSemuaPageVM::class.java)
         }
     }
 
@@ -79,15 +81,17 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.shimmerForLandingPage()
+            it.shimmerForBrandLandingPage()
         }
 
     companion object {
-        const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
-        fun newInstance(categoryId: String?): CatalogLandingPageFragment {
-            return CatalogLandingPageFragment().apply {
+        const val ARG_BRAND_ID = "ARG_BRAND_ID"
+        const val ARG_BRAND_NAME = "ARG_BRAND_NAME"
+        fun newInstance(brandId: String?, brandName: String?): CatalogBrandLandingPageFragment {
+            return CatalogBrandLandingPageFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_CATEGORY_ID, categoryId)
+                    putString(ARG_BRAND_ID, brandId)
+                    putString(ARG_BRAND_NAME, brandName)
                 }
             }
         }
@@ -97,7 +101,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         get() = catalogLandingRecyclerView
         set(value) {}
 
-    override var source: String = CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
+    override var source: String = CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE
 
     override fun getScreenName(): String = ""
 
@@ -119,18 +123,19 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         super.onViewCreated(view, savedInstanceState)
         extractArguments()
         initViews(view)
-        setCategory(categoryIdStr)
+        initHeaderTitle(view)
+        setBrandId(brandIdStr)
         setUpBase()
         initData()
     }
 
     private fun extractArguments() {
-        categoryIdStr = arguments?.getString(ARG_CATEGORY_ID, "") ?: ""
+        brandIdStr = arguments?.getString(ARG_BRAND_ID, "") ?: ""
+        brandNameStr = arguments?.getString(ARG_BRAND_NAME, "") ?: ""
     }
 
     private fun initViews(view: View) {
         globalError = view.findViewById(R.id.global_error_page)
-        initHeaderTitle(view)
         setupRecyclerView(view)
     }
 
@@ -150,33 +155,34 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun setObservers() {
-        landingPageViewModel?.catalogLandingPageLiveDataResponse?.observe(viewLifecycleOwner) {
+        brandLandingPageViewModel?.catalogLihatLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
+                        (component as? CatalogBrandCategoryDM)?.selectedCategoryId = categoryIdStr
                         catalogLibraryUiUpdater.updateModel(component)
                     }
                     updateUi()
                 }
 
                 is Fail -> {
-                    (it.throwable as? CatalogLibraryResponseException)?.let { exception ->
-                        catalogLibraryUiUpdater.removeModel(exception.shimmerType)
-                        updateUi()
-                    }
+                    onError(it.throwable)
                 }
             }
+        }
 
-            landingPageViewModel?.categoryName?.observe(viewLifecycleOwner) { categoryName ->
-                this.categoryName = categoryName
-                view?.let { v -> initHeaderTitle(v) }
+        brandLandingPageViewModel?.brandNameLiveData?.observe(viewLifecycleOwner){ brandName ->
+            if(brandName.isNotBlank()){
+                header?.headerTitle = brandName
+                brandNameStr = brandName
             }
         }
     }
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
-            headerTitle = categoryName
+            header = this
+            headerTitle = brandNameStr
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -184,6 +190,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun updateUi() {
+        catalogLandingRecyclerView?.show()
         val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -207,27 +214,18 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
             catalogLandingRecyclerView?.show()
             global_error_page.hide()
             addShimmer()
-            updateUi()
             getDataFromViewModel()
             getProducts()
         }
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel?.getCatalogTopFiveData(
-            categoryIdStr,
-            SORT_TYPE_TOP_FIVE,
-            TOTAL_ROWS_TOP_FIVE
-        )
-        landingPageViewModel?.getCatalogMostViralData(
-            categoryIdStr,
-            SORT_TYPE_VIRAL,
-            TOTAL_ROWS_VIRAL
-        )
+        brandLandingPageViewModel?.getLihatSemuaByBrandData(categoryIdStr, brandIdStr, false)
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.shimmerForLandingPage()
+        catalogLibraryUiUpdater.shimmerForBrandLandingPage()
+        updateUi()
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -258,16 +256,68 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         }
     }
 
+    override fun onBrandCategoryArrowClick() {
+        super.onBrandCategoryArrowClick()
+        openBottomSheet(brandIdStr)
+    }
+
+    override fun onBrandCategoryTabSelected(categoryName: String, categoryId: String, position: Int) {
+        super.onBrandCategoryTabSelected(categoryName, categoryId, position)
+        CatalogAnalyticsBrandLandingPage.sendOnTabClickEvent(
+            trackingQueue,
+            brandNameStr,
+            brandIdStr,
+            categoryNameStr,
+            categoryIdStr,
+            position,
+            userSessionInterface?.userId ?: ""
+        )
+        onChangeCategory(categoryName, categoryId, true)
+    }
+
+    override fun onChangeCategory(categoryName: String, categoryId: String, isTabSelected: Boolean) {
+        super.onChangeCategory(categoryName, categoryId, isTabSelected)
+        categoryIdStr = categoryId
+        categoryNameStr = categoryName
+        val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER] as? CatalogBrandCategoryDM
+        catalogLibraryUiUpdater.clearAll()
+        if (isTabSelected) {
+            categoryModel?.selectedCategoryId = categoryId
+            categoryModel?.let { catalogLibraryUiUpdater.updateModel(it) }
+        } else {
+            categoryModel?.copy()?.let { cm ->
+                cm.selectedCategoryId = categoryId
+                catalogLibraryUiUpdater.updateModel(cm)
+            }
+        }
+        setCategory(categoryId)
+        getProducts()
+    }
+
+    private fun openBottomSheet(brandIdStr: String) {
+        CatalogAnalyticsBrandLandingPage.sendClickExpandBottomSheetButtonEvent(
+            "brand page: $brandNameStr - $brandIdStr - category tab: {category-name/$categoryNameStr} - {category-id/$categoryIdStr}",
+            userSessionInterface?.userId ?: ""
+        )
+        val catalogComparisonBottomSheet = CatalogLibraryComponentBottomSheet.newInstance(
+            categoryIdStr,
+            brandIdStr
+        )
+        catalogComparisonBottomSheet.show(childFragmentManager, CatalogLibraryComponentBottomSheet::class.java.name)
+    }
+
     override fun catalogProductsCategoryLandingImpression(
         catgoryName: String,
         product: CatalogListResponse.CatalogGetList.CatalogsProduct,
         position: Int,
         userId: String
     ) {
-        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST_IN_CATEGORY}-$position"
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG}-$position"
         if (!productsTrackingSet.contains(uniqueTrackingKey)) {
-            CatalogAnalyticsCategoryLandingPage.sendImpressionOnCatalogListEvent(
+            CatalogAnalyticsBrandLandingPage.sendImpressionOnCatalogListEvent(
                 trackingQueue,
+                brandNameStr,
+                brandIdStr,
                 catgoryName,
                 product,
                 position,
@@ -277,31 +327,15 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         }
     }
 
-    override fun topFiveImpressionCategoryLandingImpression(
-        categoryName: String,
-        categoryId: String,
-        catalogName: String,
-        catalogId: String,
-        position: Int,
-        userId: String
-    ) {
-        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_TOP_5_CATALOGS_IN_CATEGORY}-$position"
-        if (!topCatalogsTrackingSet.contains(uniqueTrackingKey)) {
-            CatalogAnalyticsCategoryLandingPage.sendImpressionOnTopCatalogsInCategoryEvent(
-                trackingQueue,
-                categoryName,
-                categoryId,
-                catalogName,
-                catalogId,
-                position,
-                userId
-            )
-            topCatalogsTrackingSet.add(uniqueTrackingKey)
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
+    }
+
+    fun dismissKategoriBottomSheet() {
+        CatalogAnalyticsBrandLandingPage.sendClickCloseBottomSheetButtonEvent(
+            "$brandNameStr - $brandIdStr",
+            userSessionInterface?.userId ?: ""
+        )
     }
 }

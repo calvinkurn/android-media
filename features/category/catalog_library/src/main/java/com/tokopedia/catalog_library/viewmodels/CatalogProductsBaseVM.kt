@@ -7,12 +7,13 @@ import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SOURCE_CATEGORY_BRAND_LANDING_PAGE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductsBaseVM @Inject constructor(
+class CatalogProductsBaseVM @Inject constructor(
     private val catalogProductsUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
@@ -24,12 +25,17 @@ class ProductsBaseVM @Inject constructor(
     val shimmerLiveData: LiveData<Boolean> =
         _shimmerLiveData
 
+    private var sourceScreen: String = ""
+
     fun getCatalogListData(
+        source: String,
         categoryId: String,
         sortType: Int,
         rows: Int,
-        page: Int = 1
+        page: Int = 1,
+        brandId: String = ""
     ) {
+        sourceScreen = source
         addProductShimmer()
         catalogProductsUseCase.cancelJobs()
         catalogProductsUseCase.getCatalogProductsData(
@@ -38,7 +44,8 @@ class ProductsBaseVM @Inject constructor(
             categoryId,
             sortType,
             rows,
-            page
+            page,
+            brandId
         )
     }
 
@@ -82,27 +89,18 @@ class ProductsBaseVM @Inject constructor(
         page: Int = 1
     ): ArrayList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
-        val title = if (categoryName == "") {
+        val title = if (categoryName.isBlank()) {
             CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE
         } else {
             "Semua katalog ${categoryName.lowercase()}"
         }
-        val source = if (categoryName == "") {
-            CatalogLibraryConstant.SOURCE_HOMEPAGE
-        } else {
-            CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
-        }
-        if (page == 1) {
+        if (sourceScreen != SOURCE_CATEGORY_BRAND_LANDING_PAGE && page == 1) {
             val productHeaderModel = CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
                 null,
-                marginForTitle = if (categoryName == "") {
-                    Margin(36, 16, 0, 16)
-                } else {
-                    Margin(32, 16, 0, 16)
-                }
+                marginForTitle = Margin(32, 16, 12, 16)
             )
             visitableList.add(productHeaderModel)
         }
@@ -112,7 +110,7 @@ class ProductsBaseVM @Inject constructor(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     "${CatalogLibraryConstant.CATALOG_PRODUCT}_${product.id}",
                     product,
-                    source,
+                    sourceScreen,
                     categoryName
                 )
             )

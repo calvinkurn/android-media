@@ -53,8 +53,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ui.activity.PopularBrandsActivity"
+            android:name=".ui.activity.CatalogLibraryPopularBrandsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -67,6 +68,24 @@
                 <data
                     android:host="@string/catalog_library_host"
                     android:pathPattern="@string/applink_catalog_brand_popular"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.CatalogLibraryBrandLandingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/catalog_library_host"
+                    android:pathPattern="@string/applink_catalog_detail"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

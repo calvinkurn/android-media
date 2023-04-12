@@ -6,7 +6,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 
-object AnalyticsLihatSemuaPage {
+object CatalogAnalyticsLihatSemuaPage {
     private fun getIrisSessionId(): String {
         return TrackApp.getInstance().gtm.irisSessionId
     }
@@ -16,7 +16,11 @@ object AnalyticsLihatSemuaPage {
     }
 
     fun sendImpressionOnCategoryListEvent(
-        trackingQueue: TrackingQueue,
+        trackerId : String,
+        eventCategory : String,
+        eventAction : String,
+        eventLabel : String,
+        trackingQueue: TrackingQueue?,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -40,9 +44,9 @@ object AnalyticsLihatSemuaPage {
         list.add(promotionMap)
         val eventModel = EventModel(
             EventKeys.PROMO_VIEW,
-            CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA,
-            ActionKeys.IMPRESSION_ON_CATEGORY_LIST,
-            ""
+            eventCategory,
+            eventAction,
+            eventLabel
         )
         eventModel.key = "${ActionKeys.IMPRESSION_ON_CATEGORY_LIST}-$parentCategoryId-$position"
         val customDimensionMap = HashMap<String, Any>()
@@ -51,11 +55,11 @@ object AnalyticsLihatSemuaPage {
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
         customDimensionMap[EventKeys.KEY_EVENT_LABEL] =
             ("L1 name: $parentCategoryName - L1 ID: $parentCategoryId - sort & filter: $view - $order")
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_CATEGORY_LIST
+        customDimensionMap[EventKeys.TRACKER_ID] = trackerId
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
-        trackingQueue.putEETracking(
+        trackingQueue?.putEETracking(
             eventModel,
             hashMapOf(
                 EventKeys.KEY_ECOMMERCE to hashMapOf(

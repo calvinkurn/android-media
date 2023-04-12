@@ -1,22 +1,24 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
-import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CategoryKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlin.LazyThreadSafetyMode.NONE
 
-class CatalogLihatItemVH(
+class CatalogLihatGridItemVH(
     val view: View,
     private val catalogLibraryListener:
         CatalogLibraryListener
-) : AbstractViewHolder<CatalogLihatItemDM>(view) {
+) : CatalogLibraryAbstractViewHolder<CatalogLihatItemDM>(view) {
     var dataModel: CatalogLihatItemDM? = null
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
@@ -32,7 +34,7 @@ class CatalogLihatItemVH(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_lihat_grid
+        val LAYOUT = R.layout.item_catalog_library_lihat_grid
     }
 
     override fun bind(element: CatalogLihatItemDM?) {
@@ -51,7 +53,7 @@ class CatalogLihatItemVH(
         }
         lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
-            AnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
+            CatalogAnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
                 element?.rootCategoryName ?: "",
                 element?.rootCategoryId ?: "",
                 element?.catalogLibraryChildDataListItem?.categoryName ?: "",
@@ -68,6 +70,10 @@ class CatalogLihatItemVH(
     override fun onViewAttachedToWindow() {
         dataModel?.let {
             catalogLibraryListener.categoryListImpression(
+                TrackerId.IMPRESSION_ON_CATEGORY_LIST,
+                CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA,
+                ActionKeys.IMPRESSION_ON_CATEGORY_LIST,
+                "",
                 it.rootCategoryName,
                 it.rootCategoryId,
                 it.catalogLibraryChildDataListItem.categoryName ?: "",
