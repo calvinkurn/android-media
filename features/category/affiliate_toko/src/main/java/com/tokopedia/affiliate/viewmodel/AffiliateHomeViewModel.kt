@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
@@ -359,8 +360,8 @@ class AffiliateHomeViewModel @Inject constructor(
             try {
                 _unreadNotificationCount.value =
                     affiliateUnreadNotificationUseCase.getUnreadNotifications()
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }
