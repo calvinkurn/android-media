@@ -61,7 +61,10 @@ fun NestSortFilter(
                     isSelected = it.isSelected,
                     size = chipSize,
                     showChevron = it.showChevron,
-                    onClick = { onItemClicked(it) }
+                    onClick = {
+                        onItemClicked(it)
+                        it.onClick()
+                    }
                 )
             }
         }
