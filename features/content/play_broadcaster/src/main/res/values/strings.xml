@@ -325,6 +325,12 @@
 
     <string name="play_title_bottom_sheet_hint">Promo menarik cuma hari ini!</string>
 
+    <!-- shorts x affiliate -->
     <string name="play_shorts_affiliate_tnc_title">Daftar Tokopedia Affiliate, yuk!</string>
     <string name="play_shorts_affiliate_tnc_description">Supaya kamu bisa promosikan produk sambil ngonten di Tokopedia Play! Dapatkan komisi jika ada penonton yang beli produknya.</string>
+    <string name="play_shorts_affiliate_success_title">Hai %s, selamat bergabung di\nTokopedia Affiliate!</string>
+    <string name="play_shorts_affiliate_success_description">Ayo bikin konten, tag produk yang mau kamu promosikan, &amp; dapat komisi jika ada yang beli!</string>
+    <string name="play_shorts_affiliate_success_description_learn_more">Penasaran tentang Tokopedia Affiliate? Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_description_learn_more_action">Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_button_next">Lanjut Buat Konten</string>
 </resources>

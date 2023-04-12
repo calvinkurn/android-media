@@ -39,12 +39,8 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayAffiliateTnCBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateSuccessBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateTnCBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
@@ -229,6 +225,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                         analytic.clickCloseSwitchAccount(viewModel.selectedAccount)
                     }
                 })
+            }
+            is PlayShortsAffiliateSuccessBottomSheet -> {
+                childFragment.setupData(viewModel.selectedAccount.name)
             }
         }
     }
@@ -568,7 +567,13 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun openShortsAffiliateTncBottomSheet() {
-        PlayAffiliateTnCBottomSheet
+        PlayShortsAffiliateTnCBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun openShortsAffiliateSuccessBottomSheet() {
+        PlayShortsAffiliateSuccessBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

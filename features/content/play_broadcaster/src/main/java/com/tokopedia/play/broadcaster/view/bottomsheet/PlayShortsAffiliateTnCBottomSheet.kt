@@ -15,18 +15,18 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.setSpanOnText
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayAffiliateTncBinding
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayShortsXAffiliateTncBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
-class PlayAffiliateTnCBottomSheet @Inject constructor(
+class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     private val router: Router,
 ) : BottomSheetUnify() {
 
-    private var _binding: BottomSheetPlayAffiliateTncBinding? = null
-    private val binding: BottomSheetPlayAffiliateTncBinding
+    private var _binding: BottomSheetPlayShortsXAffiliateTncBinding? = null
+    private val binding: BottomSheetPlayShortsXAffiliateTncBinding
         get() = _binding!!
 
     private val boldSpan = StyleSpan(Typeface.BOLD)
@@ -84,7 +84,7 @@ class PlayAffiliateTnCBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayAffiliateTncBinding.inflate(
+        _binding = BottomSheetPlayShortsXAffiliateTncBinding.inflate(
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)
@@ -103,7 +103,7 @@ class PlayAffiliateTnCBottomSheet @Inject constructor(
             /** TODO
              * submit the tnc later
              */
-            if (binding.btnContinue.isEnabled) dismiss()
+            if (it.isEnabled) dismiss()
         }
     }
 
@@ -126,18 +126,18 @@ class PlayAffiliateTnCBottomSheet @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "PlayAffiliateTnCBottomSheet"
+        private const val TAG = "PlayShortsXAffiliateTncBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayAffiliateTnCBottomSheet {
+        ): PlayShortsAffiliateTnCBottomSheet {
             val oldInstance =
-                fragmentManager.findFragmentByTag(TAG) as? PlayAffiliateTnCBottomSheet
+                fragmentManager.findFragmentByTag(TAG) as? PlayShortsAffiliateTnCBottomSheet
             return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayAffiliateTnCBottomSheet::class.java.name
-            ) as PlayAffiliateTnCBottomSheet)
+                PlayShortsAffiliateTnCBottomSheet::class.java.name
+            ) as PlayShortsAffiliateTnCBottomSheet)
         }
     }
 }
