@@ -88,6 +88,8 @@ class FeedPostViewModel @Inject constructor(
         get() = _likeKolResp
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
+    private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
+
     private var cursor = ""
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
@@ -338,6 +340,20 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun suspendLikeContent(contentId: String, rowNumber: Int) {
+        _suspendedLikeData.value = LikeFeedDataModel(
+            contentId,
+            rowNumber,
+            FeedLikeAction.Like,
+        )
+    }
+
+    fun processSuspendedLike() {
+        _suspendedLikeData.value?.let {
+            likeContent(it.contentId, it.action, it.rowNumber)
+        }
+    }
+
     fun likeContent(contentId: String, action: FeedLikeAction, rowNumber: Int) {
         _likeKolResp.value = FeedResult.Loading
         viewModelScope.launch {
@@ -353,7 +369,7 @@ class FeedPostViewModel @Inject constructor(
                 if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
                     throw CustomUiMessageThrowable(R.string.feed_like_error_message)
                 }
-                val mappedResponse = mapLikeResponse(action, rowNumber)
+                val mappedResponse = mapLikeResponse(contentId, action, rowNumber)
                 _likeKolResp.value = FeedResult.Success(mappedResponse)
             } catch (it: Throwable) {
                 _likeKolResp.value = FeedResult.Failure(it)
@@ -388,8 +404,9 @@ class FeedPostViewModel @Inject constructor(
             false
         }
 
-    private fun mapLikeResponse(likeAction: FeedLikeAction, rowNumber: Int) =
+    private fun mapLikeResponse(contentId: String, likeAction: FeedLikeAction, rowNumber: Int) =
         LikeFeedDataModel(
+            contentId = contentId,
             rowNumber = rowNumber,
             action = likeAction
         )
