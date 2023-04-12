@@ -30,7 +30,6 @@ import com.tokopedia.product.detail.postatc.view.component.recommendation.Recomm
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Result
@@ -259,37 +258,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
-        if (recommendationItem.isTopAds) {
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitClickUrl(
-                TOPADS_CLASS_NAME,
-                recommendationItem.clickUrl,
-                productId,
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
-        }
-        commonTracker?.let {
-            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
-        }
         goToProduct(productId)
     }
 
-    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
-        if (recommendationItem.isTopAds) {
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitImpressionUrl(
-                TOPADS_CLASS_NAME,
-                recommendationItem.trackerImageUrl,
-                recommendationItem.productId.toString(),
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
-        }
-        commonTracker?.let {
-            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
-        }
-    }
+    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {}
 
     /**
      * Listener Area - End

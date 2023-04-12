@@ -156,7 +156,7 @@ data class RatesParam(
         "products" to products,
         "psl_code" to psl_code,
         "unique_id" to unique_id,
-        "warehouseId" to warehouse_id
+        "warehouse_id" to warehouse_id
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
