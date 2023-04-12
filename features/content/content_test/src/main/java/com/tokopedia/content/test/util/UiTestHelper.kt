@@ -26,6 +26,12 @@ fun click(text: String) {
     select(text).clickView()
 }
 
+fun click(@IdRes id: Int, middlewareAction: ViewInteraction.() -> Unit) {
+    select(id).apply {
+        middlewareAction()
+    }.clickView()
+}
+
 fun clickWithMatcher(
     vararg matchers: Matcher<View>
 ) {

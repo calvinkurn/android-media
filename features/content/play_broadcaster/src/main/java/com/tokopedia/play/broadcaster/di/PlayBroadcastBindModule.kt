@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
 import com.tokopedia.effect.EffectManager
 import com.tokopedia.effect.EffectManagerImpl
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
@@ -67,6 +69,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindContentCoachMarkSharedPref(contentCoachMarkSharedPref: ContentCoachMarkSharedPrefImpl): ContentCoachMarkSharedPref
 
     /**
      * Analytic

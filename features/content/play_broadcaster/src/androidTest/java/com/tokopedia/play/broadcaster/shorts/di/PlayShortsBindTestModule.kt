@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.effect.util.asset.manager.AssetManager
@@ -169,4 +171,8 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindContentCoachMarkSharedPref(contentCoachMarkSharedPref: ContentCoachMarkSharedPrefImpl): ContentCoachMarkSharedPref
 }

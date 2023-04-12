@@ -1,15 +1,15 @@
 package com.tokopedia.play.broadcaster.setup.beautification
 
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemRecyclerView
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
@@ -44,19 +44,19 @@ class BeautificationRobot {
 
     private val cassavaValidator = PlayBroadcastCassavaValidator.buildForBeautification(cassavaTestRule)
 
-    private val mockDispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
-    private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
-    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockConfigStore: HydraConfigStore = mockk(relaxed = true)
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-    private val mockBroadcaster: Broadcaster = mockk(relaxed = true)
-    private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
-    private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    val mockContentCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
+    val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
+    val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+    val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    val mockBroadcaster: Broadcaster = mockk(relaxed = true)
+    val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
+    val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
 
     private val playBroadcastTestModule = PlayBroadcastTestModule(
         activityContext = context,
         mockUserSession = mockUserSession,
-        mockBroadcaster = mockBroadcaster
+        mockBroadcaster = mockBroadcaster,
+        mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(
@@ -100,6 +100,16 @@ class BeautificationRobot {
     fun clickBeautificationMenu() = chainable {
         clickItemRecyclerView(R.id.rv_menu, 4)
         delay(1000)
+    }
+
+    fun clickCloseBeautificationCoachMark() = chainable {
+        click(com.tokopedia.coachmark.R.id.simple_ic_close) {
+            inRoot(RootMatchers.isPlatformPopup())
+        }
+    }
+
+    fun performDelay(delayInMillis: Long = 500) = chainable {
+        delay(delayInMillis)
     }
 
     fun verifyEventAction(eventAction: String) = chainable {

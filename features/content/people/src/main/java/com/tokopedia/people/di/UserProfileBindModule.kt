@@ -1,5 +1,7 @@
 package com.tokopedia.people.di
 
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.analytic.tracker.UserProfileTrackerImpl
 import com.tokopedia.people.data.UserFollowRepository
@@ -32,4 +34,8 @@ abstract class UserProfileBindModule {
     @Binds
     @UserProfileScope
     abstract fun bindUserProfileTracker(userProfileTracker: UserProfileTrackerImpl): UserProfileTracker
+
+    @Binds
+    @UserProfileScope
+    abstract fun bindContentCoachMarkSharedPref(coachMarkSharedPref: ContentCoachMarkSharedPrefImpl): ContentCoachMarkSharedPref
 }

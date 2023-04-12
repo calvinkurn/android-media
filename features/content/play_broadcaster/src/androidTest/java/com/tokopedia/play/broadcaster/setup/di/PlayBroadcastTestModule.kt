@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.effect.EffectManager
 import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -55,6 +56,7 @@ class PlayBroadcastTestModule(
     private val activityContext: Context,
     private val mockUserSession: UserSessionInterface,
     private val mockBroadcaster: Broadcaster,
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
 ) {
 
     @Provides
@@ -68,6 +70,10 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideBroadcaster(): Broadcaster = mockBroadcaster
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideContentCoachMarkSharedPref(): ContentCoachMarkSharedPref = mockCoachMarkSharedPref
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
