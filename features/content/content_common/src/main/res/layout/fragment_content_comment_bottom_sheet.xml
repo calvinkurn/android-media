@@ -64,7 +64,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_et_comment"
             android:hint="@string/content_comment_edit_text_hint"
-            android:inputType="textMultiLine|textVisiblePassword"
+            android:inputType="textMultiLine"
             android:paddingStart="@dimen/unify_space_16"
             android:paddingTop="6dp"
             android:paddingEnd="@dimen/content_common_space_12"
