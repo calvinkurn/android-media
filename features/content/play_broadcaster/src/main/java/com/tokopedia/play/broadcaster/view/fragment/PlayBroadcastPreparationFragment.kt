@@ -583,11 +583,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (coachMark == null) coachMark = CoachMark2(requireContext())
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
+        autoScrollToPerformanceDashBoardBanner()
+
         if (coachMarkItems.size == 1) {
             coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
         } else {
             coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
+    }
+
+    private fun autoScrollToPerformanceDashBoardBanner() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title == getString(R.string.play_bro_banner_performance_dashboard_coachmark_title)) {
+                    val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
+                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
+                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                }
+            }
+        })
     }
 
     private fun observeConfigInfo() {

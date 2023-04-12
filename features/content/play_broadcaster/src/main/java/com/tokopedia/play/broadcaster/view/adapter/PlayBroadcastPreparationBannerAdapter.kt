@@ -31,4 +31,12 @@ class PlayBroadcastPreparationBannerAdapter(
         fun onBannerClick(data: PlayBroadcastPreparationBannerModel)
     }
 
+    fun getPerformanceDashboardPosition(): Int {
+        itemList.forEachIndexed { index, playBroadcastPreparationBannerModel ->
+            if (playBroadcastPreparationBannerModel.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD)
+                return index
+        }
+        return -1
+    }
+
 }
