@@ -556,8 +556,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         val coachMarkPerformanceDashboard = CoachMark2Item(
             anchorView = binding.rvBannerPreparation,
-            title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
-            description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
             position = CoachMark2.POSITION_BOTTOM,
         )
 
@@ -595,7 +595,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun autoScrollToPerformanceDashBoardBanner() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title == getString(R.string.play_bro_banner_performance_dashboard_coachmark_title)) {
+                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
                     val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
                     val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
                     binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)

@@ -325,8 +325,8 @@ class PlayShortsPreparationFragment @Inject constructor(
 
         val coachMarkPerformanceDashboard = CoachMark2Item(
             anchorView = binding.rvBannerPreparation,
-            title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
-            description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
             position = CoachMark2.POSITION_BOTTOM,
         )
 

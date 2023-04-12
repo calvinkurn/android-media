@@ -139,4 +139,6 @@
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
 
     <string name="performance_dashboard_wording_entry_point">Pelajari Wawasan Video</string>
+    <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
+    <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
 </resources>
