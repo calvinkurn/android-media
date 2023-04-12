@@ -2452,8 +2452,6 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
-        showUploadVideoButton = true
-        createAttachmentMenus()
         if (state) {
             checkCoachMarkStatus()
             handleAddAttachmentButtonViewState(showAddAttachmentMenu)
