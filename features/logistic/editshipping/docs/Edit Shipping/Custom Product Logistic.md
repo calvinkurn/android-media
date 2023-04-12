@@ -85,12 +85,10 @@ startActivityForResult(
 # Tech Stack
 
 - Shipping Editor (Multi-Loc)
-
-
-	- MVVM
-	- Kotlin
-	- JUnit
-	- Coroutines
+  - MVVM
+  - Kotlin
+  - JUnit
+  - Coroutines
 
 ## GQL List
 

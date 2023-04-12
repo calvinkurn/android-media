@@ -49,19 +49,15 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
 ## Tech Stack
 
 - Shipping Editor (Single - Loc)
-
-
-	- MVP
-	- Java - Kotlin
-	- Retrofit
-	- **Still using REST**
+  - MVP
+  - Java - Kotlin
+  - Retrofit
+  - **Still using REST**
 - Shipping Editor (Multi-Loc)
-
-
-	- MVVM
-	- Kotlin
-	- JUnit
-	- Coroutines
+  - MVVM
+  - Kotlin
+  - JUnit
+  - Coroutines
 
 ### GQL & API List
 

@@ -29,9 +29,7 @@ Shipping editor page is a page to show available courier that can be chosen by s
 ## Sub-features / Widget / Interactions
 
 - [Shipping Editor](/wiki/spaces/PA/pages/1761280076/Shipping+Editor)
-
-
-	- Single Loc
-	- Multi Loc
+  - Single Loc
+  - Multi Loc
 - [Custom Product Logistic](/wiki/spaces/PA/pages/2103097544/Custom+Product+Logistic)
 - [Edit Address Multi Location](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2106130969/Edit+Shipping+Edit+Shop+Multilocation+Address)
