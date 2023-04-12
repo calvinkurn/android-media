@@ -673,7 +673,9 @@ open class DynamicProductDetailFragment :
     private fun observeBottomSheetEdu() {
         viewLifecycleOwner.observe(viewModel.showBottomSheetEdu) {
             val url = it?.appLink ?: return@observe
-            goToEducational(url = url)
+            viewModel.changeOneTimeMethod(
+                event = OneTimeMethodEvent.ImpressGeneralEduBs(appLink = url)
+            )
         }
     }
 
@@ -688,6 +690,9 @@ open class DynamicProductDetailFragment :
                             userId = viewModel.userId,
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
                         )
+                    }
+                    is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                        goToEducational(url = it.event.appLink)
                     }
                     else -> {
                         // noop

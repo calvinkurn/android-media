@@ -1439,6 +1439,12 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+            is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                if (_oneTimeMethod.value.impressGeneralEduBS) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressGeneralEduBS = true)
+                }
+            }
             else -> {
                 // noop
             }

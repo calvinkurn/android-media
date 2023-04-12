@@ -3294,32 +3294,49 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `change one time method assign all value`() = runBlockingTest {
         val testResults = mutableListOf<OneTimeMethodState>()
-
+        var currentSize = 1 // increase each first call changeOneTimeMethod
+        val currentIndex = {
+            currentSize - 1
+        }
         val job = launch {
             viewModel.oneTimeMethodState.toList(testResults)
         }
 
         // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        Assert.assertEquals(testResults[0].impressRestriction, false)
+        Assert.assertEquals(testResults[currentIndex()].impressRestriction, false)
 
         /**
          * list size still 2 because we don't assign the same hit variant tracker because of this code
          * if (_oneTimeMethod.value.impressRestriction) return
          * This is like verify in stateflow, we dont want to call update again if we assign the same value
          */
-        Assert.assertTrue(testResults.size == 1)
+        Assert.assertTrue(testResults.size == currentSize)
 
         val reData = RestrictionData(productId = "123")
-        // third assignment
+        // region impress restriction
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.ImpressRestriction)
-        Assert.assertTrue((testResults[1].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        Assert.assertEquals(testResults[1].impressRestriction, true)
-        Assert.assertEquals(testResults[1].impressRestriction, true)
+        currentSize++
+        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressRestriction)
+        Assert.assertTrue((testResults[currentIndex()].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        Assert.assertEquals(testResults[currentIndex()].impressRestriction, true)
 
         // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults.size == 2)
+        Assert.assertTrue(testResults.size == currentSize)
+        // endregion
+
+        // region validate general edu bs
+        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
+        currentSize++
+        Assert.assertTrue(testResults.size == currentSize)
+        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressGeneralEduBs)
+        val edu = testResults[currentIndex()].event as OneTimeMethodEvent.ImpressGeneralEduBs
+        Assert.assertTrue(edu.appLink == "applink")
+
+        // re-assign
+        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
+        Assert.assertTrue(testResults.size == currentSize)
+        // endregion
 
         job.cancel()
     }
