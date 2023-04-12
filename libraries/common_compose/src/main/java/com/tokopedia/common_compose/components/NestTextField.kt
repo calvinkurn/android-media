@@ -1,6 +1,10 @@
 package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,84 +45,116 @@ fun NestTextField(
     skeleton: Boolean = false
 ) {
     Column {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {
-                if (counter != null) {
-                    if (it.length <= counter) onValueChanged(it)
-                } else {
-                    onValueChanged(it)
-                }
-            },
-            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-            modifier = modifier
-                .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
-                .fillMaxWidth(),
-            placeholder = placeholder?.let { { NestTypography(text = it) } },
-            leadingIcon = generatePrefix(prefix, enabled),
-            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
-            label = label?.let {
-                {
-                    NestTypography(text = it)
-                }
-            },
-            enabled = enabled,
-            singleLine = true,
-            isError = !error.isNullOrEmpty(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = NestTheme.colors.NN._300,
-                focusedBorderColor = NestTheme.colors.GN._500,
-                errorBorderColor = NestTheme.colors.RN._500,
-                disabledBorderColor = NestTheme.colors.NN._200,
-                disabledTextColor = NestTheme.colors.NN._400,
-                textColor = NestTheme.colors.NN._950
-            ),
-            shape = RoundedCornerShape(8.dp)
-        )
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-            helper?.takeIf { error.isNullOrEmpty() }?.let {
-                NestTypography(
-                    text = it,
-                    modifier = Modifier
-                        .weight(4F)
-                        .padding(start = 28.dp),
-                    textStyle = NestTheme.typography.paragraph3.copy(
-                        color = generateHelperColor(
-                            enabled = enabled,
-                            error = !error.isNullOrEmpty()
+        if (skeleton) {
+            Box(
+                modifier = modifier
+                    .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray, RoundedCornerShape(8.dp))
+            )
+        } else {
+            OutlinedTextField(
+                value = value,
+                onValueChange = {
+                    if (counter != null) {
+                        if (it.length <= counter) onValueChanged(it)
+                    } else {
+                        onValueChanged(it)
+                    }
+                },
+                textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
+                modifier = modifier
+                    .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
+                    .fillMaxWidth(),
+                placeholder = placeholder?.let { { NestTypography(text = it) } },
+                leadingIcon = generatePrefix(prefix, enabled),
+                trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
+                label = label?.let {
+                    {
+                        NestTypography(text = it)
+                    }
+                },
+                enabled = enabled,
+                singleLine = true,
+                isError = !error.isNullOrEmpty(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    unfocusedBorderColor = NestTheme.colors.NN._300,
+                    focusedBorderColor = NestTheme.colors.GN._500,
+                    errorBorderColor = NestTheme.colors.RN._500,
+                    disabledBorderColor = NestTheme.colors.NN._200,
+                    disabledTextColor = NestTheme.colors.NN._400,
+                    textColor = NestTheme.colors.NN._950
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                helper?.takeIf { error.isNullOrEmpty() }?.let {
+                    NestTypography(
+                        text = it,
+                        modifier = Modifier
+                            .weight(4F)
+                            .padding(start = 28.dp),
+                        textStyle = NestTheme.typography.paragraph3.copy(
+                            color = generateHelperColor(
+                                enabled = enabled,
+                                error = !error.isNullOrEmpty()
+                            )
                         )
                     )
-                )
-            }
-            error?.let {
-                NestTypography(
-                    text = it,
-                    modifier = Modifier
-                        .weight(4F)
-                        .padding(start = 28.dp),
-                    textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
-                )
-            }
-            counter?.let {
-                val currentCount = value.length
-                NestTypography(
-                    text = "$currentCount/$it",
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(end = 28.dp),
-                    textStyle = NestTheme.typography.paragraph3.copy(
-                        color = generateCounterColor(
-                            counter = it,
-                            currentCount = currentCount,
-                            enabled = enabled
-                        ),
-                        textAlign = TextAlign.End
+                }
+                error?.let {
+                    NestTypography(
+                        text = it,
+                        modifier = Modifier
+                            .weight(4F)
+                            .padding(start = 28.dp),
+                        textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
                     )
-                )
+                }
+                counter?.let {
+                    val currentCount = value.length
+                    NestTypography(
+                        text = "$currentCount/$it",
+                        modifier = Modifier
+                            .weight(1F)
+                            .padding(end = 28.dp),
+                        textStyle = NestTheme.typography.paragraph3.copy(
+                            color = generateCounterColor(
+                                counter = it,
+                                currentCount = currentCount,
+                                enabled = enabled
+                            ),
+                            textAlign = TextAlign.End
+                        )
+                    )
+                }
             }
         }
     }
 }
+
+val shimmerColors = listOf(
+    Color.LightGray.copy(alpha = 0.9f),
+    Color.LightGray.copy(alpha = 0.4f),
+)
+@
+val transition = rememberInfiniteTransition()
+val translateAnimation by transition.animateFloat(
+    initialValue = 0f,
+    targetValue = 400f,
+    animationSpec = infiniteRepeatable(
+        tween(durationMillis = 1500, easing = LinearOutSlowInEasing),
+        RepeatMode.Restart
+    ),
+)
+
+
+val brush = Brush.linearGradient(
+    colors = shimmerColors,
+    start = Offset(translateAnimation, translateAnimation),
+    end = Offset(translateAnimation + 100f, translateAnimation + 100f),
+    tileMode = TileMode.Mirror,
+)
 
 @Composable
 private fun generateCounterColor(counter: Int, currentCount: Int, enabled: Boolean): Color {
@@ -347,5 +385,14 @@ fun NestTextFieldWithPrefixPreview() {
         suffix = "$",
         prefix = "IDR",
         placeholder = "placeholder"
+    )
+}
+
+@Preview(name = "Text Field (skeleton)")
+@Composable
+fun NestTextFieldSkeletonPreview() {
+    NestTextField(
+        value = "value",
+        skeleton = true
     )
 }
