@@ -215,4 +215,29 @@ class BeautificationAnalyticTest {
             .clickPreset(1)
             .verifyEventAction("view - failed download preset makeup")
     }
+
+    @Test
+    fun testAnalytic_viewFailApplyBeautyFilter() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickCustomFace(0)
+            .mock {
+                coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
+            }
+            .clickCustomFace(1)
+            .verifyEventAction("view - failed apply beauty filter")
+    }
+
+    @Test
+    fun testAnalytic_clickRetryApplyBeautyFilter() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickCustomFace(0)
+            .mock {
+                coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
+            }
+            .clickCustomFace(1)
+            .clickToasterCTA()
+            .verifyEventAction("click - failed apply beauty filter")
+    }
 }

@@ -178,7 +178,7 @@ fun buildBeautificationConfig(
                     else -> ""
                 },
                 name = "Face Filter $it",
-                active = it == 1,
+                active = false,
                 minValue = 0.0,
                 maxValue = 1.0,
                 defaultValue = 0.1 * it,
