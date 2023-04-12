@@ -127,4 +127,13 @@ class BeautificationAnalyticTest {
             .clickResetFilter()
             .verifyEventAction("view - reset filter bottomsheet")
     }
+
+    @Test
+    fun testAnalytic_clickYesResetFilter() {
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickResetFilter()
+            .clickYesResetFilter()
+            .verifyEventAction("click - yes reset filter")
+    }
 }

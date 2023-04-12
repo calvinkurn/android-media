@@ -132,6 +132,10 @@ class BeautificationRobot {
         click(R.id.tv_bottom_sheet_action)
     }
 
+    fun clickYesResetFilter() = chainable {
+        click(com.tokopedia.dialog.R.id.dialog_btn_primary)
+    }
+
     fun slideBeautificationSlider(value: Int) = chainable {
         slide(R.id.slider_beautification, value)
     }
