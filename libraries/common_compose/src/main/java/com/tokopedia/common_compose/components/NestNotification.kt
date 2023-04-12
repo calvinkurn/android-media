@@ -33,15 +33,20 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
         true
     }
 
-    val height = if (isText) 12.dp else 16.dp // unify has 10 for text
-    val rad = if (isText) 3.dp else 6.dp
+    val height = if (isText) {
+        if (textFinal.isEmpty()) 8.dp else 12.dp
+    } else 16.dp // unify has 10 for text
+    val rad = if (isText) {
+        if (textFinal.isEmpty()) 10.dp else 3.dp
+    } else 6.dp
+    val minWidth = if (textFinal.isEmpty()) 8.dp else 16.dp
     val style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
         .let { if (isText) it.copy(fontSize = 7.sp) else it }
 
     Surface(
         modifier = Modifier
             .height(height)
-            .defaultMinSize(minWidth = 16.dp),
+            .defaultMinSize(minWidth = minWidth),
         shape = RoundedCornerShape(rad),
     ) {
         Text(
@@ -64,11 +69,17 @@ enum class Color { PRIMARY, SECONDARY }
 fun NotificationPreview() {
     NestTheme {
         Surface {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(text = "Notification: ")
                 NestNotification("12")
                 NestNotification(text = "122", colorType = Color.SECONDARY)
+                NestNotification(text = "")
+                NestNotification(text = "", colorType = Color.SECONDARY)
                 NestNotification(text = "NEW")
+                NestNotification(text = "PROMO")
             }
         }
     }
