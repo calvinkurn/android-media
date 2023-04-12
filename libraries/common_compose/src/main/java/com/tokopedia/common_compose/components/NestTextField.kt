@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -29,12 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.iconunify.R
 
 @Composable
 fun NestTextField(
@@ -50,7 +54,8 @@ fun NestTextField(
     error: String? = null,
     onValueChanged: (String) -> Unit = {},
     counter: Int? = null,
-    helper: String? = null
+    helper: String? = null,
+    onClearable: (() -> Unit)? = null
 ) {
     Column {
         OutlinedTextField(
@@ -68,7 +73,7 @@ fun NestTextField(
                 .fillMaxWidth(),
             placeholder = placeholder?.let { { NestTypography(text = it) } },
             leadingIcon = generatePrefix(prefix, enabled),
-            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled),
+            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled, onClearable),
             label = label?.let {
                 {
                     NestTypography(text = it)
@@ -228,11 +233,20 @@ private fun generateLeadingIcon(
     icon1: @Composable (() -> Unit)? = null,
     icon2: @Composable (() -> Unit)? = null,
     suffix: String? = null,
-    enabled: Boolean
+    enabled: Boolean,
+    onClearable: (() -> Unit)? = null
 ): @Composable (() -> Unit)? {
-    if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty()) {
+    if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty() || onClearable != null) {
         return {
             Row {
+                onClearable?.let {
+                    Icon(
+                        painter = painterResource(id = R.drawable.iconunify_clear_small),
+                        contentDescription = "tips icon",
+                        tint = NestTheme.colors.NN._500,
+                        modifier = Modifier.clickable { it() }
+                    )
+                }
                 suffix?.let {
                     NestTypography(
                         text = it,
@@ -420,4 +434,10 @@ fun NestTextFieldWithPrefixPreview() {
 @Composable
 fun NestTextFieldSkeletonPreview() {
     NestTextFieldSkeleton()
+}
+
+@Preview(name = "Text Field (clearable)")
+@Composable
+fun NestTextFieldClearablePreview() {
+    NestTextField(value = "aaa", onClearable = {})
 }
