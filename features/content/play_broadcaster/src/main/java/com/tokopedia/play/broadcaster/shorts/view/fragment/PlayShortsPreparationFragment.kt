@@ -320,7 +320,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
-        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
+        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
         if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
 
         val coachMarkPerformanceDashboard = CoachMark2Item(
@@ -330,7 +330,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             position = CoachMark2.POSITION_BOTTOM,
         )
 
-        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
+        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
         return coachMarkPerformanceDashboard
     }
 
