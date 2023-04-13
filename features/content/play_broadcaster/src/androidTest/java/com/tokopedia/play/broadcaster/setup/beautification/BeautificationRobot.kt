@@ -18,13 +18,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastActivityLauncher
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
-import com.tokopedia.play.broadcaster.setup.accountListResponse
-import com.tokopedia.play.broadcaster.setup.buildBroadcastingConfigUiModel
-import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
-import com.tokopedia.play.broadcaster.setup.channelResponse
+import com.tokopedia.play.broadcaster.setup.*
 import com.tokopedia.play.broadcaster.setup.di.DaggerPlayBroadcastTestComponent
 import com.tokopedia.play.broadcaster.setup.di.PlayBroadcastRepositoryTestModule
 import com.tokopedia.play.broadcaster.setup.di.PlayBroadcastTestModule
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -106,6 +105,42 @@ class BeautificationRobot {
 
     fun launch() = chainable {
         activityLauncher.launch()
+        delay()
+    }
+
+    fun launchLive() = chainable {
+        coEvery {
+            mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            channelStatus = ChannelStatus.Pause
+        )
+
+        coEvery {
+            mockGetChannelUseCase.executeOnBackground()
+        } returns channelPausedResponse
+
+        launch()
+            .clickDialogPrimaryCTA()
+
+    }
+
+    fun launchLiveWithNoDownloadedPreset() = chainable {
+        coEvery {
+            mockRepo.getChannelConfiguration(any(), any())
+        } returns buildConfigurationUiModel(
+            channelStatus = ChannelStatus.Pause,
+            beautificationConfig = buildBeautificationConfig(
+                assetStatus = BeautificationAssetStatus.NotDownloaded
+            )
+        )
+
+        coEvery {
+            mockGetChannelUseCase.executeOnBackground()
+        } returns channelPausedResponse
+
+        launch()
+            .clickDialogPrimaryCTA()
+
     }
 
     fun clickBeautificationMenu() = chainable {
@@ -137,6 +172,7 @@ class BeautificationRobot {
 
     fun clickResetFilter() = chainable {
         click(R.id.tv_bottom_sheet_action)
+        delay(1000)
     }
 
     fun clickDialogPrimaryCTA() = chainable {
@@ -157,6 +193,7 @@ class BeautificationRobot {
 
     fun clickBeautificationMenuOnLivePage() = chainable {
         click(R.id.ic_face_filter)
+        delay(1000)
     }
 
     fun mock(action: () -> Unit) = chainable {

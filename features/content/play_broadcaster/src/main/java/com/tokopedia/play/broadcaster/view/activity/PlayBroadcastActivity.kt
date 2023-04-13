@@ -458,23 +458,12 @@ class PlayBroadcastActivity : BaseActivity(),
             val isSuccess = broadcaster.setPreset(preset.id, preset.value.toFloat())
 
             if(!isSuccess && withToaster) {
-                analytic.viewFailApplyBeautyFilter(
-                    account = viewModel.selectedAccount,
-                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                    customFace = preset.id,
-                )
-
                 showToaster(
                     err = Exception("fail to apply preset : ${preset.id}"),
                     customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
                     duration = Toaster.LENGTH_SHORT,
                     actionLabel = getString(R.string.play_broadcaster_retry),
                     actionListener = {
-                        analytic.clickRetryApplyBeautyFilter(
-                            account = viewModel.selectedAccount,
-                            page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                            customFace = preset.id,
-                        )
                         applyPreset(preset)
                     }
                 )
