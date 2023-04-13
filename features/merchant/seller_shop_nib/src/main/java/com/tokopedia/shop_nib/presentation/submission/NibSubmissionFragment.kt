@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -38,6 +40,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     companion object {
         private const val REQUEST_CODE_SELECT_FILE = 100
         private const val MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 //5 MB
+        private const val DATE_FORMAT = "dd/MM/yyyy"
 
         @JvmStatic
         fun newInstance(): NibSubmissionFragment {
@@ -175,13 +178,14 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     private fun showDatePickerBottomSheet() {
         val param = NibDatePicker.Param(
-            defaultDate = Date(),
+            defaultDate = viewModel.getNibPublishDate(),
             title = context?.getString(R.string.ssn_nib_publish_date).orEmpty(),
             buttonWording = context?.getString(R.string.ssn_select).orEmpty()
         )
         val datePicker = NibDatePicker(param)
         val onDateSelected : (Date) -> Unit = { selectedDate ->
-
+            binding?.tauNibPublishedDate?.editText?.setText(selectedDate.formatTo(DATE_FORMAT))
+            viewModel.setNibPublishDate(selectedDate)
         }
         datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
     }

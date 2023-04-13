@@ -13,6 +13,12 @@ import javax.inject.Inject
 
 class NibDatePicker @Inject constructor(private val param: Param) {
 
+    companion object{
+        private const val MIN_YEAR = 1970
+        private const val MIN_MONTH = 0
+        private const val MIN_DATE = 1
+    }
+
     data class Param(
         val defaultDate: Date,
         val title: String,
@@ -24,15 +30,11 @@ class NibDatePicker @Inject constructor(private val param: Param) {
         fragmentManager: FragmentManager,
         onDateSelected: (Date) -> Unit
     ) {
-        val minTime = Date(1970, 1, 1).toCalendar()
-        val defaultTime = buildDefaultDate()
-        val maxTime = Date().toCalendar()
-
         val dateTimePicker = DateTimePickerUnify(
             context,
-            minTime,
-            defaultTime,
-            maxTime,
+            buildMinDate(),
+            buildDefaultDate(),
+            buildMaxDate(),
             null,
             DateTimePickerUnify.TYPE_DATEPICKER
         )
@@ -43,32 +45,26 @@ class NibDatePicker @Inject constructor(private val param: Param) {
             datePickerButton.text = param.buttonWording
             datePickerButton.setOnClickListener {
                 val selectedDate = getDate().time
-                val hour = selectedDate.extractHour()
-                val minute = selectedDate.extractMinute()
-                val dateTime = buildSelectedDateInstance(param.defaultDate, hour, minute)
-                onDateSelected(dateTime)
+                onDateSelected(selectedDate)
                 dismiss()
             }
         }
         dateTimePicker.show(fragmentManager, dateTimePicker.tag)
     }
 
-
-    private fun buildSelectedDateInstance(date: Date, hour: Int, minute: Int): Date {
-        val calendar = date.toCalendar()
-        calendar.set(Calendar.HOUR_OF_DAY, hour)
-        calendar.set(Calendar.MINUTE, minute)
-        calendar.set(Calendar.SECOND, Int.ZERO)
-        return calendar.time
+    private fun buildDefaultDate(): Calendar {
+        return this.param.defaultDate.toCalendar()
     }
 
+    private fun buildMaxDate(): Calendar {
+        return Date().toCalendar()
+    }
 
-    private fun buildDefaultDate(): GregorianCalendar {
-        val hour = param.defaultDate.extractHour()
-        val minute = param.defaultDate.extractMinute()
-        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
-        }
+    private fun buildMinDate(): Calendar {
+        val minDate = Calendar.getInstance()
+        minDate.set(Calendar.YEAR, MIN_YEAR)
+        minDate.set(Calendar.MONTH, MIN_MONTH)
+        minDate.set(Calendar.DAY_OF_MONTH, MIN_DATE)
+        return minDate
     }
 }
