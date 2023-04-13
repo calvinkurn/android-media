@@ -263,13 +263,16 @@ class PlayShortsViewModel @Inject constructor(
             )
 
             val response = repo.submitOnboardAffiliateTnc(request)
+            val isSuccess = response.errorMessage.isEmpty()
+
             _uiEvent.emit(
                 PlayShortsUiEvent.SetOnboardAffiliateState(
                     isLoading = false,
-                    throwable = if (response.errorMessage.isNotEmpty()) Throwable(response.errorMessage)
-                    else null,
+                    throwable = if (isSuccess) null else Throwable(response.errorMessage),
                 )
             )
+
+            if (isSuccess) checkIsUserAffiliate()
         }) {
             _uiEvent.emit(
                 PlayShortsUiEvent.SetOnboardAffiliateState(
