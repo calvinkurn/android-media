@@ -116,6 +116,11 @@ class FeedFragment :
             feedPostViewModel.processSuspendedFollow()
         }
 
+    private val likeLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.processSuspendedLike()
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -587,12 +592,17 @@ class FeedFragment :
     }
 
     override fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int) {
-        val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
-        feedPostViewModel.likeContent(
-            contentId = id,
-            action = feedLikeAction,
-            rowNumber = rowNumber
-        )
+        if (userSession.isLoggedIn) {
+            val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
+            feedPostViewModel.likeContent(
+                contentId = id,
+                action = feedLikeAction,
+                rowNumber = rowNumber
+            )
+        } else {
+            feedPostViewModel.suspendLikeContent(id, rowNumber)
+            likeLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
     }
 
     private fun onSuccessLikeResponse(data: LikeFeedDataModel) {

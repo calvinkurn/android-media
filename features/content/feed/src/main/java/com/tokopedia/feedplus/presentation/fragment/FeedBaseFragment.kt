@@ -250,7 +250,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     }
                     onChangeTab(position)
                 }
-            })
+
+            override fun onPageSelected(position: Int) {
+                appLinkTabPosition = position
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
