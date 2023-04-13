@@ -107,6 +107,8 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -799,14 +801,21 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
-            analytics.trackClickBiometricLoginBtn()
-            gotoVerifyFingerprint()
+
+            if (isEnableDirectBiometric()) {
+                analytics.trackClickBiometricLoginBtn()
+                gotoVerifyFingerprint()
+            }
 
             setOnClickListener {
                 analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
         }
+    }
+
+    private fun isEnableDirectBiometric(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
     }
 
     private fun setLeftDrawableForFingerprint() {
