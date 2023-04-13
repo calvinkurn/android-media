@@ -308,6 +308,8 @@ class PlayShortsViewModel @Inject constructor(
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
+
+            checkIsUserAffiliate()
         }) { throwable ->
             _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
