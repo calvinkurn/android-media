@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.effect.EffectManager
-import com.tokopedia.effect.EffectManagerImpl
+import com.tokopedia.byteplus.effect.EffectManager
+import com.tokopedia.byteplus.effect.EffectManagerImpl
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
@@ -32,10 +32,10 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticI
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
-import com.tokopedia.effect.util.asset.checker.AssetChecker
-import com.tokopedia.effect.util.asset.checker.AssetCheckerImpl
-import com.tokopedia.effect.util.asset.manager.AssetManager
-import com.tokopedia.effect.util.asset.manager.AssetManagerImpl
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp

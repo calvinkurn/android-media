@@ -5,9 +5,9 @@ import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificationRepository
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.effect.util.asset.AssetHelper
-import com.tokopedia.effect.util.asset.checker.AssetChecker
-import com.tokopedia.effect.util.asset.manager.AssetManager
+import com.tokopedia.byteplus.effect.util.asset.AssetHelper
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
