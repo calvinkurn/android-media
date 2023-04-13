@@ -455,9 +455,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private Boolean isCanAllowOverride(Uri uri) {
-        try{
+        if(uri.getQueryParameter(ALLOW_OVERRIDE) != null) {
             return uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE);
-        } catch (NullPointerException e){
+        } else {
             return false;
         }
     }
