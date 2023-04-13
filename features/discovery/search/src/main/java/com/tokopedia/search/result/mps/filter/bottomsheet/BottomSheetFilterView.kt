@@ -7,13 +7,16 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.Callback
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
 
 class BottomSheetFilterView(
     private val viewModel: BottomSheetFilterViewModel?,
-    private val context: Context?,
+    context: Context?,
     private val fragmentManager: FragmentManager,
-): RefreshableView<BottomSheetFilterState> {
+): RefreshableView<BottomSheetFilterState>,
+    ContextProvider by WeakReferenceContextProvider(context) {
 
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 

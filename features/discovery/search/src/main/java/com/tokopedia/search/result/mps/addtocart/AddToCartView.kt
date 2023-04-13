@@ -9,14 +9,17 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.search.R
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
 import com.tokopedia.unifycomponents.Toaster
 
 class AddToCartView(
     private val viewModel: AddToCartViewModel?,
-    private val context: Context?,
+    context: Context?,
     private val rootView: View?,
 ): ApplinkOpener by ApplinkOpenerDelegate,
+    ContextProvider by WeakReferenceContextProvider(context),
     RefreshableView<AddToCartState> {
 
     override fun refresh(state: AddToCartState) {
