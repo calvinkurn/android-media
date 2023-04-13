@@ -5,10 +5,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
+    android:alpha="0"
     android:background="@drawable/bg_pdp_auto_collapse_label"
     android:paddingHorizontal="8dp"
     android:paddingVertical="4dp"
-    android:tag="6">
+    android:tag="6"
+    tools:alpha="1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_auto_collapse_label"
