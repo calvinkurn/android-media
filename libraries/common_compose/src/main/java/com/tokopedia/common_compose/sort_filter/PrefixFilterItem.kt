@@ -1,7 +1,6 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +15,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.Color
 import com.tokopedia.common_compose.components.NestNotification
@@ -30,7 +30,8 @@ internal fun PrefixFilterItem(
     selectedSize: Int = 0,
     painterId: Int = R.drawable.iconunify_sort_filter,
     text: String? = null,
-    textSize: Int? = null,
+    textWidth: Dp? = null,
+    textWidthChange: (Int) -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
@@ -40,12 +41,6 @@ internal fun PrefixFilterItem(
         Size.DEFAULT -> 32.dp
         Size.LARGE -> 48.dp
     }
-    var textWidthPx by remember { mutableStateOf(95) }
-    val widthPx by remember(textSize, textWidthPx) {
-        derivedStateOf { (textWidthPx - (textSize ?: 0)).coerceIn(0, 95) }
-    }
-
-    Log.d("Offset", "textWidth: $textWidthPx, textSize: $textSize")
     Surface(color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, borderColor),
@@ -67,11 +62,14 @@ internal fun PrefixFilterItem(
                 )
             }
             if (text != null) {
+                val padding = if (textWidth == 0.dp) 0.dp else 4.dp
                 Text(
                     modifier = Modifier
-                        .padding(start = 4.dp)
-                        .width(with(LocalDensity.current) { widthPx.toDp() })
-                        .onGloballyPositioned { textWidthPx = it.size.width },
+                        .padding(start = padding)
+                        .run { if (textWidth != null) width(textWidth) else this }
+                        .onGloballyPositioned {
+                            textWidthChange(it.size.width)
+                        },
                     style = NestTheme.typography.display2,
                     text = text,
                     maxLines = 1

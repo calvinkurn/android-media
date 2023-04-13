@@ -3,23 +3,22 @@ package com.tokopedia.common_compose.sort_filter
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
 import com.tokopedia.common_compose.ui.NestTheme
@@ -81,7 +80,8 @@ private fun LazyListState.horizontalOffset(): Int {
             } else if (previousIndex == firstVisibleItemIndex) {
                 firstVisibleItemScrollOffset - previousScrollOffset
             } else {
-                firstVisibleItemScrollOffset
+                if (firstVisibleItemIndex < previousIndex) -1 * previousScrollOffset
+                else firstVisibleItemScrollOffset
             }.also {
                 previousIndex = firstVisibleItemIndex
                 previousScrollOffset = firstVisibleItemScrollOffset
@@ -102,15 +102,29 @@ fun NestSortFilterAdvanced(
         Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
         Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
     }
+    val ld = LocalDensity.current
     val selectedSize by remember(items) { derivedStateOf { items.filter { it.isSelected }.size } }
     val rowState = rememberLazyListState()
     val offset = rowState.horizontalOffset()
+    var currentTextWidth by remember { mutableStateOf<Dp?>(null) }
+    var firstWidth by remember { mutableStateOf<Dp?>(null) }
+
+    LaunchedEffect(key1 = offset, block = {
+        if (currentTextWidth == null) return@LaunchedEffect
+        val diffInDp = with(ld) { offset.toDp() }
+        currentTextWidth = (currentTextWidth!! - diffInDp).coerceIn(0.dp, firstWidth)
+    })
+
     Row(modifier = modifier) {
         PrefixFilterItem(
             modifier = Modifier.padding(end = 4.dp),
             size = size,
             text = "Filter",
-            textSize = offset,
+            textWidth = currentTextWidth,
+            textWidthChange = {
+                currentTextWidth = with(ld) { it.toDp() }
+                if (firstWidth == null) firstWidth = currentTextWidth
+            },
             selectedSize = selectedSize,
             onClick = onPrefixClicked
         )
@@ -169,6 +183,7 @@ fun NestSortFilterPreview() {
                 SortFilter("Medium", false),
                 SortFilter("Big", false, showChevron = true),
                 SortFilter("Enormous", false),
+                SortFilter("Giant", false),
             )
         )
     }
