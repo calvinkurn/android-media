@@ -114,15 +114,12 @@ class BeautificationAnalyticTest {
 
     @Test
     fun testAnalytic_clickSliderBeautyFilter() {
-        /**
-         * Still failing due bcs onSlideMove is not called
-         */
-//        beautificationRobot.launch()
-//            .clickBeautificationMenu()
-//            .clickCustomFace(1)
-//            .slideBeautificationSlider(90)
-//            .performDelay(3000)
-//            .verifyEventAction("click - slider beauty filter")
+        beautificationRobot.launch()
+            .clickBeautificationMenu()
+            .clickCustomFace(1)
+            .slideBeautificationSlider(200f)
+            .performDelay(1000)
+            .verifyEventAction("click - slider beauty filter")
     }
 
     @Test

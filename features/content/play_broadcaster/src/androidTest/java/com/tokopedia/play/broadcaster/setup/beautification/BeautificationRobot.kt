@@ -7,9 +7,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.content.test.util.click
-import com.tokopedia.content.test.util.clickItemRecyclerView
-import com.tokopedia.content.test.util.slide
+import com.tokopedia.content.test.util.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
@@ -145,8 +143,8 @@ class BeautificationRobot {
         click(com.tokopedia.dialog.R.id.dialog_btn_primary)
     }
 
-    fun slideBeautificationSlider(value: Int) = chainable {
-        slide(R.id.slider_beautification, value)
+    fun slideBeautificationSlider(distance: Float) = chainable {
+        horizontalSlide(com.tokopedia.unifycomponents.R.id.range_slider_max_button, distance)
     }
 
     fun clickToasterCTA() = chainable {
