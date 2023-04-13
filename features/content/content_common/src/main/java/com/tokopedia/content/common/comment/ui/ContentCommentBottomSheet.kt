@@ -245,6 +245,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 when (it.state) {
                     ResultState.Success -> {
                         showError(false)
+                        scrollListener.updateStateAfterGetData()
                         commentAdapter.setItemsAndAnimateChanges(
                             it.list.ifEmpty {
                                 listOf(
