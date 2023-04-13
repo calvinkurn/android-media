@@ -42,8 +42,8 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
-import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
@@ -160,7 +160,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
@@ -171,118 +170,113 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import rx.subjects.PublishSubject
-import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 class ShipmentPresenter @Inject constructor(
-    private val compositeSubscription: CompositeSubscription,
-    private val checkoutGqlUseCase: CheckoutUseCase,
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
-    private val editAddressUseCase: EditAddressUseCase,
-    private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
+    private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val editAddressUseCase: EditAddressUseCase,
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
+    private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-    private val stateConverter: RatesResponseStateConverter,
-    private val shippingCourierConverter: ShippingCourierConverter,
-    private val analyticsActionListener: AnalyticsActionListener,
-    private val userSessionInterface: UserSessionInterface,
-    private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-    private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
-    private val shipmentDataConverter: ShipmentDataConverter,
+    private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
     private val releaseBookingUseCase: ReleaseBookingUseCase,
     private val prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
     private val epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
-    private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
-    private val gson: Gson,
-    private val executorSchedulers: ExecutorSchedulers,
-    private val dispatchers: CoroutineDispatchers,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
-    private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
-    private val shipmentDataRequestConverter: ShipmentDataRequestConverter
-) : ShipmentContract.Presenter, ViewModel() {
+    private val checkoutGqlUseCase: CheckoutUseCase,
+    private val shipmentDataConverter: ShipmentDataConverter,
+    private val shippingCourierConverter: ShippingCourierConverter,
+    private val stateConverter: RatesResponseStateConverter,
+    private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
+    private val analyticsActionListener: AnalyticsActionListener,
+    private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
+    private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
+    private val userSessionInterface: UserSessionInterface,
+    private val gson: Gson,
+    private val dispatchers: CoroutineDispatchers
+) : ViewModel() {
 
     private var view: ShipmentFragment? = null
 
-    override var shipmentUpsellModel = ShipmentUpsellModel()
+    var shipmentUpsellModel = ShipmentUpsellModel()
         private set
 
-    override var shipmentNewUpsellModel = ShipmentNewUpsellModel()
+    var shipmentNewUpsellModel = ShipmentNewUpsellModel()
         private set
 
-    override var shipmentCartItemModelList: List<ShipmentCartItem> = emptyList()
+    var shipmentCartItemModelList: List<ShipmentCartItem> = emptyList()
 
-    override var shipmentTickerErrorModel = ShipmentTickerErrorModel()
+    var shipmentTickerErrorModel = ShipmentTickerErrorModel()
         private set
 
-    override val tickerAnnouncementHolderData: CheckoutMutableLiveData<TickerAnnouncementHolderData> =
+    val tickerAnnouncementHolderData: CheckoutMutableLiveData<TickerAnnouncementHolderData> =
         CheckoutMutableLiveData(TickerAnnouncementHolderData())
 
-    override var recipientAddressModel: RecipientAddressModel = RecipientAddressModel()
+    var recipientAddressModel: RecipientAddressModel = RecipientAddressModel()
 
     val shipmentCostModel: CheckoutMutableLiveData<ShipmentCostModel> =
         CheckoutMutableLiveData(ShipmentCostModel())
 
-    override val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?> =
+    val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?> =
         CheckoutMutableLiveData(null)
 
-    override var shipmentDonationModel: ShipmentDonationModel? = null
+    var shipmentDonationModel: ShipmentDonationModel? = null
 
     var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel> = ArrayList()
 
-    override val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel> =
+    val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel> =
         CheckoutMutableLiveData(ShipmentButtonPaymentModel())
 
-    override var codData: CodModel? = null
+    var codData: CodModel? = null
         private set
 
     private var campaignTimer: CampaignTimerUi? = null
 
-    override var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
+    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
-    override var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    var lastValidateUseRequest: ValidateUsePromoRequest? = null
         private set
 
     var bboPromoCodes = ArrayList<String>()
 
-    override var couponStateChanged = false
+    var couponStateChanged = false
 
     private var shippingCourierViewModelsState: MutableMap<Int, List<ShippingCourierUiModel>> =
         HashMap()
 
     private var isPurchaseProtectionPage = false
 
-    override var isShowOnboarding = false
+    var isShowOnboarding = false
         private set
 
-    override var isIneligiblePromoDialogEnabled = false
+    var isIneligiblePromoDialogEnabled = false
         private set
 
     private var isBoUnstackEnabled = false
 
-    override var cartDataForRates = ""
+    var cartDataForRates = ""
         private set
 
-    override var lastApplyData: CheckoutMutableLiveData<LastApplyUiModel> =
+    var lastApplyData: CheckoutMutableLiveData<LastApplyUiModel> =
         CheckoutMutableLiveData(LastApplyUiModel())
 
-    override var uploadPrescriptionUiModel: UploadPrescriptionUiModel = UploadPrescriptionUiModel()
+    var uploadPrescriptionUiModel: UploadPrescriptionUiModel = UploadPrescriptionUiModel()
         private set
 
     private var ratesPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
 
     private val ratesQueue: Queue<ShipmentGetCourierHolderData> = LinkedList()
-    private var shouldConsumeRatesQueue: Boolean = false
 
     private var ratesPromoPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
 
-    override var logisticDonePublisher: PublishSubject<Boolean>? = null
+    var logisticDonePublisher: PublishSubject<Boolean>? = null
 
     var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
@@ -316,13 +310,12 @@ class ShipmentPresenter @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
-    override fun attachView(view: ShipmentFragment) {
+    fun attachView(view: ShipmentFragment) {
         this.view = view
     }
 
-    override fun detachView() {
+    fun detachView() {
         viewModelScope.coroutineContext.cancelChildren()
-        compositeSubscription.unsubscribe()
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
@@ -684,7 +677,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun updateShipmentButtonPaymentModel(
+    fun updateShipmentButtonPaymentModel(
         enable: Boolean?,
         totalPrice: String?,
         loading: Boolean?
@@ -706,7 +699,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun triggerSendEnhancedEcommerceCheckoutAnalytics(
+    fun triggerSendEnhancedEcommerceCheckoutAnalytics(
         tradeInCustomDimension: Map<String, String>?,
         step: String,
         eventCategory: String,
@@ -728,7 +721,7 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    override fun processInitialLoadCheckoutPage(
+    fun processInitialLoadCheckoutPage(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHinger: Boolean
@@ -975,7 +968,7 @@ class ShipmentPresenter @Inject constructor(
         this.isPurchaseProtectionPage = isPurchaseProtectionPage
     }
 
-    override fun processCheckout() {
+    fun processCheckout() {
         val checkoutRequest = generateCheckoutRequest()
         if (checkoutRequest.data.isNotEmpty() && checkoutRequest.data.first().groupOrders.isNotEmpty()) {
             // Get additional param for trade in analytics
@@ -1186,7 +1179,7 @@ class ShipmentPresenter @Inject constructor(
         validateUsePromoRevampUiModel = null
     }
 
-    override fun checkPromoCheckoutFinalShipment(
+    fun checkPromoCheckoutFinalShipment(
         validateUsePromoRequest: ValidateUsePromoRequest,
         lastSelectedCourierOrderIndex: Int,
         cartString: String?
@@ -1487,7 +1480,7 @@ class ShipmentPresenter @Inject constructor(
         return false
     }
 
-    override fun doValidateUseLogisticPromo(
+    fun doValidateUseLogisticPromo(
         cartPosition: Int,
         cartString: String,
         validateUsePromoRequest: ValidateUsePromoRequest,
@@ -1960,7 +1953,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun generateCheckoutRequest(): Carts {
+    fun generateCheckoutRequest(): Carts {
         // Set promo merchant request data
         val data = removeErrorShopProduct()
         if (validateUsePromoRevampUiModel != null) {
@@ -2096,7 +2089,7 @@ class ShipmentPresenter @Inject constructor(
         return false
     }
 
-    override fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel) {
+    fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel) {
         viewModelScope.launch(dispatchers.immediate) {
             try {
                 val params =
@@ -2110,7 +2103,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun processSaveShipmentState() {
+    fun processSaveShipmentState() {
         viewModelScope.launch(dispatchers.immediate) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(
@@ -2214,10 +2207,9 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun editAddressPinpoint(
+    fun editAddressPinpoint(
         latitude: String,
         longitude: String,
-        shipmentCartItemModel: ShipmentCartItemModel?,
         locationPass: LocationPass?
     ) {
         if (view != null) {
@@ -2225,66 +2217,56 @@ class ShipmentPresenter @Inject constructor(
             view?.setHasRunningApiCall(true)
             val requestParams =
                 generateEditAddressRequestParams(latitude, longitude)
-            compositeSubscription.add(
-                editAddressUseCase.createObservable(requestParams)
-                    .subscribeOn(executorSchedulers.io)
-                    .observeOn(executorSchedulers.main)
-                    .unsubscribeOn(executorSchedulers.io)
-                    .subscribe(object : Subscriber<String>() {
-                        override fun onCompleted() {
-                            /* no-op */
-                        }
-
-                        override fun onError(e: Throwable) {
+            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    val stringResponse =
+                        editAddressUseCase.createObservable(requestParams).toBlocking().single()
+                    if (view != null) {
+                        view?.setHasRunningApiCall(false)
+                        view?.hideLoading()
+                        var response: JsonObject? = null
+                        var messageError = ""
+                        var statusSuccess: Boolean
+                        try {
+                            response = JsonParser().parse(stringResponse).asJsonObject
+                            val statusCode =
+                                response.asJsonObject.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)[EditAddressUseCase.RESPONSE_IS_SUCCESS].asInt
+                            statusSuccess = statusCode == 1
+                            if (!statusSuccess) {
+                                messageError =
+                                    response.getAsJsonArray("message_error")[0].asString
+                            }
+                        } catch (e: Exception) {
                             Timber.d(e)
-                            if (view != null) {
-                                view?.setHasRunningApiCall(false)
-                                view?.hideLoading()
-                                view?.showToastError(
-                                    getErrorMessage(
-                                        view?.activityContext,
-                                        e
-                                    )
-                                )
-                            }
+                            statusSuccess = false
                         }
-
-                        override fun onNext(stringResponse: String) {
-                            if (view != null) {
-                                view?.setHasRunningApiCall(false)
-                                view?.hideLoading()
-                                var response: JsonObject? = null
-                                var messageError = ""
-                                var statusSuccess: Boolean
-                                try {
-                                    response = JsonParser().parse(stringResponse).asJsonObject
-                                    val statusCode =
-                                        response.asJsonObject.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)[EditAddressUseCase.RESPONSE_IS_SUCCESS].asInt
-                                    statusSuccess = statusCode == 1
-                                    if (!statusSuccess) {
-                                        messageError =
-                                            response.getAsJsonArray("message_error")[0].asString
-                                    }
-                                } catch (e: Exception) {
-                                    Timber.d(e)
-                                    statusSuccess = false
-                                }
-                                if (response != null && statusSuccess) {
-                                    recipientAddressModel.latitude = latitude
-                                    recipientAddressModel.longitude = longitude
-                                    view?.renderEditAddressSuccess(latitude, longitude)
-                                } else {
-                                    if (isNullOrEmpty(messageError)) {
-                                        messageError =
-                                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                                ?: ""
-                                    }
-                                    view?.navigateToSetPinpoint(messageError, locationPass)
-                                }
+                        if (response != null && statusSuccess) {
+                            recipientAddressModel.latitude = latitude
+                            recipientAddressModel.longitude = longitude
+                            view?.renderEditAddressSuccess(latitude, longitude)
+                        } else {
+                            if (messageError.isEmpty()) {
+                                messageError =
+                                    view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                        ?: ""
                             }
+                            view?.navigateToSetPinpoint(messageError, locationPass)
                         }
-                    })
-            )
+                    }
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                    if (view != null) {
+                        view?.setHasRunningApiCall(false)
+                        view?.hideLoading()
+                        view?.showToastError(
+                            getErrorMessage(
+                                view?.activityContext,
+                                t
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -2315,7 +2297,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     // Clear promo BBO after choose other / non BBO courier
-    override fun cancelAutoApplyPromoStackLogistic(
+    fun cancelAutoApplyPromoStackLogistic(
         itemPosition: Int,
         promoCode: String,
         shipmentCartItemModel: ShipmentCartItemModel
@@ -2392,7 +2374,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     // Clear promo red state before checkout
-    override fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>) {
+    fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>) {
         couponStateChanged = true
         var hasPromo = false
         val globalPromoCodes = ArrayList<String>()
@@ -2457,7 +2439,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     // Clear promo after clash (rare, almost zero probability)
-    override fun cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+    fun cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel: ClashingInfoDetailUiModel) {
         val globalPromoCode = ArrayList<String>()
         val clearOrders = ArrayList<ClearPromoOrder>()
         for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
@@ -2521,7 +2503,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun hitClearAllBo() {
+    fun hitClearAllBo() {
         val clearOrders = ArrayList<ClearPromoOrder>()
         var hasBo = false
         for (shipmentCartItemModel in shipmentCartItemModelList) {
@@ -2562,7 +2544,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun changeShippingAddress(
+    fun changeShippingAddress(
         newRecipientAddressModel: RecipientAddressModel?,
         chosenAddressModel: ChosenAddressModel?,
         isOneClickShipment: Boolean,
@@ -2606,69 +2588,66 @@ class ShipmentPresenter @Inject constructor(
             ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS,
             params
         )
-        compositeSubscription.add(
-            changeShippingAddressGqlUseCase.createObservable(requestParam)
-                .subscribeOn(executorSchedulers.io)
-                .observeOn(executorSchedulers.main)
-                .unsubscribeOn(executorSchedulers.io)
-                .subscribe(object : Subscriber<SetShippingAddressData>() {
-                    override fun onCompleted() {}
-                    override fun onError(e: Throwable) {
-                        if (view != null) {
-                            view?.hideLoading()
-                            view?.setHasRunningApiCall(false)
-                            Timber.d(e)
-                            val errorMessage: String? = if (e is AkamaiErrorException) {
-                                e.message
-                            } else {
-                                getErrorMessage(
-                                    view?.activityContext,
-                                    e
-                                )
+        viewModelScope.launch(dispatchers.immediate) {
+            try {
+                val setShippingAddressData = changeShippingAddressGqlUseCase(
+                    ChangeShippingAddressRequest(
+                        dataChangeAddressRequests,
+                        isOneClickShipment
+                    )
+                )
+                if (view != null) {
+                    view?.hideLoading()
+                    view?.setHasRunningApiCall(false)
+                    if (setShippingAddressData.isSuccess) {
+                        if (setShippingAddressData.messages.isEmpty()) {
+                            view?.showToastNormal(view?.activityContext!!.getString(R.string.label_change_address_success))
+                        } else {
+                            view?.showToastNormal(setShippingAddressData.messages[0])
+                        }
+                        hitClearAllBo()
+                        view?.renderChangeAddressSuccess(reloadCheckoutPage)
+                    } else {
+                        if (setShippingAddressData.messages.isNotEmpty()) {
+                            val stringBuilder = StringBuilder()
+                            for (errorMessage in setShippingAddressData.messages) {
+                                stringBuilder.append(errorMessage).append(" ")
                             }
-                            view?.showToastError(errorMessage)
+                            view?.showToastError(stringBuilder.toString())
+                            if (isHandleFallback) {
+                                view?.renderChangeAddressFailed(reloadCheckoutPage)
+                            }
+                        } else {
+                            view?.showToastError(view?.activityContext?.getString(R.string.label_change_address_failed))
                             if (isHandleFallback) {
                                 view?.renderChangeAddressFailed(reloadCheckoutPage)
                             }
                         }
                     }
-
-                    override fun onNext(setShippingAddressData: SetShippingAddressData) {
-                        if (view != null) {
-                            view?.hideLoading()
-                            view?.setHasRunningApiCall(false)
-                            if (setShippingAddressData.isSuccess) {
-                                if (setShippingAddressData.messages.isEmpty()) {
-                                    view?.showToastNormal(view?.activityContext!!.getString(R.string.label_change_address_success))
-                                } else {
-                                    view?.showToastNormal(setShippingAddressData.messages[0])
-                                }
-                                hitClearAllBo()
-                                view?.renderChangeAddressSuccess(reloadCheckoutPage)
-                            } else {
-                                if (setShippingAddressData.messages.isNotEmpty()) {
-                                    val stringBuilder = StringBuilder()
-                                    for (errorMessage in setShippingAddressData.messages) {
-                                        stringBuilder.append(errorMessage).append(" ")
-                                    }
-                                    view?.showToastError(stringBuilder.toString())
-                                    if (isHandleFallback) {
-                                        view?.renderChangeAddressFailed(reloadCheckoutPage)
-                                    }
-                                } else {
-                                    view?.showToastError(view?.activityContext?.getString(R.string.label_change_address_failed))
-                                    if (isHandleFallback) {
-                                        view?.renderChangeAddressFailed(reloadCheckoutPage)
-                                    }
-                                }
-                            }
-                        }
+                }
+            } catch (t: Throwable) {
+                if (view != null) {
+                    view?.hideLoading()
+                    view?.setHasRunningApiCall(false)
+                    Timber.d(t)
+                    val errorMessage: String? = if (t is AkamaiErrorException) {
+                        t.message
+                    } else {
+                        getErrorMessage(
+                            view?.activityContext,
+                            t
+                        )
                     }
-                })
-        )
+                    view?.showToastError(errorMessage)
+                    if (isHandleFallback) {
+                        view?.renderChangeAddressFailed(reloadCheckoutPage)
+                    }
+                }
+            }
+        }
     }
 
-    override fun processGetCourierRecommendation(
+    fun processGetCourierRecommendation(
         shipperId: Int,
         spId: Int,
         itemPosition: Int,
@@ -2715,14 +2694,15 @@ class ShipmentPresenter @Inject constructor(
             viewModelScope.launch(dispatchers.immediate) {
                 try {
                     val shippingRecommendationData = withContext(dispatchers.io) {
-                        ratesApiUseCase.execute(param).map { shippingRecommendationData: ShippingRecommendationData ->
-                            stateConverter.fillState(
-                                shippingRecommendationData,
-                                shopShipmentList,
-                                spId,
-                                0
-                            )
-                        }.toBlocking().single()
+                        ratesApiUseCase.execute(param)
+                            .map { shippingRecommendationData: ShippingRecommendationData ->
+                                stateConverter.fillState(
+                                    shippingRecommendationData,
+                                    shopShipmentList,
+                                    spId,
+                                    0
+                                )
+                            }.toBlocking().single()
                     }
                     val boPromoCode = getBoPromoCode(isForceReload, shipmentCartItemModel)
                     var errorReason = "rates invalid data"
@@ -3011,7 +2991,9 @@ class ShipmentPresenter @Inject constructor(
                                                                         courierItemData.selectedShipper.logPromoCode
                                                                     )
                                                                 ) {
-                                                                    ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
+                                                                    ordersItem.codes.add(
+                                                                        courierItemData.selectedShipper.logPromoCode!!
+                                                                    )
                                                                     ordersItem.boCode =
                                                                         courierItemData.selectedShipper.logPromoCode!!
                                                                 }
@@ -3103,14 +3085,15 @@ class ShipmentPresenter @Inject constructor(
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
                                             } else {
-                                                val courierItemData = generateCourierItemDataWithScheduleDelivery(
-                                                    shipmentGetCourierHolderData.isForceReload,
-                                                    shipmentGetCourierHolderData.shipperId,
-                                                    shipmentGetCourierHolderData.spId,
-                                                    shipmentGetCourierHolderData.shipmentCartItemModel,
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData
-                                                )
+                                                val courierItemData =
+                                                    generateCourierItemDataWithScheduleDelivery(
+                                                        shipmentGetCourierHolderData.isForceReload,
+                                                        shipmentGetCourierHolderData.shipperId,
+                                                        shipmentGetCourierHolderData.spId,
+                                                        shipmentGetCourierHolderData.shipmentCartItemModel,
+                                                        shippingCourierUiModel,
+                                                        shippingRecommendationData
+                                                    )
                                                 if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                                     // courier should only be used with BO, but no BO code found
                                                     view?.renderCourierStateFailed(
@@ -3433,7 +3416,9 @@ class ShipmentPresenter @Inject constructor(
                                                                         courierItemData.selectedShipper.logPromoCode
                                                                     )
                                                                 ) {
-                                                                    ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
+                                                                    ordersItem.codes.add(
+                                                                        courierItemData.selectedShipper.logPromoCode!!
+                                                                    )
                                                                     ordersItem.boCode =
                                                                         courierItemData.selectedShipper.logPromoCode!!
                                                                 }
@@ -3963,7 +3948,7 @@ class ShipmentPresenter @Inject constructor(
         return ""
     }
 
-    override fun generateRatesMvcParam(cartString: String?): String {
+    fun generateRatesMvcParam(cartString: String?): String {
         var mvc = ""
         val tmpMvcShippingBenefitUiModel: MutableList<MvcShippingBenefitUiModel> = ArrayList()
         val promoSpIdUiModels = if (validateUsePromoRevampUiModel != null) {
@@ -4039,18 +4024,18 @@ class ShipmentPresenter @Inject constructor(
         return shippingParam
     }
 
-    override fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel>? {
+    fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel>? {
         return shippingCourierViewModelsState[orderNumber]
     }
 
-    override fun setShippingCourierViewModelsState(
+    fun setShippingCourierViewModelsState(
         shippingCourierUiModelsState: List<ShippingCourierUiModel>,
         orderNumber: Int
     ) {
         shippingCourierViewModelsState[orderNumber] = shippingCourierUiModelsState
     }
 
-    override fun getCampaignTimer(): CampaignTimerUi? {
+    fun getCampaignTimer(): CampaignTimerUi? {
         return if (campaignTimer == null || !campaignTimer!!.showTimer) {
             null
         } else {
@@ -4063,7 +4048,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun releaseBooking() {
+    fun releaseBooking() {
         // As deals product is using OCS, the shipment should only contain 1 product
         val productId =
             getFirstProductId(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
@@ -4099,7 +4084,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun fetchEpharmacyData() {
+    fun fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
             processEpharmacyData(ePharmacyPrepareProductsGroupResponse)
         }) { throwable: Throwable? ->
@@ -4282,7 +4267,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun setPrescriptionIds(prescriptionIds: ArrayList<String>) {
+    fun setPrescriptionIds(prescriptionIds: ArrayList<String>) {
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
                 shipmentCartItemModel.prescriptionIds = prescriptionIds
@@ -4291,7 +4276,7 @@ class ShipmentPresenter @Inject constructor(
         uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
     }
 
-    override fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
+    fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
         if (view != null) {
             val epharmacyGroupIds = HashSet<String>()
             val mapPrescriptionCount = HashMap<String?, Int>()
@@ -4454,11 +4439,11 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun setLatValidateUseRequest(latValidateUseRequest: ValidateUsePromoRequest?) {
+    fun setLatValidateUseRequest(latValidateUseRequest: ValidateUsePromoRequest?) {
         lastValidateUseRequest = latValidateUseRequest
     }
 
-    override fun setUploadPrescriptionData(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+    fun setUploadPrescriptionData(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         this.uploadPrescriptionUiModel = uploadPrescriptionUiModel
     }
 
@@ -4481,7 +4466,7 @@ class ShipmentPresenter @Inject constructor(
         return true
     }
 
-    override fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
@@ -4506,7 +4491,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartStringGroup + "-0").equals(
@@ -4590,7 +4575,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Pair<ArrayList<String>, ArrayList<String>> {
+    fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Pair<ArrayList<String>, ArrayList<String>> {
         val unappliedBoPromoUniqueIds = ArrayList<String>()
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
@@ -4631,7 +4616,7 @@ class ShipmentPresenter @Inject constructor(
         return Pair(reloadedUniqueIds, unappliedBoPromoUniqueIds)
     }
 
-    override fun doUnapplyBo(cartStringGroup: String, promoCode: String) {
+    fun doUnapplyBo(cartStringGroup: String, promoCode: String) {
         val itemAdapterPosition =
             view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(cartStringGroup) ?: -1
         val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
@@ -4676,7 +4661,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun clearOrderPromoCodeFromLastValidateUseRequest(
+    fun clearOrderPromoCodeFromLastValidateUseRequest(
         cartStringGroup: String,
         promoCode: String
     ) {
@@ -4699,7 +4684,7 @@ class ShipmentPresenter @Inject constructor(
         lastApplyData.value = lastApplyUiModel
     }
 
-    override fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel) {
+    fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel) {
         val itemAdapterPosition = view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(
             voucherOrdersItemUiModel.cartStringGroup
         ) ?: -1
@@ -4722,7 +4707,7 @@ class ShipmentPresenter @Inject constructor(
         processBoPromoCourierRecommendationNew(listToProcess)
     }
 
-    /*override fun processBoPromoCourierRecommendation(
+    /*fun processBoPromoCourierRecommendation(
         itemPosition: Int,
         voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
         shipmentCartItemModel: ShipmentCartItemModel
@@ -5091,7 +5076,7 @@ class ShipmentPresenter @Inject constructor(
         return courierItemData
     }
 
-    override fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product> {
+    fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product> {
         val products = ArrayList<Product>()
         if (shipmentCartItemModel != null) {
             for (cartItemModel in shipmentCartItemModel.cartItemModels) {
@@ -5141,7 +5126,7 @@ class ShipmentPresenter @Inject constructor(
         return products
     }
 
-    override fun validateClearAllBoPromo() {
+    fun validateClearAllBoPromo() {
         if (lastValidateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
@@ -5161,7 +5146,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun cancelUpsell(
+    fun cancelUpsell(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHinger: Boolean
@@ -5174,7 +5159,7 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    override fun clearAllBoOnTemporaryUpsell() {
+    fun clearAllBoOnTemporaryUpsell() {
         if (shipmentNewUpsellModel.isShow && shipmentNewUpsellModel.isSelected) {
             val clearOrders = ArrayList<ClearPromoOrder>()
             var hasBo = false
@@ -5227,7 +5212,7 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    override fun validatePrescriptionOnBackPressed(): Boolean {
+    fun validatePrescriptionOnBackPressed(): Boolean {
         if (uploadPrescriptionUiModel.showImageUpload && view != null) {
             if (uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription) {
                 view?.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
@@ -5289,7 +5274,7 @@ class ShipmentPresenter @Inject constructor(
         setDynamicDataParam(ddpParam)
     }
 
-    override fun updateDynamicData(
+    fun updateDynamicData(
         dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
         isFireAndForget: Boolean
     ) {
@@ -5320,19 +5305,19 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest) {
+    fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest) {
         this.dynamicDataParam = dynamicDataPassingParam
     }
 
-    override fun getDynamicDataParam(): DynamicDataPassingParamRequest {
+    fun getDynamicDataParam(): DynamicDataPassingParamRequest {
         return this.dynamicDataParam
     }
 
-    override fun validateDynamicData() {
+    fun validateDynamicData() {
         updateDynamicData(getDynamicDataParam(), false)
     }
 
-    override fun isUsingDynamicDataPassing(): Boolean {
+    fun isUsingDynamicDataPassing(): Boolean {
         return isUsingDdp
     }
 
@@ -5340,7 +5325,7 @@ class ShipmentPresenter @Inject constructor(
         return scheduleDeliveryMapData[cartString]
     }
 
-    override fun setScheduleDeliveryMapData(
+    fun setScheduleDeliveryMapData(
         cartString: String,
         shipmentScheduleDeliveryMapData: ShipmentScheduleDeliveryMapData
     ) {
