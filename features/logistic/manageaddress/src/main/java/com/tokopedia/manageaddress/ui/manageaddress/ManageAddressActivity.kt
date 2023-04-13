@@ -1,6 +1,8 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -14,6 +16,10 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
+import com.tokopedia.manageaddress.ui.debugbanner.Banner
+import com.tokopedia.manageaddress.ui.debugbanner.BannerView
+import com.tokopedia.manageaddress.ui.debugbanner.DebugBanner
+import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
@@ -37,6 +43,22 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         binding = ActivityManageAddressBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         initViews()
+
+        val p0: Activity = this
+        val decorView = p0.window.decorView as ViewGroup
+        val localBanner = if (p0 is BannerView) {
+            p0.createBanner()
+        } else {
+            Banner()
+        }
+        val debugBannerView = DebugBannerView(p0).apply {
+            updateText(localBanner.bannerText, localBanner.textColorRes)
+            updateBannerColor(localBanner.bannerColorRes)
+            bannerGravity = localBanner.bannerGravity
+        }
+        val bannerSize = p0.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+        val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
+        decorView.addView(debugBannerView, params)
     }
 
     private fun initViews() {
