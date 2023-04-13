@@ -13,7 +13,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import javax.inject.Inject
 
 private const val QUERY = """
-          mutation AddToCartTokofood(${'$'}params: ATCGeneralParams!) {
+          mutation AddToCartTokofoodOld(${'$'}params: ATCGeneralParams!) {
             add_to_cart_general(params: ${'$'}params) {
               message
               status
