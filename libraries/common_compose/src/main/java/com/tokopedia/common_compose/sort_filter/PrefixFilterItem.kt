@@ -57,7 +57,7 @@ internal fun PrefixFilterItem(
                 )
             }
             if (text != null) {
-                Text(modifier = Modifier.padding(start = 4.dp), text = text)
+                Text(modifier = Modifier.padding(start = 4.dp), style = NestTheme.typography.display2, text = text)
             }
         }
     }
