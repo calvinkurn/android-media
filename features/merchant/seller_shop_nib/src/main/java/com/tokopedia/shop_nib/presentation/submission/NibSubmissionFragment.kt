@@ -14,10 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
-import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -84,7 +82,10 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        observeInputValidation()
     }
+
+
 
     private fun setupView() {
         binding?.run {
@@ -99,12 +100,23 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
                 }
             )
+
             imgFile.scaleType = ImageView.ScaleType.CENTER_CROP
+
             tauNibPublishedDate.editText.setOnClickListener { showDatePickerBottomSheet() }
             tauNibPublishedDate.editText.inputType = InputType.TYPE_NULL
             tauNibPublishedDate.editText.isFocusable = false
 
-            btnFinish.setOnClickListener { NibSubmissionSuccessActivity.start(activity ?: return@setOnClickListener) }
+            btnFinish.setOnClickListener {
+                viewModel.onTapSubmitButton()
+                activity?.finish()
+                NibSubmissionSuccessActivity.start(activity ?: return@setOnClickListener)
+            }
+        }
+    }
+    private fun observeInputValidation() {
+        viewModel.validInput.observe(viewLifecycleOwner){ isInputValid ->
+            binding?.btnFinish?.isEnabled = isInputValid
         }
     }
 
@@ -137,6 +149,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         if (fileSizeInKb <= MAX_FILE_SIZE_BYTES) {
             binding?.tpgErrorMessage?.gone()
             renderSelectedFileThumbnail(fileUri, fileSizeInKb)
+
+            viewModel.onFileSelected(fileUri.toString())
         } else {
             binding?.btnFinish?.disable()
             binding?.layoutFilePickerDefault?.gone()
@@ -170,6 +184,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun removeSelectedFile() {
+        viewModel.onFileRemoved()
+
         binding?.run {
             layoutFilePickerDefault.visible()
             layoutFilePickerSelected.gone()
@@ -185,7 +201,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         val datePicker = NibDatePicker(param)
         val onDateSelected : (Date) -> Unit = { selectedDate ->
             binding?.tauNibPublishedDate?.editText?.setText(selectedDate.formatTo(DATE_FORMAT))
-            viewModel.setNibPublishDate(selectedDate)
+            viewModel.onSelectNibPublishDate(selectedDate)
         }
         datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
     }

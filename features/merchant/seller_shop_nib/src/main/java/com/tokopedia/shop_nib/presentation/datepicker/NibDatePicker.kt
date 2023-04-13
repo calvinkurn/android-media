@@ -2,12 +2,8 @@ package com.tokopedia.shop_nib.presentation.datepicker
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toCalendar
-import com.tokopedia.shop_nib.util.extension.extractHour
-import com.tokopedia.shop_nib.util.extension.extractMinute
 import java.util.*
 import javax.inject.Inject
 
@@ -20,7 +16,7 @@ class NibDatePicker @Inject constructor(private val param: Param) {
     }
 
     data class Param(
-        val defaultDate: Date,
+        val defaultDate: Date?,
         val title: String,
         val buttonWording: String,
     )
@@ -53,7 +49,12 @@ class NibDatePicker @Inject constructor(private val param: Param) {
     }
 
     private fun buildDefaultDate(): Calendar {
-        return this.param.defaultDate.toCalendar()
+        val previouslySelectedDate = this.param.defaultDate
+        return if (previouslySelectedDate == null) {
+            Calendar.getInstance()
+        } else {
+            previouslySelectedDate.toCalendar()
+        }
     }
 
     private fun buildMaxDate(): Calendar {

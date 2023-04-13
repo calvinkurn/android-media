@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionSuccessBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -38,9 +36,7 @@ class NibSubmissionSuccessFragment : Fragment() {
 
     private fun setupView() {
         binding?.emptyState?.setImageUrl(IMAGE_URL_SUBMISSION_SUCCESS)
-        binding?.emptyState?.setPrimaryCTAClickListener {
-            RouteManager.route(activity ?: return@setPrimaryCTAClickListener, ApplinkConst.SellerApp.SELLER_APP_HOME)
-        }
+        binding?.emptyState?.setPrimaryCTAClickListener { activity?.finish() }
     }
 
 
