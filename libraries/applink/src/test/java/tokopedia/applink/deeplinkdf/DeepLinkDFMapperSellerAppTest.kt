@@ -247,4 +247,10 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/accepted-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
+
+    @Test
+    fun `check campaign list applink then should return DF_CAMPAIGN_LIST in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://campaign-list"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CAMPAIGN_LIST)
+    }
 }

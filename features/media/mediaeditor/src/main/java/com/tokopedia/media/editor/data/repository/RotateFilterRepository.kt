@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.data.repository
 
+import android.content.Context
 import android.graphics.RectF
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
+import com.tokopedia.media.editor.utils.showErrorGeneralToaster
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.OverlayView
 import javax.inject.Inject
@@ -26,7 +29,9 @@ interface RotateFilterRepository {
     var initialScale: Float
 }
 
-class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository {
+class RotateFilterRepositoryImpl @Inject constructor(
+    @ApplicationContext val context: Context
+) : RotateFilterRepository {
     override var previousDegree = 0f
     override var sliderValue = 0f
     override var rotateNumber = 0
@@ -126,7 +131,12 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         normalizeDegree: Float,
         imageRatio: Pair<Float, Float>?
     ) {
-        cropImageView.postRotate(normalizeDegree)
+        try {
+            cropImageView.postRotate(normalizeDegree)
+        } catch (e: Exception) {
+            showErrorGeneralToaster(context, e.message)
+            return
+        }
 
         // isRatioRotated = false mean initial ratio going to rotate 90 degree
         var newScale = initialRatioZoom
@@ -138,7 +148,13 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
             if (rotatedRatioZoom == 0f) {
                 val newTargetWidth = cropOverlay.cropViewRect
-                rotatedRatioZoom = if (newTargetWidth == originalTargetWidth) {
+
+                // cannot compare directly, need tolerance value since Ucrop overlay size can return diff rect value after each init
+                // cropOverlay.setTargetAspectRatio => will re-init the overlay size
+                val diffWidth = abs(newTargetWidth.width() - originalTargetWidth.width())
+                val diffHeight = abs(newTargetWidth.width() - originalTargetWidth.width())
+
+                rotatedRatioZoom = if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
                     initialScale
                 } else {
                     (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
@@ -189,5 +205,6 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
     companion object {
         private const val CROP_VIEW_ZOOM_DELAY = 500L
+        private const val TOLERANCE_SIZE_VALUE = 5 // in pixel
     }
 }
