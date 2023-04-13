@@ -272,6 +272,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     when(this){
                         0f -> {
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = getString(R.string.tidak_dibatasi)
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
                         }
                         else -> {
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = "Rp ${
@@ -292,8 +293,23 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                                     )
                                 )
 
-                            /** ProgressBar unify needs to be updated when rendered on screen */
+                            /** ProgressBar unify needs to be updated when rendered & visible on screen */
                             val dailySpentPercent = (100 * convertMoneyToValue(it.response?.data?.get(0)?.groupPriceDailySpentFmt ?: "")/this).toInt()
+                            val colorArray : IntArray = when{
+                                dailySpentPercent > 80 -> intArrayOf(
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_RN500),
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_RN500)
+                                )
+                                dailySpentPercent > 60 -> intArrayOf(
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_YN300),
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_YN300)
+                                )
+                                else -> intArrayOf(
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_GN500),
+                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, R.color.Unify_GN500)
+                                )
+                            }
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressBarColor = colorArray
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpentPercent)
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
                                 4.toPx().toFloat()
@@ -510,8 +526,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility =
                 if (mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
-            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility =
-                if (mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupPriceDaily.let {
+                if(it != 0f){
+                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility =
+                        if (mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+                }
+            }
 
             if (mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.rotation == ROTATION_0) {
                 mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.animate()
