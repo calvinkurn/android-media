@@ -9,9 +9,18 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MPSEmptyStateKeywordViewHolder(
     itemView: View,
+    private val emptyStateListener: EmptyStateListener,
 ): AbstractViewHolder<MPSEmptyStateKeywordDataView>(itemView) {
 
     private var binding: SearchMpsEmptyStateKeywordBinding? by viewBinding()
+
+    init {
+        binding?.let {
+            it.mpsEmptyStateKeywordButton.setOnClickListener {
+                emptyStateListener.onEmptyButtonKeywordClicked()
+            }
+        }
+    }
 
     override fun bind(element: MPSEmptyStateKeywordDataView) {
 

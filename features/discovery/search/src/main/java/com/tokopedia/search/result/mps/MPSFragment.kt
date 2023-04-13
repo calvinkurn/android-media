@@ -20,13 +20,13 @@ import com.tokopedia.discovery.common.State.Success
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
+import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.mps.emptystate.EmptyStateListener
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
-import com.tokopedia.search.result.presentation.view.activity.SearchComponent
-import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
@@ -46,9 +46,11 @@ class MPSFragment @Inject constructor(
     ChooseAddressListener,
     FragmentProvider,
     BackToTopView,
-    ListListener {
+    ListListener,
+    EmptyStateListener {
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
+    private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
     private var binding: SearchMpsFragmentLayoutBinding? by autoClearedNullable()
     private val recycledViewPool = RecycledViewPool()
     private var mpsListAdapter: MPSListAdapter? = null
@@ -102,7 +104,8 @@ class MPSFragment @Inject constructor(
                 context,
                 viewModel,
                 trackingQueue,
-            )
+            ),
+            emptyStateListener = this,
         )
 
         mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
@@ -189,6 +192,14 @@ class MPSFragment @Inject constructor(
         currentList: List<Visitable<*>>,
     ) {
         endlessScrollListener?.updateStateAfterGetData()
+    }
+
+    override fun onEmptyButtonKeywordClicked() {
+        searchViewModel?.showAutoCompleteView()
+    }
+
+    override fun onEmptyButtonFilterClicked() {
+
     }
 
     companion object {

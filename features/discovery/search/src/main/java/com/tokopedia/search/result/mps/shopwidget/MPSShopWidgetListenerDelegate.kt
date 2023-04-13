@@ -5,14 +5,17 @@ import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.search.result.mps.MPSViewModel
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class MPSShopWidgetListenerDelegate(
-    private val context: Context?,
+    context: Context?,
     private val mpsViewModel: MPSViewModel?,
     private val trackingQueue: TrackingQueue,
 ): MPSShopWidgetListener,
+    ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
     private val keywords

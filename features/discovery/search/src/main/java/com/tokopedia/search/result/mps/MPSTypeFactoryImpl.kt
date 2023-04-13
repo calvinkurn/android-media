@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressViewHolder
+import com.tokopedia.search.result.mps.emptystate.EmptyStateListener
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterViewHolder
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
@@ -21,6 +22,7 @@ class MPSTypeFactoryImpl(
     private val fragmentProvider: FragmentProvider,
     private val chooseAddressListener: ChooseAddressListener,
     private val shopWidgetListener: MPSShopWidgetListener,
+    private val emptyStateListener: EmptyStateListener,
 ): BaseAdapterTypeFactory(), MPSTypeFactory {
 
     override fun type(mpsShopWidgetDataView: MPSShopWidgetDataView): Int =
@@ -49,9 +51,11 @@ class MPSTypeFactoryImpl(
             )
             MPSEmptyStateKeywordViewHolder.LAYOUT -> MPSEmptyStateKeywordViewHolder(
                 view,
+                emptyStateListener,
             )
             MPSEmptyStateFilterViewHolder.LAYOUT -> MPSEmptyStateFilterViewHolder(
                 view,
+                emptyStateListener,
             )
             else -> super.createViewHolder(view, type)
         }
