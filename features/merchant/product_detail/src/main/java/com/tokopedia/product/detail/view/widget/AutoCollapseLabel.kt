@@ -47,6 +47,16 @@ class AutoCollapseLabel @JvmOverloads constructor(
     private val animator = ViewAnimator()
     private var canShow: Boolean = false
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        animator.pauseAnimators()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        animator.resumeAnimators()
+    }
+
     fun setup(recomData: ProductMediaRecomData) {
         canShow = recomData.shouldShow()
         if (canShow) bindData(recomData)
@@ -72,8 +82,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
     }
 
     private fun collapsed(): Boolean {
-        return binding.tvAutoCollapseLabel.ellipsize == null &&
-            binding.tvAutoCollapseLabel.maxWidth == Int.ZERO
+        return binding.tvAutoCollapseLabel.ellipsize == null
     }
 
     inner class ViewAnimator {
@@ -103,6 +112,18 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
             collapseAnimator = createCollapseAnimator(delay)
             collapseAnimator?.start()
+        }
+
+        fun pauseAnimators() {
+            showAnimator?.pause()
+            collapseAnimator?.pause()
+            hideAnimator?.pause()
+        }
+
+        fun resumeAnimators() {
+            showAnimator?.resume()
+            collapseAnimator?.resume()
+            hideAnimator?.resume()
         }
 
         private fun createShowAnimator() = binding.root.createAlphaAnimator(
