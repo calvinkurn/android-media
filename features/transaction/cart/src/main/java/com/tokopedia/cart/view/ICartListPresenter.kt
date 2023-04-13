@@ -113,8 +113,6 @@ interface ICartListPresenter {
 
     fun doUpdateCartForPromo()
 
-    fun doGetLastApply(promoRequest: ValidateUsePromoRequest)
-
     fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest)
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)

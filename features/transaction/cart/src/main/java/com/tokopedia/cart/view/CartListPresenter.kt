@@ -1905,28 +1905,6 @@ class CartListPresenter @Inject constructor(
         }
     }
 
-    override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        launch(dispatchers.io) {
-            try {
-                lastValidateUseRequest = promoRequest
-                val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
-                setUpdateCartAndGetLastApplyLastResponse(
-                    UpdateAndGetLastApplyData().apply {
-                        promoUiModel = getLastApplyResponse.promoUiModel
-                    }
-                )
-                syncCartGroupShopBoCodeWithPromoUiModel(getLastApplyResponse.promoUiModel)
-                isLastApplyResponseStillValid = false
-                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-            } catch (t: Throwable) {
-                if (t is AkamaiErrorException) {
-                    view?.showToastMessageRed(t)
-                }
-                view?.showPromoCheckoutStickyButtonInactive()
-            }
-        }
-    }
-
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()

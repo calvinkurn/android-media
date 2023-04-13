@@ -277,10 +277,10 @@ object PromoRequestMapper {
         lastValidateUsePromoRequest: ValidateUsePromoRequest?
     ): PromoRequest {
         val orders = mutableListOf<Order>()
-        val selectedPromoHolderDataList = mapSelectedCartGroupToPromoData(
+        val selectedPromoHolderDataMap = mapSelectedCartGroupToPromoData(
             availableCartGroupHolderDataList
-        ).values
-        selectedPromoHolderDataList.forEach { cartPromoHolderData ->
+        )
+        selectedPromoHolderDataMap.values.forEach { cartPromoHolderData ->
             val listProductDetail = mutableListOf<ProductDetail>()
             var hasCheckedItem = false
             cartPromoHolderData.productUiModelList.forEach { cartItem ->
@@ -315,7 +315,12 @@ object PromoRequestMapper {
                 orders.forEach { order ->
                     if (voucherOrder.uniqueId == order.uniqueId) {
                         if (!order.codes.contains(voucherOrder.code)) {
-                            order.codes.add(voucherOrder.code)
+                            if (!voucherOrder.isTypeLogistic()) {
+                                order.codes.add(voucherOrder.code)    
+                            }
+                            else if (voucherOrder.isTypeLogistic() && selectedPromoHolderDataMap[voucherOrder.cartStringGroup]?.boUniqueId == voucherOrder.uniqueId) {
+                                order.codes.add(voucherOrder.code)
+                            }
                         }
                         if (order.shippingId <= 0) {
                             order.shippingId = voucherOrder.shippingId
@@ -340,7 +345,12 @@ object PromoRequestMapper {
                 orders.forEach { order ->
                     if (voucherOrders.uniqueId == order.uniqueId) {
                         if (voucherOrders.code.isNotBlank() && !order.codes.contains(voucherOrders.code)) {
-                            order.codes.add(voucherOrders.code)
+                            if (!voucherOrders.isTypeLogistic()) {
+                                order.codes.add(voucherOrders.code)
+                            }
+                            else if (voucherOrders.isTypeLogistic() && selectedPromoHolderDataMap[voucherOrders.cartStringGroup]?.boUniqueId == voucherOrders.uniqueId) {
+                                order.codes.add(voucherOrders.code)
+                            }
                         }
                         if (order.shippingId <= 0) {
                             order.shippingId = voucherOrders.shippingId
@@ -367,7 +377,6 @@ object PromoRequestMapper {
         availableCartGroupHolderDataList: List<CartGroupHolderData>
     ): ClearPromoOrderData? {
         val orders = arrayListOf<ClearPromoOrder>()
-        val cartStringGroupMap = mutableMapOf<String, Boolean>()
         val promoHolderDataMap = mapSelectedCartGroupToPromoData(
             availableCartGroupHolderDataList
         )
@@ -391,12 +400,11 @@ object PromoRequestMapper {
                     if (voucherOrder.uniqueId == order.uniqueId &&
                         voucherOrder.shippingId > 0 &&
                         voucherOrder.spId > 0 &&
-                        voucherOrder.type == "logistic"
+                        voucherOrder.type == "logistic" &&
+                        promoHolderDataMap[voucherOrder.cartStringGroup]?.boUniqueId == voucherOrder.uniqueId
                     ) {
-                        if (cartStringGroupMap[voucherOrder.cartStringGroup] == false) {
-                            order.codes.add(voucherOrder.code)
-                            hasBo = true
-                        }
+                        order.codes.add(voucherOrder.code)
+                        hasBo = true
                     }
                 }
             }
@@ -406,7 +414,8 @@ object PromoRequestMapper {
                     if (voucherOrders.uniqueId == order.uniqueId &&
                         voucherOrders.shippingId > 0 &&
                         voucherOrders.spId > 0 &&
-                        voucherOrders.type == "logistic"
+                        voucherOrders.type == "logistic" &&
+                        promoHolderDataMap[voucherOrders.uniqueId]?.boUniqueId == voucherOrders.uniqueId
                     ) {
                         order.codes.add(voucherOrders.code)
                         hasBo = true
@@ -417,7 +426,7 @@ object PromoRequestMapper {
 
         return if (hasBo) {
             ClearPromoOrderData(
-                orders = orders.filter { it.codes.isNotEmpty() }
+                orders = orders
             )
         } else {
             null
