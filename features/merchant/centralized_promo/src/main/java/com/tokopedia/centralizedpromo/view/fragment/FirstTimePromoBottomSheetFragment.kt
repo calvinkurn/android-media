@@ -190,18 +190,14 @@ class FirstTimePromoBottomSheetFragment : BottomSheetUnify() {
                     CentralizedPromoApplinkConst.TYPE_VOUCHER_PRODUCT -> {
                         CentralizedPromoTracking.sendFirstVoucherProductBottomSheetClick(userSession.shopId)
                         setVoucherProductSharedPrefValue()
-                        if (productId == null) {
-                            ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
-                        } else {
-                            "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/$productId"
-                        }
+                        ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER
                     }
                     CentralizedPromoApplinkConst.TYPE_VOUCHER_CASHBACK -> {
                         CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(
                             userSession.userId,
                             false
                         )
-                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                        ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER
                     }
                     CentralizedPromoApplinkConst.TYPE_TOKOPEDIA_PLAY -> {
                         setTokopediaPlaySharedPrefValue()
