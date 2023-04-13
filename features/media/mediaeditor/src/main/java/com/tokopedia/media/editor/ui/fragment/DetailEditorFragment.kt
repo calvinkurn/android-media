@@ -1311,6 +1311,6 @@ class DetailEditorFragment @Inject constructor(
         // watermark & rotate index is used 99 since the conditional need to compare which is smaller
         private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
         private const val DEFAULT_CONTRAST_BRIGHTNESS_INDEX = -1
-        private const val DEFAULT_CROP_SCALE = 0
+        private const val DEFAULT_CROP_SCALE = 0f
     }
 }
