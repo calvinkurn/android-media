@@ -8,12 +8,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
-import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateUiModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
@@ -96,12 +96,16 @@ class PlayShortsRepositoryImpl @Inject constructor(
         }.executeOnBackground().recommendedTags.success
     }
 
-    override suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateUiModel {
-        return withContext(dispatchers.io) { broadcasterCheckAffiliateUseCase(Unit) }
+    override suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateResponseUiModel {
+        return withContext(dispatchers.io) {
+            mapper.mapBroadcasterCheckAffiliate(broadcasterCheckAffiliateUseCase(Unit))
+        }
     }
 
     override suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
-        return withContext(dispatchers.io) { mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request)) }
+        return withContext(dispatchers.io) {
+            mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request))
+        }
     }
 
 }

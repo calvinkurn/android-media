@@ -7,9 +7,11 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
+import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateResponseModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.PlayShortsConfig
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import javax.inject.Inject
@@ -66,6 +68,14 @@ class PlayShortsUiMapper @Inject constructor(
                 isChosen = false
             )
         }.toSet()
+    }
+
+    override fun mapBroadcasterCheckAffiliate(response: BroadcasterCheckAffiliateResponseModel): BroadcasterCheckAffiliateResponseUiModel {
+        val responseData = response.data
+        return BroadcasterCheckAffiliateResponseUiModel(
+            affiliateName = responseData.affiliateName,
+            isAffiliate = responseData.isAffiliate,
+        )
     }
 
     override fun mapOnboardAffiliate(response: OnboardAffiliateResponseModel): OnboardAffiliateUiModel {

@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.shorts.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class BroadcasterCheckAffiliateUiModel(
+data class BroadcasterCheckAffiliateResponseModel(
     @SerializedName("broadcasterCheckIsAffiliate")
     val data: BroadcasterCheckIsAffiliate = BroadcasterCheckIsAffiliate(),
 ) {

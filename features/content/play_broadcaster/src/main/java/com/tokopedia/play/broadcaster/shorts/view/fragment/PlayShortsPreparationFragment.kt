@@ -376,12 +376,12 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if (prev?.isShopAffiliate == curr.isShopAffiliate) return
+        if (prev?.isAffiliate == curr.isAffiliate) return
 
         /**
          * revamp this after mobile analytic merged
          */
-        if (!curr.isShopAffiliate) {
+        if (!curr.isAffiliate) {
             binding.bannerShorts.apply {
                 title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
                 description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)

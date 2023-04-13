@@ -104,7 +104,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
-    private val _isShopAffiliate = MutableStateFlow(false)
+    private val _isAffiliate = MutableStateFlow(false)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -148,7 +148,7 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList,
         _tags,
         _uploadState,
-        _isShopAffiliate
+        _isAffiliate
     ) { globalLoader,
         config,
         media,
@@ -160,7 +160,7 @@ class PlayShortsViewModel @Inject constructor(
         productSectionList,
         tags,
         uploadState,
-        isShopAffiliate ->
+        isAffiliate ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -173,7 +173,7 @@ class PlayShortsViewModel @Inject constructor(
             productSectionList = productSectionList,
             tags = tags,
             uploadState = uploadState,
-            isShopAffiliate = isShopAffiliate,
+            isAffiliate = isAffiliate,
         )
     }
 
@@ -247,7 +247,7 @@ class PlayShortsViewModel @Inject constructor(
 
             setupConfigurationIfEligible(bestEligibleAccount)
 
-            checkUserIsShopAndAffiliate()
+            checkIsUserAffiliate()
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
         }
@@ -280,10 +280,10 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun checkUserIsShopAndAffiliate() {
-        if (!selectedAccount.isShop) return
-        val checkIsShopAffiliate = repo.getBroadcasterCheckAffiliate()
-        _isShopAffiliate.update { checkIsShopAffiliate.data.isAffiliate }
+    private suspend fun checkIsUserAffiliate() {
+        if (!selectedAccount.isUser) return
+        val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
+        _isAffiliate.update { checkIsAffiliate.isAffiliate }
     }
 
     private fun handleSetMedia(mediaUri: String) {
