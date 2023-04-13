@@ -22,7 +22,7 @@ import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
-    private val router: Router,
+    private val router: Router
 ) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayShortsXAffiliateTncBinding? = null
@@ -32,6 +32,8 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     private val boldSpan = StyleSpan(Typeface.BOLD)
     private val colorSpan: ForegroundColorSpan
         get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
+
+    private var mListener: Listener? = null
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
@@ -100,11 +102,22 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
             binding.btnContinue.isEnabled = binding.layoutTnc.cbxTnc.isChecked
         }
         binding.btnContinue.setOnClickListener {
-            /** TODO
-             * submit the tnc later
-             */
-            if (it.isEnabled) dismiss()
+            if (it.isEnabled) {
+                mListener?.onSubmitTnc()
+            }
         }
+    }
+
+    fun dismissed() {
+        dismiss()
+    }
+
+    fun updateButtonState(isLoading: Boolean) {
+        binding.btnContinue.isLoading = isLoading
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -125,19 +138,25 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         return result
     }
 
+    interface Listener {
+        fun onSubmitTnc()
+    }
+
     companion object {
         private const val TAG = "PlayShortsXAffiliateTncBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayShortsAffiliateTnCBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayShortsAffiliateTnCBottomSheet
-            return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                PlayShortsAffiliateTnCBottomSheet::class.java.name
-            ) as PlayShortsAffiliateTnCBottomSheet)
+            return oldInstance ?: (
+                fragmentManager.fragmentFactory.instantiate(
+                    classLoader,
+                    PlayShortsAffiliateTnCBottomSheet::class.java.name
+                ) as PlayShortsAffiliateTnCBottomSheet
+                )
         }
     }
 }
