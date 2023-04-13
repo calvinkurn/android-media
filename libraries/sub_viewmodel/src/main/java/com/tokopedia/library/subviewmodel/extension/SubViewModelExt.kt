@@ -1,8 +1,8 @@
-package com.tokopedia.product.detail.view.viewmodel.product_detail.base.extension
+package com.tokopedia.library.subviewmodel.extension
 
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.BaseViewModelV2
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelMediator
+import com.tokopedia.library.subviewmodel.BaseViewModelV2
+import com.tokopedia.library.subviewmodel.SubViewModel
+import com.tokopedia.library.subviewmodel.SubViewModelMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext

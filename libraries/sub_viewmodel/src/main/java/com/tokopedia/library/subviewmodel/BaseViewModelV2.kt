@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel.product_detail.base
+package com.tokopedia.library.subviewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel

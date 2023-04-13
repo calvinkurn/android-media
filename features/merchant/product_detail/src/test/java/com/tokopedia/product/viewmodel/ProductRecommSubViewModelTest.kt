@@ -2,11 +2,11 @@ package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProviderImpl
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity

@@ -11,6 +11,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -23,7 +24,6 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips

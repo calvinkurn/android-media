@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.library.subviewmodel.SubViewModel
+import com.tokopedia.library.subviewmodel.SubViewModelScope
+import com.tokopedia.library.subviewmodel.extension.launch
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -12,9 +15,6 @@ import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.extension.launch
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip

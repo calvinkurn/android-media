@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.library.subviewmodel.SubViewModelProvider
+import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
+import com.tokopedia.library.subviewmodel.SubViewModelScope
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IPlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProvider
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProviderImpl
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel

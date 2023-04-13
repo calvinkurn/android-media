@@ -2,16 +2,16 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.library.subviewmodel.SubViewModel
+import com.tokopedia.library.subviewmodel.SubViewModelScope
+import com.tokopedia.library.subviewmodel.extension.getMediator
+import com.tokopedia.library.subviewmodel.extension.launch
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IPlayWidgetSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelScope
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.extension.getMediator
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.extension.launch
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

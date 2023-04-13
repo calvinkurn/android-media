@@ -1,6 +1,7 @@
 package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -16,7 +17,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelProviderImpl
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider

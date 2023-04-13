@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel.product_detail.base
+package com.tokopedia.library.subviewmodel
 
 /**
  * Created by yovi.putra on 24/03/23"
