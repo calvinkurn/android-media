@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.shorts.domain
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -36,4 +36,7 @@ interface PlayShortsRepository {
         shortsId: String,
         tags: Set<String>
     ): Boolean
+
+    suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateUiModel
+
 }

@@ -27,7 +27,11 @@ import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -99,6 +103,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
+    private val _isShopAffiliate = MutableStateFlow(false)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -141,8 +146,20 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm,
         _productSectionList,
         _tags,
-        _uploadState
-    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, productSectionList, tags, uploadState ->
+        _uploadState,
+        _isShopAffiliate
+    ) { globalLoader,
+        config,
+        media,
+        accountList,
+        selectedAccount,
+        menuListUiState,
+        titleForm,
+        coverForm,
+        productSectionList,
+        tags,
+        uploadState,
+        isShopAffiliate ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -154,7 +171,8 @@ class PlayShortsViewModel @Inject constructor(
             coverForm = coverForm,
             productSectionList = productSectionList,
             tags = tags,
-            uploadState = uploadState
+            uploadState = uploadState,
+            isShopAffiliate = isShopAffiliate,
         )
     }
 
@@ -224,9 +242,17 @@ class PlayShortsViewModel @Inject constructor(
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             setupConfigurationIfEligible(bestEligibleAccount)
+
+            checkUserIsShopAndAffiliate()
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
         }
+    }
+
+    private suspend fun checkUserIsShopAndAffiliate() {
+        if (!selectedAccount.isShop) return
+        val checkIsShopAffiliate = repo.getBroadcasterCheckAffiliate()
+        _isShopAffiliate.update { checkIsShopAffiliate.data.isAffiliate }
     }
 
     private fun handleSetMedia(mediaUri: String) {

@@ -19,6 +19,7 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -242,19 +243,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
-
-        /** TODO
-         * some logic to check whether to show banner affiliate or not
-         * but BE team is not ready yet
-         */
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
-            description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
-            bannerIcon = IconUnify.SALDO
-            setOnClickListener {
-                openShortsAffiliateTncBottomSheet()
-            }
-        }
     }
 
     private fun setupListener() {
@@ -316,6 +304,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
+                renderBannerPreparation(it.prevValue, it.value)
             }
         }
 
@@ -359,6 +348,28 @@ class PlayShortsPreparationFragment @Inject constructor(
             && getSetupTitleBottomSheet().isAdded && getSetupTitleBottomSheet().isVisible) {
             getSetupTitleBottomSheet().dismiss()
         }
+    }
+
+    private fun renderBannerPreparation(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.isShopAffiliate == curr.isShopAffiliate) return
+
+        /**
+         * revamp this after mobile analytic merged
+         */
+        if (!curr.isShopAffiliate) {
+            binding.bannerShorts.apply {
+                title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
+                description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
+                bannerIcon = IconUnify.SALDO
+                setOnClickListener {
+                    openShortsAffiliateTncBottomSheet()
+                }
+                visible()
+            }
+        } else binding.bannerShorts.gone()
     }
 
     private fun setupCoachMark() {
