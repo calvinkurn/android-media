@@ -72,6 +72,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
+        mListener?.onImpressed()
         if(!isAdded) showNow(fragmentManager, TAG)
     }
 
@@ -251,6 +252,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     )
 
     interface Listener {
+        fun onImpressed() {}
         fun onClickShare(channel: PlayWidgetChannelUiModel)
         fun onClickSeePerformance(channel: PlayWidgetChannelUiModel)
         fun onClickSeePerformanceVideoAnalytics(channel: PlayWidgetChannelUiModel)
