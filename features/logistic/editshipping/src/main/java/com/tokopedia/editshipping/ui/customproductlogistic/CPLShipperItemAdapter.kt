@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShipperProductNameBinding
 import com.tokopedia.logisticCommon.data.model.ShipperProductCPLModel
 
-class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShipperItemViewHolder>() {
+class CPLShipperItemAdapter :
+    RecyclerView.Adapter<CPLShipperItemAdapter.CPLShipperItemViewHolder>() {
 
     private val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
     var listener: CPLShipperItemAdapterListener? = null
@@ -17,7 +19,11 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLShipperItemViewHolder {
-        val binding = ItemShipperProductNameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemShipperProductNameBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return CPLShipperItemViewHolder(binding)
     }
 
@@ -29,6 +35,7 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         return cplShipperItem.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addData(data: List<ShipperProductCPLModel>) {
         cplShipperItem.clear()
         cplShipperItem.addAll(data)
@@ -39,7 +46,8 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         this.listener = listener
     }
 
-    inner class CPLShipperItemViewHolder(private val binding: ItemShipperProductNameBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class CPLShipperItemViewHolder(private val binding: ItemShipperProductNameBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(data: ShipperProductCPLModel) {
             val lastItem = cplShipperItem.last()

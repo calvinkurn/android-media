@@ -47,7 +47,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -79,7 +78,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -753,7 +752,7 @@ class ShopPageProductListResultFragment :
         shopDynamicTabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab
     ): Boolean {
         return shopDynamicTabData.tabData.firstOrNull {
-            it.name == ShopPageTabName.HOME
+            it.name == ShopPageHeaderTabName.HOME
         }?.shopLayoutFeature?.firstOrNull {
             it.name == ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE && it.isActive
         } != null
@@ -953,7 +952,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.clickProductSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -970,10 +968,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -1006,7 +1006,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.impressionProductListSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -1023,10 +1022,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(

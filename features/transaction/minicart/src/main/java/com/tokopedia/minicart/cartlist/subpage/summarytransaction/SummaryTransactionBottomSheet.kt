@@ -15,7 +15,6 @@ import javax.inject.Inject
 class SummaryTransactionBottomSheet @Inject constructor() {
 
     fun show(data: MiniCartSummaryTransactionUiModel, fragmentManager: FragmentManager, context: Context) {
-
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false

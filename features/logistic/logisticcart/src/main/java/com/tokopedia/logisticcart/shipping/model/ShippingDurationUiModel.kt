@@ -9,15 +9,15 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShippingDurationUiModel(
-        var serviceData: ServiceData = ServiceData(),
-        var shippingCourierViewModelList: List<ShippingCourierUiModel> = emptyList(),
-        var isSelected: Boolean = false,
-        var isShowShowCase: Boolean = false,
-        var errorMessage: String? = null,
-        var isCodAvailable: Boolean = false,
-        var codText: String? = null,
-        var isShowShippingInformation: Boolean = false,
-        var merchantVoucherModel: MerchantVoucherModel? = null,
-        var etaErrorCode: Int = 0,
-        var dynamicPriceModel: DynamicPriceModel? = null,
+    var serviceData: ServiceData = ServiceData(),
+    var shippingCourierViewModelList: List<ShippingCourierUiModel> = emptyList(),
+    var isSelected: Boolean = false,
+    var isShowShowCase: Boolean = false,
+    var errorMessage: String? = null,
+    var isCodAvailable: Boolean = false,
+    var codText: String? = null,
+    var isShowShippingInformation: Boolean = false,
+    var merchantVoucherModel: MerchantVoucherModel? = null,
+    var etaErrorCode: Int = 0,
+    var dynamicPriceModel: DynamicPriceModel? = null
 ) : Parcelable, RatesViewModelType

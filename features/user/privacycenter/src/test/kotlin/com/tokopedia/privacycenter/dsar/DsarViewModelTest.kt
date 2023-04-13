@@ -105,7 +105,7 @@ class DsarViewModelTest {
 
     @Test
     fun `checkRequest success`() {
-        val status = "SVP Approval"
+        val status = "In Progress"
 
         val searchRequestResp = GetRequestDetailResponse(requestQueueRefId = "123", status = status)
         coEvery { searchRequestUseCase(any()) } returns searchRequestResp

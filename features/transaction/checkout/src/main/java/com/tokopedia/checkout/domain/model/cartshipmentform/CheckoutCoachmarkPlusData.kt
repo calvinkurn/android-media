@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class CheckoutCoachmarkPlusData(
     val isShown: Boolean = false,
     val title: String = "",
-    val content: String = "",
+    val content: String = ""
 ) : Parcelable

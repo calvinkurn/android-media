@@ -27,7 +27,7 @@ data class ToolUiModel(
             EditorToolType.CROP to IconUnify.CROP,
             EditorToolType.ROTATE to IconUnify.ROTATION,
             EditorToolType.REMOVE_BACKGROUND to IconUnify.BACKGROUND,
-            EditorToolType.WATERMARK to IconUnify.WALLET,
+            EditorToolType.WATERMARK to IconUnify.WATERMARK,
             EditorToolType.ADD_LOGO to IconUnify.STAMP
         )
 

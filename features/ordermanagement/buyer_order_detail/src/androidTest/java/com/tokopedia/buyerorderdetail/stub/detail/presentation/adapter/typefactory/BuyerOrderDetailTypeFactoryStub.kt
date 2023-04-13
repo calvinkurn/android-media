@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRec
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
@@ -27,6 +28,7 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     productListToggleListener: ProductListToggleViewHolder.Listener,
+    pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     productViewListener: PartialProductItemViewHolder.ProductViewListener,
     navigator: BuyerOrderDetailNavigator,
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -38,6 +40,7 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationListener,
     courierInfoViewHolderListener,
     productListToggleListener,
+    pofRefundInfoListener,
     productViewListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,

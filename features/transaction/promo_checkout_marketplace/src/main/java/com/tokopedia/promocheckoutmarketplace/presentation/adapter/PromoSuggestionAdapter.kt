@@ -24,5 +24,4 @@ class PromoSuggestionAdapter(private val actionListener: PromoCheckoutSuggestion
     override fun onBindViewHolder(holder: PromoSuggestionViewHolder, position: Int) {
         holder.bindData(data[position])
     }
-
 }

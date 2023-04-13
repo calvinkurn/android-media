@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 
-class OrderOnboardingCard(private val binding: LayoutOccOnboardingNewBinding): RecyclerView.ViewHolder(binding.root) {
+class OrderOnboardingCard(private val binding: LayoutOccOnboardingNewBinding) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 1

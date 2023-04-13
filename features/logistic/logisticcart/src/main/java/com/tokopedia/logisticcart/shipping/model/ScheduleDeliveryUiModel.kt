@@ -22,7 +22,7 @@ data class ScheduleDeliveryUiModel(
     // product id
     var timeslotId: Long = 0L,
     // selected delivery products
-    var deliveryProduct: DeliveryProduct = DeliveryProduct(),
+    var deliveryProduct: DeliveryProduct = DeliveryProduct()
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(
@@ -69,8 +69,7 @@ data class ScheduleDeliveryUiModel(
             deliveryProduct = deliveryService?.deliveryProducts?.find {
                 it.timeslotId == timeslotId && it.available
             }
-        }
-        else if (validationMetadata.isNotEmpty()) {
+        } else if (validationMetadata.isNotEmpty()) {
             deliveryServices.forEach { service ->
                 val selectedDeliveryProduct = service.deliveryProducts.find { product ->
                     product.validationMetadata == validationMetadata && product.available

@@ -70,11 +70,12 @@ data class TabMenuUiModel(
 }
 
 data class WidgetItemUiModel(
+    val id: Long,
     val item: PlayWidgetUiModel
 ) : WidgetUiModel() {
     companion object {
         val Empty: WidgetItemUiModel
-            get() = WidgetItemUiModel(item = PlayWidgetUiModel.Empty)
+            get() = WidgetItemUiModel(item = PlayWidgetUiModel.Empty, id = 0L)
     }
 }
 

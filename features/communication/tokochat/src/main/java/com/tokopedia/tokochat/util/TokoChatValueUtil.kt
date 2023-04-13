@@ -18,4 +18,9 @@ object TokoChatValueUtil {
      * Push Notif values
      */
     const val NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY = "nc_template_key"
+
+    /**
+     * Censor values
+     */
+    const val CENSOR_TEXT = "******"
 }

@@ -3,8 +3,8 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.Data
@@ -27,33 +27,39 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success THEN should navigate to checkout page`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isError = false
-                isBundlingItem = false
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-                trackerAttribution = "t"
-                category = "c"
-            })
-            add(CartItemHolderData().apply {
-                isError = false
-                isBundlingItem = true
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-                trackerAttribution = "t"
-                category = "c"
-            })
-            add(CartItemHolderData().apply {
-                isError = true
-                isBundlingItem = true
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-                trackerAttribution = "t"
-                category = "c"
-            })
+            add(
+                CartItemHolderData().apply {
+                    isError = false
+                    isBundlingItem = false
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                    trackerAttribution = "t"
+                    category = "c"
+                }
+            )
+            add(
+                CartItemHolderData().apply {
+                    isError = false
+                    isBundlingItem = true
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                    trackerAttribution = "t"
+                    category = "c"
+                }
+            )
+            add(
+                CartItemHolderData().apply {
+                    isError = true
+                    isBundlingItem = true
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                    trackerAttribution = "t"
+                    category = "c"
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -77,11 +83,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success with eligible COD THEN should navigate to checkout page with eligible COD`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -105,11 +113,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success with not eligible COD THEN should navigate to checkout page with not eligible COD`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = false
-                productPrice = 1000000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = false
+                    productPrice = 1000000.0
+                    quantity = 10
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -173,13 +183,17 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success with item checked partial item THEN should navigate to checkout page with matched condition`() {
         // GIVEN
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf<CartItemHolderData>().apply {
-                    add(CartItemHolderData().apply {
-                        isSelected = false
-                    })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = false
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -203,22 +217,30 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success with item checked partial shop THEN should navigate to checkout page with matched condition`() {
         // GIVEN
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf<CartItemHolderData>().apply {
-                    add(CartItemHolderData().apply {
-                        isSelected = true
-                    })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = true
+                            }
+                        )
+                    }
+                    isAllSelected = true
                 }
-                isAllSelected = true
-            })
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf<CartItemHolderData>().apply {
-                    add(CartItemHolderData().apply {
-                        isSelected = false
-                    })
+            )
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = false
+                            }
+                        )
+                    }
+                    isAllSelected = false
                 }
-                isAllSelected = false
-            })
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -243,26 +265,36 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout success with item checked partial shop and item THEN should navigate to checkout page with matched condition`() {
         // GIVEN
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf<CartItemHolderData>().apply {
-                    add(CartItemHolderData().apply {
-                        isSelected = true
-                    })
-                    add(CartItemHolderData().apply {
-                        isSelected = false
-                    })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = true
+                            }
+                        )
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = false
+                            }
+                        )
+                    }
+                    isAllSelected = false
+                    isPartialSelected = true
                 }
-                isAllSelected = false
-                isPartialSelected = true
-            })
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf<CartItemHolderData>().apply {
-                    add(CartItemHolderData().apply {
-                        isSelected = false
-                    })
+            )
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(
+                            CartItemHolderData().apply {
+                                isSelected = false
+                            }
+                        )
+                    }
+                    isAllSelected = false
                 }
-                isAllSelected = false
-            })
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -289,20 +321,22 @@ class UpdateCartTest : BaseCartTest() {
         val boType = 0
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
-                    tickerText = tickerText,
-                    state = CartShopBoAffordabilityState.SUCCESS_AFFORD
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
+                tickerText = tickerText,
+                state = CartShopGroupTickerState.SUCCESS_AFFORD
             )
             shopBoMetadata = BoMetadata(
-                    boType = boType
+                boType = boType
             )
         }
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf(cartItem)
-                isAllSelected = true
-                isPartialSelected = false
-            })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf(cartItem)
+                    isAllSelected = true
+                    isPartialSelected = false
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -318,9 +352,14 @@ class UpdateCartTest : BaseCartTest() {
 
         // THEN
         verify {
-            view.renderToShipmentFormSuccess(match {
-                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "fulfill_${boType}"
-            }, any(), any(), any())
+            view.renderToShipmentFormSuccess(
+                match {
+                    (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "fulfill_$boType"
+                },
+                any(),
+                any(),
+                any()
+            )
         }
     }
 
@@ -331,20 +370,22 @@ class UpdateCartTest : BaseCartTest() {
         val boType = 0
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
-                    tickerText = tickerText,
-                    state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
+                tickerText = tickerText,
+                state = CartShopGroupTickerState.SUCCESS_NOT_AFFORD
             )
             shopBoMetadata = BoMetadata(
-                    boType = boType
+                boType = boType
             )
         }
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf(cartItem)
-                isAllSelected = true
-                isPartialSelected = false
-            })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf(cartItem)
+                    isAllSelected = true
+                    isPartialSelected = false
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -360,9 +401,14 @@ class UpdateCartTest : BaseCartTest() {
 
         // THEN
         verify {
-            view.renderToShipmentFormSuccess(match {
-                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "unfulfill_${boType}"
-            }, any(), any(), any())
+            view.renderToShipmentFormSuccess(
+                match {
+                    (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "unfulfill_$boType"
+                },
+                any(),
+                any(),
+                any()
+            )
         }
     }
 
@@ -372,16 +418,18 @@ class UpdateCartTest : BaseCartTest() {
         val tickerText = ""
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
-                    tickerText = tickerText
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
+                tickerText = tickerText
             )
         }
         val shopDataList = mutableListOf<CartShopHolderData>().apply {
-            add(CartShopHolderData().apply {
-                productUiModelList = mutableListOf(cartItem)
-                isAllSelected = true
-                isPartialSelected = false
-            })
+            add(
+                CartShopHolderData().apply {
+                    productUiModelList = mutableListOf(cartItem)
+                    isAllSelected = true
+                    isPartialSelected = false
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -397,9 +445,14 @@ class UpdateCartTest : BaseCartTest() {
 
         // THEN
         verify {
-            view.renderToShipmentFormSuccess(match {
-                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == ""
-            }, any(), any(), any())
+            view.renderToShipmentFormSuccess(
+                match {
+                    (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == ""
+                },
+                any(),
+                any(),
+                any()
+            )
         }
     }
 
@@ -407,11 +460,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout failed with out of service THEN should render out of service error`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val outOfService = OutOfService(id = "503")
@@ -436,11 +491,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout failed with other error and no need to show cta THEN should render error with no cta`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val errorMessage = "error message"
@@ -465,11 +522,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for checkout failed with other error and need to show cta THEN should render error with cta`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val errorMessage = "error message"
@@ -543,11 +602,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for on fragment stopped THEN should call API`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -571,11 +632,13 @@ class UpdateCartTest : BaseCartTest() {
     fun `WHEN update cart for on fragment stopped THEN should not show loading`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -595,7 +658,6 @@ class UpdateCartTest : BaseCartTest() {
         }
     }
 
-
     @Test
     fun `WHEN update cart for checkout with view is detached THEN should not render view`() {
         // GIVEN
@@ -609,5 +671,4 @@ class UpdateCartTest : BaseCartTest() {
             view.renderToShipmentFormSuccess(any(), any(), any(), any())
         }
     }
-
 }

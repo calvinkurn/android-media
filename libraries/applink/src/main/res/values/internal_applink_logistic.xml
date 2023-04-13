@@ -2,7 +2,6 @@
 <resources>
     <string name="host_logistic" translatable="false">logistic</string>
 
-    <string name="path_shipping_confirmation" translatable="false">/shipping-confirmation/.*</string>
     <string name="path_add_address_v1" translatable="false">/addaddress/v1/.*\\/</string>
     <string name="path_add_address_v2" translatable="false">/addaddress/v2/</string>
     <string name="path_add_address_v3" translatable="false">/addaddress/v3/</string>
@@ -19,5 +18,10 @@
     <string name="path_pinpoint_webview" translatable="false">/pin-point-picker-result</string>
 
     <string name="path_proof_of_delivery" translatable="false">/shipping/pod/.*</string>
+    <string name="path_pinpoint" translatable="false">/pinpoint</string>
+
+    <string name="dilayani_tokopedia_title" translatable="false">Dilayani Tokopedia</string>
+
+    <string name="path_find_new_driver" translatable="false">/findnewdriver</string>
 
 </resources>

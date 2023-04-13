@@ -94,6 +94,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   type
                   bgColors
                   textColor
+                  bgImage
+                  imgLottie
                   shopLayoutFeatures {
                     name
                     isActive
@@ -108,6 +110,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                           widgetMasterID
                           widgetType
                           widgetName
+                          isFestivity
                           header {
                             title
                             ctaText

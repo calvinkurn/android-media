@@ -9,7 +9,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IMAGE_URL_SMALL_
 
 class BottomSheetWishlistCollectionCreateItemViewHolder(
     private val binding: AddWishlistCollectionCreateNewItemBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
         item: BottomSheetWishlistCollectionTypeLayoutData,
         actionListener: BottomSheetWishlistCollectionAdapter.ActionListener?

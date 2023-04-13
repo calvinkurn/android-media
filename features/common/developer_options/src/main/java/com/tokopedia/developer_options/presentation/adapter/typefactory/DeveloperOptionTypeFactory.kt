@@ -50,7 +50,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: RequestNewFcmTokenUiModel): Int
     fun type(uiModel: ResetOnBoardingNavigationUiModel): Int
     fun type(uiModel: TranslatorUiModel): Int
-    fun type(uiModel: AppAuthSecretUiModel): Int
     fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
@@ -58,4 +57,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ConvertResourceIdUiModel): Int
     fun type(uiModel: ViewHanselPatchUiModel): Int
     fun type(uiModel: TopchatWebSocketLoggingUiModel): Int
+    fun type(uiModel: LoginHelperUiModel): Int
+    fun type(uiModel: DevOptsAuthorizationUiModel): Int
+    fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
 }

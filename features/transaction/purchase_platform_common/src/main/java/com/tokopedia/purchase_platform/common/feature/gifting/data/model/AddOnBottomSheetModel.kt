@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnBottomSheetModel(
-        var ticker: AddOnTickerModel = AddOnTickerModel(),
-        var headerTitle: String = "",
-        var description: String = "",
-        var products: List<AddOnProductItemModel> = emptyList()
-): Parcelable
+    var ticker: AddOnTickerModel = AddOnTickerModel(),
+    var headerTitle: String = "",
+    var description: String = "",
+    var products: List<AddOnProductItemModel> = emptyList()
+) : Parcelable

@@ -25,7 +25,6 @@ import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
 import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
-import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.util.Events
@@ -184,23 +183,29 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         if (can) {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_G500
-                ), PorterDuff.Mode.SRC_IN
+                    activity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                ),
+                PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    activity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )
         } else {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N50
-                ), PorterDuff.Mode.SRC_IN
+                    activity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                ),
+                PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                    activity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_20
                 )
             )
         }
@@ -218,12 +223,11 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         return ActivityComponentFactory.instance.createActivityComponent(requireActivity())
     }
 
-    private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int, s: String) {
+    private fun onResult(index: Int, s: String) {
         analytics.eventClickTemplate()
         val intent = Intent()
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
         intent.putExtra(TemplateChatFragment.LIST_RESULT, s)
-        intent.putExtra(ENABLED_KEY_RESULT, editTemplateViewModel.isEnabled)
         intent.putExtra(
             TemplateChatFragment.MODE_RESULT,
             arguments?.getInt(InboxMessageConstant.PARAM_MODE)
@@ -231,7 +235,7 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int) {
+    private fun onResult(index: Int) {
         val intent = Intent()
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
         intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE)
@@ -248,28 +252,29 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
 
     private fun showError(error: Throwable) {
         SnackbarManager.make(
-            activity, ErrorHandler.getErrorMessage(
-                context, error
-            ), Snackbar.LENGTH_LONG
+            activity,
+            ErrorHandler.getErrorMessage(
+                context,
+                error
+            ),
+            Snackbar.LENGTH_LONG
         ).show()
     }
 
     private fun setupObservers() {
-        viewModel.createEditTemplate.observe(viewLifecycleOwner, {
-            onResult(it.editTemplateResultModel, it.index, it.text)
+        viewModel.createEditTemplate.observe(viewLifecycleOwner) {
+            onResult(it.index, it.text)
             finish()
-        })
+        }
 
-        viewModel.deleteTemplate.observe(viewLifecycleOwner, {
-            val editTemplateUiModel = it.first
-            val index = it.second
-            onResult(editTemplateUiModel, index)
+        viewModel.deleteTemplate.observe(viewLifecycleOwner) {
+            onResult(it)
             finish()
-        })
+        }
 
-        viewModel.errorAction.observe(viewLifecycleOwner, {
+        viewModel.errorAction.observe(viewLifecycleOwner) {
             showError(it)
-        })
+        }
     }
 
     companion object {

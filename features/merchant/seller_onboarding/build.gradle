@@ -21,6 +21,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.networkDependencies.glide
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

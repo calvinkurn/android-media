@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 
+import android.view.View
 import com.tokopedia.play.view.type.VideoOrientation
 
 /**
@@ -11,7 +12,11 @@ class LandscapeVideoBoundsProvider : VideoBoundsProvider {
         return 0
     }
 
-    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(
+        view: View,
+        estimatedKeyboardHeight: Int,
+        videoOrientation: VideoOrientation,
+    ): Int {
         return 0
     }
 }

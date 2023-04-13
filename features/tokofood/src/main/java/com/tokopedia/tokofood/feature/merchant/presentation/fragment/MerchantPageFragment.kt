@@ -363,6 +363,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                 )
             )
         }
+
+        if (!getShouldPopBackStackImmediate()) {
+            context?.let {
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            }?.let { backgroundColor ->
+                view?.setBackgroundColor(backgroundColor)
+            }
+        }
     }
 
     private fun setHeaderBackground() {
@@ -1082,6 +1090,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
+            }
+
+            cartTokoFoodData.message.takeIf { it.isNotBlank() }?.let { message ->
+                view?.let { view ->
+                    Toaster.build(
+                        view = view,
+                        text = message,
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_NORMAL
+                    ).show()
+                }
             }
         }
     }

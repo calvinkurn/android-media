@@ -171,4 +171,44 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
             "Pesanan selesai! Kamu bisa liat riwayat chat dan juga nge-chat driver sampai 2 jam setelah pesanan diselesaikan."
         )
     }
+
+    @Test
+    fun should_show_censored_message_when_users_send_blocked_words() {
+        // Given
+        ApiResponseStub.chatHistoryResponse = Pair(
+            200,
+            "chat_history/success_get_chat_history_censored.json"
+        )
+
+        // When
+        launchChatRoomActivity()
+
+        // Then
+        MessageBubbleResult.assertMessageBubbleCensoredVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertMessageBubbleCensoredText(
+            position = 0,
+            text = activity.getString(
+                com.tokopedia.tokochat_common.R.string.tokochat_message_censored
+            )
+        )
+    }
+
+    @Test
+    fun should_show_bottomsheet_guide_chat_when_users_click_show_censored() {
+        // Given
+        ApiResponseStub.chatHistoryResponse = Pair(
+            200,
+            "chat_history/success_get_chat_history_censored.json"
+        )
+
+        // When
+        launchChatRoomActivity()
+        MessageBubbleRobot.clickCheckGuide()
+
+        // Then
+        MessageBubbleResult.assertGuideChatBottomSheet()
+    }
 }

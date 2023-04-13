@@ -17,17 +17,19 @@ class GetPromoFlagTest : BaseCartTest() {
     fun `WHEN get promo flag with last apply valid THEN should return last apply poml auto applied flag`() {
         // GIVEN
         val pomlAutoApplied = true
-        cartListPresenter.setCartListData(CartData(
+        cartListPresenter.setCartListData(
+            CartData(
                 promo = CartPromoData(
-                        lastApplyPromo = LastApplyPromo(
-                                lastApplyPromoData = LastApplyPromoData(
-                                        additionalInfo = PromoAdditionalInfo(
-                                                pomlAutoApplied = pomlAutoApplied
-                                        )
-                                )
+                    lastApplyPromo = LastApplyPromo(
+                        lastApplyPromoData = LastApplyPromoData(
+                            additionalInfo = PromoAdditionalInfo(
+                                pomlAutoApplied = pomlAutoApplied
+                            )
                         )
+                    )
                 )
-        ))
+            )
+        )
         cartListPresenter.setLastApplyValid()
 
         // WHEN
@@ -53,13 +55,15 @@ class GetPromoFlagTest : BaseCartTest() {
     fun `WHEN get promo flag with last apply invalid THEN should return last validate use response poml auto applied flag`() {
         // GIVEN
         val pomlAutoApplied = true
-        cartListPresenter.setValidateUseLastResponse(ValidateUsePromoRevampUiModel(
+        cartListPresenter.setValidateUseLastResponse(
+            ValidateUsePromoRevampUiModel(
                 promoUiModel = PromoUiModel(
-                        additionalInfoUiModel = AdditionalInfoUiModel(
-                                pomlAutoApplied = pomlAutoApplied
-                        )
+                    additionalInfoUiModel = AdditionalInfoUiModel(
+                        pomlAutoApplied = pomlAutoApplied
+                    )
                 )
-        ))
+            )
+        )
         cartListPresenter.setLastApplyNotValid()
 
         // WHEN

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -26,6 +27,7 @@ import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * For navigating to this class
@@ -102,6 +104,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
 
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
@@ -248,6 +253,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         } catch (e: Throwable) {
             onApplinkParseError(e)
         }
+
+        productDetailComponent = initializeComponent()
+        productDetailComponent?.inject(this)
+        supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
     }

@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -98,7 +100,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
             }
         }
 
-        private const val URL_THANK_PAYMENT_PROCESSING = "https://images.tokopedia.net/img/android/payment/thankyou-native/thank_payment_processing.png"
+        private const val URL_THANK_PAYMENT_PROCESSING = TokopediaImageUrl.URL_THANK_PAYMENT_PROCESSING
     }
 
 }

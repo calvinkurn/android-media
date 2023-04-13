@@ -5,12 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
-import com.tokopedia.product.detail.postatc.model.PostAtcInfo
-import com.tokopedia.product.detail.postatc.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
+import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
-import com.tokopedia.product.detail.postatc.util.mapToUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -23,7 +22,7 @@ class PostAtcViewModel @Inject constructor(
     private val getPostAtcLayoutUseCase: GetPostAtcLayoutUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _layouts = MutableLiveData<Result<List<PostAtcUiModel>>>()
     val layouts: LiveData<Result<List<PostAtcUiModel>>> = _layouts
@@ -55,10 +54,12 @@ class PostAtcViewModel @Inject constructor(
                 result
             )
 
-            val uiModels = result.components.mapToUiModel()
-            _layouts.postValue(uiModels.asSuccess())
+            val components = result.components
+            if (components.isEmpty()) throw Throwable()
 
-        }, onError = { _layouts.postValue(it.asFail()) })
+            val uiModels = result.components.mapToUiModel()
+            _layouts.value = uiModels.asSuccess()
+        }, onError = { _layouts.value = it.asFail() })
     }
 
     fun fetchRecommendation(
@@ -72,12 +73,15 @@ class PostAtcViewModel @Inject constructor(
                 productIds = listOf(productId)
             )
             val result = getRecommendationUseCase.getData(requestParams)
-            if (result.isEmpty()) throw MessageErrorException("empty result")
-            else _recommendations.postValue(uniqueId to result.first().asSuccess())
-        }, onError = {
-            _recommendations.postValue(uniqueId to it.asFail())
-        })
+            if (result.isEmpty()) throw Throwable()
 
+            val widget = result.first()
+            if (widget.recommendationItemList.isEmpty()) throw Throwable()
+
+            _recommendations.value = uniqueId to widget.asSuccess()
+        }, onError = {
+            _recommendations.value = uniqueId to it.asFail()
+        })
     }
 
     private fun updateInfo(
@@ -101,5 +105,4 @@ class PostAtcViewModel @Inject constructor(
             shopId = basicInfo.shopId
         }
     }
-
 }

@@ -32,9 +32,9 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
 
     override fun getComponent(): OrderSummaryPageComponent {
         return DaggerOrderSummaryPageComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .orderSummaryPageModule(OrderSummaryPageModule(this))
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .orderSummaryPageModule(OrderSummaryPageModule(this))
+            .build()
     }
 
     override fun onBackPressed() {

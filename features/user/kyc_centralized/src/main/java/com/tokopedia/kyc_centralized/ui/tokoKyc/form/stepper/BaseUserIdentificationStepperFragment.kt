@@ -22,13 +22,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PRO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFormBinding
-import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -42,7 +41,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     BaseDaggerFragment() {
 
     protected var viewBinding by autoClearedNullable<FragmentUserIdentificationFormBinding>()
-    protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
     protected var stepperModel: T? = null
 
@@ -73,7 +71,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA,
                 false
             ) ?: false
-            analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)

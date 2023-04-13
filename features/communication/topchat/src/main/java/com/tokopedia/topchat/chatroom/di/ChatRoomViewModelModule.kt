@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import dagger.Binds
 import dagger.Module
@@ -28,4 +29,9 @@ abstract class ChatRoomViewModelModule {
     @ViewModelKey(TopChatViewModel::class)
     internal abstract fun bindTopChatViewModel(viewModel: TopChatViewModel): ViewModel
 
+    @Binds
+    @ChatScope
+    @IntoMap
+    @ViewModelKey(TopChatRoomWebSocketViewModel::class)
+    internal abstract fun bindTopChatRoomWebSocketViewModel(viewModel: TopChatRoomWebSocketViewModel): ViewModel
 }

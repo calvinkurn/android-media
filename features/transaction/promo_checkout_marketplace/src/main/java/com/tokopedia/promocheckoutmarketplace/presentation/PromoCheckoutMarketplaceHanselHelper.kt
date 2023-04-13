@@ -4,8 +4,10 @@ import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoChecko
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.PromoCheckoutViewModel
 
 // Helper class to provide getter for global variable
-class PromoCheckoutMarketplaceHanselHelper(val promoCheckoutViewModel: PromoCheckoutViewModel,
-                                           val promoCheckoutAnalytics: PromoCheckoutAnalytics) {
+class PromoCheckoutMarketplaceHanselHelper(
+    val promoCheckoutViewModel: PromoCheckoutViewModel,
+    val promoCheckoutAnalytics: PromoCheckoutAnalytics
+) {
 
     fun getViewModel(): PromoCheckoutViewModel {
         return promoCheckoutViewModel
@@ -14,5 +16,4 @@ class PromoCheckoutMarketplaceHanselHelper(val promoCheckoutViewModel: PromoChec
     fun getAnalytics(): PromoCheckoutAnalytics {
         return promoCheckoutAnalytics
     }
-
 }

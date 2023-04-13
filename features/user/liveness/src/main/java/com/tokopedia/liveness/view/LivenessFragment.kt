@@ -323,6 +323,7 @@ class LivenessFragment : BaseDaggerFragment(),
 
     override fun onGetFaceDataStart() {}
 
+
     @SuppressLint("DeprecatedMethod")
     override fun onGetFaceDataSuccess(resultEntity: ResultEntity?) {
         try {

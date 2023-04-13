@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -10,15 +12,15 @@ import javax.inject.Inject
 
 open class GetChatUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val dispatcher: CoroutineDispatchers,
+    private val dispatcher: CoroutineDispatchers
 ) {
 
     var minReplyTime = "" // for param beforeReplyTime for top
     var maxReplyTime = "" // for param afterReplyTime for bottom
     var hasNext = false // has next top
-    var hasNextAfter = false // has next bottom
+    private var hasNextAfter = MutableLiveData(false) // has next bottom
 
-    suspend fun getFirstPageChat(messageId: String): GetExistingChatPojo  {
+    suspend fun getFirstPageChat(messageId: String): GetExistingChatPojo {
         return withContext(dispatcher.io) {
             val topQuery = generateFirstPageQuery()
             val params = generateFirstPageParam(messageId)
@@ -47,7 +49,7 @@ open class GetChatUseCase @Inject constructor(
         }
     }
 
-    suspend fun getBottomChat(messageId: String): GetExistingChatPojo  {
+    suspend fun getBottomChat(messageId: String): GetExistingChatPojo {
         return withContext(dispatcher.io) {
             val topQuery = generateBottomQuery()
             val params = generateBottomParam(messageId)
@@ -59,8 +61,8 @@ open class GetChatUseCase @Inject constructor(
 
     private fun generateBottomQuery(): String {
         return requestQuery.format(
-            ", $${PARAM_AFTER_REPLY_TIME}: String",
-            ", afterReplyTime: $${PARAM_AFTER_REPLY_TIME}"
+            ", $$PARAM_AFTER_REPLY_TIME: String",
+            ", afterReplyTime: $$PARAM_AFTER_REPLY_TIME"
         )
     }
 
@@ -83,8 +85,8 @@ open class GetChatUseCase @Inject constructor(
 
     private fun generateTopQuery(): String {
         return requestQuery.format(
-            ", $${PARAM_BEFORE_REPLY_TIME}: String",
-            ", beforeReplyTime: $${PARAM_BEFORE_REPLY_TIME}"
+            ", $$PARAM_BEFORE_REPLY_TIME: String",
+            ", beforeReplyTime: $$PARAM_BEFORE_REPLY_TIME"
         )
     }
 
@@ -95,7 +97,7 @@ open class GetChatUseCase @Inject constructor(
 
     private fun updateMaxReplyTime(chat: GetExistingChatPojo) {
         maxReplyTime = chat.chatReplies.maxReplyTime
-        hasNextAfter = chat.chatReplies.hasNextAfter
+        hasNextAfter.postValue(chat.chatReplies.hasNextAfter)
     }
 
     private suspend fun getChat(query: String, params: Map<String, Any>): GetExistingChatPojo {
@@ -109,7 +111,7 @@ open class GetChatUseCase @Inject constructor(
         )
     }
 
-    fun isInTheMiddleOfThePage(): Boolean {
+    fun isInTheMiddleOfThePage(): LiveData<Boolean> {
         return hasNextAfter
     }
 
@@ -117,13 +119,13 @@ open class GetChatUseCase @Inject constructor(
         minReplyTime = ""
         maxReplyTime = ""
         hasNext = false
-        hasNextAfter = false
+        hasNextAfter.value = false
     }
 
     private val requestQuery = """
-        query get_chat_replies($${PARAM_MESSAGE_ID}: Int!%s) {
+        query get_chat_replies($$PARAM_MESSAGE_ID: Int!%s) {
           status
-          chatReplies(msgId: $${PARAM_MESSAGE_ID}, isTextOnly: true%s) {
+          chatReplies(msgId: $$PARAM_MESSAGE_ID, isTextOnly: true%s) {
             minReplyTime
             maxReplyTime
             block {
@@ -211,5 +213,4 @@ open class GetChatUseCase @Inject constructor(
         const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"
         const val PARAM_AFTER_REPLY_TIME: String = "afterReplyTime"
     }
-
 }

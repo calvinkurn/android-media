@@ -7,7 +7,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
@@ -57,8 +59,8 @@ class ProductBundleMultipleViewHolder(
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
             typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
-            typographyBundleProductSavingAmount = bundleWidgetHeaderFooter.tvSavingAmountPriceWording
-            buttonAtc = bundleWidgetHeaderFooter.btnBundleAtc
+            typographyBundleProductSavingAmount = bundleWidgetFooter.tvSavingAmountPriceWording
+            buttonAtc = bundleWidgetFooter.btnBundleAtc
             rvBundleProducts = rvMultipleBundleProducts
             widgetContainer = bundleWidgetContainer
         }
@@ -66,6 +68,8 @@ class ProductBundleMultipleViewHolder(
 
     fun bind(bundle: BundleUiModel) {
         val bundleDetail = bundle.bundleDetails.firstOrNull() ?: BundleDetailUiModel()
+
+        initFooterStyle(bundle)
 
         // bundle card item details
         typographyBundleName?.text = bundle.bundleName
@@ -152,6 +156,29 @@ class ProductBundleMultipleViewHolder(
         }
     }
 
+    private fun initFooterStyle(bundle: BundleUiModel) {
+        val isMinimalMode = bundle.bundleName.isEmpty()
+        val isWideMode = containerWidgetParams.isMoreThanZero()
+        viewBinding?.apply {
+            bundleWidgetMaximalFooter.isVisible = !isMinimalMode
+            bundleWidgetMinimalFooter.root.isVisible = isMinimalMode
+            if (isWideMode) {
+                bundleWidgetMinimalFooter.tvBundleDisplayPrice.layoutParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.MATCH_PARENT,
+                    FlexboxLayout.LayoutParams.MATCH_PARENT
+                )
+            }
+            if (isMinimalMode) {
+                bundleWidgetMinimalFooter.let {
+                    typographyBundleProductDisplayPrice = it.tvBundleDisplayPrice
+                    typographyBundleProductOriginalPrice = it.tvBundleOriginalPrice
+                    labelBundleDiscount = it.labelDiscountBundle
+                    buttonAtc = it.btnBundleAtc
+                }
+            }
+        }
+    }
+
     private fun initListener(
         bundle: BundleUiModel,
         bundleDetail: BundleDetailUiModel,
@@ -159,6 +186,11 @@ class ProductBundleMultipleViewHolder(
     ) {
         itemView.addOnImpressionListener(bundle) {
             listener?.impressionProductBundleMultiple(
+                bundleDetail,
+                adapterPosition
+            )
+            listener?.impressionProductBundleMultiple(
+                bundle,
                 bundleDetail,
                 adapterPosition
             )

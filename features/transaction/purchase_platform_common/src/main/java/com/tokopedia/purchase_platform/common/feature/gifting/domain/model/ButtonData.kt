@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ButtonData(
-        var text: String = ""
+    var text: String = ""
 ) : Parcelable

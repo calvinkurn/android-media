@@ -51,7 +51,7 @@
         android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:useShadow="true"
-        app:voucherShadowColor="@color/Unify_N700_20"
+        app:voucherShadowColor="@color/Unify_N600"
         tools:visibility="visible" />
 
     <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
@@ -119,7 +119,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_topchat_1"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN300" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ll_cta_container"

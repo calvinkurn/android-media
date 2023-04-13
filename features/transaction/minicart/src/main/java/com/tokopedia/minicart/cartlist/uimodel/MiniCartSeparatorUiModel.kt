@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
 data class MiniCartSeparatorUiModel(
-        var height: Int = 0
+    var height: Int = 0
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 
     companion object {
@@ -14,5 +14,4 @@ data class MiniCartSeparatorUiModel(
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

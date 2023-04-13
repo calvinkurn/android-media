@@ -72,12 +72,12 @@ object DsarUtils {
         val formattedMaxDate = maxDate.time.toString(DateUtil.YYYYMMDD)
         val formattedMinDate = minDate.time.toString(DateUtil.YYYYMMDD)
 
-        return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_$formattedMaxDate"
+        return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}-$formattedMaxDate"
     }
 
     fun formatTransactionDateToParam(customDateModel: CustomDateModel?): String {
         if (customDateModel != null) {
-            return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${customDateModel.startDate}_${customDateModel.endDate}"
+            return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${customDateModel.startDate}-${customDateModel.endDate}"
         }
         return ""
     }

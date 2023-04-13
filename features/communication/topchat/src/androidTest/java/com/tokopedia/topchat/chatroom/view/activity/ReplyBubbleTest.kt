@@ -223,7 +223,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.clickReplyBubbleAt(0)
 
         // Then
-        assertThat(getChatUseCase.isInTheMiddleOfThePage(), `is`(true))
+        assertThat(getChatUseCase.isInTheMiddleOfThePage().value, `is`(true))
     }
 
     @Test

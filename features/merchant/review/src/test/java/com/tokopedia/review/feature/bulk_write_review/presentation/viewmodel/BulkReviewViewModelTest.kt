@@ -16,6 +16,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.util.Resource
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
+import com.tokopedia.review.utils.Constant
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coVerify
@@ -303,14 +304,13 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
-                val newRating = 2
 
                 // load data and verify that bad rating category bottom sheet is initially dismissed
                 doSuccessGetInitialData()
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
 
-                // change rating to 2 and verify that bad rating category bottom sheet is showing
-                viewModel.onRatingChanged(reviewItem.inboxID, newRating)
+                // change rating to Constant.BAD_RATING and verify that bad rating category bottom sheet is showing
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Showing)
             }
         }
@@ -319,14 +319,12 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onRatingChanged should not show bad rating category bottom sheet when change rating to bad rating from good rating on invalid review item`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
-                val newRating = 2
-
                 // load data and verify that bad rating category bottom sheet is initially dismissed
                 doSuccessGetInitialData()
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
 
-                // change rating to 2 and verify that bad rating category bottom sheet is still dismissed
-                viewModel.onRatingChanged("", newRating)
+                // change rating to Constant.BAD_RATING and verify that bad rating category bottom sheet is still dismissed
+                viewModel.onRatingChanged("", Constant.BAD_RATING)
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
             }
         }
@@ -337,15 +335,13 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
                 val badRatingCategory = getBadRatingCategory()
-                val initialRating = 2
-                val newRating = 1
 
                 // load data and verify that bad rating category bottom sheet is initially dismissed
                 doSuccessGetInitialData()
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
 
                 // simulate bad rating category selection and apply
-                viewModel.onRatingChanged(reviewItem.inboxID, initialRating)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Showing)
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
@@ -358,7 +354,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                 // change review item rating to other bad rating and verify that bad rating category
                 // bottom sheet is still dismissed
-                viewModel.onRatingChanged(reviewItem.inboxID, newRating)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING.dec())
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
             }
         }
@@ -368,8 +364,6 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
             val badRatingCategory = getBadRatingCategory()
-            val initialRating = 2
-            val newRating = 5
 
             // load data and verify that bad rating category widget is initially hidden
             doSuccessGetInitialData()
@@ -383,7 +377,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             )
 
             // simulate bad rating category selection and apply
-            viewModel.onRatingChanged(reviewItem.inboxID, initialRating)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -401,7 +395,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             )
 
             // change review item rating to good rating and verify that bad rating category widget is hidden
-            viewModel.onRatingChanged(reviewItem.inboxID, newRating)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING.inc())
             assertTrue(
                 (uiStates.last() as BulkReviewPageUiState.Showing)
                     .items
@@ -536,7 +530,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                         doSuccessGetInitialData()
                         // change rating to bad rating to show the bad rating category bottom sheet
-                        viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                        viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                         // select Lainnya reason to show the expanded text area bottom sheet
                         viewModel.onBadRatingCategorySelectionChanged(
                             position = Int.ZERO,
@@ -562,7 +556,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doSuccessGetInitialData()
 
             // change rating to bad rating to show the bad rating category bottom sheet
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -577,7 +571,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     reputationId = reviewItem.reputationID,
                     productId = reviewItem.product.productID,
                     userId = SAMPLE_USER_ID,
-                    rating = 2,
+                    rating = Constant.BAD_RATING,
                     reason = badRatingCategory.description
                 )
             }
@@ -592,7 +586,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doSuccessGetInitialData()
 
             // change rating to bad rating to show the bad rating category bottom sheet
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -607,7 +601,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     reputationId = reviewItem.reputationID,
                     productId = reviewItem.product.productID,
                     userId = SAMPLE_USER_ID,
-                    rating = 2,
+                    rating = Constant.BAD_RATING,
                     reason = badRatingCategory.description
                 )
             }
@@ -623,7 +617,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 doSuccessGetInitialData()
 
                 // change rating to bad rating to show the bad rating category bottom sheet
-                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
 
                 // verify that initially no bad rating category is selected
                 assertTrue(
@@ -677,7 +671,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     doSuccessGetInitialData()
 
                     // change rating to bad rating to show the bad rating category bottom sheet
-                    viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                    viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
 
                     // verify that initially text area bottom sheet is dismissed
                     assertTrue(uiStates.last() is BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed)
@@ -706,7 +700,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                     doSuccessGetInitialData()
 
-                    viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                    viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
 
                     // verify that initially text area bottom sheet is dismissed
                     assertTrue(uiStates.last() is BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed)
@@ -736,7 +730,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     doSuccessGetInitialData()
 
                     // select Lainnya bad rating category and dismiss the expanded text area bottom sheet
-                    viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                    viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                     viewModel.onBadRatingCategorySelectionChanged(
                         position = Int.ZERO,
                         badRatingCategoryID = badRatingCategory.id,
@@ -768,7 +762,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
             doSuccessGetInitialData()
             // change rating to bad rating to show the bad rating category bottom sheet
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -800,7 +794,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                 doSuccessGetInitialData()
                 // change rating to bad rating to show the bad rating category bottom sheet
-                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
                     badRatingCategoryID = badRatingCategory.id,
@@ -824,7 +818,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                 doSuccessGetInitialData()
                 // change rating to bad rating to show the bad rating category bottom sheet
-                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
                     badRatingCategoryID = firstBadRatingCategoryToSelect.id,
@@ -868,7 +862,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                 doSuccessGetInitialData()
                 // change rating to bad rating to show the bad rating category bottom sheet
-                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
                     badRatingCategoryID = badRatingCategory.id,
@@ -1720,7 +1714,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockAllSuccessSubmitBulkReview()
 
             doSuccessGetInitialData()
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -1745,7 +1739,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockAllSuccessSubmitBulkReview()
 
             doSuccessGetInitialData()
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -1770,7 +1764,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockPartialSuccessSubmitBulkReview()
 
             doSuccessGetInitialData()
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -1795,7 +1789,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockErrorSubmitBulkReview()
 
             doSuccessGetInitialData()
-            viewModel.onRatingChanged(reviewItem.inboxID, 2)
+            viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
             viewModel.onBadRatingCategorySelectionChanged(
                 position = Int.ZERO,
                 badRatingCategoryID = badRatingCategory.id,
@@ -2196,7 +2190,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 val badRatingCategory = getBadRatingCategory()
 
                 doSuccessGetInitialData()
-                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
                 viewModel.onBadRatingCategoryImpressed(Int.ZERO, badRatingCategory.description)
 
                 verify(exactly = 1) {
@@ -2206,7 +2200,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                         reputationId = reviewItem.reputationID,
                         productId = reviewItem.product.productID,
                         userId = SAMPLE_USER_ID,
-                        rating = 2,
+                        rating = Constant.BAD_RATING,
                         reason = badRatingCategory.description
                     )
                 }

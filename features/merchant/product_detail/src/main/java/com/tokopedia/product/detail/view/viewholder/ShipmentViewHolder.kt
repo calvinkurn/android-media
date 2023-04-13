@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,6 +27,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.toPx
 
 class ShipmentViewHolder(
     view: View,
@@ -33,6 +36,13 @@ class ShipmentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_shipment
+
+        private const val TIPS_TYPE = "tips"
+        private const val TICKER_INFO_TYPE = "info"
+        private const val TICKER_WARNING_TYPE = "warning"
+        private const val TICKER_ACTION_APPLINK = "applink"
+
+        private const val SHIPMENT_ICON_PADDING = 16
     }
 
     private val context = view.context
@@ -120,7 +130,8 @@ class ShipmentViewHolder(
         renderBo(element, rates)
         renderShipment(element, rates)
         renderCourier(element, rates)
-        renderTicker(element)
+        renderTickers(rates)
+        renderTips(rates)
 
         itemView.addOnImpressionListener(element.impressHolder) {
             val componentTrackData = getComponentTrackData(element)
@@ -143,10 +154,24 @@ class ShipmentViewHolder(
             text = originalShippingRate.getCurrencyFormatted()
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
-        val freeOngkirImageUrl = element.freeOngkirUrl
-        pdpShipmentIcon.showIfWithBlock(
-            !rates.hasUsedBenefit && !element.isFullfillment && freeOngkirImageUrl.isNotEmpty()
-        ) { setImageUrl(freeOngkirImageUrl) }
+        val boBadge = rates.boBadge
+        val freeOngkirImageUrl = boBadge.imageUrl
+        pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
+
+            updateLayoutParams<MarginLayoutParams> {
+                marginEnd = if (boBadge.isUsingPadding)
+                    SHIPMENT_ICON_PADDING.toPx()
+                else 0
+            }
+
+            setImageUrl(freeOngkirImageUrl)
+            val imageHeight = boBadge.imageHeight
+            if (imageHeight > 0) {
+                updateLayoutParams {
+                    height = imageHeight.toPx()
+                }
+            }
+        }
         if (element.isFullfillment) {
             pdpShipmentGroupTc.show()
             pdpShipmentTcLabel.text = rates.fulfillmentData.prefix
@@ -234,11 +259,14 @@ class ShipmentViewHolder(
         }
     }
 
-    private fun renderTicker(element: ProductShipmentDataModel) = with(viewMain) {
-        val tickers = element.rates.tickers.map {
+    private fun renderTickers(rates: P2RatesEstimateData) = with(viewMain) {
+        val tickers = rates.tickers.filter {
+            it.color == TICKER_INFO_TYPE ||
+                it.color == TICKER_WARNING_TYPE
+        }.map {
             TickerData(
                 description = it.message,
-                type = Ticker.TYPE_ANNOUNCEMENT,
+                type = mapTickerType(it.color),
                 title = it.title,
                 isFromHtml = true
             )
@@ -249,6 +277,34 @@ class ShipmentViewHolder(
                 TickerPagerAdapter(context, tickers),
                 tickers
             )
+        }
+    }
+
+    private fun mapTickerType(type: String): Int {
+        return when (type) {
+            TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+    }
+
+    private fun renderTips(rates: P2RatesEstimateData) = with(viewMain) {
+        val tips = rates.tickers.firstOrNull {
+            it.color == TIPS_TYPE
+        } ?: return
+
+        pdpShipmentTips.showIfWithBlock(tips.message.isNotBlank()) {
+            title = tips.title
+
+            val htmlString = HtmlLinkHelper(context, generateHtml(tips.message, tips.link))
+            description = htmlString.spannedString ?: ""
+            setOnClickListener {
+                if (tips.action == TICKER_ACTION_APPLINK) {
+                    listener.goToApplink(tips.link)
+                } else {
+                    listener.goToWebView(tips.link)
+                }
+            }
         }
     }
 
@@ -271,6 +327,10 @@ class ShipmentViewHolder(
         }
     }
 
+    private fun generateHtml(message: String, link: String): String = with(itemView) {
+        return message.replace("{link}", context.getString(R.string.ticker_href_builder, link))
+    }
+
     /**
      * Hide view with conditional visibility,
      * which means the view is not mandatory.
@@ -290,6 +350,7 @@ class ShipmentViewHolder(
             pdpShipmentRatesError.hide()
             pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
+            pdpShipmentTips.hide()
         }
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase
 
 const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
-        """
+    """
         query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
@@ -666,6 +666,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 id
                 additional_vertical_id
                 transaction_type
+              }
+              dynamic_data_passing {
+                is_ddp
+                dynamic_data
               }
             }
           }

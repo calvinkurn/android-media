@@ -15,8 +15,8 @@ class UndoDeleteTest : BaseCartTest() {
     fun `WHEN undo delete success THEN should render success`() {
         // GIVEN
         val response = UndoDeleteCartDataResponse(
-                status = "OK",
-                data = Data(success = 1, message = listOf("success message"))
+            status = "OK",
+            data = Data(success = 1, message = listOf("success message"))
         )
 
         coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
@@ -66,5 +66,4 @@ class UndoDeleteTest : BaseCartTest() {
             view.onUndoDeleteCartDataSuccess()
         }
     }
-
 }

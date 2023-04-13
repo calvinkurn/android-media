@@ -99,6 +99,7 @@ object Constant {
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"
+    const val DISCO_EMPTY_STATE_IMG = "disco_empty_state_img"
 
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"

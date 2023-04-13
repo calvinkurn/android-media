@@ -2,7 +2,6 @@ package com.tokopedia.product.manage.feature.stockreminder.domain.usecase
 
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class StockReminderDataUseCase @Inject constructor(

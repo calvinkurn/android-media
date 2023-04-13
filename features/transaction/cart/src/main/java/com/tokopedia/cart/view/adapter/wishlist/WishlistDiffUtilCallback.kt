@@ -3,8 +3,10 @@ package com.tokopedia.cart.view.adapter.wishlist
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 
-class WishlistDiffUtilCallback(private val oldList: List<CartWishlistItemHolderData>,
-                               private val newList: List<CartWishlistItemHolderData>) : DiffUtil.Callback() {
+class WishlistDiffUtilCallback(
+    private val oldList: List<CartWishlistItemHolderData>,
+    private val newList: List<CartWishlistItemHolderData>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -28,5 +30,4 @@ class WishlistDiffUtilCallback(private val oldList: List<CartWishlistItemHolderD
         // Just return true because id comparison on `areItemsTheSame` is enough
         return true
     }
-
 }

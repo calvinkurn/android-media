@@ -16,9 +16,10 @@ import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
+import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.search.utils.updateComponentId
+import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -92,8 +93,9 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         applySortAndFilter(applySortFilterModel)
 
-        val requestParams = applySortFilterModel.mapParameter
-            .updateComponentId(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+        val requestParams = applySortFilterModel.mapParameter +
+            manualFilterToggleMap() +
+            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
 
         parameterListener.refreshSearchParameter(requestParams)
 

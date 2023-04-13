@@ -10,10 +10,14 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.CheckUserFinancialAssets
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
-import com.tokopedia.profilecompletion.profileinfo.usecase.*
+import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.UserFinancialAssetsUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineExceptionHandler

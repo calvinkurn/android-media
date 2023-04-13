@@ -6,6 +6,11 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormFaceF
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormFinalFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.CameraKtpFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormKtpFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
 import dagger.Component
 
 @ActivityScope
@@ -20,4 +25,8 @@ interface UserIdentificationCommonComponent {
     fun inject(fragment: UserIdentificationFormFinalFragment?)
     fun inject(fragment: UserIdentificationInfoFragment?)
     fun inject(fragment: UserIdentificationInfoSimpleFragment?)
+    fun inject(fragment: CameraKtpFragment)
+    fun inject(fragment: UserIdentificationCameraFragment)
+    fun inject(activity: UserIdentificationFormActivity)
+    fun inject(fragment: UserIdentificationFormKtpFragment)
 }

@@ -6,6 +6,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.response.BundleStats
+import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -278,6 +281,21 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         assertEquals(ATC_ERROR_GLOBAL, throwableError.message)
     }
 
+    @Test
+    fun `when set shop info with name shoptest expect get shop info with name shoptest`() {
+        viewModel.setShopInfo(ShopInformation(shopName = "shoptest"))
+        assertEquals("shoptest", viewModel.getShopInfo()?.shopName.orEmpty())
+    }
+
+    @Test
+    fun `when setting total bundle sold using bundle info expect sum of sold bundle`() {
+        val bundleInfo = listOf(
+            BundleInfo(bundleStats = BundleStats("2")),
+            BundleInfo(bundleStats = BundleStats("2"))
+        )
+        viewModel.setBundleTotalSold(bundleInfo)
+        assertEquals(4,viewModel.getBundleTotalSold())
+    }
     private fun generateProductVariant(): ProductVariant {
         val bundleInfoTest = singleBundleVariant?.bundleInfo?.firstOrNull()
         val bundleItemTest = bundleInfoTest?.bundleItems?.firstOrNull()

@@ -14,17 +14,21 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 @GqlQuery(GetCouponListRecommendationUseCase.QUERY_NAME, GetCouponListRecommendationUseCase.QUERY)
-class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CouponListRecommendationResponse>() {
+class GetCouponListRecommendationUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<CouponListRecommendationResponse>() {
 
     private var params: Map<String, Any?>? = null
 
     fun setParams(promoRequest: PromoRequest, chosenAddress: ChosenAddress?) {
         params = mapOf(
-                KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
-                // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
-                        ?: chosenAddressRequestHelper.getChosenAddress())
+            KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
+            // Add current selected address from local cache
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (
+                chosenAddress
+                    ?: chosenAddressRequestHelper.getChosenAddress()
+                )
         )
     }
 
@@ -170,5 +174,4 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
             }
         """
     }
-
 }

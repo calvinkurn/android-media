@@ -10,7 +10,7 @@ object ScheduleDeliveryResponseHelper {
         scheduleDeliveryRatesResponse: ScheduleDeliveryRatesResponse,
         available: Boolean? = null,
         hidden: Boolean? = null,
-        recommend: Boolean? = null,
+        recommend: Boolean? = null
     ): ScheduleDeliveryRatesResponse {
         val scheduleDeliveryData = scheduleDeliveryRatesResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         return ScheduleDeliveryRatesResponse(

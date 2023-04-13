@@ -63,12 +63,12 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
             this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
@@ -384,18 +384,18 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun setSellerBackground() {
         val stroke = if (source == BundlingSource.PRODUCT_ATTACHMENT) {
-            com.tokopedia.unifyprinciples.R.color.Unify_G200
+            com.tokopedia.unifyprinciples.R.color.Unify_GN50
         } else {
             null
         }
         bgSender = ViewUtil.generateBackgroundWithShadow(
             this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,

@@ -5,7 +5,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
 
@@ -87,5 +92,4 @@ class FollowShopTest : BaseCartTest() {
             view.showProgressLoading()
         }
     }
-
 }

@@ -131,7 +131,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             try {
                 val response = goCicilInstallmentOptionUseCase.executeSuspend(
                     request
-                    )
+                )
                 val installmentList = mapInstallmentOptions(
                     response.installmentOptions
                 )

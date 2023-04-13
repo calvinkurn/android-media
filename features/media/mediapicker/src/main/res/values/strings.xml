@@ -39,6 +39,7 @@
 <!--    message-->
     <string name="picker_page_source_not_found">[Dev] PageSource not found, please add your own on PickerParam builder.</string>
 
+    <string name="picker_include_medias_connection_error">Oops, halaman bermasalah. Cek koneksimu dan coba lagi, ya.</string>
     <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>
     <string name="picker_storage_threshold_message">Memori HP-mu kurang dari %1$d MB. Biar bisa rekam &#38; simpan video, hapus beberapa media di galerimu.</string>
     <string name="picker_storage_fail_video_record">Video belum tersimpan, memori HP-mu tidak cukup. Hapus dulu beberapa media di galeri &#38; rekam ulang.</string>

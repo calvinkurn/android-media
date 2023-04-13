@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
+import javax.net.ssl.SSLContext;
+
 
 public abstract class MainApplication extends CoreNetworkApplication {
 
@@ -98,6 +100,9 @@ public abstract class MainApplication extends CoreNetworkApplication {
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeeded(this);
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, null, null);
+            sslContext.createSSLEngine();
         } catch (GooglePlayServicesRepairableException e) {
             GoogleApiAvailability.getInstance().showErrorNotification(this, e.getConnectionStatusCode());
         } catch (Throwable t) {

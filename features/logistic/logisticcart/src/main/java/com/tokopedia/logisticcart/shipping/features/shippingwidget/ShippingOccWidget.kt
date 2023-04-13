@@ -245,10 +245,10 @@ class ShippingOccWidget : ConstraintLayout {
     ) {
         binding?.apply {
             tvShippingCourier.text = "$shipperName (${
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                shippingPrice,
-                false
-            ).removeDecimalSuffix()
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shippingPrice,
+                    false
+                ).removeDecimalSuffix()
             })"
             if (eta.isNotEmpty()) {
                 tvShippingCourierEta.text = eta
@@ -459,8 +459,8 @@ class ShippingOccWidget : ConstraintLayout {
                 tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             } else {
                 tvShippingCourier.text = "$shipperName (${
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
-                    .removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
+                        .removeDecimalSuffix()
                 })"
             }
             if (shippingEta.isNullOrBlank()) {

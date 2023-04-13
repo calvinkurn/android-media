@@ -1,8 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.gifting.view
 
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -14,8 +12,10 @@ import com.tokopedia.purchase_platform.common.databinding.ItemGiftingAddOnBindin
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ButtonGiftingAddOnView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr)  {
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var binding: ItemGiftingAddOnBinding? = ItemGiftingAddOnBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -57,7 +57,6 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             desc = styledAttributes.getString(R.styleable.GiftingButtonView_desc) ?: ""
             urlLeftIcon = styledAttributes.getString(R.styleable.GiftingButtonView_icon_left) ?: ""
             urlRightIcon = styledAttributes.getString(R.styleable.GiftingButtonView_icon_right) ?: ""
-
         } finally {
             styledAttributes.recycle()
         }
@@ -80,8 +79,9 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
     }
 
     private fun loadRightImage() {
-        if (urlRightIcon.isEmpty()) binding?.iconRight?.gone()
-        else {
+        if (urlRightIcon.isEmpty()) {
+            binding?.iconRight?.gone()
+        } else {
             binding?.iconRight?.visible()
             binding?.iconRight?.loadImage(urlRightIcon)
         }
@@ -93,8 +93,9 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             titleAddon.text = title
             titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
-            if (desc.isEmpty()) descAddon.gone()
-            else {
+            if (desc.isEmpty()) {
+                descAddon.gone()
+            } else {
                 descAddon.visible()
                 descAddon.text = desc
                 descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
@@ -107,8 +108,9 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             titleAddon.text = title
             titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
 
-            if (desc.isEmpty()) descAddon.gone()
-            else {
+            if (desc.isEmpty()) {
+                descAddon.gone()
+            } else {
                 descAddon.visible()
                 descAddon.text = desc
                 descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))

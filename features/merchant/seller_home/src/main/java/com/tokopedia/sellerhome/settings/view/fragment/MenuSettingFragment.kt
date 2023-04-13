@@ -10,25 +10,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -37,9 +42,11 @@ import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracki
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
@@ -53,7 +60,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -75,6 +81,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
+        private const val PERSONA_MENU_COACH_MARK = "persona_menu_coach_mark"
 
         private const val LOGOUT_ALIAS = "logout"
         private const val REQ_CODE_GLOBAL_FEEDBACK = 8043
@@ -92,6 +99,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharedPref: SellerHomeSharedPref
 
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
@@ -116,6 +126,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private var binding by autoClearedNullable<FragmentMenuSettingBinding>()
+    private var personaCoachMark: CoachMark2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -251,6 +262,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             when (result) {
                 is Success -> {
                     menuSettingAdapter?.showSuccessAccessMenus(result.data)
+                    menuSettingViewModel.getShopLocEligible(userSession.shopId.toLongOrZero())
                 }
                 is Fail -> {
                     menuSettingAdapter?.removeLoading()
@@ -259,27 +271,89 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             }
         }
     }
-    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
-        when (isEligibleMultiloc) {
-            is Success -> {
-                menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
 
-            }
+    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
+        if (isEligibleMultiloc is Success) {
+            menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
         }
     }
 
     private fun setupView() {
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
+        val menuLayoutManager by getMenuLayoutManager()
+        binding?.recyclerView?.layoutManager = menuLayoutManager
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
-        if (!userSession.isShopOwner) {
+        if (userSession.isShopOwner) {
+            menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
+        } else {
             menuSettingViewModel.checkShopSettingAccess()
         }
-        menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
         observe(menuSettingViewModel.shopLocEligible, ::setupLocationSettings)
 
         setupLogoutView()
         setupExtraSettingView()
         startShopActiveService()
+        showPersonaCoachMark(menuLayoutManager)
+    }
+
+    private fun getMenuLayoutManager(): Lazy<LinearLayoutManager> {
+        return lazy {
+            object : LinearLayoutManager(context) {
+                override fun scrollVerticallyBy(
+                    dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?
+                ): Int {
+                    return try {
+                        showPersonaCoachMark(this)
+                        super.scrollVerticallyBy(dy, recycler, state)
+                    } catch (@Suppress("SwallowedException") e: IndexOutOfBoundsException) {
+                        Int.ZERO
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showPersonaCoachMark(lm: LinearLayoutManager) {
+        binding?.recyclerView?.post {
+            context?.let { ctx ->
+                val menuTitle = ctx.getString(R.string.setting_seller_persona)
+                val personaMenuIndex = adapter.data.indexOfFirst {
+                    (it as? MenuItemUiModel)?.title == menuTitle
+                }
+
+                val eligibleCoachMark = sharedPref.getBoolean(PERSONA_MENU_COACH_MARK, true)
+                if (personaMenuIndex != RecyclerView.NO_POSITION && eligibleCoachMark) {
+                    val firstVisibleIndex = lm.findFirstCompletelyVisibleItemPosition()
+                    val lastVisibleIndex = lm.findLastCompletelyVisibleItemPosition()
+
+                    if (personaCoachMark == null) {
+                        personaCoachMark = CoachMark2(ctx).apply {
+                            onDismissListener = {
+                                sharedPref.putBoolean(PERSONA_MENU_COACH_MARK, false)
+                            }
+                        }
+                    }
+
+                    if (personaMenuIndex in firstVisibleIndex..lastVisibleIndex) {
+                        lm.getChildAt(personaMenuIndex)?.let { anchor ->
+                            personaCoachMark?.showCoachMark(getCoachMarkItem(anchor))
+                        }
+                    } else {
+                        personaCoachMark?.dismissCoachMark()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCoachMarkItem(anchor: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            CoachMark2Item(
+                anchorView = anchor,
+                title = String.EMPTY,
+                description = getString(R.string.menu_setting_persona_coach_mack),
+                position = CoachMark2.POSITION_BOTTOM
+            )
+        )
     }
 
     private fun setupLogoutView() {
@@ -368,27 +442,29 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun showLogoutDialog() {
         context?.let {
-            AlertDialog.Builder(it).apply {
-                try {
-                    setIcon(logoutIconDrawable)
-                } catch (e: Exception) {
-                    Timber.e(e)
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.run {
+                setTitle(it.getString(R.string.seller_home_logout_title))
+                setDescription(it.getString(R.string.seller_home_logout_confirm))
+                setPrimaryCTAText(it.getString(R.string.seller_home_logout_button))
+                setPrimaryCTAClickListener {
+                    doLogout(dialog)
                 }
-
-                setTitle(context.getString(R.string.seller_home_logout_title))
-                setMessage(context.getString(R.string.seller_home_logout_confirm))
-                setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                    val progressDialog = showProgressDialog()
-                    dialogInterface.dismiss()
-                    RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
-                    progressDialog.dismiss()
-                    activity?.finish()
+                setSecondaryCTAText(it.getString(R.string.seller_home_cancel))
+                setSecondaryCTAClickListener {
+                    dialog.dismiss()
                 }
-                setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                }
-            }.show()
+                show()
+            }
         }
+    }
+
+    private fun doLogout(dialog: DialogUnify) {
+        val progressDialog = showProgressDialog()
+        dialog.dismiss()
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
+        progressDialog.dismiss()
+        activity?.finish()
     }
 
     private fun showProgressDialog(): ProgressDialog {

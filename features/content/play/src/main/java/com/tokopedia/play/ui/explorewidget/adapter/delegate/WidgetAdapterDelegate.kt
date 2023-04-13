@@ -12,6 +12,7 @@ import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.widget.ui.adapter.viewholder.placeholder.PlayWidgetCardPlaceholderViewHolder
 import com.tokopedia.play.R as playR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 02/12/22
@@ -45,7 +46,9 @@ class WidgetAdapterDelegate private constructor() {
             item: ExploreWidgetPlaceholder,
             holder: PlayWidgetCardPlaceholderViewHolder
         ) {
+            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyR.dimen.unify_space_8)
             holder.bind()
+            holder.itemView.setPadding(space8, space8, space8, space8)
             holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
         }
 

@@ -37,14 +37,14 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntSafely().toZeroIfNull()
         val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
         val isFromSBM = bundle?.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM) ?: false
-        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
+        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA, "") ?: ""
         return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM, isFromSBM)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
         return DaggerRechargeGeneralComponent.builder()
-                .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
-                .build()
+            .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
+            .build()
     }
 
     override fun onBackPressed() {
@@ -77,7 +77,9 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     companion object {
 
         @LayoutRes val LAYOUT = R.layout.view_recharge_general_toolbar
+
         @IdRes val TOOLBAR_ID = R.id.recharge_general_header
+
         @IdRes val VIEW_PARENT_ID = R.id.recharge_general_view_parent
 
         const val PARAM_CATEGORY_ID = "category_id"
@@ -90,11 +92,13 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
 
-        fun newInstance(context: Context,
-                        categoryId: Int,
-                        menuId: Int,
-                        operatorId: Int = 0,
-                        productId: String = ""): Intent {
+        fun newInstance(
+            context: Context,
+            categoryId: Int,
+            menuId: Int,
+            operatorId: Int = 0,
+            productId: String = ""
+        ): Intent {
             val intent = Intent(context, RechargeGeneralActivity::class.java)
             intent.putExtra(PARAM_CATEGORY_ID, categoryId.toString())
             intent.putExtra(PARAM_MENU_ID, menuId.toString())

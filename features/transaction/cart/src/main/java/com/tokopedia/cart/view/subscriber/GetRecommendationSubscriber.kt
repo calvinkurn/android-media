@@ -11,7 +11,6 @@ import rx.Subscriber
 class GetRecommendationSubscriber(private val view: ICartListView?) : Subscriber<List<RecommendationWidget>>() {
 
     override fun onCompleted() {
-
     }
 
     override fun onError(e: Throwable) {

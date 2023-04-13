@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW
 import com.tokopedia.affiliate.AFFILIATE_TANDC_URL
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -19,12 +20,12 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.createListForTermsAndCondition
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -140,6 +141,11 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
             sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SYARAT)
             AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
+        }
+        view?.findViewById<Typography>(R.id.kebijakan_text)?.setOnClickListener {
+            context?.let {
+                RouteManager.route(it, AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW)
+            }
         }
     }
 

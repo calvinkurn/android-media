@@ -250,6 +250,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = widgetLayoutManager
         binding.rvWidgets.addOnScrollListener(scrollListener)
+        binding.rvWidgets.itemAnimator = null
 
         binding.srExploreWidget.setOnRefreshListener {
             binding.srExploreWidget.isRefreshing = !binding.srExploreWidget.isRefreshing
@@ -463,7 +464,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.selectedChips,
             viewModel.exploreWidgetConfig.autoPlay
         )
-        router.route(requireContext(), item.appLink)
+        router.route(context, item.appLink)
     }
 
     override fun onImpressChannelCard(
@@ -512,7 +513,9 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        binding.rvWidgets.layoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
+        if(state is ExploreWidgetState.Fail) return
+
+        binding.rvWidgets.layoutManager = if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
         scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 

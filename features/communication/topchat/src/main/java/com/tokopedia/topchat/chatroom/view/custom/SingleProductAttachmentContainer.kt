@@ -73,12 +73,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
           this,
-          com.tokopedia.unifyprinciples.R.color.Unify_Background,
+          com.tokopedia.unifyprinciples.R.color.Unify_NN0,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+          ViewUtil.getShadowColorViewHolder(context),
           R.dimen.dp_topchat_2,
           R.dimen.dp_topchat_1,
           Gravity.CENTER
@@ -237,16 +237,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
-            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
+            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_GN50 else null
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                ViewUtil.getShadowColorViewHolder(context),
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER,
