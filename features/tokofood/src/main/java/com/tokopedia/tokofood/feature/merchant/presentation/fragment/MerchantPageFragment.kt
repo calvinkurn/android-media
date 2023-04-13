@@ -878,8 +878,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CartGeneralCartListData)?.let { cartData ->
-                        if (it.source == SOURCE){
+                    if (it.source == SOURCE){
+                        (it.data as? CartGeneralCartListData)?.let { cartData ->
                             val products = cartData.getProductListFromCart()
                             val purchaseAmount = cartData.data.shoppingSummary.getTokofoodBusinessBreakdown().totalBillFmt
                             val shop = cartData.data.getTokofoodBusinessData().customResponse.shop
@@ -891,8 +891,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 merchantId,
                                 merchantName
                             )
-                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
+                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
             }

@@ -282,9 +282,9 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CartGeneralCartListData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE){
-                                goToPurchasePage()
-                            }
+                        }
+                        if (uiEvent.source == MINI_CART_SOURCE){
+                            goToPurchasePage()
                         }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {

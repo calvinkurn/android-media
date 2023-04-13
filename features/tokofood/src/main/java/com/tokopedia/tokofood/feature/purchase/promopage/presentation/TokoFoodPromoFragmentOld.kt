@@ -30,9 +30,9 @@ import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodButton
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodEmptyState
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPage
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodButtonOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodEmptyStateOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPageOld
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbar
@@ -251,7 +251,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
             when (it.state) {
                 UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
                 UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE -> {
-                    (it.data as? PromoListTokoFoodErrorPage)?.let { errorPage ->
+                    (it.data as? PromoListTokoFoodErrorPageOld)?.let { errorPage ->
                         renderGlobalError(errorPage)
                         logError(MessageErrorException(errorPage.description))
                     }
@@ -269,7 +269,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_NO_COUPON -> {
-                    (it.data as? PromoListTokoFoodEmptyState)?.let { emptyState ->
+                    (it.data as? PromoListTokoFoodEmptyStateOld)?.let { emptyState ->
                         renderEmptyState(emptyState)
                     }
                 }
@@ -316,7 +316,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         }
     }
 
-    private fun renderGlobalError(errorPage: PromoListTokoFoodErrorPage) {
+    private fun renderGlobalError(errorPage: PromoListTokoFoodErrorPageOld) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
             errorPage.title.takeIf { it.isNotBlank() }?.let { titleError ->
@@ -329,10 +329,10 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
             errorAction.text = errorPage.button.firstOrNull()?.text.orEmpty()
             setActionClickListener {
                 when(errorPage.button.firstOrNull()?.action) {
-                    PromoListTokoFoodButton.REFRESH_ACTION -> {
+                    PromoListTokoFoodButtonOld.REFRESH_ACTION -> {
                         loadData()
                     }
-                    PromoListTokoFoodButton.REDIRECT_ACTION -> {
+                    PromoListTokoFoodButtonOld.REDIRECT_ACTION -> {
                         TokofoodRouteManager.routePrioritizeInternal(context, errorPage.button.firstOrNull()?.link.orEmpty())
                     }
                     else -> {
@@ -345,7 +345,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         viewBinding?.recyclerViewPurchasePromo?.gone()
     }
 
-    private fun renderEmptyState(emptyState: PromoListTokoFoodEmptyState) {
+    private fun renderEmptyState(emptyState: PromoListTokoFoodEmptyStateOld) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
             emptyState.title.takeIf { it.isNotBlank() }?.let { titleError ->
