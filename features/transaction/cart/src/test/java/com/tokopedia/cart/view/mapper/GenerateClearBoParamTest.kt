@@ -14,50 +14,24 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
+import org.junit.Before
 import org.junit.Test
 
 class GenerateClearBoParamTest {
+    
+    private lateinit var cartFirstOrderList: MutableList<CartItemHolderData>
+    private lateinit var cartSecondOrderList: MutableList<CartItemHolderData>
+    
+    @Before
+    fun setup() {
+        cartFirstOrderList = PromoRequestMapperTestHelper.getFirstCartOrder()
+        cartSecondOrderList = PromoRequestMapperTestHelper.getSecondCartOrder()
+    }
+    
 
     @Test
     fun `WHEN promoData is null should generate correct params`() {
         // GIVEN
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -211,43 +185,6 @@ class GenerateClearBoParamTest {
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                     )
                 )
-            )
-        )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
             )
         )
         val productUiModelList = cartFirstOrderList
@@ -437,43 +374,6 @@ class GenerateClearBoParamTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -629,43 +529,6 @@ class GenerateClearBoParamTest {
                     type = "logistic",
                     cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                 )
-            )
-        )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
             )
         )
         val productUiModelList = cartFirstOrderList
@@ -833,43 +696,6 @@ class GenerateClearBoParamTest {
                     type = "logistic",
                     cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                 )
-            )
-        )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
             )
         )
         val productUiModelList = cartFirstOrderList

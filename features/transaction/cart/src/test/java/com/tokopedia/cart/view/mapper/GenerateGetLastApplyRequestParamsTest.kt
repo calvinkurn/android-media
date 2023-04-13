@@ -19,52 +19,19 @@ import org.junit.Before
 import org.junit.Test
 
 class GenerateGetLastApplyRequestParamsTest {
+    
+    private lateinit var cartFirstOrderList: MutableList<CartItemHolderData>
+    private lateinit var cartSecondOrderList: MutableList<CartItemHolderData>
 
     @Before
     fun setup() {
-
+        cartFirstOrderList = PromoRequestMapperTestHelper.getFirstCartOrder()
+        cartSecondOrderList = PromoRequestMapperTestHelper.getSecondCartOrder()
     }
 
     @Test
     fun `WHEN promoData is null and no BO should generate correct params`() {
         // GIVEN
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -111,7 +78,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf(),
@@ -127,7 +94,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         shopId = 2
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -184,43 +151,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -267,7 +197,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf(),
@@ -283,7 +213,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         shopId = 2
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -340,43 +270,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -424,7 +317,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -445,7 +338,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -521,43 +414,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -605,7 +461,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -626,7 +482,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -716,43 +572,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -800,7 +619,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE", "TESTMVC2"),
@@ -821,7 +640,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf("TESTMVC"),
@@ -925,43 +744,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1009,7 +791,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -1030,7 +812,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf("TESTMVC2"),
@@ -1102,43 +884,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1185,7 +930,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf(),
@@ -1201,7 +946,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         shopId = 2
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -1267,43 +1012,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1351,7 +1059,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf(),
@@ -1372,7 +1080,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -1463,43 +1171,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1547,7 +1218,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -1568,7 +1239,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf(),
@@ -1657,43 +1328,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1741,7 +1375,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE", "TESTMVC2"),
@@ -1762,7 +1396,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf("TESTMVC"),
@@ -1876,43 +1510,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 )
             )
         )
-        val cartFirstOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "1",
-                quantity = 5,
-                bundleId = "0"
-            ),
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "111111-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "1",
-                    poDuration = "0"
-                ),
-                productId = "2",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
-        val cartSecondOrderList = mutableListOf(
-            CartItemHolderData(
-                isSelected = true,
-                cartStringOrder = "222222-KEY",
-                shopHolderData = CartShopHolderData(
-                    shopId = "2",
-                    poDuration = "0"
-                ),
-                productId = "3",
-                quantity = 5,
-                bundleId = "0"
-            )
-        )
         val productUiModelList = cartFirstOrderList
             .plus(cartSecondOrderList)
             .toMutableList()
@@ -1960,7 +1557,7 @@ class GenerateGetLastApplyRequestParamsTest {
                 cartType = CartConstant.PARAM_DEFAULT,
                 orders = listOf(
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartSecondOrderList
                         ),
                         codes = mutableListOf("TESTCODE"),
@@ -1981,7 +1578,7 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     OrdersItem(
-                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                        productDetails = PromoRequestMapperTestHelper.mapCartProductModelToPromoProductDetailsItem(
                             cartFirstOrderList
                         ),
                         codes = mutableListOf("TESTMVC2"),
