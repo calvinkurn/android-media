@@ -31,12 +31,14 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -53,7 +55,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
 
-class TokoNowCategoryViewModel @Inject constructor (
+class TokoNowCategoryViewModel @Inject constructor(
     baseDispatcher: CoroutineDispatchers,
     @param:Named(TOKONOW_CATEGORY_L1)
     val categoryL1: String,
@@ -75,8 +77,8 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
-    userSession: UserSessionInterface,
-): BaseSearchCategoryViewModel(
+    userSession: UserSessionInterface
+) : BaseSearchCategoryViewModel(
     baseDispatcher,
     queryParamMap,
     getFilterUseCase,
@@ -86,7 +88,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     getWarehouseUseCase,
     setUserPreferenceUseCase,
     chooseAddressWrapper,
-    userSession,
+    userSession
 ) {
 
     private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
@@ -119,15 +121,18 @@ class TokoNowCategoryViewModel @Inject constructor (
         get() = TOKONOW_DIRECTORY
 
     private fun getCategoryIdForTracking() =
-            if (categoryL2.isNotEmpty()) "$categoryL1/$categoryL2"
-            else categoryL1
+        if (categoryL2.isNotEmpty()) {
+            "$categoryL1/$categoryL2"
+        } else {
+            categoryL1
+        }
 
     override fun loadFirstPage() {
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
-                this::onGetCategoryFirstPageSuccess,
-                this::onGetFirstPageError,
-                createRequestParams(),
+            this::onGetCategoryFirstPageSuccess,
+            this::onGetFirstPageError,
+            createRequestParams()
         )
     }
 
@@ -145,21 +150,21 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val searchProduct = categoryModel.searchProduct
         val headerDataView = HeaderDataView(
-                title = categoryModel.categoryDetail.data.name,
-                aceSearchProductHeader = searchProduct.header,
-                categoryFilterDataValue = categoryModel.categoryFilter,
-                quickFilterDataValue = categoryModel.quickFilter,
-                bannerChannel = categoryModel.bannerChannel,
+            title = categoryModel.categoryDetail.data.name,
+            aceSearchProductHeader = searchProduct.header,
+            categoryFilterDataValue = categoryModel.categoryFilter,
+            quickFilterDataValue = categoryModel.quickFilter,
+            bannerChannel = categoryModel.bannerChannel
         )
 
         val contentDataView = ContentDataView(
-                aceSearchProductData = searchProduct.data,
-                repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
+            aceSearchProductData = searchProduct.data,
+            repurchaseWidget = categoryModel.tokonowRepurchaseWidget
         )
 
         val isActive = categoryModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
 
-        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct,isActive)
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct, isActive)
 
         sendOpenScreenTrackingUrl(categoryModel)
         setSharingModel(categoryModel)
@@ -188,17 +193,17 @@ class TokoNowCategoryViewModel @Inject constructor (
     private fun createAisleDataView() = CategoryAisleDataView(
         listOf(
             createAisleItem(navigation?.prev),
-            createAisleItem(navigation?.next),
+            createAisleItem(navigation?.next)
         ),
         chooseAddressData?.service_type.orEmpty()
     )
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
         return CategoryAisleItemDataView(
-                id = navigationItem?.id ?: "",
-                name = navigationItem?.name ?: "",
-                imgUrl = navigationItem?.imageUrl ?: "",
-                applink = navigationItem?.applinks ?: "",
+            id = navigationItem?.id ?: "",
+            name = navigationItem?.name ?: "",
+            imgUrl = navigationItem?.imageUrl ?: "",
+            applink = navigationItem?.applinks ?: ""
         )
     }
 
@@ -207,7 +212,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
-                state = TokoNowLayoutState.LOADING,
+            state = TokoNowLayoutState.LOADING
         )
         visitableList.add(categoryMenuIndex, categoryMenuUIModel)
     }
@@ -228,8 +233,8 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun loadCategoryMenu(isEmptyProductList: Boolean) {
         launchCatchError(
-                block = { tryLoadCategoryMenu(isEmptyProductList) },
-                onError = { catchLoadCategoryMenuError() }
+            block = { tryLoadCategoryMenu(isEmptyProductList) },
+            onError = { catchLoadCategoryMenuError() }
         )
     }
 
@@ -238,32 +243,34 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val categoryList = getCategoryList()
 
-        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID
 
         updateCategoryUIModel(
-                categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(
-                    response = categoryList,
-                    seeAllAppLink = seeAllAppLink
-                ),
-                categoryUIModelState = TokoNowLayoutState.SHOW,
+            categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(
+                response = categoryList,
                 seeAllAppLink = seeAllAppLink
+            ),
+            categoryUIModelState = TokoNowLayoutState.SHOW,
+            seeAllAppLink = seeAllAppLink
         )
     }
 
-    private suspend fun getCategoryList() =
-            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH).data
+    private suspend fun getCategoryList(): List<CategoryResponse> {
+        val warehouses = AddressMapper.mapToWarehousesData(chooseAddressData)
+        return getCategoryListUseCase.execute(warehouses, CATEGORY_LIST_DEPTH).data
+    }
 
     private suspend fun updateCategoryUIModel(
-            categoryItemListUIModel: List<Visitable<*>>?,
-            categoryUIModelState: Int,
-            seeAllAppLink: String = ""
+        categoryItemListUIModel: List<Visitable<*>>?,
+        categoryUIModelState: Int,
+        seeAllAppLink: String = ""
     ) {
         val currentCategoryUIModel = getCategoryMenuUIModelInVisitableList() ?: return
 
         val updatedCategoryUiModel = currentCategoryUIModel.copy(
-                categoryListUiModel = categoryItemListUIModel,
-                state = categoryUIModelState,
-                seeAllAppLink = seeAllAppLink
+            categoryListUiModel = categoryItemListUIModel,
+            state = categoryUIModelState,
+            seeAllAppLink = seeAllAppLink
         )
 
         replaceCategoryUIModelInVisitableList(currentCategoryUIModel, updatedCategoryUiModel)
@@ -273,13 +280,13 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun getCategoryMenuUIModelInVisitableList(): TokoNowCategoryMenuUiModel? {
         return visitableList
-                .find { it is TokoNowCategoryMenuUiModel }
-                as? TokoNowCategoryMenuUiModel
+            .find { it is TokoNowCategoryMenuUiModel }
+            as? TokoNowCategoryMenuUiModel
     }
 
     private fun replaceCategoryUIModelInVisitableList(
         current: TokoNowCategoryMenuUiModel,
-        updated: TokoNowCategoryMenuUiModel,
+        updated: TokoNowCategoryMenuUiModel
     ) {
         val position = visitableList.indexOf(current)
 
@@ -289,8 +296,8 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private suspend fun catchLoadCategoryMenuError() {
         updateCategoryUIModel(
-                categoryItemListUIModel = null,
-                categoryUIModelState = TokoNowLayoutState.HIDE
+            categoryItemListUIModel = null,
+            categoryUIModelState = TokoNowLayoutState.HIDE
         )
     }
 
@@ -354,7 +361,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
-        var deeplinkParam = "${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${categoryL1}"
+        var deeplinkParam = "${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/$categoryL1"
         var url = categoryUrl
         if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
             deeplinkParam += "/$categoryIdLvl2"
@@ -390,9 +397,9 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(
-                this::onGetCategoryLoadMorePageSuccess,
-                this::onGetCategoryLoadMorePageError,
-                createRequestParams(),
+            this::onGetCategoryLoadMorePageSuccess,
+            this::onGetCategoryLoadMorePageError,
+            createRequestParams()
         )
     }
 
@@ -403,7 +410,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     private fun onGetCategoryLoadMorePageError(throwable: Throwable) {
-
     }
 
     override fun getRecomCategoryId(
@@ -414,7 +420,10 @@ class TokoNowCategoryViewModel @Inject constructor (
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
         val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
 
-        return if (categoryFilterId.isNotEmpty()) listOf(categoryFilterId)
-        else listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
+        return if (categoryFilterId.isNotEmpty()) {
+            listOf(categoryFilterId)
+        } else {
+            listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
+        }
     }
 }

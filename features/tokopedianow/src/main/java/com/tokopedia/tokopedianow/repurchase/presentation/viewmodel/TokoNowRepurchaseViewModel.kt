@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
@@ -92,7 +93,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     deleteCartUseCase: DeleteCartUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
-): BaseTokoNowViewModel(
+) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
@@ -184,19 +185,18 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
             _getLayout.postValue(Success(layout))
         }) {
-
         }
     }
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+        if (shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             getMiniCartJob?.cancel()
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
                 val isInitialLoad = _getLayout.value == null
 
-                if(isInitialLoad) {
+                if (isInitialLoad) {
                     setMiniCartAndProductQuantity(data)
                 } else {
                     setProductAddToCartQuantity(data)
@@ -211,10 +211,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    fun getChooseAddress(source: String){
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+    fun getChooseAddress(source: String) {
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
             _chooseAddress.postValue(Success(it))
-        },{
+        }, {
             _chooseAddress.postValue(Fail(it))
         }, source)
     }
@@ -301,13 +301,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             val productList = getProductList()
             layoutList.removeLoading()
 
-            if(productList.isEmpty()) {
+            if (productList.isEmpty()) {
                 showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
             } else {
                 showProductList(productList)
             }
         }) {
-
         }
     }
 
@@ -317,13 +316,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             val productList = getProductList()
             layoutList.removeLoading()
 
-            if(productList.isEmpty()) {
+            if (productList.isEmpty()) {
                 showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
             } else {
                 showProductList(productList)
             }
         }) {
-
         }
     }
 
@@ -333,13 +331,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             val productList = getProductList()
             layoutList.removeLoading()
 
-            if(productList.isEmpty()) {
+            if (productList.isEmpty()) {
                 showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
             } else {
                 showProductList(productList)
             }
         }) {
-
         }
     }
 
@@ -348,7 +345,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         val isLoggedIn = userSession.isLoggedIn
 
-        if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
+        if (shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(listOf(shopId), MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
@@ -490,7 +487,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADING
             )
 
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, warehouseId)
 
             val layout = RepurchaseLayoutUiModel(
@@ -513,7 +511,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getCategoryMenu() {
         launchCatchError(block = {
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, warehouseId)
 
             val layout = RepurchaseLayoutUiModel(
@@ -540,7 +539,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val scrolledToLastItem = containsLastItemIndex == true
         val hasNextPage = productListMeta?.hasNext == true
 
-        if(scrolledToLastItem && hasNextPage) {
+        if (scrolledToLastItem && hasNextPage) {
             loadMoreProduct()
         }
     }
@@ -582,7 +581,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
             _loadMore.postValue(Success(layout))
         }) {
-
         }
     }
 
@@ -592,7 +590,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         type: String,
         cartId: String
     ) {
-        if(type == PRODUCT_REPURCHASE) {
+        if (type == PRODUCT_REPURCHASE) {
             trackRepurchaseAddToCart(productId, quantity, cartId)
         }
     }
@@ -622,6 +620,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     private fun createProductListRequestParam(page: Int): GetRepurchaseProductListParam {
+        val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
@@ -629,7 +628,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
-            warehouseID = warehouseId,
+            warehouses = warehouses,
             sort = sort,
             totalScan = totalScan,
             page = page,
@@ -646,7 +645,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {
-        when(id) {
+        when (id) {
             EMPTY_STATE_NO_HISTORY_SEARCH -> {
                 val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_search
                 val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_search

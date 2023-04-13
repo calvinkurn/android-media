@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.categoryfilter.domain.mapper.CategoryFilterMapper
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 class TokoNowCategoryFilterViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
+    private val addressData: TokoNowLocalAddress,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -33,15 +35,15 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
     private val _categoryList = MutableLiveData<Result<List<CategoryFilterChip>>>()
     private var _selectedFilter = MutableLiveData<SelectedSortFilter?>()
 
-    fun getCategoryList(warehouseId: String, selectedFilter: SelectedSortFilter?) {
+    fun getCategoryList(selectedFilter: SelectedSortFilter?) {
         launchCatchError(block = {
             val selectedFilterIds = selectedFilter?.id.orEmpty()
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
+            val warehouses = addressData.getWarehousesData()
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH)
             val categoryList = CategoryFilterMapper.mapToCategoryList(response, selectedFilterIds)
             _categoryList.postValue(Success(categoryList))
             _selectedFilter.postValue(selectedFilter)
         }) {
-
         }
     }
 
@@ -60,7 +62,7 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
             selectedFilterTitle.add(filterTitle)
         }
 
-        if(selectedFilterIds.isNotEmpty()) {
+        if (selectedFilterIds.isNotEmpty()) {
             val selectedSortFilter = SelectedSortFilter(
                 selectedFilterIds,
                 selectedFilterTitle
