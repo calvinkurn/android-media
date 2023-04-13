@@ -438,19 +438,27 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
-            } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
+            } else if (uri.getQuery() != null && isCanAllowOverride(uri)) {
                 prepareOpenWebView(uri);
             } else {
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
-        } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
+        } else if (uri.getQuery() != null && isCanAllowOverride(uri)) {
             prepareOpenWebView(uri);
         } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
             RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
             context.finish();
+        }
+    }
+
+    private Boolean isCanAllowOverride(Uri uri) {
+        try{
+            return uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE);
+        } catch (NullPointerException e){
+            return false;
         }
     }
 
