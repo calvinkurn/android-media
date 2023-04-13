@@ -364,9 +364,14 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
     }
 
-    fun getRegisteredNavigationForCreateVoucherProduct(deeplink: String): String {
-        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
-        return UriUtil.buildUri(ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT, lastSegment)
+    fun getRegisteredNavigationForCreateShopVoucher(): String {
+        val voucherType = "shop"
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
+    }
+
+    fun getRegisteredNavigationForCreateVoucherProduct(): String {
+        val voucherType = "product"
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
     }
 
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
@@ -379,12 +384,20 @@ object DeeplinkMapperMerchant {
         return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
     }
 
+    fun isCreateShopVoucherApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)
+    }
+
     fun isCreateVoucherProductApplink(deeplink: String): Boolean {
         return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
     }
 
     fun isVoucherProductListApplink(deeplink: String): Boolean {
         return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_LIST)
+    }
+
+    fun isShopVoucherDetailApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_DETAIL)
     }
 
     fun isVoucherProductDetailApplink(deeplink: String): Boolean {
@@ -433,12 +446,17 @@ object DeeplinkMapperMerchant {
 
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
-        return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_LIST, lastSegment)
+    }
+
+    fun getRegisteredNavigationForShopVoucherDetail(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL, lastSegment)
     }
 
     fun getRegisteredNavigationForVoucherProductDetail(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
-        return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL, lastSegment)
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL, lastSegment)
     }
 
     fun getRegisteredNavigationForSellerShopFlashSale(deeplink: String): String {
@@ -489,31 +507,5 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
-    }
-
-    fun getRegisteredNavigationForOldMvcSellerCreate(context: Context): String {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
-            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
-            true
-        )
-        return if (isEnableNewSellerMvcRouting) {
-            ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
-        } else {
-            ApplinkConstInternalSellerapp.CREATE_VOUCHER
-        }
-    }
-
-    fun getRegisteredNavigationForOldMvcSellerList(context: Context): String {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
-            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
-            true
-        )
-        return if (isEnableNewSellerMvcRouting) {
-            ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
-        } else {
-            ApplinkConstInternalSellerapp.VOUCHER_LIST
-        }
     }
 }
