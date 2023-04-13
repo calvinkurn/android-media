@@ -124,4 +124,6 @@ data class FilterState(
     fun isFilterApplied(option: Option?): Boolean = isFilterApplied(option?.uniqueId)
 
     fun isFilterApplied(uniqueId: String?): Boolean = filterViewState.contains(uniqueId ?: "")
+
+    fun resetFilters(): FilterState = copy(filterViewState = emptySet())
 }

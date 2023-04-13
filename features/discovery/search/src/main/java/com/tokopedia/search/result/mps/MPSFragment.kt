@@ -199,7 +199,7 @@ class MPSFragment @Inject constructor(
     }
 
     override fun onEmptyButtonFilterClicked() {
-
+        viewModel?.resetFilter()
     }
 
     companion object {

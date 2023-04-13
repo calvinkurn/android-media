@@ -164,4 +164,6 @@ data class MPSState(
     )
 
     fun applyFilter(parameter: Map<String, String>) = copy(parameter = parameter)
+
+    fun resetFilter() = copy(parameter = filterState.resetFilters().parameter)
 }

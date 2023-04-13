@@ -186,4 +186,10 @@ class MPSViewModel @Inject constructor(
 
         multiProductSearch()
     }
+
+    fun resetFilter() {
+        updateState { it.resetFilter().reload() }
+
+        multiProductSearch()
+    }
 }
