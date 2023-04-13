@@ -129,8 +129,6 @@ const val CART_REVAMP_V4_QUERY =
                   group_information {
                     name
                     badge_url
-                    app_link
-                    description
                   }
                   group_shop_v2_cart {
                     cart_string_order
@@ -209,7 +207,6 @@ const val CART_REVAMP_V4_QUERY =
                         bundle_grayscale_icon_url
                       }
                       products {
-                        origin_warehouse_ids
                         checkbox_state
                         cart_id
                         product_information
