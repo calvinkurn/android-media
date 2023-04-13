@@ -47,6 +47,9 @@ sealed interface PlayShortsAction {
 
     object ClickUploadVideo : PlayShortsAction
 
+    /** Shorts x Affiliate */
+    object SetOnboardAffiliate: PlayShortsAction
+
     /** Others */
     object SetNotFirstSwitchAccount : PlayShortsAction
     object SetShowSetupCoverCoachMark : PlayShortsAction

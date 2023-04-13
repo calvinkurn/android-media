@@ -227,6 +227,13 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayShortsAffiliateTnCBottomSheet -> {
+                childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
+                    override fun onSubmitTnc() {
+                        viewModel.submitAction(PlayShortsAction.SetOnboardAffiliate)
+                    }
+                })
+            }
             is PlayShortsAffiliateSuccessBottomSheet -> {
                 childFragment.setupData(viewModel.selectedAccount.name)
             }
@@ -322,6 +329,21 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                     is PlayShortsUiEvent.SwitchAccount -> {
                         showSwitchAccountBottomSheet()
+                    }
+                    is PlayShortsUiEvent.SetOnboardAffiliateState -> {
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.updateButtonState(event.isLoading)
+                        if (event.isLoading) return@collect
+                        if (event.throwable != null) {
+                            toaster.showError(
+                                event.throwable,
+                                duration = Toaster.LENGTH_LONG
+                            )
+                            currentBottomSheet.dismissed()
+                        } else {
+                            currentBottomSheet.dismissed()
+                            openShortsAffiliateSuccessBottomSheet()
+                        }
                     }
                     else -> {}
                 }
@@ -577,10 +599,11 @@ class PlayShortsPreparationFragment @Inject constructor(
             .show(childFragmentManager)
     }
 
+    private fun getShortsAffiliateTncBottomSheet() = PlayShortsAffiliateTnCBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
     private fun openShortsAffiliateTncBottomSheet() {
-        PlayShortsAffiliateTnCBottomSheet
-            .getFragment(childFragmentManager, requireActivity().classLoader)
-            .show(childFragmentManager)
+        getShortsAffiliateTncBottomSheet().show(childFragmentManager)
     }
 
     private fun openShortsAffiliateSuccessBottomSheet() {

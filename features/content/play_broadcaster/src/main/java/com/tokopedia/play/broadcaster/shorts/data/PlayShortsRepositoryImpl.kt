@@ -9,9 +9,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUs
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateUiModel
+import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import kotlinx.coroutines.withContext
@@ -30,6 +33,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val mapper: PlayShortsMapper,
     private val dispatchers: CoroutineDispatchers,
     private val broadcasterCheckAffiliateUseCase: BroadcasterCheckIsAffiliateUseCase,
+    private val onboardAffiliateUseCase: OnBoardAffiliateUseCase,
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -94,6 +98,10 @@ class PlayShortsRepositoryImpl @Inject constructor(
 
     override suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateUiModel {
         return withContext(dispatchers.io) { broadcasterCheckAffiliateUseCase(Unit) }
+    }
+
+    override suspend fun setOnboardAffiliate(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
+        return withContext(dispatchers.io) { mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request)) }
     }
 
 }

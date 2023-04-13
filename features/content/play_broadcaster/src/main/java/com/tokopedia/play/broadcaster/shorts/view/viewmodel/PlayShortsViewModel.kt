@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -215,6 +216,9 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
 
+            /** Shorts x Affiliate */
+            is PlayShortsAction.SetOnboardAffiliate -> handleSetOnboardAffiliate()
+
             /** Others */
             is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
@@ -246,6 +250,33 @@ class PlayShortsViewModel @Inject constructor(
             checkUserIsShopAndAffiliate()
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
+        }
+    }
+
+    private fun handleSetOnboardAffiliate() {
+        viewModelScope.launchCatchErrorWithLoader(block = {
+            _uiEvent.emit(PlayShortsUiEvent.SetOnboardAffiliateState(isLoading = true))
+
+            val request = OnboardAffiliateRequestModel(
+                channelID = _config.value.shortsId.toInt(),
+                profileID = _selectedAccount.value.id,
+            )
+
+            val response = repo.setOnboardAffiliate(request)
+            _uiEvent.emit(
+                PlayShortsUiEvent.SetOnboardAffiliateState(
+                    isLoading = false,
+                    throwable = if (response.errorMessage.isNotEmpty()) Throwable(response.errorMessage)
+                    else null,
+                )
+            )
+        }) {
+            _uiEvent.emit(
+                PlayShortsUiEvent.SetOnboardAffiliateState(
+                    isLoading = false,
+                    throwable = it,
+                )
+            )
         }
     }
 

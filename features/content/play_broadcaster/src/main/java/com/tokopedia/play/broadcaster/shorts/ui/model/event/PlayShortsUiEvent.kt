@@ -33,4 +33,9 @@ sealed interface PlayShortsUiEvent {
     data class ErrorUploadMedia(
         val throwable: Throwable
     ) : PlayShortsUiEvent
+
+    data class SetOnboardAffiliateState(
+        val isLoading: Boolean,
+        val throwable: Throwable? = null
+    ) : PlayShortsUiEvent
 }
