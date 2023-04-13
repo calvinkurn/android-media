@@ -105,7 +105,7 @@ private fun NestLabelType.toTextColor(): Color {
     return when (this) {
         NestLabelType.HIGHLIGHT_LIGHT_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._800 else NestTheme.colors.GN._500
         NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._800 else NestTheme.colors.YN._500
-        NestLabelType.HIGHLIGHT_LIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._500
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._600
         NestLabelType.HIGHLIGHT_LIGHT_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._800 else NestTheme.colors.RN._500
         NestLabelType.HIGHLIGHT_LIGHT_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._800 else NestTheme.colors.BN._500
         NestLabelType.HIGHLIGHT_LIGHT_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._800 else NestTheme.colors.TN._500
