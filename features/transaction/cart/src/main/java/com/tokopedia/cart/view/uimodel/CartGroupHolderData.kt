@@ -1,7 +1,5 @@
 package com.tokopedia.cart.view.uimodel
 
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.GroupInformation
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
@@ -53,7 +51,6 @@ data class CartGroupHolderData(
     var isPo: Boolean = false,
 //    var poDuration: String = "",
     var boCode: String = "",
-    var boUniqueId: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
 ) {
@@ -111,8 +108,7 @@ data class CartGroupHolderData(
             warehouseId = this.warehouseId,
             isPo = this.isPo,
 //            poDuration = this.poDuration,
-            boCode = this.boCode,
-            boUniqueId = this.boUniqueId
+            boCode = this.boCode
         )
     }
     
