@@ -13,15 +13,16 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.util.AddressMapperTestUtils.mapToWarehouses
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -69,7 +70,7 @@ open class CategoryTestFixtures {
     }
 
     protected open fun `Given choose address data`(
-            chooseAddressData: LocalCacheModel = dummyChooseAddressData
+        chooseAddressData: LocalCacheModel = dummyChooseAddressData
     ) {
         every {
             chooseAddressWrapper.getChooseAddressData()
@@ -77,10 +78,10 @@ open class CategoryTestFixtures {
     }
 
     protected open fun `Given category view model`(
-            categoryL1: String = defaultCategoryL1,
-            categoryL2: String = defaultCategoryL2,
-            externalServiceType: String = defaultExternalServiceType,
-            queryParamMap: Map<String, String> = defaultQueryParamMap,
+        categoryL1: String = defaultCategoryL1,
+        categoryL2: String = defaultCategoryL2,
+        externalServiceType: String = defaultExternalServiceType,
+        queryParamMap: Map<String, String> = defaultQueryParamMap
     ) {
         tokoNowCategoryViewModel = TokoNowCategoryViewModel(
             CoroutineTestDispatchersProvider,
@@ -98,29 +99,33 @@ open class CategoryTestFixtures {
             getCategoryListUseCase,
             setUserPreferenceUseCase,
             chooseAddressWrapper,
-            userSession,
+            userSession
         )
     }
 
     protected fun createMandatoryTokonowQueryParams(
-            chooseAddressData: LocalCacheModel = dummyChooseAddressData
-    ) = mapOf(
-            SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
-            SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
-            SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.SRP_PAGE_ID to defaultCategoryL1,
-            SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
-            SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
-            SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
-            SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,
-            SearchApiConst.USER_LAT to chooseAddressData.lat,
-            SearchApiConst.USER_LONG to chooseAddressData.long,
-            SearchApiConst.USER_POST_CODE to chooseAddressData.postal_code,
-        )
+        chooseAddressData: LocalCacheModel = dummyChooseAddressData
+    ) = mutableMapOf(
+        SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
+        SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
+        SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+        SearchApiConst.SRP_PAGE_ID to defaultCategoryL1,
+        SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
+        SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
+        SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
+        SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,
+        SearchApiConst.USER_LAT to chooseAddressData.lat,
+        SearchApiConst.USER_LONG to chooseAddressData.long,
+        SearchApiConst.USER_POST_CODE to chooseAddressData.postal_code
+    ).apply {
+        if (chooseAddressData.warehouses.isNotEmpty()) {
+            SearchApiConst.WAREHOUSES to mapToWarehouses(chooseAddressData)
+        }
+    }
 
     protected fun `Given get category first page use case will be successful`(
-            categoryModel: CategoryModel,
-            requestParamsSlot: CapturingSlot<RequestParams> = slot()
+        categoryModel: CategoryModel,
+        requestParamsSlot: CapturingSlot<RequestParams> = slot()
     ) {
         every {
             getCategoryFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))

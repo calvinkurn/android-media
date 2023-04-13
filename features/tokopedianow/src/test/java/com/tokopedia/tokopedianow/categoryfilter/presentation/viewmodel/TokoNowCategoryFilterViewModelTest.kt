@@ -14,7 +14,6 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
 
     @Test
     fun `when getCategoryList success should set categoryList value and update selectedFilter`() {
-        val warehouseId = "1"
         val selectedFilter = SelectedSortFilter(listOf("1"), listOf("Filter"))
 
         val categoryListResponse = CategoryListResponse(
@@ -33,7 +32,7 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
 
         onGetCategoryList_thenReturn(categoryListResponse)
 
-        viewModel.getCategoryList(warehouseId, selectedFilter)
+        viewModel.getCategoryList(selectedFilter)
 
         val categoryFilterList = listOf(
             CategoryFilterChip(id = "1", title = "Title")
@@ -51,7 +50,6 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
 
     @Test
     fun `given selectedFilter null when getCategoryList success should set categoryList value`() {
-        val warehouseId = "1"
         val selectedFilter = null
 
         val categoryListResponse = CategoryListResponse(
@@ -70,7 +68,7 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
 
         onGetCategoryList_thenReturn(categoryListResponse)
 
-        viewModel.getCategoryList(warehouseId, selectedFilter)
+        viewModel.getCategoryList(selectedFilter)
 
         val categoryFilterList = listOf(
             CategoryFilterChip(id = "1", title = "Title")
@@ -88,13 +86,12 @@ class TokoNowCategoryFilterViewModelTest : TokoNowCategoryFilterViewModelTestFix
 
     @Test
     fun `when getCategoryList error should do nothing`() {
-        val warehouseId = "1"
         val selectedFilter = SelectedSortFilter(listOf("1"), listOf("Filter"))
         val error = NullPointerException()
 
         onGetCategoryList_thenReturn(error)
 
-        viewModel.getCategoryList(warehouseId, selectedFilter)
+        viewModel.getCategoryList(selectedFilter)
 
         verifyGetCategoryListCalled()
 

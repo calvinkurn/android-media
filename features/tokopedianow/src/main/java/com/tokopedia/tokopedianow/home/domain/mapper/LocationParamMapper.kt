@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.constant.ServiceType
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import java.lang.StringBuilder
 
 object LocationParamMapper {
@@ -15,6 +16,7 @@ object LocationParamMapper {
     private const val PARAM_SERVICE_TYPE_2H = "servicetype_2h"
     private const val PARAM_SERVICE_TYPE_15M = "servicetype_15m"
     private const val PARAM_SERVICE_TYPE = "servicetype"
+    private const val PARAM_WAREHOUSES = "warehouses"
 
     fun mapLocation(localCacheModel: LocalCacheModel?): String {
         val stringBuilder = StringBuilder()
@@ -41,9 +43,10 @@ object LocationParamMapper {
             locationParamsMap[PARAM_SERVICE_TYPE] = service_type
             locationParamsMap[PARAM_SERVICE_TYPE_15M] = warehouseId15m
             locationParamsMap[PARAM_SERVICE_TYPE_2H] = warehouseId2h
+//            locationParamsMap[PARAM_WAREHOUSES] = mapToWarehouses(localCacheModel)
 
-            for((key, value) in locationParamsMap) {
-                if(stringBuilder.isNotBlank()) {
+            for ((key, value) in locationParamsMap) {
+                if (stringBuilder.isNotBlank()) {
                     stringBuilder.append("&")
                 }
                 stringBuilder.append("$key=$value")
