@@ -9,6 +9,7 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -95,7 +96,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
                 }
             )
-
+            imgFile.scaleType = ImageView.ScaleType.CENTER_CROP
             tauNibPublishedDate.editText.setOnClickListener { showDatePickerBottomSheet() }
             tauNibPublishedDate.editText.inputType = InputType.TYPE_NULL
             tauNibPublishedDate.editText.isFocusable = false
