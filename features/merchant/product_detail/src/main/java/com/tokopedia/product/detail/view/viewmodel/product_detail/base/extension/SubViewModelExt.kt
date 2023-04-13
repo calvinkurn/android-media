@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail.base.extension
 
+import com.tokopedia.product.detail.view.viewmodel.product_detail.base.BaseViewModelV2
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.base.SubViewModelMediator
 import kotlinx.coroutines.CoroutineScope
@@ -12,11 +13,10 @@ import kotlin.coroutines.CoroutineContext
  * @param block
  */
 fun SubViewModel.launch(
-    context: CoroutineContext? = viewModelScope?.coroutineContext,
+    context: CoroutineContext? = viewModelScope.coroutineContext,
     block: suspend CoroutineScope.() -> Unit
 ) {
-    val scope = viewModelScope ?: return
-    scope.launch(context = context ?: scope.coroutineContext) {
+    viewModelScope.launch(context = context ?: viewModelScope.coroutineContext) {
         block()
     }
 }
@@ -28,7 +28,9 @@ fun SubViewModel.launch(
 @Suppress("UNCHECKED_CAST")
 fun <T : SubViewModelMediator> SubViewModel.getMediator(): Lazy<T> = lazy {
     if (mediator == null) {
-        throw IllegalArgumentException("Mediator cannot be null, register the mediator before use")
+        throw IllegalAccessException(
+            "Mediator is not registered yet, make sure your ViewModel extend ${BaseViewModelV2::class.simpleName}"
+        )
     }
 
     mediator as T

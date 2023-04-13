@@ -13,8 +13,9 @@ class SubViewModelProviderImpl @Inject constructor() : SubViewModelProvider {
     // store delegate to get SubViewModelMediator
     private var mediatorProvider: (() -> SubViewModelMediator)? = null
 
-    override val viewModelScope: CoroutineScope?
+    override val viewModelScope: CoroutineScope
         get() = viewModelScopeProvider?.invoke()
+            ?: throw IllegalAccessException("viewModelScope is not registered yet, make sure your ViewModel extend ${BaseViewModelV2::class.simpleName}")
 
     override val mediator: SubViewModelMediator?
         get() = mediatorProvider?.invoke()
