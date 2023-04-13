@@ -64,6 +64,9 @@ class FeedMainViewModel @Inject constructor(
     private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
     val metaData get() = _metaData.asStateFlow()
 
+    private val _isPageResumed = MutableLiveData<Boolean>(false)
+    val isPageResumed get() = _isPageResumed
+
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
@@ -101,6 +104,14 @@ class FeedMainViewModel @Inject constructor(
                     _swipeOnboardingState.update { it.copy(hasShown = true) }
                 }
         }
+    }
+
+    fun resumePage() {
+        _isPageResumed.value = true
+    }
+
+    fun pausePage() {
+        _isPageResumed.value = false
     }
 
     fun changeCurrentTabByIndex(index: Int) {

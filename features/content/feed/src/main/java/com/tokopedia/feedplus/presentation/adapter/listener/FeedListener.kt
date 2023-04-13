@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
@@ -43,4 +44,12 @@ interface FeedListener {
     )
 
     fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int)
+
+    /**
+     * Video
+     */
+    fun getVideoPlayer(id: String): FeedExoPlayer
+
+    fun detachPlayer(player: FeedExoPlayer)
+
 }

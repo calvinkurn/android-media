@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -40,11 +41,13 @@ import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -91,6 +94,8 @@ class FeedFragment :
     private var adapter: FeedPostAdapter? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
+
+    private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -159,6 +164,17 @@ class FeedFragment :
         observeReport()
         observeFollow()
         observeLikeContent()
+        observeResumePage()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseCurrentVideo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resumeCurrentVideo()
     }
 
     override fun onDestroyView() {
@@ -167,6 +183,8 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
+
+        videoPlayerManager.releaseAll()
     }
 
     override fun initInjector() {
@@ -271,6 +289,15 @@ class FeedFragment :
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         adapter?.removeErrorNetwork()
         showLoading()
+        adapter?.showLoading()
+    }
+
+    override fun getVideoPlayer(id: String): FeedExoPlayer {
+        return videoPlayerManager.occupy(id)
+    }
+
+    override fun detachPlayer(player: FeedExoPlayer) {
+        videoPlayerManager.detach(player)
     }
 
     override fun onProductTagButtonClicked(
@@ -505,13 +532,13 @@ class FeedFragment :
 
                 override fun onPageSelected(position: Int) {
                     if (position > ZERO) {
-                        adapter?.notifyItemChanged(position - ONE, FEED_POST_NOT_SELECTED)
+                        notifyItemNotSelected(position - ONE)
                     }
                     if (position < (adapter?.itemCount ?: 0)) {
-                        adapter?.notifyItemChanged(position + ONE, FEED_POST_NOT_SELECTED)
+                        notifyItemNotSelected(position + ONE)
                     }
 
-                    adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+                    notifyItemSelected(position)
                 }
             })
         }
@@ -528,6 +555,9 @@ class FeedFragment :
                     } else {
                         adapter?.updateList(it.data.items)
                         feedPostViewModel.fetchTopAdsData()
+                        if (it.data.pagination.totalData == it.data.items.size) {
+                            view?.post { notifyItemSelected(0) }
+                        }
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
@@ -578,6 +608,31 @@ class FeedFragment :
                 }
             }
         }
+    }
+
+    private fun observeResumePage() {
+        feedMainViewModel.isPageResumed.observe(viewLifecycleOwner) { isResumed ->
+            if (isResumed) resumeCurrentVideo()
+            else pauseCurrentVideo()
+        }
+    }
+
+    private fun pauseCurrentVideo() {
+        val currentIndex = binding.rvFeedPost.currentItem
+        if (currentIndex >= (adapter?.list?.size ?: 0)) return
+        val item = adapter?.list?.get(currentIndex) ?: return
+        if (item !is FeedCardVideoContentModel) return
+
+        videoPlayerManager.pause(item.id)
+    }
+
+    private fun resumeCurrentVideo() {
+        val currentIndex = binding.rvFeedPost.currentItem
+        if (currentIndex >= (adapter?.list?.size ?: 0)) return
+        val item = adapter?.list?.get(currentIndex) ?: return
+        if (item !is FeedCardVideoContentModel) return
+
+        videoPlayerManager.resume(item.id)
     }
 
     private fun onGoToLogin() {
@@ -765,6 +820,14 @@ class FeedFragment :
     private fun hideLoading() {
         binding.feedLoading.hide()
         binding.swipeRefreshFeedLayout.show()
+    }
+
+    private fun notifyItemSelected(position: Int) {
+        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
+    }
+
+    private fun notifyItemNotSelected(position: Int) {
+        adapter?.notifyItemChanged(position, FEED_POST_NOT_SELECTED)
     }
 
     companion object {
