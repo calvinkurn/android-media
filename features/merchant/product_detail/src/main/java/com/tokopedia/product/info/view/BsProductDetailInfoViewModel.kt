@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-
 /**
  * Created by Yehezkiel on 13/10/20
  */
@@ -89,7 +88,7 @@ class BsProductDetailInfoViewModel @Inject constructor(
         isGiftable = productInfoParcel.isGiftable,
         bottomSheetParam = productInfoParcel.bottomSheetParam,
         catalogId = productInfoParcel.catalogId,
-        forceRefresh = productInfoParcel.forceRefresh
+        forceRefresh = true // productInfoParcel.forceRefresh
     )
 
     private fun doGenerateVisitable(

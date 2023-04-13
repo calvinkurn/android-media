@@ -6,12 +6,13 @@ package com.tokopedia.product.detail.data.model.datamodel.product_detail_info
  **/
 
 interface ProductDetailInfoNavigator {
+    fun toCategory(appLink: String)
 
-    fun onCategory(appLink: String)
+    fun toEtalase(appLink: String)
 
-    fun onEtalase(appLink: String)
+    fun toCatalog(appLink: String, subTitle: String)
 
-    fun onCatalog(appLink: String, subTitle: String)
+    fun toAppLink(key: String, appLink: String)
 
-    fun onAppLink(appLink: String)
+    fun toProductDetailInfo(key: String, extParam: String)
 }

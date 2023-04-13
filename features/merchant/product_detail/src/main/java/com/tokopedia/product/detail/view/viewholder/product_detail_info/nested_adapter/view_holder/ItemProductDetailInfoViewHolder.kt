@@ -72,26 +72,38 @@ class ItemProductDetailInfoViewHolder(
         trackData: ComponentTrackDataModel?
     ) {
         data.routeOnClick(object : ProductDetailInfoNavigator {
-            override fun onCategory(appLink: String) {
+            override fun toCategory(appLink: String) {
                 listener.onCategoryClicked(
-                    url = data.applink,
+                    url = appLink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
 
-            override fun onEtalase(appLink: String) {
+            override fun toEtalase(appLink: String) {
                 listener.onEtalaseClicked(
-                    url = data.applink,
+                    url = appLink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
 
-            override fun onCatalog(appLink: String, subTitle: String) {
+            override fun toCatalog(appLink: String, subTitle: String) {
                 // no-ops, on bottom sheet only
             }
 
-            override fun onAppLink(appLink: String) {
-                listener.goToApplink(data.applink)
+            override fun toAppLink(key: String, appLink: String) {
+                listener.onAnnotationOpenAppLink(
+                    key = key,
+                    appLink = appLink,
+                    trackData = trackData
+                )
+            }
+
+            override fun toProductDetailInfo(key: String, extParam: String) {
+                listener.onAnnotationOpenProductInfoSheet(
+                    key = key,
+                    extParam = extParam,
+                    trackData = trackData
+                )
             }
         })
     }

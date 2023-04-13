@@ -165,7 +165,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasic
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
@@ -1148,13 +1147,20 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onDetailAnnotationClicked(
-        data: ProductDetailInfoContent,
+    override fun onAnnotationOpenAppLink(
+        key: String,
+        appLink: String,
+        trackData: ComponentTrackDataModel?
+    ) {
+        goToApplink(url = appLink)
+    }
+
+    override fun onAnnotationOpenProductInfoSheet(
+        key: String,
+        extParam: String,
         trackData: ComponentTrackDataModel?
     ) {
         val activity = activity ?: return
-
-        // TODO tracker
 
         ProductDetailInfoHelper.showBottomSheetInfo(
             fragmentActivity = activity,
@@ -1165,7 +1171,7 @@ open class DynamicProductDetailFragment :
             infoData = pdpUiUpdater?.productDetailInfoData ?: ProductDetailInfoDataModel(),
             forceRefresh = shouldRefreshProductInfoBottomSheet,
             isOpenSpecification = false,
-            annotationExtParam = data.extParam
+            annotationExtParam = extParam
         )
     }
 

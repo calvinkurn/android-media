@@ -202,6 +202,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       title
                       content {
                         key
+                        type
+                        action
                         extParam
                         title
                         subtitle

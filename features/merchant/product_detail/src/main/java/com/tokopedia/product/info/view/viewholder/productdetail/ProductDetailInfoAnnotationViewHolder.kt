@@ -87,20 +87,24 @@ class ProductDetailInfoAnnotationViewHolder(
 
         infoDetailClickArea.setOnClickListener {
             data.routeOnClick(object : ProductDetailInfoNavigator {
-                override fun onCategory(appLink: String) {
+                override fun toCategory(appLink: String) {
                     listener.goToCategory(data.applink)
                 }
 
-                override fun onEtalase(appLink: String) {
+                override fun toEtalase(appLink: String) {
                     listener.goToEtalase(data.applink)
                 }
 
-                override fun onCatalog(appLink: String, subTitle: String) {
+                override fun toCatalog(appLink: String, subTitle: String) {
                     listener.goToCatalog(data.applink, data.subtitle)
                 }
 
-                override fun onAppLink(appLink: String) {
-                    listener.goToApplink(data.applink)
+                override fun toAppLink(key: String, appLink: String) {
+                    listener.goToAppLinkWithTracker(key = key, data.applink)
+                }
+
+                override fun toProductDetailInfo(key: String, extParam: String) {
+                    // no-ops
                 }
             })
         }

@@ -25,7 +25,21 @@ data class Content(
     // as identifier for tracker or mapping other action
     @SerializedName("key")
     val key: String = "",
-    // param for aggregator page, such as product detail info bottom sheet from panduan ukuran
+    // types is action, applink, default
+    @SerializedName("type")
+    val type: String = "",
+    // currently still one action is open_detail_product
+    @SerializedName("action")
+    val action: String = "",
+    // param for type is action, currently for open_detail_product
     @SerializedName("extParam")
     val extParam: String = ""
-)
+) {
+
+    companion object {
+        const val TYPE_ACTION = "action"
+
+        const val ACTION_APPLINK = "applink"
+        const val ACTION_OPEN_DETAIL_PRODUCT = "open_detail_produk"
+    }
+}

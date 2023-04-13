@@ -29,10 +29,10 @@ data class ProductInfoParcelData(
     val isOpenCatalogDescription
         get() = !isOpenSpecification && productInfo.isCatalog
 
-    val bottomSheetParam = if (isOpenSpecification) {
-        productInfo.catalogBottomSheet?.param.orEmpty()
-    } else if (annotationExtParam.isNotBlank()) {
+    val bottomSheetParam = if (annotationExtParam.isNotBlank()) {
         annotationExtParam
+    } else if (isOpenSpecification) {
+        productInfo.catalogBottomSheet?.param.orEmpty()
     } else {
         productInfo.bottomSheet.param
     }
