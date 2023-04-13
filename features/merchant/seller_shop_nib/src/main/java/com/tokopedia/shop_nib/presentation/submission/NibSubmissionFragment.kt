@@ -17,6 +17,7 @@ import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
@@ -85,6 +86,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         binding?.run {
             header.setNavigationOnClickListener { activity?.finish() }
             layoutFilePickerDefault.setOnClickListener { showFilePicker() }
+            layoutFilePickerError.setOnClickListener { showFilePicker() }
             iconClose.setOnClickListener { removeSelectedFile() }
             tpgNibBenefit.setHyperlinkText(
                 fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
@@ -129,10 +131,13 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         val fileSizeInKb = fileHelper.getFileSizeInBytes(fileUri)
 
         if (fileSizeInKb <= MAX_FILE_SIZE_BYTES) {
+            binding?.tpgErrorMessage?.gone()
             renderSelectedFileThumbnail(fileUri, fileSizeInKb)
         } else {
             binding?.btnFinish?.disable()
-            binding?.root?.showToasterError(context?.getString(R.string.ssn_error_message_file_size).orEmpty())
+            binding?.layoutFilePickerDefault?.gone()
+            binding?.layoutFilePickerError?.visible()
+            binding?.tpgErrorMessage?.show()
         }
     }
 
@@ -150,6 +155,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             }
 
             layoutFilePickerDefault.gone()
+            layoutFilePickerError.gone()
             layoutFilePickerSelected.visible()
             tpgFileName.text = fileName
 
