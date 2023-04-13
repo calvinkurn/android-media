@@ -35,6 +35,9 @@ object AccountConstants {
         const val DEBIT_OR_CREDIT_CARD = "debit or credit card"
         const val CLICK_PAYMENT = "clickPayment"
         const val PAYMENT_SETTING_PAGE = "payment setting page"
+        const val PAYMENT = "payment"
+        const val TRACKER_ID_42695 = "42695"
+        const val USER_ID = "userId"
     }
 
     interface ErrorCodes {
