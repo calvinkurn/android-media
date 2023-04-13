@@ -54,7 +54,6 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheet() {
         viewBinding = BottomsheetPlayWidgetSellerActionListBinding.inflate(LayoutInflater.from(context))
         setChild(viewBinding?.root)
-        mListener?.onImpressed()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,6 +72,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
+        mListener?.onImpressed()
         if(!isAdded) showNow(fragmentManager, TAG)
     }
 
