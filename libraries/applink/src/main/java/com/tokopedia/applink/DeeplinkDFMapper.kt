@@ -212,6 +212,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
+    const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
@@ -722,8 +723,24 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
             add(DFP({ it.startsWith(SELLER_SHOP_FLASH_SALE) }, DF_BASE_SELLER_APP, R.string.title_shop_flash_sale))
-            add(DFP({ it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE)}, DF_BASE_SELLER_APP, R.string.title_tokopedia_flash_sale))
-            add(DFP({ it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_tokopedia_flash_sale_campaign_detail))
+            add(
+                DFP(
+                    {
+                        it.startsWith(SellerApp.SELLER_TOKOPEDIA_FLASH_SALE) || it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale
+                )
+            )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL) || it.startsWithPattern(SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale_campaign_detail
+                )
+            )
             add(DFP({ it.startsWith(SELLER_MVC_INTRO)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_intro))
             add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
