@@ -41,11 +41,11 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
 
     private var mUserName: String = ""
 
-    private val clickablePolicy = object : ClickableSpan() {
+    private val clickableLearnMore = object : ClickableSpan() {
         override fun onClick(p0: View) {
             router.route(
                 requireContext(),
-                generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_privacy_policy_link))
+                generateWebViewApplink(getString(R.string.play_shorts_affiliate_success_learn_more_web_link))
             )
         }
 
@@ -106,11 +106,10 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
         val result = SpannableStringBuilder()
 
         val mainText = getString(R.string.play_shorts_affiliate_success_description_learn_more)
-        val privacyPolicy =
-            getString(R.string.play_shorts_affiliate_success_description_learn_more_action)
+        val privacyPolicy = getString(R.string.play_shorts_affiliate_success_description_learn_more_action)
 
         result.append(mainText)
-        result.setSpanOnText(privacyPolicy, clickablePolicy, boldSpan, colorSpan)
+        result.setSpanOnText(privacyPolicy, clickableLearnMore, boldSpan, colorSpan)
 
         return result
     }
