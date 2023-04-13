@@ -463,7 +463,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 ),
                 isPo = false,
                 boCode = "TESTCODE",
-                boUniqueId = "000000-KEY",
                 productUiModelList = productUiModelList
             )
         )
@@ -868,7 +867,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 ),
                 isPo = false,
                 boCode = "TESTCODE",
-                boUniqueId = "000000-KEY",
                 productUiModelList = productUiModelList
             )
         )
@@ -1407,7 +1405,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 ),
                 isPo = false,
                 boCode = "TESTCODE",
-                boUniqueId = "000000-KEY",
                 productUiModelList = productUiModelList
             )
         )
@@ -1821,7 +1818,6 @@ class GenerateGetLastApplyRequestParamsTest {
                 ),
                 isPo = false,
                 boCode = "TESTCODE",
-                boUniqueId = "000000-KEY",
                 productUiModelList = productUiModelList
             )
         )

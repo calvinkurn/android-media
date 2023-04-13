@@ -51,7 +51,6 @@ data class CartGroupHolderData(
     var isPo: Boolean = false,
 //    var poDuration: String = "",
     var boCode: String = "",
-    var boUniqueId: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
 ) {
@@ -109,8 +108,7 @@ data class CartGroupHolderData(
             warehouseId = this.warehouseId,
             isPo = this.isPo,
 //            poDuration = this.poDuration,
-            boCode = this.boCode,
-            boUniqueId = this.boUniqueId
+            boCode = this.boCode
         )
     }
     

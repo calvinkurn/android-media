@@ -2252,7 +2252,6 @@ class CartListPresenter @Inject constructor(
                     if (voucherOrderUiModel.messageUiModel.state == "green") {
                         groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.apply {
                             boCode = voucherOrderUiModel.code
-                            boUniqueId = voucherOrderUiModel.uniqueId
                         }
                         boGroupUniqueIds.add(voucherOrderUiModel.cartStringGroup)
                     }
@@ -2269,16 +2268,21 @@ class CartListPresenter @Inject constructor(
     private fun clearBo(group: CartGroupHolderData) {
         launch {
             try {
+                val cartStringGroupSet = mutableSetOf<String>()
                 val cartPromoHolderData = PromoRequestMapper.mapSelectedCartGroupToPromoData(listOf(group))
                 clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                         orderData = ClearPromoOrderData(
                             orders = cartPromoHolderData.values.map {
+                                val isNoCodeExistInCurrentGroup = !cartStringGroupSet.contains(it.cartStringGroup)
+                                if (isNoCodeExistInCurrentGroup) {
+                                    cartStringGroupSet.add(it.cartStringGroup)
+                                }
                                 ClearPromoOrder(
                                     uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
-                                    codes = if (it.cartStringOrder == group.boUniqueId) {
+                                    codes = if (isNoCodeExistInCurrentGroup) {
                                         mutableListOf(group.boCode)
                                     }
                                     else {
@@ -2303,7 +2307,6 @@ class CartListPresenter @Inject constructor(
 //        )
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
-        group.boUniqueId = ""
     }
 
     override fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
@@ -2325,7 +2328,6 @@ class CartListPresenter @Inject constructor(
                 ) {
                     groupDataList.firstOrNull { it.cartString == voucherOrder.cartStringGroup }?.apply {
                         boCode = voucherOrder.code
-                        boUniqueId = voucherOrder.uniqueId
                     }
                 }
             }

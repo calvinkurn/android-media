@@ -167,7 +167,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "111111-KEY",
                 cartString = "_-0-9466960-169751269-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -193,7 +192,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "444444-KEY",
                 cartString = "_-0-9466960-169751270-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -229,7 +227,7 @@ class GenerateClearBoParamTest {
                         isPo = false,
                         poDuration = "0",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
-                        codes = mutableListOf("TESTBO2")
+                        codes = mutableListOf()
                     ),
                     ClearPromoOrder(
                         uniqueId = "111111-KEY",
@@ -249,7 +247,7 @@ class GenerateClearBoParamTest {
                         isPo = false,
                         poDuration = "0",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
-                        codes = mutableListOf()
+                        codes = mutableListOf("TESTBO2")
                     ),
                 )
             ),
@@ -393,7 +391,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "111111-KEY",
                 cartString = "_-0-9466960-169751269-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -419,7 +416,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "444444-KEY",
                 cartString = "_-0-9466960-169751270-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -589,7 +585,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "111111-KEY",
                 cartString = "_-0-9466960-169751269-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -615,7 +610,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "444444-KEY",
                 cartString = "_-0-9466960-169751270-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -795,7 +789,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "111111-KEY",
                 cartString = "_-0-9466960-169751269-KEY_OWOC",
                 isPo = false,
                 boCode = "",
@@ -821,7 +814,6 @@ class GenerateClearBoParamTest {
                         )
                     )
                 ),
-                boUniqueId = "444444-KEY",
                 cartString = "_-0-9466960-169751270-KEY_OWOC",
                 isPo = false,
                 boCode = "",

@@ -235,7 +235,6 @@ object CartUiModelMapper {
                         it.spId > 0 && it.type == "logistic"
                 }
                 boCode = lastApplyData?.code ?: ""
-                boUniqueId = lastApplyData?.uniqueId ?: ""
                 coachmarkPlus = CartShopCoachmarkPlusData(
                     isShown = cartData.coachmark.plus.isShown && (firstPlusAvailableGroupIndex == index),
                     title = cartData.coachmark.plus.title,
