@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
-import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -150,7 +149,6 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList,
         _tags,
         _uploadState,
-        _bannerPreparation
     ) { globalLoader,
         config,
         media,
@@ -161,8 +159,7 @@ class PlayShortsViewModel @Inject constructor(
         coverForm,
         productSectionList,
         tags,
-        uploadState,
-        bannerPreparation ->
+        uploadState ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -175,7 +172,6 @@ class PlayShortsViewModel @Inject constructor(
             productSectionList = productSectionList,
             tags = tags,
             uploadState = uploadState,
-            bannerPreparation = bannerPreparation,
         )
     }
 
@@ -221,26 +217,7 @@ class PlayShortsViewModel @Inject constructor(
             /** Others */
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
-            is PlayShortsAction.AddBannerPreparation -> handleAddBannerPreparation(action.data)
-            is PlayShortsAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(action.data)
         }
-    }
-
-    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
-        viewModelScope.launchCatchError(block = {
-            if (_bannerPreparation.value.contains(data)) return@launchCatchError
-            _bannerPreparation.update { it + data }
-        }, onError = {})
-    }
-
-    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
-        viewModelScope.launchCatchError(block = {
-            _bannerPreparation.update { list ->
-                list.filter { banner ->
-                    banner != data
-                }
-            }
-        }, onError = {})
     }
 
     private fun handleCloseCoverForm() {
@@ -456,19 +433,8 @@ class PlayShortsViewModel @Inject constructor(
                 config
             }
 
-            setupPerformanceDashboardEntryPoint(finalConfig)
-
             _config.update { finalConfig }
             setSelectedAccount(account)
-        }
-    }
-
-    private fun setupPerformanceDashboardEntryPoint(config: PlayShortsConfigUiModel) {
-        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
-        if (isAllowToSeePerformanceDashboard && config.hasContent) {
-            submitAction(PlayShortsAction.AddBannerPreparation(banner))
-        } else {
-            submitAction(PlayShortsAction.RemoveBannerPreparation(banner))
         }
     }
 

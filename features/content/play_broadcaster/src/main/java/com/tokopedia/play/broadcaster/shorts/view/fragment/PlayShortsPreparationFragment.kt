@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
@@ -82,6 +79,9 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var _binding: FragmentPlayShortsPreparationBinding? = null
     private val binding: FragmentPlayShortsPreparationBinding get() = _binding!!
 
+    /** TODO better to migrate this implementation with Carousel from Unify
+     * read: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/706284924/Carousel
+     **/
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
@@ -96,7 +96,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var exitConfirmationDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
-    private var isPerformanceDashboardEntryPointCoachMarkShown = false
     private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
@@ -174,7 +173,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return viewModel.productSectionList
                     }
 
@@ -265,14 +263,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
-        when (data.type) {
-            PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD -> {
-                RouteManager.route(
-                    requireContext(),
-                    PerformanceDashboardNavigation.getPerformanceDashboardAppLink()
-                )
-            }
-        }
     }
 
     private fun setupView() {
@@ -317,21 +307,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             )
             coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
         }
-    }
-
-    private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
-        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
-        if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
-
-        val coachMarkPerformanceDashboard = CoachMark2Item(
-            anchorView = binding.rvBannerPreparation,
-            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
-            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
-            position = CoachMark2.POSITION_BOTTOM,
-        )
-
-        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
-        return coachMarkPerformanceDashboard
     }
 
     private fun setupListener() {
@@ -393,7 +368,6 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
-                renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
             }
         }
 
@@ -460,7 +434,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupUiStandby() {
-        Log.d("<LOG>", "Standby")
         binding.preparationMenu.showMenuText(true)
         binding.flBottomBackground.animateShow()
         binding.flTopBackground.animateShow()
@@ -468,7 +441,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupUiIdle() {
-        Log.d("<LOG>", "Idle")
         binding.preparationMenu.showMenuText(false)
         binding.flBottomBackground.animateGone()
         binding.flTopBackground.animateGone()
@@ -517,22 +489,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (prev?.menuList == curr.menuList) return
 
         binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
-    }
-
-    private fun renderBannerPreparationPage(
-        prev: List<PlayBroadcastPreparationBannerModel>?,
-        curr: List<PlayBroadcastPreparationBannerModel>
-    ) {
-        if (prev == curr) return
-        adapterBanner.setItemsAndAnimateChanges(curr)
-        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
-
-        val containsDashboard = curr.find { it.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD } != null
-
-        if (containsDashboard) {
-            val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
-            if (coachMark != null) setupCoachMark(coachMark)
-        }
     }
 
     private fun showExitConfirmationDialog() {
