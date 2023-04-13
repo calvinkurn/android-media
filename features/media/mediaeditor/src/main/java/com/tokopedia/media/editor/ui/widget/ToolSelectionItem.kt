@@ -67,4 +67,12 @@ class ToolSelectionItem: ConstraintLayout {
             listener()
         }
     }
+
+    fun setActive() {
+        mCardRef?.changeTypeWithTransition(CardUnify2.TYPE_BORDER_ACTIVE)
+    }
+
+    fun setInactive() {
+        mCardRef?.changeTypeWithTransition(CardUnify2.TYPE_BORDER)
+    }
 }

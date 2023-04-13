@@ -15,6 +15,8 @@ import com.tokopedia.unifycomponents.toPx
 class AddTextToolAdapter(
     private val listener: AddTextToolUiComponent.Listener
 ): RecyclerView.Adapter<AddTextViewHolder>() {
+    private var selectedIndex = FREE_TEXT_INDEX
+
     // icon ref will be replace by unify icon later
     private val mAddTextMenu = listOf(
         AddTextAction(editorR.string.add_text_change_position, iconRef = editorR.drawable.editor_icon_expand),
@@ -62,17 +64,22 @@ class AddTextToolAdapter(
         private const val TYPE_ITEM = 0
         private const val TYPE_DIVIDER = 1
 
+        // index is refer to mAddTextMenu
+        // if edit free & background text please check AddTextUiModel
         private const val CHANGE_POSITION_INDEX = 0
         private const val SAVE_TEMPLATE_INDEX = 1
-        private const val FREE_TEXT_INDEX = 3
-        private const val BACKGROUND_TEXT_INDEX = 4
+        const val FREE_TEXT_INDEX = 3
+        const val BACKGROUND_TEXT_INDEX = 4
     }
 }
 
 class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+    private var selectionToolItem: ToolSelectionItem? = null
+
     fun bind(addTextData: AddTextAction, listener: () -> Unit) {
         try {
             (view as ToolSelectionItem).apply {
+                selectionToolItem = this
                 setTextTitle(addTextData.textRef)
                 addTextData.iconId?.let {
                     setIcon(it)
@@ -84,7 +91,15 @@ class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
                 }
                 setListener(listener)
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
+    }
+
+    fun setActive() {
+        selectionToolItem?.setActive()
+    }
+
+    fun setInactive() {
+        selectionToolItem?.setInactive()
     }
 
     companion object {

@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -25,7 +24,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 ) : AddTextFilterRepository {
     override fun generateTextOverlay(
         size: Pair<Int, Int>,
-        textData: EditorAddTextUiModel
+        data: EditorAddTextUiModel
     ): Bitmap {
         val originalImageWidth = size.first
         val originalImageHeight = size.second
@@ -41,14 +40,14 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         val mTextPaint = TextPaint()
 
         mTextPaint.textSize = fontSize
-        mTextPaint.color = textData.getColor(context)
+        mTextPaint.color = data.getColor(context)
 
         val typeFace = getTypeface(context, TYPEFACE)
-        mTextPaint.typeface = Typeface.create(typeFace, textData.getTypeFaceStyle())
+        mTextPaint.typeface = Typeface.create(typeFace, data.getTypeFaceStyle())
 
-        val alignment = textData.getLayoutAlignment()
+        val alignment = data.getLayoutAlignment()
         var mTextLayout = StaticLayout(
-            textData.textValue,
+            data.textValue,
             mTextPaint,
             (canvas.width - padding).toInt(),
             alignment,
@@ -59,10 +58,10 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
         canvas.save()
 
-        when (textData.textPosition) {
+        when (data.textPosition) {
             EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
                 mTextLayout = StaticLayout(
-                    textData.textValue,
+                    data.textValue,
                     mTextPaint,
                     (canvas.height - padding).toInt(),
                     alignment,
@@ -76,7 +75,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             }
             EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
                 mTextLayout = StaticLayout(
-                    textData.textValue,
+                    data.textValue,
                     mTextPaint,
                     (canvas.height - padding).toInt(),
                     alignment,

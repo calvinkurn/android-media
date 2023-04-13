@@ -410,9 +410,26 @@ class DetailEditorFragment @Inject constructor(
     }
 
     // === Listener add text
-    override fun onAddFreeText() {}
+    private var tempTemplateMode = EditorAddTextUiModel.TEXT_TEMPLATE_FREE
+    override fun onAddFreeText() {
+        EditorAddTextUiModel.TEXT_TEMPLATE_FREE.let { templateIndex ->
+            data.addTextValue?.let {
+                it.textTemplate = templateIndex
+            }
+            tempTemplateMode = templateIndex
+        }
+        implementAddTextData()
+    }
 
-    override fun onAddSingleBackgroundText() {}
+    override fun onAddSingleBackgroundText() {
+        EditorAddTextUiModel.TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
+            data.addTextValue?.let {
+                it.textTemplate = templateIndex
+            }
+            tempTemplateMode = templateIndex
+        }
+        implementAddTextData()
+    }
 
     override fun onChangePosition() {
         val intent = Intent(activity, AddTextActivity::class.java)
@@ -432,9 +449,12 @@ class DetailEditorFragment @Inject constructor(
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
             addLogoCacheManager.set(elements.originalPaths.first())
         } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val element = data?.getParcelableExtra(AddTextActivity.ADD_TEXT_RESULT) ?: EditorAddTextUiModel(textValue = "")
-            this.data.addTextValue = element
-            implementAddTextData(element)
+            data?.getParcelableExtra<EditorAddTextUiModel>(AddTextActivity.ADD_TEXT_RESULT)?.let {
+                this.data.addTextValue = it.apply {
+                    textTemplate = tempTemplateMode
+                }
+                implementAddTextData()
+            }
         }
     }
 
@@ -638,7 +658,7 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.ADD_TEXT -> {
-                addTextComponent.setupView()
+                addTextComponent.setupView(data.addTextValue)
                 setImageView(data.resultUrl ?: url, false)
                 viewBinding?.imgPreviewOverlay?.setOnClickListener {
                     openAddTextActivity()
@@ -1345,12 +1365,17 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementAddTextData(textData: EditorAddTextUiModel) {
-        val bitmap = viewModel.getAddTextFilterOverlay(
-            Pair(originalImageWidth, originalImageHeight),
-            textData
-        )
-        viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmap)
+    private fun implementAddTextData() {
+        data.addTextValue?.let {
+            viewModel.getAddTextFilterOverlay(
+                Pair(originalImageWidth, originalImageHeight),
+                it
+            ).let { bitmapResult ->
+                addTextComponent.updateItemActiveState(it)
+
+                viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmapResult)
+            }
+        }
     }
 
     private fun openAddTextActivity() {

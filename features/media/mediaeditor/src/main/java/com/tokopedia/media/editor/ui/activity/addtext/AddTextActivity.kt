@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.AddTextFragment
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import javax.inject.Inject
 
@@ -95,6 +96,8 @@ class AddTextActivity : BaseEditorActivity() {
     companion object {
         const val ADD_TEXT_PARAM = "intent_data.add_text"
         const val ADD_TEXT_RESULT = "result_data.add_text"
+
+        // flag to decide showing textbox mode / change position mode
         const val ADD_TEXT_MODE = "mode_data.add_text"
 
         const val ADD_TEXT_REQUEST_CODE = 389

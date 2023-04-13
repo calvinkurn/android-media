@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btmsht_add_text_tips"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        android:text="Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btmsht_add_text_color_wrapper"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btmsht_add_text_color_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Pilihan Warna:"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:layout_marginTop="8dp"
+            android:id="@+id/btmsht_add_text_color_black"
+            app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_color_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:chipText="Hitam"
+            app:chipImageSrc="@drawable/bg_animated_action_counter_minus_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/btmsht_add_text_color_white"
+            app:layout_constraintTop_toTopOf="@id/btmsht_add_text_color_black"
+            app:layout_constraintLeft_toRightOf="@id/btmsht_add_text_color_black"
+            app:chipText="Putih"
+            app:chipImageSrc="@drawable/bg_animated_action_counter_minus_24"
+            android:layout_marginLeft="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btmsht_add_text_template_wrapper"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_color_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btmsht_add_text_template_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Pilih Template:"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <GridLayout
+            android:columnCount="2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_template_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_columnWeight="1"
+                android:background="@color/green_200"
+                android:layout_width="0dp"
+                android:layout_height="100dp"/>
+
+            <View
+                android:layout_columnWeight="1"
+                android:background="@color/red_100"
+                android:layout_width="0dp"
+                android:layout_height="100dp"/>
+
+            <View
+                android:layout_columnWeight="1"
+                android:background="@color/Blue_B100"
+                android:layout_width="0dp"
+                android:layout_height="100dp"/>
+
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:id="@+id/btmsht_add_text_action_wrapper"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_template_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btmsht_add_text_action_lanjut"
+            android:text="Lanjut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

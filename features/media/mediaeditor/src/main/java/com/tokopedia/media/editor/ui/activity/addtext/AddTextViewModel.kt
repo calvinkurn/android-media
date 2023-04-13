@@ -10,7 +10,7 @@ import com.tokopedia.media.editor.utils.getImageSize
 import javax.inject.Inject
 
 class AddTextViewModel @Inject constructor(
-    val addTextFilterRepository: AddTextFilterRepository
+    private val addTextFilterRepository: AddTextFilterRepository
 ): ViewModel() {
     private var _imgUrl = MutableLiveData<String>()
     val imgUrl: LiveData<String> get() = _imgUrl

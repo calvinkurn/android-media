@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Parcelable
 import android.text.Layout
 import androidx.core.content.ContextCompat
+import com.tokopedia.media.editor.ui.adapter.AddTextToolAdapter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,7 +14,8 @@ class EditorAddTextUiModel(
     var textStyle: Int = TEXT_STYLE_REGULAR,
     var textColor: Int = 0,
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
-    var textPosition: Int = TEXT_POSITION_BOTTOM
+    var textPosition: Int = TEXT_POSITION_BOTTOM,
+    var textTemplate: Int = TEXT_TEMPLATE_FREE
 ) : Parcelable {
     fun getColor(context: Context?): Int {
         if (context == null) return 0
@@ -52,5 +54,8 @@ class EditorAddTextUiModel(
         const val TEXT_POSITION_RIGHT = 1
         const val TEXT_POSITION_TOP = 2
         const val TEXT_POSITION_BOTTOM = 3
+
+        const val TEXT_TEMPLATE_FREE = AddTextToolAdapter.FREE_TEXT_INDEX
+        const val TEXT_TEMPLATE_BACKGROUND = AddTextToolAdapter.BACKGROUND_TEXT_INDEX
     }
 }
