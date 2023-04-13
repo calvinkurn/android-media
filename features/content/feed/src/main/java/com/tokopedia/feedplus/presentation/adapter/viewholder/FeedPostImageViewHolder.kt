@@ -220,13 +220,11 @@ class FeedPostImageViewHolder(
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
                         productTagView.bindText(
-                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
-                            PRODUCT_COUNT_ONE
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex])
                         )
                     } else {
                         productTagView.bindText(
-                            element.products,
-                            element.totalProducts
+                            element.products
                         )
                     }
                 }
