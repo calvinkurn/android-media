@@ -93,6 +93,7 @@ class VideoPictureView @JvmOverloads constructor(
         updateImages(listOfImage = media)
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
+        setupRecommendationLabelListener(position = pagerSelectedLastPosition)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
         scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
@@ -166,6 +167,7 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         updateMediaLabel(position)
         updateThumbnail(position)
+        setupRecommendationLabelListener(position)
         shouldShowRecommendationLabel(position)
     }
 
@@ -268,6 +270,7 @@ class VideoPictureView @JvmOverloads constructor(
             }
 
             updateMediaLabel(position)
+            setupRecommendationLabelListener(position)
             shouldShowRecommendationLabel(position)
             updateThumbnail(position)
             pagerSelectedLastPosition = position
@@ -340,8 +343,15 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupRecommendationLabel(recommendation: ProductMediaRecomData) {
         binding.txtAnimLabelRecommendation.setup(recommendation)
-        binding.txtAnimLabelRecommendation.setOnClickListener {
-            mListener?.onShowProductMediaRecommendationClicked()
+    }
+
+    private fun setupRecommendationLabelListener(position: Int) {
+        if (videoPictureAdapter?.isFirstPicture(position) == true) {
+            binding.txtAnimLabelRecommendation.setOnClickListener {
+                mListener?.onShowProductMediaRecommendationClicked()
+            }
+        } else {
+            binding.txtAnimLabelRecommendation.setOnClickListener(null)
         }
     }
 
