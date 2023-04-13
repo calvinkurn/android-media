@@ -381,6 +381,9 @@ object PromoRequestMapper {
             availableCartGroupHolderDataList
         )
         promoHolderDataMap.values.forEach { cartPromoHolderData ->
+            if (!cartPromoHolderData.hasSelectedProduct) {
+                return@forEach
+            }
             val order = ClearPromoOrder(
                 uniqueId = cartPromoHolderData.cartStringOrder,
                 boType = cartPromoHolderData.boMetadata.boType,
@@ -401,7 +404,7 @@ object PromoRequestMapper {
                         voucherOrder.shippingId > 0 &&
                         voucherOrder.spId > 0 &&
                         voucherOrder.type == "logistic" &&
-                        promoHolderDataMap[voucherOrder.cartStringGroup]?.boUniqueId == voucherOrder.uniqueId
+                        promoHolderDataMap[voucherOrder.uniqueId]?.boUniqueId == voucherOrder.uniqueId
                     ) {
                         order.codes.add(voucherOrder.code)
                         hasBo = true
