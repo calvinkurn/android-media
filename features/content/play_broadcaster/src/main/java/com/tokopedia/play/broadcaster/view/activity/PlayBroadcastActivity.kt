@@ -403,7 +403,10 @@ class PlayBroadcastActivity : BaseActivity(),
         applyPreset(selectedPreset)
     }
 
-    private fun applyFaceFilter(vararg faceFilters: FaceFilterUiModel): Boolean {
+    private fun applyFaceFilter(
+        vararg faceFilters: FaceFilterUiModel,
+        withToaster: Boolean = true,
+    ): Boolean {
         var isAllFilterApplied = true
 
         faceFilters.forEach { faceFilter ->
@@ -412,28 +415,31 @@ class PlayBroadcastActivity : BaseActivity(),
             } else {
                 val isSuccess = broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
 
-                if(!isSuccess) {
+                if (!isSuccess) {
                     isAllFilterApplied = false
-                    analytic.viewFailApplyBeautyFilter(
-                        account = viewModel.selectedAccount,
-                        page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                        customFace = faceFilter.id,
-                    )
 
-                    showToaster(
-                        err = Exception("fail to apply face filter : ${faceFilter.id}"),
-                        customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
-                        duration = Toaster.LENGTH_SHORT,
-                        actionLabel = getString(R.string.play_broadcaster_retry),
-                        actionListener = {
-                            analytic.clickRetryApplyBeautyFilter(
-                                account = viewModel.selectedAccount,
-                                page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                                customFace = faceFilter.id,
-                            )
-                            applyFaceFilter(faceFilter)
-                        }
-                    )
+                    if (withToaster) {
+                        analytic.viewFailApplyBeautyFilter(
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            customFace = faceFilter.id,
+                        )
+
+                        showToaster(
+                            err = Exception("fail to apply face filter : ${faceFilter.id}"),
+                            customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                            duration = Toaster.LENGTH_SHORT,
+                            actionLabel = getString(R.string.play_broadcaster_retry),
+                            actionListener = {
+                                analytic.clickRetryApplyBeautyFilter(
+                                    account = viewModel.selectedAccount,
+                                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                                    customFace = faceFilter.id,
+                                )
+                                applyFaceFilter(faceFilter)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -441,14 +447,17 @@ class PlayBroadcastActivity : BaseActivity(),
         return isAllFilterApplied
     }
 
-    private fun applyPreset(preset: PresetFilterUiModel): Boolean {
+    private fun applyPreset(
+        preset: PresetFilterUiModel,
+        withToaster: Boolean = true,
+    ): Boolean {
         return if (preset.isRemoveEffect) {
             broadcaster.removePreset()
             true
         } else {
             val isSuccess = broadcaster.setPreset(preset.id, preset.value.toFloat())
 
-            if(!isSuccess) {
+            if(!isSuccess && withToaster) {
                 analytic.viewFailApplyBeautyFilter(
                     account = viewModel.selectedAccount,
                     page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
@@ -478,13 +487,12 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
         if (viewModel.isBeautificationEnabled) {
             val isAllFaceFilterApplied = if (viewModel.selectedFaceFilter?.isRemoveEffect == true) {
-                viewModel.selectedFaceFilter?.let { applyFaceFilter(it) }.orTrue()
+                viewModel.selectedFaceFilter?.let { applyFaceFilter(it, withToaster = false) }.orTrue()
             } else {
-                applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray())
+                applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray(), withToaster = false)
             }
 
-            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it) }.orTrue()
-
+            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it, withToaster = false) }.orTrue()
 
             if(isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
                 analytic.viewFailReapplyBeautyFilter(account = viewModel.selectedAccount)

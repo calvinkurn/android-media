@@ -278,4 +278,25 @@ class BeautificationAnalyticTest {
             .clickDialogPrimaryCTA()
             .verifyEventAction("view - beauty filter ongoing livestream")
     }
+
+    @Test
+    fun testAnalytic_clickRetryReapplyBeautyFilter() {
+
+        coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
+
+        beautificationRobot.launch()
+            .performDelay(1000)
+            .clickToasterCTA()
+            .verifyEventAction("click - reapply beauty filter")
+    }
+
+    @Test
+    fun testAnalytic_viewFailReapplyBeautyFilter() {
+
+        coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
+
+        beautificationRobot.launch()
+            .performDelay(1000)
+            .verifyEventAction("view - reapply beauty filter")
+    }
 }
