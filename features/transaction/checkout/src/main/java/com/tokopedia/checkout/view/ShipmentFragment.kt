@@ -266,7 +266,6 @@ class ShipmentFragment :
 
     private var hasClearPromoBeforeCheckout = false
     private var hasRunningApiCall = false
-    private var bboPromoCodes = ArrayList<String>()
     private var shipmentLoadingIndex = -1
     private var isPlusSelected: Boolean? = null
     private var delayScrollToFirstShopSubscription: Subscription? = null
@@ -2189,7 +2188,7 @@ class ShipmentFragment :
         if (!flagNeedToSetPinpoint) {
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)!!
-            val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
+            val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest().copy()
             if (promoCode.isNotEmpty()) {
                 for (order in validateUsePromoRequest.orders) {
                     if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
@@ -2998,6 +2997,7 @@ class ShipmentFragment :
     }
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?) {
+        if (shipmentLoadingIndex == -1 && !shipmentPresenter.shipmentButtonPayment.value.loading) {
 //        if (lastApplyUiModel == null) return
 //        val validateUseRequestParam = shipmentPresenter.generateValidateUsePromoRequest()
 //        val promoRequestParam = shipmentPresenter.generateCouponListRecommendationRequest()
@@ -3013,40 +3013,43 @@ class ShipmentFragment :
 //        if (isTradeIn) {
 //            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
 //        }
-        onResultFromPromo(
-            Activity.RESULT_OK,
-            Intent().apply {
-                putExtra(
-                    ARGS_VALIDATE_USE_DATA_RESULT,
-                    ValidateUsePromoRevampUiModel().apply {
-                        promoUiModel = PromoUiModel(
-                            voucherOrderUiModels = listOf(
-                                PromoCheckoutVoucherOrdersItemUiModel(
-                                    code = "BOINTRAISLANDQA10",
-                                    cartStringGroup = "6370771-0-6595013-174524131",
-                                    shippingId = 23,
-                                    spId = 45,
-                                    type = "logistic",
-                                    messageUiModel = com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel(state = "green")
+            onResultFromPromo(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(
+                        ARGS_VALIDATE_USE_DATA_RESULT,
+                        ValidateUsePromoRevampUiModel().apply {
+                            promoUiModel = PromoUiModel(
+                                voucherOrderUiModels = listOf(
+                                    PromoCheckoutVoucherOrdersItemUiModel(
+                                        code = "BOINTRAISLANDQA10",
+                                        cartStringGroup = "6370771-0-6595013-174524131",
+                                        shippingId = 23,
+                                        spId = 45,
+                                        type = "logistic",
+                                        messageUiModel = com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel(
+                                            state = "green"
+                                        )
+                                    )
                                 )
                             )
-                        )
-                    }
-                )
-                putExtra(
-                    ARGS_LAST_VALIDATE_USE_REQUEST,
-                    ValidateUsePromoRequest().apply {
-                        orders = listOf(
-                            OrdersItem(
-                                shippingId = 23,
-                                codes = mutableListOf("BOINTRAISLANDQA10"),
-                                cartStringGroup = "6370771-0-6595013-174524131"
+                        }
+                    )
+                    putExtra(
+                        ARGS_LAST_VALIDATE_USE_REQUEST,
+                        ValidateUsePromoRequest().apply {
+                            orders = listOf(
+                                OrdersItem(
+                                    shippingId = 23,
+                                    codes = mutableListOf("BOINTRAISLANDQA10"),
+                                    cartStringGroup = "6370771-0-6595013-174524131"
+                                )
                             )
-                        )
-                    }
-                )
-            }
-        )
+                        }
+                    )
+                }
+            )
+        }
     }
 
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
@@ -3827,7 +3830,7 @@ class ShipmentFragment :
                 )
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
                 if (shouldValidateUse) {
-                    val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest()
+                    val validateUsePromoRequest = shipmentPresenter.generateValidateUsePromoRequest().copy()
                     if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
                         for (order in validateUsePromoRequest.orders) {
                             if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(

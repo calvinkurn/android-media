@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -45,6 +46,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
     @GqlQuery(QUERY_VALIDATE_USE, VALIDATE_USE_QUERY)
     override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
         val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
+        Log.i("qwertyuiop", "do validate use $param")
         delay(5_000)
 //        val request = GraphqlRequest(ValidateUseQuery(), ValidateUseResponse::class.java, getParams(param))
 //        val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
@@ -257,7 +259,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
             """,
             ValidateUseResponse::class.java
         )
-
+        Log.i("qwertyuiop", "done validate use")
         return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)
     }
 }

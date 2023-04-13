@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -58,6 +59,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter.Compan
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstProductId
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.checkout.view.helper.ShipmentValidatePromoHolderData
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
@@ -272,6 +274,8 @@ class ShipmentPresenter @Inject constructor(
 
     private val ratesQueue: Queue<ShipmentGetCourierHolderData> = LinkedList()
 
+    private val promoQueue: LinkedList<ShipmentValidatePromoHolderData> = LinkedList()
+
     var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData> =
@@ -315,7 +319,8 @@ class ShipmentPresenter @Inject constructor(
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
-        logisticPromoDonePublisher = null
+        ratesQueue.clear()
+        promoQueue.clear()
         view = null
     }
 
@@ -886,6 +891,8 @@ class ShipmentPresenter @Inject constructor(
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
         setLatValidateUseRequest(null)
         validateUsePromoRevampUiModel = null
+        ratesQueue.clear()
+        promoQueue.clear()
         shipmentTickerErrorModel = ShipmentTickerErrorModel(cartShipmentAddressFormData.errorTicker)
         val tickerData = cartShipmentAddressFormData.tickerData
         if (tickerData != null) {
@@ -1181,97 +1188,114 @@ class ShipmentPresenter @Inject constructor(
         lastSelectedCourierOrderIndex: Int,
         cartString: String?
     ) {
-        isValidatingFinalPromo = true
-        couponStateChanged = true
-        updateShipmentButtonPaymentModel(loading = true)
-        viewModelScope.launch(dispatchers.immediate) {
-            try {
-                setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
-                val validateUsePromoRevampUiModel =
-                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
-                        .executeOnBackground()
-                if (view != null) {
-                    this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                        validateUsePromoRevampUiModel
-                    couponStateChanged = true
-                    showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                    validateBBO(validateUsePromoRevampUiModel)
-                    updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                    if (!validateUsePromoRevampUiModel.status.equals(
-                            statusOK,
-                            ignoreCase = true
-                        ) || validateUsePromoRevampUiModel.errorCode != statusCode200
-                    ) {
-                        val message: String =
-                            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                                validateUsePromoRevampUiModel.message[0]
-                            } else {
-                                DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-                            }
-                        view?.renderErrorCheckPromoShipmentData(message)
-                        view?.resetPromoBenefit()
-                        view?.resetAllCourier()
-                    } else {
-                        view?.updateButtonPromoCheckout(
-                            validateUsePromoRevampUiModel.promoUiModel,
-                            false
-                        )
-                        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-                            analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-                                validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-                            )
+        if (promoQueue.isEmpty()) {
+            Log.i("qwertyuiop", "call final validate ${Exception().stackTraceToString()}")
+            isValidatingFinalPromo = true
+            couponStateChanged = true
+            updateShipmentButtonPaymentModel(loading = true)
+            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    Log.i("qwertyuiop", "do final validate")
+                    if (promoQueue.isNotEmpty()) {
+                        // ignore if there is still a promo in queue
+                        return@launch
+                    }
+                    val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                        setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                        validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                            .executeOnBackground()
+                    }
+                    if (promoQueue.isNotEmpty()) {
+                        // ignore if there is still a promo in queue
+                        return@launch
+                    }
+                    if (view != null) {
+                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                            validateUsePromoRevampUiModel
+                        couponStateChanged = true
+                        showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                        validateBBO(validateUsePromoRevampUiModel)
+                        updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                        if (!validateUsePromoRevampUiModel.status.equals(
+                                statusOK,
+                                ignoreCase = true
+                            ) || validateUsePromoRevampUiModel.errorCode != statusCode200
+                        ) {
+                            val message: String =
+                                if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                                    validateUsePromoRevampUiModel.message[0]
+                                } else {
+                                    DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                                }
+                            view?.renderErrorCheckPromoShipmentData(message)
+                            view?.resetPromoBenefit()
+                            view?.resetAllCourier()
                         } else {
-                            for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-                                if (voucherOrder.messageUiModel.state == "red") {
-                                    analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-                                        voucherOrder.messageUiModel.text
-                                    )
-                                    break
+                            view?.updateButtonPromoCheckout(
+                                validateUsePromoRevampUiModel.promoUiModel,
+                                false
+                            )
+                            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                                analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+                                    validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                                )
+                            } else {
+                                for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                                    if (voucherOrder.messageUiModel.state == "red") {
+                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+                                            voucherOrder.messageUiModel.text
+                                        )
+                                        break
+                                    }
                                 }
                             }
                         }
-                    }
-                    val clashingInfoDetailUiModel =
-                        validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
-                    if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
-                        val clashPromoCodes = ArrayList<String>()
-                        for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
-                            for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
-                                clashPromoCodes.add(voucherOrder.code)
+                        val clashingInfoDetailUiModel =
+                            validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
+                        if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
+                            val clashPromoCodes = ArrayList<String>()
+                            for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
+                                for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
+                                    clashPromoCodes.add(voucherOrder.code)
+                                }
                             }
+                            cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
                         }
-                        cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
-                    }
-                    reloadCourierForMvc(
-                        validateUsePromoRevampUiModel,
-                        lastSelectedCourierOrderIndex,
-                        cartString
-                    )
-                    checkUnCompletedPublisher()
-                    isValidatingFinalPromo = false
-                    updateShipmentButtonPaymentModel(loading = false)
-                }
-            } catch (e: Throwable) {
-                Timber.d(e)
-                if (view != null) {
-                    if (e is AkamaiErrorException) {
-                        clearAllPromo()
-                        view?.showToastError(e.message)
-                        view?.resetAllCourier()
-                        view?.doResetButtonPromoCheckout()
-                    } else {
-                        view?.renderErrorCheckPromoShipmentData(
-                            getErrorMessage(
-                                view?.activityContext,
-                                e
-                            )
+                        reloadCourierForMvc(
+                            validateUsePromoRevampUiModel,
+                            lastSelectedCourierOrderIndex,
+                            cartString
                         )
+                        checkUnCompletedPublisher()
+                        isValidatingFinalPromo = false
+                        updateShipmentButtonPaymentModel(loading = false)
+                        Log.i("qwertyuiop", "done final validate")
                     }
-                    checkUnCompletedPublisher()
-                    isValidatingFinalPromo = false
-                    updateShipmentButtonPaymentModel(loading = false)
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                    if (view != null) {
+                        if (e is AkamaiErrorException) {
+                            clearAllPromo()
+                            view?.showToastError(e.message)
+                            view?.resetAllCourier()
+                            view?.doResetButtonPromoCheckout()
+                        } else {
+                            view?.renderErrorCheckPromoShipmentData(
+                                getErrorMessage(
+                                    view?.activityContext,
+                                    e
+                                )
+                            )
+                        }
+                        checkUnCompletedPublisher()
+                        isValidatingFinalPromo = false
+                        updateShipmentButtonPaymentModel(loading = false)
+                        Log.i("qwertyuiop", "done final validate")
+                    }
                 }
             }
+        } else {
+            Log.i("qwertyuiop", "call final validate with promo quota exist")
         }
     }
 
@@ -1493,117 +1517,18 @@ class ShipmentPresenter @Inject constructor(
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
             updateShipmentButtonPaymentModel(loading = true)
-            viewModelScope.launch(dispatchers.immediate) {
-                try {
-                    setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
-                    val validateUsePromoRevampUiModel =
-                        validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
-                            .executeOnBackground()
-                    if (view != null) {
-                        view?.setStateLoadingCourierStateAtIndex(
-                            cartPosition,
-                            false
-                        )
-                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                            validateUsePromoRevampUiModel
-                        updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                        showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                        validateBBOWithSpecificOrder(
-                            validateUsePromoRevampUiModel,
-                            cartString,
-                            promoCode
-                        )
-                        val isValidatePromoRevampSuccess =
-                            validateUsePromoRevampUiModel.status.equals(
-                                statusOK,
-                                ignoreCase = true
-                            ) && validateUsePromoRevampUiModel.errorCode == statusCode200
-                        if (isValidatePromoRevampSuccess) {
-                            view?.updateButtonPromoCheckout(
-                                validateUsePromoRevampUiModel.promoUiModel,
-                                true
-                            )
-                        } else {
-                            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                                val errMessage =
-                                    validateUsePromoRevampUiModel.message[0]
-                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
-                                    errMessage
-                                )
-                                eventCheckoutViewPromoMessage(errMessage)
-                                view?.showToastError(errMessage)
-                                view?.resetCourier(cartPosition)
-                                view?.getShipmentCartItemModel(cartPosition)?.let {
-                                    if (it.boCode.isNotEmpty()) {
-                                        clearCacheAutoApply(it, promoCode)
-                                        clearOrderPromoCodeFromLastValidateUseRequest(
-                                            cartString,
-                                            promoCode
-                                        )
-                                        it.boCode = ""
-                                    }
-                                }
-                            } else {
-                                view?.showToastError(
-                                    DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
-                                )
-                                view?.resetCourier(cartPosition)
-                                view?.getShipmentCartItemModel(cartPosition)?.let {
-                                    if (it.boCode.isNotEmpty()) {
-                                        clearCacheAutoApply(it, promoCode)
-                                        clearOrderPromoCodeFromLastValidateUseRequest(
-                                            cartString,
-                                            promoCode
-                                        )
-                                        it.boCode = ""
-                                    }
-                                }
-                            }
-                        }
-                        updateShipmentButtonPaymentModel(loading = false)
-                    }
-                    logisticPromoDonePublisher?.onCompleted()
-                    val shipmentScheduleDeliveryMapData =
-                        getScheduleDeliveryMapData(cartString)
-                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                        shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                    }
-                } catch (e: Throwable) {
-                    Timber.d(e)
-                    if (view != null) {
-                        view?.setStateLoadingCourierStateAtIndex(
-                            cartPosition,
-                            false
-                        )
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
-                        if (e is AkamaiErrorException) {
-                            clearAllPromo()
-                            view?.showToastError(e.message)
-                            view?.resetAllCourier()
-                            view?.doResetButtonPromoCheckout()
-                        } else {
-                            view?.showToastError(e.message)
-                            view?.resetCourier(cartPosition)
-                            view?.getShipmentCartItemModel(cartPosition)?.let {
-                                if (it.boCode.isNotEmpty()) {
-                                    clearCacheAutoApply(it, promoCode)
-                                    clearOrderPromoCodeFromLastValidateUseRequest(
-                                        cartString,
-                                        promoCode
-                                    )
-                                    it.boCode = ""
-                                }
-                            }
-                        }
-                        view?.logOnErrorApplyBo(e, cartPosition, promoCode)
-                        updateShipmentButtonPaymentModel(loading = false)
-                        logisticPromoDonePublisher?.onCompleted()
-                        val shipmentScheduleDeliveryMapData =
-                            getScheduleDeliveryMapData(cartString)
-                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                        }
-                    }
+            promoQueue.offer(
+                ShipmentValidatePromoHolderData(
+                    validateUsePromoRequest,
+                    cartPosition,
+                    cartString,
+                    promoCode,
+                    null
+                )
+            )
+            if (promoQueue.size == 1) {
+                viewModelScope.launch(dispatchers.immediate) {
+                    doValidateLogisticPromoForOneOrder()
                 }
             }
         }
@@ -1623,135 +1548,174 @@ class ShipmentPresenter @Inject constructor(
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
             updateShipmentButtonPaymentModel(loading = true)
-            viewModelScope.launch(dispatchers.immediate) {
-                doValidateLogisticPromoForOneOrder(
+            promoQueue.offer(
+                ShipmentValidatePromoHolderData(
                     validateUsePromoRequest,
                     cartPosition,
                     cartString,
                     promoCode,
                     newCourierItemData
                 )
-                updateShipmentButtonPaymentModel(loading = false)
+            )
+            if (promoQueue.size == 1) {
+                viewModelScope.launch(dispatchers.immediate) {
+                    doValidateLogisticPromoForOneOrder()
+                }
             }
         }
     }
 
-    private suspend fun doValidateLogisticPromoForOneOrder(
-        validateUsePromoRequest: ValidateUsePromoRequest,
-        cartPosition: Int,
-        cartString: String,
-        promoCode: String,
-        newCourierItemData: CourierItemData
-    ) {
-        try {
-            setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
-            val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
-                validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
-                    .executeOnBackground()
-            }
-            if (view != null) {
-                view?.setStateLoadingCourierStateAtIndex(
-                    cartPosition,
-                    false
-                )
-                this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                    validateUsePromoRevampUiModel
-                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                validateBBOWithSpecificOrder(
-                    validateUsePromoRevampUiModel,
-                    cartString,
-                    promoCode,
-                    newCourierItemData,
-                    cartPosition
-                )
-                val isValidatePromoRevampSuccess =
-                    validateUsePromoRevampUiModel.status.equals(
-                        statusOK,
-                        ignoreCase = true
-                    ) && validateUsePromoRevampUiModel.errorCode == statusCode200
-                if (isValidatePromoRevampSuccess) {
-                    view?.updateButtonPromoCheckout(
-                        validateUsePromoRevampUiModel.promoUiModel,
-                        true
-                    )
-                } else {
-                    if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                        val errMessage =
-                            validateUsePromoRevampUiModel.message[0]
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
-                            errMessage
-                        )
-                        eventCheckoutViewPromoMessage(errMessage)
-                        view?.showToastError(errMessage)
-                        view?.resetCourier(cartPosition)
-                        view?.getShipmentCartItemModel(cartPosition)?.let {
-                            if (it.boCode.isNotEmpty()) {
-                                clearCacheAutoApply(it, promoCode)
-                                clearOrderPromoCodeFromLastValidateUseRequest(
-                                    cartString,
-                                    promoCode
-                                )
-                                it.boCode = ""
-                            }
-                        }
-                    } else {
-                        view?.showToastError(
-                            DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
-                        )
-                        view?.resetCourier(cartPosition)
-                        view?.getShipmentCartItemModel(cartPosition)?.let {
-                            if (it.boCode.isNotEmpty()) {
-                                clearCacheAutoApply(it, promoCode)
-                                clearOrderPromoCodeFromLastValidateUseRequest(
-                                    cartString,
-                                    promoCode
-                                )
-                                it.boCode = ""
-                            }
-                        }
+    private suspend fun doValidateLogisticPromoForOneOrder() {
+        withContext(dispatchers.immediate) {
+            Log.i("qwertyuiop", "do validate one order")
+            var itemToProcess = promoQueue.peek()
+            loopProcess@ while (isActive && itemToProcess != null) {
+                Log.i("qwertyuiop", "promo queue = ${promoQueue.size}")
+                val shipmentValidatePromoHolderData = itemToProcess
+                try {
+                    updateShipmentButtonPaymentModel(loading = true)
+                    if (promoQueue.filter { it.cartString == shipmentValidatePromoHolderData.cartString }.size > 1) {
+                        // ignore this, because there is a new one in the queue
+                        promoQueue.remove()
+                        itemToProcess = promoQueue.peek()
+                        continue@loopProcess
                     }
-                }
-            }
-            logisticPromoDonePublisher?.onCompleted()
-            val shipmentScheduleDeliveryMapData =
-                getScheduleDeliveryMapData(cartString)
-            if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-            }
-        } catch (e: Throwable) {
-            Timber.d(e)
-            if (view != null) {
-                view?.setStateLoadingCourierStateAtIndex(
-                    cartPosition,
-                    false
-                )
-                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
-                if (e is AkamaiErrorException) {
-                    clearAllPromo()
-                    view?.showToastError(e.message)
-                    view?.resetAllCourier()
-                    view?.doResetButtonPromoCheckout()
-                } else {
-                    view?.showToastError(e.message)
-                    view?.resetCourier(cartPosition)
-                    view?.getShipmentCartItemModel(cartPosition)?.let {
-                        if (it.boCode.isNotEmpty()) {
-                            clearCacheAutoApply(it, promoCode)
-                            clearOrderPromoCodeFromLastValidateUseRequest(
-                                cartString,
-                                promoCode
+                    val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                        setValidateUseBoCodeInOneOrderOwoc(shipmentValidatePromoHolderData.validateUsePromoRequest)
+                        validateUsePromoRevampUseCase.setParam(shipmentValidatePromoHolderData.validateUsePromoRequest)
+                            .executeOnBackground()
+                    }
+                    promoQueue.remove()
+                    itemToProcess = promoQueue.peek()
+                    if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
+                        // ignore this, because there is a new one in the queue
+                        continue@loopProcess
+                    }
+                    if (view != null) {
+                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                            validateUsePromoRevampUiModel
+                        val isValidatePromoRevampSuccess =
+                            validateUsePromoRevampUiModel.status.equals(
+                                statusOK,
+                                ignoreCase = true
+                            ) && validateUsePromoRevampUiModel.errorCode == statusCode200
+                        if (isValidatePromoRevampSuccess) {
+                            view?.updateButtonPromoCheckout(
+                                validateUsePromoRevampUiModel.promoUiModel,
+                                true
                             )
-                            it.boCode = ""
+                            view?.setStateLoadingCourierStateAtIndex(
+                                shipmentValidatePromoHolderData.cartPosition,
+                                false
+                            )
+                            this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                                validateUsePromoRevampUiModel
+                            updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                            showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                            validateBBOWithSpecificOrder(
+                                validateUsePromoRevampUiModel,
+                                shipmentValidatePromoHolderData.cartString,
+                                shipmentValidatePromoHolderData.promoCode,
+                                shipmentValidatePromoHolderData.newCourierItemData,
+                                shipmentValidatePromoHolderData.cartPosition
+                            )
+                        } else {
+                            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                                val errMessage =
+                                    validateUsePromoRevampUiModel.message[0]
+                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
+                                    errMessage
+                                )
+                                eventCheckoutViewPromoMessage(errMessage)
+                                view?.showToastError(errMessage)
+                                view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                                view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                                    ?.let {
+                                        if (it.boCode.isNotEmpty()) {
+                                            clearCacheAutoApply(
+                                                it,
+                                                shipmentValidatePromoHolderData.promoCode
+                                            )
+                                            clearOrderPromoCodeFromLastValidateUseRequest(
+                                                shipmentValidatePromoHolderData.cartString,
+                                                shipmentValidatePromoHolderData.promoCode
+                                            )
+                                            it.boCode = ""
+                                        }
+                                    }
+                            } else {
+                                view?.showToastError(
+                                    DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
+                                )
+                                view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                                view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                                    ?.let {
+                                        if (it.boCode.isNotEmpty()) {
+                                            clearCacheAutoApply(
+                                                it,
+                                                shipmentValidatePromoHolderData.promoCode
+                                            )
+                                            clearOrderPromoCodeFromLastValidateUseRequest(
+                                                shipmentValidatePromoHolderData.cartString,
+                                                shipmentValidatePromoHolderData.promoCode
+                                            )
+                                            it.boCode = ""
+                                        }
+                                    }
+                            }
                         }
+                        updateShipmentButtonPaymentModel(loading = false)
                     }
-                }
-                view?.logOnErrorApplyBo(e, cartPosition, promoCode)
-                logisticPromoDonePublisher?.onCompleted()
-                val shipmentScheduleDeliveryMapData =
-                    getScheduleDeliveryMapData(cartString)
-                if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                    shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                    val shipmentScheduleDeliveryMapData =
+                        getScheduleDeliveryMapData(shipmentValidatePromoHolderData.cartString)
+                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                        shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                    }
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                    if (view != null) {
+                        promoQueue.remove()
+                        itemToProcess = promoQueue.peek()
+                        view?.setStateLoadingCourierStateAtIndex(
+                            shipmentValidatePromoHolderData.cartPosition,
+                            false
+                        )
+                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
+                        if (e is AkamaiErrorException) {
+                            clearAllPromo()
+                            view?.showToastError(e.message)
+                            view?.resetAllCourier()
+                            view?.doResetButtonPromoCheckout()
+                        } else {
+                            view?.showToastError(e.message)
+                            view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                            view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                                ?.let {
+                                    if (it.boCode.isNotEmpty()) {
+                                        clearCacheAutoApply(
+                                            it,
+                                            shipmentValidatePromoHolderData.promoCode
+                                        )
+                                        clearOrderPromoCodeFromLastValidateUseRequest(
+                                            shipmentValidatePromoHolderData.cartString,
+                                            shipmentValidatePromoHolderData.promoCode
+                                        )
+                                        it.boCode = ""
+                                    }
+                                }
+                        }
+                        view?.logOnErrorApplyBo(
+                            e,
+                            shipmentValidatePromoHolderData.cartPosition,
+                            shipmentValidatePromoHolderData.promoCode
+                        )
+                        val shipmentScheduleDeliveryMapData =
+                            getScheduleDeliveryMapData(shipmentValidatePromoHolderData.cartString)
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                        }
+                        updateShipmentButtonPaymentModel(loading = false)
+                    }
                 }
             }
         }
@@ -1878,7 +1842,7 @@ class ShipmentPresenter @Inject constructor(
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
         cartString: String?,
         promoCode: String,
-        recommendedCourier: CourierItemData,
+        recommendedCourier: CourierItemData?,
         cartItemPosition: Int
     ) {
         var orderFound = false
@@ -1892,7 +1856,7 @@ class ShipmentPresenter @Inject constructor(
                 if (voucherOrder.messageUiModel.state != "red") {
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
                         if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
-                            if (view != null) {
+                            if (view != null && recommendedCourier != null) {
                                 view?.setSelectedCourier(
                                     cartItemPosition,
                                     recommendedCourier,
@@ -2890,42 +2854,184 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private suspend fun consumeRatesQueue() {
-        var itemToProcess = ratesQueue.peek()
-        loopProcess@ while (itemToProcess != null) {
-            val shipmentGetCourierHolderData = itemToProcess
-            if (shipmentGetCourierHolderData.shipmentCartItemModel.ratesValidationFlow) {
-                try {
-                    val shippingRecommendationData = withContext(dispatchers.io) {
-                        ratesWithScheduleUseCase.execute(
-                            shipmentGetCourierHolderData.ratesParam,
-                            shipmentGetCourierHolderData.shipmentCartItemModel.fulfillmentId.toString()
+        withContext(dispatchers.immediate) {
+            var itemToProcess = ratesQueue.peek()
+            loopProcess@ while (isActive && itemToProcess != null) {
+                val shipmentGetCourierHolderData = itemToProcess
+                if (shipmentGetCourierHolderData.shipmentCartItemModel.ratesValidationFlow) {
+                    try {
+                        val shippingRecommendationData = withContext(dispatchers.io) {
+                            ratesWithScheduleUseCase.execute(
+                                shipmentGetCourierHolderData.ratesParam,
+                                shipmentGetCourierHolderData.shipmentCartItemModel.fulfillmentId.toString()
+                            )
+                                .map { shippingRecommendationData: ShippingRecommendationData ->
+                                    stateConverter.fillState(
+                                        shippingRecommendationData,
+                                        shipmentGetCourierHolderData.shopShipmentList,
+                                        shipmentGetCourierHolderData.spId,
+                                        0
+                                    )
+                                }.toBlocking().single()
+                        }
+                        val boPromoCode = getBoPromoCode(
+                            shipmentGetCourierHolderData.isForceReload,
+                            shipmentGetCourierHolderData.shipmentCartItemModel
                         )
-                            .map { shippingRecommendationData: ShippingRecommendationData ->
-                                stateConverter.fillState(
-                                    shippingRecommendationData,
-                                    shipmentGetCourierHolderData.shopShipmentList,
-                                    shipmentGetCourierHolderData.spId,
-                                    0
-                                )
-                            }.toBlocking().single()
-                    }
-                    val boPromoCode = getBoPromoCode(
-                        shipmentGetCourierHolderData.isForceReload,
-                        shipmentGetCourierHolderData.shipmentCartItemModel
-                    )
-                    var errorReason = "rates invalid data"
-                    if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
-                        if (!shipmentGetCourierHolderData.isForceReload && isBoUnstackEnabled && shipmentGetCourierHolderData.shipmentCartItemModel.boCode.isNotEmpty()) {
-                            val logisticPromo =
-                                shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentGetCourierHolderData.shipmentCartItemModel.boCode && !it.disabled }
-                            if (logisticPromo != null) {
+                        var errorReason = "rates invalid data"
+                        if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
+                            if (!shipmentGetCourierHolderData.isForceReload && isBoUnstackEnabled && shipmentGetCourierHolderData.shipmentCartItemModel.boCode.isNotEmpty()) {
+                                val logisticPromo =
+                                    shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentGetCourierHolderData.shipmentCartItemModel.boCode && !it.disabled }
+                                if (logisticPromo != null) {
+                                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                                        if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
+                                            for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                                shippingCourierUiModel.isSelected = false
+                                            }
+                                            for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                                if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
+                                                    if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                        view?.renderCourierStateFailed(
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            false,
+                                                            false
+                                                        )
+                                                        view?.logOnErrorLoadCourier(
+                                                            MessageErrorException(
+                                                                shippingCourierUiModel.productData.error?.errorMessage
+                                                            ),
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            boPromoCode
+                                                        )
+                                                        ratesQueue.remove()
+                                                        itemToProcess = ratesQueue.peek()
+                                                        continue@loopProcess
+                                                    } else {
+                                                        val courierItemData =
+                                                            generateCourierItemDataWithScheduleDelivery(
+                                                                shipmentGetCourierHolderData.isForceReload,
+                                                                shipmentGetCourierHolderData.shipperId,
+                                                                shipmentGetCourierHolderData.spId,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel,
+                                                                shippingCourierUiModel,
+                                                                shippingRecommendationData,
+                                                                logisticPromo
+                                                            )
+                                                        val shouldValidatePromo =
+                                                            !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
+                                                        if (!shouldValidatePromo) {
+                                                            shippingCourierUiModel.isSelected = true
+                                                            setShippingCourierViewModelsState(
+                                                                shippingDurationUiModel.shippingCourierViewModelList,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel.orderNumber
+                                                            )
+                                                            view?.renderCourierStateSuccess(
+                                                                courierItemData,
+                                                                shipmentGetCourierHolderData.itemPosition,
+                                                                false,
+                                                                shipmentGetCourierHolderData.isForceReload
+                                                            )
+                                                            ratesQueue.remove()
+                                                            itemToProcess = ratesQueue.peek()
+                                                            continue@loopProcess
+                                                        } else {
+                                                            val validateUsePromoRequest =
+                                                                generateValidateUsePromoRequest().copy()
+                                                            for (ordersItem in validateUsePromoRequest.orders) {
+                                                                if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
+                                                                    if (!ordersItem.codes.contains(
+                                                                            courierItemData.selectedShipper.logPromoCode
+                                                                        )
+                                                                    ) {
+                                                                        ordersItem.codes.add(
+                                                                            courierItemData.selectedShipper.logPromoCode!!
+                                                                        )
+                                                                        ordersItem.boCode =
+                                                                            courierItemData.selectedShipper.logPromoCode!!
+                                                                    }
+                                                                    ordersItem.shippingId =
+                                                                        courierItemData.selectedShipper.shipperId
+                                                                    ordersItem.spId =
+                                                                        courierItemData.selectedShipper.shipperProductId
+                                                                    ordersItem.freeShippingMetadata =
+                                                                        courierItemData.selectedShipper.freeShippingMetadata
+                                                                    ordersItem.boCampaignId =
+                                                                        courierItemData.selectedShipper.boCampaignId
+                                                                    ordersItem.shippingSubsidy =
+                                                                        courierItemData.selectedShipper.shippingSubsidy
+                                                                    ordersItem.benefitClass =
+                                                                        courierItemData.selectedShipper.benefitClass
+                                                                    ordersItem.shippingPrice =
+                                                                        courierItemData.selectedShipper.shippingRate.toDouble()
+                                                                    ordersItem.etaText =
+                                                                        courierItemData.selectedShipper.etaText!!
+                                                                    ordersItem.validationMetadata =
+                                                                        shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
+                                                                }
+                                                            }
+                                                            val shipmentCartItemModelLists =
+                                                                shipmentCartItemModelList.filterIsInstance(
+                                                                    ShipmentCartItemModel::class.java
+                                                                )
+                                                            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
+                                                                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                                                                    for (order in validateUsePromoRequest.orders) {
+                                                                        if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                                                            !tmpShipmentCartItemModel.isFreeShippingPlus
+                                                                        ) {
+                                                                            order.codes.remove(
+                                                                                tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                                                                            )
+                                                                            order.boCode = ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            promoQueue.offer(
+                                                                ShipmentValidatePromoHolderData(
+                                                                    validateUsePromoRequest,
+                                                                    shipmentGetCourierHolderData.itemPosition,
+                                                                    shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
+                                                                    courierItemData.selectedShipper.logPromoCode!!,
+                                                                    courierItemData
+                                                                )
+                                                            )
+                                                            if (promoQueue.size == 1) {
+                                                                doValidateLogisticPromoForOneOrder()
+                                                            } else {
+                                                                withContext(dispatchers.default) {
+                                                                    while (promoQueue.isNotEmpty()) {
+                                                                        // wait until promo queue is empty
+                                                                    }
+                                                                }
+                                                            }
+                                                            ratesQueue.remove()
+                                                            itemToProcess = ratesQueue.peek()
+                                                            continue@loopProcess
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    errorReason = "promo not matched"
+                                }
+                            } else {
                                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                     if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                             shippingCourierUiModel.isSelected = false
                                         }
+                                        val selectedSpId =
+                                            if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
+                                                shippingDurationUiModel.serviceData.selectedShipperProductId
+                                            } else {
+                                                shipmentGetCourierHolderData.spId
+                                            }
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                            if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
+                                            if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                                     view?.renderCourierStateFailed(
                                                         shipmentGetCourierHolderData.itemPosition,
@@ -2950,9 +3056,24 @@ class ShipmentPresenter @Inject constructor(
                                                             shipmentGetCourierHolderData.spId,
                                                             shipmentGetCourierHolderData.shipmentCartItemModel,
                                                             shippingCourierUiModel,
-                                                            shippingRecommendationData,
-                                                            logisticPromo
+                                                            shippingRecommendationData
                                                         )
+                                                    if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                                        // courier should only be used with BO, but no BO code found
+                                                        view?.renderCourierStateFailed(
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            false,
+                                                            false
+                                                        )
+                                                        view?.logOnErrorLoadCourier(
+                                                            MessageErrorException("rates ui hidden but no promo"),
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            boPromoCode
+                                                        )
+                                                        ratesQueue.remove()
+                                                        itemToProcess = ratesQueue.peek()
+                                                        continue@loopProcess
+                                                    }
                                                     val shouldValidatePromo =
                                                         !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                                                     if (!shouldValidatePromo) {
@@ -2972,7 +3093,7 @@ class ShipmentPresenter @Inject constructor(
                                                         continue@loopProcess
                                                     } else {
                                                         val validateUsePromoRequest =
-                                                            generateValidateUsePromoRequest()
+                                                            generateValidateUsePromoRequest().copy()
                                                         for (ordersItem in validateUsePromoRequest.orders) {
                                                             if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
                                                                 if (!ordersItem.codes.contains(
@@ -3023,13 +3144,24 @@ class ShipmentPresenter @Inject constructor(
                                                                 }
                                                             }
                                                         }
-                                                        doValidateLogisticPromoForOneOrder(
-                                                            validateUsePromoRequest,
-                                                            shipmentGetCourierHolderData.itemPosition,
-                                                            shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
-                                                            courierItemData.selectedShipper.logPromoCode!!,
-                                                            courierItemData
+                                                        promoQueue.offer(
+                                                            ShipmentValidatePromoHolderData(
+                                                                validateUsePromoRequest,
+                                                                shipmentGetCourierHolderData.itemPosition,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
+                                                                courierItemData.selectedShipper.logPromoCode!!,
+                                                                courierItemData
+                                                            )
                                                         )
+                                                        if (promoQueue.size == 1) {
+                                                            doValidateLogisticPromoForOneOrder()
+                                                        } else {
+                                                            withContext(dispatchers.default) {
+                                                                while (promoQueue.isNotEmpty()) {
+                                                                    // wait until promo queue is empty
+                                                                }
+                                                            }
+                                                        }
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3039,319 +3171,327 @@ class ShipmentPresenter @Inject constructor(
                                         }
                                     }
                                 }
-                            } else {
-                                errorReason = "promo not matched"
-                            }
-                        } else {
-                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        shippingCourierUiModel.isSelected = false
-                                    }
-                                    val selectedSpId =
-                                        if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
-                                            shippingDurationUiModel.serviceData.selectedShipperProductId
-                                        } else {
-                                            shipmentGetCourierHolderData.spId
-                                        }
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                            if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                                view?.renderCourierStateFailed(
+
+                                // corner case auto selection if BE default duration failed
+                                if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection || shipmentGetCourierHolderData.shipmentCartItemModel.isDisableChangeCourier) {
+                                    val shippingDuration =
+                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                    if (shippingDuration != null) {
+                                        val shippingCourier =
+                                            shippingDuration.shippingCourierViewModelList.firstOrNull {
+                                                it.productData.error?.errorMessage.isNullOrEmpty()
+                                            }
+                                        if (shippingCourier != null) {
+                                            val courierItemData =
+                                                generateCourierItemDataWithScheduleDelivery(
+                                                    shipmentGetCourierHolderData.isForceReload,
+                                                    shipmentGetCourierHolderData.shipperId,
+                                                    shipmentGetCourierHolderData.spId,
+                                                    shipmentGetCourierHolderData.shipmentCartItemModel,
+                                                    shippingCourier,
+                                                    shippingRecommendationData
+                                                )
+                                            val shouldValidatePromo =
+                                                !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
+                                            if (!shouldValidatePromo) {
+                                                shippingCourier.isSelected = true
+                                                view?.renderCourierStateSuccess(
+                                                    courierItemData,
                                                     shipmentGetCourierHolderData.itemPosition,
                                                     false,
-                                                    false
-                                                )
-                                                view?.logOnErrorLoadCourier(
-                                                    MessageErrorException(
-                                                        shippingCourierUiModel.productData.error?.errorMessage
-                                                    ),
-                                                    shipmentGetCourierHolderData.itemPosition,
-                                                    boPromoCode
+                                                    shipmentGetCourierHolderData.isForceReload
                                                 )
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
                                             } else {
-                                                val courierItemData =
-                                                    generateCourierItemDataWithScheduleDelivery(
-                                                        shipmentGetCourierHolderData.isForceReload,
-                                                        shipmentGetCourierHolderData.shipperId,
-                                                        shipmentGetCourierHolderData.spId,
-                                                        shipmentGetCourierHolderData.shipmentCartItemModel,
-                                                        shippingCourierUiModel,
-                                                        shippingRecommendationData
-                                                    )
-                                                if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
-                                                    // courier should only be used with BO, but no BO code found
-                                                    view?.renderCourierStateFailed(
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        false,
-                                                        false
-                                                    )
-                                                    view?.logOnErrorLoadCourier(
-                                                        MessageErrorException("rates ui hidden but no promo"),
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        boPromoCode
-                                                    )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
+                                                val validateUsePromoRequest =
+                                                    generateValidateUsePromoRequest().copy()
+                                                for (ordersItem in validateUsePromoRequest.orders) {
+                                                    if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
+                                                        if (!ordersItem.codes.contains(
+                                                                courierItemData.selectedShipper.logPromoCode
+                                                            )
+                                                        ) {
+                                                            ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
+                                                            ordersItem.boCode =
+                                                                courierItemData.selectedShipper.logPromoCode!!
+                                                        }
+                                                        ordersItem.shippingId =
+                                                            courierItemData.selectedShipper.shipperId
+                                                        ordersItem.spId =
+                                                            courierItemData.selectedShipper.shipperProductId
+                                                        ordersItem.freeShippingMetadata =
+                                                            courierItemData.selectedShipper.freeShippingMetadata
+                                                        ordersItem.boCampaignId =
+                                                            courierItemData.selectedShipper.boCampaignId
+                                                        ordersItem.shippingSubsidy =
+                                                            courierItemData.selectedShipper.shippingSubsidy
+                                                        ordersItem.benefitClass =
+                                                            courierItemData.selectedShipper.benefitClass
+                                                        ordersItem.shippingPrice =
+                                                            courierItemData.selectedShipper.shippingRate.toDouble()
+                                                        ordersItem.etaText =
+                                                            courierItemData.selectedShipper.etaText!!
+                                                        ordersItem.validationMetadata =
+                                                            shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
+                                                    }
                                                 }
-                                                val shouldValidatePromo =
-                                                    !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                                if (!shouldValidatePromo) {
-                                                    shippingCourierUiModel.isSelected = true
-                                                    setShippingCourierViewModelsState(
-                                                        shippingDurationUiModel.shippingCourierViewModelList,
-                                                        shipmentGetCourierHolderData.shipmentCartItemModel.orderNumber
+                                                val shipmentCartItemModelLists =
+                                                    shipmentCartItemModelList.filterIsInstance(
+                                                        ShipmentCartItemModel::class.java
                                                     )
-                                                    view?.renderCourierStateSuccess(
-                                                        courierItemData,
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        false,
-                                                        shipmentGetCourierHolderData.isForceReload
-                                                    )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
-                                                } else {
-                                                    val validateUsePromoRequest =
-                                                        generateValidateUsePromoRequest()
-                                                    for (ordersItem in validateUsePromoRequest.orders) {
-                                                        if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
-                                                            if (!ordersItem.codes.contains(
-                                                                    courierItemData.selectedShipper.logPromoCode
-                                                                )
+                                                if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
+                                                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                                                        for (order in validateUsePromoRequest.orders) {
+                                                            if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                                                !tmpShipmentCartItemModel.isFreeShippingPlus
                                                             ) {
-                                                                ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
-                                                                ordersItem.boCode =
-                                                                    courierItemData.selectedShipper.logPromoCode!!
-                                                            }
-                                                            ordersItem.shippingId =
-                                                                courierItemData.selectedShipper.shipperId
-                                                            ordersItem.spId =
-                                                                courierItemData.selectedShipper.shipperProductId
-                                                            ordersItem.freeShippingMetadata =
-                                                                courierItemData.selectedShipper.freeShippingMetadata
-                                                            ordersItem.boCampaignId =
-                                                                courierItemData.selectedShipper.boCampaignId
-                                                            ordersItem.shippingSubsidy =
-                                                                courierItemData.selectedShipper.shippingSubsidy
-                                                            ordersItem.benefitClass =
-                                                                courierItemData.selectedShipper.benefitClass
-                                                            ordersItem.shippingPrice =
-                                                                courierItemData.selectedShipper.shippingRate.toDouble()
-                                                            ordersItem.etaText =
-                                                                courierItemData.selectedShipper.etaText!!
-                                                            ordersItem.validationMetadata =
-                                                                shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
-                                                        }
-                                                    }
-                                                    val shipmentCartItemModelLists =
-                                                        shipmentCartItemModelList.filterIsInstance(
-                                                            ShipmentCartItemModel::class.java
-                                                        )
-                                                    if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                            for (order in validateUsePromoRequest.orders) {
-                                                                if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                    !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                ) {
-                                                                    order.codes.remove(
-                                                                        tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                    )
-                                                                    order.boCode = ""
-                                                                }
+                                                                order.codes.remove(
+                                                                    tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                                                                )
+                                                                order.boCode = ""
                                                             }
                                                         }
                                                     }
-                                                    doValidateLogisticPromoForOneOrder(
+                                                }
+                                                promoQueue.offer(
+                                                    ShipmentValidatePromoHolderData(
                                                         validateUsePromoRequest,
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
                                                         courierItemData.selectedShipper.logPromoCode!!,
                                                         courierItemData
                                                     )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // corner case auto selection if BE default duration failed
-                            if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection || shipmentGetCourierHolderData.shipmentCartItemModel.isDisableChangeCourier) {
-                                val shippingDuration =
-                                    shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
-                                if (shippingDuration != null) {
-                                    val shippingCourier =
-                                        shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                            it.productData.error?.errorMessage.isNullOrEmpty()
-                                        }
-                                    if (shippingCourier != null) {
-                                        val courierItemData =
-                                            generateCourierItemDataWithScheduleDelivery(
-                                                shipmentGetCourierHolderData.isForceReload,
-                                                shipmentGetCourierHolderData.shipperId,
-                                                shipmentGetCourierHolderData.spId,
-                                                shipmentGetCourierHolderData.shipmentCartItemModel,
-                                                shippingCourier,
-                                                shippingRecommendationData
-                                            )
-                                        val shouldValidatePromo =
-                                            !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                        if (!shouldValidatePromo) {
-                                            shippingCourier.isSelected = true
-                                            view?.renderCourierStateSuccess(
-                                                courierItemData,
-                                                shipmentGetCourierHolderData.itemPosition,
-                                                false,
-                                                shipmentGetCourierHolderData.isForceReload
-                                            )
-                                            ratesQueue.remove()
-                                            itemToProcess = ratesQueue.peek()
-                                            continue@loopProcess
-                                        } else {
-                                            val validateUsePromoRequest =
-                                                generateValidateUsePromoRequest()
-                                            for (ordersItem in validateUsePromoRequest.orders) {
-                                                if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
-                                                    if (!ordersItem.codes.contains(
-                                                            courierItemData.selectedShipper.logPromoCode
-                                                        )
-                                                    ) {
-                                                        ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
-                                                        ordersItem.boCode =
-                                                            courierItemData.selectedShipper.logPromoCode!!
-                                                    }
-                                                    ordersItem.shippingId =
-                                                        courierItemData.selectedShipper.shipperId
-                                                    ordersItem.spId =
-                                                        courierItemData.selectedShipper.shipperProductId
-                                                    ordersItem.freeShippingMetadata =
-                                                        courierItemData.selectedShipper.freeShippingMetadata
-                                                    ordersItem.boCampaignId =
-                                                        courierItemData.selectedShipper.boCampaignId
-                                                    ordersItem.shippingSubsidy =
-                                                        courierItemData.selectedShipper.shippingSubsidy
-                                                    ordersItem.benefitClass =
-                                                        courierItemData.selectedShipper.benefitClass
-                                                    ordersItem.shippingPrice =
-                                                        courierItemData.selectedShipper.shippingRate.toDouble()
-                                                    ordersItem.etaText =
-                                                        courierItemData.selectedShipper.etaText!!
-                                                    ordersItem.validationMetadata =
-                                                        shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
-                                                }
-                                            }
-                                            val shipmentCartItemModelLists =
-                                                shipmentCartItemModelList.filterIsInstance(
-                                                    ShipmentCartItemModel::class.java
                                                 )
-                                            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                    for (order in validateUsePromoRequest.orders) {
-                                                        if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                            !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                        ) {
-                                                            order.codes.remove(
-                                                                tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                            )
-                                                            order.boCode = ""
+                                                if (promoQueue.size == 1) {
+                                                    doValidateLogisticPromoForOneOrder()
+                                                } else {
+                                                    withContext(dispatchers.default) {
+                                                        while (promoQueue.isNotEmpty()) {
+                                                            // wait until promo queue is empty
                                                         }
                                                     }
                                                 }
+                                                ratesQueue.remove()
+                                                itemToProcess = ratesQueue.peek()
+                                                continue@loopProcess
                                             }
-                                            doValidateLogisticPromoForOneOrder(
-                                                validateUsePromoRequest,
-                                                shipmentGetCourierHolderData.itemPosition,
-                                                shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
-                                                courierItemData.selectedShipper.logPromoCode!!,
-                                                courierItemData
-                                            )
-                                            ratesQueue.remove()
-                                            itemToProcess = ratesQueue.peek()
-                                            continue@loopProcess
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            errorReason = "rates empty data"
                         }
-                    } else {
-                        errorReason = "rates empty data"
-                    }
-                    view?.renderCourierStateFailed(
-                        shipmentGetCourierHolderData.itemPosition,
-                        false,
-                        false
-                    )
-                    view?.logOnErrorLoadCourier(
-                        MessageErrorException(errorReason),
-                        shipmentGetCourierHolderData.itemPosition,
-                        boPromoCode
-                    )
-                    ratesQueue.remove()
-                    itemToProcess = ratesQueue.peek()
-                } catch (t: Throwable) {
-                    Timber.d(t)
-                    val boPromoCode = getBoPromoCode(
-                        shipmentGetCourierHolderData.isForceReload,
-                        shipmentGetCourierHolderData.shipmentCartItemModel
-                    )
-                    if (shipmentGetCourierHolderData.isInitialLoad) {
                         view?.renderCourierStateFailed(
                             shipmentGetCourierHolderData.itemPosition,
                             false,
                             false
                         )
+                        view?.logOnErrorLoadCourier(
+                            MessageErrorException(errorReason),
+                            shipmentGetCourierHolderData.itemPosition,
+                            boPromoCode
+                        )
+                        ratesQueue.remove()
+                        itemToProcess = ratesQueue.peek()
+                    } catch (t: Throwable) {
+                        Timber.d(t)
+                        val boPromoCode = getBoPromoCode(
+                            shipmentGetCourierHolderData.isForceReload,
+                            shipmentGetCourierHolderData.shipmentCartItemModel
+                        )
+                        if (shipmentGetCourierHolderData.isInitialLoad) {
+                            view?.renderCourierStateFailed(
+                                shipmentGetCourierHolderData.itemPosition,
+                                false,
+                                false
+                            )
+                        }
+                        view?.logOnErrorLoadCourier(
+                            t,
+                            shipmentGetCourierHolderData.itemPosition,
+                            boPromoCode
+                        )
+                        ratesQueue.remove()
+                        itemToProcess = ratesQueue.peek()
                     }
-                    view?.logOnErrorLoadCourier(
-                        t,
-                        shipmentGetCourierHolderData.itemPosition,
-                        boPromoCode
-                    )
-                    ratesQueue.remove()
-                    itemToProcess = ratesQueue.peek()
-                }
-            } else {
-                try {
-                    val shippingRecommendationData = withContext(dispatchers.io) {
-                        ratesUseCase.execute(shipmentGetCourierHolderData.ratesParam)
-                            .map { shippingRecommendationData: ShippingRecommendationData ->
-                                stateConverter.fillState(
-                                    shippingRecommendationData,
-                                    shipmentGetCourierHolderData.shopShipmentList,
-                                    shipmentGetCourierHolderData.spId,
-                                    0
-                                )
-                            }.toBlocking().single()
-                    }
-                    val boPromoCode = getBoPromoCode(
-                        shipmentGetCourierHolderData.isForceReload,
-                        shipmentGetCourierHolderData.shipmentCartItemModel
-                    )
-                    var errorReason = "rates invalid data"
-                    if (shipmentGetCourierHolderData.isInitialLoad && shipmentGetCourierHolderData.shipmentCartItemModel.shouldResetCourier) {
-                        shipmentGetCourierHolderData.shipmentCartItemModel.shouldResetCourier =
-                            false
-                        error("racing condition against epharmacy validation")
-                    }
-                    if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                        if (!shipmentGetCourierHolderData.isForceReload && isBoUnstackEnabled && shipmentGetCourierHolderData.shipmentCartItemModel.boCode.isNotEmpty()) {
-                            val logisticPromo =
-                                shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentGetCourierHolderData.shipmentCartItemModel.boCode && !it.disabled }
-                            if (logisticPromo != null) {
+                } else {
+                    try {
+                        val shippingRecommendationData = withContext(dispatchers.io) {
+                            ratesUseCase.execute(shipmentGetCourierHolderData.ratesParam)
+                                .map { shippingRecommendationData: ShippingRecommendationData ->
+                                    stateConverter.fillState(
+                                        shippingRecommendationData,
+                                        shipmentGetCourierHolderData.shopShipmentList,
+                                        shipmentGetCourierHolderData.spId,
+                                        0
+                                    )
+                                }.toBlocking().single()
+                        }
+                        val boPromoCode = getBoPromoCode(
+                            shipmentGetCourierHolderData.isForceReload,
+                            shipmentGetCourierHolderData.shipmentCartItemModel
+                        )
+                        var errorReason = "rates invalid data"
+                        if (shipmentGetCourierHolderData.isInitialLoad && shipmentGetCourierHolderData.shipmentCartItemModel.shouldResetCourier) {
+                            shipmentGetCourierHolderData.shipmentCartItemModel.shouldResetCourier =
+                                false
+                            error("racing condition against epharmacy validation")
+                        }
+                        if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                            if (!shipmentGetCourierHolderData.isForceReload && isBoUnstackEnabled && shipmentGetCourierHolderData.shipmentCartItemModel.boCode.isNotEmpty()) {
+                                val logisticPromo =
+                                    shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentGetCourierHolderData.shipmentCartItemModel.boCode && !it.disabled }
+                                if (logisticPromo != null) {
+                                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                                        if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
+                                            for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                                shippingCourierUiModel.isSelected = false
+                                            }
+                                            for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                                if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
+                                                    if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                        view?.renderCourierStateFailed(
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            shipmentGetCourierHolderData.isTradeInDropOff,
+                                                            false
+                                                        )
+                                                        view?.logOnErrorLoadCourier(
+                                                            MessageErrorException(
+                                                                shippingCourierUiModel.productData.error?.errorMessage
+                                                            ),
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            boPromoCode
+                                                        )
+                                                        ratesQueue.remove()
+                                                        itemToProcess = ratesQueue.peek()
+                                                        continue@loopProcess
+                                                    } else {
+                                                        val courierItemData =
+                                                            generateCourierItemData(
+                                                                shipmentGetCourierHolderData.isForceReload,
+                                                                shipmentGetCourierHolderData.shipperId,
+                                                                shipmentGetCourierHolderData.spId,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel,
+                                                                shippingCourierUiModel,
+                                                                shippingRecommendationData,
+                                                                logisticPromo
+                                                            )
+                                                        val shouldValidatePromo =
+                                                            !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
+                                                        if (!shouldValidatePromo) {
+                                                            shippingCourierUiModel.isSelected = true
+                                                            setShippingCourierViewModelsState(
+                                                                shippingDurationUiModel.shippingCourierViewModelList,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel.orderNumber
+                                                            )
+                                                            view?.renderCourierStateSuccess(
+                                                                courierItemData,
+                                                                shipmentGetCourierHolderData.itemPosition,
+                                                                shipmentGetCourierHolderData.isTradeInDropOff,
+                                                                shipmentGetCourierHolderData.isForceReload
+                                                            )
+                                                            ratesQueue.remove()
+                                                            itemToProcess = ratesQueue.peek()
+                                                            continue@loopProcess
+                                                        } else {
+                                                            val validateUsePromoRequest =
+                                                                generateValidateUsePromoRequest().copy()
+                                                            for (ordersItem in validateUsePromoRequest.orders) {
+                                                                if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
+                                                                    if (!ordersItem.codes.contains(
+                                                                            courierItemData.selectedShipper.logPromoCode
+                                                                        )
+                                                                    ) {
+                                                                        ordersItem.codes.add(
+                                                                            courierItemData.selectedShipper.logPromoCode!!
+                                                                        )
+                                                                        ordersItem.boCode =
+                                                                            courierItemData.selectedShipper.logPromoCode!!
+                                                                    }
+                                                                    ordersItem.shippingId =
+                                                                        courierItemData.selectedShipper.shipperId
+                                                                    ordersItem.spId =
+                                                                        courierItemData.selectedShipper.shipperProductId
+                                                                    ordersItem.freeShippingMetadata =
+                                                                        courierItemData.selectedShipper.freeShippingMetadata
+                                                                    ordersItem.boCampaignId =
+                                                                        courierItemData.selectedShipper.boCampaignId
+                                                                    ordersItem.shippingSubsidy =
+                                                                        courierItemData.selectedShipper.shippingSubsidy
+                                                                    ordersItem.benefitClass =
+                                                                        courierItemData.selectedShipper.benefitClass
+                                                                    ordersItem.shippingPrice =
+                                                                        courierItemData.selectedShipper.shippingRate.toDouble()
+                                                                    ordersItem.etaText =
+                                                                        courierItemData.selectedShipper.etaText!!
+                                                                    ordersItem.validationMetadata =
+                                                                        shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
+                                                                }
+                                                            }
+                                                            val shipmentCartItemModelLists =
+                                                                shipmentCartItemModelList.filterIsInstance(
+                                                                    ShipmentCartItemModel::class.java
+                                                                )
+                                                            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
+                                                                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                                                                    for (order in validateUsePromoRequest.orders) {
+                                                                        if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                                                            !tmpShipmentCartItemModel.isFreeShippingPlus
+                                                                        ) {
+                                                                            order.codes.remove(
+                                                                                tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                                                                            )
+                                                                            order.boCode = ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            promoQueue.offer(
+                                                                ShipmentValidatePromoHolderData(
+                                                                    validateUsePromoRequest,
+                                                                    shipmentGetCourierHolderData.itemPosition,
+                                                                    shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
+                                                                    courierItemData.selectedShipper.logPromoCode!!,
+                                                                    courierItemData
+                                                                )
+                                                            )
+                                                            if (promoQueue.size == 1) {
+                                                                doValidateLogisticPromoForOneOrder()
+                                                            } else {
+                                                                withContext(dispatchers.default) {
+                                                                    while (promoQueue.isNotEmpty()) {
+                                                                        // wait until promo queue is empty
+                                                                    }
+                                                                }
+                                                            }
+                                                            ratesQueue.remove()
+                                                            itemToProcess = ratesQueue.peek()
+                                                            continue@loopProcess
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    errorReason = "promo not matched"
+                                }
+                            } else {
                                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                     if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                             shippingCourierUiModel.isSelected = false
                                         }
+                                        val selectedSpId = getSelectedSpId(
+                                            shipmentGetCourierHolderData.shipmentCartItemModel,
+                                            shipmentGetCourierHolderData.spId,
+                                            shippingDurationUiModel
+                                        )
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                            if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
+                                            if (shipmentGetCourierHolderData.isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                                     view?.renderCourierStateFailed(
                                                         shipmentGetCourierHolderData.itemPosition,
@@ -3375,9 +3515,24 @@ class ShipmentPresenter @Inject constructor(
                                                         shipmentGetCourierHolderData.spId,
                                                         shipmentGetCourierHolderData.shipmentCartItemModel,
                                                         shippingCourierUiModel,
-                                                        shippingRecommendationData,
-                                                        logisticPromo
+                                                        shippingRecommendationData
                                                     )
+                                                    if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                                        // courier should only be used with BO, but no BO code found
+                                                        view?.renderCourierStateFailed(
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            shipmentGetCourierHolderData.isTradeInDropOff,
+                                                            false
+                                                        )
+                                                        view?.logOnErrorLoadCourier(
+                                                            MessageErrorException("rates ui hidden but no promo"),
+                                                            shipmentGetCourierHolderData.itemPosition,
+                                                            boPromoCode
+                                                        )
+                                                        ratesQueue.remove()
+                                                        itemToProcess = ratesQueue.peek()
+                                                        continue@loopProcess
+                                                    }
                                                     val shouldValidatePromo =
                                                         !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                                                     if (!shouldValidatePromo) {
@@ -3397,7 +3552,7 @@ class ShipmentPresenter @Inject constructor(
                                                         continue@loopProcess
                                                     } else {
                                                         val validateUsePromoRequest =
-                                                            generateValidateUsePromoRequest()
+                                                            generateValidateUsePromoRequest().copy()
                                                         for (ordersItem in validateUsePromoRequest.orders) {
                                                             if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
                                                                 if (!ordersItem.codes.contains(
@@ -3448,13 +3603,24 @@ class ShipmentPresenter @Inject constructor(
                                                                 }
                                                             }
                                                         }
-                                                        doValidateLogisticPromoForOneOrder(
-                                                            validateUsePromoRequest,
-                                                            shipmentGetCourierHolderData.itemPosition,
-                                                            shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
-                                                            courierItemData.selectedShipper.logPromoCode!!,
-                                                            courierItemData
+                                                        promoQueue.offer(
+                                                            ShipmentValidatePromoHolderData(
+                                                                validateUsePromoRequest,
+                                                                shipmentGetCourierHolderData.itemPosition,
+                                                                shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
+                                                                courierItemData.selectedShipper.logPromoCode!!,
+                                                                courierItemData
+                                                            )
                                                         )
+                                                        if (promoQueue.size == 1) {
+                                                            doValidateLogisticPromoForOneOrder()
+                                                        } else {
+                                                            withContext(dispatchers.default) {
+                                                                while (promoQueue.isNotEmpty()) {
+                                                                    // wait until promo queue is empty
+                                                                }
+                                                            }
+                                                        }
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3464,284 +3630,155 @@ class ShipmentPresenter @Inject constructor(
                                         }
                                     }
                                 }
-                            } else {
-                                errorReason = "promo not matched"
-                            }
-                        } else {
-                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        shippingCourierUiModel.isSelected = false
-                                    }
-                                    val selectedSpId = getSelectedSpId(
-                                        shipmentGetCourierHolderData.shipmentCartItemModel,
-                                        shipmentGetCourierHolderData.spId,
-                                        shippingDurationUiModel
-                                    )
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        if (shipmentGetCourierHolderData.isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
-                                            if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                                view?.renderCourierStateFailed(
+
+                                // corner case auto selection if BE default duration failed
+                                if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection) {
+                                    val shippingDuration =
+                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                    if (shippingDuration != null) {
+                                        val shippingCourier =
+                                            shippingDuration.shippingCourierViewModelList.firstOrNull {
+                                                it.productData.error?.errorMessage.isNullOrEmpty()
+                                            }
+                                        if (shippingCourier != null) {
+                                            val courierItemData = generateCourierItemData(
+                                                shipmentGetCourierHolderData.isForceReload,
+                                                shipmentGetCourierHolderData.shipperId,
+                                                shipmentGetCourierHolderData.spId,
+                                                shipmentGetCourierHolderData.shipmentCartItemModel,
+                                                shippingCourier,
+                                                shippingRecommendationData
+                                            )
+                                            val shouldValidatePromo =
+                                                !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
+                                            if (!shouldValidatePromo) {
+                                                shippingCourier.isSelected = true
+                                                view?.renderCourierStateSuccess(
+                                                    courierItemData,
                                                     shipmentGetCourierHolderData.itemPosition,
                                                     shipmentGetCourierHolderData.isTradeInDropOff,
-                                                    false
-                                                )
-                                                view?.logOnErrorLoadCourier(
-                                                    MessageErrorException(
-                                                        shippingCourierUiModel.productData.error?.errorMessage
-                                                    ),
-                                                    shipmentGetCourierHolderData.itemPosition,
-                                                    boPromoCode
+                                                    shipmentGetCourierHolderData.isForceReload
                                                 )
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
                                             } else {
-                                                val courierItemData = generateCourierItemData(
-                                                    shipmentGetCourierHolderData.isForceReload,
-                                                    shipmentGetCourierHolderData.shipperId,
-                                                    shipmentGetCourierHolderData.spId,
-                                                    shipmentGetCourierHolderData.shipmentCartItemModel,
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData
-                                                )
-                                                if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
-                                                    // courier should only be used with BO, but no BO code found
-                                                    view?.renderCourierStateFailed(
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        shipmentGetCourierHolderData.isTradeInDropOff,
-                                                        false
-                                                    )
-                                                    view?.logOnErrorLoadCourier(
-                                                        MessageErrorException("rates ui hidden but no promo"),
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        boPromoCode
-                                                    )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
+                                                val validateUsePromoRequest =
+                                                    generateValidateUsePromoRequest().copy()
+                                                for (ordersItem in validateUsePromoRequest.orders) {
+                                                    if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
+                                                        if (!ordersItem.codes.contains(
+                                                                courierItemData.selectedShipper.logPromoCode
+                                                            )
+                                                        ) {
+                                                            ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
+                                                            ordersItem.boCode =
+                                                                courierItemData.selectedShipper.logPromoCode!!
+                                                        }
+                                                        ordersItem.shippingId =
+                                                            courierItemData.selectedShipper.shipperId
+                                                        ordersItem.spId =
+                                                            courierItemData.selectedShipper.shipperProductId
+                                                        ordersItem.freeShippingMetadata =
+                                                            courierItemData.selectedShipper.freeShippingMetadata
+                                                        ordersItem.boCampaignId =
+                                                            courierItemData.selectedShipper.boCampaignId
+                                                        ordersItem.shippingSubsidy =
+                                                            courierItemData.selectedShipper.shippingSubsidy
+                                                        ordersItem.benefitClass =
+                                                            courierItemData.selectedShipper.benefitClass
+                                                        ordersItem.shippingPrice =
+                                                            courierItemData.selectedShipper.shippingRate.toDouble()
+                                                        ordersItem.etaText =
+                                                            courierItemData.selectedShipper.etaText!!
+                                                        ordersItem.validationMetadata =
+                                                            shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
+                                                    }
                                                 }
-                                                val shouldValidatePromo =
-                                                    !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                                if (!shouldValidatePromo) {
-                                                    shippingCourierUiModel.isSelected = true
-                                                    setShippingCourierViewModelsState(
-                                                        shippingDurationUiModel.shippingCourierViewModelList,
-                                                        shipmentGetCourierHolderData.shipmentCartItemModel.orderNumber
+                                                val shipmentCartItemModelLists =
+                                                    shipmentCartItemModelList.filterIsInstance(
+                                                        ShipmentCartItemModel::class.java
                                                     )
-                                                    view?.renderCourierStateSuccess(
-                                                        courierItemData,
-                                                        shipmentGetCourierHolderData.itemPosition,
-                                                        shipmentGetCourierHolderData.isTradeInDropOff,
-                                                        shipmentGetCourierHolderData.isForceReload
-                                                    )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
-                                                } else {
-                                                    val validateUsePromoRequest =
-                                                        generateValidateUsePromoRequest()
-                                                    for (ordersItem in validateUsePromoRequest.orders) {
-                                                        if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
-                                                            if (!ordersItem.codes.contains(
-                                                                    courierItemData.selectedShipper.logPromoCode
-                                                                )
+                                                if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
+                                                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                                                        for (order in validateUsePromoRequest.orders) {
+                                                            if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                                                !tmpShipmentCartItemModel.isFreeShippingPlus
                                                             ) {
-                                                                ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
-                                                                ordersItem.boCode =
-                                                                    courierItemData.selectedShipper.logPromoCode!!
-                                                            }
-                                                            ordersItem.shippingId =
-                                                                courierItemData.selectedShipper.shipperId
-                                                            ordersItem.spId =
-                                                                courierItemData.selectedShipper.shipperProductId
-                                                            ordersItem.freeShippingMetadata =
-                                                                courierItemData.selectedShipper.freeShippingMetadata
-                                                            ordersItem.boCampaignId =
-                                                                courierItemData.selectedShipper.boCampaignId
-                                                            ordersItem.shippingSubsidy =
-                                                                courierItemData.selectedShipper.shippingSubsidy
-                                                            ordersItem.benefitClass =
-                                                                courierItemData.selectedShipper.benefitClass
-                                                            ordersItem.shippingPrice =
-                                                                courierItemData.selectedShipper.shippingRate.toDouble()
-                                                            ordersItem.etaText =
-                                                                courierItemData.selectedShipper.etaText!!
-                                                            ordersItem.validationMetadata =
-                                                                shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
-                                                        }
-                                                    }
-                                                    val shipmentCartItemModelLists =
-                                                        shipmentCartItemModelList.filterIsInstance(
-                                                            ShipmentCartItemModel::class.java
-                                                        )
-                                                    if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                            for (order in validateUsePromoRequest.orders) {
-                                                                if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                    !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                ) {
-                                                                    order.codes.remove(
-                                                                        tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                    )
-                                                                    order.boCode = ""
-                                                                }
+                                                                order.codes.remove(
+                                                                    tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                                                                )
+                                                                order.boCode = ""
                                                             }
                                                         }
                                                     }
-                                                    doValidateLogisticPromoForOneOrder(
+                                                }
+                                                promoQueue.offer(
+                                                    ShipmentValidatePromoHolderData(
                                                         validateUsePromoRequest,
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
                                                         courierItemData.selectedShipper.logPromoCode!!,
                                                         courierItemData
                                                     )
-                                                    ratesQueue.remove()
-                                                    itemToProcess = ratesQueue.peek()
-                                                    continue@loopProcess
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // corner case auto selection if BE default duration failed
-                            if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection) {
-                                val shippingDuration =
-                                    shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
-                                if (shippingDuration != null) {
-                                    val shippingCourier =
-                                        shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                            it.productData.error?.errorMessage.isNullOrEmpty()
-                                        }
-                                    if (shippingCourier != null) {
-                                        val courierItemData = generateCourierItemData(
-                                            shipmentGetCourierHolderData.isForceReload,
-                                            shipmentGetCourierHolderData.shipperId,
-                                            shipmentGetCourierHolderData.spId,
-                                            shipmentGetCourierHolderData.shipmentCartItemModel,
-                                            shippingCourier,
-                                            shippingRecommendationData
-                                        )
-                                        val shouldValidatePromo =
-                                            !shipmentGetCourierHolderData.isForceReload && courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                        if (!shouldValidatePromo) {
-                                            shippingCourier.isSelected = true
-                                            view?.renderCourierStateSuccess(
-                                                courierItemData,
-                                                shipmentGetCourierHolderData.itemPosition,
-                                                shipmentGetCourierHolderData.isTradeInDropOff,
-                                                shipmentGetCourierHolderData.isForceReload
-                                            )
-                                            ratesQueue.remove()
-                                            itemToProcess = ratesQueue.peek()
-                                            continue@loopProcess
-                                        } else {
-                                            val validateUsePromoRequest =
-                                                generateValidateUsePromoRequest()
-                                            for (ordersItem in validateUsePromoRequest.orders) {
-                                                if (ordersItem.cartStringGroup == shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup) {
-                                                    if (!ordersItem.codes.contains(
-                                                            courierItemData.selectedShipper.logPromoCode
-                                                        )
-                                                    ) {
-                                                        ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
-                                                        ordersItem.boCode =
-                                                            courierItemData.selectedShipper.logPromoCode!!
-                                                    }
-                                                    ordersItem.shippingId =
-                                                        courierItemData.selectedShipper.shipperId
-                                                    ordersItem.spId =
-                                                        courierItemData.selectedShipper.shipperProductId
-                                                    ordersItem.freeShippingMetadata =
-                                                        courierItemData.selectedShipper.freeShippingMetadata
-                                                    ordersItem.boCampaignId =
-                                                        courierItemData.selectedShipper.boCampaignId
-                                                    ordersItem.shippingSubsidy =
-                                                        courierItemData.selectedShipper.shippingSubsidy
-                                                    ordersItem.benefitClass =
-                                                        courierItemData.selectedShipper.benefitClass
-                                                    ordersItem.shippingPrice =
-                                                        courierItemData.selectedShipper.shippingRate.toDouble()
-                                                    ordersItem.etaText =
-                                                        courierItemData.selectedShipper.etaText!!
-                                                    ordersItem.validationMetadata =
-                                                        shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
-                                                }
-                                            }
-                                            val shipmentCartItemModelLists =
-                                                shipmentCartItemModelList.filterIsInstance(
-                                                    ShipmentCartItemModel::class.java
                                                 )
-                                            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                    for (order in validateUsePromoRequest.orders) {
-                                                        if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                            !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                        ) {
-                                                            order.codes.remove(
-                                                                tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                            )
-                                                            order.boCode = ""
+                                                if (promoQueue.size == 1) {
+                                                    doValidateLogisticPromoForOneOrder()
+                                                } else {
+                                                    withContext(dispatchers.default) {
+                                                        while (promoQueue.isNotEmpty()) {
+                                                            // wait until promo queue is empty
                                                         }
                                                     }
                                                 }
+                                                ratesQueue.remove()
+                                                itemToProcess = ratesQueue.peek()
+                                                continue@loopProcess
                                             }
-                                            doValidateLogisticPromoForOneOrder(
-                                                validateUsePromoRequest,
-                                                shipmentGetCourierHolderData.itemPosition,
-                                                shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup,
-                                                courierItemData.selectedShipper.logPromoCode!!,
-                                                courierItemData
-                                            )
-                                            ratesQueue.remove()
-                                            itemToProcess = ratesQueue.peek()
-                                            continue@loopProcess
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            errorReason = "rates empty data"
                         }
-                    } else {
-                        errorReason = "rates empty data"
-                    }
-                    view?.renderCourierStateFailed(
-                        shipmentGetCourierHolderData.itemPosition,
-                        shipmentGetCourierHolderData.isTradeInDropOff,
-                        false
-                    )
-                    view?.logOnErrorLoadCourier(
-                        MessageErrorException(errorReason),
-                        shipmentGetCourierHolderData.itemPosition,
-                        boPromoCode
-                    )
-                    ratesQueue.remove()
-                    itemToProcess = ratesQueue.peek()
-                } catch (t: Throwable) {
-                    Timber.d(t)
-                    val boPromoCode = getBoPromoCode(
-                        shipmentGetCourierHolderData.isForceReload,
-                        shipmentGetCourierHolderData.shipmentCartItemModel
-                    )
-                    if (shipmentGetCourierHolderData.isInitialLoad) {
                         view?.renderCourierStateFailed(
                             shipmentGetCourierHolderData.itemPosition,
                             shipmentGetCourierHolderData.isTradeInDropOff,
                             false
                         )
+                        view?.logOnErrorLoadCourier(
+                            MessageErrorException(errorReason),
+                            shipmentGetCourierHolderData.itemPosition,
+                            boPromoCode
+                        )
+                        ratesQueue.remove()
+                        itemToProcess = ratesQueue.peek()
+                    } catch (t: Throwable) {
+                        Timber.d(t)
+                        val boPromoCode = getBoPromoCode(
+                            shipmentGetCourierHolderData.isForceReload,
+                            shipmentGetCourierHolderData.shipmentCartItemModel
+                        )
+                        if (shipmentGetCourierHolderData.isInitialLoad) {
+                            view?.renderCourierStateFailed(
+                                shipmentGetCourierHolderData.itemPosition,
+                                shipmentGetCourierHolderData.isTradeInDropOff,
+                                false
+                            )
+                        }
+                        view?.logOnErrorLoadCourier(
+                            t,
+                            shipmentGetCourierHolderData.itemPosition,
+                            boPromoCode
+                        )
+                        ratesQueue.remove()
+                        itemToProcess = ratesQueue.peek()
                     }
-                    view?.logOnErrorLoadCourier(
-                        t,
-                        shipmentGetCourierHolderData.itemPosition,
-                        boPromoCode
-                    )
-                    ratesQueue.remove()
-                    itemToProcess = ratesQueue.peek()
                 }
             }
+            updateShipmentButtonPaymentModel(loading = false)
         }
-        updateShipmentButtonPaymentModel(loading = false)
     }
 
     private fun generateCourierItemDataWithScheduleDelivery(
@@ -4945,7 +4982,7 @@ class ShipmentPresenter @Inject constructor(
                                                         logisticPromo
                                                     )
                                                 val validateUsePromoRequest =
-                                                    generateValidateUsePromoRequest()
+                                                    generateValidateUsePromoRequest().copy()
                                                 for (ordersItem in validateUsePromoRequest.orders) {
                                                     if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                                                         if (!ordersItem.codes.contains(
@@ -4994,13 +5031,24 @@ class ShipmentPresenter @Inject constructor(
                                                         }
                                                     }
                                                 }
-                                                doValidateLogisticPromoForOneOrder(
-                                                    validateUsePromoRequest,
-                                                    itemPosition,
-                                                    cartString,
-                                                    promoCode,
-                                                    courierItemData
+                                                promoQueue.offer(
+                                                    ShipmentValidatePromoHolderData(
+                                                        validateUsePromoRequest,
+                                                        itemPosition,
+                                                        cartString,
+                                                        promoCode,
+                                                        courierItemData
+                                                    )
                                                 )
+                                                if (promoQueue.size == 1) {
+                                                    doValidateLogisticPromoForOneOrder()
+                                                } else {
+                                                    withContext(dispatchers.default) {
+                                                        while (promoQueue.isNotEmpty()) {
+                                                            // wait until promo queue is empty
+                                                        }
+                                                    }
+                                                }
                                                 continue@loopProcess
                                             }
                                         }
@@ -5575,8 +5623,13 @@ class ShipmentPresenter @Inject constructor(
             .forEach { ordersItems ->
                 val boCode = ordersItems.first().boCode
                 if (boCode.isNotEmpty()) {
+                    val existingAppliedUniqueId = validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.firstOrNull { it.code == boCode && it.cartStringGroup == ordersItems.first().cartStringGroup }?.uniqueId ?: ""
                     ordersItems.forEachIndexed { index, ordersItem ->
-                        if (index > 0 && ordersItem.codes.contains(boCode)) {
+                        if (existingAppliedUniqueId.isNotEmpty()) {
+                            if (ordersItem.uniqueId != existingAppliedUniqueId) {
+                                ordersItem.codes.remove(boCode)
+                            }
+                        } else if (index > 0) {
                             ordersItem.codes.remove(boCode)
                         }
                     }

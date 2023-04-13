@@ -1410,8 +1410,11 @@ class ShipmentCartItemBottomViewHolder(
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
         if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-            scheduleDeliveryDebouncedListener?.onScheduleDeliveryChanged(
-                ShipmentScheduleDeliveryHolderData(scheduleDeliveryUiModel, bindingAdapterPosition)
+            scheduleDeliveryDonePublisher = PublishSubject.create()
+            actionListener?.onChangeScheduleDelivery(
+                scheduleDeliveryUiModel,
+                bindingAdapterPosition,
+                scheduleDeliveryDonePublisher!!
             )
         }
     }
