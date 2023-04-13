@@ -1,8 +1,8 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,10 +32,10 @@ fun NestTips(
     Card(
         modifier = modifier.fillMaxWidth(),
         border = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._200),
-        backgroundColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._200 else NestTheme.colors.NN._50
+        backgroundColor = NestTheme.colors.NN._50
     ) {
         Box {
-            Box(modifier = Modifier.align(Alignment.TopEnd).offset(x = (6).dp, y = (-8).dp)) {
+            Box(modifier = Modifier.align(Alignment.TopEnd).offset(x = (8).dp, y = (-8).dp)) {
                 Box(
                     modifier = Modifier
                         .width(40.dp).height(40.dp)
@@ -45,7 +45,8 @@ fun NestTips(
             Icon(
                 painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_lightbulb),
                 contentDescription = "tips icon",
-                modifier = Modifier.align(Alignment.TopEnd).padding(end = 4.dp, top = 4.dp).height(20.dp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 4.dp, top = 4.dp)
+                    .height(24.dp),
                 tint = NestTheme.colors.NN._300
             )
             Column(modifier = Modifier.padding(16.dp)) {
@@ -74,4 +75,12 @@ fun NestTips(
 @Composable
 fun NestTipsPreview() {
     NestTips(title = "tips title", description = "tips description")
+}
+
+@Preview(name = "Tips Dark Mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun NestTipsDarkPreview() {
+    NestTheme(darkTheme = true) {
+        NestTips(title = "tips title", description = "tips description")
+    }
 }
