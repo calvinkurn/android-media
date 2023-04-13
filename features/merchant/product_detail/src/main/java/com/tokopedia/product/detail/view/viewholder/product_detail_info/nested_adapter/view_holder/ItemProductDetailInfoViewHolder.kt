@@ -38,13 +38,13 @@ class ItemProductDetailInfoViewHolder(
         infoDetailValue.apply {
             text = data.subtitle.parseAsHtmlLink(root.context)
 
-            if (data.applink.isNotEmpty()) {
+            if (data.isClickable) {
                 setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
-            }
 
-            setOnClickListener {
-                setOnDetailValueClicked(data = data, trackData = trackData)
+                setOnClickListener {
+                    setOnDetailValueClicked(data = data, trackData = trackData)
+                }
             }
         }
     }

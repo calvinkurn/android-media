@@ -88,7 +88,7 @@ class BsProductDetailInfoViewModel @Inject constructor(
         isGiftable = productInfoParcel.isGiftable,
         bottomSheetParam = productInfoParcel.bottomSheetParam,
         catalogId = productInfoParcel.catalogId,
-        forceRefresh = true // productInfoParcel.forceRefresh
+        forceRefresh = productInfoParcel.forceRefresh
     )
 
     private fun doGenerateVisitable(

@@ -471,7 +471,8 @@ object DynamicProductDetailMapper {
                 showAtBottomSheet = it.showAtBottomSheet,
                 key = it.key,
                 type = it.getType(),
-                action = it.getAction()
+                action = it.getAction(),
+                extParam = it.extParam
             )
         }
     }

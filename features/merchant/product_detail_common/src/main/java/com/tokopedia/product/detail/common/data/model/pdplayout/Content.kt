@@ -37,6 +37,10 @@ data class Content(
 ) {
 
     companion object {
+        const val KEY_ETALASE = "etalase"
+        const val KEY_CATEGORY = "kategori"
+        const val KEY_CATALOG = "katalog"
+
         const val TYPE_ACTION = "action"
 
         const val ACTION_APPLINK = "applink"

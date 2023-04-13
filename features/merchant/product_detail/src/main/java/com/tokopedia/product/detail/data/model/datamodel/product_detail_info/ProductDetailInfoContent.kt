@@ -2,8 +2,10 @@ package com.tokopedia.product.detail.data.model.datamodel.product_detail_info
 
 import android.os.Parcelable
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content.Companion.KEY_CATALOG
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content.Companion.KEY_CATEGORY
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content.Companion.KEY_ETALASE
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 
 /**
  * Created by yovi.putra on 03/09/22"
@@ -21,26 +23,23 @@ data class ProductDetailInfoContent(
     val isAnnotation: Boolean = false,
     val showAtBottomSheet: Boolean = true,
     val key: String = "",
-    val type: @RawValue Type = Type.Default,
-    val action: @RawValue Action = Action.None
+    val type: Type = Type.DEFAULT,
+    val action: Action = Action.NONE,
+    val extParam: String = ""
 ) : Parcelable {
 
-    // should be legacy code, currently this keys need for tracking
-    companion object {
-        const val KEY_ETALASE = "etalase"
-        const val KEY_CATEGORY = "kategori"
-        const val KEY_CATALOG = "katalog"
+    val isClickable: Boolean
+        get() = applink.isNotBlank() || type != Type.DEFAULT
+
+    enum class Type(val value: String) {
+        DEFAULT(""),
+        ACTION("action")
     }
 
-    sealed interface Type {
-        object Action : Type
-        object Default : Type
-    }
-
-    sealed interface Action {
-        object None : Action
-        data class AppLink(val appLink: String) : Action
-        data class OpenProductDetailInfo(val extParam: String) : Action
+    enum class Action(val value: String) {
+        NONE(""),
+        APP_LINK("applink"),
+        OPEN_PRODUCT_DETAIL_INFO("open_detail_produk")
     }
 
     fun routeOnClick(
@@ -51,7 +50,7 @@ data class ProductDetailInfoContent(
             KEY_CATALOG -> navigator.toCatalog(appLink = applink, subTitle = subtitle)
             KEY_CATEGORY -> navigator.toCategory(appLink = applink)
             else -> when (type) { // new code for generalize
-                is Type.Action -> routeAction(navigator = navigator)
+                Type.ACTION -> routeAction(navigator = navigator)
                 else -> {
                     // no ops
                 }
@@ -61,11 +60,11 @@ data class ProductDetailInfoContent(
 
     private fun routeAction(navigator: ProductDetailInfoNavigator) {
         when (action) {
-            is Action.AppLink -> {
-                navigator.toAppLink(key = key, appLink = action.appLink)
+            Action.APP_LINK -> {
+                navigator.toAppLink(key = key, appLink = applink)
             }
-            is Action.OpenProductDetailInfo -> {
-                navigator.toProductDetailInfo(key = key, extParam = action.extParam)
+            Action.OPEN_PRODUCT_DETAIL_INFO -> {
+                navigator.toProductDetailInfo(key = key, extParam = extParam)
             }
             else -> {
                 navigator.toAppLink(key = key, appLink = applink)
@@ -75,16 +74,12 @@ data class ProductDetailInfoContent(
 }
 
 fun Content.getType() = when (type) {
-    Content.TYPE_ACTION -> ProductDetailInfoContent.Type.Action
-    else -> ProductDetailInfoContent.Type.Default
+    ProductDetailInfoContent.Type.ACTION.value -> ProductDetailInfoContent.Type.ACTION
+    else -> ProductDetailInfoContent.Type.DEFAULT
 }
 
 fun Content.getAction() = when (action) {
-    Content.ACTION_APPLINK -> ProductDetailInfoContent.Action.AppLink(
-        appLink = applink
-    )
-    Content.ACTION_OPEN_DETAIL_PRODUCT -> ProductDetailInfoContent.Action.OpenProductDetailInfo(
-        extParam = extParam
-    )
-    else -> ProductDetailInfoContent.Action.None
+    ProductDetailInfoContent.Action.APP_LINK.value -> ProductDetailInfoContent.Action.APP_LINK
+    ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO.value -> ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO
+    else -> ProductDetailInfoContent.Action.NONE
 }

@@ -68,7 +68,7 @@ class ProductDetailInfoAnnotationViewHolder(
         infoDetailTitle.text = data.title
         infoDetailValue.text = data.subtitle
 
-        if (data.applink.isNotEmpty()) {
+        if (data.isClickable) {
             setAppLink(data = data)
         }
 
