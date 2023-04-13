@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -154,7 +155,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         performanceTrace.init(
             v = view.rootView,
             scope = this.lifecycleScope,
-            touchListenerActivity = activity as? BaseActivity
+            touchListenerActivity = activity as? TouchListenerActivity
         )
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0) {
