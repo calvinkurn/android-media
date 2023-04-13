@@ -60,6 +60,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonUse.setOnClickListener {
+            analytics.sendEventClickSafeVerificationMethod()
             showProgressLoading()
             viewModel.updateWhiteList(
                 (adapter as AuthenticateCreditCardAdapter).getSelectedState(),

@@ -105,6 +105,18 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickCreditCardSetting(String item) {
+
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_PAYMENT,
+                AccountConstants.Analytics.PAYMENT_SETTING_PAGE,
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
+                ""
+        ));
+    }
+
     public void eventClickKycSetting(String projectId) {
         track(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_ACCOUNT,
