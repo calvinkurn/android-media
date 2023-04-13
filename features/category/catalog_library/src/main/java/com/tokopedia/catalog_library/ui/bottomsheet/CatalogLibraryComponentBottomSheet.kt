@@ -38,7 +38,7 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
             brandId = requireArguments().getString(ARG_EXTRA_BRAND_ID, "")
             brandName = requireArguments().getString(ARG_EXTRA_BRAND_NAME, "")
         }
-        setTitle("Kategori")
+        setTitle(getString(R.string.catalog_library_kategori))
         if (savedInstanceState == null) {
             childFragmentManager.beginTransaction().replace(
                 R.id.frame_content,

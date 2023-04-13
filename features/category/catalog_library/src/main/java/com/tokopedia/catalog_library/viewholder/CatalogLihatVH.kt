@@ -11,7 +11,7 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
-import com.tokopedia.catalog_library.adapter.decoration.GridSpacingItemDecoration
+import com.tokopedia.common_category.decoration.GridSpacingItemDecoration
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM

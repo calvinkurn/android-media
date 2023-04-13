@@ -9,4 +9,5 @@
     <string name="lihat">Lihat</string>
     <string name="product_price">%s - %s</string>
     <string name="most_viral_subtitle_common">%s yang lagi ramai dilihat</string>
+    <string name="catalog_library_kategori">Kategori</string>
 </resources>
