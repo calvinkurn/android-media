@@ -155,11 +155,16 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onCartClicked(view: ProductSheetViewComponent) {
+        analytic.clickCartFromSheet()
         if (playViewModel.isLoggedIn) {
             router.route(context, ApplinkConst.CART)
         } else {
             openLoginForCart.launch(Unit)
         }
+    }
+
+    override fun onImpressedCart(view: ProductSheetViewComponent) {
+        analytic.impressCartFromBottomSheet()
     }
 
     override fun onButtonTransactionClicked(
