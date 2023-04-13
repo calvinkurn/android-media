@@ -918,7 +918,7 @@ class PinpointMapFragment :
     private fun EditText.setupClearButtonWithAction() {
         addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                val clearIcon = if (editable?.isNotEmpty() == true) R.drawable.ic_close_btn else 0
+                val clearIcon = if (editable?.isNotEmpty() == true) com.tokopedia.iconunify.R.drawable.iconunify_clear_small else 0
                 setCompoundDrawablesWithIntrinsicBounds(0, 0, clearIcon, 0)
             }
 
