@@ -217,7 +217,7 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
 
             /** Shorts x Affiliate */
-            is PlayShortsAction.SetOnboardAffiliate -> handleSetOnboardAffiliate()
+            is PlayShortsAction.SubmitOnboardAffiliateTnc -> handleSubmitOnboardAffiliateTnc()
 
             /** Others */
             is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
@@ -253,7 +253,7 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSetOnboardAffiliate() {
+    private fun handleSubmitOnboardAffiliateTnc() {
         viewModelScope.launchCatchErrorWithLoader(block = {
             _uiEvent.emit(PlayShortsUiEvent.SetOnboardAffiliateState(isLoading = true))
 
@@ -262,7 +262,7 @@ class PlayShortsViewModel @Inject constructor(
                 profileID = _selectedAccount.value.id,
             )
 
-            val response = repo.setOnboardAffiliate(request)
+            val response = repo.submitOnboardAffiliateTnc(request)
             _uiEvent.emit(
                 PlayShortsUiEvent.SetOnboardAffiliateState(
                     isLoading = false,

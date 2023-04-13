@@ -230,7 +230,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             is PlayShortsAffiliateTnCBottomSheet -> {
                 childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
                     override fun onSubmitTnc() {
-                        viewModel.submitAction(PlayShortsAction.SetOnboardAffiliate)
+                        viewModel.submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
                     }
                 })
             }

@@ -100,7 +100,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
         return withContext(dispatchers.io) { broadcasterCheckAffiliateUseCase(Unit) }
     }
 
-    override suspend fun setOnboardAffiliate(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
+    override suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
         return withContext(dispatchers.io) { mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request)) }
     }
 

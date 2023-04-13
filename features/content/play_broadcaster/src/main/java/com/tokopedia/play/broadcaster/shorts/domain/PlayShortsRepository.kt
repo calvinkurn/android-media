@@ -41,6 +41,6 @@ interface PlayShortsRepository {
 
     suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateUiModel
 
-    suspend fun setOnboardAffiliate(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel
+    suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel
 
 }
