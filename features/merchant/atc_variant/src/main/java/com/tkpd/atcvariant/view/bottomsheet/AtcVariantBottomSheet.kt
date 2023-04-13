@@ -61,6 +61,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -567,6 +568,10 @@ class AtcVariantBottomSheet :
             sellerDistrictId = sellerDistrictId,
             lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
+
+        mAnalyticsListener?.onButtonActionClicked(
+            cartType = buttonActionType, variantId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted().orEmpty(), variantName =  variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted().orEmpty(),
+            shopId = variantAggregatorData?.simpleBasicInfo?.shopID.orEmpty(), shopType = shopType, shopName = variantAggregatorData?.simpleBasicInfo?.shopName.orEmpty(), cartId = cartId, productInfo = selectedChild ?: VariantChild(), quantity = selectedQuantity)
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -847,10 +852,6 @@ class AtcVariantBottomSheet :
                 sharedData?.trackerListNamePdp ?: "",
                 sharedData?.showQtyEditor ?: false
             )
-
-            with(viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category) {
-                mAnalyticsListener?.onButtonActionClicked(variantId = this?.id.orEmpty(), variantName =  this?.name.orEmpty())
-            }
         }
     }
 
@@ -1090,7 +1091,7 @@ interface AtcVariantBottomSheetListener {
  */
 interface AtcVariantAnalyticsListener {
     // [PLAY] row 13,16,61,62,63 https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
-    fun onButtonActionClicked(variantId: String, variantName: String)
+    fun onButtonActionClicked(cartType: Int, variantId: String, variantName: String, shopName: String, shopId: String, shopType: String, productInfo: VariantChild, cartId: String, quantity: Int)
     fun clickActionFromToaster(message: String) // Click Lihat Keranjang from toaster
     fun impressErrorToaster(message: String) // Impress toaster [Belum pilih varian]
 }

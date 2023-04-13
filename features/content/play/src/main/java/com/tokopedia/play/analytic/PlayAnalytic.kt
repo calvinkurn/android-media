@@ -8,7 +8,9 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -634,24 +636,54 @@ class PlayAnalytic(
         )
     }
 
+    fun clickTransactionInVariantSheet(
+        cartType: Int,
+        variantName: String,
+        variantId: String,
+        variantChild: VariantChild,
+        shopName: String,
+        shopId: String,
+        shopType: String,
+        cartId: String,
+        quantity: Int,
+    ) {
+        val eventAction = when (cartType) {
+        ProductDetailCommonConstant.ATC_BUTTON-> "click atc in varian page"
+        ProductDetailCommonConstant.BUY_BUTTON-> "click beli in varian page"
+        ProductDetailCommonConstant.OCC_BUTTON-> "click - Beli Langsung on global variant bottomsheet"
+            else -> ""
+        }
+        clickAtcButtonInVariant(
+            trackingQueue, eventAction, variantId, variantName, shopName, shopType, shopId, variantChild, cartId, quantity
+        )
+    }
+
     private fun clickAtcButtonInVariant(
         trackingQueue: TrackingQueue,
-        product: PlayProductUiModel.Product,
+        eventAction: String,
+        variantId: String,
+        variantName: String,
+        shopName: String,
+        shopType: String,
+        shopId: String,
+        variantChild: VariantChild,
         cartId: String,
-        shopInfo: PlayPartnerInfo
+        quantity: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK atc in varian page",
-                "$mChannelId - ${product.id} - ${mChannelType.value}"
+                eventAction,
+                "$mChannelId - ${variantChild.productId} - ${mChannelType.value}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
+                        "products" to listOf(
+                            convertFromVariant(variantChild, variantName, shopName, shopId, shopType, variantId, cartId, quantity)
+                        )
                     )
                 )
             ),
@@ -661,9 +693,9 @@ class PlayAnalytic(
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userId,
                 KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
+                KEY_PRODUCT_ID to variantChild.productId,
+                KEY_PRODUCT_NAME to variantChild.name,
+                KEY_PRODUCT_URL to variantChild.url.toString(),
                 KEY_CHANNEL to mChannelName
             )
         )
@@ -874,6 +906,29 @@ class PlayAnalytic(
             )
         }
         return base
+    }
+
+    /**
+     * Convert Items from Variant Bottom Sheet
+     */
+
+    private fun convertFromVariant(variantChild: VariantChild, variantName: String, shopName: String, shopId: String, shopType: String, variantId: String, cartId: String, quantity: Int): HashMap<String, Any> {
+        return hashMapOf(
+            "name" to variantChild.name,
+            "id" to variantChild.productId,
+            "price" to variantChild.price,
+            "brand" to "",
+            "variant" to variantName,
+            "category" to variantName,
+            "category_id" to variantId,
+            "quantity" to quantity,
+            "shop_id" to shopId,
+            "shop_name" to shopName,
+            "shop_type" to shopType,
+            "dimension45" to cartId,
+            "dimension40" to "/groupchat - varian page",
+
+        )
     }
 
     companion object {
