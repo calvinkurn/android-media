@@ -52,9 +52,9 @@ fun NestSortFilter(
             items(items) {
                 NestChips(
                     text = it.title,
-                    isSelected = it.isSelected,
+                    state = if (it.isSelected) NestChips.State.Selected else NestChips.State.Default,
                     size = chipSize,
-                    showChevron = it.showChevron,
+                    rightIcon = NestChips.RightIcon.Chevron {},
                     onClick = it.onClick
                 )
             }
