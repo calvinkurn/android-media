@@ -26,6 +26,128 @@ class GenerateGetLastApplyRequestParamsTest {
     }
 
     @Test
+    fun `WHEN promoData is null and no BO should generate correct params`() {
+        // GIVEN
+        val cartFirstOrderList = mutableListOf(
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "111111-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "1",
+                    poDuration = "0"
+                ),
+                productId = "1",
+                quantity = 5,
+                bundleId = "0"
+            ),
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "111111-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "1",
+                    poDuration = "0"
+                ),
+                productId = "2",
+                quantity = 5,
+                bundleId = "0"
+            )
+        )
+        val cartSecondOrderList = mutableListOf(
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "222222-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "2",
+                    poDuration = "0"
+                ),
+                productId = "3",
+                quantity = 5,
+                bundleId = "0"
+            )
+        )
+        val productUiModelList = cartFirstOrderList
+            .plus(cartSecondOrderList)
+            .toMutableList()
+        val groupShopList = mutableListOf(
+            CartGroupHolderData(
+                promoCodes = listOf(),
+                warehouseId = 0,
+                boMetadata = BoMetadata(
+                    boType = 0,
+                    boEligibilities = listOf(
+                        BoEligibility(
+                            key = "is_bo_reg",
+                            value = "true"
+                        ),
+                        BoEligibility(
+                            key = "bo_type",
+                            value = "1"
+                        ),
+                        BoEligibility(
+                            key = "campaign_ids",
+                            value = "213,198,212"
+                        )
+                    )
+                ),
+                isPo = false,
+                boCode = "",
+                productUiModelList = productUiModelList
+            )
+        )
+
+        // WHEN
+        val getLastApplyPromoRequest = PromoRequestMapper.generateGetLastApplyRequestParams(
+            promoData = null,
+            selectedCartGroupHolderDataList = groupShopList,
+            null
+        )
+
+        // THEN
+        assertEquals(
+            ValidateUsePromoRequest(
+                codes = mutableListOf(),
+                state = CartConstant.PARAM_CART,
+                skipApply = 0,
+                cartType = CartConstant.PARAM_DEFAULT,
+                orders = listOf(
+                    OrdersItem(
+                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                            cartSecondOrderList
+                        ),
+                        codes = mutableListOf(),
+                        uniqueId = "222222-KEY",
+                        shippingId = 0,
+                        spId = 0,
+                        boCampaignId = 0,
+                        shippingSubsidy = 0,
+                        benefitClass = "",
+                        shippingPrice = 0.0,
+                        etaText = "",
+                        shippingMetadata = "",
+                        shopId = 2
+                    ),
+                    OrdersItem(
+                        productDetails = PromoRequestMapperTestUtil.mapCartProductModelToPromoProductDetailsItem(
+                            cartFirstOrderList
+                        ),
+                        codes = mutableListOf(),
+                        uniqueId = "111111-KEY",
+                        shippingId = 0,
+                        spId = 0,
+                        boCampaignId = 0,
+                        shippingSubsidy = 0,
+                        benefitClass = "",
+                        shippingPrice = 0.0,
+                        etaText = "",
+                        shippingMetadata = "",
+                        shopId = 1
+                    )
+                )
+            ), getLastApplyPromoRequest
+        )
+    }
+
+    @Test
     fun `WHEN promoData is lastApplyPromo and no BO should generate correct params`() {
         // GIVEN
         val promoData = LastApplyPromo(

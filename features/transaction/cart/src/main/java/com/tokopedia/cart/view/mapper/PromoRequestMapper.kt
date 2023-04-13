@@ -324,15 +324,13 @@ object PromoRequestMapper {
                         if (order.spId <= 0) {
                             order.spId = voucherOrder.spId
                         }
+                        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull {
+                            it.uniqueId == order.uniqueId
+                        }
+                        validateOrderRequest?.let {
+                            order.shippingMetadata = it.shippingMetadata
+                        }
                     }
-                }
-            }
-            orders.forEach { order ->
-                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull {
-                    it.uniqueId == order.uniqueId
-                }
-                validateOrderRequest?.let {
-                    order.shippingMetadata = it.shippingMetadata
                 }
             }
         } else if (promoData is LastApplyPromo) {
@@ -439,11 +437,11 @@ object PromoRequestMapper {
         set: MutableSet<String>
     ): Boolean {
         if (!isTypeLogistic) return true
-        val isAlreadyInCurrentGroup = set.contains(cartStringGroup)
-        if (!isAlreadyInCurrentGroup) {
+        val isNotExistIsCurrentGroup = !set.contains(cartStringGroup)
+        if (isNotExistIsCurrentGroup) {
             set.add(cartStringGroup)
         }
-        return !isAlreadyInCurrentGroup
+        return isNotExistIsCurrentGroup
     }
 }
 

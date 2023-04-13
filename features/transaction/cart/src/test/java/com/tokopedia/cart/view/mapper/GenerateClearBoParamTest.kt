@@ -13,9 +13,140 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNull
 import org.junit.Test
 
 class GenerateClearBoParamTest {
+
+    @Test
+    fun `WHEN promoData is null should generate correct params`() {
+        // GIVEN
+        val cartFirstOrderList = mutableListOf(
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "111111-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "1",
+                    poDuration = "0"
+                ),
+                productId = "1",
+                quantity = 5,
+                bundleId = "0"
+            ),
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "111111-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "1",
+                    poDuration = "0"
+                ),
+                productId = "2",
+                quantity = 5,
+                bundleId = "0"
+            )
+        )
+        val cartSecondOrderList = mutableListOf(
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "222222-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "2",
+                    poDuration = "0"
+                ),
+                productId = "3",
+                quantity = 5,
+                bundleId = "0"
+            )
+        )
+        val productUiModelList = cartFirstOrderList
+            .plus(cartSecondOrderList)
+            .toMutableList()
+        val secondGroupProductUiModelList = mutableListOf(
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "333333-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "3",
+                    poDuration = "0"
+                ),
+                productId = "4",
+                quantity = 5,
+                bundleId = "0"
+            ),
+            CartItemHolderData(
+                isSelected = true,
+                cartStringOrder = "444444-KEY",
+                shopHolderData = CartShopHolderData(
+                    shopId = "4",
+                    poDuration = "0"
+                ),
+                productId = "5",
+                quantity = 5,
+                bundleId = "0"
+            )
+        )
+        val groupShopList = mutableListOf(
+            CartGroupHolderData(
+                promoCodes = listOf("CODE-A"),
+                warehouseId = 0,
+                boMetadata = BoMetadata(
+                    boType = 1,
+                    boEligibilities = listOf(
+                        BoEligibility(
+                            key = "is_bo_reg",
+                            value = "true"
+                        ),
+                        BoEligibility(
+                            key = "bo_type",
+                            value = "1"
+                        ),
+                        BoEligibility(
+                            key = "campaign_ids",
+                            value = "213,198,212"
+                        )
+                    )
+                ),
+                cartString = "_-0-9466960-169751269-KEY_OWOC",
+                isPo = false,
+                boCode = "",
+                productUiModelList = productUiModelList
+            ),
+            CartGroupHolderData(
+                promoCodes = listOf("CODE-B"),
+                warehouseId = 0,
+                boMetadata = BoMetadata(
+                    boType = 1,
+                    boEligibilities = listOf(
+                        BoEligibility(
+                            key = "is_bo_reg",
+                            value = "true"
+                        ),
+                        BoEligibility(
+                            key = "bo_type",
+                            value = "1"
+                        ),
+                        BoEligibility(
+                            key = "campaign_ids",
+                            value = "213,198,212"
+                        )
+                    )
+                ),
+                cartString = "_-0-9466960-169751270-KEY_OWOC",
+                isPo = false,
+                boCode = "",
+                productUiModelList = secondGroupProductUiModelList
+            )
+        )
+
+        // WHEN
+        val clearPromoOrderData = PromoRequestMapper.generateClearBoParam(
+            promoData = null,
+            availableCartGroupHolderDataList = groupShopList
+        )
+
+        // THEN
+        assertNull(clearPromoOrderData)
+    }
 
     @Test
     fun `WHEN promoData is lastApplyPromo should generate correct params`() {
