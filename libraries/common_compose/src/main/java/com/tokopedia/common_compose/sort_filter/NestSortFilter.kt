@@ -1,16 +1,23 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,6 +71,26 @@ fun NestSortFilter(
 }
 
 @Composable
+private fun LazyListState.horizontalOffset(): Int {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousScrollOffset == firstVisibleItemScrollOffset) {
+                0
+            } else if (previousIndex == firstVisibleItemIndex) {
+                firstVisibleItemScrollOffset - previousScrollOffset
+            } else {
+                firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+
+@Composable
 fun NestSortFilterAdvanced(
     modifier: Modifier = Modifier,
     size: Size = Size.DEFAULT,
@@ -76,17 +103,22 @@ fun NestSortFilterAdvanced(
         Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
     }
     val selectedSize by remember(items) { derivedStateOf { items.filter { it.isSelected }.size } }
+    val rowState = rememberLazyListState()
+    val offset = rowState.horizontalOffset()
     Row(modifier = modifier) {
         PrefixFilterItem(
             modifier = Modifier.padding(end = 4.dp),
             size = size,
             text = "Filter",
+            textSize = offset,
             selectedSize = selectedSize,
             onClick = onPrefixClicked
         )
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            state = rowState
         ) {
             items(items) {
                 NestChips(
@@ -117,21 +149,29 @@ enum class Size { DEFAULT, LARGE }
 @Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestSortFilterPreview() {
-    var items by remember { mutableStateOf(listOf(
-        SortFilter("Terrible", true, showChevron = true),
-        SortFilter("Bad", false),
-        SortFilter("Medium", false),
-        SortFilter("Good", false),
-        SortFilter("Impressive", false),
-    )) }
-    var advItems by remember { mutableStateOf(listOf(
-        SortFilter("Micro", false),
-        SortFilter("Tiny", false),
-        SortFilter("Small", true),
-        SortFilter("Medium", false),
-        SortFilter("Big", false, showChevron = true),
-        SortFilter("Enormous", false),
-    )) }
+    var items by remember {
+        mutableStateOf(
+            listOf(
+                SortFilter("Terrible", true, showChevron = true),
+                SortFilter("Bad", false),
+                SortFilter("Medium", false),
+                SortFilter("Good", false),
+                SortFilter("Impressive", false),
+            )
+        )
+    }
+    var advItems by remember {
+        mutableStateOf(
+            listOf(
+                SortFilter("Micro", false),
+                SortFilter("Tiny", false),
+                SortFilter("Small", true),
+                SortFilter("Medium", false),
+                SortFilter("Big", false, showChevron = true),
+                SortFilter("Enormous", false),
+            )
+        )
+    }
 
     var size by remember { mutableStateOf(Size.DEFAULT) }
     NestTheme {

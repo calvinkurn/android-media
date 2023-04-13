@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,9 +9,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +30,7 @@ internal fun PrefixFilterItem(
     selectedSize: Int = 0,
     painterId: Int = R.drawable.iconunify_sort_filter,
     text: String? = null,
+    textSize: Int? = null,
     onClick: () -> Unit = {}
 ) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
@@ -36,6 +40,12 @@ internal fun PrefixFilterItem(
         Size.DEFAULT -> 32.dp
         Size.LARGE -> 48.dp
     }
+    var textWidthPx by remember { mutableStateOf(95) }
+    val widthPx by remember(textSize, textWidthPx) {
+        derivedStateOf { (textWidthPx - (textSize ?: 0)).coerceIn(0, 95) }
+    }
+
+    Log.d("Offset", "textWidth: $textWidthPx, textSize: $textSize")
     Surface(color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, borderColor),
@@ -57,7 +67,15 @@ internal fun PrefixFilterItem(
                 )
             }
             if (text != null) {
-                Text(modifier = Modifier.padding(start = 4.dp), style = NestTheme.typography.display2, text = text)
+                Text(
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .width(with(LocalDensity.current) { widthPx.toDp() })
+                        .onGloballyPositioned { textWidthPx = it.size.width },
+                    style = NestTheme.typography.display2,
+                    text = text,
+                    maxLines = 1
+                )
             }
         }
     }
