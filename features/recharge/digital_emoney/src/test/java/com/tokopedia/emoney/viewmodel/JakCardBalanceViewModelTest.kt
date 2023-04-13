@@ -2,13 +2,12 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.emoney.domain.request.JakCardRequestMapper
-import com.tokopedia.emoney.domain.response.JakCardAttribute
-import com.tokopedia.emoney.domain.response.JakCardData
 import com.tokopedia.emoney.domain.response.JakCardResponse
 import com.tokopedia.emoney.domain.response.JakCardResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetJakCardUseCase
@@ -21,7 +20,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.spyk
-import junit.framework.Assert
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -29,6 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.net.SocketTimeoutException
+
 
 class JakCardBalanceViewModelTest {
     @get:Rule
@@ -56,14 +55,17 @@ class JakCardBalanceViewModelTest {
     private lateinit var resultFail: ByteArray
     private val resultFailString = "6700"
     private lateinit var resultSelectSuccess: ByteArray
-    private val resultSelectSuccessString = "6F31B02F001001019360885008689978000000111020220622203206220100001E84800001000000000E48A301B19800000C009000"
+    private val resultSelectSuccessString =
+        "6F31B02F001001019360885008689978000000111020220622203206220100001E84800001000000000E48A301B19800000C009000"
     private lateinit var resultCheckBalanceSuccess: ByteArray
     private val resultCheckBalanceSuccessString = "00004E209000"
     private lateinit var resultInitLoadSuccess: ByteArray
-    private val resultInitLoadSuccessString = "100000EA6001936088500974121300000011A300EC32CCBAE98D5CEAFFEE9000"
+    private val resultInitLoadSuccessString =
+        "100000EA6001936088500974121300000011A300EC32CCBAE98D5CEAFFEE9000"
     private lateinit var resultLoadSuccess: ByteArray
     private val resultLoadSuccessString = "000186A0841CF19C9000"
-    private val resultInitLoadSuccessStringWithoutCode = "100000EA6001936088500974121300000011A300EC32CCBAE98D5CEAFFEE"
+    private val resultInitLoadSuccessStringWithoutCode =
+        "100000EA6001936088500974121300000011A300EC32CCBAE98D5CEAFFEE"
     private val resultLoadSuccessSeparated = "000186A0841CF19C"
     private val deposit = "00000000"
     private val expiry = "20320622"
@@ -242,16 +244,21 @@ class JakCardBalanceViewModelTest {
             }
     """.trimIndent()
 
-    private val COMMAND_SELECT_STAG_BYTE_ARRAY = NFCUtils.stringToByteArrayRadix(COMMAND_SELECT_JAK_CARD_STAG + COMMAND_AID_JAK_CARD_STAG)
-    private val COMMAND_SELECT_PROD_BYTE_ARRAY = NFCUtils.stringToByteArrayRadix(COMMAND_SELECT_JAK_CARD_PROD + COMMAND_AID_JAK_CARD_PROD)
-    private val COMMAND_CHECK_BALANCE_BYTE_ARRAY = NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
+    private val COMMAND_SELECT_STAG_BYTE_ARRAY =
+        NFCUtils.stringToByteArrayRadix(COMMAND_SELECT_JAK_CARD_STAG + COMMAND_AID_JAK_CARD_STAG)
+    private val COMMAND_SELECT_PROD_BYTE_ARRAY =
+        NFCUtils.stringToByteArrayRadix(COMMAND_SELECT_JAK_CARD_PROD + COMMAND_AID_JAK_CARD_PROD)
+    private val COMMAND_CHECK_BALANCE_BYTE_ARRAY =
+        NFCUtils.stringToByteArrayRadix(COMMAND_CHECK_BALANCE)
     private val COMMAND_INIT_LOAD_BYTE_ARRAY = NFCUtils.stringToByteArrayRadix(COMMAND_INIT_LOAD)
     private val COMMAND_LOAD_BYTE_ARRAY = NFCUtils.stringToByteArrayRadix(COMMAND_LOAD)
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         mockkObject(NFCUtils.Companion)
         mockkStatic(GlobalConfig::class)
+        mockkStatic(FirebaseCrashlytics::class)
 
         emptyByteNFC = byteArrayOf()
         resultFail = NFCUtils.stringToByteArrayRadix(resultFailString)
@@ -259,7 +266,8 @@ class JakCardBalanceViewModelTest {
         resultCheckBalanceSuccess = NFCUtils.stringToByteArrayRadix(resultCheckBalanceSuccessString)
         resultInitLoadSuccess = NFCUtils.stringToByteArrayRadix(resultInitLoadSuccessString)
         resultLoadSuccess = NFCUtils.stringToByteArrayRadix(resultLoadSuccessString)
-        jakCardBalanceViewModel = spyk(JakCardBalanceViewModel(Dispatchers.Unconfined, jakCardUseCase))
+        jakCardBalanceViewModel =
+            spyk(JakCardBalanceViewModel(Dispatchers.Unconfined, jakCardUseCase))
     }
 
     private fun initSuccessData() {
@@ -279,57 +287,70 @@ class JakCardBalanceViewModelTest {
     }
 
     @Test
-    fun `processJakCardTagIntent failed select staging process and return error` () {
+    fun `processJakCardTagIntent failed select staging process and return error`() {
         //given
         initSuccessData()
         every { GlobalConfig.isAllowDebuggingTools() } returns true
-        every { isoDep.transceive(COMMAND_SELECT_STAG_BYTE_ARRAY) }  returns resultFail
+        every { isoDep.transceive(COMMAND_SELECT_STAG_BYTE_ARRAY) } returns resultFail
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent failed select production process and return error` () {
+    fun `processJakCardTagIntent failed select production process and return error`() {
         //given
         initSuccessData()
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultFail
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultFail
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process but checkBalance error and return error` () {
-        //given
-        initSuccessData()
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultFail
-        //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
-        //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
-    }
-
-    @Test
-    fun `processJakCardTagIntent success select production process but checkBalance throw exception and return error` () {
+    fun `processJakCardTagIntent success select production process but checkBalance error and return error`() {
         //given
         initSuccessData()
         every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} throws IOException()
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultFail
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and select checkBalance success and pending balance empty` () {
+    fun `processJakCardTagIntent success select production process but checkBalance throw exception and return error`() {
+        //given
+        initSuccessData()
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } throws IOException()
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and select checkBalance success and pending balance empty`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -337,21 +358,25 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responseCheckBalance = Gson().fromJson(checkBalanceResponse, JakCardResponse::class.java)
+        val responseCheckBalance =
+            Gson().fromJson(checkBalanceResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responseCheckBalance
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(responseCheckBalance))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(responseCheckBalance)
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and select checkBalance failed and return error` () {
+    fun `processJakCardTagIntent success select production process and select checkBalance failed and return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -361,18 +386,23 @@ class JakCardBalanceViewModelTest {
         )
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
-        coEvery { jakCardUseCase.execute(createPendingBalanceParam) } throws SocketTimeoutException(ERROR_MESSAGE)
+        coEvery { jakCardUseCase.execute(createPendingBalanceParam) } throws SocketTimeoutException(
+            ERROR_MESSAGE
+        )
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load error and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load error and return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -380,22 +410,26 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultFail
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init give io exception and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init give io exception and return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -403,22 +437,26 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } throws IOException(ERROR_MESSAGE)
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but cryptogram empty and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but cryptogram empty and return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -426,21 +464,25 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalanceCryptogramEmpty = Gson().fromJson(getPendingBalanceResponseCryptogramEmpty, JakCardResponse::class.java)
+        val responsePendingBalanceCryptogramEmpty =
+            Gson().fromJson(getPendingBalanceResponseCryptogramEmpty, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalanceCryptogramEmpty
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but isodep is not connected and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but isodep is not connected and return error`() {
         //given
         initSuccessDataIsoDepNotConnected()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -448,30 +490,42 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
     fun `processInitLoad isoDep not initialize and return error`() {
         //when
-        jakCardBalanceViewModel.processInitLoad(resultSelectSuccessString, cardNumber, lastBalance, COMMAND_INIT_LOAD)
+        jakCardBalanceViewModel.processInitLoad(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            COMMAND_INIT_LOAD
+        )
 
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with no cryptogram return last balance` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with no cryptogram return last balance`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -479,7 +533,8 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
         val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
@@ -488,11 +543,12 @@ class JakCardBalanceViewModelTest {
             lastBalance,
             amount
         )
-        val topUpWithoutWrite = Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
+        val topUpWithoutWrite =
+            Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
@@ -500,11 +556,14 @@ class JakCardBalanceViewModelTest {
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(topUpWithoutWrite))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpWithoutWrite)
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load success return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -512,7 +571,8 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
         val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
@@ -521,23 +581,29 @@ class JakCardBalanceViewModelTest {
             lastBalance,
             amount
         )
-        val topUpWithoutWrite = Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
+        val topUpWithoutWrite =
+            Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
-        coEvery { jakCardUseCase.execute(createTopUpParam) } throws SocketTimeoutException(ERROR_MESSAGE)
+        coEvery { jakCardUseCase.execute(createTopUpParam) } throws SocketTimeoutException(
+            ERROR_MESSAGE
+        )
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with cryptogram empty and return error ` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with cryptogram empty and return error `() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -545,7 +611,8 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
         val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
@@ -554,11 +621,12 @@ class JakCardBalanceViewModelTest {
             lastBalance,
             amount
         )
-        val topUpCryptogramEmpty = Gson().fromJson(topUpResponseCryptogramEmpty, JakCardResponse::class.java)
+        val topUpCryptogramEmpty =
+            Gson().fromJson(topUpResponseCryptogramEmpty, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
@@ -566,11 +634,14 @@ class JakCardBalanceViewModelTest {
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with isodep not connected and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with isodep not connected and return error`() {
         //given
         initSuccessDataIsoDepNotConnected()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -578,7 +649,8 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
         val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
@@ -590,8 +662,8 @@ class JakCardBalanceViewModelTest {
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
@@ -599,11 +671,14 @@ class JakCardBalanceViewModelTest {
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
-    fun `processJakCardTagIntent success select production process and get pending balance success but init load success and process load error and return error` () {
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success and process load error and return error`() {
         //given
         initSuccessData()
         val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
@@ -611,7 +686,8 @@ class JakCardBalanceViewModelTest {
             cardNumber,
             lastBalance
         )
-        val responsePendingBalance = Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
         val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
@@ -623,8 +699,8 @@ class JakCardBalanceViewModelTest {
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
 
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) }  returns resultSelectSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultFail
 
@@ -633,16 +709,30 @@ class JakCardBalanceViewModelTest {
         //when
         jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
     fun `processLoad isoDep not initialize and return error`() {
         //when
-        jakCardBalanceViewModel.processLoad(JakCardResponse(), "","", "", "", amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            JakCardResponse(),
+            "",
+            "",
+            "",
+            "",
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
@@ -651,10 +741,21 @@ class JakCardBalanceViewModelTest {
         initSuccessDataIsoDepNotConnected()
         jakCardBalanceViewModel.isoDep = isoDep
         //when
-        jakCardBalanceViewModel.processLoad(JakCardResponse(), "","904200001011223344556677880000000144D51AC8", "", "", amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            JakCardResponse(),
+            "",
+            "904200001011223344556677880000000144D51AC8",
+            "",
+            "",
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
@@ -668,10 +769,21 @@ class JakCardBalanceViewModelTest {
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } throws IOException(ERROR_MESSAGE)
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
@@ -684,15 +796,25 @@ class JakCardBalanceViewModelTest {
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
 
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultFail
-
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultFail
 
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals(((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message, ERROR_MESSAGE)
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
     }
 
     @Test
@@ -703,23 +825,38 @@ class JakCardBalanceViewModelTest {
 
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
-        val topUpConfirmationCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
 
-        val topUpConfirmation = Gson().fromJson(topUpConfirmationResponse, JakCardResponse::class.java)
+        val topUpConfirmation =
+            Gson().fromJson(topUpConfirmationResponse, JakCardResponse::class.java)
 
-        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
-            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo)
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo
+        )
 
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(paramGetTopUpQuery) } returns topUpConfirmation
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation)
+        )
     }
 
     @Test
@@ -730,23 +867,38 @@ class JakCardBalanceViewModelTest {
 
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
-        val topUpConfirmationCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
 
-        val topUpConfirmationWrite = Gson().fromJson(topUpConfirmationResponseWrite, JakCardResponse::class.java)
+        val topUpConfirmationWrite =
+            Gson().fromJson(topUpConfirmationResponseWrite, JakCardResponse::class.java)
 
-        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
-            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo)
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo
+        )
 
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(paramGetTopUpQuery) } returns topUpConfirmationWrite
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(topUpConfirmationWrite))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmationWrite)
+        )
     }
 
     @Test
@@ -757,23 +909,38 @@ class JakCardBalanceViewModelTest {
 
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
-        val topUpConfirmationCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
 
-        val topUpConfirmationError = Gson().fromJson(topUpConfirmationResponseError, JakCardResponse::class.java)
+        val topUpConfirmationError =
+            Gson().fromJson(topUpConfirmationResponseError, JakCardResponse::class.java)
 
-        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
-            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo)
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo
+        )
 
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(paramGetTopUpQuery) } returns topUpConfirmationError
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(topUpConfirmationError))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmationError)
+        )
     }
 
     @Test
@@ -784,23 +951,40 @@ class JakCardBalanceViewModelTest {
 
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
         val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
-        val topUpConfirmationCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
 
-        val topUpConfirmation = Gson().fromJson(topUpConfirmationResponse, JakCardResponse::class.java)
+        val topUpConfirmation =
+            Gson().fromJson(topUpConfirmationResponse, JakCardResponse::class.java)
 
-        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(topUpConfirmationCardData,
-            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo)
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.data.attributes.stan, topUp.data.attributes.refNo
+        )
 
         every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
-        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY)} returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
-        coEvery { jakCardUseCase.execute(paramGetTopUpQuery) } throws SocketTimeoutException(ERROR_MESSAGE)
+        coEvery { jakCardUseCase.execute(paramGetTopUpQuery) } throws SocketTimeoutException(
+            ERROR_MESSAGE
+        )
 
         //when
-        jakCardBalanceViewModel.processLoad(topUp, topUpCardData, topUp.data.attributes.cryptogram, topUp.data.attributes.stan, topUp.data.attributes.refNo, amount, cardNumber, lastBalance)
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.data.attributes.cryptogram,
+            topUp.data.attributes.stan,
+            topUp.data.attributes.refNo,
+            amount,
+            cardNumber
+        )
 
         //then
-        assertEquals((jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry, JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation))
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation)
+        )
     }
 
     @Test
