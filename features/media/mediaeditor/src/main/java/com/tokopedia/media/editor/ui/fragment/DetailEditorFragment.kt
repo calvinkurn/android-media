@@ -750,12 +750,12 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun readPreviousState() {
-        var cropScale = 0f
-        var latestBrightnessIndex = -1
-        var latestContrastIndex = -1
+        var cropScale = DEFAULT_CROP_SCALE
+        var latestBrightnessIndex = DEFAULT_CONTRAST_BRIGHTNESS_INDEX
+        var latestContrastIndex = DEFAULT_CONTRAST_BRIGHTNESS_INDEX
 
-        var tempWatermarkIndex = 99
-        var tempCropRotateIndex = 99
+        var tempWatermarkIndex = DEFAULT_WATERMARK_ROTATE_INDEX
+        var tempCropRotateIndex = DEFAULT_WATERMARK_ROTATE_INDEX
 
         detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
             if (editorDetailUi.cropRotateValue.isCrop) cropScale =
@@ -1308,6 +1308,9 @@ class DetailEditorFragment @Inject constructor(
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
 
-        private const val PIXEL_BYTE_SIZE = 4
+        // watermark & rotate index is used 99 since the conditional need to compare which is smaller
+        private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
+        private const val DEFAULT_CONTRAST_BRIGHTNESS_INDEX = -1
+        private const val DEFAULT_CROP_SCALE = 0
     }
 }
