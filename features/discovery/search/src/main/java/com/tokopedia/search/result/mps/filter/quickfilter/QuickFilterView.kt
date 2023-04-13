@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.mps.filter.quickfilter
 
 import com.tokopedia.filter.common.FilterState
+import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.search.utils.mvvm.RefreshableView
@@ -29,6 +30,8 @@ class QuickFilterView(
             sortFilterHorizontalScrollView.scrollX = 0
             parentListener = ::openBottomSheetFilter
             addItem(sortFilterItemList(quickFilterState))
+
+            indicatorCounter = getSortFilterCount(quickFilterState.filterState.parameter)
         }
     }
 
@@ -40,17 +43,21 @@ class QuickFilterView(
         quickFilterState: QuickFilterState,
     ): SortFilterItem =
         SortFilterItem(quickFilterDataView.filter.title).apply {
-            type = getType(quickFilterDataView, quickFilterState.filterState)
+            setItemType(quickFilterDataView, quickFilterState.filterState)
             listener = { onQuickFilterClicked(quickFilterDataView) }
         }
 
-    private fun getType(
+    private fun SortFilterItem.setItemType(
         quickFilterDataView: QuickFilterDataView,
         filterState: FilterState,
-    ): String {
+    ) {
         val isOptionSelected = filterState.isFilterApplied(quickFilterDataView.firstOption)
-
-        return if (isOptionSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        if (isOptionSelected) {
+            type = ChipsUnify.TYPE_SELECTED
+            typeUpdated = false
+        } else {
+            type = ChipsUnify.TYPE_NORMAL
+        }
     }
 
     private fun onQuickFilterClicked(quickFilterDataView: QuickFilterDataView) {
