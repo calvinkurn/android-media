@@ -270,13 +270,7 @@ class ShipmentPresenter @Inject constructor(
     var uploadPrescriptionUiModel: UploadPrescriptionUiModel = UploadPrescriptionUiModel()
         private set
 
-    private var ratesPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
-
     private val ratesQueue: Queue<ShipmentGetCourierHolderData> = LinkedList()
-
-    private var ratesPromoPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
-
-    var logisticDonePublisher: PublishSubject<Boolean>? = null
 
     var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
@@ -310,6 +304,8 @@ class ShipmentPresenter @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
+    var isValidatingFinalPromo: Boolean = false
+
     fun attachView(view: ShipmentFragment) {
         this.view = view
     }
@@ -319,9 +315,6 @@ class ShipmentPresenter @Inject constructor(
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
-        ratesPublisher = null
-        logisticDonePublisher = null
-        ratesPromoPublisher = null
         logisticPromoDonePublisher = null
         view = null
     }
@@ -621,12 +614,12 @@ class ShipmentPresenter @Inject constructor(
                         false
                     )
                 )
-            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(
+            updateShipmentButtonPaymentModel(
                 enable = true,
                 totalPrice = priceTotalFormatted
             )
         } else {
-            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(
+            updateShipmentButtonPaymentModel(
                 enable = cartItemErrorCounter < shipmentCartItemModelList.size,
                 totalPrice = "-"
             )
@@ -678,15 +671,19 @@ class ShipmentPresenter @Inject constructor(
     }
 
     fun updateShipmentButtonPaymentModel(
-        enable: Boolean?,
-        totalPrice: String?,
-        loading: Boolean?
+        enable: Boolean? = null,
+        totalPrice: String? = null,
+        loading: Boolean? = null
     ) {
         val buttonPaymentModel = shipmentButtonPayment.value
         shipmentButtonPayment.value = buttonPaymentModel.copy(
             enable = enable ?: buttonPaymentModel.enable,
             totalPrice = totalPrice ?: buttonPaymentModel.totalPrice,
-            loading = loading ?: buttonPaymentModel.loading
+            loading = if (isValidatingFinalPromo) {
+                true
+            } else {
+                loading ?: buttonPaymentModel.loading
+            }
         )
     }
 
@@ -1184,8 +1181,9 @@ class ShipmentPresenter @Inject constructor(
         lastSelectedCourierOrderIndex: Int,
         cartString: String?
     ) {
+        isValidatingFinalPromo = true
         couponStateChanged = true
-        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
+        updateShipmentButtonPaymentModel(loading = true)
         viewModelScope.launch(dispatchers.immediate) {
             try {
                 setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
@@ -1250,7 +1248,8 @@ class ShipmentPresenter @Inject constructor(
                         cartString
                     )
                     checkUnCompletedPublisher()
-                    shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
+                    isValidatingFinalPromo = false
+                    updateShipmentButtonPaymentModel(loading = false)
                 }
             } catch (e: Throwable) {
                 Timber.d(e)
@@ -1269,7 +1268,8 @@ class ShipmentPresenter @Inject constructor(
                         )
                     }
                     checkUnCompletedPublisher()
-                    shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
+                    isValidatingFinalPromo = false
+                    updateShipmentButtonPaymentModel(loading = false)
                 }
             }
         }
@@ -1492,7 +1492,7 @@ class ShipmentPresenter @Inject constructor(
             if (showLoading) {
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
-            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
+            updateShipmentButtonPaymentModel(loading = true)
             viewModelScope.launch(dispatchers.immediate) {
                 try {
                     setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
@@ -1560,10 +1560,8 @@ class ShipmentPresenter @Inject constructor(
                                 }
                             }
                         }
-                        shipmentButtonPayment.value =
-                            shipmentButtonPayment.value.copy(loading = false)
+                        updateShipmentButtonPaymentModel(loading = false)
                     }
-                    logisticDonePublisher?.onCompleted()
                     logisticPromoDonePublisher?.onCompleted()
                     val shipmentScheduleDeliveryMapData =
                         getScheduleDeliveryMapData(cartString)
@@ -1598,9 +1596,7 @@ class ShipmentPresenter @Inject constructor(
                             }
                         }
                         view?.logOnErrorApplyBo(e, cartPosition, promoCode)
-                        shipmentButtonPayment.value =
-                            shipmentButtonPayment.value.copy(loading = false)
-                        logisticDonePublisher?.onCompleted()
+                        updateShipmentButtonPaymentModel(loading = false)
                         logisticPromoDonePublisher?.onCompleted()
                         val shipmentScheduleDeliveryMapData =
                             getScheduleDeliveryMapData(cartString)
@@ -1626,7 +1622,7 @@ class ShipmentPresenter @Inject constructor(
             if (showLoading) {
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
-            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
+            updateShipmentButtonPaymentModel(loading = true)
             viewModelScope.launch(dispatchers.immediate) {
                 doValidateLogisticPromoForOneOrder(
                     validateUsePromoRequest,
@@ -1635,8 +1631,7 @@ class ShipmentPresenter @Inject constructor(
                     promoCode,
                     newCourierItemData
                 )
-                shipmentButtonPayment.value =
-                    shipmentButtonPayment.value.copy(loading = false)
+                updateShipmentButtonPaymentModel(loading = false)
             }
         }
     }
@@ -1718,7 +1713,6 @@ class ShipmentPresenter @Inject constructor(
                     }
                 }
             }
-            logisticDonePublisher?.onCompleted()
             logisticPromoDonePublisher?.onCompleted()
             val shipmentScheduleDeliveryMapData =
                 getScheduleDeliveryMapData(cartString)
@@ -1753,7 +1747,6 @@ class ShipmentPresenter @Inject constructor(
                     }
                 }
                 view?.logOnErrorApplyBo(e, cartPosition, promoCode)
-                logisticDonePublisher?.onCompleted()
                 logisticPromoDonePublisher?.onCompleted()
                 val shipmentScheduleDeliveryMapData =
                     getScheduleDeliveryMapData(cartString)
@@ -2735,7 +2728,6 @@ class ShipmentPresenter @Inject constructor(
                                                         itemPosition,
                                                         boPromoCode
                                                     )
-                                                    logisticDonePublisher?.onCompleted()
                                                     return@launch
                                                 } else {
                                                     shippingCourierUiModel.isSelected = true
@@ -2786,7 +2778,6 @@ class ShipmentPresenter @Inject constructor(
                                                 itemPosition,
                                                 boPromoCode
                                             )
-                                            logisticDonePublisher?.onCompleted()
                                             return@launch
                                         } else {
                                             val courierItemData = generateCourierItemData(
@@ -2809,7 +2800,6 @@ class ShipmentPresenter @Inject constructor(
                                                     itemPosition,
                                                     boPromoCode
                                                 )
-                                                logisticDonePublisher?.onCompleted()
                                                 return@launch
                                             }
                                             shippingCourierUiModel.isSelected = true
@@ -2867,7 +2857,6 @@ class ShipmentPresenter @Inject constructor(
                         itemPosition,
                         boPromoCode
                     )
-                    logisticDonePublisher?.onCompleted()
                 } catch (t: Throwable) {
                     Timber.d(t)
                     val boPromoCode = getBoPromoCode(isForceReload, shipmentCartItemModel)
@@ -2875,11 +2864,10 @@ class ShipmentPresenter @Inject constructor(
                         view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
                     }
                     view?.logOnErrorLoadCourier(t, itemPosition, boPromoCode)
-                    logisticDonePublisher?.onCompleted()
                 }
             }
         } else {
-            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
+            updateShipmentButtonPaymentModel(loading = true)
             ratesQueue.offer(
                 ShipmentGetCourierHolderData(
                     shipperId,
@@ -3753,7 +3741,7 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
-        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
+        updateShipmentButtonPaymentModel(loading = false)
     }
 
     private fun generateCourierItemDataWithScheduleDelivery(
@@ -4833,8 +4821,7 @@ class ShipmentPresenter @Inject constructor(
         listToProcess: List<Triple<Int, PromoCheckoutVoucherOrdersItemUiModel, ShipmentCartItemModel>>
     ) {
         viewModelScope.launch(dispatchers.immediate) {
-            shipmentButtonPayment.value =
-                shipmentButtonPayment.value.copy(loading = true)
+            updateShipmentButtonPaymentModel(loading = true)
             loopProcess@ for ((
                 itemPosition: Int,
                 voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel,
@@ -5039,8 +5026,7 @@ class ShipmentPresenter @Inject constructor(
                     view?.logOnErrorLoadCourier(t, itemPosition, promoCode)
                 }
             }
-            shipmentButtonPayment.value =
-                shipmentButtonPayment.value.copy(loading = false)
+            updateShipmentButtonPaymentModel(loading = false)
         }
     }
 

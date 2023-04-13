@@ -1054,10 +1054,7 @@ class ShipmentFragment :
                     false,
                     false
                 )
-                if (shipmentPresenter.logisticDonePublisher != null) {
-                    shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
-                    shipmentPresenter.logisticDonePublisher?.onCompleted()
-                }
+                shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
             }
             onNeedUpdateViewItem(itemPosition)
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
