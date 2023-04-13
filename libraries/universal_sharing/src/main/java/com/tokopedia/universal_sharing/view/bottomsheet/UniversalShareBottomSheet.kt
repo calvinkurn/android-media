@@ -527,6 +527,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             channel = shareModel.channel
             campaign = shareModel.campaign
             feature = shareModel.feature
+            type = linkProperties?.linkerType ?: ""
             isAffiliate = shareModel.isAffiliate
             ogImageUrl = shareModel.ogImgUrl
             ogTitle = linkProperties?.ogTitle
