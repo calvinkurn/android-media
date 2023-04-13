@@ -48,7 +48,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
-    public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION = "android_customer_flight_cancellation_navigation";
@@ -131,8 +130,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
-
-    public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";

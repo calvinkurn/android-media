@@ -93,8 +93,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
         flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
         flightOrderDetailViewModel.fetchOrderDetailData()
-        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
-            flightOrderDetailViewModel.fetchCrossSellData()
+        flightOrderDetailViewModel.fetchCrossSellData()
     }
 
     override fun onCreateView(
