@@ -345,6 +345,12 @@ class PlayShortsPreparationFragment @Inject constructor(
                             openShortsAffiliateSuccessBottomSheet()
                         }
                     }
+                    is PlayShortsUiEvent.SuccessSubmitAffiliateTnc -> {
+                        /** TODO show coach-mark product affiliate
+                         * implement the coach-mark after mobile analytic merged
+                         **/
+                        toaster.showToaster("Show CoachMark Product Affiliate")
+                    }
                     else -> {}
                 }
             }

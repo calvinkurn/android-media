@@ -38,4 +38,7 @@ sealed interface PlayShortsUiEvent {
         val isLoading: Boolean,
         val throwable: Throwable? = null
     ) : PlayShortsUiEvent
+
+    object SuccessSubmitAffiliateTnc : PlayShortsUiEvent
+
 }

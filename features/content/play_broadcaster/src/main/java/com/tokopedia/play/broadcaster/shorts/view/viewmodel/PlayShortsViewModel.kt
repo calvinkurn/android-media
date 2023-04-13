@@ -272,7 +272,7 @@ class PlayShortsViewModel @Inject constructor(
                 )
             )
 
-            if (isSuccess) checkIsUserAffiliate()
+            isSuccessSubmitAffiliateTnc(isSuccess)
         }) {
             _uiEvent.emit(
                 PlayShortsUiEvent.SetOnboardAffiliateState(
@@ -281,12 +281,6 @@ class PlayShortsViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private suspend fun checkIsUserAffiliate() {
-        if (!selectedAccount.isUser) return
-        val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
-        _isAffiliate.update { checkIsAffiliate.isAffiliate }
     }
 
     private fun handleSetMedia(mediaUri: String) {
@@ -438,6 +432,18 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSetCoverUploadedSource(source: Int) {
         sharedPref.setUploadedCoverSource(source, selectedAccount.id, SOURCE)
+    }
+
+    private suspend fun checkIsUserAffiliate() {
+        if (!selectedAccount.isUser) return
+        val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
+        _isAffiliate.update { checkIsAffiliate.isAffiliate }
+    }
+
+    private suspend fun isSuccessSubmitAffiliateTnc(isSuccess: Boolean) {
+        if (!isSuccess) return
+        checkIsUserAffiliate()
+        _uiEvent.emit(PlayShortsUiEvent.SuccessSubmitAffiliateTnc)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
