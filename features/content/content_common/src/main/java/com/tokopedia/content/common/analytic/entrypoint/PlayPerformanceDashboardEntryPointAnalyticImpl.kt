@@ -104,63 +104,6 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
     }
 
     /**
-     * row 4
-     **/
-    override fun onViewBottomSheetContentCardShopPageChannel(authorId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_EVENT_SELLER,
-                KEY_EVENT_ACTION to "view - bottom sheet content card shop page channel",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
-                KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSessionId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to sessionIris,
-                KEY_TRACKER_ID to getTrackerId("41755", "41739")
-            )
-        )
-    }
-
-    /**
-     * row 5
-     **/
-    override fun onClickReportPageEntryPoint(authorId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT_SELLER,
-                KEY_EVENT_ACTION to "click - report page entry point",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
-                KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSessionId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to sessionIris,
-                KEY_TRACKER_ID to getTrackerId("41756", "41740")
-            )
-        )
-    }
-
-    /**
-     * row 6
-     **/
-    override fun onClickPerformanceDashboardEntryPointShortsPageChanel(authorId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT_SELLER,
-                KEY_EVENT_ACTION to "click - performance dashboard entry point shop page channel",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER,
-                KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSessionId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to sessionIris,
-                KEY_TRACKER_ID to getTrackerId("41757", "41741")
-            )
-        )
-    }
-
-    /**
      * row 7
      **/
     override fun onClickPerformanceDashboardEntryPointChannelPage(authorId: String, channelId: String) {
@@ -194,25 +137,6 @@ class PlayPerformanceDashboardEntryPointAnalyticImpl @Inject constructor(
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SESSION_IRIS to sessionIris,
                 KEY_TRACKER_ID to getTrackerId("41759", "41743")
-            )
-        )
-    }
-
-    /**
-     * row 9
-     **/
-    override fun onClickPerformanceDashboardEntryPointReportPage(authorId: String,) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT_SELLER,
-                KEY_EVENT_ACTION to "click - performance dashboard entry point report page",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
-                KEY_EVENT_LABEL to "$authorId - ${getAccountType(KEY_TYPE_CONTENT_SELLER)}",
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSessionId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SESSION_IRIS to sessionIris,
-                KEY_TRACKER_ID to getTrackerId("41760", "41744")
             )
         )
     }

@@ -18,21 +18,6 @@ interface PlayPerformanceDashboardEntryPointAnalytic {
     fun onClickPerformanceDashboardEntryPointNative(authorId: String)
 
     /**
-     * row 4
-     **/
-    fun onViewBottomSheetContentCardShopPageChannel(authorId: String)
-
-    /**
-     * row 5
-     **/
-    fun onClickReportPageEntryPoint(authorId: String)
-
-    /**
-     * row 6
-     **/
-    fun onClickPerformanceDashboardEntryPointShortsPageChanel(authorId: String)
-
-    /**
      * row 7
      **/
     fun onClickPerformanceDashboardEntryPointChannelPage(authorId: String, channelId: String)
@@ -41,11 +26,6 @@ interface PlayPerformanceDashboardEntryPointAnalytic {
      * row 8
      **/
     fun onClickReportPageEntryPointGroupChatRoom(authorId: String, channelId: String)
-
-    /**
-     * row 9
-     **/
-    fun onClickPerformanceDashboardEntryPointReportPage(authorId: String)
 
     /**
      * row 10
