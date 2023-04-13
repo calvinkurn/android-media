@@ -1,24 +1,35 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.gojek.kyc.sdk.core.extensions.checkSelfPermissionWithTryCatch
+import com.gojek.kyc.sdk.core.utils.KycSdkPartner
+import com.gojek.onekyc.OneKycSdk
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
+import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
@@ -47,8 +58,20 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            goToCaptureKycDocuments()
+        } else {
+            showPermissionRejected()
+        }
+    }
+
+    @Inject
+    lateinit var oneKycSdk: OneKycSdk
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         arguments?.let {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
@@ -79,13 +102,24 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
             if (isAccountLinked or (binding?.layoutAccountLinking?.root?.isShown == false)) {
-                //TODO goto take picture or KTP
+                goToCaptureKycDocuments()
             } else {
                 val parameter = GotoKycMainParam(
                     projectId = projectId,
                     sourcePage = source
                 )
                 gotoBridgingAccountLinking(parameter)
+            }
+        }
+    }
+
+    private fun goToCaptureKycDocuments() {
+        activity?.let {
+            if (checkSelfPermissionWithTryCatch(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLocation.launch(Manifest.permission.CAMERA)
+            } else {
+                oneKycSdk.init()
+                oneKycSdk.launchKyc(partner = KycSdkPartner.TOKO, activity = it)
             }
         }
     }
@@ -161,12 +195,37 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         startKycForResult.launch(intent)
     }
 
+    private fun initInjector() {
+        DaggerGoToKycComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
+    }
+
+    private fun showPermissionRejected() {
+        Toaster.build(
+            requireView().rootView,
+            getString(R.string.goto_kyc_permission_camera_denied),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(R.string.goto_kyc_permission_action_active)
+        ) { goToApplicationDetailActivity() }.show()
+    }
+
+    private fun goToApplicationDetailActivity() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(PACKAGE, requireActivity().packageName, null)
+        intent.data = uri
+        requireActivity().startActivity(intent)
+    }
+
     companion object {
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
         private const val ACCOUNT_LINKED = "account_linked"
         private const val IS_KTP_TAKEN = "is_ktp_taken"
         private const val IS_SELFIE_TAKEN = "is_selfie_taken"
+        private const val PACKAGE = "package"
 
         fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean = false) =
             OnboardNonProgressiveBottomSheet().apply {
