@@ -24,20 +24,19 @@ class FeedProductButtonView(
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
-        products: List<FeedCardProductModel>,
-        totalProducts: Int
+        products: List<FeedCardProductModel>
     ) {
         with(binding) {
             when {
-                totalProducts == PRODUCT_COUNT_ZERO -> {
+                products.size == PRODUCT_COUNT_ZERO -> {
                     root.hide()
                 }
-                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
+                products.size > PRODUCT_COUNT_NINETY_NINE -> {
                     tvPlayProductCount.text = NINETY_NINE_PLUS
                     root.show()
                 }
                 else -> {
-                    tvPlayProductCount.text = totalProducts.toString()
+                    tvPlayProductCount.text = products.size.toString()
                     root.show()
                 }
             }

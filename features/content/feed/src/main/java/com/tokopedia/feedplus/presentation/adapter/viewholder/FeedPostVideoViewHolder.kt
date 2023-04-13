@@ -193,7 +193,6 @@ class FeedPostVideoViewHolder(
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
             products = data.products,
-            totalProducts = data.totalProducts
         )
     }
 
