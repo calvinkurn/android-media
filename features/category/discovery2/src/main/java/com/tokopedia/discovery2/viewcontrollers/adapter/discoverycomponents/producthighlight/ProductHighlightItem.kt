@@ -24,8 +24,6 @@ import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
-private const val MARGIN_16 = 16
-private const val MARGIN_4 = 4
 
 class ProductHighlightItem(private val productHighlightData: DataItem, private val properties: Properties?,
                            private val constraintLayout: ConstraintLayout, private val constraintSet: ConstraintSet, private val viewWeight: Float? = Utils.DEFAULT_BANNER_WEIGHT,
@@ -57,19 +55,20 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
 
         if (previousProductHighlightItem == null) {
             constraintSet.connect(productHighlightView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
-                MARGIN_16)
+                context.resources.getDimensionPixelSize(R.dimen.dp_16))
         } else {
             constraintSet.connect(previousProductHighlightItem.productHighlightView.id, ConstraintSet.END, productHighlightView.id, ConstraintSet.START,
-                MARGIN_4)
+                context.resources.getDimensionPixelSize(R.dimen.dp_4))
             constraintSet.connect(productHighlightView.id, ConstraintSet.START, previousProductHighlightItem.productHighlightView.id, ConstraintSet.END,
-                MARGIN_4)
+                context.resources.getDimensionPixelSize(R.dimen.dp_4))
         }
 
         if (islastItem) {
             constraintSet.connect(productHighlightView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
-                MARGIN_16)
+                context.resources.getDimensionPixelSize(R.dimen.dp_16))
         }
-        constraintSet.connect(productHighlightView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        constraintSet.connect(productHighlightView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, context.resources.getDimensionPixelSize(R.dimen.dp_16))
+        constraintSet.connect(productHighlightView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(R.dimen.dp_4))
         if (!productHighlightData.imageUrlDynamicMobile.isNullOrEmpty()) {
             try {
                 if (context.isValidGlideContext())
@@ -153,6 +152,34 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                             phDiscountedProductPrice.hide()
                         }
                     }
+
+                    if (productHighlightData.isActive == false) {
+                        phImageTextBottom.text = "Terjual Habis"
+                        val matrix = ColorMatrix().apply {
+                            setSaturation(0f)
+                        }
+
+                        val filter = ColorMatrixColorFilter(matrix)
+                        bgImage.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            )
+                        )
+                        phProductName.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        phProductPrice.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        phProductDiscount.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+                        phProductDiscount.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                            )
+                        )
+                        phDiscountedProductPrice.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        bgImage.colorFilter = filter
+                        productHighlightImage.colorFilter = filter
+                        phShopLogo.colorFilter = filter
+                    }
                 }
             }
         } else {
@@ -231,7 +258,12 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                         }
 
                         val filter = ColorMatrixColorFilter(matrix)
-                        dataCardParent.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+                        bgImage.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            )
+                        )
                         phProductName.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
                         phProductPrice.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
                         phProductDiscount.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
@@ -253,8 +285,17 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
     }
 
     private fun setMargin(discoItemMultiProductHighlightBinding: DiscoItemMultiProductHighlightBinding) {
-        if (compType == "triple") {
-            discoItemMultiProductHighlightBinding.phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_40), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
+        if (compType == "double") {
+            with(discoItemMultiProductHighlightBinding) {
+                productHighlightImage.layoutParams.width = getScreenWidth() / 2 - context.resources.getDimensionPixelSize(R.dimen.dp_36)
+                phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_56), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
+            }
+        } else if (compType == "triple") {
+            with(discoItemMultiProductHighlightBinding) {
+                guideline.setGuidelinePercent(0.4f)
+                productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
+            }
         }
     }
 }

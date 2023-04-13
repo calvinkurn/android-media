@@ -12,11 +12,12 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/product_highlight_image"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_144"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/unify_space_8"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
         android:elevation="@dimen/unify_space_2"
+        tools:minHeight="@dimen/dp_144"
         android:scaleType="fitCenter"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.42" />
+        app:layout_constraintGuide_percent="0.45" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/data_card_parent"

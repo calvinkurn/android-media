@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
