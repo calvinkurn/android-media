@@ -2,6 +2,7 @@ package com.tokopedia.shop_nib.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.shop_nib.di.module.ShopNibModule
+import com.tokopedia.shop_nib.di.module.ShopNibNetworkModule
 import com.tokopedia.shop_nib.di.module.ShopNibViewModelModule
 import com.tokopedia.shop_nib.di.scope.ShopNibScope
 import com.tokopedia.shop_nib.presentation.submission.NibSubmissionActivity
@@ -10,7 +11,7 @@ import dagger.Component
 
 @ShopNibScope
 @Component(
-    modules = [ShopNibModule::class, ShopNibViewModelModule::class],
+    modules = [ShopNibModule::class, ShopNibViewModelModule::class, ShopNibNetworkModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface ShopNibComponent {

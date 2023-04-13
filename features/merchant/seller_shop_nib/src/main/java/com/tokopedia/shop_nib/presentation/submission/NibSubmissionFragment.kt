@@ -16,6 +16,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.startLoading
+import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,6 +35,8 @@ import com.tokopedia.shop_nib.R
 import com.tokopedia.shop_nib.presentation.datepicker.NibDatePicker
 import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessActivity
 import com.tokopedia.shop_nib.util.extension.toMb
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 
 class NibSubmissionFragment : BaseDaggerFragment() {
@@ -83,9 +89,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeInputValidation()
+        observeFileSubmission()
     }
-
-
 
     private fun setupView() {
         binding?.run {
@@ -108,9 +113,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             tauNibPublishedDate.editText.isFocusable = false
 
             btnFinish.setOnClickListener {
+                binding?.btnFinish?.startLoading()
                 viewModel.onTapSubmitButton()
-                activity?.finish()
-                NibSubmissionSuccessActivity.start(activity ?: return@setOnClickListener)
             }
         }
     }
@@ -118,6 +122,33 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         viewModel.validInput.observe(viewLifecycleOwner){ isInputValid ->
             binding?.btnFinish?.isEnabled = isInputValid
         }
+    }
+
+    private fun observeFileSubmission() {
+        viewModel.fileUpload.observe(viewLifecycleOwner){ result ->
+
+
+            when(result) {
+                is Success -> handleFileSubmissionResult(result.data)
+                is Fail -> {
+                    binding?.btnFinish?.stopLoading()
+                    view?.showToasterError(result.throwable)
+                }
+            }
+
+        }
+    }
+
+    private fun handleFileSubmissionResult(isSuccess: Boolean) {
+        if (isSuccess) {
+            redirectToSubmissionSuccessPage()
+        } else {
+            binding?.root?.showToaster("file upload failed")
+        }
+    }
+    private fun redirectToSubmissionSuccessPage() {
+        activity?.finish()
+        NibSubmissionSuccessActivity.start(activity ?: return)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

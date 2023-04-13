@@ -9,7 +9,11 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import javax.inject.Inject
+
 
 class FileHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
@@ -31,6 +35,35 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
             cursor?.close()
         }
     }
+
+    fun getFileFromUri(uri: Uri, filename: String): File? {
+        var file: File? = null
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            file = File(context.cacheDir, filename)
+            outputStream = FileOutputStream(file)
+            inputStream?.let { input ->
+                val buffer = ByteArray(4 * 1024) // 4K buffer
+                var bytesRead: Int
+                while (input.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                inputStream?.close()
+                outputStream?.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return file
+    }
+
 
     fun getFileName(uri: Uri): String {
         val cursor: Cursor? = context.contentResolver.query(
