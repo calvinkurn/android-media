@@ -21,7 +21,8 @@ interface FeedListener {
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>
     )
 
     fun onProductTagViewClicked(

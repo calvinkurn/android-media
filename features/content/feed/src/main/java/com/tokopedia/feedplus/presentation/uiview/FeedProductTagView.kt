@@ -26,7 +26,7 @@ class FeedProductTagView(
         totalProducts: Int
     ) {
         with(binding) {
-            bindText(products, totalProducts)
+            bindText(products)
 
             root.setOnClickListener {
                 listener.onProductTagViewClicked(
@@ -44,26 +44,25 @@ class FeedProductTagView(
     }
 
     fun bindText(
-        products: List<FeedCardProductModel>,
-        totalProducts: Int
+        products: List<FeedCardProductModel>
     ) {
         with(binding) {
             when {
-                totalProducts == PRODUCT_COUNT_ZERO -> {
+                products.size == PRODUCT_COUNT_ZERO -> {
                     root.hide()
                 }
-                totalProducts == PRODUCT_COUNT_ONE -> {
+                products.size == PRODUCT_COUNT_ONE -> {
                     tvTagProduct.text = products.firstOrNull()?.name
                     root.show()
                 }
-                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
+                products.size > PRODUCT_COUNT_NINETY_NINE -> {
                     tvTagProduct.text =
                         root.context.getString(R.string.feeds_tag_product_99_more_text)
                     root.show()
                 }
                 else -> {
                     tvTagProduct.text =
-                        root.context.getString(R.string.feeds_tag_product_text, totalProducts)
+                        root.context.getString(R.string.feeds_tag_product_text, products.size)
                     root.show()
                 }
             }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedXProductResult
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -85,6 +86,14 @@ class FeedProductItemInfoViewModel @Inject constructor(
             it.printStackTrace()
             _feedProductsResponse.value = FeedXProductResult.Error(it)
         })
+    }
+
+    fun showProductsFromPost(
+        products: List<FeedXProduct>
+    ) {
+        _feedProductsResponse.value = FeedXProductResult.Success(
+            FeedXGetActivityProductsResponse(products = products)
+        )
     }
 
     private fun handleDataForFeedDetail(

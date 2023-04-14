@@ -31,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
@@ -306,7 +307,8 @@ class FeedFragment :
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>
     ) {
         openProductTagBottomSheet(
             postId = postId,
@@ -314,7 +316,8 @@ class FeedFragment :
             postType = postType,
             isFollowing = isFollowing,
             campaign = campaign,
-            hasVoucher = hasVoucher
+            hasVoucher = hasVoucher,
+            products = products
         )
     }
 
@@ -342,7 +345,8 @@ class FeedFragment :
                 postType = postType,
                 isFollowing = isFollowing,
                 campaign = campaign,
-                hasVoucher = hasVoucher
+                hasVoucher = hasVoucher,
+                products = products
             )
         }
     }
@@ -778,6 +782,7 @@ class FeedFragment :
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
+        products: List<FeedCardProductModel>,
         hasVoucher: Boolean
     ) {
         val productBottomSheet = ProductItemInfoBottomSheet()
@@ -785,6 +790,7 @@ class FeedFragment :
             childFragmentManager,
             this,
             ProductBottomSheetData(
+                products = MapperProductsToXProducts.transform(products),
                 postId = postId,
                 shopId = author.id,
                 postType = postType,
