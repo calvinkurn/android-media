@@ -41,7 +41,8 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
     }
 
     private fun sendDevicePushPermissionStatusEvent(userSession:UserSessionInterface, context: Context?, activityName: String){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activityName == CUSTOMER_APP_FIRST_ACTIVITY) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            (activityName == CUSTOMER_APP_FIRST_ACTIVITY || (activityName == SELLER_APP_FIRST_ACTIVITY))) {
             context?.let {
                 NotificationSettingsGtmEvents(
                     userSession,
@@ -97,6 +98,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
 
     companion object {
         private const val CUSTOMER_APP_FIRST_ACTIVITY = "MainParentActivity"
+        private const val SELLER_APP_FIRST_ACTIVITY = "SellerHomeActivity"
         private val exceptionActivityList = listOf(
             "SplashScreenActivity",
             "SellerOnboardingActivity",

@@ -5,7 +5,6 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getVisiblePercent
@@ -39,6 +37,7 @@ import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +51,7 @@ class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
     private val scope: CoroutineScope
-) : ViewComponent(container, R.id.cl_product_sheet) {
+) : BottomSheetViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
@@ -141,7 +140,6 @@ class ProductSheetViewComponent(
         productListener = productCardListener
     )
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val itemDecoration: ProductLineItemDecoration
 
     private val voucherListener = object : PlayVoucherView.Listener {
@@ -196,14 +194,6 @@ class ProductSheetViewComponent(
                 listener.onCartClicked(this@ProductSheetViewComponent)
             }
         })
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun showWithHeight(height: Int) {
