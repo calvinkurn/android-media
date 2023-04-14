@@ -14,7 +14,7 @@ class CheckEligibilityUseCase @Inject constructor(
 ) {
     suspend fun invoke(): CheckEligibilityResult {
         return withContext(dispatchers.io) {
-            val response = oneKycSdk.getOneKycNetworkRepository().getEligibilityStatus(partnerName = KycSdkPartner.TOKO.name)
+            val response = oneKycSdk.getOneKycNetworkRepository().getEligibilityStatus(partnerName = KycSdkPartner.TOKOPEDIA_CORE.name)
 
             if (response.success == false) {
                 CheckEligibilityResult.Failed(MessageErrorException(response.errors?.first()?.message.orEmpty()))

@@ -2,7 +2,7 @@ package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.gojek.jago.onekyc.configs.UnifiedJagoKycConfigsDefault
+import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
@@ -12,10 +12,8 @@ import com.gojek.onekyc.OneKycSdk
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
@@ -29,7 +27,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 open class GoToKycModule {
@@ -98,7 +95,7 @@ open class GoToKycModule {
 
     @ActivityScope
     @Provides
-    fun provideKycSdkClientConfig(): KycSdkClientConfig = KycSdkClientConfig(partner = KycSdkPartner.TOKO, clientId = "KycDemoApp", clientAppVersion =  "0.0.1")
+    fun provideKycSdkClientConfig(): KycSdkClientConfig = KycSdkClientConfig(partner = KycSdkPartner.TOKOPEDIA_CORE, clientId = "KycDemoApp", clientAppVersion =  "0.0.1")
 
     @Provides
     @ActivityScope
@@ -138,8 +135,7 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideUnifiedJagoKycConfigsDefault() = UnifiedJagoKycConfigsDefault()
-    //TODO check the code above, and make sure that use the class (why the name contain jago?)
+    fun provideUnifiedKycConfigsDefault() = UnifiedKycConfigsDefault()
 
     @ActivityScope
     @Provides
@@ -149,7 +145,7 @@ open class GoToKycModule {
         gotoKycEventTrackingProvider: GotoKycEventTrackingProvider,
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
-        unifiedJagoKycConfigsDefault: UnifiedJagoKycConfigsDefault,
+        unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
     ): OneKycSdk {
@@ -158,7 +154,7 @@ open class GoToKycModule {
             remoteConfig = defaultRemoteConfigProvider,
             eventTracker = gotoKycEventTrackingProvider,
             kycSdkConfig = kycSdkConfig,
-            experimentProvider = unifiedJagoKycConfigsDefault,
+            experimentProvider = unifiedKycConfigsDefault,
             errorHandler = gotoKycErrorHandler,
             okHttpClient = okHttpClient,
             imageLoader = gotoKycImageLoader
