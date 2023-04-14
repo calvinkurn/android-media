@@ -25,6 +25,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -85,9 +86,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
-    private val mLayoutManager by lazyThreadSafetyNone {
-        LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-    }
+    private var mLayoutManager: LinearLayoutManager? = null
     private val snapHelper = PagerSnapHelper()
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
@@ -106,8 +105,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                 super.onScrolled(recyclerView, dx, dy)
                 val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
 
-                val position = mLayoutManager.getPosition(snappedView)
-                binding.pcBannerPreparation.setCurrentIndicator(position)
+                val position = mLayoutManager?.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position.orZero())
             }
         }
     }
@@ -276,6 +275,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupView() {
+        mLayoutManager = LinearLayoutManager(requireContext())
         binding.toolbar.apply {
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
