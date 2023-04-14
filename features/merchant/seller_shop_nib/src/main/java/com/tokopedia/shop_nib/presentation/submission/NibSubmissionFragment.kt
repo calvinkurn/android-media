@@ -4,14 +4,12 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -24,22 +22,22 @@ import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.shop_nib.R
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
 import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
-import com.tokopedia.shop_nib.util.FileHelper
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
-import com.tokopedia.shop_nib.R
+import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.presentation.datepicker.NibDatePicker
 import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessActivity
+import com.tokopedia.shop_nib.util.FileHelper
 import com.tokopedia.shop_nib.util.extension.toMb
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
+import javax.inject.Inject
 
 class NibSubmissionFragment : BaseDaggerFragment() {
 
@@ -140,11 +138,11 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleFileSubmissionResult(isSuccess: Boolean) {
-        if (isSuccess) {
+    private fun handleFileSubmissionResult(result: UploadFileResult) {
+        if (result.isSuccess) {
             redirectToSubmissionSuccessPage()
         } else {
-            binding?.root?.showToaster("file upload failed")
+            binding?.root?.showToaster(result.errorMessage)
         }
     }
     private fun redirectToSubmissionSuccessPage() {
@@ -162,23 +160,20 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
 
     private fun showFilePicker() {
-        val intent = if (isAndroid10OrAbove()) {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/jpeg,image/png,application/pdf"
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        } else {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/jpeg,image/png,application/pdf"
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        }
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/jpeg,image/png,application/pdf"
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.putExtra(
+            Intent.EXTRA_MIME_TYPES,
+            arrayOf("image/png", "image/jpeg", "application/pdf")
+        )
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+
 
         try {
-            startActivityForResult(Intent.createChooser(intent, context?.getString(R.string.ssn_select_picture)), REQUEST_CODE_SELECT_FILE)
-        } catch (_: ActivityNotFoundException) {}
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FILE)
+        } catch (_: ActivityNotFoundException) {
+        }
 
     }
 
@@ -186,18 +181,40 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     private fun showSelectedFile(intent: Intent) {
         val fileUri = intent.data ?: return
         val fileSizeInKb = fileHelper.getFileSizeInBytes(fileUri)
+        val fileExtension = fileHelper.getFileExtension(fileUri)
 
-        if (fileSizeInKb <= MAX_FILE_SIZE_BYTES) {
-            binding?.tpgErrorMessage?.gone()
-            renderSelectedFileThumbnail(fileUri, fileSizeInKb)
+        val allowedFileExtensions = listOf("png", "jpeg", "jpg", "pdf")
 
-            viewModel.onFileSelected(fileUri.toString())
-        } else {
+        if (fileExtension !in allowedFileExtensions) {
             binding?.btnFinish?.disable()
+
             binding?.layoutFilePickerDefault?.gone()
             binding?.layoutFilePickerError?.visible()
-            binding?.tpgErrorMessage?.show()
+
+            binding?.tpgErrorMessage?.visible()
+            binding?.tpgErrorMessage?.text = context?.getString(R.string.ssn_error_message_file_extension)
+
+            viewModel.onSelectInvalidFile()
+            return
         }
+
+        if (fileSizeInKb > MAX_FILE_SIZE_BYTES) {
+            binding?.btnFinish?.disable()
+
+            binding?.layoutFilePickerDefault?.gone()
+            binding?.layoutFilePickerError?.visible()
+
+            binding?.tpgErrorMessage?.visible()
+            binding?.tpgErrorMessage?.text = context?.getString(R.string.ssn_error_message_file_size)
+
+            viewModel.onSelectInvalidFile()
+            return
+        }
+
+
+        binding?.tpgErrorMessage?.gone()
+        renderSelectedFileThumbnail(fileUri, fileSizeInKb)
+        viewModel.onFileSelected(fileUri.toString())
     }
 
     private fun renderSelectedFileThumbnail(fileUri: Uri, fileSizeInKb: Long) {
@@ -245,10 +262,5 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             viewModel.onSelectNibPublishDate(selectedDate)
         }
         datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
-    }
-
-    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
-    private fun isAndroid10OrAbove(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     }
 }

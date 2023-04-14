@@ -1,8 +1,10 @@
 package com.tokopedia.shop_nib.data.source
 
 import android.net.Uri
+import com.tokopedia.shop_nib.data.mapper.UploadFileMapper
 import com.tokopedia.shop_nib.data.response.UploadFileResponse
 import com.tokopedia.shop_nib.data.service.UploadFileService
+import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.util.FileHelper
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -14,8 +16,9 @@ class RemoteDataSource @Inject constructor(
     private val service: UploadFileService,
     private val userSessionInterface: UserSessionInterface,
     private val fileHelper: FileHelper,
+    private val mapper: UploadFileMapper
 ) {
-    suspend fun uploadFile(fileUri: String): UploadFileResponse {
+    suspend fun uploadFile(fileUri: String): UploadFileResult {
         val uri = Uri.parse(fileUri)
 
         val fileExtension = fileHelper.getFileExtension(uri)
@@ -36,6 +39,7 @@ class RemoteDataSource @Inject constructor(
         params["user_id"] = RequestBody.create("text/plain".toMediaTypeOrNull(), userSessionInterface.userId)
         params["shop_id"] = RequestBody.create("text/plain".toMediaTypeOrNull(), userSessionInterface.shopId)
 
-        return service.uploadFile(filePart, params)
+        val response = service.uploadFile(filePart, params)
+        return mapper.map(response)
     }
 }

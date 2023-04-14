@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,8 +26,8 @@ class NibSubmissionViewModel @Inject constructor(
     val validInput: LiveData<Boolean>
         get() = _validInput
 
-    private val _fileUpload = MutableLiveData<Result<Boolean>>()
-    val fileUpload: LiveData<Result<Boolean>>
+    private val _fileUpload = MutableLiveData<Result<UploadFileResult>>()
+    val fileUpload: LiveData<Result<UploadFileResult>>
         get() = _fileUpload
 
     fun onSelectNibPublishDate(nibPublishDate: Date) {
@@ -43,13 +44,17 @@ class NibSubmissionViewModel @Inject constructor(
         validateInput()
     }
 
+    fun onSelectInvalidFile() {
+        this.fileUri = ""
+        validateInput()
+    }
+
     fun onTapSubmitButton() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val response = uploadFileUseCase.execute(fileUri)
-                val isSuccess = response.data?.resultStatus?.code == "200"
-                _fileUpload.postValue(Success(isSuccess))
+                val result = uploadFileUseCase.execute(fileUri)
+                _fileUpload.postValue(Success(result))
             },
             onError = { error ->
                 _fileUpload.postValue(Fail(error))
