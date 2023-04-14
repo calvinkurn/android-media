@@ -69,7 +69,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
 // Edit shipping for multi location
 class ShippingEditorFragment :
     BaseDaggerFragment(),
