@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxde
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ProductrevGetInboxDesktop
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
@@ -33,10 +34,19 @@ class GetReviewUseCase @Inject constructor(
 
     private inner class Mapper : Func1<GraphqlResponse, Observable<ReviewDomain>> {
         override fun call(response: GraphqlResponse): Observable<ReviewDomain> {
-            val result = response.getData<ProductrevGetInboxDesktop>(
-                ProductrevGetInboxDesktop::class.java
-            ).reviewDomain
-            return Observable.just(result)
+            val error = response.getError(ProductrevGetInboxDesktop::class.java)
+            return if (error.isNullOrEmpty()) {
+                val result = response.getData<ProductrevGetInboxDesktop>(
+                    ProductrevGetInboxDesktop::class.java
+                ).reviewDomain
+                Observable.just(result)
+            } else {
+                Observable.error(
+                    MessageErrorException(
+                        error.mapNotNull { it.message }.joinToString(separator = ", ")
+                    )
+                )
+            }
         }
     }
 

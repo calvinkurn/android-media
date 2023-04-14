@@ -3,7 +3,11 @@ package com.tokopedia.shop_settings.viewmodel.shopsettingsnote
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.settings.notes.view.domain.*
+import com.tokopedia.shop.settings.notes.view.domain.AddShopNoteUseCase
+import com.tokopedia.shop.settings.notes.view.domain.DeleteShopNoteUseCase
+import com.tokopedia.shop.settings.notes.view.domain.GetShopNoteUseCase
+import com.tokopedia.shop.settings.notes.view.domain.ReorderShopNoteUseCase
+import com.tokopedia.shop.settings.notes.view.domain.UpdateShopNoteUseCase
 import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteAddEditViewModel
 import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteListReorderViewModel
 import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteListViewModel

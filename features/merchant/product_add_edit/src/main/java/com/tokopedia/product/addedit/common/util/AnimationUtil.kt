@@ -1,7 +1,11 @@
 package com.tokopedia.product.addedit.common.util
 
 import android.view.View
-import android.view.animation.*
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,7 +31,9 @@ internal fun View?.animateExpand() = this?.run {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
             layoutParams.height = if (interpolatedTime == INTERPOLATED_TIME_END) {
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
-            } else (targetHeight * interpolatedTime).toInt()
+            } else {
+                (targetHeight * interpolatedTime).toInt()
+            }
             alpha = interpolatedTime
             requestLayout()
         }
@@ -74,8 +80,14 @@ internal fun View?.animateRotateCcw() = this?.run {
 
 internal fun View?.animateRotate(fromDegree: Float, toDegree: Float) = this?.run {
     val duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
-    val rotate = RotateAnimation(fromDegree, toDegree, Animation.RELATIVE_TO_SELF, PIVOT_X_CENTER,
-            Animation.RELATIVE_TO_SELF, PIVOT_Y_CENTER)
+    val rotate = RotateAnimation(
+        fromDegree,
+        toDegree,
+        Animation.RELATIVE_TO_SELF,
+        PIVOT_X_CENTER,
+        Animation.RELATIVE_TO_SELF,
+        PIVOT_Y_CENTER
+    )
 
     rotate.duration = duration
     rotate.interpolator = LinearInterpolator()

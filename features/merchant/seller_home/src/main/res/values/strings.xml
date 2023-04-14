@@ -152,9 +152,9 @@
     <string name="sah_new_other_topads_topup_now">Top up sekarang!</string>
     <string name="sah_new_other_share_text">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
 
-    <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
-    <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
-    <string name="seller_home_logout_button">Keluar</string>
+    <string name="seller_home_logout_title">Keluar dari akun Tokopedia Seller?</string>
+    <string name="seller_home_logout_confirm">Kamu harus masuk ke akunmu lagi jika mau akses toko dan lanjutkan aktivitas berjualan.</string>
+    <string name="seller_home_logout_button">Ya, Keluar</string>
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
     <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>

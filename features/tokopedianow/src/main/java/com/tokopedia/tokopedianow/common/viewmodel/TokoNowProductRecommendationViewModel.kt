@@ -17,12 +17,12 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
-import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
@@ -97,9 +97,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         val cartProductIds = miniCartSimplifiedData.miniCartItems.values.mapNotNull {
             if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
         }
-        val unavailableProducts = productModels.filter { it is TokoNowProductCardCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
+        val unavailableProducts = productModels.filter { it is ProductCardCompactCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
         unavailableProducts.forEach { product ->
-            if ((product as TokoNowProductCardCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
+            if ((product as ProductCardCompactCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
                 val totalQuantity = miniCartSimplifiedData.miniCartItems.getMiniCartItemParentProduct(product.parentId)?.totalQuantity.orZero()
                 if (totalQuantity == HomeLayoutMapper.DEFAULT_QUANTITY) {
                     productModels.updateProductCardCarouselItemQuantity(
@@ -164,8 +164,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         quantity: Int,
         shopId: String
     ) {
-        if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
-            val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        if (productModels.size > position && productModels[position] is ProductCardCompactCarouselItemUiModel) {
+            val product = productModels[position] as ProductCardCompactCarouselItemUiModel
             val productId = product.getProductId()
 
             onCartQuantityChanged(
@@ -220,7 +220,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private fun trackProductAddToCart(
         position: Int,
         addToCartModel: AddToCartDataModel,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         _atcDataTracker.postValue(
             AddToCartDataTrackerModel(
