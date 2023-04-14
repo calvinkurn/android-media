@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
@@ -52,13 +53,14 @@ class SwitchAccountAnalyticTest {
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockHydraSharedPreferences: HydraSharedPreferences = mockk(relaxed = true)
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private val mockAddedTag = GetAddedChannelTagsResponse()
 
     private fun createRobot() = SwitchAccountRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
-        userSessionInterface = mockk(relaxed = true),
+        userSessionInterface = mockUserSession,
         dispatcher = mockDispatcher,
         repo = mockRepo,
         channelUseCase = mockGetChannelUseCase,
