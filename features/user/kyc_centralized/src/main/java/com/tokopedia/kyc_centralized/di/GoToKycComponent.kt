@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.CaptureKycDocumentsFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
@@ -31,4 +32,5 @@ interface GoToKycComponent {
     fun inject(bottomSheet: OnboardNonProgressiveBottomSheet)
     fun inject(fragment: BridgingAccountLinkingFragment)
     fun inject(fragment: FinalLoaderFragment)
+    fun inject(fragment: CaptureKycDocumentsFragment)
 }

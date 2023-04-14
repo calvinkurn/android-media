@@ -1,9 +1,10 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
+import javax.inject.Inject
 
 //TODO: change implementation
-class GotoKycEventTrackingProvider : IKycSdkEventTrackingProvider {
+class GotoKycEventTrackingProvider @Inject constructor() : IKycSdkEventTrackingProvider {
 
     override fun track(eventName: String, eventProperties: Map<String, Any>, productName: String?) {
 

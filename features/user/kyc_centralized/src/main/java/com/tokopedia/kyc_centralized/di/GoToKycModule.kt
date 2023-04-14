@@ -17,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -76,11 +77,13 @@ open class GoToKycModule {
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor
+                            chuckerInterceptor: ChuckerInterceptor,
+                            projectIdInterceptor: ProjectIdInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(AkamaiBotInterceptor(context))
+        builder.addInterceptor(projectIdInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -120,18 +123,6 @@ open class GoToKycModule {
     ): DefaultRemoteConfigProvider {
         return DefaultRemoteConfigProvider(context, gson)
     }
-
-    @Provides
-    @ActivityScope
-    fun provideGotoKycEventTrackingProvider() = GotoKycEventTrackingProvider()
-
-    @Provides
-    @ActivityScope
-    fun provideGotoKycErrorHandler() = GotoKycErrorHandler()
-
-    @Provides
-    @ActivityScope
-    fun provideGotoKycImageLoader() = GotoKycImageLoader()
 
     @Provides
     @ActivityScope

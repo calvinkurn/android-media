@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusUseCase
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
@@ -16,15 +16,15 @@ import javax.inject.Inject
 
 class FinalLoaderViewModel @Inject constructor(
     private val registerProgressiveUseCase: RegisterProgressiveUseCase,
-    private val kycStatusUseCase: KycStatusUseCase,
+    private val projectInfoUseCase: ProjectInfoUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _registerProgressive = MutableLiveData<RegisterProgressiveResult>()
     val registerProgressive : LiveData<RegisterProgressiveResult> get() = _registerProgressive
 
-    private val _kycStatus = MutableLiveData<KycStatusResult>()
-    val kycStatus : LiveData<KycStatusResult> get() = _kycStatus
+    private val _kycStatus = MutableLiveData<ProjectInfoResult>()
+    val kycStatus : LiveData<ProjectInfoResult> get() = _kycStatus
 
     fun registerProgressiveUseCase(projectId: String, challengeId: String) {
         _registerProgressive.value = RegisterProgressiveResult.Loading()
@@ -44,12 +44,10 @@ class FinalLoaderViewModel @Inject constructor(
     }
 
     fun kycStatus(projectId: String) {
-        _kycStatus.value = KycStatusResult.Loading()
-
         launchCatchError(block = {
-            _kycStatus.value = kycStatusUseCase(projectId.toIntSafely())
+            _kycStatus.value = projectInfoUseCase(projectId.toIntSafely())
         }, onError = {
-            _kycStatus.value = KycStatusResult.Failed(it)
+            _kycStatus.value = ProjectInfoResult.Failed(it)
         })
     }
 

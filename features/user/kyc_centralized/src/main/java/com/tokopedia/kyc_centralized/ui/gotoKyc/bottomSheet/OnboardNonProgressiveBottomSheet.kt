@@ -13,7 +13,8 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.gojek.kyc.sdk.core.extensions.checkSelfPermissionWithTryCatch
-import com.gojek.kyc.sdk.core.utils.KycSdkPartner
+import com.gojek.kyc.sdk.core.extensions.isKtpExist
+import com.gojek.kyc.sdk.core.extensions.isSelfieExist
 import com.gojek.onekyc.OneKycSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
@@ -38,8 +39,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var projectId = ""
     private var source = ""
     private var isAccountLinked = false
-    private var isKtpTaken = false
-    private var isSelfieTaken = false
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -60,7 +59,11 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            goToCaptureKycDocuments()
+            val parameter = GotoKycMainParam(
+                projectId = projectId,
+                sourcePage = source
+            )
+            gotoCaptureKycDocuments(parameter)
         } else {
             showPermissionRejected()
         }
@@ -76,8 +79,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
             isAccountLinked = it.getBoolean(ACCOUNT_LINKED)
-            isKtpTaken = it.getBoolean(IS_KTP_TAKEN)
-            isSelfieTaken = it.getBoolean(IS_SELFIE_TAKEN)
         }
     }
 
@@ -94,32 +95,35 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViewAccountLinking()
+        initListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
         setUpViewKtp()
         setUpViewSelfie()
-        initListener()
     }
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
             if (isAccountLinked or (binding?.layoutAccountLinking?.root?.isShown == false)) {
-                goToCaptureKycDocuments()
+                activity?.let {
+                    if (checkSelfPermissionWithTryCatch(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissionLocation.launch(Manifest.permission.CAMERA)
+                    } else {
+                        val parameter = GotoKycMainParam(
+                            projectId = projectId,
+                            sourcePage = source
+                        )
+                        gotoCaptureKycDocuments(parameter)
+                    }
+                }
             } else {
                 val parameter = GotoKycMainParam(
                     projectId = projectId,
                     sourcePage = source
                 )
                 gotoBridgingAccountLinking(parameter)
-            }
-        }
-    }
-
-    private fun goToCaptureKycDocuments() {
-        activity?.let {
-            if (checkSelfPermissionWithTryCatch(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissionLocation.launch(Manifest.permission.CAMERA)
-            } else {
-                oneKycSdk.init()
-                oneKycSdk.launchKyc(partner = KycSdkPartner.TOKO, activity = it)
             }
         }
     }
@@ -141,20 +145,21 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewKtp() {
+        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_ktp)
             )
 
             tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
-            if (isKtpTaken) {
-                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_checklist_circle_green,
-                    0
-                )
-            }
+
+            val compoundDrawable = if (isKtpTaken) { R.drawable.ic_checklist_circle_green } else { 0 }
+            tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                compoundDrawable,
+                0
+            )
 
             tvItemSubtitle.text = if (isKtpTaken) {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken)
@@ -165,6 +170,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewSelfie() {
+        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
         binding?.layoutSelfie?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_selfie)
@@ -191,6 +197,13 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
         val intent = Intent(activity, GotoKycMainActivity::class.java)
         intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_BRIDGING_ACCOUNT_LINKING)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
+        startKycForResult.launch(intent)
+    }
+
+    private fun gotoCaptureKycDocuments(parameter: GotoKycMainParam) {
+        val intent = Intent(activity, GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_CAPTURE_KYC_DOCUMENTS)
         intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
         startKycForResult.launch(intent)
     }
@@ -223,18 +236,14 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
         private const val ACCOUNT_LINKED = "account_linked"
-        private const val IS_KTP_TAKEN = "is_ktp_taken"
-        private const val IS_SELFIE_TAKEN = "is_selfie_taken"
         private const val PACKAGE = "package"
 
-        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean = false) =
+        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean) =
             OnboardNonProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
                     putBoolean(ACCOUNT_LINKED, isAccountLinked)
-                    putBoolean(IS_KTP_TAKEN, isKtpTaken)
-                    putBoolean(IS_SELFIE_TAKEN, isSelfieTaken)
                 }
             }
     }
