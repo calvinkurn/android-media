@@ -24,7 +24,6 @@
             android:layout_weight="0.1"
             android:background="@color/Unify_Static_White"
             android:contentDescription="@string/img_courier_content_description"
-            tools:visibility="visible"
             tools:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography
