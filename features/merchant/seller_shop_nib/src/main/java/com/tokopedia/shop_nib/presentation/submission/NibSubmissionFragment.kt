@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -126,12 +128,11 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     private fun observeFileSubmission() {
         viewModel.fileUpload.observe(viewLifecycleOwner){ result ->
-
+            binding?.btnFinish?.stopLoading()
 
             when(result) {
                 is Success -> handleFileSubmissionResult(result.data)
                 is Fail -> {
-                    binding?.btnFinish?.stopLoading()
                     view?.showToasterError(result.throwable)
                 }
             }
@@ -152,8 +153,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_SELECT_FILE) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == REQUEST_CODE_SELECT_FILE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
                 showSelectedFile(data)
             }
         }
@@ -161,17 +162,26 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
 
     private fun showFilePicker() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/jpeg,image/png,application/pdf"
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        val intent = if (isAndroid10OrAbove()) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/jpeg,image/png,application/pdf"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        } else {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/jpeg,image/png,application/pdf"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg", "application/pdf"))
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        }
 
         try {
-            startActivityForResult(intent, REQUEST_CODE_SELECT_FILE)
+            startActivityForResult(Intent.createChooser(intent, context?.getString(R.string.ssn_select_picture)), REQUEST_CODE_SELECT_FILE)
         } catch (_: ActivityNotFoundException) {}
 
     }
+
 
     private fun showSelectedFile(intent: Intent) {
         val fileUri = intent.data ?: return
@@ -237,4 +247,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
     }
 
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
+    private fun isAndroid10OrAbove(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    }
 }
