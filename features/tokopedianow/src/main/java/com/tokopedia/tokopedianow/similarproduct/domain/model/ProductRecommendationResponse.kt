@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.compact.similarproduct.domain.model
+package com.tokopedia.tokopedianow.similarproduct.domain.model
 
 import com.google.gson.annotations.SerializedName
 

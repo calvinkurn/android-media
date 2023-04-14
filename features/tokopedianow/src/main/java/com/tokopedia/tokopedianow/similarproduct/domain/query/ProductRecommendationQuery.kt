@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.compact.similarproduct.domain.query
+package com.tokopedia.tokopedianow.similarproduct.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
@@ -19,8 +19,8 @@ internal object ProductRecommendationQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${PARAM_USER_ID}: Int!, ${'$'}${PARAM_PRODUCT_IDS}: String!, ${'$'}${PARAM_QUERY}: String!){
-            $OPERATION_NAME(${PARAM_USER_ID}:${'$'}${PARAM_USER_ID}, ${PARAM_PRODUCT_IDS}:${'$'}${PARAM_PRODUCT_IDS}, ${PARAM_QUERY}:${'$'}${PARAM_QUERY}, ${PARAM_PAGE_NAME}: "now_similar_page", ${PARAM_X_DEVICE}: "android", ${PARAM_TOKONOW}: true) {
+        query $OPERATION_NAME(${'$'}$PARAM_USER_ID: Int!, ${'$'}$PARAM_PRODUCT_IDS: String!, ${'$'}$PARAM_QUERY: String!){
+            $OPERATION_NAME($PARAM_USER_ID:${'$'}$PARAM_USER_ID, $PARAM_PRODUCT_IDS:${'$'}$PARAM_PRODUCT_IDS, $PARAM_QUERY:${'$'}$PARAM_QUERY, $PARAM_PAGE_NAME: "now_similar_page", $PARAM_X_DEVICE: "android", $PARAM_TOKONOW: true) {
                 meta {
                   recommendation
                   size

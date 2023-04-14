@@ -1,13 +1,13 @@
-package com.tokopedia.productcard.compact.similarproduct.domain.usecase
+package com.tokopedia.tokopedianow.similarproduct.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.toUrlParams
-import com.tokopedia.productcard.compact.similarproduct.domain.model.ProductRecommendationResponse
-import com.tokopedia.productcard.compact.similarproduct.domain.query.ProductRecommendationQuery
-import com.tokopedia.productcard.compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_PRODUCT_IDS
-import com.tokopedia.productcard.compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_QUERY
-import com.tokopedia.productcard.compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_USER_ID
+import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
+import com.tokopedia.tokopedianow.similarproduct.domain.query.ProductRecommendationQuery
+import com.tokopedia.tokopedianow.similarproduct.domain.query.ProductRecommendationQuery.PARAM_PRODUCT_IDS
+import com.tokopedia.tokopedianow.similarproduct.domain.query.ProductRecommendationQuery.PARAM_QUERY
+import com.tokopedia.tokopedianow.similarproduct.domain.query.ProductRecommendationQuery.PARAM_USER_ID
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

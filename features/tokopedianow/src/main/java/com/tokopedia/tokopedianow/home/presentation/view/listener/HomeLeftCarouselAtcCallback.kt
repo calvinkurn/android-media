@@ -23,7 +23,7 @@ class HomeLeftCarouselAtcCallback(
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
     HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
     override fun onProductCardAddVariantClicked(

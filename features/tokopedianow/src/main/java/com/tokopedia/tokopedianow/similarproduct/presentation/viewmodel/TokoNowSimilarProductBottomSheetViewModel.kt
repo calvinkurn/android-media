@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.productcard.compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
-import com.tokopedia.productcard.compact.similarproduct.domain.usecase.GetSimilarProductUseCase
+import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
+import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateProductQuantity
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel

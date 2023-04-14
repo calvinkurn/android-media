@@ -17,7 +17,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.productcard.compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
+import com.tokopedia.tokopedianow.similarproduct.domain.mapper.ProductRecommendationResponseMapper
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel

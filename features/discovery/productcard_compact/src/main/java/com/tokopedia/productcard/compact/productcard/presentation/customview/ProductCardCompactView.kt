@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.compact.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_RED
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -31,7 +31,7 @@ import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
@@ -63,7 +63,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     )
 
     private fun LayoutProductCardCompactViewBinding.setupUi(
-        model: TokoNowProductCardViewUiModel
+        model: ProductCardCompactUiModel
     ) {
         initImageFilterView(
             imageUrl = model.imageUrl,
@@ -479,7 +479,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         }
     }
 
-    fun setData(model: TokoNowProductCardViewUiModel) {
+    fun setData(model: ProductCardCompactUiModel) {
         if (model.usePreDraw) {
             binding.root.doOnPreDraw {
                 binding.setupUi(model)

@@ -1,8 +1,8 @@
-package com.tokopedia.productcard.compact.similarproduct.domain.mapper
+package com.tokopedia.tokopedianow.similarproduct.domain.mapper
 
-import com.tokopedia.productcard.compact.common.util.NumberUtil
-import com.tokopedia.productcard.compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
+import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
 
 object ProductRecommendationResponseMapper {
     private const val POSITION_OFFSET = 1
@@ -23,7 +23,7 @@ object ProductRecommendationResponseMapper {
                             priceFmt = price,
                             imageUrl = imageUrl,
                             slashedPrice = product.slashedPrice.orEmpty(),
-                            discountPercentage = NumberUtil.formatFloatToString(product.discountPercentage),
+                            discountPercentage = formatFloatToString(product.discountPercentage),
                             categoryId = product.departmentId.toString(),
                             categoryName = categoryName,
                             position = position
