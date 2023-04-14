@@ -11,31 +11,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
-import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_nib.R
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionBinding
 import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
-import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.presentation.datepicker.NibDatePicker
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiState
 import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessActivity
 import com.tokopedia.shop_nib.util.FileHelper
 import com.tokopedia.shop_nib.util.extension.toMb
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -43,7 +44,6 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     companion object {
         private const val REQUEST_CODE_SELECT_FILE = 100
-        private const val MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 //5 MB
         private const val DATE_FORMAT = "dd/MM/yyyy"
 
         @JvmStatic
@@ -57,7 +57,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var fileHelper: FileHelper
@@ -88,8 +88,8 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeInputValidation()
-        observeFileSubmission()
+        observeUiState()
+        observeUiEffect()
     }
 
     private fun setupView() {
@@ -97,7 +97,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             header.setNavigationOnClickListener { activity?.finish() }
             layoutFilePickerDefault.setOnClickListener { showFilePicker() }
             layoutFilePickerError.setOnClickListener { showFilePicker() }
-            iconClose.setOnClickListener { removeSelectedFile() }
+            iconClose.setOnClickListener { viewModel.processEvent(UiEvent.UnselectFile) }
             tpgNibBenefit.setHyperlinkText(
                 fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
                 hyperlinkSubstring = context?.getString(R.string.ssn_here).orEmpty(),
@@ -108,43 +108,84 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
             imgFile.scaleType = ImageView.ScaleType.CENTER_CROP
 
-            tauNibPublishedDate.editText.setOnClickListener { showDatePickerBottomSheet() }
+            tauNibPublishedDate.editText.setOnClickListener { viewModel.processEvent(UiEvent.TapChangeDate) }
             tauNibPublishedDate.editText.inputType = InputType.TYPE_NULL
             tauNibPublishedDate.editText.isFocusable = false
 
             btnFinish.setOnClickListener {
-                binding?.btnFinish?.startLoading()
-                viewModel.onTapSubmitButton()
+                viewModel.processEvent(UiEvent.SubmitFile)
             }
         }
     }
-    private fun observeInputValidation() {
-        viewModel.validInput.observe(viewLifecycleOwner){ isInputValid ->
-            binding?.btnFinish?.isEnabled = isInputValid
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.collect { state -> handleUiState(state) }
         }
     }
 
-    private fun observeFileSubmission() {
-        viewModel.fileUpload.observe(viewLifecycleOwner){ result ->
-            binding?.btnFinish?.stopLoading()
+    private fun observeUiEffect() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
+        }
+    }
 
-            when(result) {
-                is Success -> handleFileSubmissionResult(result.data)
-                is Fail -> {
-                    view?.showToasterError(result.throwable)
-                }
+    private fun handleUiState(uiState: UiState) {
+        binding?.run {
+            if (uiState.isLoading) btnFinish.startLoading() else btnFinish.stopLoading()
+            btnFinish.isEnabled = uiState.isInputValid
+            tauNibPublishedDate.editText.setText(uiState.selectedDate?.formatTo(DATE_FORMAT))
+        }
+
+        renderFilePreview(uiState.fileState)
+    }
+
+    private fun handleEffect(effect: UiEffect) {
+        when (effect) {
+            UiEffect.RedirectToSubmissionSuccess -> redirectToSubmissionSuccessPage()
+            is UiEffect.ShowDatePicker -> showDatePickerBottomSheet(effect.previouslySelectedDate)
+            UiEffect.ShowFilePicker -> showFilePicker()
+            is UiEffect.ShowError -> view?.showToasterError(effect.error)
+            is UiEffect.ShowUploadError -> view?.showToasterError(effect.errorMessage)
+        }
+    }
+
+
+    private fun renderFilePreview(fileState: UiState.FileState) {
+        binding?.tpgErrorMessage?.isVisible = fileState is UiState.FileState.Valid
+        when (fileState) {
+            UiState.FileState.NotSelected -> {
+                binding?.layoutFilePickerDefault?.visible()
+                binding?.layoutFilePickerError?.gone()
+                binding?.layoutFilePickerSelected?.gone()
+
             }
+            UiState.FileState.InvalidFileExtension -> {
+                binding?.layoutFilePickerDefault?.gone()
+                binding?.layoutFilePickerError?.visible()
+                binding?.layoutFilePickerSelected?.gone()
 
+                binding?.tpgErrorMessage?.text =
+                    context?.getString(R.string.ssn_error_message_file_extension)
+            }
+            UiState.FileState.ExceedMaxFileSize -> {
+                binding?.layoutFilePickerDefault?.gone()
+                binding?.layoutFilePickerError?.visible()
+                binding?.layoutFilePickerSelected?.gone()
+
+                binding?.tpgErrorMessage?.text =
+                    context?.getString(R.string.ssn_error_message_file_size)
+            }
+            is UiState.FileState.Valid -> {
+                binding?.layoutFilePickerDefault?.gone()
+                binding?.layoutFilePickerError?.gone()
+                binding?.layoutFilePickerSelected?.visible()
+
+                renderSelectedFileThumbnail(fileState.fileUri, fileState.fileSizeKb)
+            }
         }
     }
 
-    private fun handleFileSubmissionResult(result: UploadFileResult) {
-        if (result.isSuccess) {
-            redirectToSubmissionSuccessPage()
-        } else {
-            binding?.root?.showToaster(result.errorMessage)
-        }
-    }
     private fun redirectToSubmissionSuccessPage() {
         activity?.finish()
         NibSubmissionSuccessActivity.start(activity ?: return)
@@ -153,7 +194,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_SELECT_FILE && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                showSelectedFile(data)
+                handleSelectedFile(data)
             }
         }
     }
@@ -177,47 +218,16 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     }
 
-
-    private fun showSelectedFile(intent: Intent) {
+    private fun handleSelectedFile(intent: Intent) {
         val fileUri = intent.data ?: return
-        val fileSizeInKb = fileHelper.getFileSizeInBytes(fileUri)
+        val fileSizeKb = fileHelper.getFileSizeInBytes(fileUri)
         val fileExtension = fileHelper.getFileExtension(fileUri)
 
-        val allowedFileExtensions = listOf("png", "jpeg", "jpg", "pdf")
-
-        if (fileExtension !in allowedFileExtensions) {
-            binding?.btnFinish?.disable()
-
-            binding?.layoutFilePickerDefault?.gone()
-            binding?.layoutFilePickerError?.visible()
-
-            binding?.tpgErrorMessage?.visible()
-            binding?.tpgErrorMessage?.text = context?.getString(R.string.ssn_error_message_file_extension)
-
-            viewModel.onSelectInvalidFile()
-            return
-        }
-
-        if (fileSizeInKb > MAX_FILE_SIZE_BYTES) {
-            binding?.btnFinish?.disable()
-
-            binding?.layoutFilePickerDefault?.gone()
-            binding?.layoutFilePickerError?.visible()
-
-            binding?.tpgErrorMessage?.visible()
-            binding?.tpgErrorMessage?.text = context?.getString(R.string.ssn_error_message_file_size)
-
-            viewModel.onSelectInvalidFile()
-            return
-        }
-
-
-        binding?.tpgErrorMessage?.gone()
-        renderSelectedFileThumbnail(fileUri, fileSizeInKb)
-        viewModel.onFileSelected(fileUri.toString())
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri.toString(), fileExtension, fileSizeKb))
     }
 
-    private fun renderSelectedFileThumbnail(fileUri: Uri, fileSizeInKb: Long) {
+    private fun renderSelectedFileThumbnail(uri: String, fileSizeInKb: Long) {
+        val fileUri = Uri.parse(uri)
         val fileName = fileHelper.getFileName(fileUri)
         val fileExtension = fileHelper.getFileExtension(fileUri)
         val isPdf = fileExtension == "pdf"
@@ -230,36 +240,27 @@ class NibSubmissionFragment : BaseDaggerFragment() {
                 imgFile.loadImage(fileUri)
             }
 
-            layoutFilePickerDefault.gone()
-            layoutFilePickerError.gone()
-            layoutFilePickerSelected.visible()
             tpgFileName.text = fileName
 
             val fileSizeInMb = fileSizeInKb.toMb()
             val roundedFileSizeInMb = String.format("%.2f", fileSizeInMb)
-            tpgFileSize.text = context?.getString(R.string.ssn_placeholder_file_size, roundedFileSizeInMb)
+            tpgFileSize.text =
+                context?.getString(R.string.ssn_placeholder_file_size, roundedFileSizeInMb)
         }
     }
 
-    private fun removeSelectedFile() {
-        viewModel.onFileRemoved()
 
-        binding?.run {
-            layoutFilePickerDefault.visible()
-            layoutFilePickerSelected.gone()
-        }
-    }
+    private fun showDatePickerBottomSheet(previouslySelectedDate: Date?) {
+        if (!isAdded) return
 
-    private fun showDatePickerBottomSheet() {
         val param = NibDatePicker.Param(
-            defaultDate = viewModel.getNibPublishDate(),
+            defaultDate = previouslySelectedDate,
             title = context?.getString(R.string.ssn_nib_publish_date).orEmpty(),
             buttonWording = context?.getString(R.string.ssn_select).orEmpty()
         )
         val datePicker = NibDatePicker(param)
-        val onDateSelected : (Date) -> Unit = { selectedDate ->
-            binding?.tauNibPublishedDate?.editText?.setText(selectedDate.formatTo(DATE_FORMAT))
-            viewModel.onSelectNibPublishDate(selectedDate)
+        val onDateSelected: (Date) -> Unit = { selectedDate ->
+            viewModel.processEvent(UiEvent.ConfirmDate(selectedDate))
         }
         datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
     }

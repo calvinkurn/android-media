@@ -1,16 +1,18 @@
 package com.tokopedia.shop_nib.presentation.submission
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
+import com.tokopedia.shop_nib.presentation.submission.uimodel.UiState
 import java.util.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 import javax.inject.Inject
 
@@ -19,64 +21,119 @@ class NibSubmissionViewModel @Inject constructor(
     private val uploadFileUseCase: UploadFileUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private var fileUri : String = ""
-    private var nibPublishDate : Date? = null
-
-    private val _validInput = MutableLiveData<Boolean>()
-    val validInput: LiveData<Boolean>
-        get() = _validInput
-
-    private val _fileUpload = MutableLiveData<Result<UploadFileResult>>()
-    val fileUpload: LiveData<Result<UploadFileResult>>
-        get() = _fileUpload
-
-    fun onSelectNibPublishDate(nibPublishDate: Date) {
-        this.nibPublishDate = nibPublishDate
-        validateInput()
-    }
-    fun onFileSelected(fileUri: String) {
-        this.fileUri = fileUri
-        validateInput()
+    companion object {
+        private const val MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 //5 MB
     }
 
-    fun onFileRemoved() {
-        this.fileUri = ""
-        validateInput()
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
+
+    private val currentState: UiState
+        get() = _uiState.value
+
+
+    fun processEvent(event: UiEvent) {
+        when(event) {
+            is UiEvent.TapSelectFile -> _uiEffect.tryEmit(UiEffect.ShowFilePicker)
+            is UiEvent.ConfirmFile -> handleConfirmFile(event.fileUri, event.fileExtension, event.fileSizeKb)
+            UiEvent.UnselectFile -> handleUnselectFile()
+            is UiEvent.TapChangeDate -> _uiEffect.tryEmit(UiEffect.ShowDatePicker(currentState.selectedDate))
+            is UiEvent.ConfirmDate -> handleConfirmDate(event.newDate)
+            UiEvent.SubmitFile -> handleSubmitFile()
+        }
     }
 
-    fun onSelectInvalidFile() {
-        this.fileUri = ""
-        validateInput()
+    private fun handleConfirmFile(fileUri: String, fileExtension: String, fileSizeKb: Long) {
+        _uiState.update {
+            val fileState = validateFileInput(fileUri, fileExtension, fileSizeKb)
+            val isInputValid = validateInput(fileState)
+
+            it.copy(
+                selectedFileUri = fileUri,
+                selectedFileExtension = fileExtension,
+                selectedFileSizeKb = fileSizeKb,
+                fileState = fileState,
+                isInputValid = isInputValid
+            )
+        }
     }
 
-    fun onTapSubmitButton() {
+    private fun handleConfirmDate(newDate: Date) {
+        _uiState.update { it.copy(selectedDate = newDate) }
+    }
+
+    private fun handleUnselectFile() {
+        _uiState.update {
+            it.copy(
+                selectedFileUri = "",
+                selectedFileExtension = "",
+                selectedFileSizeKb = 0,
+                fileState = UiState.FileState.NotSelected,
+                isInputValid = false
+            )
+        }
+    }
+
+    private fun handleSubmitFile() {
+        _uiState.update { it.copy(isLoading = true) }
+
+        val fileUri = currentState.selectedFileUri
+        val nibPublishDate = currentState.selectedDate
+
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = uploadFileUseCase.execute(fileUri)
-                _fileUpload.postValue(Success(result))
+
+                _uiState.update { it.copy(isLoading = false, error = null) }
+                if (result.isSuccess) {
+                    _uiEffect.tryEmit(UiEffect.RedirectToSubmissionSuccess)
+                } else {
+                    _uiEffect.tryEmit(UiEffect.ShowUploadError(result.errorMessage))
+                }
+
             },
             onError = { error ->
-                _fileUpload.postValue(Fail(error))
+                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiEffect.tryEmit(UiEffect.ShowError(error))
             }
         )
     }
 
-    private fun validateInput() {
-        if (fileUri.isEmpty()) {
-            _validInput.value = false
-            return
-        }
 
-        if (nibPublishDate == null) {
-            _validInput.value = false
-            return
-        }
-
-        _validInput.value = true
+    private fun validateInput(fileState: UiState.FileState): Boolean {
+        return currentState.selectedDate != null && fileState is UiState.FileState.Valid
     }
 
-    fun getNibPublishDate(): Date? {
-        return nibPublishDate
+    private fun validateFileInput(fileUri: String, fileExtension: String, fileSizeKb: Long): UiState.FileState {
+        if (!isFileSelected(fileUri)) {
+            return UiState.FileState.NotSelected
+        }
+
+        if (!isValidFileExtension(fileExtension)) {
+            return UiState.FileState.InvalidFileExtension
+        }
+
+        if (!isValidFileSize(fileSizeKb)) {
+            return UiState.FileState.ExceedMaxFileSize
+        }
+
+        return UiState.FileState.Valid(fileUri, fileSizeKb)
+    }
+
+    private fun isFileSelected(fileUri: String): Boolean {
+        return fileUri.isNotEmpty()
+    }
+
+    private fun isValidFileExtension(fileExtension: String): Boolean {
+        val allowedFileExtensions = listOf("png", "jpeg", "jpg", "pdf")
+        return fileExtension in allowedFileExtensions
+    }
+
+    private fun isValidFileSize(fileSizeKb: Long): Boolean {
+        return fileSizeKb <= MAX_FILE_SIZE_BYTES
     }
 }
