@@ -658,12 +658,8 @@ class SmartBillsFragment :
     }
 
     private fun getCatalogData() {
-        if (getRemoteConfigAddBillsEnabler()) {
-            showProgressBar()
-            viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
-        } else {
-            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
-        }
+        showProgressBar()
+        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
@@ -922,10 +918,6 @@ class SmartBillsFragment :
                 }
             }
         }
-    }
-
-    private fun getRemoteConfigAddBillsEnabler(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true)
     }
 
     private fun showProgressBar() {
