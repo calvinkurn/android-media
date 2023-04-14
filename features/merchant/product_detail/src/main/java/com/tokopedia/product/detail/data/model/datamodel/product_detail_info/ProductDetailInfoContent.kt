@@ -39,7 +39,7 @@ data class ProductDetailInfoContent(
     enum class Action(val value: String) {
         NONE(""),
         APP_LINK("applink"),
-        OPEN_PRODUCT_DETAIL_INFO("open_detail_produk")
+        OPEN_PRODUCT_DETAIL_INFO("open_detail_product")
     }
 
     fun routeOnClick(
