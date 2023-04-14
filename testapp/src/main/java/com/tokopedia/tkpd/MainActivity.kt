@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     val REQUEST_CODE_LOGIN = 123
     val REQUEST_CODE_LOGOUT = 456
+    val REQUEST_CODE_DEVELOPER_OPTIONS = 789
     lateinit var userSession: UserSessionInterface
 
     private val model = mutableStateOf(
@@ -51,7 +52,8 @@ class MainActivity : AppCompatActivity() {
                             HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
                             HomeDestination.APPLINK -> goTo()
                         }
-                    })
+                    }
+                )
             }
         }
     }
@@ -119,6 +121,11 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Logout Failed", Toast.LENGTH_SHORT).show()
                 }
             }
+            REQUEST_CODE_DEVELOPER_OPTIONS -> {
+                if (userSession.isLoggedIn) {
+                    goTo()
+                }
+            }
         }
     }
 
@@ -126,9 +133,9 @@ class MainActivity : AppCompatActivity() {
         if (userSession.isLoggedIn) {
             val identity =
                 if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            model.value = model.value.copy(loginText = "Logged in as:\n${identity}")
+            model.value = model.value.copy(isLoggedIn = true, loginText = "Logged in as:\n$identity")
         } else {
-            model.value = model.value.copy(loginText = "Login")
+            model.value = model.value.copy(isLoggedIn = false, loginText = "Login")
         }
     }
 
@@ -144,8 +151,11 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        if (model.value.applink.isNotBlank()) RouteManager.route(this, model.value.applink)
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        if (model.value.applink.isNotBlank()) {
+            RouteManager.route(this, model.value.applink)
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getDefaultAppLink(): String {
@@ -159,7 +169,8 @@ class MainActivity : AppCompatActivity() {
         val applink: String = "",
         val urlState: String = "LIVE",
         val isDarkModeChecked: Boolean = false,
-        val loginText: String = "Login"
+        val loginText: String = "Login",
+        val isLoggedIn: Boolean = false
     )
 
     sealed interface HomeDestination {

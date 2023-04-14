@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.draft.presentation.viewholder
 
 import android.graphics.Typeface
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.ItemProductDraftListBinding
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener

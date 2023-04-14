@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.sort_filter
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -65,18 +66,6 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     }
 }
 
-@Preview(name = "Sort Filter Item (Selected)")
-@Composable
-fun NestSortFilterItemSelectedPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", true, {}))
-}
-
-@Preview(name = "Sort Filter Item (Default)")
-@Composable
-fun NestSortFilterItemPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", false, {}))
-}
-
 @Composable
 private fun NestSortFilterItem(sortFilter: SortFilter) {
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
@@ -127,7 +116,10 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NestTypography(text = sortFilter.title, textStyle = NestTheme.typography.display2.copy(color = textColor))
+            NestTypography(
+                text = sortFilter.title,
+                textStyle = NestTheme.typography.display2.copy(color = textColor)
+            )
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
@@ -138,12 +130,32 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
     }
 }
 
+@Preview(name = "Sort Filter Item (Selected)")
+@Composable
+fun NestSortFilterItemSelectedPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", true, {}))
+}
+
+@Preview(name = "Sort Filter Item (Default)")
+@Composable
+fun NestSortFilterItemPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", false, {}))
+}
+
 @Preview(name = "Sort Filter")
+@Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestSortFilterPreview() {
     val items = arrayListOf(
         SortFilter("Lokasi", true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
-    NestSortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
+    NestTheme {
+        NestSortFilter(
+            modifier = Modifier,
+            items = items,
+            onClearFilter = {},
+            showClearFilterIcon = true
+        )
+    }
 }
