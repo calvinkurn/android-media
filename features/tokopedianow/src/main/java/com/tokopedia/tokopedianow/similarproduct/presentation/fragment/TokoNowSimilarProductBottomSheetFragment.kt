@@ -49,7 +49,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     @Inject
-    lateinit var bottomSheetViewModel : TokoNowSimilarProductBottomSheetViewModel
+    lateinit var viewModel : TokoNowSimilarProductBottomSheetViewModel
 
     private val productList = ArrayList<ProductCardCompactSimilarProductUiModel>()
 
@@ -72,7 +72,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         setupBottomSheet()
 
-        bottomSheetViewModel.getSimilarProductList(productIdTriggered)
+        viewModel.getSimilarProductList(productIdTriggered)
     }
 
     override fun onAttach(context: Context) {
@@ -90,8 +90,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        if(bottomSheetViewModel.isLoggedIn) {
-            bottomSheetViewModel.onCartQuantityChanged(productId, shopId, quantity)
+        if(viewModel.isLoggedIn) {
+            viewModel.onCartQuantityChanged(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }
@@ -100,8 +100,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     override fun onProductClicked(product: ProductCardCompactSimilarProductUiModel) {
         goToProductDetailPage(product)
         listener?.trackClickProduct(
-            userId = bottomSheetViewModel.userId,
-            warehouseId = bottomSheetViewModel.warehouseId,
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -109,8 +109,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
     override fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel) {
         listener?.trackImpressionBottomSheet(
-            userId = bottomSheetViewModel.userId,
-            warehouseId = bottomSheetViewModel.warehouseId,
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -122,7 +122,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        bottomSheetViewModel.getMiniCart()
+        viewModel.getMiniCart()
     }
 
     private fun goToProductDetailPage(item: ProductCardCompactSimilarProductUiModel) {
@@ -141,8 +141,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
         bottomSheet?.setOnDismissListener {
             listener?.trackClickCloseBottomsheet(
-                userId = bottomSheetViewModel.userId,
-                warehouseId = bottomSheetViewModel.warehouseId,
+                userId = viewModel.userId,
+                warehouseId = viewModel.warehouseId,
                 productIdTriggered = productIdTriggered
             )
         }
@@ -151,7 +151,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     private fun observeLiveData() {
-        bottomSheetViewModel.similarProductList.observe(viewLifecycleOwner) { list ->
+        viewModel.similarProductList.observe(viewLifecycleOwner) { list ->
             if (list.isNotEmpty()) {
                 //map this list to similar ui model list
                 list?.forEachIndexed { index, recommendationItem ->
@@ -164,7 +164,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
                         }
                     }
                 }
-                bottomSheetViewModel.onViewCreated(productList)
+                viewModel.onViewCreated(productList)
             } else {
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
@@ -172,35 +172,35 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
             trackAction()
         }
 
-        observe(bottomSheetViewModel.visitableItems) {
+        observe(viewModel.visitableItems) {
             bottomSheet?.items = it
         }
 
-        observe(bottomSheetViewModel.addItemToCart) {
+        observe(viewModel.addItemToCart) {
             when (it) {
                 is Success -> onSuccessAddItemToCart(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(bottomSheetViewModel.removeCartItem) {
+        observe(viewModel.removeCartItem) {
             when (it) {
                 is Success -> onSuccessRemoveCartItem(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(bottomSheetViewModel.updateCartItem) {
+        observe(viewModel.updateCartItem) {
             when (it) {
                 is Success -> onSuccessUpdateCartItem(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(bottomSheetViewModel.miniCart) {
+        observe(viewModel.miniCart) {
             when(it) {
                 is Success -> {
-                    bottomSheet?.setMiniCartData(it.data, bottomSheetViewModel.getShopId(), this)
+                    bottomSheet?.setMiniCartData(it.data, viewModel.getShopId(), this)
                 }
                 is Fail -> { /* nothing to do */ }
             }
@@ -216,8 +216,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
         bottomSheet?.changeQuantity(data.data.quantity, position)
 
         listener?.trackClickAddToCart(
-            userId = bottomSheetViewModel.userId,
-            warehouseId = bottomSheetViewModel.warehouseId,
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
             similarProduct = productList[position],
             productIdTriggered = productIdTriggered,
             newQuantity = data.data.quantity
@@ -236,7 +236,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     private fun onSuccessUpdateCartItem(data : Triple<String, UpdateCartV2Data, Int>) {
-        val shopId = bottomSheetViewModel.getShopId().toString()
+        val shopId = viewModel.getShopId().toString()
         bottomSheet?.updateMiniCart(shopId)
 
         val productId = data.first
@@ -255,7 +255,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     private fun getMiniCart() {
-        bottomSheetViewModel.getMiniCart()
+        viewModel.getMiniCart()
     }
 
     private fun showToaster(
@@ -275,15 +275,15 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
     private fun trackAction() {
         listener?.trackClickSimilarProductBtn(
-            userId = bottomSheetViewModel.userId,
-            warehouseId = bottomSheetViewModel.warehouseId,
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
             productIdTriggered = productIdTriggered
         )
 
         if(productList.isEmpty()) {
             listener?.trackImpressionEmptyState(
-                userId = bottomSheetViewModel.userId,
-                warehouseId = bottomSheetViewModel.warehouseId,
+                userId = viewModel.userId,
+                warehouseId = viewModel.warehouseId,
                 productIdTriggered = productIdTriggered
             )
         }
