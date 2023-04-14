@@ -35,7 +35,6 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNo
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
-import com.tokopedia.productcard.compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
 
 class ProductCardCompactView @JvmOverloads constructor(
@@ -56,15 +55,12 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
-    private var binding: LayoutProductCardCompactViewBinding
-
-    init {
-        binding = LayoutProductCardCompactViewBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
-    }
+    private var productCardCompactListener: ProductCardCompactListener? = null
+    private var binding: LayoutProductCardCompactViewBinding = LayoutProductCardCompactViewBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     private fun LayoutProductCardCompactViewBinding.setupUi(
         model: TokoNowProductCardViewUiModel
@@ -254,8 +250,7 @@ class ProductCardCompactView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                val intent = ProductCardCompactSimilarProductActivity.createNewIntent(context, productId, productCardCompactSimilarProductTrackerListener)
-                context.startActivity(intent)
+                productCardCompactListener?.onClickSimilarProduct(productId, productCardCompactSimilarProductTrackerListener)
             }
         }
     }
@@ -511,10 +506,20 @@ class ProductCardCompactView @JvmOverloads constructor(
     ){
         this.productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
     }
-
     fun setWishlistButtonListener(
-        wishlistButtonListener: ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener
+        wishlistButtonListener: ProductCardCompactWishlistButtonView.WishlistButtonListener
     ) {
         binding.wishlistButton.setListener(wishlistButtonListener)
+    }
+
+    fun setListener(productCardCompactListener: ProductCardCompactListener?) {
+        this.productCardCompactListener = productCardCompactListener
+    }
+
+    interface ProductCardCompactListener {
+        fun onClickSimilarProduct(
+            productId: String,
+            similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
+        )
     }
 }

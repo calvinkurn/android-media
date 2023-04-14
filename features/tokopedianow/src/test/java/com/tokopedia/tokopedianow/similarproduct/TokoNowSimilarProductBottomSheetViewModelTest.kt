@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.compact.similarproduct
+package com.tokopedia.tokopedianow.similarproduct
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,10 +13,10 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.productcard.compact.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.productcard.compact.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
-import com.tokopedia.productcard.compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
-import com.tokopedia.productcard.compact.common.util.TestUtils.mockPrivateField
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.productcard.compact.common.helper.LocalAddressHelper
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,12 +39,12 @@ class ProductCardCompactSimilarProductViewModelTest {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
-    private lateinit var localAddressHelper: LocalAddressHelper
+    private lateinit var localAddressHelper: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
     private lateinit var chooseAddressData: LocalCacheModel
 
-    protected lateinit var viewModel: ProductCardCompactSimilarProductViewModel
+    protected lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
 
     @Before
     fun setUp() {
@@ -57,7 +57,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         getSimilarProductUseCase = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
 
-        viewModel = ProductCardCompactSimilarProductViewModel(
+        viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
             userSession,
             localAddressHelper,
@@ -107,7 +107,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getChooseAddressData()
+            localAddressHelper.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -124,7 +124,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getChooseAddressData()
+            localAddressHelper.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -139,7 +139,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getChooseAddressData()
+            localAddressHelper.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")

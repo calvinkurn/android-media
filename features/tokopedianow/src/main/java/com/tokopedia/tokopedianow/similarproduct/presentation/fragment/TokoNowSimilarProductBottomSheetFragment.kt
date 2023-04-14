@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.compact.similarproduct.presentation.fragment
+package com.tokopedia.tokopedianow.similarproduct.presentation.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -17,43 +17,43 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.productcard.compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
+import com.tokopedia.productcard.compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
-import com.tokopedia.productcard.compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder.SimilarProductListener
-import com.tokopedia.productcard.compact.R
-import com.tokopedia.productcard.compact.common.di.component.DaggerCommonComponent
-import com.tokopedia.productcard.compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
-import com.tokopedia.productcard.compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
+import com.tokopedia.productcard.compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
+import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductCardCompactSimilarProductFragment : Fragment(),
-    SimilarProductListener,
+class TokoNowSimilarProductBottomSheetFragment : Fragment(),
+    ProductCardCompactSimilarProductViewHolder.SimilarProductListener,
     MiniCartWidgetListener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 101
         private const val QUANTITY_ZERO = 0
 
-        fun newInstance(productId: String?): ProductCardCompactSimilarProductFragment {
-            return ProductCardCompactSimilarProductFragment().apply {
+        fun newInstance(productId: String?): TokoNowSimilarProductBottomSheetFragment {
+            return TokoNowSimilarProductBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SIMILAR_PRODUCT_ID, productId)
                 }
             }
         }
     }
-    private var listener: ProductCardCompactSimilarProductTrackerListener? = null
 
     @Inject
-    lateinit var viewModel : ProductCardCompactSimilarProductViewModel
+    lateinit var bottomSheetViewModel : TokoNowSimilarProductBottomSheetViewModel
 
     private val productList = ArrayList<ProductCardCompactSimilarProductUiModel>()
 
+    private var listener: ProductCardCompactSimilarProductTrackerListener? = null
     private var bottomSheet: ProductCardCompactSimilarProductBottomSheet? = null
 
     private val productIdTriggered: String
@@ -64,7 +64,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_product_card_compact_base, container, false)
+        return inflater.inflate(R.layout.fragment_tokopedianow_base, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,7 +72,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         setupBottomSheet()
 
-        viewModel.getSimilarProductList(productIdTriggered)
+        bottomSheetViewModel.getSimilarProductList(productIdTriggered)
     }
 
     override fun onAttach(context: Context) {
@@ -90,8 +90,8 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        if(viewModel.isLoggedIn) {
-            viewModel.onCartQuantityChanged(productId, shopId, quantity)
+        if(bottomSheetViewModel.isLoggedIn) {
+            bottomSheetViewModel.onCartQuantityChanged(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }
@@ -100,8 +100,8 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     override fun onProductClicked(product: ProductCardCompactSimilarProductUiModel) {
         goToProductDetailPage(product)
         listener?.trackClickProduct(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = bottomSheetViewModel.userId,
+            warehouseId = bottomSheetViewModel.warehouseId,
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -109,8 +109,8 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
 
     override fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel) {
         listener?.trackImpressionBottomSheet(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = bottomSheetViewModel.userId,
+            warehouseId = bottomSheetViewModel.warehouseId,
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -122,7 +122,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.getMiniCart()
+        bottomSheetViewModel.getMiniCart()
     }
 
     private fun goToProductDetailPage(item: ProductCardCompactSimilarProductUiModel) {
@@ -130,10 +130,10 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun setupBottomSheet() {
-        val title = getString(R.string.product_card_compact_similar_product_bottom_sheet_title)
+        val title = getString(R.string.tokopedianow_similar_product_bottom_sheet_title)
 
         bottomSheet = ProductCardCompactSimilarProductBottomSheet.newInstance().apply {
-            productListener = this@ProductCardCompactSimilarProductFragment
+            productListener = this@TokoNowSimilarProductBottomSheetFragment
             items = emptyList()
             setTitle(title)
             triggerProductId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
@@ -141,8 +141,8 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
 
         bottomSheet?.setOnDismissListener {
             listener?.trackClickCloseBottomsheet(
-                userId = viewModel.userId,
-                warehouseId = viewModel.warehouseId,
+                userId = bottomSheetViewModel.userId,
+                warehouseId = bottomSheetViewModel.warehouseId,
                 productIdTriggered = productIdTriggered
             )
         }
@@ -151,7 +151,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.similarProductList.observe(viewLifecycleOwner) { list ->
+        bottomSheetViewModel.similarProductList.observe(viewLifecycleOwner) { list ->
             if (list.isNotEmpty()) {
                 //map this list to similar ui model list
                 list?.forEachIndexed { index, recommendationItem ->
@@ -164,7 +164,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
                         }
                     }
                 }
-                viewModel.onViewCreated(productList)
+                bottomSheetViewModel.onViewCreated(productList)
             } else {
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
@@ -172,35 +172,35 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
             trackAction()
         }
 
-        observe(viewModel.visitableItems) {
+        observe(bottomSheetViewModel.visitableItems) {
             bottomSheet?.items = it
         }
 
-        observe(viewModel.addItemToCart) {
+        observe(bottomSheetViewModel.addItemToCart) {
             when (it) {
                 is Success -> onSuccessAddItemToCart(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(viewModel.removeCartItem) {
+        observe(bottomSheetViewModel.removeCartItem) {
             when (it) {
                 is Success -> onSuccessRemoveCartItem(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(viewModel.updateCartItem) {
+        observe(bottomSheetViewModel.updateCartItem) {
             when (it) {
                 is Success -> onSuccessUpdateCartItem(it.data)
                 is Fail -> showErrorToaster(it)
             }
         }
 
-        observe(viewModel.miniCart) {
+        observe(bottomSheetViewModel.miniCart) {
             when(it) {
                 is Success -> {
-                    bottomSheet?.setMiniCartData(it.data, viewModel.getShopId(), this)
+                    bottomSheet?.setMiniCartData(it.data, bottomSheetViewModel.getShopId(), this)
                 }
                 is Fail -> { /* nothing to do */ }
             }
@@ -209,15 +209,15 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        showToaster(message = message, actionText = getString(R.string.product_card_compact_see), onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
+        showToaster(message = message, actionText = getString(R.string.tokopedianow_similar_product_bottom_sheet_see), onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
         val position = productList.indexOfFirst {
-            it.id == data.data.productId.toString()
+            it.id == data.data.productId
         }
         bottomSheet?.changeQuantity(data.data.quantity, position)
 
         listener?.trackClickAddToCart(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = bottomSheetViewModel.userId,
+            warehouseId = bottomSheetViewModel.warehouseId,
             similarProduct = productList[position],
             productIdTriggered = productIdTriggered,
             newQuantity = data.data.quantity
@@ -227,7 +227,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
-        showToaster(message = data.second, actionText = getString(R.string.product_card_compact_ok), onClickAction = {})
+        showToaster(message = data.second, actionText = getString(R.string.tokopedianow_similar_product_bottom_sheet_ok), onClickAction = {})
         val position = productList.indexOfFirst {
             it.id == data.first
         }
@@ -236,7 +236,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun onSuccessUpdateCartItem(data : Triple<String, UpdateCartV2Data, Int>) {
-        val shopId = viewModel.getShopId().toString()
+        val shopId = bottomSheetViewModel.getShopId().toString()
         bottomSheet?.updateMiniCart(shopId)
 
         val productId = data.first
@@ -255,7 +255,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun getMiniCart() {
-        viewModel.getMiniCart()
+        bottomSheetViewModel.getMiniCart()
     }
 
     private fun showToaster(
@@ -275,22 +275,22 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
 
     private fun trackAction() {
         listener?.trackClickSimilarProductBtn(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = bottomSheetViewModel.userId,
+            warehouseId = bottomSheetViewModel.warehouseId,
             productIdTriggered = productIdTriggered
         )
 
         if(productList.isEmpty()) {
             listener?.trackImpressionEmptyState(
-                userId = viewModel.userId,
-                warehouseId = viewModel.warehouseId,
+                userId = bottomSheetViewModel.userId,
+                warehouseId = bottomSheetViewModel.warehouseId,
                 productIdTriggered = productIdTriggered
             )
         }
     }
 
     private fun injectDependencies() {
-        DaggerCommonComponent.builder()
+        DaggerSimilarProductComponent.builder()
             .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)

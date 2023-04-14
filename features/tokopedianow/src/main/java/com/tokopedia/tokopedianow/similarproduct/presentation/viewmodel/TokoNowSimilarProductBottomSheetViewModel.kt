@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.compact.similarproduct.presentation.viewmodel
+package com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,31 +12,31 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.productcard.compact.common.helper.LocalAddressHelper
-import com.tokopedia.productcard.compact.common.viewmodel.BaseCartViewModel
 import com.tokopedia.productcard.compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard.compact.similarproduct.domain.usecase.GetSimilarProductUseCase
-import com.tokopedia.productcard.compact.similarproduct.presentation.mapper.ProductCardCompactSimilarProductMapper.updateDeletedProductQuantity
-import com.tokopedia.productcard.compact.similarproduct.presentation.mapper.ProductCardCompactSimilarProductMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateDeletedProductQuantity
+import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateProductQuantity
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ProductCardCompactSimilarProductViewModel @Inject constructor(
+class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
     private val userSession: UserSessionInterface,
-    private val localAddressHelper: LocalAddressHelper,
+    private val addressData: TokoNowLocalAddress,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     dispatchers: CoroutineDispatchers
-) : BaseCartViewModel(
+) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
-    localAddressHelper,
+    addressData,
     userSession,
     dispatchers
 ) {
@@ -86,7 +86,7 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
 
     private fun appendChooseAddressParams(): MutableMap<String, Any> {
         val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
-        val chooseAddressData = localAddressHelper.getChooseAddressData()
+        val chooseAddressData = addressData.getAddressData()
         warehouseId = chooseAddressData.warehouse_id
 
         if (chooseAddressData.city_id.isNotEmpty())

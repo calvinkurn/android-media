@@ -91,6 +91,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickyS
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
@@ -102,6 +103,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -1126,5 +1128,12 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
+    }
+
+    protected open fun createProductCardCompactCallback(): ProductCardCompactCallback = ProductCardCompactCallback { productId, similarProductTrackerListener ->
+        context?.apply {
+            val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
+            startActivity(intent)
+        }
     }
 }

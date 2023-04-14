@@ -1,11 +1,11 @@
-package com.tokopedia.productcard.compact.similarproduct.presentation.mapper
+package com.tokopedia.tokopedianow.similarproduct.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 
-internal object ProductCardCompactSimilarProductMapper {
+internal object TokoNowSimilarProductBottomSheetMapper {
     private const val PRODUCT_DEFAULT_QTY = 0
 
     fun MutableList<Visitable<*>>.updateProductQuantity(miniCart: MiniCartSimplifiedData) {
