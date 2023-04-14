@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -31,36 +31,15 @@ class GetPaymentFeeCheckoutUseCase @Inject constructor(
             throw RuntimeException("Parameter is null!")
         }
 
-        val response = graphqlRepository.response(listOf(
+        val response = graphqlRepository.response(
+            listOf(
                 GraphqlRequest(
-                        GetPaymentFeeCheckoutQuery(),
-                        PaymentFeeGqlResponse::class.java,
-                        params
+                    GetPaymentFeeCheckoutQuery(),
+                    PaymentFeeGqlResponse::class.java,
+                    params
                 )
-        )).getSuccessData<PaymentFeeGqlResponse>()
-
-        /*val jsonRaw = """
-            {
-              "getPaymentFee": {
-                "success": true,
-                "errors": [],
-                "data": [
-                  {
-                    "code": "platform_fee",
-                    "title": "Biaya Jasa Aplikasi",
-                    "fee": 1000,
-                    "tooltip_info": "Biaya jasa aplikasi kami pakai untuk kasih kamu layanan terbaik. Jumlahnya disesuaikan dengan total tagihanmu.",
-                    "show_tooltip": true,
-                    "show_slashed": true,
-                    "slashed_fee": 5000,
-                    "slashed_label": "Diskon Jasa Aplikasi"
-                  }
-                ]
-              }
-            }
-        """.trimIndent()
-        val gson = Gson()
-        val response = gson.fromJson(jsonRaw, PaymentFeeGqlResponse::class.java)*/
+            )
+        ).getSuccessData<PaymentFeeGqlResponse>()
 
         if (response.response.success) {
             return response
