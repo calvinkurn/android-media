@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.di
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
