@@ -12,7 +12,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.views.fragment.UserProfileFragment
 import javax.inject.Inject

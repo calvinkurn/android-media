@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.viewmodel
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -53,6 +54,7 @@ import com.tokopedia.utils.date.toString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.ParseException
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -479,7 +481,15 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         passenger.flightBookingMealMetaViewModels = arrayListOf()
         passenger.headerTitle = userName
         passenger.passengerFirstName = userName
-        if (getMandatoryDOB()) passenger.passengerBirthdate = userProfile.birthday.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
+        if (getMandatoryDOB()) {
+            try {
+                passenger.passengerBirthdate =
+                    userProfile.birthday.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                        .toString(DateUtil.YYYY_MM_DD)
+            } catch(parseException: ParseException) {
+                FirebaseCrashlytics.getInstance().recordException(parseException)
+            }
+        }
         return passenger
     }
 

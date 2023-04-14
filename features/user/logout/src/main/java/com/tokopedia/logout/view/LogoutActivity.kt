@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -86,7 +84,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null
 
@@ -106,7 +103,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         getParam()
 
-        initTetraDebugger()
         initObservable()
         initGoogleClient()
 
@@ -135,13 +131,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun initTetraDebugger() {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = instance(applicationContext)
-            tetraDebugger?.init()
-        }
     }
 
     private fun initObservable() {
@@ -207,7 +196,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
@@ -238,7 +226,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (dataStorePreference.isDataStoreEnabled()) {
             GlobalScope.launch {
                 try {
-                    userSessionDataStore.clearDataStore()
+                    userSessionDataStore.logoutSession()
                 } catch (e: Exception) {
                     val data = mapOf(
                         "method" to "logout_activity",

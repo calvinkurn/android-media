@@ -7,7 +7,7 @@ import android.text.TextUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.wandroid.traceroute.TraceRoute

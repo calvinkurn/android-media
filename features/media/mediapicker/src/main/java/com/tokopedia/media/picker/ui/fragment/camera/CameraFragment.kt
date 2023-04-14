@@ -36,7 +36,7 @@ import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
@@ -195,6 +195,7 @@ open class CameraFragment @Inject constructor(
 
     override fun onTakeMediaClicked() {
         if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            pickerViewModel.isOnVideoRecording(false)
             cameraView.stopVideo()
             return
         }
@@ -208,6 +209,7 @@ open class CameraFragment @Inject constructor(
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
                 cameraViewModel.onVideoTaken()
+                pickerViewModel.isOnVideoRecording(true)
             }
         }
     }
@@ -234,9 +236,9 @@ open class CameraFragment @Inject constructor(
     override fun onVideoTaken(result: VideoResult) {
         val videoFile = result.file
             .asPickerFile()
-            .cameraToUiModel()
+            .toRemovableUiModel()
             .apply {
-                videoLength = requireContext()
+                duration = requireContext()
                     .getVideoDuration(file)
             }
 
@@ -268,13 +270,17 @@ open class CameraFragment @Inject constructor(
             }
         }
 
+        pickerViewModel.isOnVideoRecording.observe(viewLifecycleOwner) {
+            controller.setThumbnailVisibility(!it)
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             cameraViewModel.pictureTaken.collect {
                 if (it == null) return@collect
 
                 val file = it
                     .asPickerFile()
-                    .cameraToUiModel()
+                    .toRemovableUiModel()
 
                 onShowMediaThumbnail(file)
             }

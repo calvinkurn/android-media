@@ -49,7 +49,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var rvAdapter: RewardSummaryAdapter
     lateinit var decoration: RewardItemDecoration
     val dataList = arrayListOf<RewardSummaryItem>()
-    val buttonsMap = HashMap<@RewardButtonType String, Typography>()
+    val buttonsMap = HashMap<String, Typography>()
 
     val CONTAINER_REWARD = 0
     val CONTAINER_EMPTY = 1

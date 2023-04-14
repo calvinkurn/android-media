@@ -18,30 +18,39 @@ class GetLiveStatisticsUseCase @Inject constructor(
 ) : UseCase<GetLiveStatisticsResponse.ReportChannelSummary>() {
 
     private val query = """
-        query liveReport(${'$'}channelId: String!){
-          broadcasterReportLiveSummaries(channelID: ${'$'}channelId, useDashboardFormat: true) {
-            channel {
-              channelID
-              metrics {
-                add_to_cart: addToCart
-                add_to_cart_fmt: addToCartFmt
-                payment_verified: paymentVerified
-                payment_verified_fmt: paymentVerifiedFmt
-                follow_shop: followShop
-                follow_shop_fmt: followShopFmt
-                like_channel: likeChannel
-                like_channel_fmt: likeChannelFmt
-                visit_shop: visitShop
-                visit_shop_fmt: visitShopFmt
-                visit_pdp: visitPDP
-                visit_pdp_fmt: visitPDPFmt
-                visit_channel: visitChannel
-                visit_channel_fmt: visitChannelFmt
+          query liveReport(${'$'}channelId: String!) {
+              broadcasterReportLiveSummaries(channelID: ${'$'}channelId, useDashboardFormat: true) {
+                channel {
+                  channelID
+                  metrics {
+                    add_to_cart: addToCart
+                    add_to_cart_fmt: addToCartFmt
+                    payment_verified: paymentVerified
+                    payment_verified_fmt: paymentVerifiedFmt
+                    follow_shop: followShop
+                    follow_shop_fmt: followShopFmt
+                    like_channel: likeChannel
+                    like_channel_fmt: likeChannelFmt
+                    visit_shop: visitShop
+                    visit_shop_fmt: visitShopFmt
+                    visit_pdp: visitPDP
+                    visit_pdp_fmt: visitPDPFmt
+                    visit_channel: visitChannel
+                    visit_channel_fmt: visitChannelFmt
+                  }
+                  userMetrics {
+                    visitChannelFmt
+                    totalLikeFmt
+                    followProfileFmt
+                    visitPDPFmt
+                    visitProfileFmt
+                    addToCartFmt
+                    paymentVerifiedFmt
+                  }
+                }
+                duration
               }
             }
-            duration
-          }
-        }
         """
 
     var params: Map<String, Any> = mapOf()

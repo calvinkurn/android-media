@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.postatc.base
 
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+
 interface PostAtcListener {
     fun impressComponent(componentTrackData: ComponentTrackData)
 
@@ -10,5 +12,6 @@ interface PostAtcListener {
     fun refreshPage()
 
     fun fetchRecommendation(pageName: String, uniqueId: Int)
-    fun removeComponent(position: Int)
+    fun onClickRecommendationItem(recommendationItem: RecommendationItem)
+    fun onImpressRecommendationItem(recommendationItem: RecommendationItem)
 }

@@ -8,16 +8,17 @@ import javax.inject.Inject
 class GetInitiateVoucherPageMapper @Inject constructor() {
 
     fun map(response: GetInitiateVoucherPageResponse): VoucherCreationMetadata {
-        return with(response.getInitiateVoucherPage.data) {
+        return with(response.getInitiateVoucherPage) {
             VoucherCreationMetadata(
-                accessToken,
-                isEligible,
-                maxProduct,
-                prefixVoucherCode,
-                shopId.toLongOrZero(),
-                token,
-                userId.toLongOrZero(),
-                discountActive
+                data.accessToken,
+                data.isEligible,
+                data.maxProduct,
+                data.prefixVoucherCode,
+                data.shopId.toLongOrZero(),
+                data.token,
+                data.userId.toLongOrZero(),
+                data.discountActive,
+                header.messages.firstOrNull()
             )
         }
     }

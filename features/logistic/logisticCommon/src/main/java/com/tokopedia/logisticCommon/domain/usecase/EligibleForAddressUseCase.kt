@@ -23,5 +23,4 @@ class EligibleForAddressUseCase @Inject constructor(private val repository: Kero
     override suspend fun executeOnBackground(): KeroAddrIsEligibleForAddressFeatureResponse {
         return repository.eligibleForAddressFeature(featureId)
     }
-
 }

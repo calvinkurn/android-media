@@ -61,9 +61,9 @@ class EditAddressRevampTest {
         val queryPath = "tracker/logistic/editaddress_user_revamp_positive.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
+            fillReceiver(RECEIVER)
             fillAddress(ADDRESS)
             fillPhoneNumber(PHONE)
-            fillReceiver(RECEIVER)
             onClickChangePinpoint()
             onClickCariUlangAlamat()
             searchAddressStreet(KEYWORD)

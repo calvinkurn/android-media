@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 
 object VariantCommonMapper {
-    var selectedOptionId = listOf<String>()
+    private var selectedOptionId = listOf<String>()
 
     fun mapVariantIdentifierToHashMap(variantData: ProductVariant?): MutableMap<String, String> {
         return variantData?.variants?.associateBy({
@@ -20,16 +20,6 @@ object VariantCommonMapper {
         }, {
             "0"
         })?.toMutableMap() ?: mutableMapOf()
-    }
-
-    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariant?, selectedOptionIds: List<String>): MutableMap<String, String> {
-        val hashMap: MutableMap<String, String> = mutableMapOf()
-
-        variantData?.variants?.mapIndexed { index, variant ->
-            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: "0"
-        }
-
-        return hashMap
     }
 
     fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
@@ -88,12 +78,6 @@ object VariantCommonMapper {
             }
         }
         return pairOfValue
-    }
-
-    fun selectedProductData(variantData: ProductVariant, selectedOptionIds: List<String>): VariantChild? {
-        return variantData.children.firstOrNull {
-            it.optionIds == selectedOptionIds
-        }
     }
 
     private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {

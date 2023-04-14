@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -13,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TalkSmartReplyDetailCard : BaseCustomView {
 
     companion object {
-        const val BUYER_IMAGE_URL = "https://images.tokopedia.net/img/android/others/smart_reply_card_avatar.png"
+        const val BUYER_IMAGE_URL = TokopediaImageUrl.BUYER_IMAGE_URL
     }
 
     private var talkSmartReplyDetailSellerName: Typography? = null

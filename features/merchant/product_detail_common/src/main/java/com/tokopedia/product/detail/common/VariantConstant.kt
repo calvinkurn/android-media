@@ -5,13 +5,9 @@ package com.tokopedia.product.detail.common
  */
 
 object VariantConstant {
-    const val PARAM_PRODUCT_IDS = "productIds"
-    const val PARAM_WAREHOUSE_ID = "warehouseID"
-
-    const val QUERY_MULTI_ORIGIN = "multiorigin"
     const val QUERY_VARIANT = "variant"
 
-    //State
+    // State
     const val STATE_UNSELECTED = 0
     const val STATE_SELECTED = 1
     const val STATE_EMPTY = -1
@@ -20,4 +16,3 @@ object VariantConstant {
 
     const val DEFAULT_MAX_ORDER = 100
 }
-

@@ -1,41 +1,52 @@
 package com.tokopedia.updateinactivephone.features.successpage.withpin
 
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
+import androidx.test.filters.MediumTest
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.features.successpage.BaseSuccessPageTest
+import com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.checkSuccessPageIsDisplayed
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.clickOnGotoHomeButton
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.isDescriptionForExpedited
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.isTitleForExpedited
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @UiTest
-@LargeTest
+@MediumTest
 @RunWith(AndroidJUnit4::class)
 class WithPinSuccessPageGeneralTest : BaseSuccessPageTest() {
 
-    @Test
-    fun show_success_page() {
-        runTest(source = InactivePhoneConstant.EXPEDITED) {
-            checkSuccessPageIsDisplayed()
-        }
-    }
+    @get:Rule
+    var rule = IntentsTestRule(
+        InactivePhoneSuccessPageActivity::class.java, false, false
+    )
 
     @Test
-    fun should_render_for_expedited() {
+    fun basic_test() {
         runTest(source = InactivePhoneConstant.EXPEDITED) {
+            intending(anyIntent()).respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    null
+                )
+            )
+            checkSuccessPageIsDisplayed()
             isTitleForExpedited("Nomor HP-mu sudah diubah!")
             isDescriptionForExpedited("Kamu bisa pakai nomor ini buat verifikasi atau masuk ke Tokopedia.")
+            clickOnGotoHomeButton()
+            intended(hasData(ApplinkConst.HOME))
         }
     }
 
-    @Test
-    fun click_on_button_goto_home() {
-        runTest(source = InactivePhoneConstant.EXPEDITED) {
-            clickOnGotoHomeButton()
-        }
-    }
 }

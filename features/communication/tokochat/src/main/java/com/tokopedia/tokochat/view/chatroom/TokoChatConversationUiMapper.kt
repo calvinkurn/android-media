@@ -11,10 +11,12 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionData
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrapper
+import com.tokopedia.tokochat.util.TokoChatValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleCensorUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import java.util.*
@@ -95,7 +97,7 @@ class TokoChatConversationUiMapper @Inject constructor(
                     }
                 }
                 ConversationsConstants.TEXT_MESSAGE -> {
-                    resultList.add(it.mapToMessageBubbleUiModel(userId))
+                    resultList.add(it.mapToMessageBubble(userId))
                 }
             }
         }
@@ -112,6 +114,19 @@ class TokoChatConversationUiMapper @Inject constructor(
             resultList.add(resultList.size, it)
         }
         return resultList
+    }
+
+    private fun ConversationsMessage.mapToMessageBubble(
+        userId: String,
+        isNotSupported: Boolean = false,
+        unsupportedMessageText: String = ""
+    ): Any {
+        // If message text is censored text & from sender, change the UI
+        return if (messageText == CENSOR_TEXT && this.messageSender?.userId == userId) {
+            this.mapTopMessageBubbleCensorUiModel(userId)
+        } else {
+            this.mapToMessageBubbleUiModel(userId, isNotSupported, unsupportedMessageText)
+        }
     }
 
     private fun ConversationsMessage.mapToMessageBubbleUiModel(
@@ -132,6 +147,18 @@ class TokoChatConversationUiMapper @Inject constructor(
             .withIsSender(this.messageSender?.userId == userId)
             .withMessageText(messageText)
             .withIsNotSupported(isNotSupported)
+            .build()
+    }
+
+    private fun ConversationsMessage.mapTopMessageBubbleCensorUiModel(
+        userId: String
+    ): TokoChatMessageBubbleCensorUiModel {
+        return TokoChatMessageBubbleCensorUiModel.Builder()
+            .withMessageId(this.messageId)
+            .withFromUserId(this.messageSender?.userId ?: "")
+            .withMessageTime(this.createdTimestamp)
+            .withMessageStatus(this.readReceipt)
+            .withIsSender(this.messageSender?.userId == userId)
             .build()
     }
 

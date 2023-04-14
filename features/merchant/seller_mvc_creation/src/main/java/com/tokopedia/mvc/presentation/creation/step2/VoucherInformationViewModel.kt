@@ -198,7 +198,7 @@ class VoucherInformationViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time),
-                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_START_DATE)
+                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.ALL)
                 )
             }
             handleVoucherInputValidation()
@@ -210,7 +210,7 @@ class VoucherInformationViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time),
-                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_END_DATE)
+                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.ALL)
                 )
             }
             handleVoucherInputValidation()

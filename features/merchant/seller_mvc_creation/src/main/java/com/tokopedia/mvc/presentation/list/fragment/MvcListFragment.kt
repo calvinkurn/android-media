@@ -109,6 +109,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -124,6 +125,7 @@ class MvcListFragment :
     companion object {
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
+
         @JvmStatic
         fun newInstance(statusFilter: String) = MvcListFragment().apply {
             arguments = Bundle().apply {
@@ -765,7 +767,10 @@ class MvcListFragment :
         filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(
+                viewModel.filter,
+                enableResetButton = !viewModel.isFilterReseted()
+            )
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
@@ -1055,6 +1060,7 @@ class MvcListFragment :
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
+        SharedPreferencesUtil().setEditCouponSourcePage(context, activity?.javaClass.toString())
         val intent = SummaryActivity.buildEditModeIntent(requireContext(), voucher.id)
         startActivity(intent)
     }
@@ -1082,14 +1088,12 @@ class MvcListFragment :
                 )
             }
 
-
             val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     routeToUrl(linkUrl.toString())
                 }
             })
-
 
             ticker.addPagerView(tickerAdapter, remoteTickers)
             ticker.setDescriptionClickEvent(object : TickerCallback {
@@ -1098,7 +1102,6 @@ class MvcListFragment :
                 }
 
                 override fun onDismiss() {
-
                 }
             })
         }

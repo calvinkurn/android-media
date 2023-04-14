@@ -20,6 +20,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -32,6 +33,8 @@ class CardViewHolder(
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
         private const val ZERO_STR = "0"
+        private const val COLOR_PATTERN = "(#[a-fA-F0-9]{8}|#[a-fA-F0-9]{6})"
+        private const val URL_TEXT_PATTERN = "(?<=>)(.*?)(?=</a>)"
     }
 
     private val binding by lazy {
@@ -62,7 +65,7 @@ class CardViewHolder(
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(element, true)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
                 setupTag(element)
             }
             else -> {
@@ -102,7 +105,7 @@ class CardViewHolder(
                     shouldLoadAnimation = false
                     tvCardValue.visible()
                     shcCardValueCountdownView.invisible()
-                    tvCardValue.text = shownValue.parseAsHtml()
+                    setCardValueText(shownValue)
                 }
                 setupRefreshButton(element)
             }
@@ -125,7 +128,7 @@ class CardViewHolder(
                 tvCardValue.invisible()
             } else {
                 tvCardValue.visible()
-                tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
+                setCardValueText(element.data?.value)
             }
             if (element.data?.description.isNullOrBlank()) {
                 tvCardSubValue.invisible()
@@ -144,8 +147,9 @@ class CardViewHolder(
             }
 
             root.setOnClickListener {
-                if (element.getWidgetAppLink().isNotBlank()) {
-                    if (RouteManager.route(root.context, element.getWidgetAppLink())) {
+                val appLink = element.getWidgetAppLink()
+                if (appLink.isNotBlank()) {
+                    if (RouteManager.route(root.context, appLink)) {
                         listener.sendCardClickTracking(element)
                     }
                 }
@@ -155,6 +159,38 @@ class CardViewHolder(
             showBadge(element.data?.badgeImageUrl.orEmpty())
             removeCardValueUnderLine()
         }
+    }
+
+    private fun setCardValueText(value: String?) {
+        with(binding) {
+            val cardValue = value?.takeIf { it.isNotBlank() } ?: ZERO_STR
+            val hexColor = getHexColor(cardValue)
+            if (hexColor.isNullOrBlank()) {
+                tvCardValue.text = cardValue.parseAsHtml()
+            } else {
+                val urlPattern = URL_TEXT_PATTERN.toRegex().find(cardValue)
+                val isUrl = urlPattern?.groupValues?.isNotEmpty().orFalse()
+                tvCardValue.text = if (isUrl) {
+                    urlPattern?.value ?: cardValue
+                } else {
+                    cardValue.parseAsHtml()
+                }
+                getUnifyColorFromString(cardValue)?.let {
+                    tvCardValue.setTextColor(it)
+                }
+            }
+        }
+    }
+
+    private fun getUnifyColorFromString(shownValue: String): Int? {
+        getHexColor(shownValue)?.let { hexColor ->
+            return stringToUnifyColor(itemView.context, hexColor).unifyColor
+        }
+        return null
+    }
+
+    private fun getHexColor(str: String): String? {
+        return COLOR_PATTERN.toRegex().find(str)?.groupValues?.first()
     }
 
     private fun removeCardValueUnderLine() {

@@ -11,5 +11,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SellerHomeDataUiModel(
     val toasterMessage: String = String.EMPTY,
-    val toasterCta: String = String.EMPTY
+    val toasterCta: String = String.EMPTY,
+    val shouldShowPersonaBtmSheet: Boolean = false
 ) : Parcelable

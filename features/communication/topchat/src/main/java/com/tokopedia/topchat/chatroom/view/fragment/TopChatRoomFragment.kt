@@ -815,7 +815,7 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
         try {
             if (::viewModel.isInitialized) {
                 val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
@@ -2017,6 +2017,7 @@ open class TopChatRoomFragment :
     }
 
     override fun onBackPressed(): Boolean {
+        if (!isAdded || isDetached) return super.onBackPressed()
         if (super.onBackPressed()) return true
         if (webSocketViewModel.isUploading()) {
             showDialogConfirmToAbortUpload()

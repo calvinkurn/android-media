@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,6 +27,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.toPx
 
 class ShipmentViewHolder(
     view: View,
@@ -38,6 +41,8 @@ class ShipmentViewHolder(
         private const val TICKER_INFO_TYPE = "info"
         private const val TICKER_WARNING_TYPE = "warning"
         private const val TICKER_ACTION_APPLINK = "applink"
+
+        private const val SHIPMENT_ICON_PADDING = 16
     }
 
     private val context = view.context
@@ -149,10 +154,24 @@ class ShipmentViewHolder(
             text = originalShippingRate.getCurrencyFormatted()
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
-        val freeOngkirImageUrl = element.freeOngkirUrl
-        pdpShipmentIcon.showIfWithBlock(
-            !rates.hasUsedBenefit && !element.isFullfillment && freeOngkirImageUrl.isNotEmpty()
-        ) { setImageUrl(freeOngkirImageUrl) }
+        val boBadge = rates.boBadge
+        val freeOngkirImageUrl = boBadge.imageUrl
+        pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
+
+            updateLayoutParams<MarginLayoutParams> {
+                marginEnd = if (boBadge.isUsingPadding)
+                    SHIPMENT_ICON_PADDING.toPx()
+                else 0
+            }
+
+            setImageUrl(freeOngkirImageUrl)
+            val imageHeight = boBadge.imageHeight
+            if (imageHeight > 0) {
+                updateLayoutParams {
+                    height = imageHeight.toPx()
+                }
+            }
+        }
         if (element.isFullfillment) {
             pdpShipmentGroupTc.show()
             pdpShipmentTcLabel.text = rates.fulfillmentData.prefix

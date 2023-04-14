@@ -6,22 +6,34 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.type.ScreenOrientation2
+import com.tokopedia.play.view.type.isCompact
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
@@ -88,6 +100,9 @@ class PlayUpcomingFragment @Inject constructor(
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private var _binding: FragmentPlayUpcomingBinding? = null
     private val binding: FragmentPlayUpcomingBinding get() = _binding!!
@@ -297,7 +312,41 @@ class PlayUpcomingFragment @Inject constructor(
         if(prevState?.info != currState.info) {
             currState.info.let {
                 if(it.coverUrl.isNotEmpty()) {
-                    binding.ivUpcomingCover.setImageUrl(it.coverUrl)
+                    Glide.with(this)
+                        .asBitmap()
+                        .load(it.coverUrl)
+                        .addListener(object : RequestListener<Bitmap> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Bitmap?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                if (resource == null) return false
+
+                                binding.ivUpcomingCover.scaleType =
+                                    if (resource.height > resource.width && orientation.isCompact) {
+                                        ImageView.ScaleType.CENTER_CROP
+                                    } else {
+                                        ImageView.ScaleType.FIT_CENTER
+                                    }
+
+                                return false
+                            }
+                        })
+                        .skipMemoryCache(false)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .into(binding.ivUpcomingCover)
                 }
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
@@ -313,6 +362,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onClickActionButton() {
         handleUpcomingClickAnalytic()
+        showNotificationReminderPrompt()
         playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
@@ -328,6 +378,17 @@ class PlayUpcomingFragment @Inject constructor(
                 analytic.clickWatchNow(channelId)
             }
             else -> {}
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val status = playUpcomingViewModel.remindState
+        if ((status is PlayUpcomingState.ReminderStatus) && !status.isReminded) {
+            activity?.let {
+                val view = NotificationGeneralPromptLifecycleCallbacks()
+                    .notificationGeneralPromptView(it, LIVE_SHOPPING)
+                NotificationReminderPrompt(view).showReminderPrompt(it, LIVE_SHOPPING)
+            }
         }
     }
 
@@ -436,5 +497,6 @@ class PlayUpcomingFragment @Inject constructor(
     companion object {
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val LIVE_SHOPPING = "liveShopping"
     }
 }

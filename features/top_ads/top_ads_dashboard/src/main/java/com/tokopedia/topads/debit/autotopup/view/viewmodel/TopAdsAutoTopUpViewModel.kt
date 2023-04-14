@@ -59,12 +59,13 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         whiteListedUserUseCase.setParams()
         whiteListedUserUseCase.executeQuerySafeMode(
             onSuccess = {
+                var isWhitelisted = false
                 it.data.forEach { data ->
                     if (data.featureName == IS_TOP_UP_CREDIT_NEW_UI) {
-                        _isUserWhitelisted.value =
-                            Success(true)
+                        isWhitelisted = true
                     }
                 }
+                _isUserWhitelisted.value = Success(isWhitelisted)
             },
             onError = {
                 _isUserWhitelisted.value = Fail(it)

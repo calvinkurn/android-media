@@ -11,31 +11,34 @@ interface MediaFileRepository {
 }
 
 class MediaFileRepositoryImpl @Inject constructor(
-   source: MediaQueryDataSource
+    source: MediaQueryDataSource
 ) : MediaFileRepository, MediaQueryDataSource by source {
 
     override operator fun invoke(bucketId: Long, start: Int): Flow<List<Media>> {
-        val cursor = setupMediaQuery(bucketId, LIMIT_MEDIA_OFFSET)
+        val cursor = setupMediaQuery(bucketId, start, LIMIT_MEDIA_OFFSET)
         val result = mutableListOf<Media>()
-        var index = start
+
+        val cursorSize = cursor?.count ?: 0
+        var count = 0
 
         return flow {
-            while (cursor?.moveToPosition(index) == true) {
-                val media = createMedia(cursor)?: continue
-                if (media.file.exists().not()) continue
+            if (cursor?.moveToFirst() == true) {
+                do {
+                    val media = createMedia(cursor) ?: continue
+                    if (media.file.exists().not()) continue
 
-                if (media.file.isVideo()) {
-                    media.videoLength = getVideoDuration(media.file)
-                }
+                    if (media.file.isVideo()) {
+                        media.duration = getVideoDuration(media.file)
+                    }
 
-                result.add(media)
-                index++
+                    result.add(media)
+                    count++
 
-                if (result.size == LIMIT_MEDIA_OFFSET) break
+                    if (count == cursorSize) break
+                } while (cursor.moveToNext())
             }
 
             cursor?.close()
-
             emit(result)
         }
     }
