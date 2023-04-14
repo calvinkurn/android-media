@@ -906,8 +906,7 @@ class ShipmentPresenter @Inject constructor(
                 setCurrentDynamicDataParamFromSAF(cartShipmentAddressFormData, isOneClickShipment)
                 view?.renderCheckoutPage(
                     !isReloadData,
-                    isReloadAfterPriceChangeHigher,
-                    isOneClickShipment
+                    isReloadAfterPriceChangeHigher
                 )
                 if (cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                     view?.showToastNormal(cartShipmentAddressFormData.popUpMessage)
@@ -2472,6 +2471,274 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
+    fun processGetCourierRecommendationMvc(
+        shipperId: Int,
+        spId: Int,
+        itemPosition: Int,
+        shipmentDetailData: ShipmentDetailData?,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        shopShipmentList: List<ShopShipment>,
+        products: ArrayList<Product>,
+        cartString: String?,
+        isTradeInDropOff: Boolean,
+        recipientAddressModel: RecipientAddressModel?,
+        skipMvc: Boolean,
+        cartStringGroup: String,
+        groupProducts: List<GroupProduct>
+    ) {
+        val shippingParam = getShippingParam(
+            shipmentDetailData,
+            products,
+            cartString,
+            isTradeInDropOff,
+            recipientAddressModel,
+            cartStringGroup,
+            groupProducts
+        )
+        val counter = if (codData == null) -1 else codData!!.counterCod
+        val cornerId = this.recipientAddressModel.isCornerAddress
+        val pslCode = getLogisticPromoCode(shipmentCartItemModel)
+        val isLeasing = shipmentCartItemModel.isLeasingProduct
+        val mvc = generateRatesMvcParam(cartString)
+        val ratesParamBuilder = RatesParam.Builder(shopShipmentList, shippingParam)
+            .isCorner(cornerId)
+            .codHistory(counter)
+            .isLeasing(isLeasing)
+            .promoCode(pslCode)
+            .cartData(cartDataForRates)
+            .warehouseId(shipmentCartItemModel.fulfillmentId.toString())
+            .mvc("")
+        if (!skipMvc) {
+            ratesParamBuilder.mvc(mvc)
+        }
+        val param = ratesParamBuilder.build()
+        if (isTradeInDropOff) {
+            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    val shippingRecommendationData = withContext(dispatchers.io) {
+                        ratesApiUseCase.execute(param)
+                            .map { shippingRecommendationData: ShippingRecommendationData ->
+                                stateConverter.fillState(
+                                    shippingRecommendationData,
+                                    shopShipmentList,
+                                    spId,
+                                    0
+                                )
+                            }.toBlocking().single()
+                    }
+                    val boPromoCode = ""
+                    var errorReason = "rates invalid data"
+                    if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                        for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                            if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
+                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                    shippingCourierUiModel.isSelected = false
+                                }
+                                val shippingCourierUiModel = shippingDurationUiModel.shippingCourierViewModelList.first()
+                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                    view?.renderCourierStateFailed(
+                                        itemPosition,
+                                        isTradeInDropOff,
+                                        false
+                                    )
+                                    view?.logOnErrorLoadCourier(
+                                        MessageErrorException(
+                                            shippingCourierUiModel.productData.error?.errorMessage
+                                        ),
+                                        itemPosition,
+                                        boPromoCode
+                                    )
+                                    return@launch
+                                } else {
+                                    val courierItemData = generateCourierItemData(
+                                        true,
+                                        shipperId,
+                                        spId,
+                                        shipmentCartItemModel,
+                                        shippingCourierUiModel,
+                                        shippingRecommendationData
+                                    )
+                                    if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                        // courier should only be used with BO, but no BO code found
+                                        view?.renderCourierStateFailed(
+                                            itemPosition,
+                                            isTradeInDropOff,
+                                            false
+                                        )
+                                        view?.logOnErrorLoadCourier(
+                                            MessageErrorException("rates ui hidden but no promo"),
+                                            itemPosition,
+                                            boPromoCode
+                                        )
+                                        return@launch
+                                    }
+                                    shippingCourierUiModel.isSelected = true
+                                    setShippingCourierViewModelsState(
+                                        shippingDurationUiModel.shippingCourierViewModelList,
+                                        shipmentCartItemModel.orderNumber
+                                    )
+                                    view?.renderCourierStateSuccess(
+                                        courierItemData,
+                                        itemPosition,
+                                        isTradeInDropOff
+                                    )
+                                    return@launch
+                                }
+                            }
+                        }
+                    } else {
+                        errorReason = "rates empty data"
+                    }
+                    view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+                    view?.logOnErrorLoadCourier(
+                        MessageErrorException(errorReason),
+                        itemPosition,
+                        boPromoCode
+                    )
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                    view?.logOnErrorLoadCourier(t, itemPosition, "")
+                }
+            }
+        } else {
+            updateShipmentButtonPaymentModel(loading = true)
+            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    val shippingRecommendationData = withContext(dispatchers.io) {
+                        if (shipmentCartItemModel.ratesValidationFlow) {
+                            ratesWithScheduleUseCase.execute(
+                                param,
+                                shipmentCartItemModel.fulfillmentId.toString()
+                            )
+                                .map { shippingRecommendationData: ShippingRecommendationData ->
+                                    stateConverter.fillState(
+                                        shippingRecommendationData,
+                                        shopShipmentList,
+                                        spId,
+                                        0
+                                    )
+                                }.toBlocking().single()
+                        } else {
+                            ratesUseCase.execute(param)
+                                .map { shippingRecommendationData: ShippingRecommendationData ->
+                                    stateConverter.fillState(
+                                        shippingRecommendationData,
+                                        shopShipmentList,
+                                        spId,
+                                        0
+                                    )
+                                }.toBlocking().single()
+                        }
+                    }
+                    val boPromoCode = ""
+                    var errorReason = "rates invalid data"
+                    if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                        val selectedSpId = shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.shipperProductId ?: 0
+                        for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                            if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
+                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                    shippingCourierUiModel.isSelected = false
+                                }
+                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                    if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
+                                        if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                            view?.renderCourierStateFailed(
+                                                itemPosition,
+                                                isTradeInDropOff,
+                                                false
+                                            )
+                                            view?.logOnErrorLoadCourier(
+                                                MessageErrorException(
+                                                    shippingCourierUiModel.productData.error?.errorMessage
+                                                ),
+                                                itemPosition,
+                                                boPromoCode
+                                            )
+                                            return@launch
+                                        } else {
+                                            val courierItemData = generateCourierItemData(
+                                                true,
+                                                shipperId,
+                                                spId,
+                                                shipmentCartItemModel,
+                                                shippingCourierUiModel,
+                                                shippingRecommendationData
+                                            )
+                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                                // courier should only be used with BO, but no BO code found
+                                                view?.renderCourierStateFailed(
+                                                    itemPosition,
+                                                    isTradeInDropOff,
+                                                    false
+                                                )
+                                                view?.logOnErrorLoadCourier(
+                                                    MessageErrorException("rates ui hidden but no promo"),
+                                                    itemPosition,
+                                                    boPromoCode
+                                                )
+                                                return@launch
+                                            }
+                                            shippingCourierUiModel.isSelected = true
+                                            setShippingCourierViewModelsState(
+                                                shippingDurationUiModel.shippingCourierViewModelList,
+                                                shipmentCartItemModel.orderNumber
+                                            )
+                                            view?.renderCourierStateSuccess(
+                                                courierItemData,
+                                                itemPosition,
+                                                isTradeInDropOff
+                                            )
+                                            return@launch
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // corner case auto selection if BE default duration failed
+                        if (shipmentCartItemModel.isAutoCourierSelection) {
+                            val shippingDuration =
+                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                            if (shippingDuration != null) {
+                                val shippingCourier =
+                                    shippingDuration.shippingCourierViewModelList.firstOrNull {
+                                        it.productData.error?.errorMessage.isNullOrEmpty()
+                                    }
+                                if (shippingCourier != null) {
+                                    shippingCourier.isSelected = true
+                                    view?.renderCourierStateSuccess(
+                                        generateCourierItemData(
+                                            true,
+                                            shipperId,
+                                            spId,
+                                            shipmentCartItemModel,
+                                            shippingCourier,
+                                            shippingRecommendationData
+                                        ),
+                                        itemPosition,
+                                        isTradeInDropOff
+                                    )
+                                    return@launch
+                                }
+                            }
+                        }
+                    } else {
+                        errorReason = "rates empty data"
+                    }
+                    view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+                    view?.logOnErrorLoadCourier(
+                        MessageErrorException(errorReason),
+                        itemPosition,
+                        boPromoCode
+                    )
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                    view?.logOnErrorLoadCourier(t, itemPosition, "")
+                }
+            }
+        }
+    }
+
     fun processGetCourierRecommendation(
         shipperId: Int,
         spId: Int,
@@ -2578,8 +2845,7 @@ class ShipmentPresenter @Inject constructor(
                                                             logisticPromo
                                                         ),
                                                         itemPosition,
-                                                        isTradeInDropOff,
-                                                        isForceReload
+                                                        isTradeInDropOff
                                                     )
                                                     return@launch
                                                 }
@@ -2642,8 +2908,7 @@ class ShipmentPresenter @Inject constructor(
                                             view?.renderCourierStateSuccess(
                                                 courierItemData,
                                                 itemPosition,
-                                                isTradeInDropOff,
-                                                isForceReload
+                                                isTradeInDropOff
                                             )
                                             return@launch
                                         }
@@ -2672,8 +2937,7 @@ class ShipmentPresenter @Inject constructor(
                                                 shippingRecommendationData
                                             ),
                                             itemPosition,
-                                            isTradeInDropOff,
-                                            isForceReload
+                                            isTradeInDropOff
                                         )
                                         return@launch
                                     }
@@ -2797,8 +3061,7 @@ class ShipmentPresenter @Inject constructor(
                                                             view?.renderCourierStateSuccess(
                                                                 courierItemData,
                                                                 shipmentGetCourierHolderData.itemPosition,
-                                                                false,
-                                                                shipmentGetCourierHolderData.isForceReload
+                                                                false
                                                             )
                                                             ratesQueue.remove()
                                                             itemToProcess = ratesQueue.peek()
@@ -2953,8 +3216,7 @@ class ShipmentPresenter @Inject constructor(
                                                         view?.renderCourierStateSuccess(
                                                             courierItemData,
                                                             shipmentGetCourierHolderData.itemPosition,
-                                                            false,
-                                                            shipmentGetCourierHolderData.isForceReload
+                                                            false
                                                         )
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
@@ -3066,8 +3328,7 @@ class ShipmentPresenter @Inject constructor(
                                                 view?.renderCourierStateSuccess(
                                                     courierItemData,
                                                     shipmentGetCourierHolderData.itemPosition,
-                                                    false,
-                                                    shipmentGetCourierHolderData.isForceReload
+                                                    false
                                                 )
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
@@ -3258,8 +3519,7 @@ class ShipmentPresenter @Inject constructor(
                                                             view?.renderCourierStateSuccess(
                                                                 courierItemData,
                                                                 shipmentGetCourierHolderData.itemPosition,
-                                                                shipmentGetCourierHolderData.isTradeInDropOff,
-                                                                shipmentGetCourierHolderData.isForceReload
+                                                                shipmentGetCourierHolderData.isTradeInDropOff
                                                             )
                                                             ratesQueue.remove()
                                                             itemToProcess = ratesQueue.peek()
@@ -3412,8 +3672,7 @@ class ShipmentPresenter @Inject constructor(
                                                         view?.renderCourierStateSuccess(
                                                             courierItemData,
                                                             shipmentGetCourierHolderData.itemPosition,
-                                                            shipmentGetCourierHolderData.isTradeInDropOff,
-                                                            shipmentGetCourierHolderData.isForceReload
+                                                            shipmentGetCourierHolderData.isTradeInDropOff
                                                         )
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
@@ -3524,8 +3783,7 @@ class ShipmentPresenter @Inject constructor(
                                                 view?.renderCourierStateSuccess(
                                                     courierItemData,
                                                     shipmentGetCourierHolderData.itemPosition,
-                                                    shipmentGetCourierHolderData.isTradeInDropOff,
-                                                    shipmentGetCourierHolderData.isForceReload
+                                                    shipmentGetCourierHolderData.isTradeInDropOff
                                                 )
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
@@ -5073,10 +5331,9 @@ class ShipmentPresenter @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-        view?.updateAddOnsData(addOnsDataModel, identifier, cartString)
+        view?.updateAddOnsData(identifier, cartString)
         if (isUsingDynamicDataPassing()) {
             view?.updateAddOnsDynamicDataPassing(
-                addOnsDataModel,
                 addOnResult,
                 identifier,
                 cartString,

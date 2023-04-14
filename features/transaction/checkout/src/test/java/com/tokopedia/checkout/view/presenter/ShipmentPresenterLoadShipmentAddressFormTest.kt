@@ -66,7 +66,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         // Then
         verifyOrder {
             view.hideInitialLoading()
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.stopTrace()
         }
     }
@@ -230,7 +230,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.stopTrace()
         }
     }
@@ -261,7 +261,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
             view.updateLocalCacheAddressData(any())
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.showToastNormal(any())
             view.stopTrace()
         }
@@ -293,7 +293,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
             view.updateLocalCacheAddressData(any())
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.stopTrace()
         }
 
@@ -841,7 +841,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.stopTrace()
         }
     }
@@ -870,7 +870,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPage(any(), any(), any())
+            view.renderCheckoutPage(any(), any())
             view.stopTrace()
         }
     }

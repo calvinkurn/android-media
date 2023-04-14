@@ -36,7 +36,7 @@ interface ShipmentAdapterActionListener {
     fun onChangeAddress()
     fun onFinishChoosingShipment(
         lastSelectedCourierOrder: Int,
-        lastSelectedCourierOrdercartString: String?,
+        lastSelectedCourierOrderCartString: String?,
         forceHitValidateUse: Boolean,
         skipValidateUse: Boolean
     )

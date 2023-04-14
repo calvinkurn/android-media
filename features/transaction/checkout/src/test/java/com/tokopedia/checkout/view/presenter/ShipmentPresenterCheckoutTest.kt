@@ -856,7 +856,6 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         // Then
         verify {
             view.updateAddOnsData(
-                AddOnsDataModel(),
                 0,
                 shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup
             )
@@ -911,7 +910,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartStringGroup)
+            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup)
         }
     }
 
@@ -969,7 +968,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartStringGroup)
+            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup)
         }
     }
 

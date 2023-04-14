@@ -736,7 +736,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             view.renderCourierStateSuccess(
                 any(),
                 any(),
-                any(),
                 any()
             )
         } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
@@ -809,7 +808,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             view.renderCourierStateSuccess(
                 any(),
                 any(),
-                any(),
                 any()
             )
         } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
@@ -869,7 +867,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every {
             view.renderCourierStateSuccess(
-                any(),
                 any(),
                 any(),
                 any()
@@ -936,7 +933,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             view.renderCourierStateSuccess(
                 any(),
                 any(),
-                any(),
                 any()
             )
         } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
@@ -989,7 +985,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every {
             view.renderCourierStateSuccess(
-                any(),
                 any(),
                 any(),
                 any()
@@ -1046,7 +1041,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             view.renderCourierStateSuccess(
                 any(),
                 any(),
-                any(),
                 any()
             )
         } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
@@ -1101,7 +1095,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             view.renderCourierStateSuccess(
                 any(),
                 any(),
-                any(),
                 any()
             )
         } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
@@ -1145,7 +1138,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every {
             view.renderCourierStateSuccess(
-                any(),
                 any(),
                 any(),
                 any()
@@ -1196,7 +1188,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every {
             view.renderCourierStateSuccess(
-                any(),
                 any(),
                 any(),
                 any()
@@ -1255,7 +1246,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every {
             view.renderCourierStateSuccess(
-                any(),
                 any(),
                 any(),
                 any()
@@ -1439,7 +1429,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Then
         verifyOrder {
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
         }
     }
 
@@ -1487,7 +1477,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Then
         verifyOrder {
             getRatesApiUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
         }
     }
 
@@ -1541,7 +1531,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         verifyOrder {
             view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
         }
     }
 }

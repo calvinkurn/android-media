@@ -82,7 +82,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         // Then
         verify {
             getRatesWithScheduleUseCase.execute(any(), any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
         }
     }
 

@@ -76,7 +76,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
         }
     }
 
@@ -143,7 +143,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
         }
     }
 
@@ -209,7 +209,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
         }
     }
 
@@ -258,7 +258,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val isForceReload = false
         val skipMvc = true
 
-        every { view.renderCourierStateSuccess(any(), any(), any(), any()) } answers {
+        every { view.renderCourierStateSuccess(any(), any(), any()) } answers {
             presenter.logisticDonePublisher!!.onCompleted()
         }
 

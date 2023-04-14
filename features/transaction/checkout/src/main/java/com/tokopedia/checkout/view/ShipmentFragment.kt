@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
@@ -83,10 +84,10 @@ import com.tokopedia.coachmark.CoachMarkPreference.hasShown
 import com.tokopedia.coachmark.CoachMarkPreference.setShown
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -135,13 +136,17 @@ import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eve
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.ARGS_APPLIED_MVC_CART_STRINGS
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
@@ -155,6 +160,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOK
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
+import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -162,13 +168,11 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -856,8 +860,7 @@ class ShipmentFragment :
 
     fun renderCheckoutPage(
         isInitialRender: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean,
-        isOneClickShipment: Boolean
+        isReloadAfterPriceChangeHigher: Boolean
     ) {
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding)
         setCampaignTimer()
@@ -1036,8 +1039,7 @@ class ShipmentFragment :
     fun renderCourierStateSuccess(
         courierItemData: CourierItemData,
         itemPosition: Int,
-        isTradeInDropOff: Boolean,
-        isForceReloadRates: Boolean
+        isTradeInDropOff: Boolean
     ) {
         if (context != null) {
             val shipmentCartItemModel =
@@ -1257,7 +1259,7 @@ class ShipmentFragment :
     // Re-fetch rates to get promo mvc icon for all order, except already reloaded unique ids
     private fun reloadCourierForMvc(
         appliedMvcCartStrings: ArrayList<String>?,
-        reloadedUniqueIds: ArrayList<String>?
+        reloadedUniqueIds: ArrayList<String>
     ) {
         val obj = shipmentAdapter.getShipmentDataList()
         if (obj.isNotEmpty()) {
@@ -1266,10 +1268,10 @@ class ShipmentFragment :
                     val shipmentCartItemModel = obj[i] as ShipmentCartItemModel
                     if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(
                             shipmentCartItemModel.cartStringGroup
-                        ) && !reloadedUniqueIds!!.contains(shipmentCartItemModel.cartStringGroup)
+                        ) && !reloadedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
                     ) {
                         prepareReloadRates(i, false)
-                    } else if (!reloadedUniqueIds!!.contains(shipmentCartItemModel.cartStringGroup)) {
+                    } else if (!reloadedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)) {
                         prepareReloadRates(i, true)
                     }
                 }
@@ -2207,7 +2209,7 @@ class ShipmentFragment :
                 }
             }
             val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
-            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
+            if (!shipmentCartItemModelLists.isNullOrEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
                 for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                     for (order in validateUsePromoRequest.orders) {
                         if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
@@ -2613,19 +2615,17 @@ class ShipmentFragment :
             }
             shipmentCartItemModel.selectedShipmentDetailData!!.isTradein = isTradeIn
             if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
-                shipmentPresenter.processGetCourierRecommendation(
+                shipmentPresenter.processGetCourierRecommendationMvc(
                     shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.shipperId,
                     shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.shipperProductId,
                     cartPosition,
                     shipmentCartItemModel.selectedShipmentDetailData,
                     shipmentCartItemModel,
                     shipmentCartItemModel.shopShipmentList,
-                    false,
                     shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                     shipmentCartItemModel.cartStringGroup,
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
-                    cartPosition > -1,
                     skipMvc,
                     if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                     if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentPresenter.getGroupProductsForRatesRequest(shipmentCartItemModel) else emptyList()
@@ -3001,57 +3001,57 @@ class ShipmentFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?) {
         if (shipmentLoadingIndex == -1 && !shipmentPresenter.shipmentButtonPayment.value.loading) {
-//        if (lastApplyUiModel == null) return
-//        val validateUseRequestParam = shipmentPresenter.generateValidateUsePromoRequest()
-//        val promoRequestParam = shipmentPresenter.generateCouponListRecommendationRequest()
-//        val intent =
-//            RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-//        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-//        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-//        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-//        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
-//        setChosenAddressForTradeInDropOff(intent)
-//        setPromoExtraMvcLockCourierFlow(intent)
-//        startActivityForResult(intent, REQUEST_CODE_PROMO)
-//        if (isTradeIn) {
-//            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
-//        }
-            onResultFromPromo(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(
-                        ARGS_VALIDATE_USE_DATA_RESULT,
-                        ValidateUsePromoRevampUiModel().apply {
-                            promoUiModel = PromoUiModel(
-                                voucherOrderUiModels = listOf(
-                                    PromoCheckoutVoucherOrdersItemUiModel(
-                                        code = "BOINTRAISLANDQA10",
-                                        cartStringGroup = "6370771-0-6595013-174524131",
-                                        shippingId = 23,
-                                        spId = 45,
-                                        type = "logistic",
-                                        messageUiModel = com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel(
-                                            state = "green"
-                                        )
-                                    )
-                                )
-                            )
-                        }
-                    )
-                    putExtra(
-                        ARGS_LAST_VALIDATE_USE_REQUEST,
-                        ValidateUsePromoRequest().apply {
-                            orders = listOf(
-                                OrdersItem(
-                                    shippingId = 23,
-                                    codes = mutableListOf("BOINTRAISLANDQA10"),
-                                    cartStringGroup = "6370771-0-6595013-174524131"
-                                )
-                            )
-                        }
-                    )
-                }
-            )
+            if (lastApplyUiModel == null) return
+            val validateUseRequestParam = shipmentPresenter.generateValidateUsePromoRequest()
+            val promoRequestParam = shipmentPresenter.generateCouponListRecommendationRequest()
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, shipmentPresenter.bboPromoCodes)
+            setChosenAddressForTradeInDropOff(intent)
+            setPromoExtraMvcLockCourierFlow(intent)
+            startActivityForResult(intent, REQUEST_CODE_PROMO)
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
+            }
+//            onResultFromPromo(
+//                Activity.RESULT_OK,
+//                Intent().apply {
+//                    putExtra(
+//                        ARGS_VALIDATE_USE_DATA_RESULT,
+//                        ValidateUsePromoRevampUiModel().apply {
+//                            promoUiModel = PromoUiModel(
+//                                voucherOrderUiModels = listOf(
+//                                    PromoCheckoutVoucherOrdersItemUiModel(
+//                                        code = "BOINTRAISLANDQA10",
+//                                        cartStringGroup = "6370771-0-6595013-174524131",
+//                                        shippingId = 23,
+//                                        spId = 45,
+//                                        type = "logistic",
+//                                        messageUiModel = com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel(
+//                                            state = "green"
+//                                        )
+//                                    )
+//                                )
+//                            )
+//                        }
+//                    )
+//                    putExtra(
+//                        ARGS_LAST_VALIDATE_USE_REQUEST,
+//                        ValidateUsePromoRequest().apply {
+//                            orders = listOf(
+//                                OrdersItem(
+//                                    shippingId = 23,
+//                                    codes = mutableListOf("BOINTRAISLANDQA10"),
+//                                    cartStringGroup = "6370771-0-6595013-174524131"
+//                                )
+//                            )
+//                        }
+//                    )
+//                }
+//            )
         }
     }
 
@@ -3653,7 +3653,7 @@ class ShipmentFragment :
                 KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA
             )
             uploadModel.isError = false
-            if (!isApi || (prescriptions != null && prescriptions.isNotEmpty())) {
+            if (!isApi || !prescriptions.isNullOrEmpty()) {
                 shipmentPresenter.setPrescriptionIds(prescriptions!!)
             }
             if (!isApi) {
@@ -3667,47 +3667,47 @@ class ShipmentFragment :
         if (resultCode == EPHARMACY_REDIRECT_CART_RESULT_CODE) {
             finish()
         } else if (resultCode == EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE) {
-//            if (data == null) {
-//                return
-//            }
-//            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
-//                EPHARMACY_CONSULTATION_RESULT_EXTRA
-//            )
-            val newResult = arrayListOf(
-                EPharmacyMiniConsultationResult(
-                    shopInfo = listOf(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                            products = arrayListOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                    isEthicalDrug = true,
-                                    itemWeight = 0.0,
-                                    name = "",
-                                    productId = 5232131732,
-                                    productImage = "",
-                                    productTotalWeightFmt = "",
-                                    quantity = ""
-                                )
-                            ),
-                            shopId = "14005189",
-                            partnerLogoUrl = "",
-                            shopLocation = "",
-                            shopLogoUrl = "",
-                            shopName = "",
-                            shopType = ""
-                        )
-                    ),
-                    epharmacyGroupId = "",
-                    consultationStatus = 4,
-                    consultationString = "",
-                    prescription = emptyList(),
-                    partnerConsultationId = "",
-                    tokoConsultationId = "",
-                    prescriptionImages = emptyList()
-                )
+            if (data == null) {
+                return
+            }
+            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
+                EPHARMACY_CONSULTATION_RESULT_EXTRA
             )
-//            if (results != null) {
-            shipmentPresenter.setMiniConsultationResult(newResult)
-//            }
+//            val newResult = arrayListOf(
+//                EPharmacyMiniConsultationResult(
+//                    shopInfo = listOf(
+//                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+//                            products = arrayListOf(
+//                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+//                                    isEthicalDrug = true,
+//                                    itemWeight = 0.0,
+//                                    name = "",
+//                                    productId = 5232131732,
+//                                    productImage = "",
+//                                    productTotalWeightFmt = "",
+//                                    quantity = ""
+//                                )
+//                            ),
+//                            shopId = "14005189",
+//                            partnerLogoUrl = "",
+//                            shopLocation = "",
+//                            shopLogoUrl = "",
+//                            shopName = "",
+//                            shopType = ""
+//                        )
+//                    ),
+//                    epharmacyGroupId = "",
+//                    consultationStatus = 4,
+//                    consultationString = "",
+//                    prescription = emptyList(),
+//                    partnerConsultationId = "",
+//                    tokoConsultationId = "",
+//                    prescriptionImages = emptyList()
+//                )
+//            )
+            if (results != null) {
+                shipmentPresenter.setMiniConsultationResult(results)
+            }
         }
     }
 
@@ -3857,7 +3857,7 @@ class ShipmentFragment :
                         }
                     }
                     val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
-                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.isNotEmpty()) {
+                    if (!shipmentCartItemModelLists.isNullOrEmpty()) {
                         for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                             for (order in validateUsePromoRequest.orders) {
                                 if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
@@ -4008,7 +4008,6 @@ class ShipmentFragment :
     }
 
     fun updateAddOnsData(
-        addOnsDataModel: AddOnsDataModel?,
         identifier: Int,
         cartString: String
     ) {
@@ -4026,7 +4025,6 @@ class ShipmentFragment :
     }
 
     fun updateAddOnsDynamicDataPassing(
-        addOnsDataModel: AddOnsDataModel,
         addOnResult: AddOnResult,
         identifier: Int,
         cartString: String,
