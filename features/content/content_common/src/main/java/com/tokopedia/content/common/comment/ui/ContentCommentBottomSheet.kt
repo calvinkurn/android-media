@@ -23,6 +23,7 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
+import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.isParent
@@ -162,6 +163,7 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
     fun String.getGraphemeLength(): Int {
@@ -209,6 +211,7 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.commentHeader.title = getString(R.string.content_comment_header)
         binding.commentHeader.closeListener = View.OnClickListener {
             mSource?.onCommentDismissed()
+            analytics?.closeCommentSheet()
             dismiss()
         }
         binding.rvComment.adapter = commentAdapter
@@ -236,6 +239,12 @@ class ContentCommentBottomSheet @Inject constructor(
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
             windowInsets
+        }
+        binding.newComment.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                analytics?.clickTextBox()
+            }
+            false
         }
     }
 
@@ -384,9 +393,12 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onReplyClicked(item: CommentUiModel.Item) {
         isFromChild = true
         viewModel.submitAction(CommentAction.EditTextClicked(item))
+        analytics?.clickReplyChild()
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
+        analytics?.longClickComment()
+
         viewModel.submitAction(CommentAction.SelectComment(item))
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
@@ -399,14 +411,21 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onProfileClicked(appLink: String) {
         viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickProfilePicture()
     }
 
     override fun onUserNameClicked(appLink: String) {
         viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickCommentName()
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
         viewModel.submitAction(CommentAction.ExpandComment(item))
+        if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
+    }
+
+    override fun onImpressedExpandable() {
+        analytics?.impressLihatBalasan()
     }
 
     override fun dismiss() {
@@ -467,17 +486,22 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
             FeedMenuIdentifier.DELETE -> deleteCommentChecker()
-            FeedMenuIdentifier.LAPORKAN -> viewModel.submitAction(CommentAction.RequestReportAction)
+            FeedMenuIdentifier.LAPORKAN -> {
+                viewModel.submitAction(CommentAction.RequestReportAction)
+                analytics?.clickReportComment()
+            }
         }
     }
 
     private fun deleteCommentChecker() {
         requireInternet {
+            analytics?.clickRemoveComment()
             viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
         viewModel.submitAction(
             CommentAction.ReportComment(
                 feedReportRequestParamModel.copy(
@@ -533,15 +557,17 @@ class ContentCommentBottomSheet @Inject constructor(
             )
         } else {
             val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
+            val type = TagMentionBuilder.isChildOrParent(
+                binding.newComment.text?.toSpanned(),
+                binding.newComment.tag.toString()
+            )
             viewModel.submitAction(
                 CommentAction.ReplyComment(
                     convert,
-                    TagMentionBuilder.isChildOrParent(
-                        binding.newComment.text?.toSpanned(),
-                        binding.newComment.tag.toString()
-                    )
+                    type
                 )
             )
+            if (type.isParent) analytics?.clickSendParentComment() else analytics?.clickSendChildComment()
         }
     }
 
@@ -569,6 +595,10 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    fun setAnalytic(tracker: IContentCommentAnalytics) {
+        analytics = tracker
+    }
+
     interface EntrySource {
         fun getPageSource(): PageSource
 
@@ -580,7 +610,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
         private const val HEIGHT_PERCENT = 0.8
         private const val KEYBOARD_HEIGHT_PERCENT = 0.3
-        private const val SHIMMER_VALUE = 10
+        private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
 

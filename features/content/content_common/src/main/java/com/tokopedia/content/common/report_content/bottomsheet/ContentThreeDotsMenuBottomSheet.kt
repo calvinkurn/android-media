@@ -156,6 +156,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
             }
         }
     }
+
     @Deprecated("Analytic is not valid")
     fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
         mAnalytic = analytic
