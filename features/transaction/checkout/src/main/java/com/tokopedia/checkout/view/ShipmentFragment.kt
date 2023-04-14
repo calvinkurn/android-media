@@ -273,6 +273,53 @@ class ShipmentFragment :
     private var toasterThrottleSubscription: Subscription? = null
     private var toasterEmitter: Emitter<String>? = null
 
+    private val deviceId: String
+        get() = if (arguments?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
+            arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID)!!
+        } else {
+            ""
+        }
+
+    private val isOneClickShipment: Boolean
+        get() = arguments != null && arguments!!.getBoolean(ARG_IS_ONE_CLICK_SHIPMENT)
+
+    private val checkoutLeasingId: String
+        get() {
+            var leasingId = "0"
+            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_LEASING_ID) != null &&
+                !arguments!!.getString(ARG_CHECKOUT_LEASING_ID).equals("null", ignoreCase = true)
+            ) {
+                leasingId = arguments!!.getString(ARG_CHECKOUT_LEASING_ID)!!
+            }
+            return leasingId
+        }
+
+    private val isTradeIn: Boolean
+        get() = arguments != null && arguments!!.getString(
+            ShipmentFormRequest.EXTRA_DEVICE_ID,
+            ""
+        ) != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
+
+    private val checkoutPageSource: String
+        get() {
+            var pageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
+            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE) != null) {
+                pageSource = arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE)!!
+            }
+            return pageSource
+        }
+
+    private fun isPlusSelected(): Boolean {
+        if (isPlusSelected == null) {
+            isPlusSelected = if (arguments != null) {
+                arguments!!.getBoolean(ARG_IS_PLUS_SELECTED, false)
+            } else {
+                false
+            }
+        }
+        return isPlusSelected!!
+    }
+
     override fun initInjector() {
         if (activity != null) {
             val baseMainApplication = activity!!.application as BaseMainApplication
@@ -424,53 +471,6 @@ class ShipmentFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_N50
             )
         )
-    }
-
-    private val deviceId: String
-        get() = if (arguments?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
-            arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID)!!
-        } else {
-            ""
-        }
-
-    private val isOneClickShipment: Boolean
-        get() = arguments != null && arguments!!.getBoolean(ARG_IS_ONE_CLICK_SHIPMENT)
-
-    private val checkoutLeasingId: String
-        get() {
-            var leasingId = "0"
-            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_LEASING_ID) != null &&
-                !arguments!!.getString(ARG_CHECKOUT_LEASING_ID).equals("null", ignoreCase = true)
-            ) {
-                leasingId = arguments!!.getString(ARG_CHECKOUT_LEASING_ID)!!
-            }
-            return leasingId
-        }
-
-    private val isTradeIn: Boolean
-        get() = arguments != null && arguments!!.getString(
-            ShipmentFormRequest.EXTRA_DEVICE_ID,
-            ""
-        ) != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
-
-    private val checkoutPageSource: String
-        get() {
-            var pageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
-            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE) != null) {
-                pageSource = arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE)!!
-            }
-            return pageSource
-        }
-
-    private fun isPlusSelected(): Boolean {
-        if (isPlusSelected == null) {
-            isPlusSelected = if (arguments != null) {
-                arguments!!.getBoolean(ARG_IS_PLUS_SELECTED, false)
-            } else {
-                false
-            }
-        }
-        return isPlusSelected!!
     }
 
     private fun initRecyclerViewData(
@@ -1320,7 +1320,7 @@ class ShipmentFragment :
                             }
                         }
                     }
-                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
+                    shipmentPresenter.setLastValidateUseRequest(validateUsePromoRequest)
                     if (!stillHasPromo) {
                         doResetButtonPromoCheckout()
                     }
@@ -3791,8 +3791,14 @@ class ShipmentFragment :
                     selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()
                 val hasCheckAllCourier =
                     shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
-                val haveToClearCache = shipmentCartItemModel.voucherLogisticItemUiModel != null &&
-                    !TextUtils.isEmpty(shipmentCartItemModel.voucherLogisticItemUiModel!!.code) &&
+                val haveToClearCache = (
+                    (
+                        shipmentCartItemModel.voucherLogisticItemUiModel != null && !TextUtils.isEmpty(
+                            shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                        )
+                        ) ||
+                        !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
+                    ) &&
                     TextUtils.isEmpty(newCourierItemData.selectedShipper.logPromoCode)
                 val shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier
                 val shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier
@@ -3805,7 +3811,7 @@ class ShipmentFragment :
                     )
                 )
                 if (haveToClearCache) {
-                    val promoLogisticCode = shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                    val promoLogisticCode = shipmentCartItemModel.voucherLogisticItemUiModel?.code ?: courierItemData.selectedShipper.logPromoCode!!
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(
                         0,
                         promoLogisticCode,
@@ -3876,12 +3882,13 @@ class ShipmentFragment :
                             ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                         }
                     }
-                    shipmentPresenter.doValidateUseLogisticPromo(
+                    shipmentPresenter.doValidateUseLogisticPromoNew(
                         position,
                         shipmentCartItemModel.cartStringGroup,
                         validateUsePromoRequest,
                         selectedShipper.logPromoCode!!,
-                        false
+                        false,
+                        null
                     )
                 } else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier || hasNoPromo) {
                     donePublisher.onCompleted()

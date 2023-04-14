@@ -80,6 +80,12 @@ data class SelectedShipperModel(
                 benefitClass = scheduleDelivery.deliveryProduct.promoStacking.benefitClass
                 shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.shippingSubsidy
                 boCampaignId = scheduleDelivery.deliveryProduct.promoStacking.boCampaignId
+            } else {
+                logPromoCode = ""
+                freeShippingMetadata = ""
+                benefitClass = ""
+                shippingSubsidy = 0
+                boCampaignId = 0
             }
         }
     }

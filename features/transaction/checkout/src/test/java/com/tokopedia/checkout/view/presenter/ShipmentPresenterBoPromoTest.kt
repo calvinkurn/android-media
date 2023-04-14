@@ -350,7 +350,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 code = "TESTBO2"
             )
         )
-        presenter.setLatValidateUseRequest(lastValidateUseRequest)
+        presenter.setLastValidateUseRequest(lastValidateUseRequest)
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -390,7 +390,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLatValidateUseRequest(lastValidateUseRequest)
+        presenter.setLastValidateUseRequest(lastValidateUseRequest)
 
         // When
         presenter.validateClearAllBoPromo()
@@ -421,7 +421,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLatValidateUseRequest(lastValidateUseRequest)
+        presenter.setLastValidateUseRequest(lastValidateUseRequest)
 
         // When
         presenter.validateClearAllBoPromo()
@@ -452,7 +452,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLatValidateUseRequest(lastValidateUseRequest)
+        presenter.setLastValidateUseRequest(lastValidateUseRequest)
 
         // When
         presenter.validateClearAllBoPromo()
@@ -483,7 +483,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLatValidateUseRequest(lastValidateUseRequest)
+        presenter.setLastValidateUseRequest(lastValidateUseRequest)
 
         // When
         presenter.validateClearAllBoPromo()
@@ -498,7 +498,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN clear all BO promo with cart list null THEN don't clear all BO promo`() {
         // Given
         presenter.shipmentCartItemModelList = listOf()
-        presenter.setLatValidateUseRequest(null)
+        presenter.setLastValidateUseRequest(null)
 
         // When
         presenter.validateClearAllBoPromo()
@@ -517,7 +517,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.setLatValidateUseRequest(
+        presenter.setLastValidateUseRequest(
             ValidateUsePromoRequest(
                 orders = listOf(
                     OrdersItem(
@@ -565,7 +565,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.setLatValidateUseRequest(
+        presenter.setLastValidateUseRequest(
             ValidateUsePromoRequest(
                 orders = listOf(
                     OrdersItem(
@@ -616,7 +616,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.setLatValidateUseRequest(
+        presenter.setLastValidateUseRequest(
             ValidateUsePromoRequest(
                 orders = listOf(
                     OrdersItem(
@@ -666,7 +666,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.setLatValidateUseRequest(null)
+        presenter.setLastValidateUseRequest(null)
         presenter.lastApplyData.value = LastApplyUiModel()
 
         // When
@@ -683,7 +683,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
-        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(orders = emptyList()))
+        presenter.setLastValidateUseRequest(ValidateUsePromoRequest(orders = emptyList()))
         presenter.lastApplyData.value = LastApplyUiModel(voucherOrders = emptyList())
 
         // When

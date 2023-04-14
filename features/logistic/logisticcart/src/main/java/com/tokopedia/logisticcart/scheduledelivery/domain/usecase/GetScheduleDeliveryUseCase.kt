@@ -1094,10 +1094,10 @@ class GetScheduleDeliveryUseCase @Inject constructor(
                                                 "shipper_name": "GTL",
                                                 "shipper_product_id": 58,
                                                 "shipper_product_name": "Instant",
-                                                "final_price": 0,
+                                                "final_price": 17000,
                                                 "real_price": 17000,
-                                                "text_final_price": "Rp0",
-                                                "text_real_price": "Rp17.000",
+                                                "text_final_price": "Rp17.000",
+                                                "text_real_price": "",
                                                 "checksum": "HkwFtXKjFbDHtGZcvnDK6LoChB4%3D",
                                                 "insurance": {
                                                     "insurance_type": 3,

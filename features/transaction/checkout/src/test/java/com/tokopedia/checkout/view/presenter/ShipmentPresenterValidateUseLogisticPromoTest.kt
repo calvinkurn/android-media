@@ -205,7 +205,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 )
             )
         )
-        presenter.setLatValidateUseRequest(validateUsePromoRequest)
+        presenter.setLastValidateUseRequest(validateUsePromoRequest)
         presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "", true)
 
         // Then

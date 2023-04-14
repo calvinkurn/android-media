@@ -447,7 +447,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLatValidateUseRequest(validateUsePromoRequest)
+        presenter.setLastValidateUseRequest(validateUsePromoRequest)
         val message = "error"
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             AkamaiErrorException(message)
