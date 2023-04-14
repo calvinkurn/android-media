@@ -62,7 +62,8 @@ class NibSubmissionViewModel @Inject constructor(
     }
 
     private fun handleConfirmDate(newDate: Date) {
-        _uiState.update { it.copy(selectedDate = newDate) }
+        val isInputValid = validateInput(currentState.fileState)
+        _uiState.update { it.copy(selectedDate = newDate, isInputValid = isInputValid) }
     }
 
     private fun handleUnselectFile() {

@@ -21,7 +21,6 @@ import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_nib.R
@@ -152,19 +151,19 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
 
     private fun renderFilePreview(fileState: UiState.FileState) {
-        binding?.tpgErrorMessage?.isVisible = fileState is UiState.FileState.Valid
         when (fileState) {
             UiState.FileState.NotSelected -> {
                 binding?.layoutFilePickerDefault?.visible()
                 binding?.layoutFilePickerError?.gone()
                 binding?.layoutFilePickerSelected?.gone()
-
+                binding?.tpgErrorMessage?.gone()
             }
             UiState.FileState.InvalidFileExtension -> {
                 binding?.layoutFilePickerDefault?.gone()
                 binding?.layoutFilePickerError?.visible()
                 binding?.layoutFilePickerSelected?.gone()
 
+                binding?.tpgErrorMessage?.visible()
                 binding?.tpgErrorMessage?.text =
                     context?.getString(R.string.ssn_error_message_file_extension)
             }
@@ -173,6 +172,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
                 binding?.layoutFilePickerError?.visible()
                 binding?.layoutFilePickerSelected?.gone()
 
+                binding?.tpgErrorMessage?.visible()
                 binding?.tpgErrorMessage?.text =
                     context?.getString(R.string.ssn_error_message_file_size)
             }
@@ -180,6 +180,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
                 binding?.layoutFilePickerDefault?.gone()
                 binding?.layoutFilePickerError?.gone()
                 binding?.layoutFilePickerSelected?.visible()
+                binding?.tpgErrorMessage?.gone()
 
                 renderSelectedFileThumbnail(fileState.fileUri, fileState.fileSizeKb)
             }
@@ -193,9 +194,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_SELECT_FILE && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                handleSelectedFile(data)
-            }
+            if (data != null) { handleSelectedFile(data) }
         }
     }
 

@@ -219,7 +219,7 @@
                 android:id="@+id/tpgErrorMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ssn_error_message_file_size"
+                tools:text="@string/ssn_error_message_file_size"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/Unify_RN500"
                 android:visibility="gone"
