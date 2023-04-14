@@ -23,11 +23,9 @@ object CentralizedPromoErrorHandler {
                         cause = throwable
                     )
                 )
-            } else {
-                throwable.printStackTrace()
             }
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
+
         }
     }
 
