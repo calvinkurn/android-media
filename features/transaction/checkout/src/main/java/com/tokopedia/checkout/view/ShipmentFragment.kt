@@ -1079,6 +1079,7 @@ class ShipmentFragment :
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(
                         itemPosition,
                         shipmentCartItemModel.boCode,
+                        shipmentCartItemModel.cartStringGroup,
                         shipmentCartItemModel
                     )
                     shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(
@@ -1762,6 +1763,7 @@ class ShipmentFragment :
         shipmentPresenter.cancelAutoApplyPromoStackLogistic(
             position,
             pslCode,
+            shipmentCartItemModel.cartStringGroup,
             shipmentCartItemModel
         )
     }
@@ -2355,6 +2357,7 @@ class ShipmentFragment :
                         shipmentPresenter.cancelAutoApplyPromoStackLogistic(
                             0,
                             promoLogisticCode,
+                            shipmentCartItemModel.cartStringGroup,
                             shipmentCartItemModel
                         )
                         val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
@@ -3806,6 +3809,7 @@ class ShipmentFragment :
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(
                         0,
                         promoLogisticCode,
+                        shipmentCartItemModel.cartStringGroup,
                         shipmentCartItemModel
                     )
                     val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest

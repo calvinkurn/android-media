@@ -1119,18 +1119,18 @@ class GetScheduleDeliveryUseCase @Inject constructor(
                                                 },
                                                 "ut": "1681311106",
                                                 "promo_stacking": {
-                                                    "promo_code": "BONOWSELLY",
+                                                    "promo_code": "",
                                                     "promo_chargeable": false,
-                                                    "benefit_class": "scheduled",
+                                                    "benefit_class": "",
                                                     "is_bebas_ongkir_extra": false,
-                                                    "benefit_amount": 75000,
-                                                    "bo_campaign_id": 191,
-                                                    "disabled": false,
+                                                    "benefit_amount": 0,
+                                                    "bo_campaign_id": 0,
+                                                    "disabled": true,
                                                     "free_shipping_metadata": {
                                                         "sent_shipper_partner": false,
-                                                        "benefit_class": "scheduled",
-                                                        "shipping_subsidy": 75000,
-                                                        "additional_data": "{\"bo_feature_type\":[],\"fulfillment\":{\"chargeable_flag\":0}}"
+                                                        "benefit_class": "",
+                                                        "shipping_subsidy": 0,
+                                                        "additional_data": ""
                                                     }
                                                 },
                                                 "validation_metadata": "{\"timeslot_id\":341,\"schedule_date\":\"2023-04-13T12:00:00+07:00\",\"shipping_price\":17000}"
