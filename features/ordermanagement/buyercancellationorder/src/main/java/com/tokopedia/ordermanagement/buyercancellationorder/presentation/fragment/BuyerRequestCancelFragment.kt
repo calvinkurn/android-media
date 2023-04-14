@@ -219,9 +219,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun setupViews() {
         binding?.run {
             btnReqCancel.isEnabled = false
-            tfChooseSubReason.textFieldInput.isFocusable = false
-            tfChooseSubReason.textFieldInput.isClickable = false
-            tfChooseSubReason.setOnClickListener {}
+//            tfChooseSubReason.textFieldInput.isFocusable = false
+//            tfChooseSubReason.textFieldInput.isClickable = false
+//            tfChooseSubReason.setOnClickListener {}
             labelShopName.text = MethodChecker.fromHtml(shopName)
             labelInvoice.text = invoiceNum
         }
@@ -246,8 +246,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tvCancelWaitTime.gone()
             btnReqCancelWait.gone()
 
-            tfChooseReason.gone()
-            tfChooseSubReason.gone()
+//            tfChooseReason.gone()
+            cardUnifyChooseReason.hide()
+//            tfChooseSubReason.gone()
+            cardUnifyChooseSubReason.hide()
             btnReqCancel.gone()
 
             ivCheck.visible()
@@ -272,12 +274,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tvBodyCancelRequested.gone()
             btnChatPenjual.gone()
 
-            tfChooseSubReason.gone()
+//            tfChooseSubReason.gone()
+            cardUnifyChooseSubReason.hide()
             btnReqCancel.visible()
 
-            tfChooseReason.visible()
-            tfChooseReason.textFieldInput.isFocusable = false
-            tfChooseReason.textFieldInput.isClickable = true
+//            tfChooseReason.visible()
+//            tfChooseReason.textFieldInput.isFocusable = false
+//            tfChooseReason.textFieldInput.isClickable = true
+            cardUnifyChooseReason.show()
 
         }
         setListenersCancelIsAvailable()
@@ -291,8 +295,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tvBodyCancelRequested.gone()
             btnChatPenjual.gone()
 
-            tfChooseReason.gone()
-            tfChooseSubReason.gone()
+//            tfChooseReason.gone()
+            cardUnifyChooseReason.hide()
+//            tfChooseSubReason.gone()
+            cardUnifyChooseSubReason.hide()
             btnReqCancel.gone()
 
             tvCancelWaitDesc.visible()
@@ -327,13 +333,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun setListenersCancelIsAvailable() {
         binding?.run {
-            tfChooseReason.setOnClickListener {
+            cardUnifyChooseReason.setOnClickListener {
                 showReasonBottomSheet()
             }
-            tfChooseReason.textFieldInput.setOnClickListener {
+            tvChooseReasonLabel.setOnClickListener {
                 showReasonBottomSheet()
             }
-            tfChooseReason.textFieldIcon1.setOnClickListener {
+            iconChooseReason.setOnClickListener {
                 showReasonBottomSheet()
             }
         }
@@ -450,7 +456,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingCancelReasons() {
-        buyerCancellationViewModel.cancelReasonResult.observe(viewLifecycleOwner, {
+        buyerCancellationViewModel.cancelReasonResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     binding?.run {
@@ -480,7 +486,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -539,19 +545,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun cancelBtnClickListener(isEligibleInstantCancel: Boolean) {
         binding?.run {
             if (reasonCode == BuyerConsts.REASON_CODE_LAINNYA) {
+                val placeHolderText = getString(R.string.reason_placeholder)
                 when {
-                    tfChooseSubReasonEditable.textFieldInput.text.isEmpty() -> {
+                    tvChooseSubReasonLabel.text == placeHolderText -> {
                         showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
                     }
-                    tfChooseSubReasonEditable.textFieldInput.text.length < COUNTER_15 -> {
-                        showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
-                    }
-                    tfChooseSubReasonEditable.textFieldInput.text.length > COUNTER_160 -> {
-                        showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
-                    }
+//                    tfChooseSubReasonEditable.textFieldInput.text.length < COUNTER_15 -> {
+//                        showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
+//                    }
+//                    tfChooseSubReasonEditable.textFieldInput.text.length > COUNTER_160 -> {
+//                        showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
+//                    }
                     else -> {
                         val subReasonLainnya =
-                            tfChooseSubReasonEditable.textFieldInput.text.toString().trimStart()
+                            tvChooseSubReasonLabel.text.toString().trimStart()
+//                            tfChooseSubReasonEditable.textFieldInput.text.toString().trimStart()
                         if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
                             reasonCancel = subReasonLainnya
                             isCancelAlreadyClicked = true
@@ -577,82 +585,88 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         bottomSheet.dismiss()
         binding?.run {
             btnReqCancel.isEnabled = false
-            tfChooseReason.textFieldInput.inputType =
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tfChooseReason.textFieldInput.isSingleLine = false
-            tfChooseReason.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-            tfChooseReason.textFieldInput.setText(reason)
+//            tfChooseReason.textFieldInput.inputType =
+//                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//            tfChooseReason.textFieldInput.isSingleLine = false
+//            tfChooseReason.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+//            tfChooseReason.textFieldInput.setText(reason)
+            tvChooseReasonLabel.text = reason
             currentReasonStr = reason
 
             if (reason.equals(LAINNYA, true)) {
                 reasonCode = BuyerConsts.REASON_CODE_LAINNYA
-                tfChooseSubReason.gone()
+//                tfChooseSubReason.gone()
+                cardUnifyChooseSubReason.hide()
                 tvSubReason.visible()
                 tvSubReason.text = getString(R.string.ask_2_lainnya)
-                tfChooseSubReasonEditable.visible()
-                tfChooseSubReasonEditable.requestFocus()
+//                tfChooseSubReasonEditable.visible()
+//                tfChooseSubReasonEditable.requestFocus()
                 context?.let { showKeyboard(it) }
-                tfChooseSubReasonEditable.setCounter(COUNTER_160)
-                tfChooseSubReasonEditable.textFieldInput.inputType =
-                    InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                tfChooseSubReasonEditable.textFieldInput.isSingleLine = false
-                tfChooseSubReasonEditable.textFieldInput.imeOptions =
-                    EditorInfo.IME_FLAG_NO_ENTER_ACTION
-                tfChooseSubReasonEditable.textFieldInput.addTextChangedListener(object :
-                    TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
-                    }
-
-                    override fun afterTextChanged(s: Editable) {
-                        buyerCancellationViewModel.validateBuyerRequestCancelReason(s.toString())
-                    }
-                })
+//                tfChooseSubReasonEditable.setCounter(COUNTER_160)
+//                tfChooseSubReasonEditable.textFieldInput.inputType =
+//                    InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//                tfChooseSubReasonEditable.textFieldInput.isSingleLine = false
+//                tfChooseSubReasonEditable.textFieldInput.imeOptions =
+//                    EditorInfo.IME_FLAG_NO_ENTER_ACTION
+//                tfChooseSubReasonEditable.textFieldInput.addTextChangedListener(object :
+//                    TextWatcher {
+//                    override fun beforeTextChanged(
+//                        s: CharSequence,
+//                        start: Int,
+//                        count: Int,
+//                        after: Int
+//                    ) {
+//                    }
+//
+//                    override fun onTextChanged(
+//                        s: CharSequence,
+//                        start: Int,
+//                        before: Int,
+//                        count: Int
+//                    ) {
+//                    }
+//
+//                    override fun afterTextChanged(s: Editable) {
+//                        buyerCancellationViewModel.validateBuyerRequestCancelReason(s.toString())
+//                    }
+//                })
             } else {
                 context?.let { hideKeyboard(it) }
                 if (cancelReasonResponse.reasons.isNotEmpty()) {
                     tvSubReason.visible()
                     tvSubReason.text = getString(R.string.ask_2_placeholder)
 
-                    tfChooseSubReason.visible()
-                    tfChooseSubReasonEditable.gone()
-                    tfChooseSubReason.textFieldIcon1.setImageResource(R.drawable.ic_chevron_down)
-                    tfChooseSubReason.textFieldInput.setText("")
+//                    tfChooseSubReason.visible()
+//                    tfChooseSubReasonEditable.gone()
+                    cardUnifyChooseReason.show()
+
+//                    tfChooseSubReason.textFieldIcon1.setImageResource(R.drawable.ic_chevron_down)
+//                    tfChooseSubReason.textFieldInput.setText("")
 
                     cancelReasonResponse.reasons.forEach {
                         if (it.title.equals(reason, true)) {
                             listOfSubReason = it.subReasons
 
-                            tfChooseSubReason.textFiedlLabelText.inputType =
-                                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                            tfChooseSubReason.textFieldInput.isSingleLine = false
-                            tfChooseSubReason.textFieldInput.imeOptions =
-                                EditorInfo.IME_FLAG_NO_ENTER_ACTION
-                            tfChooseSubReason.textFieldInput.isFocusable = false
-                            tfChooseSubReason.textFieldInput.isClickable = true
-                            tfChooseSubReason.setOnClickListener {
+//                            tfChooseSubReason.textFiedlLabelText.inputType =
+//                                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//                            tfChooseSubReason.textFieldInput.isSingleLine = false
+//                            tfChooseSubReason.textFieldInput.imeOptions =
+//                                EditorInfo.IME_FLAG_NO_ENTER_ACTION
+//                            tfChooseSubReason.textFieldInput.isFocusable = false
+//                            tfChooseSubReason.textFieldInput.isClickable = true
+                            cardUnifyChooseSubReason.setOnClickListener {
                                 showSubReasonBottomSheet()
                             }
-                            tfChooseSubReason.textFieldInput.setOnClickListener {
+                            tvChooseSubReasonLabel.setOnClickListener {
                                 showSubReasonBottomSheet()
                             }
-                            tfChooseSubReason.textFieldIcon1.setOnClickListener {
+                            iconChooseSubReason.setOnClickListener {
                                 showSubReasonBottomSheet()
                             }
                         }
                     }
+                } else {
+                    //no op
                 }
             }
         }
@@ -662,22 +676,34 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         bottomSheet.dismiss()
         reasonCode = rCode
         binding?.run {
-            tfChooseSubReason.textFieldInput.inputType =
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tfChooseSubReason.textFieldInput.isSingleLine = false
-            tfChooseSubReason.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-            tfChooseSubReason.textFieldInput.setText(reason)
+//            tfChooseSubReason.textFieldInput.inputType =
+//                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//            tfChooseSubReason.textFieldInput.isSingleLine = false
+//            tfChooseSubReason.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+//            tfChooseSubReason.textFieldInput.setText(reason)
+            tvChooseSubReasonLabel.text = reason
             reasonCancel = reason
 
-            tfChooseReason.textFieldInput.text?.let { inputReason ->
-                if (inputReason.isNotEmpty()) {
-                    tfChooseSubReason.textFieldInput.text?.let { inputSubReason ->
-                        if (inputSubReason.isNotEmpty()) {
+            tvChooseReasonLabel.text?.let {
+                val placeHolderText = getString(R.string.reason_placeholder)
+                if (it.isNotBlank() && it != placeHolderText) {
+                    tvChooseSubReasonLabel.text?.let { subReason ->
+                        if (subReason.isNotBlank() && subReason != placeHolderText) {
                             btnReqCancel.isEnabled = true
                         }
                     }
                 }
             }
+
+//            tfChooseReason.textFieldInput.text?.let { inputReason ->
+//                if (inputReason.isNotEmpty()) {
+//                    tfChooseSubReason.textFieldInput.text?.let { inputSubReason ->
+//                        if (inputSubReason.isNotEmpty()) {
+//                            btnReqCancel.isEnabled = true
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -688,17 +714,23 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingRequestCancel() {
-        buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, {
+        buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == RESULT_CODE_SUCCESS && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        backToEntryPoint(RESULT_CODE_SUCCESS, buyerRequestCancelResponse.message.first())
+                        backToEntryPoint(
+                            RESULT_CODE_SUCCESS,
+                            buyerRequestCancelResponse.message.first()
+                        )
                     } else if (buyerRequestCancelResponse.success == 0) {
                         if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
                             showPopup(buyerRequestCancelResponse.popup)
                         } else if (buyerRequestCancelResponse.message.isNotEmpty()) {
-                            showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                            showToaster(
+                                buyerRequestCancelResponse.message.first(),
+                                Toaster.TYPE_ERROR
+                            )
                         }
                     }
                 }
@@ -706,17 +738,18 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun observeBuyerRequestCancelReasonValidationResult() {
-        buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner, {
+        buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner) {
             binding?.run {
-                tfChooseSubReasonEditable.setMessage(it.inputFieldMessage)
-                tfChooseSubReasonEditable.setError(it.isError)
+//                tfChooseSubReasonEditable.setMessage(it.inputFieldMessage)
+//                tfChooseSubReasonEditable.setError(it.isError)
+                tvChooseSubReasonLabel.text = it.inputFieldMessage
                 btnReqCancel.isEnabled = it.isButtonEnable
             }
-        })
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -753,7 +786,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingInstantCancel() {
-        buyerCancellationViewModel.buyerInstantCancelResult.observe(viewLifecycleOwner, {
+        buyerCancellationViewModel.buyerInstantCancelResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     instantCancelResponse = it.data.buyerInstantCancel
@@ -763,7 +796,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun renderInstantCancellation() {
