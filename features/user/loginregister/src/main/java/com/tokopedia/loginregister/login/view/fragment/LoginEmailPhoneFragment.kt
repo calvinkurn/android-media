@@ -108,7 +108,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -401,19 +400,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun checkSeamless() {
         if (isEnableSeamlessLogin) {
-            showLoadingSeamless()
+            showLoadingOverlay()
             viewModel.checkSeamlessEligiblity()
         } else {
-            hideLoadingSeamless()
+            hideLoadingOverlay()
         }
     }
 
-    private fun showLoadingSeamless() {
+    private fun showLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.show()
         (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
-    private fun hideLoadingSeamless() {
+    private fun hideLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.hide()
         (activity as? LoginActivity)?.supportActionBar?.show()
     }
@@ -456,7 +455,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (it) {
                 routeToGojekSeamlessPage()
             } else {
-                hideLoadingSeamless()
+                hideLoadingOverlay()
             }
         }
 
@@ -592,6 +591,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
+            if (isEnableDirectBiometric()) {
+                hideLoadingOverlay()
+            }
+
             if (isEnableFingerprint && data.isRegistered) {
                 enableFingerprint()
             } else {
@@ -789,6 +792,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun checkFingerprintAvailability() {
         if (!GlobalConfig.isSellerApp()) {
+            if (isEnableDirectBiometric()) {
+                showLoadingOverlay()
+            }
             viewModel.registerCheckFingerprint()
         }
     }
@@ -1656,7 +1662,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                     GotoSeamlessLoginFragment.RESULT_OTHER_ACCS -> {
-                        hideLoadingSeamless()
+                        hideLoadingOverlay()
                     }
                     else -> {
                         activity?.finish()
