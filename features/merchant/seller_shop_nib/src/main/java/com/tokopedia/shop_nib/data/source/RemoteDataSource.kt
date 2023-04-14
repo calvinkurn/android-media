@@ -10,6 +10,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
@@ -23,7 +25,7 @@ class RemoteDataSource @Inject constructor(
 
         val fileExtension = fileHelper.getFileExtension(uri)
         val fileName = "file.$fileExtension"
-        val file = fileHelper.getFileFromUri(uri, fileName) ?: throw Exception("File not found")
+        val file = fileHelper.getFileFromUri(uri, fileName) ?: throw Exception("Failed to create file from URI")
 
 
         val fileMime = if (fileExtension == "pdf") {
@@ -32,12 +34,12 @@ class RemoteDataSource @Inject constructor(
             "image/$fileExtension"
         }
 
-        val fileBody = RequestBody.create(fileMime.toMediaTypeOrNull(), file)
+        val fileBody = file.asRequestBody(fileMime.toMediaTypeOrNull())
         val filePart = MultipartBody.Part.createFormData("image", file.name, fileBody)
 
         val params = HashMap<String, RequestBody>()
-        params["user_id"] = RequestBody.create("text/plain".toMediaTypeOrNull(), userSessionInterface.userId)
-        params["shop_id"] = RequestBody.create("text/plain".toMediaTypeOrNull(), userSessionInterface.shopId)
+        params["user_id"] = userSessionInterface.userId.toRequestBody("text/plain".toMediaTypeOrNull())
+        params["shop_id"] = userSessionInterface.shopId.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val response = service.uploadFile(filePart, params)
 
