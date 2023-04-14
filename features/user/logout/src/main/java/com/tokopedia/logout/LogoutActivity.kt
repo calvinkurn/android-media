@@ -1,4 +1,4 @@
-package com.tokopedia.logout.view
+package com.tokopedia.logout
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -34,10 +34,8 @@ import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
-import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId

@@ -1,4 +1,4 @@
-package com.tokopedia.logout.viewmodel
+package com.tokopedia.logout
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

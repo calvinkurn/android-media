@@ -1,7 +1,8 @@
-package com.tokopedia.logout.viewmodel
+package com.tokopedia.logout
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logout.LogoutViewModel
 import com.tokopedia.logout.domain.model.LogoutDataModel
 import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
