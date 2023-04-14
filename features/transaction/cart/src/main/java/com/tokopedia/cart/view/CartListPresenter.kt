@@ -74,6 +74,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -1904,27 +1905,6 @@ class CartListPresenter @Inject constructor(
         }
     }
 
-    override fun doGetLastApply(promoRequest: ValidateUsePromoRequest) {
-        launch(dispatchers.io) {
-            try {
-                lastValidateUseRequest = promoRequest
-                val getLastApplyResponse = getLastApplyPromoUseCase(promoRequest)
-                setUpdateCartAndGetLastApplyLastResponse(
-                    UpdateAndGetLastApplyData().apply {
-                        promoUiModel = getLastApplyResponse.promoUiModel
-                    }
-                )
-                isLastApplyResponseStillValid = false
-                view?.updatePromoCheckoutStickyButton(getLastApplyResponse.promoUiModel)
-            } catch (t: Throwable) {
-                if (t is AkamaiErrorException) {
-                    view?.showToastMessageRed(t)
-                }
-                view?.showPromoCheckoutStickyButtonInactive()
-            }
-        }
-    }
-
     override fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()
@@ -1950,6 +1930,7 @@ class CartListPresenter @Inject constructor(
                         updateCartDataResponse.updateCartData?.let { updateCartData ->
                             if (updateCartData.isSuccess) {
                                 updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                    syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
                                     setLastApplyNotValid()
                                     setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
                                     setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
@@ -2271,7 +2252,6 @@ class CartListPresenter @Inject constructor(
                     if (voucherOrderUiModel.messageUiModel.state == "green") {
                         groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.apply {
                             boCode = voucherOrderUiModel.code
-                            boUniqueId = voucherOrderUiModel.uniqueId
                         }
                         boGroupUniqueIds.add(voucherOrderUiModel.cartStringGroup)
                     }
@@ -2288,16 +2268,21 @@ class CartListPresenter @Inject constructor(
     private fun clearBo(group: CartGroupHolderData) {
         launch {
             try {
+                val cartStringGroupSet = mutableSetOf<String>()
                 val cartPromoHolderData = PromoRequestMapper.mapSelectedCartGroupToPromoData(listOf(group))
                 clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                         orderData = ClearPromoOrderData(
                             orders = cartPromoHolderData.values.map {
+                                val isNoCodeExistInCurrentGroup = !cartStringGroupSet.contains(it.cartStringGroup)
+                                if (isNoCodeExistInCurrentGroup) {
+                                    cartStringGroupSet.add(it.cartStringGroup)
+                                }
                                 ClearPromoOrder(
                                     uniqueId = it.cartStringOrder,
                                     boType = group.boMetadata.boType,
-                                    codes = if (it.cartStringOrder == group.boUniqueId || it.needToMoveBoData) {
+                                    codes = if (isNoCodeExistInCurrentGroup) {
                                         mutableListOf(group.boCode)
                                     }
                                     else {
@@ -2322,7 +2307,6 @@ class CartListPresenter @Inject constructor(
 //        )
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
-        group.boUniqueId = ""
     }
 
     override fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
@@ -2332,5 +2316,21 @@ class CartListPresenter @Inject constructor(
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             hasCheckedProductWithBundle && !hasCheckedBundleProduct
+    }
+    
+    private fun syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel: PromoUiModel) {
+        view?.let { cartListView ->
+            val groupDataList = cartListView.getAllGroupDataList()
+            promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+                if (
+                    voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && 
+                    voucherOrder.type == "logistic" && voucherOrder.messageUiModel.state == "green"
+                ) {
+                    groupDataList.firstOrNull { it.cartString == voucherOrder.cartStringGroup }?.apply {
+                        boCode = voucherOrder.code
+                    }
+                }
+            }
+        }
     }
 }

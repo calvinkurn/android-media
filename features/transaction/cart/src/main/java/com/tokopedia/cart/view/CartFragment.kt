@@ -4245,21 +4245,6 @@ class CartFragment :
         cache.applyEditor()
     }
 
-    override fun showPromoCheckoutStickyButtonInactive() {
-        binding?.apply {
-            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
-            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
-            promoCheckoutBtnCart.desc =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
-            promoCheckoutBtnCart.setOnClickListener {
-                renderPromoCheckoutLoading()
-                dPresenter.doGetLastApply(generateParamGetLastApplyPromo())
-            }
-        }
-    }
-
     override fun showPromoCheckoutStickyButtonLoading() {
         renderPromoCheckoutLoading()
     }

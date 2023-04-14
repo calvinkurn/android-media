@@ -144,8 +144,6 @@ interface ICartListView : CustomerView {
 
     fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>)
 
-    fun showPromoCheckoutStickyButtonInactive()
-
     fun showPromoCheckoutStickyButtonLoading()
 
     fun onSuccessClearRedPromosThenGoToCheckout()

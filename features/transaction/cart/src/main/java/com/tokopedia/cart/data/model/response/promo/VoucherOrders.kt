@@ -50,4 +50,12 @@ data class VoucherOrders(
     
     @SerializedName("shipping_metadata")
     val shippingMetadata: String = ""
-)
+) {
+    companion object {
+        private const val TYPE_LOGISTIC = "logistic"
+    }
+
+    fun isTypeLogistic(): Boolean {
+        return type == TYPE_LOGISTIC
+    }
+}
