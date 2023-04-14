@@ -49,7 +49,7 @@ data class CartShipmentAddressFormData(
     var isUsingDdp: Boolean = false,
     var dynamicData: String = "",
     var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
-    var dynamicPlatformFee: CheckoutPlatformFeeData = CheckoutPlatformFeeData()
+    var shipmentPlatformFee: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

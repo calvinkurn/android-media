@@ -2,10 +2,13 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -15,6 +18,8 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -104,8 +109,10 @@ class ShipmentPresenterPlatformFeeTest {
     @MockK(relaxed = true)
     private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
 
+    private var shipmentMapper = ShipmentMapper()
     private var shipmentDataConverter = ShipmentDataConverter()
     private var platformFeeParams = PaymentFeeCheckoutRequest()
+    private var shippingDurationConverter = ShippingDurationConverter()
 
     private lateinit var presenter: ShipmentPresenter
 
@@ -143,6 +150,92 @@ class ShipmentPresenterPlatformFeeTest {
             dynamicPaymentFeeCheckoutUseCase
         )
         presenter.attachView(view)
+    }
+
+    @Test
+    fun verifyShipmentPlatformFeeDataIsEnabled() {
+        val response = DataProvider.provideShipmentAddressFormWithPlatformFeeEnabledResponse()
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(cartShipmentAddressFormData)
+        }
+        every {
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                any()
+            )
+        } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.getShipmentPlatformFeeData().isEnable)
+    }
+
+    @Test
+    fun verifyShipmentPlatformFeeDataIsDisabled() {
+        val response = DataProvider.provideShipmentAddressFormWithPlatformFeeDisabledResponse()
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(cartShipmentAddressFormData)
+        }
+        every {
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                any()
+            )
+        } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(!presenter.getShipmentPlatformFeeData().isEnable)
     }
 
     @Test

@@ -11,7 +11,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutPlatformFeeData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
@@ -479,7 +479,7 @@ public interface ShipmentContract {
 
         void getDynamicPaymentFee(PaymentFeeCheckoutRequest paymentFeeCheckoutRequest);
 
-        CheckoutPlatformFeeData getShipmentPlatformFeeData();
+        ShipmentPlatformFeeData getShipmentPlatformFeeData();
     }
 
 }

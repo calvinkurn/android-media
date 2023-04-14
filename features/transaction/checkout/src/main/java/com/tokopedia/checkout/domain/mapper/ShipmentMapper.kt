@@ -139,7 +139,7 @@ class ShipmentMapper @Inject constructor() {
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
-            dynamicPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
+            shipmentPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
         }
     }
 
@@ -1086,8 +1086,8 @@ class ShipmentMapper @Inject constructor() {
         )
     }
 
-    private fun mapPlatformFee(platformFee: ShipmentPlatformFee): CheckoutPlatformFeeData {
-        return CheckoutPlatformFeeData(
+    private fun mapPlatformFee(platformFee: ShipmentPlatformFee): ShipmentPlatformFeeData {
+        return ShipmentPlatformFeeData(
             isEnable = platformFee.isEnable,
             errorWording = platformFee.errorWording,
             additionalData = platformFee.additionalData,

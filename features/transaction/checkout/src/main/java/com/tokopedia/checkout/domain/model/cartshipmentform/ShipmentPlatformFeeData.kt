@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class CheckoutPlatformFeeData(
+data class ShipmentPlatformFeeData(
     val isEnable: Boolean = false,
     val errorWording: String = "",
     val profileCode: String = "",

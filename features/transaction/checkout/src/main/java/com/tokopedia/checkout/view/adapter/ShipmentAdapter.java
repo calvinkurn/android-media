@@ -118,9 +118,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
 
-    private boolean isShowPlatformFeeLoader;
-    private boolean isShowTickerPlatformFee;
-
     @Inject
     public ShipmentAdapter(
             ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -139,14 +136,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setShowOnboarding(boolean showOnboarding) {
         this.isShowOnboarding = showOnboarding;
-    }
-
-    public void setShowPlatformFeeLoader(boolean showPlatformFeeLoader) {
-        this.isShowPlatformFeeLoader = showPlatformFeeLoader;
-    }
-
-    public void setShowTickerPlatformFee(boolean showTickerPlatformFee) {
-        this.isShowTickerPlatformFee = isShowTickerPlatformFee;
     }
 
     @Override

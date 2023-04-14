@@ -48,7 +48,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutPlatformFeeData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
@@ -271,7 +271,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public DynamicDataPassingParamRequest dynamicDataParam = new DynamicDataPassingParamRequest();
     public String dynamicData = "";
 
-    public CheckoutPlatformFeeData checkoutPlatformFeeData = new CheckoutPlatformFeeData();
+    public ShipmentPlatformFeeData shipmentPlatformFeeData = new ShipmentPlatformFeeData();
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -747,7 +747,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
         dynamicData = cartShipmentAddressFormData.getDynamicData();
-        checkoutPlatformFeeData = cartShipmentAddressFormData.getDynamicPlatformFee();
+        shipmentPlatformFeeData = cartShipmentAddressFormData.getShipmentPlatformFee();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -3401,8 +3401,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public CheckoutPlatformFeeData getShipmentPlatformFeeData() {
-        return checkoutPlatformFeeData;
+    public ShipmentPlatformFeeData getShipmentPlatformFeeData() {
+        return shipmentPlatformFeeData;
     }
 
     @Override
@@ -3455,14 +3455,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         if (platformFeeData.getResponse().getSuccess()) {
                             getView().showPaymentFeeData(platformFeeData);
                         } else {
-                            getView().showPaymentFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
+                            getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
                         }
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
-                        getView().showPaymentFeeTickerFailedToLoad(checkoutPlatformFeeData.getErrorWording());
+                        getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
                     }
                     return Unit.INSTANCE;
                 }

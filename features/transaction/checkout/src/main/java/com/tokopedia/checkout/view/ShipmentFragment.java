@@ -4297,13 +4297,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void checkPlatformFee() {
-        ShipmentPaymentFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
-        if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
-        && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
-            shipmentAdapter.setPlatformFeeData(platformFeeModel);
-            updateCost();
-        } else {
-            getPaymentFee();
+        if (shipmentPresenter.getShipmentPlatformFeeData().isEnable()) {
+            ShipmentPaymentFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
+            if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
+                    && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
+                shipmentAdapter.setPlatformFeeData(platformFeeModel);
+                updateCost();
+            } else {
+                getPaymentFee();
+            }
         }
     }
 
