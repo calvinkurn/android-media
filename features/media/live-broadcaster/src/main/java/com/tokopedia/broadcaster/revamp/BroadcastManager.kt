@@ -24,7 +24,7 @@ import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithByteplus
 import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithoutByteplus
 import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWrapper
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.effect.EffectManager
+import com.tokopedia.byteplus.effect.EffectManager
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
 import com.wmspanel.libstream.gles.EglCore
