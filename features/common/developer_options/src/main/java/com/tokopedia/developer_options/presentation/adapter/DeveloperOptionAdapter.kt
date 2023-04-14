@@ -93,6 +93,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
+        const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
     }
 
     /**
@@ -102,7 +103,6 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
-        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         SystemNonSystemAppsUiModel(
@@ -125,7 +125,8 @@ class DeveloperOptionAdapter(
                 KEYWORD_LANGUAGE_SETTING,
                 KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
                 KEYWORD_TOTAL_TRANSLATED_TEXT
-            )),
+            )
+        ),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         HomeAndNavigationRevampSwitcherUiModel(
             listOf(
@@ -174,6 +175,7 @@ class DeveloperOptionAdapter(
         ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
+        DeprecatedApiSwitcherToasterUiModel(listOf(KEYWORD_DEPRECATED_API_SWITCHER_TOASTER)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         LoggingToServerUiModel(
             listOf(
@@ -210,6 +212,13 @@ class DeveloperOptionAdapter(
         TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
     )
 
+    /**
+     * To Show Login Helper at the top
+     **/
+    private val topHiddenItems = mutableListOf(
+        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER))
+    )
+
     private var defaultItems = mutableListOf<OptionItemUiModel>()
     private var isAuthorized = false
 
@@ -219,9 +228,10 @@ class DeveloperOptionAdapter(
 
     fun initializeList() {
         defaultItems.clear()
-        if(isAuthorized.not()) {
+        if (isAuthorized.not()) {
             defaultItems.addAll(generalItems)
         } else {
+            defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
             removeWidget(DevOptsAuthorizationUiModel::class.java)

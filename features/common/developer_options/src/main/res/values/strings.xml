@@ -135,4 +135,5 @@
     <string name="label_counter">Counter:</string>
     <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
     <string name="login_helper">Login Helper</string>
+    <string name="deprecated_api_switcher_toaster">Show Deprecated API Switcher Toaster</string>
 </resources>

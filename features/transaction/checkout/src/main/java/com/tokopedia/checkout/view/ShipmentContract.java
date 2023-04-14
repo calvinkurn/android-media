@@ -213,6 +213,8 @@ public interface ShipmentContract {
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
 
+        void setShipmentNewUpsellLoading(boolean isLoading);
+
         void showPaymentFeeSkeletonLoading();
 
         void showPaymentFeeTickerFailedToLoad(String ticker);
