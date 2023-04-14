@@ -15,8 +15,24 @@ class EditorAddTextUiModel(
     var textColor: Int = 0,
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
     var textPosition: Int = TEXT_POSITION_BOTTOM,
-    var textTemplate: Int = TEXT_TEMPLATE_FREE
+    var textTemplate: Int = TEXT_TEMPLATE_FREE,
+    private val textTemplateLatar: LatarTemplateDetail? = null
 ) : Parcelable {
+
+    // need to encapsulate latar template model to prevent error when using `Free Text` but accessing `Latar Text` template
+    private var mTextTemplateLatar = textTemplateLatar
+    get() {
+        return if (textTemplate != TEXT_TEMPLATE_BACKGROUND) {
+            return null
+        } else {
+            field
+        }
+    }
+
+    fun setLatarTemplate(latarTemplate: LatarTemplateDetail) {
+        mTextTemplateLatar = latarTemplate
+    }
+
     fun getColor(context: Context?): Int {
         if (context == null) return 0
         return ContextCompat.getColor(context, textColor)
@@ -57,5 +73,22 @@ class EditorAddTextUiModel(
 
         const val TEXT_TEMPLATE_FREE = AddTextToolAdapter.FREE_TEXT_INDEX
         const val TEXT_TEMPLATE_BACKGROUND = AddTextToolAdapter.BACKGROUND_TEXT_INDEX
+
+        // --- if edit this line please check AddTextLatarBottomSheet
+        const val TEXT_LATAR_TEMPLATE_FULL = 0
+        const val TEXT_LATAR_TEMPLATE_FLOATING = 1
+        const val TEXT_LATAR_TEMPLATE_SIDE_CUT = 2
+
+        const val TEXT_LATAR_TEMPLATE_BLACK = 0
+        const val TEXT_LATAR_TEMPLATE_WHITE = 1
+        // ---
+
+        private const val TEXT_LATAR_NULL = -1
     }
 }
+
+@Parcelize
+data class LatarTemplateDetail(
+    val latarColor: Int,
+    val latarModel: Int
+) : Parcelable

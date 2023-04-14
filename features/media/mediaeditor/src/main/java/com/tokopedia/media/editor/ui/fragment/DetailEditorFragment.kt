@@ -53,6 +53,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.ui.widget.AddTextLatarBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorAddTextTipsBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
@@ -422,13 +423,20 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onAddSingleBackgroundText() {
-        EditorAddTextUiModel.TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
-            data.addTextValue?.let {
-                it.textTemplate = templateIndex
+        showAddTextLatarSelection{ color, model ->
+            EditorAddTextUiModel.TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
+                data.addTextValue?.let {
+                    it.textTemplate = templateIndex
+                    it.setLatarTemplate(LatarTemplateDetail(
+                        latarColor = color,
+                        latarModel = model
+                    ))
+                }
+                tempTemplateMode = templateIndex
             }
-            tempTemplateMode = templateIndex
+
+            implementAddTextData()
         }
-        implementAddTextData()
     }
 
     override fun onChangePosition() {
@@ -1263,13 +1271,13 @@ class DetailEditorFragment @Inject constructor(
     }
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
-        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, BOTTOM_SHEET_TAG)
+        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
         isAddLogoTipsShowed = true
     }
 
     fun showAddTextTips() {
         EditorAddTextTipsBottomSheet().apply {
-            show(this@DetailEditorFragment.childFragmentManager, BOTTOM_SHEET_TAG)
+            show(this@DetailEditorFragment.childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
             if (data.addTextValue == null) {
                 setOnDismissListener {
                     openAddTextActivity()
@@ -1385,6 +1393,10 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
+    private fun showAddTextLatarSelection(onFinish: (color: Int, latarModel: Int) -> Unit) {
+        AddTextLatarBottomSheet(onFinish).show(childFragmentManager, ADD_TEXT_BOTTOM_SHEET_TAG)
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1400,7 +1412,8 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_REMOVE_BG_TOASTER = 300L
 
-        private const val BOTTOM_SHEET_TAG = "Add Logo BottomSheet"
+        private const val ADD_LOGO_BOTTOM_SHEET_TAG = "Add Logo BottomSheet"
+        private const val ADD_TEXT_BOTTOM_SHEET_TAG = "Add Text BottomSheet"
 
         private const val ADD_LOGO_PICKER_REQUEST_CODE = 979
 
