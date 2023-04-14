@@ -40,6 +40,12 @@ class RemoteDataSource @Inject constructor(
         params["shop_id"] = RequestBody.create("text/plain".toMediaTypeOrNull(), userSessionInterface.shopId)
 
         val response = service.uploadFile(filePart, params)
+
+        //Remove the file from app cache directory if it was successfully submitted
+        if (response.data?.resultStatus?.code == "200") {
+            fileHelper.delete(file)
+        }
+
         return mapper.map(response)
     }
 }

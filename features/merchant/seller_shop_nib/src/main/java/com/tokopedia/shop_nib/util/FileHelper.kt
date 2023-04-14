@@ -36,6 +36,10 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
         }
     }
 
+    fun delete(file: File) {
+        file.delete()
+    }
+
     fun getFileFromUri(uri: Uri, filename: String): File? {
         var file: File? = null
         var inputStream: InputStream? = null
