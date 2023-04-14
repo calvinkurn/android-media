@@ -33,7 +33,6 @@ import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPers
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isFavoriteNumberRevamp
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
@@ -204,8 +203,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         isSwitchChecked: Boolean = false
     ) {
         context?.let {
-            val intent = if (isFavoriteNumberRevamp(requireContext())) {
-                TopupBillsPersoSavedNumberActivity.createInstance(
+            val intent = TopupBillsPersoSavedNumberActivity.createInstance(
                     it,
                     clientNumber,
                     dgCategoryIds,
@@ -215,21 +213,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     loyaltyStatus,
                     FavoriteNumberPageConfig.TELCO,
                 )
-            } else {
-                val favoriteNumbers = FavoriteNumberDataMapper
-                    .mapSeamlessFavNumberItemToSearchDataView(seamlessFavNumberList)
-                DigitalSearchNumberActivity.newInstance(
-                    it,
-                    ClientNumberType.TYPE_INPUT_TEL.value,
-                    clientNumber,
-                    favoriteNumbers
-                )
-            }
 
-            val requestCode = if (isFavoriteNumberRevamp(requireContext()))
-                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
-
-            startActivityForResult(intent, requestCode)
+            startActivityForResult(intent, REQUEST_CODE_DIGITAL_SAVED_NUMBER)
         }
     }
 
