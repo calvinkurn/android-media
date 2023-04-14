@@ -43,6 +43,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationTabFragment
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
@@ -183,6 +185,21 @@ class SwitchAccountRobot(
                     strategyFactory = onboardingStrategy
                 )
             },
+            BeautificationSetupFragment::class.java to {
+                BeautificationSetupFragment(
+                    viewModelFactoryCreator = parentViewModelFactoryCreator,
+                    beautificationUiBridge = mockk(relaxed = true),
+                    beautificationAnalytic = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
+                )
+            },
+            BeautificationTabFragment::class.java to {
+                BeautificationTabFragment(
+                    viewModelFactoryCreator = parentViewModelFactoryCreator,
+                    beautificationAnalytic = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
+                )
+            }
         )
     )
 
