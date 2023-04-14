@@ -172,10 +172,6 @@
         </value>
     </entry>
     <entry>
-        <key>mainapp_digital_smartcard</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>mainapp_enable_notif_center</key>
         <value>true</value>
     </entry>
