@@ -560,7 +560,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
      * function. This is necessary because we want to make sure that the next emitted value will
      * be collected only after the animation/transition to the submitting state UI is finished.
      */
-    private suspend fun onBulkReviewPageSubmitting(
+    protected open suspend fun onBulkReviewPageSubmitting(
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         stickyButtonUiState: BulkReviewStickyButtonUiState
     ) {
