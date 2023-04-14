@@ -74,11 +74,11 @@ private fun LazyListState.horizontalOffset(): Int {
     var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
-            Log.d("SortFilterDebug", "$firstVisibleItemIndex, $firstVisibleItemScrollOffset")
-            if (previousIndex == firstVisibleItemIndex) {
+            if (previousIndex == firstVisibleItemIndex && firstVisibleItemIndex == 0) {
                 firstVisibleItemScrollOffset - previousScrollOffset
             } else {
-                if (firstVisibleItemIndex < previousIndex) -1 * previousScrollOffset
+                if (firstVisibleItemIndex > 0) 0
+                else if (firstVisibleItemIndex < previousIndex) -1 * previousScrollOffset
                 else firstVisibleItemScrollOffset
             }.also {
                 previousIndex = firstVisibleItemIndex
@@ -109,7 +109,7 @@ fun NestSortFilterAdvanced(
 
     LaunchedEffect(key1 = offset, block = {
         if (currentTextWidth == null) return@LaunchedEffect
-        val diffInDp = with(ld) { offset.toDp() }
+        val diffInDp = with(ld) { offset.toDp() }.times(1.7f)
         currentTextWidth = (currentTextWidth!! - diffInDp).coerceIn(0.dp, firstWidth)
     })
 

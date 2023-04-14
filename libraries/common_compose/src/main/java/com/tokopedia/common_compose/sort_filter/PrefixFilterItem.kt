@@ -64,7 +64,6 @@ internal fun PrefixFilterItem(
             }
             if (text != null) {
                 val padding = if (textWidth == 0.dp) 0.dp else 4.dp
-                Log.d("SortFilterDebug", "textWidth: $textWidth")
                 Text(
                     modifier = Modifier
                         .padding(start = padding)
