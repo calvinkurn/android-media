@@ -89,7 +89,7 @@ class BeautificationRobot {
         coEvery { mockRepo.downloadPresetAsset(any(), any()) } returns true
         coEvery { mockRepo.saveBeautificationConfig(any(), any(), any()) } returns true
 
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns channelResponse
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns channelWithTitleResponse
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns GetAddedChannelTagsResponse()
 
         coEvery { mockBroadcaster.setFaceFilter(any(), any()) } returns true

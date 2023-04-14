@@ -76,6 +76,13 @@ fun accountListResponse(
 
 val channelResponse = GetChannelResponse.Channel(
     basic = GetChannelResponse.ChannelBasic(
+        coverUrl = "https://tokopedia.com",
+        channelId = "12345",
+    )
+)
+
+val channelWithTitleResponse = GetChannelResponse.Channel(
+    basic = GetChannelResponse.ChannelBasic(
         title = "Title",
         coverUrl = "https://tokopedia.com",
         channelId = "12345",
