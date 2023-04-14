@@ -72,7 +72,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder.Companion.LAYOUT
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -474,30 +474,6 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addCartItemDataList1(shipmentCartItems: List<ShipmentCartItemModel>) {
-        this.shipmentCartItemModelList = shipmentCartItems
-        shipmentCartItems.forEach { shipmentCartItem ->
-//            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
-            if (shipmentCartItem.isStateAllItemViewExpanded) {
-                shipmentCartItem.cartItemModels.forEach {
-                    shipmentDataList.add(it)
-                }
-            } else {
-                shipmentDataList.add(shipmentCartItem.cartItemModels.first())
-            }
-            if (shipmentCartItem.cartItemModels.size > 1) {
-                shipmentDataList.add(
-                    CartItemExpandModel(
-                        cartStringGroup = shipmentCartItem.cartStringGroup,
-                        cartSize = shipmentCartItem.cartItemModels.size
-                    )
-                )
-            }
-            shipmentDataList.add(shipmentCartItem)
-        }
-        checkDataForCheckout()
-    }
-
     fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItem>) {
         this.shipmentCartItemModelList = shipmentCartItems.filterIsInstance(ShipmentCartItemModel::class.java)
 //        shipmentCartItems.forEach { shipmentCartItem ->
@@ -612,9 +588,8 @@ class ShipmentAdapter @Inject constructor(
                 shipmentSellerCashbackModel = ShipmentSellerCashbackModel()
             }
             shipmentSellerCashbackModel!!.isVisible = true
-            shipmentSellerCashbackModel!!.sellerCashbackFmt = removeDecimalSuffix(
-                convertPriceValueToIdrFormat(cashback.toLong(), false)
-            )
+            shipmentSellerCashbackModel!!.sellerCashbackFmt =
+                convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
             shipmentDataList.add(shipmentSellerCashbackModel!!)
         }
     }
@@ -693,7 +668,7 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun addListShipmentCrossSellModel(shipmentCrossSellModelList: List<ShipmentCrossSellModel>?) {
-        if (shipmentCrossSellModelList != null && shipmentCrossSellModelList.isNotEmpty()) {
+        if (!shipmentCrossSellModelList.isNullOrEmpty()) {
             this.shipmentCrossSellModelList = shipmentCrossSellModelList
             shipmentDataList.addAll(shipmentCrossSellModelList)
         }
@@ -790,11 +765,10 @@ class ShipmentAdapter @Inject constructor(
             for (i in shipmentDataList.indices) {
                 val shipmentData = shipmentDataList[i]
                 if (shipmentData is ShipmentCartItemModel) {
-                    val shipmentCartItemModel = shipmentData
-                    if (shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.useDropshipper != null && shipmentCartItemModel.selectedShipmentDetailData!!.useDropshipper!!) {
-                        if (TextUtils.isEmpty(shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperName) || TextUtils.isEmpty(
-                                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperPhone
-                            ) || !shipmentCartItemModel.selectedShipmentDetailData!!.isDropshipperNameValid || !shipmentCartItemModel.selectedShipmentDetailData!!.isDropshipperPhoneValid
+                    if (shipmentData.selectedShipmentDetailData != null && shipmentData.selectedShipmentDetailData!!.useDropshipper != null && shipmentData.selectedShipmentDetailData!!.useDropshipper!!) {
+                        if (TextUtils.isEmpty(shipmentData.selectedShipmentDetailData!!.dropshipperName) || TextUtils.isEmpty(
+                                shipmentData.selectedShipmentDetailData!!.dropshipperPhone
+                            ) || !shipmentData.selectedShipmentDetailData!!.isDropshipperNameValid || !shipmentData.selectedShipmentDetailData!!.isDropshipperPhoneValid
                         ) {
                             availableCheckout = false
                             errorPosition = i
@@ -802,16 +776,16 @@ class ShipmentAdapter @Inject constructor(
                             break
                         }
                     }
-                    if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel!!.showImageUpload && uploadPrescriptionUiModel!!.frontEndValidation && shipmentCartItemModel.hasEthicalProducts && !shipmentCartItemModel.isError) {
-                        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+                    if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel!!.showImageUpload && uploadPrescriptionUiModel!!.frontEndValidation && shipmentData.hasEthicalProducts && !shipmentData.isError) {
+                        for (cartItemModel in shipmentData.cartItemModels) {
                             if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
                                 val prescriptionIdsEmpty =
-                                    shipmentCartItemModel.prescriptionIds.isEmpty()
+                                    shipmentData.prescriptionIds.isEmpty()
                                 val consultationEmpty =
-                                    TextUtils.isEmpty(shipmentCartItemModel.tokoConsultationId) || TextUtils.isEmpty(
-                                        shipmentCartItemModel.partnerConsultationId
-                                    ) || shipmentCartItemModel.tokoConsultationId == "0" || shipmentCartItemModel.partnerConsultationId == "0" || TextUtils.isEmpty(
-                                        shipmentCartItemModel.consultationDataString
+                                    TextUtils.isEmpty(shipmentData.tokoConsultationId) || TextUtils.isEmpty(
+                                        shipmentData.partnerConsultationId
+                                    ) || shipmentData.tokoConsultationId == "0" || shipmentData.partnerConsultationId == "0" || TextUtils.isEmpty(
+                                        shipmentData.consultationDataString
                                     )
                                 if (prescriptionIdsEmpty && consultationEmpty) {
                                     isPrescriptionFrontEndValidationError = true
@@ -947,15 +921,14 @@ class ShipmentAdapter @Inject constructor(
         }
         val currentShipmentData = shipmentDataList[position]
         if (currentShipmentData is ShipmentCartItemModel) {
-            val cartItemModel = currentShipmentData
-            if (cartItemModel.selectedShipmentDetailData != null && cartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+            if (currentShipmentData.selectedShipmentDetailData != null && currentShipmentData.selectedShipmentDetailData!!.selectedCourier != null) {
                 for (shippingCourierUiModel in shippingCourierUiModels) {
                     if (shippingCourierUiModel.productData.shipperProductId == recommendedCourier.shipperProductId) {
                         shippingCourierUiModel.isSelected = true
                         break
                     }
                 }
-                cartItemModel.selectedShipmentDetailData!!.shippingCourierViewModels =
+                currentShipmentData.selectedShipmentDetailData!!.shippingCourierViewModels =
                     shippingCourierUiModels
             }
         }
@@ -1133,13 +1106,6 @@ class ShipmentAdapter @Inject constructor(
         return shipmentDataList.indexOf(shipmentCartItemModel)
     }
 
-    private fun getShipmentCartItemTopByCartString(cartString: String): Pair<Int, ShipmentCartItemTopModel> {
-        val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemTopModel && data.cartStringGroup == cartString
-        }
-        return Pair(index, shipmentDataList[index] as ShipmentCartItemTopModel)
-    }
-
     private fun updateShipmentCartItemTop(
         topIndex: Int,
         shipmentCartItemModel: ShipmentCartItemModel,
@@ -1198,28 +1164,6 @@ class ShipmentAdapter @Inject constructor(
 //            shipmentDataList[firstItemPosition] = topProductIndex.cartItemModels.first()
 //            notifyItemChanged(firstItemPosition)
 //        }
-    }
-
-    private fun getCartItemExpandByCartString(cartString: String): Pair<Int, CartItemExpandModel?> {
-        val index = shipmentDataList.indexOfFirst { data ->
-            data is CartItemExpandModel && data.cartStringGroup == cartString
-        }
-        return if (index == RecyclerView.NO_POSITION) {
-            Pair(index, null)
-        } else {
-            Pair(index, shipmentDataList[index] as CartItemExpandModel)
-        }
-    }
-
-    private fun updateCartItemExpand(shipmentCartItemModel: ShipmentCartItemModel) {
-        val (position, data) = getCartItemExpandByCartString(shipmentCartItemModel.cartStringGroup)
-        if (data != null) {
-            shipmentDataList[position] = data.copy(
-                isExpanded = shipmentCartItemModel.isStateAllItemViewExpanded,
-                cartSize = shipmentCartItemModel.cartItemModels.size
-            )
-            notifyItemChanged(position)
-        }
     }
 
     fun getShipmentCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {

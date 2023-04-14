@@ -7,10 +7,6 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
-import com.tokopedia.purchase_platform.common.utils.joinToString
-import com.tokopedia.purchase_platform.common.utils.joinToStringFromListInt
 import javax.inject.Inject
 
 class RatesDataConverter @Inject constructor() {
@@ -105,15 +101,15 @@ class RatesDataConverter @Inject constructor() {
             destinationAddress = userAddress.address,
             destinationDistrictId = userAddress.districtId,
             destinationLatitude =
-            if (!isNullOrEmpty(userAddress.latitude)) userAddress.latitude else null,
+            userAddress.latitude.ifEmpty { null },
             destinationLongitude =
-            if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null,
+            userAddress.longitude.ifEmpty { null },
             destinationPostalCode = userAddress.postalCode,
             originDistrictId = groupShop.groupShopData.first().shop.districtId,
             originLatitude =
-            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.latitude)) groupShop.groupShopData.first().shop.latitude else null,
+            groupShop.groupShopData.first().shop.latitude.ifEmpty { null },
             originLongitude =
-            if (!isNullOrEmpty(groupShop.groupShopData.first().shop.longitude)) groupShop.groupShopData.first().shop.longitude else null,
+            groupShop.groupShopData.first().shop.longitude.ifEmpty { null },
             originPostalCode = groupShop.groupShopData.first().shop.postalCode,
             categoryIds = getCategoryIds(groupShop.groupShopData.flatMap { it.products }),
             productInsurance = if (isForceInsurance(groupShop.groupShopData.flatMap { it.products })) 1 else 0,
@@ -139,7 +135,7 @@ class RatesDataConverter @Inject constructor() {
                 }
             }
         }
-        return joinToStringFromListInt(categoryIds, ",")
+        return categoryIds.joinToString(",")
     }
 
     private fun isForceInsurance(products: List<Product>): Boolean {
@@ -149,30 +145,6 @@ class RatesDataConverter @Inject constructor() {
             }
         }
         return false
-    }
-
-    private fun getShippingNames(shopShipments: List<ShopShipment>): String {
-        val shippingNames: MutableList<String> = ArrayList()
-        for (i in shopShipments.indices) {
-            val shippingName = shopShipments[i].shipCode
-            if (!shippingNames.contains(shippingName)) {
-                shippingNames.add(shippingName)
-            }
-        }
-        return joinToString(shippingNames, ",")
-    }
-
-    private fun getShippingServices(shopShipments: List<ShopShipment>): String {
-        val shippingServices: MutableList<String> = ArrayList()
-        for (i in shopShipments.indices) {
-            for (j in shopShipments[i].shipProds.indices) {
-                val shippingService = shopShipments[i].shipProds[j].shipGroupName
-                if (!shippingServices.contains(shippingService)) {
-                    shippingServices.add(shippingService)
-                }
-            }
-        }
-        return joinToString(shippingServices, ",")
     }
 
     companion object {

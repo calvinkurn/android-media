@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -185,9 +186,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
-import com.tokopedia.purchase_platform.common.utils.Utils.setToasterCustomBottomHeight
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -196,22 +195,18 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorStrin
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.time.TimeHelper.timeBetweenRFC3339
 import com.tokopedia.utils.time.TimeHelper.timeSinceNow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import rx.Emitter
 import rx.Observable
-import rx.Subscriber
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/**
- * @author Irfan Khoirul on 23/04/18.
- * Originaly authored by Aghny, Angga, Kris
- */
 class ShipmentFragment :
     BaseCheckoutFragment(),
     AnalyticsActionListener,
@@ -272,8 +267,6 @@ class ShipmentFragment :
     private var hasRunningApiCall = false
     private var shipmentLoadingIndex = -1
     private var isPlusSelected: Boolean? = null
-    private var delayScrollToFirstShopSubscription: Subscription? = null
-    private var delayScrollToCoachmarkEpharmacySubscription: Subscription? = null
     private var toasterThrottleSubscription: Subscription? = null
     private var toasterEmitter: Emitter<String>? = null
 
@@ -347,8 +340,6 @@ class ShipmentFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        delayScrollToFirstShopSubscription?.unsubscribe()
-        delayScrollToCoachmarkEpharmacySubscription?.unsubscribe()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
         val countDownTimer = binding?.partialCountdown?.countDown?.timer
@@ -576,29 +567,23 @@ class ShipmentFragment :
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop()
         } else if (hasEpharmacyWidget) {
-            triggerEpharmacyCoachmark(uploadPrescriptionUiModel)
+            delayEpharmacyProcess(uploadPrescriptionUiModel)
         }
     }
 
-    private fun triggerEpharmacyCoachmark(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        delayScrollToCoachmarkEpharmacySubscription = Observable.just(uploadPrescriptionUiModel)
-            .delay(1000, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<UploadPrescriptionUiModel>() {
-                override fun onCompleted() {}
-                override fun onError(e: Throwable) {
-                    Timber.d(e)
-                }
-
-                override fun onNext(UploadPrescriptionUiModel1: UploadPrescriptionUiModel?) {
-                    if (!isUnsubscribed && activityContext != null) {
-                        if (UploadPrescriptionUiModel1?.consultationFlow == true) {
-                            shipmentPresenter.fetchEpharmacyData()
-                        }
+    private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                delay(1_000)
+                if (isActive && activityContext != null) {
+                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
+                        shipmentPresenter.fetchEpharmacyData()
                     }
                 }
-            })
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 
     fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
@@ -654,33 +639,28 @@ class ShipmentFragment :
     }
 
     private fun delayScrollToFirstShop() {
-        delayScrollToFirstShopSubscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<Long>() {
-                override fun onCompleted() {}
-                override fun onError(e: Throwable) {
-                    Timber.d(e)
-                }
-
-                override fun onNext(aLong: Long) {
-                    if (!isUnsubscribed) {
-                        if (binding?.rvShipment?.layoutManager != null) {
-                            val linearSmoothScroller: LinearSmoothScroller =
-                                object : LinearSmoothScroller(
-                                    binding?.rvShipment!!.context
-                                ) {
-                                    override fun getVerticalSnapPreference(): Int {
-                                        return SNAP_TO_START
-                                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                delay(1_000)
+                if (isActive) {
+                    if (binding?.rvShipment?.layoutManager != null) {
+                        val linearSmoothScroller: LinearSmoothScroller =
+                            object : LinearSmoothScroller(
+                                binding?.rvShipment!!.context
+                            ) {
+                                override fun getVerticalSnapPreference(): Int {
+                                    return SNAP_TO_START
                                 }
-                            linearSmoothScroller.targetPosition =
-                                shipmentAdapter.firstShopPosition
-                            binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
-                        }
+                            }
+                        linearSmoothScroller.targetPosition =
+                            shipmentAdapter.firstShopPosition
+                        binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
                     }
                 }
-            })
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 
     private fun sendEEStep2() {
@@ -815,13 +795,11 @@ class ShipmentFragment :
             return
         }
         if (shipmentAdapter.getShipmentDataList()[lastItemPosition] is ShipmentButtonPaymentModel) {
-            setToasterCustomBottomHeight(
+            Toaster.toasterCustomBottomHeight =
                 context!!.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48)
-            )
         } else {
-            setToasterCustomBottomHeight(
+            Toaster.toasterCustomBottomHeight =
                 context!!.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
-            )
         }
     }
 
@@ -1505,7 +1483,7 @@ class ShipmentFragment :
                 }
             }
 
-            Activity.RESULT_CANCELED -> if (activity != null && data == null && shipmentPresenter.shipmentCartItemModelList == null) {
+            Activity.RESULT_CANCELED -> if (activity != null && data == null && shipmentPresenter.shipmentCartItemModelList.isEmpty()) {
                 activity!!.finish()
             }
 
@@ -2300,18 +2278,14 @@ class ShipmentFragment :
                 serviceDataTracker.isPromo == 1,
                 serviceDataTracker.serviceName,
                 serviceDataTracker.codData.isCod == 1,
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        serviceDataTracker.rangePrice.minPrice,
-                        false
-                    )
-                ),
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        serviceDataTracker.rangePrice.maxPrice,
-                        false
-                    )
-                )
+                convertPriceValueToIdrFormat(
+                    serviceDataTracker.rangePrice.minPrice,
+                    false
+                ).removeDecimalSuffix(),
+                convertPriceValueToIdrFormat(
+                    serviceDataTracker.rangePrice.maxPrice,
+                    false
+                ).removeDecimalSuffix()
             )
         }
         if (flagNeedToSetPinpoint) {
@@ -2824,7 +2798,7 @@ class ShipmentFragment :
         shipmentPresenter.updateShipmentCostModel()
     }
 
-    fun removeIneligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>) {
+    fun removeIneligiblePromo() {
         val validateUsePromoRevampUiModel = shipmentPresenter.validateUsePromoRevampUiModel
         if (validateUsePromoRevampUiModel != null) {
             if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
@@ -3202,7 +3176,7 @@ class ShipmentFragment :
                         )
                     }
                 }
-            } else if (!voucherOrder.success && isNullOrEmpty(voucherOrder.type)) {
+            } else if (!voucherOrder.success && voucherOrder.type.isNullOrEmpty()) {
                 for (shipmentCartItemModel in shipmentCartItemModels) {
                     if (shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == voucherOrder.code) {
                         resetCourier(shipmentCartItemModel)
@@ -4193,9 +4167,6 @@ class ShipmentFragment :
         const val ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID"
         const val ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE"
         const val ARG_IS_PLUS_SELECTED = "ARG_IS_PLUS_SELECTED"
-        private const val DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION =
-            "LAST_CHOOSE_COURIER_ITEM_POSITION"
-        private const val DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID"
         var EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
         private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
         private const val TOASTER_THROTTLE: Long = 2000

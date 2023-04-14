@@ -38,7 +38,7 @@ import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomS
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
-import com.tokopedia.purchase_platform.common.utils.Utils
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import rx.Emitter
@@ -901,9 +901,7 @@ class ShipmentCartItemBottomViewHolder(
                 if (subTotalPrice == 0L) {
                     "-"
                 } else {
-                    Utils.removeDecimalSuffix(
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)
-                    )
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false).removeDecimalSuffix()
                 },
                 R.string.content_desc_tv_sub_total_price
             )
@@ -932,9 +930,8 @@ class ShipmentCartItemBottomViewHolder(
             if (selectedCourier != null && voucherLogisticItemUiModel != null) {
                 if (selectedCourier.selectedShipper.discountedRate == 0) {
                     tvShippingFeePrice.setTextAndContentDescription(
-                        Utils.removeDecimalSuffix(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(0.0, false)
-                        ),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(0.0, false)
+                            .removeDecimalSuffix(),
                         R.string.content_desc_tv_shipping_fee_price_subtotal
                     )
                 } else {
@@ -971,12 +968,11 @@ class ShipmentCartItemBottomViewHolder(
                 tvAddOnFee.visibility = View.VISIBLE
                 tvAddOnPrice.visibility = View.VISIBLE
                 tvAddOnPrice.text =
-                    Utils.removeDecimalSuffix(
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            totalAddOnPrice,
-                            false
-                        )
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        totalAddOnPrice,
+                        false
                     )
+                        .removeDecimalSuffix()
             } else {
                 tvAddOnFee.visibility = View.GONE
                 tvAddOnPrice.visibility = View.GONE
@@ -1003,12 +999,11 @@ class ShipmentCartItemBottomViewHolder(
         } else {
             textViewLabel.visibility = View.VISIBLE
             textViewPrice.visibility = View.VISIBLE
-            Utils.removeDecimalSuffix(
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    price,
-                    false
-                )
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                price,
+                false
             )
+                .removeDecimalSuffix()
         }
     }
 

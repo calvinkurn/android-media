@@ -23,7 +23,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import javax.inject.Inject
 
 /**
@@ -139,10 +138,8 @@ class ShipmentDataConverter @Inject constructor() {
             recipientAddress.provinceId = defaultAddress.provinceId
             recipientAddress.recipientName = defaultAddress.receiverName
             recipientAddress.recipientPhoneNumber = defaultAddress.phone
-            recipientAddress.latitude =
-                if (!isNullOrEmpty(defaultAddress.latitude)) defaultAddress.latitude else null
-            recipientAddress.longitude =
-                if (!isNullOrEmpty(defaultAddress.longitude)) defaultAddress.longitude else null
+            recipientAddress.latitude = defaultAddress.latitude.ifEmpty { null }
+            recipientAddress.longitude = defaultAddress.longitude.ifEmpty { null }
             recipientAddress.isSelected =
                 defaultAddress.status == PRIME_ADDRESS
             recipientAddress.cornerId = defaultAddress.cornerId

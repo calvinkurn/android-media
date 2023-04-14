@@ -164,7 +164,6 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -1822,10 +1821,10 @@ class ShipmentPresenter @Inject constructor(
                             response.successDataModel.tickerMessage
                         tickerAnnouncementHolderData.value = ticker
                     }
-                    view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
+                    view?.removeIneligiblePromo()
                 } catch (t: Throwable) {
                     Timber.d(t)
-                    view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
+                    view?.removeIneligiblePromo()
                 }
             }
         }
@@ -4983,9 +4982,7 @@ class ShipmentPresenter @Inject constructor(
                                                                     val prescriptionIds =
                                                                         ArrayList<String>()
                                                                     for (prescriptionImage in epharmacyGroup.prescriptionImages!!) {
-                                                                        if (prescriptionImage != null && !isNullOrEmpty(
-                                                                                prescriptionImage.prescriptionId
-                                                                            )
+                                                                        if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
                                                                         ) {
                                                                             prescriptionIds.add(
                                                                                 prescriptionImage.prescriptionId!!
@@ -5160,9 +5157,7 @@ class ShipmentPresenter @Inject constructor(
                                                             val prescriptionIds =
                                                                 ArrayList<String>()
                                                             for (prescriptionImage in result.prescriptionImages!!) {
-                                                                if (prescriptionImage != null && !isNullOrEmpty(
-                                                                        prescriptionImage.prescriptionId
-                                                                    )
+                                                                if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
                                                                 ) {
                                                                     prescriptionIds.add(
                                                                         prescriptionImage.prescriptionId!!

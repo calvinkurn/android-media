@@ -25,7 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -313,12 +313,10 @@ class ShippingWidget : ConstraintLayout {
     fun setLabelSelectedShippingCourier(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             val courierName = "${selectedCourierItemData.name} (${
-            removeDecimalSuffix(
-                convertPriceValueToIdrFormat(
-                    selectedCourierItemData.shipperPrice,
-                    false
-                )
-            )
+            convertPriceValueToIdrFormat(
+                selectedCourierItemData.shipperPrice,
+                false
+            ).removeDecimalSuffix()
             })"
 
             if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
@@ -334,12 +332,11 @@ class ShippingWidget : ConstraintLayout {
             } else {
                 renderLabelAndCourierName(
                     courierName = selectedCourierItemData.name ?: "",
-                    labelPriceOrDuration = removeDecimalSuffix(
-                        convertPriceValueToIdrFormat(
-                            selectedCourierItemData.shipperPrice,
-                            false
-                        )
-                    )
+                    labelPriceOrDuration =
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
+                    ).removeDecimalSuffix()
                 )
             }
         }
@@ -492,12 +489,11 @@ class ShippingWidget : ConstraintLayout {
         courierName: String?,
         shipperPrice: Int
     ): String {
-        val price = removeDecimalSuffix(
+        val price =
             convertPriceValueToIdrFormat(
                 shipperPrice,
                 false
-            )
-        )
+            ).removeDecimalSuffix()
         return "$courierName ($price)"
     }
 
@@ -547,12 +543,10 @@ class ShippingWidget : ConstraintLayout {
             }
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
-                        false
-                    )
-                )
+                convertPriceValueToIdrFormat(
+                    selectedCourierItemData.shipperPrice,
+                    false
+                ).removeDecimalSuffix()
                 })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString

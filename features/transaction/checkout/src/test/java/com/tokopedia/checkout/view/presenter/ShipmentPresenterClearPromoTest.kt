@@ -255,7 +255,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.removeIneligiblePromo(notEligilePromoList)
+            view.removeIneligiblePromo()
         }
     }
 
@@ -324,7 +324,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.removeIneligiblePromo(notEligiblePromos)
+            view.removeIneligiblePromo()
         }
     }
 
@@ -357,7 +357,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         // Then
         verify(inverse = true) {
 //            view.updateTickerAnnouncementMessage()
-            view.removeIneligiblePromo(notEligiblePromos)
+            view.removeIneligiblePromo()
         }
     }
 
@@ -386,7 +386,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         // Then
         verify(inverse = true) {
 //            view.updateTickerAnnouncementMessage()
-            view.removeIneligiblePromo(notEligiblePromos)
+            view.removeIneligiblePromo()
         }
     }
 
@@ -418,7 +418,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         // Then
         verifySequence {
 //            view.updateTickerAnnouncementMessage()
-            view.removeIneligiblePromo(notEligilePromoList)
+            view.removeIneligiblePromo()
         }
     }
 
