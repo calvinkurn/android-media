@@ -25,7 +25,7 @@ object CentralizedPromoErrorHandler {
                 )
             }
         } catch (e: IllegalStateException) {
-
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
