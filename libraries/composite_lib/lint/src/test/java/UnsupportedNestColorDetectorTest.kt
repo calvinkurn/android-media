@@ -34,6 +34,11 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
         assertTrue("Unify_N50".contains(regex))
         assertTrue(
             """
+            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            """.trimIndent().contains(regex)
+        )
+        assertTrue(
+            """
             android:textColor="@color/Unify_N700"
             """.trimMargin().contains(regex)
         )
@@ -43,6 +48,11 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
             """.trimMargin().contains(regex)
         )
         assertFalse("Unify_NN50".contains(regex))
+        assertFalse(
+            """
+            com.tokopedia.unifyprinciples.R.color.Unify_GB500
+            """.trimIndent().contains(regex)
+        )
     }
 
     @Test
@@ -83,6 +93,6 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
             )
         ).allowMissingSdk()
             .run()
-            .expectWarningCount(3)
+            .expectWarningCount(0)
     }
 }

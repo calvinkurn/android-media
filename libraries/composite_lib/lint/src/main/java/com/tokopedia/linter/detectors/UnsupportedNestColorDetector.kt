@@ -25,16 +25,13 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner {
     companion object {
         private const val ISSUE_ID = "UnsupportedNestColor"
         private const val BRIEF_DESC = "Deprecated color should not be used."
-        private const val ERROR_MESSAGE = "Color has deprecated. " +
-            "Please use color with token contains 'N' before color number. Example:" +
-            "\n❌ : Unify_N100 " +
-            "\n✅ : Unify_NN100" +
-            "\n❌ : Unify_G500 " +
-            "\n✅ : Unify_GN500"
+        private const val ERROR_MESSAGE = "Please use color with token contains 'N' before color number, ex: " +
+            "❌ : Unify_N100 → ✅ : Unify_NN100, or you can consultation with your designer." +
+            "\n⚒️ ️Quick Fix:\n@s"
         private val ISSUE_PRIORITY = Priority.Medium
         private val ISSUE_SEVERITY = Severity.WARNING
         private val ISSUE_CATEGORY = Category.CORRECTNESS
-        private const val NEST_INDEX = 7
+        private const val NEST_INDEX = 14
         private const val NEST_CHARACTER = "N"
         val REGEX_OLD_COLOR = "(Unify_[A-Z]\\d{1,4}_\\d{1,2})|(Unify_[A-Z]\\d{1,4})".toRegex()
 
@@ -125,19 +122,22 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner {
     private fun reportXmlError(context: XmlContext, attribute: Attr) {
         val attrValue = StringBuilder(attribute.value)
         val sAttrValue = attrValue.toString()
-        val suggestion = UnifyComponentsList.unifyToNestColor[sAttrValue]
-            ?: sAttrValue
+        val token = sAttrValue.substringAfter("/")
+        val suggestion = UnifyComponentsList.unifyToNestColor[token]
+            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER).toString()
         val quickFix = LintFix.create()
             .replace()
             .text(sAttrValue)
             .with(suggestion)
             .build()
+        val quickFixDesc = " ❌: $sAttrValue → ✅: $suggestion"
+        val message = ERROR_MESSAGE.replace("@s", quickFixDesc)
 
         context.report(
             XML_ISSUE,
             attribute,
             context.getValueLocation(attribute),
-            ERROR_MESSAGE,
+            message,
             quickFix
         )
     }
