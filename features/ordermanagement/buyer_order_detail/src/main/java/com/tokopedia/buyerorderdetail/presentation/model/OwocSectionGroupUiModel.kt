@@ -3,19 +3,12 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 
-class OwocThickDividerUiModel : Visitable<OwocSectionGroupTypeFactoryImpl> {
+class OwocSectionGroupUiModel(
+    val owocProductListUiModel: List<OwocProductListUiModel>
+): Visitable<OwocSectionGroupTypeFactoryImpl> {
 
     override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ThickDividerUiModel) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
-    }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 
 data class OwocAddonsListUiModel(
     val addonsLogoUrl: String,
@@ -9,7 +9,7 @@ data class OwocAddonsListUiModel(
     val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>,
 ) : BaseOwocVisitableUiModel {
 
-    override fun type(typeFactory: OwocTypeFactoryImpl): Int {
+    override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 

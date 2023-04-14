@@ -13,7 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocSectionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -114,7 +114,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
-            OwocSectionViewHolder.LAYOUT -> OwocSectionViewHolder(parent)
+            OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -226,6 +226,6 @@ open class BuyerOrderDetailTypeFactory(
     }
 
     fun type(owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel): Int {
-        return OwocSectionViewHolder.LAYOUT
+        return OwocInfoViewHolder.LAYOUT
     }
 }

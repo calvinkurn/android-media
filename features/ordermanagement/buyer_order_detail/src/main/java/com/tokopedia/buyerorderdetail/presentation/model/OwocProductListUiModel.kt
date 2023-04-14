@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocTypeFactoryImpl
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 
 data class OwocProductListUiModel(
     val productList: List<ProductListUiModel.ProductUiModel>,
@@ -9,7 +11,12 @@ data class OwocProductListUiModel(
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?,
     val productListToggleUiModel: ProductListUiModel.ProductListToggleUiModel?,
-) {
+): Visitable<OwocSectionGroupTypeFactoryImpl> {
+
+    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
+        return typeFactory.type(this)
+    }
+
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
         val fromShopId: String,
@@ -25,7 +32,7 @@ data class OwocProductListUiModel(
             return shopName.isNotBlank()
         }
 
-        override fun type(typeFactory: OwocTypeFactoryImpl): Int {
+        override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
             return typeFactory.type(this)
         }
     }
@@ -50,7 +57,7 @@ data class OwocProductListUiModel(
             return productName.isNotBlank()
         }
 
-        override fun type(typeFactory: OwocTypeFactoryImpl): Int {
+        override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
             return typeFactory.type(this)
         }
     }
@@ -68,7 +75,7 @@ data class OwocProductListUiModel(
             return bundleItemList.isNotEmpty()
         }
 
-        override fun type(typeFactory: OwocTypeFactoryImpl): Int {
+        override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
             return typeFactory.type(this)
         }
     }
@@ -83,7 +90,7 @@ data class OwocProductListUiModel(
             return context?.getString(text.id)?.isNotBlank() == true
         }
 
-        override fun type(typeFactory: OwocTypeFactoryImpl): Int {
+        override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
             return typeFactory.type(this)
         }
     }
