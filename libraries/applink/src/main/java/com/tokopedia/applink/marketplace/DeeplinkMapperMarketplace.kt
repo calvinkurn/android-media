@@ -53,7 +53,7 @@ object DeeplinkMapperMarketplace {
 
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
-            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
+            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink)
         } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
             ApplinkConstInternalTokopediaNow.HOME
         } else {
