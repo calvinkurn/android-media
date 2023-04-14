@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
 import com.tokopedia.common_compose.ui.NestTheme
@@ -75,9 +74,8 @@ private fun LazyListState.horizontalOffset(): Int {
     var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
-            if (previousScrollOffset == firstVisibleItemScrollOffset) {
-                0
-            } else if (previousIndex == firstVisibleItemIndex) {
+            Log.d("SortFilterDebug", "$firstVisibleItemIndex, $firstVisibleItemScrollOffset")
+            if (previousIndex == firstVisibleItemIndex) {
                 firstVisibleItemScrollOffset - previousScrollOffset
             } else {
                 if (firstVisibleItemIndex < previousIndex) -1 * previousScrollOffset

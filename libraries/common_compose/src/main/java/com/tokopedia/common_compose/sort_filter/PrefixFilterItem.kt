@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -63,6 +64,7 @@ internal fun PrefixFilterItem(
             }
             if (text != null) {
                 val padding = if (textWidth == 0.dp) 0.dp else 4.dp
+                Log.d("SortFilterDebug", "textWidth: $textWidth")
                 Text(
                     modifier = Modifier
                         .padding(start = padding)
