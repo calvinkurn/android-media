@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
@@ -9,7 +10,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.trackers.TokomemberSource
-import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -22,15 +22,15 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true)
-                        || jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)) {
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true) ||
+                        jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)
+                    ) {
                         val requestParam = gson.fromJson(
                             featureEngineItem.detail,
                             TopAdsRequestParams::class.java
                         )
                         return requestParam
                     }
-
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
@@ -44,7 +44,7 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
                         return true
                     }
                 } catch (e: Exception) {
@@ -75,7 +75,7 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
                         if (i == 0) {
                             isFirstElement = true
                             sectionTitle = jsonObject[KEY_TITLE].toString()
@@ -87,7 +87,7 @@ object FeatureRecommendationMapper {
                 }
             }
         }
-        return TokoMemberRequestParam (
+        return TokoMemberRequestParam(
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
@@ -100,11 +100,13 @@ object FeatureRecommendationMapper {
     }
 
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
-        if (engineData == null)
+        if (engineData == null) {
             return null
+        }
 
-        if (engineData.featureEngineItem.isNullOrEmpty())
+        if (engineData.featureEngineItem.isNullOrEmpty()) {
             return null
+        }
 
         // For gyro section header will be equivalent to title of first element
         getGyroRecommendationItemList(engineData.featureEngineItem).also {
@@ -123,9 +125,9 @@ object FeatureRecommendationMapper {
     fun getWidgetOrder(engineData: FeatureEngineData?): String {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             try {
-                val jsonObject = JSONObject(engineData.featureEngineItem.first().detail)
-                return if (jsonObject[KEY_TYPE].toString().equals(TYPE_CONFIG, true)){
-                    jsonObject[KEY_WIDGET_ORDER].toString()
+                val jsonObject = JsonParser.parseString(engineData.featureEngineItem.first().detail).asJsonObject
+                return if (jsonObject[KEY_TYPE].asString.equals(TYPE_CONFIG, true)) {
+                    jsonObject[KEY_WIDGET_ORDER].asString
                 } else {
                     ""
                 }
@@ -141,27 +143,27 @@ object FeatureRecommendationMapper {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             try {
                 val bannerItem = engineData.featureEngineItem.find {
-                    JSONObject(it.detail)[KEY_TYPE].toString().equals(TYPE_BANNER, true)
+                    val a = JsonParser.parseString(it.detail).asJsonObject[KEY_TYPE].asString
+                    a.equals(TYPE_BANNER, true)
                 } ?: return null
 
-                val bannerDetail = JSONObject(bannerItem.detail)
+                val bannerDetail = JsonParser.parseString(bannerItem.detail).asJsonObject
                 val bannerItems = mutableListOf<BannerItem>()
-                val bannerData = JSONArray(bannerDetail[KEY_BANNER_DATA].toString())
+                val bannerData = JsonParser.parseString(bannerDetail[KEY_BANNER_DATA].asString).asJsonArray
 
-                for (i in 0 until bannerData.length()) {
+                for (i in 0 until bannerData.size()) {
                     bannerItems.add(
                         BannerItem(
-                            bannerData.getJSONObject(i)[KEY_ASSET_URL].toString(),
-                            bannerData.getJSONObject(i)[KEY_APPLINK].toString(),
+                            bannerData[i].asJsonObject[KEY_ASSET_URL].asString,
+                            bannerData[i].asJsonObject[KEY_APPLINK].asString
                         )
                     )
                 }
 
                 return BannerWidgetModel(
-                    title = bannerDetail[KEY_TITLE].toString(),
+                    title = bannerDetail[KEY_TITLE].asString,
                     items = bannerItems
                 )
-
             } catch (e: Exception) {
                 return null
             }
@@ -209,6 +211,4 @@ object FeatureRecommendationMapper {
     private const val KEY_APPLINK = "applink"
     const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
-
-
 }
