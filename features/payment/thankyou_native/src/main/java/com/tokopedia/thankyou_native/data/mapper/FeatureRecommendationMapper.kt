@@ -165,6 +165,7 @@ object FeatureRecommendationMapper {
                     items = bannerItems
                 )
             } catch (e: Exception) {
+                Timber.e(e)
                 return null
             }
         }

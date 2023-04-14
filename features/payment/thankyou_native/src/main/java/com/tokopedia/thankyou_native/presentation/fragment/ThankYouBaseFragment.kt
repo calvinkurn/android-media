@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.TaskStackBuilder
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -323,6 +324,7 @@ abstract class ThankYouBaseFragment :
         thanksPageDataViewModel.getThanksPageTicker(thanksPageData.configList)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
         thanksPageDataViewModel.thanksPageDataResultLiveData.observe(
             viewLifecycleOwner,

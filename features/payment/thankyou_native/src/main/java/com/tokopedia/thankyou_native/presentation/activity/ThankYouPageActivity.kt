@@ -34,6 +34,7 @@ import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import timber.log.Timber
 import javax.inject.Inject
 
 var idlingResource: TkpdIdlingResource? = null
@@ -329,6 +330,7 @@ class ThankYouPageActivity :
             return getAbTestPlatform()
                 ?.getBoolean(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, true) ?: false
         } catch (e: Exception) {
+            Timber.e(e)
             true
         }
     }
