@@ -85,7 +85,7 @@ class LoginNegativeCase: LoginBase() {
     fun forbiddenPage_discoverEmpty() {
         fakeRepo.discoverConfig = Config.Error
         runTest {
-            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
         }
     }
 
