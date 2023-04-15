@@ -3,11 +3,14 @@ package com.tokopedia.loginregister.login.behaviour.base
 import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.clearText
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matchers.not
 
 open class LoginRegisterBase {
 
@@ -26,17 +29,17 @@ open class LoginRegisterBase {
     fun inputEmailOrPhone(value: String) {
         val viewInteraction = onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             .check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.typeText(value))
+        viewInteraction.perform(clearText(), typeText(value))
     }
 
     fun shouldBeDisabledWithInputType(inputType: Int) {
         onView(withInputType(inputType))
-            .check(matches(CoreMatchers.not(isEnabled())))
+            .check(matches(not(isEnabled())))
     }
 
     fun shouldBeDisabled(id: Int) {
         onView(withId(id))
-            .check(matches(CoreMatchers.not(isEnabled())))
+            .check(matches(not(isEnabled())))
     }
 
     fun shouldBeDisplayed(id: Int) {
@@ -46,7 +49,7 @@ open class LoginRegisterBase {
 
     fun shouldBeHidden(id: Int) {
         onView(withId(id))
-            .check(matches(CoreMatchers.not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
     }
 
     fun isDisplayingGivenText(givenText: String) {
@@ -93,7 +96,7 @@ open class LoginRegisterBase {
     fun deleteEmailOrPhoneInput() {
         val viewInteraction = onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             .check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.clearText())
+        viewInteraction.perform(clearText())
     }
 
     fun clickTopLogin() {
