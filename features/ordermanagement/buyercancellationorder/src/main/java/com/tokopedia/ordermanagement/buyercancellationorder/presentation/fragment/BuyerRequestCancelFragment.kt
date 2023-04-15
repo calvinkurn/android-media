@@ -51,11 +51,13 @@ import com.tokopedia.ordermanagement.buyercancellationorder.databinding.Fragment
 import com.tokopedia.ordermanagement.buyercancellationorder.di.component.BuyerCancellationOrderComponent
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.activity.BuyerRequestCancelActivity
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerListOfProductsBottomSheetAdapter
+import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerNewCancellationOrderAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.divider.BuyerBundlingProductItemDivider
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.typefactory.BuyerProductBundlingAdapterFactory
+import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationProductUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -222,8 +224,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 //            tfChooseSubReason.textFieldInput.isFocusable = false
 //            tfChooseSubReason.textFieldInput.isClickable = false
 //            tfChooseSubReason.setOnClickListener {}
-            labelShopName.text = MethodChecker.fromHtml(shopName)
-            labelInvoice.text = invoiceNum
+//            labelShopName.text = MethodChecker.fromHtml(shopName)
+//            labelInvoice.text = invoiceNum
         }
     }
 
@@ -500,20 +502,20 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         binding?.run {
             // list product
-            if (listProduct.isNotEmpty() && !isBundlingProduct) {
-                labelProductName.text = MethodChecker.fromHtml(listProduct.firstOrNull()?.productName.orEmpty())
-                labelPrice.text = listProduct.firstOrNull()?.productPrice.orEmpty()
-                ivProduct.loadImage(listProduct.firstOrNull()?.picture.orEmpty())
-
-                if (listProduct.size > 1) {
-                    labelSeeAllProducts.visible()
-                    labelSeeAllProducts.text =
-                        "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
-                    labelSeeAllProducts.setOnClickListener { showProductsBottomSheet() }
-                } else {
-                    labelSeeAllProducts.gone()
-                }
-            }
+//            if (listProduct.isNotEmpty() && !isBundlingProduct) {
+//                labelProductName.text = MethodChecker.fromHtml(listProduct.firstOrNull()?.productName.orEmpty())
+//                labelPrice.text = listProduct.firstOrNull()?.productPrice.orEmpty()
+//                ivProduct.loadImage(listProduct.firstOrNull()?.picture.orEmpty())
+//
+//                if (listProduct.size > 1) {
+//                    labelSeeAllProducts.visible()
+//                    labelSeeAllProducts.text =
+//                        "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
+//                    labelSeeAllProducts.setOnClickListener { showProductsBottomSheet() }
+//                } else {
+//                    labelSeeAllProducts.gone()
+//                }
+//            }
 
             // cancel reasons
             cancelReasonResponse.reasons.forEach { reasonItem ->
@@ -759,25 +761,32 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             normalProductList?.let { products ->
                 binding?.run {
                     if (products.isNotEmpty()) {
-                        labelProductName.text =
-                            MethodChecker.fromHtml(products.firstOrNull()?.productName.orEmpty())
-                        labelPrice.text = products.firstOrNull()?.productPrice.orEmpty()
-                        ivProduct.loadImage(products.firstOrNull()?.productThumbnailUrl.orEmpty())
+//                        labelProductName.text =
+//                            MethodChecker.fromHtml(products.firstOrNull()?.productName.orEmpty())
+//                        labelPrice.text = products.firstOrNull()?.productPrice.orEmpty()
+//                        ivProduct.loadImage(products.firstOrNull()?.productThumbnailUrl.orEmpty())
                     }
-                    labelSeeAllProducts.run {
-                        val totalItems = products.count().orZero()
-                        if (totalItems > 1) {
-                            text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
-                            setOnClickListener {
-                                showProductBundleBottomSheet(products)
-                            }
-                            show()
-                        } else {
-                            gone()
-                        }
-                    }
+//                    labelSeeAllProducts.run {
+//                        val totalItems = products.count().orZero()
+//                        if (totalItems > 1) {
+//                            text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+//                            setOnClickListener {
+//                                showProductBundleBottomSheet(products)
+//                            }
+//                            show()
+//                        } else {
+//                            gone()
+//                        }
+//                    }
                 }
             }
+        }
+    }
+
+    private fun setupRecyclerViewCancellationProduct(items: List<BuyerCancellationProductUiModel>) {
+        binding?.rvCardProductItem?.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = BuyerNewCancellationOrderAdapter(items)
         }
     }
 
