@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.view.forbidden.fragment;
+package com.tokopedia.loginregister.forbidden;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.sessioncommon.R;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
