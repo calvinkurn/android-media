@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
