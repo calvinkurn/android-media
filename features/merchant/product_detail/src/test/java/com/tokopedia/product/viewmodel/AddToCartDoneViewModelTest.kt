@@ -46,8 +46,14 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var addToCartUseCase: AddToCartUseCase
 
     private val viewModel by lazy {
-        AddToCartDoneViewModel(userSessionInterface, addToWishlistV2UseCase, deleteWishlistV2UseCase,
-                getRecommendationUseCase, addToCartUseCase, CoroutineTestDispatchersProvider)
+        AddToCartDoneViewModel(
+            userSessionInterface,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
+            getRecommendationUseCase,
+            addToCartUseCase,
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
@@ -111,6 +117,26 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
+    fun `on success get recommendation but filtered out by empty products`() {
+        val recomWidget1 = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+        val recomWidget2 = RecommendationWidget(tid = "2", recommendationItemList = emptyList())
+        val listOfRecom = listOf(recomWidget1, recomWidget2)
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOfRecom
+
+        viewModel.getRecommendationProduct("123")
+
+        coVerify {
+            getRecommendationUseCase.getData(any())
+        }
+
+        Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isNotEmpty())
+        Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.size == 1)
+    }
+
+    @Test
     fun `add to cart success`() = runBlocking {
         val data = AddToCartDoneRecommendationItemDataModel(RecommendationItem(), true)
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
@@ -125,7 +151,7 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns success` () {
+    fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -140,7 +166,7 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns fail` () {
+    fun `verify add to wishlistv2 returns fail`() {
         val productId = "123"
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val mockThrowable = mockk<Throwable>("fail")
@@ -156,7 +182,7 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns success`(){
+    fun `verify remove wishlistV2 returns success`() {
         val productId = "123"
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
@@ -171,7 +197,7 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns fail`(){
+    fun `verify remove wishlistV2 returns fail`() {
         val productId = "123"
         val mockThrowable = mockk<Throwable>("fail")
 
