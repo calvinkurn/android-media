@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFee
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
@@ -239,7 +240,7 @@ class ShipmentPresenterPlatformFeeTest {
     }
 
     @Test
-    fun getDynamicPlatformFee() {
+    fun getDynamicPlatformFeeReturnsSuccess() {
         // Given
         val platformFee = PaymentFeeGqlResponse(PaymentFeeResponse(success = true))
 
@@ -258,6 +259,49 @@ class ShipmentPresenterPlatformFeeTest {
         // Then
         verifyOrder {
             view.showPaymentFeeData(platformFee)
+        }
+    }
+
+    @Test
+    fun getDynamicPlatformFeeReturnsFailed() {
+        // Given
+        val platformFee = PaymentFeeGqlResponse(PaymentFeeResponse(success = false))
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            firstArg<(PaymentFeeGqlResponse) -> Unit>().invoke(platformFee)
+        }
+
+        presenter.getDynamicPaymentFee(platformFeeParams)
+        // When
+
+        // Then
+        verifyOrder {
+            view.showPaymentFeeTickerFailedToLoad(any())
+        }
+    }
+
+    @Test
+    fun getDynamicPlatformFeeReturnsError() {
+        // Given
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
+        }
+
+        presenter.getDynamicPaymentFee(platformFeeParams)
+        // When
+
+        // Then
+        verifyOrder {
+            view.showPaymentFeeTickerFailedToLoad(any())
         }
     }
 }
