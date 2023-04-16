@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +23,7 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
@@ -80,6 +82,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var feedNavigationAnalytics: FeedNavigationAnalytics
 
     private val adapter by lazy {
         FeedPagerAdapter(
@@ -192,9 +197,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
             CreateContentType.CREATE_LIVE -> {
+                feedNavigationAnalytics.eventClickCreateLive()
+
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
             CreateContentType.CREATE_POST -> {
+                feedNavigationAnalytics.eventClickCreatePost()
+
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                 intent.putExtra(
                     BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
@@ -217,6 +226,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
+                feedNavigationAnalytics.eventClickCreateVideo()
+
                 openCreateShorts.launch()
             }
             else -> {}
@@ -241,25 +252,41 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
-                            )
+            OnPageChangeCallback() {
+
+            var shouldSendSwipeTracker = false
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
                         )
-                    }
-                    onChangeTab(position)
+                    )
                 }
+                onChangeTab(position)
+
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
+                    }
+                    shouldSendSwipeTracker = false
+                }
+            }
 
             override fun onPageSelected(position: Int) {
                 appLinkTabPosition = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
             }
         })
 
@@ -492,14 +519,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         binding.btnFeedCreatePost.setOnClickListener {
+            feedNavigationAnalytics.eventClickCreationButton()
             onCreatePostClicked()
         }
 
         binding.btnFeedLive.setOnClickListener {
+            feedNavigationAnalytics.eventClickLiveButton()
             openAppLink.launch(meta.liveApplink)
         }
 
         binding.feedUserProfileImage.setOnClickListener {
+            feedNavigationAnalytics.eventClickProfileButton()
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
             } else {
@@ -538,6 +568,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (firstTabData != null) {
             binding.tyFeedFirstTab.text = firstTabData.title
             binding.tyFeedFirstTab.setOnClickListener {
+                feedNavigationAnalytics.eventClickForYouTab()
                 binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
             }
             binding.tyFeedFirstTab.show()
@@ -548,6 +579,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (secondTabData != null) {
             binding.tyFeedSecondTab.text = secondTabData.title
             binding.tyFeedSecondTab.setOnClickListener {
+                feedNavigationAnalytics.eventClickFollowingTab()
                 binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
             }
             binding.tyFeedSecondTab.show()
@@ -647,6 +679,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+
+        private const val THRESHOLD_OFFSET_HALF = 0.5f
 
         private const val COACHMARK_START_DELAY_IN_SEC = 1
 
