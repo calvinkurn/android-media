@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageUnify"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="12dp"
+        app:typographyType="heading_3"
+        android:id="@+id/typography"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan info login di perangkat ini?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageUnify" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
+        android:id="@+id/typography2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Pastikan kamu menggunakan perangkat pribadi dan telah membaca syarat dan ketentuan Tokopedia."
+        app:layout_constraintEnd_toEndOf="@+id/typography"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/typography"
+        app:layout_constraintTop_toBottomOf="@+id/typography" />
+
+    <LinearLayout
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography2">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_margin="12dp"
+            android:id="@+id/btmSheetOclNegativeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nanti Saja"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"
+            app:layout_constraintEnd_toEndOf="@+id/imageUnify"
+            app:layout_constraintTop_toBottomOf="@+id/typography2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btmSheetOclPositiveBtn"
+            android:layout_margin="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ya, Simpan"
+            app:unifyButtonVariant="ghost"
+            app:layout_constraintStart_toStartOf="@+id/imageUnify"
+            app:layout_constraintTop_toBottomOf="@+id/typography2" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
