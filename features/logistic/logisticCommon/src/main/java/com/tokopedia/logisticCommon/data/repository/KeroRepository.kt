@@ -32,6 +32,9 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         private const val PARAM_EXTRACT_ADDRESS_DETAIL = "extract_address_detail"
         private const val PARAM_SOURCE = "source"
         private const val PARAM_TRACK_ACTIVITY = "track_activity"
+        private const val PARAM = "param"
+        private const val PARAM_LATLNG = "latlng"
+        private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
     }
 
     suspend fun getAutoComplete(
@@ -40,9 +43,9 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         isManageAddressFlow: Boolean = false
     ): AutoCompleteResponse {
         val param = mapOf(
-            "param" to keyword,
-            "latlng" to latlng,
-            "is_manage_address_flow" to isManageAddressFlow
+            PARAM to keyword,
+            PARAM_LATLNG to latlng,
+            PARAM_IS_MANAGE_ADDRESS_FLOW to isManageAddressFlow
         )
         val request = GraphqlRequest(
             KeroLogisticQuery.autoComplete,
@@ -57,8 +60,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         isManageAddressFlow: Boolean = false
     ): GetDistrictResponse {
         val param = mapOf(
-            "param" to placeId,
-            "is_manage_address_flow" to isManageAddressFlow
+            PARAM to placeId,
+            PARAM_IS_MANAGE_ADDRESS_FLOW to isManageAddressFlow
         )
         val request = GraphqlRequest(
             KeroLogisticQuery.placesGetDistrict,
@@ -149,8 +152,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         isManageAddressFlow: Boolean = false
     ): AutoFillResponse {
         val param = mapOf(
-            "latlng" to latlong,
-            "is_manage_address_flow" to isManageAddressFlow
+            PARAM_LATLNG to latlong,
+            PARAM_IS_MANAGE_ADDRESS_FLOW to isManageAddressFlow
         )
         val request = GraphqlRequest(
             KeroLogisticQuery.keroMapsAutofill,
