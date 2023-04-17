@@ -296,4 +296,17 @@ class AffiliateHomeViewModelTest {
         affiliateHomeViewModel.fetchUnreadNotificationCount()
         assertEquals(5, affiliateHomeViewModel.getUnreadNotificationCount().value)
     }
+
+    @Test
+    fun `should reset notification count to zero`() {
+        coEvery {
+            getUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateHomeViewModel.getUnreadNotificationCount().value)
+
+        affiliateHomeViewModel.resetNotificationCount()
+        assertEquals(0, affiliateHomeViewModel.getUnreadNotificationCount().value)
+    }
 }

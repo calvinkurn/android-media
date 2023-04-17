@@ -219,6 +219,7 @@ class AffiliateHomeFragment :
             setIcon(
                 IconBuilder()
                     .addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                        affiliateHomeViewModel.resetNotificationCount()
                         sendNotificationClickEvent()
                         RouteManager.route(
                             context,

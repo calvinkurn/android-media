@@ -41,6 +41,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -89,7 +90,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var itemTypes = emptyList<ItemTypesItem>()
     private var sseJob: Job? = null
 
-    private val _unreadNotificationCount = MutableLiveData(0)
+    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
 
     fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
@@ -364,6 +365,10 @@ class AffiliateHomeViewModel @Inject constructor(
                 Timber.e(e)
             }
         }
+    }
+
+    fun resetNotificationCount() {
+        _unreadNotificationCount.value = Int.ZERO
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
