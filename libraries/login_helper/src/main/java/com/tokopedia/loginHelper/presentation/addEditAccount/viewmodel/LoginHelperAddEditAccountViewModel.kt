@@ -2,13 +2,16 @@ package com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
+import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountViewModel @Inject constructor(
+    private val aesEncryptorCBC: AESEncryptorCBC,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -21,10 +24,20 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                 handleBackButtonTap()
             }
             is LoginHelperAddEditAccountEvent.AddUserToLocalDB -> {
+                handleAddUserToLocalDB(event.email, event.password, event.tribe)
             }
             is LoginHelperAddEditAccountEvent.AddUserToRemoteDB -> {
             }
         }
+    }
+    private fun handleAddUserToLocalDB(email: String, password: String, tribe: String) {
+        val encryptedEmail = encrypt(email)
+        val encryptedPassword = encrypt(password)
+    }
+
+    private fun encrypt(text: String): String {
+        val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
+        return aesEncryptorCBC.encrypt(text, secretKey)
     }
 
     private fun handleBackButtonTap() {
