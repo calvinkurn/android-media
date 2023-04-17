@@ -18,6 +18,7 @@ import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.Lo
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsEvent
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.home.LoginHelperActivity
+import com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -65,8 +66,8 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
         when (action) {
             is LoginHelperAccountSettingsAction.GoToLoginHelperHome -> backToPreviousScreen()
             is LoginHelperAccountSettingsAction.GoToAddAccount -> goToAddAccountScreen()
-            is LoginHelperAccountSettingsAction.GoToEditAccount -> goToEditAccountScreen()
-            is LoginHelperAccountSettingsAction.GoToDeleteAccount -> goToDeleteAccountScreen()
+            is LoginHelperAccountSettingsAction.GoToEditAccount -> goToEditDeleteAccountScreen()
+            is LoginHelperAccountSettingsAction.GoToDeleteAccount -> goToEditDeleteAccountScreen()
         }
     }
 
@@ -103,10 +104,9 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
         context?.let { LoginHelperAddEditAccountActivity.buildAddAccountModeIntent(it) }
     }
 
-    private fun goToEditAccountScreen() {
-    }
-
-    private fun goToDeleteAccountScreen() {
+    private fun goToEditDeleteAccountScreen() {
+        val intent = Intent(activity, LoginHelperSearchActivity::class.java)
+        startActivity(intent)
     }
 
     private fun HeaderUnify.setUpHeader() {
@@ -114,7 +114,7 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
             context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_accounts_settings)
                 .toBlankOrString()
         setNavigationOnClickListener {
-            //  viewModel.processEvent(LoginHelperEvent.TapBackButton)
+            viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToLoginHelperHome)
         }
     }
 

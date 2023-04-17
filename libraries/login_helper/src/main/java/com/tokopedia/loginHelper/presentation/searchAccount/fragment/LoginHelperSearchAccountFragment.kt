@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 
-class LoginHelperSearchAccountFragment: BaseDaggerFragment() {
+class LoginHelperSearchAccountFragment : BaseDaggerFragment() {
     override fun getScreenName(): String {
         return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_search_header_title)
             .toBlankOrString()
@@ -18,5 +18,12 @@ class LoginHelperSearchAccountFragment: BaseDaggerFragment() {
             )
             .build()
             .inject(this)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): LoginHelperSearchAccountFragment {
+            return LoginHelperSearchAccountFragment()
+        }
     }
 }
