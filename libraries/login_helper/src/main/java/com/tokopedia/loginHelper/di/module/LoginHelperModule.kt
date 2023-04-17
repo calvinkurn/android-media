@@ -5,9 +5,11 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
+import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.user.session.UserSession
@@ -62,4 +64,9 @@ class LoginHelperModule {
         return context.resources
     }
 
+    @LoginHelperScope
+    @Provides
+    fun provideEncryptor(): AESEncryptorCBC {
+        return AESEncryptorCBC(ENCRYPTION_KEY)
+    }
 }

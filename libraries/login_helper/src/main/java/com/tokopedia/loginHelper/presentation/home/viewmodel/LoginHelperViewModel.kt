@@ -52,7 +52,8 @@ class LoginHelperViewModel @Inject constructor(
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val userSession: UserSessionInterface,
     private val getProfileUseCase: GetProfileUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase
+    private val getAdminTypeUseCase: GetAdminTypeUseCase,
+    private val aesEncryptorCBC: AESEncryptorCBC
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())
@@ -116,7 +117,6 @@ class LoginHelperViewModel @Inject constructor(
 //    }
 
     private fun storeUserDetailsInState(loginData: LoginDataResponse) {
-        val aesEncryptorCBC = AESEncryptorCBC(ENCRYPTION_KEY)
         val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
 
         val decryptedUserDetails = mutableListOf<UserDataResponse>()
