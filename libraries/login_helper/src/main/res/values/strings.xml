@@ -17,4 +17,14 @@
     <string name="login_helper_btn_remove_account">Remove Account</string>
     <string name="login_helper_add_account_tips">Environment is chosen from Config. Current environment is %s All operations related to accounts will be on  %s. </string>
 
+
+    <string name="login_helper_enter_user_email">Enter Email</string>
+    <string name="login_helper_enter_password">Enter Password</string>
+    <string name="login_helper_enter_tribe">Enter Tribe(Optional)</string>
+    <string name="login_helper_account_whitelist">Make Sure that your account is whitelisted, otherwise you can not do single click login</string>
+    <string name="login_helper_consent_checkbox">By Clicking this checkout you give consent to store your account in db. Therefore it is accessible to everyone in Android Team</string>
+    <string name="login_helper_local_storage">By storing here, your account is not shared to everyone else. It is stored locally in your device and will be removed if you uninstall the app.</string>
+    <string name="login_helper_save_to_db">Save Account to DB</string>
+    <string name="login_helper_save_to_local">Save Account Locally</string>
+
 </resources>
