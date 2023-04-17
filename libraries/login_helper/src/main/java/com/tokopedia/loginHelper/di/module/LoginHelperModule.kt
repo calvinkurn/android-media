@@ -8,7 +8,10 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginHelper.data.local.LoginHelperUserDatabase
+import com.tokopedia.loginHelper.data.repository.UserLocalRepositoryImpl
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
+import com.tokopedia.loginHelper.domain.repository.UserLocalRepository
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -68,5 +71,11 @@ class LoginHelperModule {
     @Provides
     fun provideEncryptor(): AESEncryptorCBC {
         return AESEncryptorCBC(ENCRYPTION_KEY)
+    }
+
+    @LoginHelperScope
+    @Provides
+    fun provideLocalUserRepository(db: LoginHelperUserDatabase): UserLocalRepository {
+        return UserLocalRepositoryImpl(db.userDao)
     }
 }
