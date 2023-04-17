@@ -20,16 +20,16 @@ import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -255,6 +255,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             zoomImageAdapterDataMap.clear()
             selectedMediaView.removeAsset()
             getPhotos()
+
+            showFeedVideoDepreciateBottomSheet()
         }
     }
 
@@ -914,6 +916,17 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onStop() {
         super.onStop()
         stopMedia()
+    }
+
+    private fun showFeedVideoDepreciateBottomSheet() {
+        if (!viewModel.isUserFirstTimeVisit) return
+
+        val asBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
+        FeedVideoDepreciateBottomSheet
+            .newInstance(asBuyer)
+            .show(childFragmentManager, "")
+
+        viewModel.setFirstTimeUserVisit()
     }
 
     companion object {
