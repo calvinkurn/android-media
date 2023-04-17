@@ -8,16 +8,20 @@ import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
 import com.tokopedia.productcard.layout.label.LabelLayoutStrategyControl
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyControl
+import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategy
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategy
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyControl
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyControl
 
-internal class LayoutStrategyControl :
-    LayoutStrategy,
+internal class LayoutStrategyControl(
+    stockBarLayoutStrategy: StockBarLayoutStrategy,
+    shadowLayoutStrategy: ShadowLayoutStrategy,
+) : LayoutStrategy,
     ImageLayoutStrategy by ImageLayoutStrategyControl(),
     LabelLayoutStrategy by LabelLayoutStrategyControl(),
     VariantLayoutStrategy by VariantLayoutStrategyControl(),
     EtaLayoutStrategy by EtaLayoutStrategyControl(),
-    ShadowLayoutStrategy by ShadowLayoutStrategyControl(),
-    ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyControl()
+    ShadowLayoutStrategy by shadowLayoutStrategy,
+    ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyControl(),
+    StockBarLayoutStrategy by stockBarLayoutStrategy

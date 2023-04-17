@@ -24,6 +24,8 @@ internal const val GENERAL_GREEN = "generalGreen"
 internal const val GENERAL_RED = "generalRed"
 internal const val GENERAL_ORANGE = "generalOrange"
 internal const val GENERAL_TEAL = "generalTeal"
+internal const val GOLD = "gold"
+internal const val RED = "red"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
@@ -39,6 +41,7 @@ internal const val LABEL_COST_PER_UNIT = "costperunit"
 internal const val LABEL_CATEGORY_SIDE = "category_side"
 internal const val LABEL_CATEGORY_BOTTOM = "category_bottom"
 internal const val LABEL_OVERLAY = "overlay"
+internal const val LABEL_RIBBON = "ribbon"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
@@ -80,3 +83,6 @@ internal const val MIN_QUANTITY_NON_VARIANT = 1
 
 internal const val SQUARE_IMAGE_RATIO = "1:1"
 internal const val LONG_IMAGE_RATIO = "4:5"
+
+internal const val CARD_MARGIN = 4
+internal const val MEDIA_MARGIN = 1.25f
