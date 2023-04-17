@@ -1,13 +1,15 @@
-package com.tokopedia.manageaddress.ui.debugbanner
+package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.ViewGroup
-import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.ui.debugbanner.BannerView
+import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
 
 
-class DebugBanner private constructor(app: Application, private var banner: Banner) :
+class DebugBanner constructor(app: Application, private var banner: Banner) :
     Application.ActivityLifecycleCallbacks by ActivityEmptyLifecycleCallbacks() {
 
     companion object {
@@ -34,7 +36,9 @@ class DebugBanner private constructor(app: Application, private var banner: Bann
             updateBannerColor(localBanner.bannerColorRes)
             bannerGravity = localBanner.bannerGravity
         }
-        val bannerSize = p0.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+        val bannerSize = p0.resources.getDimension(
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65f, p0.resources.displayMetrics).toInt()
+        ).toInt()
         val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
         decorView.addView(debugBannerView, params)
 
