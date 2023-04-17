@@ -7,7 +7,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecomCom
 /**
  * Created by frenzel on 11/03/23
  */
-class RecomTypeFactoryImpl: RecomTypeFactory {
+class RecomTypeFactoryImpl : RecomTypeFactory {
     override fun type(model: RecomComparisonBpcModel): Int {
         return ComparisonBpcWidgetView.LAYOUT
     }
@@ -16,8 +16,8 @@ class RecomTypeFactoryImpl: RecomTypeFactory {
         return RecomCarouselWidgetView.LAYOUT
     }
 
-    override fun createView(context: Context, type: Int): BaseRecomWidgetView<*> {
-        return when(type) {
+    override fun createView(context: Context, model: RecomVisitable): BaseRecomWidgetView<out RecomVisitable> {
+        return when (model.type(this)) {
             ComparisonBpcWidgetView.LAYOUT -> ComparisonBpcWidgetView(context)
             RecomCarouselWidgetView.LAYOUT -> RecomCarouselWidgetView(context)
             else -> throw IllegalArgumentException("Invalid view type")

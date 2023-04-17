@@ -21,17 +21,16 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
     private val typeFactory = RecomTypeFactoryImpl()
 
     fun bind(model: RecomVisitable) {
-        val type = model.type(typeFactory)
-        val widget = typeFactory.createView(context, type)
+        val widget = typeFactory.createView(context, model)
 
         val widgetView = addWidgetView { widget } ?: return
         widgetView.bind(model)
     }
 
-    private inline fun <reified T : View> addWidgetView(creator: () -> T): T? {
+    private fun addWidgetView(creator: () -> BaseRecomWidgetView<*>): BaseRecomWidgetView<RecomVisitable>? {
         val firstChild = getFirstChild()
         return try {
-            if (firstChild !is T) {
+            if (firstChild !is BaseRecomWidgetView<*>) {
                 removeCurrentView()
                 val widget = creator().apply {
                     layoutParams = getChildLayoutParams()
@@ -39,10 +38,12 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
                 addView(widget)
 
                 widget
-            } else firstChild
+            } else {
+                firstChild
+            }
         } catch (e: Exception) {
             null
-        }
+        } as? BaseRecomWidgetView<RecomVisitable>
     }
 
     private fun getFirstChild(): View? = getChildAt(0)
@@ -58,7 +59,7 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
         )
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when(event) {
+        when (event) {
             Lifecycle.Event.ON_CREATE -> { }
             Lifecycle.Event.ON_START -> { }
             Lifecycle.Event.ON_PAUSE -> { }
