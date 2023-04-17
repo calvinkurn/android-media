@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
@@ -76,6 +77,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
@@ -87,6 +89,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
@@ -143,7 +146,7 @@ object DynamicProductDetailMapper {
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -645,6 +648,18 @@ object DynamicProductDetailMapper {
         )
     }
 
+    fun generatePersonalizedData(product: DynamicProductInfoP1, startTime: Long) = PersonalizedCampaignModel(
+        product.data.campaign.campaignTypeName,
+        product.data.price.priceFmt,
+        product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+        product.data.campaign.percentageAmount,
+        startTime,
+        (
+            product.data.campaign.endDateUnix
+                ?: ""
+            ).toLongOrZero()
+    )
+
     fun generateAffiliateShareData(
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
@@ -694,7 +709,7 @@ object DynamicProductDetailMapper {
         }
     }
 
-    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+    private fun isBebasOngkir(type: Int) = type != BebasOngkirType.NON_BO.value
 
     private fun mapBebasOngkirType(type: Int): String {
         return when (type) {

@@ -65,7 +65,7 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -2134,7 +2134,7 @@ class ShopHomeViewModelTest {
             shopPageGetDynamicTab = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
                 tabData = listOf(
                     ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
-                        name = ShopPageTabName.HOME,
+                        name = ShopPageHeaderTabName.HOME,
                         data = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData.Data(
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(

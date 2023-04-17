@@ -156,12 +156,12 @@ class PlayYouTubeFragment @Inject constructor(
 
     private fun enterFullscreen() {
         if (isAdded && !orientation.isLandscape)
-            orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+            orientationListener.changeOrientation(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
         if (isAdded && !orientation.isPortrait)
-            orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+            orientationListener.changeOrientation(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun handleYouTubeVideoState(state: PlayViewerVideoState) {

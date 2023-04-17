@@ -73,3 +73,10 @@ fun createVerify(): DealsVerifyResponse {
     )
 }
 
+fun createVerifyError(): DealsVerifyResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("verify_error.json"),
+        DealsVerifyResponse::class.java
+    )
+}
+

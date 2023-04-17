@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -62,9 +61,9 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     override fun initInjector() {
         activity?.let {
             DaggerShopSettingsComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -144,7 +143,6 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         val sortDataList = getAdapter().data
         for (shopNoteViewModel in sortDataList) {
             shopNoteViewModel.id?.let { shopNoteList.add(it) }
-
         }
         viewModel.reorderShopNote(shopNoteList)
     }
@@ -152,8 +150,13 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     private fun onSuccessReorderShopNote(successMessage: String) {
         hideSubmitLoading()
         view?.let {
-            Toaster.make(it, getString(R.string.note_success_reorder), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.abstraction.R.string.close))
+            Toaster.make(
+                it,
+                getString(R.string.note_success_reorder),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.abstraction.R.string.close)
+            )
         }
         listener!!.onSuccessReorderNotes()
     }
@@ -162,8 +165,13 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.abstraction.R.string.close))
+            Toaster.make(
+                it,
+                message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close)
+            )
         }
     }
 
@@ -203,7 +211,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
 
     private fun observeData() {
         observe(viewModel.reorderNote) {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessReorderShopNote(it.data)
                 is Fail -> onErrorReorderShopNote(it.throwable)
             }
@@ -217,7 +225,6 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
 
         @JvmStatic
         fun newInstance(shopNoteUiModels: ArrayList<ShopNoteUiModel>): ShopSettingsNotesReorderFragment {
-
             val args = Bundle()
             args.putParcelableArrayList(EXTRA_NOTE_LIST, shopNoteUiModels)
             val fragment = ShopSettingsNotesReorderFragment()

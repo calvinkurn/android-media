@@ -40,6 +40,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -555,5 +556,16 @@ class ManageAddressViewModelTest {
         assertEquals(manageAddressViewModel.source, source)
         assertEquals(manageAddressViewModel.receiverUserId, ruid)
         assertEquals(manageAddressViewModel.senderUserId, suid)
+        assertFalse(manageAddressViewModel.isFromMoneyIn)
+    }
+
+
+    @Test
+    fun `verify when source from money in is correct`() {
+        // Given
+        manageAddressViewModel.source = ManageAddressSource.MONEY_IN.source
+
+        // Then
+        assertTrue(manageAddressViewModel.isFromMoneyIn)
     }
 }

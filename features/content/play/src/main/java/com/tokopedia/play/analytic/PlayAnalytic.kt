@@ -231,7 +231,7 @@ class PlayAnalytic(
     fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
-            ProductAction.Buy -> clickBeliButtonProductWithVariant(productId)
+            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
         }
     }
 

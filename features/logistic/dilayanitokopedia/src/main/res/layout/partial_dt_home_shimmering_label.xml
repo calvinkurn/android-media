@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="150dp"
+            android:layout_height="12dp"
+            android:layout_gravity="start|center_vertical"
+            app:loader_corner_radius="3dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="60dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end|center_vertical"
+            app:loader_corner_radius="3dp"
+            app:loader_type="rect" />
+    </FrameLayout>
+</merge>

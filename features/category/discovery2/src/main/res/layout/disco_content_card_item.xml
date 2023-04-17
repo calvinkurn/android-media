@@ -75,14 +75,18 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/content_card_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="12dp"
+                android:layout_marginEnd="6dp"
                 android:layout_marginBottom="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/content_card_image"
                 app:typographyType="display_2"
@@ -142,7 +146,8 @@
                     app:layout_constraintStart_toEndOf="@id/title_tv"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="display_3"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="1" />
 
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -170,7 +175,34 @@
                     app:layout_constraintStart_toEndOf="@id/hours_separator_text_view"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="2" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/minutes_separator_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:text=":"
+                    android:textColor="@color/Unify_RN500"
+                    app:layout_constraintBottom_toBottomOf="@id/minutes_layout"
+                    app:layout_constraintStart_toEndOf="@id/minutes_layout"
+                    app:layout_constraintTop_toTopOf="@id/minutes_layout"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/seconds_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/Unify_RN500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/minutes_separator_text_view"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="3" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

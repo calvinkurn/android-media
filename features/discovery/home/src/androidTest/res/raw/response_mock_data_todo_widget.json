@@ -1,0 +1,50 @@
+{
+  "data": {
+    "getHomeToDoWidget": {
+      "toDos": [
+        {
+          "id": 1,
+          "dataSource": "r3_category",
+          "title": "Widget Title",
+          "dueDate": "Tinggal 2 hari lagi",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/10/5/a809e96e-3c18-4e63-ac83-8deb9b4c1b1c.png",
+          "contextInfo": "Context Description",
+          "price": "Rp.99.999.999",
+          "discountPercentage": "50%",
+          "slashedPrice": "Rp.49.999.999",
+          "cta": {
+            "type": "ghost",
+            "mode": "main",
+            "text": "Bayar",
+            "applink": "tokopedia://category-explore?type=1&source=homepage.6_image.0.41876",
+            "url": "https://www.tokopedia.com/kategori-belanja"
+          },
+          "applink": "tokopedia://category-explore?type=1&source=homepage.6_image.0.41876",
+          "url": "https://www.tokopedia.com/kategori-belanja",
+          "feParam": "closeButton=user_id:data_source"
+        },
+        {
+          "id": 2,
+          "dataSource": "r3_category",
+          "title": "Widget Title",
+          "dueDate": "",
+          "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/10/5/a809e96e-3c18-4e63-ac83-8deb9b4c1b1c.png",
+          "contextInfo": "Donasi bulanan",
+          "price": "Rp.1.000.000/bulan",
+          "discountPercentage": "",
+          "slashedPrice": "",
+          "cta": {
+            "type": "filled",
+            "mode": "main",
+            "text": "Bayar",
+            "applink": "",
+            "url": ""
+          },
+          "applink": "tokopedia://category-explore?type=1&source=homepage.6_image.0.41876",
+          "url": "https://www.tokopedia.com/kategori-belanja",
+          "feParam": ""
+        }
+      ]
+    }
+  }
+}
