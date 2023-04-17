@@ -431,7 +431,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
         // Then
         verifySequence {
-            view.activityContext
+            view.activity
             view.renderErrorCheckPromoShipmentData(any())
         }
     }

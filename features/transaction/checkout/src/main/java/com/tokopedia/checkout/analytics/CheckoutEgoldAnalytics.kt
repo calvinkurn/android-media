@@ -11,7 +11,7 @@ import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class CheckoutEgoldAnalytics @Inject constructor(val userSession: UserSessionInterface) : TransactionAnalytics() {
+class CheckoutEgoldAnalytics @Inject constructor(private val userSession: UserSessionInterface) : TransactionAnalytics() {
 
     companion object {
         // Event Action

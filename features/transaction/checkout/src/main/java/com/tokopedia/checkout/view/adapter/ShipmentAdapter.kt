@@ -223,19 +223,33 @@ class ShipmentAdapter @Inject constructor(
         val view = layoutInflater.inflate(viewType, parent, false)
         when (viewType) {
             ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS -> {
-                return ShipmentRecipientAddressViewHolder(ViewItemShipmentRecipientAddressBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentRecipientAddressViewHolder(
+                    ViewItemShipmentRecipientAddressBinding.bind(
+                        view
+                    ),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
-                return ShipmentCostViewHolder(ViewItemShipmentCostDetailsBinding.bind(view), layoutInflater)
+                return ShipmentCostViewHolder(
+                    ViewItemShipmentCostDetailsBinding.bind(view),
+                    layoutInflater
+                )
             }
 
             ITEM_VIEW_PROMO_CHECKOUT -> {
-                return PromoCheckoutViewHolder(ItemPromoCheckoutBinding.bind(view), shipmentAdapterActionListener)
+                return PromoCheckoutViewHolder(
+                    ItemPromoCheckoutBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC -> {
-                return ShipmentInsuranceTncViewHolder(ItemInsuranceTncBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentInsuranceTncViewHolder(
+                    ItemInsuranceTncBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
@@ -243,15 +257,24 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentDonationViewHolder.ITEM_VIEW_DONATION -> {
-                return ShipmentDonationViewHolder(ItemDonationBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentDonationViewHolder(
+                    ItemDonationBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL -> {
-                return ShipmentCrossSellViewHolder(ItemCrossSellBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentCrossSellViewHolder(
+                    ItemCrossSellBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentEmasViewHolder.ITEM_VIEW_EMAS -> {
-                return ShipmentEmasViewHolder(CheckoutHolderItemEmasBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentEmasViewHolder(
+                    CheckoutHolderItemEmasBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ITEM_VIEW_PAYMENT_BUTTON -> {
@@ -267,7 +290,12 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
-                return ShippingCompletionTickerViewHolder(ItemTickerShippingCompletionBinding.bind(view), shipmentAdapterActionListener)
+                return ShippingCompletionTickerViewHolder(
+                    ItemTickerShippingCompletionBinding.bind(
+                        view
+                    ),
+                    shipmentAdapterActionListener
+                )
             }
 
             ITEM_VIEW_SHIPMENT_TICKER_ERROR -> {
@@ -279,7 +307,10 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentUpsellViewHolder(ItemUpsellBinding.bind(view), shipmentAdapterActionListener)
+                return ShipmentUpsellViewHolder(
+                    ItemUpsellBinding.bind(view),
+                    shipmentAdapterActionListener
+                )
             }
 
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
@@ -475,7 +506,8 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItem>) {
-        this.shipmentCartItemModelList = shipmentCartItems.filterIsInstance(ShipmentCartItemModel::class.java)
+        this.shipmentCartItemModelList =
+            shipmentCartItems.filterIsInstance(ShipmentCartItemModel::class.java)
 //        shipmentCartItems.forEach { shipmentCartItem ->
 //            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
 //            if (shipmentCartItem.isStateAllItemViewExpanded) {
@@ -845,7 +877,13 @@ class ShipmentAdapter @Inject constructor(
         }
         if (index > 0) {
             notifyItemChanged(index)
-            checkHasSelectAllCourier(false, index, shipmentCartItemModel!!.cartStringGroup, false, false)
+            checkHasSelectAllCourier(
+                false,
+                index,
+                shipmentCartItemModel!!.cartStringGroup,
+                false,
+                false
+            )
             if (shipmentCartItemModel.isEligibleNewShippingExperience) {
                 updateShippingCompletionTickerVisibility()
             }
@@ -1183,9 +1221,15 @@ class ShipmentAdapter @Inject constructor(
 
     fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel) {
         // todo: should refactor to update each model separately
-        val (topIndex, shipmentCartItems) = getShipmentCartItemGroupByCartString(shipmentCartItemModel.cartStringGroup)
+        val (topIndex, shipmentCartItems) = getShipmentCartItemGroupByCartString(
+            shipmentCartItemModel.cartStringGroup
+        )
         if (topIndex != RecyclerView.NO_POSITION) {
-            updateShipmentCartItemTop(topIndex, shipmentCartItemModel, shipmentCartItems.first() as ShipmentCartItemTopModel)
+            updateShipmentCartItemTop(
+                topIndex,
+                shipmentCartItemModel,
+                shipmentCartItems.first() as ShipmentCartItemTopModel
+            )
             updateCartItems(topIndex, shipmentCartItemModel, shipmentCartItems)
             updateShipmenCartItem(topIndex + shipmentCartItems.lastIndex, shipmentCartItemModel)
         }
@@ -1195,8 +1239,16 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onViewFreeShippingPlusBadge()
     }
 
-    override fun onClickLihatOnTickerOrderError(shopId: String, errorMessage: String, shipmentCartItemTopModel: ShipmentCartItemTopModel) {
-        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage, shipmentCartItemTopModel)
+    override fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        shipmentCartItemTopModel: ShipmentCartItemTopModel
+    ) {
+        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(
+            shopId,
+            errorMessage,
+            shipmentCartItemTopModel
+        )
     }
 
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
@@ -1257,7 +1309,9 @@ class ShipmentAdapter @Inject constructor(
         cartItemExpandModel: CartItemExpandModel
     ) {
         if (position != RecyclerView.NO_POSITION) {
-            val (topPosition, shipmentCartItems) = getShipmentCartItemGroupByCartString(cartItemExpandModel.cartStringGroup)
+            val (topPosition, shipmentCartItems) = getShipmentCartItemGroupByCartString(
+                cartItemExpandModel.cartStringGroup
+            )
             if (topPosition != RecyclerView.NO_POSITION) {
                 shipmentDataList[position] = cartItemExpandModel
                 notifyItemChanged(position)

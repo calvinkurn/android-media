@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
+import com.tokopedia.checkout.data.model.response.releasebookingstock.ReleaseBookingResponse
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import io.mockk.every

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
+import com.tokopedia.checkout.data.model.response.releasebookingstock.ReleaseBookingResponse
 import rx.Subscriber
 import timber.log.Timber
 

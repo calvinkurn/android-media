@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
-import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
@@ -107,10 +107,10 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
-        val mockContext = mockk<Activity>()
+        val mockContext = mockk<FragmentActivity>()
         val errorMessage = "error"
         every { mockContext.getString(R.string.message_error_checkout_empty) } returns errorMessage
-        every { view.activityContext } returns mockContext
+        every { view.activity } returns mockContext
 
         // When
         presenter.processCheckout()
@@ -211,7 +211,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
-        every { view.activityContext } returns null
+        every { view.activity } returns null
         coEvery { checkoutUseCase(any()) } returns
             CheckoutData().apply {
                 isError = true
@@ -249,8 +249,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
-        val mockContext = mockk<Activity>()
-        every { view.activityContext } returns mockContext
+        val mockContext = mockk<FragmentActivity>()
+        every { view.activity } returns mockContext
         coEvery { checkoutUseCase(any()) } returns
             CheckoutData().apply {
                 isError = true
@@ -289,7 +289,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
-        every { view.activityContext } returns null
+        every { view.activity } returns null
         coEvery { checkoutUseCase(any()) } throws IOException()
 
         // When
@@ -310,8 +310,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val validateUseResponse = DataProvider.provideValidateUseResponse()
         presenter.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -328,7 +328,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout request with donation THEN request should contains donation flag true`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -346,7 +346,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout request with egold THEN request should contains egold data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -369,7 +369,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout request with corner address THEN request should contains corner address data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         val tmpUserCornerId = "123"
         val tmpCornerId = "456"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -392,7 +392,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout params trade in laku 6 THEN request should contains trade in laku 6 data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -420,7 +420,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout params trade in indopaket THEN request should contains trade in indopaket data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -448,7 +448,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout params with fingerprint supported and fingerprint enabled THEN request should contains fingerprint data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -456,7 +456,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val checkoutRequest =
             presenter.generateCheckoutRequest()
 
-        val mockContext = mockk<Activity>()
+        val mockContext = mockk<FragmentActivity>()
         mockkObject(FingerPrintUtil)
         mockkObject(CheckoutFingerprintUtil)
         val fingerprintString = "abc"
@@ -473,7 +473,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
                 return ByteArray(0)
             }
         }
-        every { view.activityContext } returns mockContext
+        every { view.activity } returns mockContext
         every { CheckoutFingerprintUtil.getEnableFingerprintPayment(mockContext) } returns true
         every { CheckoutFingerprintUtil.getFingerprintPublicKey(mockContext) } returns publicKey
         every { FingerPrintUtil.getPublicKey(publicKey) } returns fingerprintString
@@ -497,7 +497,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate checkout params with fingerprint supported and fingerprint disabled THEN request should contains fingerprint data`() {
         // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -505,12 +505,12 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val checkoutRequest =
             presenter.generateCheckoutRequest()
 
-        val mockContext = mockk<Activity>()
+        val mockContext = mockk<FragmentActivity>()
         mockkObject(FingerPrintUtil)
         mockkObject(CheckoutFingerprintUtil)
         val fingerprintString = "abc"
         val publicKey = null
-        every { view.activityContext } returns mockContext
+        every { view.activity } returns mockContext
         every { CheckoutFingerprintUtil.getEnableFingerprintPayment(mockContext) } returns true
         every { CheckoutFingerprintUtil.getFingerprintPublicKey(mockContext) } returns publicKey
 
@@ -558,7 +558,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             }
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -637,7 +637,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             }
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -1023,8 +1023,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val validateUseResponse = DataProvider.provideValidateUseResponse()
         presenter.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -1077,8 +1077,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             false,
             false
         )
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -1128,8 +1128,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             false,
             false
         )
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -1175,8 +1175,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             false,
             false
         )
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
@@ -1222,8 +1222,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             false,
             false
         )
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+//        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+//        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }

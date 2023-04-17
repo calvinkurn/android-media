@@ -189,7 +189,6 @@ interface ShipmentContract {
         fun sendAnalyticsOnClickChooseOtherAddressShipment()
         fun sendAnalyticsOnClickTopDonation()
         fun sendAnalyticsOnClickChangeAddress()
-        fun sendAnalyticsOnClickSubtotal()
         fun sendAnalyticsOnClickCheckBoxDropShipperOption()
         fun sendAnalyticsOnClickCheckBoxInsuranceOption()
         fun sendAnalyticsScreenName(screenName: String)

@@ -42,18 +42,18 @@ class ShipmentItemDecoration : RecyclerView.ItemDecoration() {
                 viewHolder is ShipmentButtonPaymentViewHolder -> {
                     outRect.bottom = it.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_0).toInt()
                 }
-                viewHolder.adapterPosition == (parent.adapter?.itemCount ?: 0) - LAST_POSITION -> {
+                viewHolder.bindingAdapterPosition == (parent.adapter?.itemCount ?: 0) - LAST_POSITION -> {
                     outRect.bottom = it.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_14).toInt()
                 }
                 viewHolder is ShipmentCostViewHolder -> {
-                    if (viewHolder.adapterPosition == (parent.adapter?.itemCount ?: 0) - SECOND_LAST_POSITION) {
+                    if (viewHolder.bindingAdapterPosition == (parent.adapter?.itemCount ?: 0) - SECOND_LAST_POSITION) {
                         outRect.bottom = verticalSpaceHeight
                     } else {
                         outRect.bottom = it.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_0).toInt()
                     }
                 }
                 viewHolder is ShipmentInsuranceTncViewHolder -> {
-                    if (viewHolder.adapterPosition == (parent.adapter?.itemCount ?: 0) - SECOND_LAST_POSITION) {
+                    if (viewHolder.bindingAdapterPosition == (parent.adapter?.itemCount ?: 0) - SECOND_LAST_POSITION) {
                         outRect.top = verticalSpaceHeight
                     } else {
                         outRect.top = it.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_0).toInt()

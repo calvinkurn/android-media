@@ -45,7 +45,6 @@ interface ShipmentAdapterActionListener {
     fun onInsuranceChecked(position: Int)
     fun onPriorityChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
-    fun onSubTotalItemClicked(position: Int)
     fun onInsuranceTncClicked()
     fun onPriorityTncClicker()
     fun onOntimeDeliveryClicked(url: String)
@@ -96,7 +95,6 @@ interface ShipmentAdapterActionListener {
     fun onClickSwapInIndomaret()
     fun onSwapInUserAddress()
     val currentFragmentManager: FragmentManager
-    fun scrollToPositionWithOffset(position: Int, dy: Float)
     fun scrollToPositionWithOffset(position: Int)
     fun onClickLihatOnTickerOrderError(
         shopId: String,

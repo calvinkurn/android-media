@@ -143,7 +143,7 @@ class ShipmentPresenterValidateUseCourierPromoTest : BaseShipmentPresenterTest()
         val exception = ResponseErrorException()
         val mockContext = mockk<Activity>()
         mockkObject(ErrorHandler.Companion)
-        every { view.activityContext } returns mockContext
+        every { view.activity } returns mockContext
         every { ErrorHandler.Companion.getErrorMessage(any(), any(), any()) } returns errorMessage
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             exception

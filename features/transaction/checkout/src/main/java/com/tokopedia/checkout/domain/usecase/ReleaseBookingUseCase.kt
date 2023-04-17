@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
+import com.tokopedia.checkout.data.model.response.releasebookingstock.ReleaseBookingResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -25,7 +25,9 @@ class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase)
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
             .map {
-                val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(ReleaseBookingResponse::class.java)
+                val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(
+                    ReleaseBookingResponse::class.java
+                )
                 response
                     ?: throw MessageErrorException(it.getError(ReleaseBookingResponse::class.java)[0].message)
             }
