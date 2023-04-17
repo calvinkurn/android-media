@@ -1,7 +1,7 @@
 <resources>
     <string name="login_helper_header_title">Login Helper</string>
     <string name="login_helper_accounts_header_title">Login Helper Account Settings</string>
-    <string name="login_helper_add_edit_header_title">Login Helper Account Settings</string>
+    <string name="login_helper_add_edit_header_title">Login Helper Add Edit Accounts</string>
     <string name="login_helper_search_header_title">Login Helper Account Settings</string>
     <string name="login_helper_env_staging">Staging</string>
     <string name="login_helper_env_prod">Production</string>
@@ -9,6 +9,12 @@
     <string name="login_helper_warning_chip_click">Environment already set</string>
     <string name="login_helper_enter_email">Enter Email</string>
     <string name="login_helper_app_restart">Please restart the app</string>
-
     <string name="login_helper_btn_go_to_accounts_settings">Go to Account Settings</string>
+
+    <string name="login_helper_accounts_settings">Account Settings</string>
+    <string name="login_helper_btn_add_account">Add Account</string>
+    <string name="login_helper_btn_edit_account">Edit Account</string>
+    <string name="login_helper_btn_remove_account">Remove Account</string>
+    <string name="login_helper_add_account_tips">Environment is chosen from Config. Current environment is %s All operations related to accounts will be on  %s. </string>
+
 </resources>

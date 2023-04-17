@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.LoginHelperAccountSettingsViewModel
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperAddEditAccountViewModel
-import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
 import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
+import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -26,16 +26,16 @@ abstract class LoginHelperViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(LoginHelperViewModel::class)
+    @ViewModelKey(LoginHelperAccountSettingsViewModel::class)
     internal abstract fun provideLoginHelperAccountSettingsViewModel(viewModel: LoginHelperAccountSettingsViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(LoginHelperViewModel::class)
+    @ViewModelKey(LoginHelperAddEditAccountViewModel::class)
     internal abstract fun provideLoginHelperAddEditAccountViewModel(viewModel: LoginHelperAddEditAccountViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(LoginHelperViewModel::class)
+    @ViewModelKey(LoginHelperSearchAccountViewModel::class)
     internal abstract fun provideLoginHelperSearchAccountViewModel(viewModel: LoginHelperSearchAccountViewModel): ViewModel
 }
