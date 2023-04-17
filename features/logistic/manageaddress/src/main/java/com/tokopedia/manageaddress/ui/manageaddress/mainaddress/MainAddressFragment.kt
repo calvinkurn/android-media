@@ -249,7 +249,10 @@ class MainAddressFragment :
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
                             if (viewModel.isFromMoneyIn) {
-                                putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                                putExtra(
+                                    CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA,
+                                    _selectedAddressItem
+                                )
                             } else {
                                 putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
                             }
@@ -348,15 +351,13 @@ class MainAddressFragment :
                     }
                     if (viewModel.isClearData) clearData()
 
-                    if (viewModel.page == 1) {
-                        mainAddressListener?.setupTicker(
-                            firstTicker = if (it.data.listAddress.isNotEmpty()) {
-                                it.data.pageInfo?.ticker
-                            } else {
-                                null
-                            }
-                        )
-                    }
+                    setupTicker(
+                        if (it.data.listAddress.isNotEmpty()) {
+                            it.data.pageInfo?.ticker
+                        } else {
+                            null
+                        }
+                    )
 
                     if (it.data.listAddress.isNotEmpty()) {
                         updateStateForCheckoutSnippet(it.data.listAddress)
@@ -370,7 +371,7 @@ class MainAddressFragment :
                 }
 
                 is ManageAddressState.Fail -> {
-                    mainAddressListener?.setupTicker()
+                    setupTicker()
                     binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
@@ -383,6 +384,12 @@ class MainAddressFragment :
                     isLoading = true
                 }
             }
+        }
+    }
+
+    private fun setupTicker(firstTicker: String? = null) {
+        if (viewModel.page == 1) {
+            mainAddressListener?.setupTicker(firstTicker)
         }
     }
 
