@@ -16,8 +16,6 @@ object FeatureRecommendationMapper {
     private val gson = Gson()
 
     fun getTopAdsParams(engineData: FeatureEngineData?): TopAdsRequestParams? {
-        return gson.fromJson("\"{\"type\":\"tdn_user\",\"ep\":\"banner\",\"inventory_id\":\"15\",\"item\":\"3\",\"dimen_id_desktop\":\"8\",\"dimen_id_mobile\":\"3\",\"title\":\"Sesuai seleramu\",\"desc\":\"Cobain yuk\",\"section_title\":\"Promo Brand Pilihan\"}\"\n", TopAdsRequestParams::class.java)
-
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
