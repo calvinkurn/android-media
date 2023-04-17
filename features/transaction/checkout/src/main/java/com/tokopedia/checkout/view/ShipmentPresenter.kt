@@ -1439,7 +1439,8 @@ class ShipmentPresenter @Inject constructor(
                     order.shopId,
                     order.isPo,
                     order.poDuration.toString(),
-                    order.warehouseId
+                    order.warehouseId,
+                    order.cartStringGroup
                 )
             )
             if (order.codes.isNotEmpty()) {
@@ -1610,7 +1611,7 @@ class ShipmentPresenter @Inject constructor(
                         }
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
-                        if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
+                        if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
                             // ignore this, because there is a new one in the queue
                             Log.i("qwertyuiop", "skip promo queue 2")
                             continue@loopProcess
@@ -1656,7 +1657,7 @@ class ShipmentPresenter @Inject constructor(
                             }
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
-                        if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
+                        if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.clearPromoOrder != null }) {
                             // ignore this, because there is a new one in the queue
                             Log.i("qwertyuiop", "skip promo queue 4")
                             continue@loopProcess
@@ -1685,6 +1686,7 @@ class ShipmentPresenter @Inject constructor(
         itemPosition: Int,
         promoCode: String,
         cartString: String,
+        uniqueId: String,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
         couponStateChanged = true
@@ -1694,13 +1696,14 @@ class ShipmentPresenter @Inject constructor(
                 cartString = cartString,
                 promoCode = promoCode,
                 clearPromoOrder = ClearPromoOrder(
-                    shipmentCartItemModel.cartStringGroup,
+                    uniqueId,
                     shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                     arrayListOf(promoCode),
                     shipmentCartItemModel.shopId,
                     shipmentCartItemModel.isProductIsPreorder,
                     shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                    shipmentCartItemModel.fulfillmentId
+                    shipmentCartItemModel.fulfillmentId,
+                    shipmentCartItemModel.cartStringGroup
                 )
             )
         )
@@ -1783,7 +1786,7 @@ class ShipmentPresenter @Inject constructor(
                     hasPromo = true
                 } else if (shipmentCartItemModelList.isNotEmpty()) {
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
-                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == notEligiblePromo.uniqueId) {
+                        if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == notEligiblePromo.cartStringGroup) {
                             val codes = ArrayList<String>()
                             codes.add(notEligiblePromo.promoCode)
                             clearOrders.add(
@@ -1794,7 +1797,8 @@ class ShipmentPresenter @Inject constructor(
                                     shipmentCartItemModel.shopId,
                                     shipmentCartItemModel.isProductIsPreorder,
                                     shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                                    shipmentCartItemModel.fulfillmentId
+                                    shipmentCartItemModel.fulfillmentId,
+                                    shipmentCartItemModel.cartStringGroup
                                 )
                             )
                             hasPromo = true
@@ -1865,7 +1869,8 @@ class ShipmentPresenter @Inject constructor(
                                     cartItemModel.shopId,
                                     cartItemModel.isProductIsPreorder,
                                     cartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                                    cartItemModel.fulfillmentId
+                                    cartItemModel.fulfillmentId,
+                                    cartItemModel.cartStringGroup
                                 )
                             )
                         }
@@ -1904,13 +1909,14 @@ class ShipmentPresenter @Inject constructor(
                 boCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                 clearOrders.add(
                     ClearPromoOrder(
-                        shipmentCartItemModel.cartStringGroup,
+                        shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                         shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                         boCodes,
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
                         shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                        shipmentCartItemModel.fulfillmentId
+                        shipmentCartItemModel.fulfillmentId,
+                        shipmentCartItemModel.cartStringGroup
                     )
                 )
                 hasBo = true
@@ -2030,13 +2036,15 @@ class ShipmentPresenter @Inject constructor(
                             if (it.boCode.isNotEmpty()) {
                                 clearCacheAutoApply(
                                     it,
-                                    shipmentValidatePromoHolderData.promoCode
+                                    shipmentValidatePromoHolderData.promoCode,
+                                    it.boUniqueId
                                 )
                                 clearOrderPromoCodeFromLastValidateUseRequest(
                                     shipmentValidatePromoHolderData.cartString,
                                     shipmentValidatePromoHolderData.promoCode
                                 )
                                 it.boCode = ""
+                                it.boUniqueId = ""
                             }
                         }
                 } else {
@@ -2049,13 +2057,15 @@ class ShipmentPresenter @Inject constructor(
                             if (it.boCode.isNotEmpty()) {
                                 clearCacheAutoApply(
                                     it,
-                                    shipmentValidatePromoHolderData.promoCode
+                                    shipmentValidatePromoHolderData.promoCode,
+                                    it.boUniqueId
                                 )
                                 clearOrderPromoCodeFromLastValidateUseRequest(
                                     shipmentValidatePromoHolderData.cartString,
                                     shipmentValidatePromoHolderData.promoCode
                                 )
                                 it.boCode = ""
+                                it.boUniqueId = ""
                             }
                         }
                 }
@@ -2092,13 +2102,15 @@ class ShipmentPresenter @Inject constructor(
                         if (it.boCode.isNotEmpty()) {
                             clearCacheAutoApply(
                                 it,
-                                shipmentValidatePromoHolderData.promoCode
+                                shipmentValidatePromoHolderData.promoCode,
+                                it.boUniqueId
                             )
                             clearOrderPromoCodeFromLastValidateUseRequest(
                                 shipmentValidatePromoHolderData.cartString,
                                 shipmentValidatePromoHolderData.promoCode
                             )
                             it.boCode = ""
+                            it.boUniqueId = ""
                         }
                     }
             }
@@ -2324,6 +2336,7 @@ class ShipmentPresenter @Inject constructor(
             ) {
                 doUnapplyBo(
                     shipmentCartItemModel.cartStringGroup,
+                    shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                     shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                 )
                 unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartStringGroup)
@@ -2340,13 +2353,13 @@ class ShipmentPresenter @Inject constructor(
         return Pair(reloadedUniqueIds, unappliedBoPromoUniqueIds)
     }
 
-    fun doUnapplyBo(cartStringGroup: String, promoCode: String) {
+    fun doUnapplyBo(cartStringGroup: String, uniqueId: String, promoCode: String) {
         val itemAdapterPosition =
             view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(cartStringGroup) ?: -1
         val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             view?.resetCourier(itemAdapterPosition)
-            clearCacheAutoApply(shipmentCartItemModel, promoCode)
+            clearCacheAutoApply(shipmentCartItemModel, promoCode, uniqueId)
             clearOrderPromoCodeFromLastValidateUseRequest(cartStringGroup, promoCode)
             view?.onNeedUpdateViewItem(itemAdapterPosition)
         }
@@ -2354,7 +2367,8 @@ class ShipmentPresenter @Inject constructor(
 
     private fun clearCacheAutoApply(
         shipmentCartItemModel: ShipmentCartItemModel,
-        promoCode: String
+        promoCode: String,
+        uniqueId: String
     ) {
         val globalCodes: List<String> = ArrayList()
         val clearOrders: MutableList<ClearPromoOrder> = ArrayList()
@@ -2362,13 +2376,14 @@ class ShipmentPresenter @Inject constructor(
         promoCodes.add(promoCode)
         clearOrders.add(
             ClearPromoOrder(
-                shipmentCartItemModel.cartStringGroup,
+                uniqueId,
                 shipmentCartItemModel.shipmentCartData.boMetadata.boType,
                 promoCodes,
                 shipmentCartItemModel.shopId,
                 shipmentCartItemModel.isProductIsPreorder,
                 shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                shipmentCartItemModel.fulfillmentId
+                shipmentCartItemModel.fulfillmentId,
+                shipmentCartItemModel.cartStringGroup
             )
         )
         viewModelScope.launch(dispatchers.immediate) {
@@ -2442,6 +2457,7 @@ class ShipmentPresenter @Inject constructor(
                         ) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartStringGroup,
+                                shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                             )
                         }
@@ -4281,6 +4297,7 @@ class ShipmentPresenter @Inject constructor(
                                                     itemPosition,
                                                     promoCode,
                                                     cartString,
+                                                    voucherOrdersItemUiModel.uniqueId,
                                                     shipmentCartItemModel
                                                 )
                                                 clearOrderPromoCodeFromLastValidateUseRequest(
@@ -4399,6 +4416,7 @@ class ShipmentPresenter @Inject constructor(
                         itemPosition,
                         promoCode,
                         cartString,
+                        voucherOrdersItemUiModel.uniqueId,
                         shipmentCartItemModel
                     )
                     clearOrderPromoCodeFromLastValidateUseRequest(cartString, promoCode)

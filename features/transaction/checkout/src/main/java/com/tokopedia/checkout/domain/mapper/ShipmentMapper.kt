@@ -217,6 +217,11 @@ class ShipmentMapper @Inject constructor() {
                     shippingId = it.shippingId
                     spId = it.spId
                     boCode = it.boCode
+                    boUniqueId = if (it.boCode.isNotEmpty()) {
+                        shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data.voucherOrders.first { voucher -> voucher.code == it.boCode && voucher.cartStringGroup == it.cartString }.uniqueId
+                    } else {
+                        ""
+                    }
                     dropshipperName = it.dropshiper.name
                     dropshipperPhone = it.dropshiper.telpNo
                     isUseInsurance = it.isInsurance

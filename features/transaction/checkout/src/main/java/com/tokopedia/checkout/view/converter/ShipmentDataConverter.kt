@@ -245,6 +245,7 @@ class ShipmentDataConverter @Inject constructor() {
                 shippingId = groupShop.shippingId,
                 spId = groupShop.spId,
                 boCode = groupShop.boCode,
+                boUniqueId = groupShop.boUniqueId,
                 dropshiperName = groupShop.dropshipperName,
                 dropshiperPhone = groupShop.dropshipperPhone,
                 isInsurance = groupShop.isUseInsurance,

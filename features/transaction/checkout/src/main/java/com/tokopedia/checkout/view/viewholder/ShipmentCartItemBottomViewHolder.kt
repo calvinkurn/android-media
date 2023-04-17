@@ -214,6 +214,7 @@ class ShipmentCartItemBottomViewHolder(
         if (shipmentCartItemModel.isError) {
             actionListener?.onCancelVoucherLogisticClicked(
                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code,
+                shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                 bindingAdapterPosition,
                 shipmentCartItemModel
             )

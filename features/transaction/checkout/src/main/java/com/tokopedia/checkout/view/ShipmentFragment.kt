@@ -1466,6 +1466,7 @@ class ShipmentFragment :
                         messageUiModel.state = voucherOrder.messageUiModel.state
                         messageUiModel.text = voucherOrder.messageUiModel.text
                         log.message = messageUiModel
+                        log.uniqueId = voucherOrder.uniqueId
                         shipmentCartItemModel.voucherLogisticItemUiModel = log
                         onNeedUpdateViewItem(
                             shipmentAdapter.getShipmentCartItemModelPosition(
@@ -2043,6 +2044,7 @@ class ShipmentFragment :
                             val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
                             notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
                             notEligiblePromoHolderdata.uniqueId = voucherOrdersItemUiModel.uniqueId
+                            notEligiblePromoHolderdata.cartStringGroup = voucherOrdersItemUiModel.cartStringGroup
                             notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                         }
                     }
@@ -2405,6 +2407,7 @@ class ShipmentFragment :
                         itemPosition,
                         shipmentCartItemModel.boCode,
                         shipmentCartItemModel.cartStringGroup,
+                        shipmentCartItemModel.boUniqueId,
                         shipmentCartItemModel
                     )
                     shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(
@@ -2412,6 +2415,7 @@ class ShipmentFragment :
                         shipmentCartItemModel.boCode
                     )
                     shipmentCartItemModel.boCode = ""
+                    shipmentCartItemModel.boUniqueId = ""
                     showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message))
                 } else if (isBoAutoApplyFlow) {
                     showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message))
@@ -2701,6 +2705,7 @@ class ShipmentFragment :
                             0,
                             promoLogisticCode,
                             shipmentCartItemModel.cartStringGroup,
+                            shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                             shipmentCartItemModel
                         )
                         val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
@@ -3037,6 +3042,7 @@ class ShipmentFragment :
     // cancel BO if order is error
     override fun onCancelVoucherLogisticClicked(
         pslCode: String,
+        uniqueId: String,
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
@@ -3045,6 +3051,7 @@ class ShipmentFragment :
             position,
             pslCode,
             shipmentCartItemModel.cartStringGroup,
+            uniqueId,
             shipmentCartItemModel
         )
     }
@@ -3129,9 +3136,10 @@ class ShipmentFragment :
                     val promoLogisticCode = shipmentCartItemModel.voucherLogisticItemUiModel?.code
                         ?: courierItemData.selectedShipper.logPromoCode!!
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(
-                        0,
+                        position,
                         promoLogisticCode,
                         shipmentCartItemModel.cartStringGroup,
+                        shipmentCartItemModel.voucherLogisticItemUiModel?.uniqueId ?: shipmentCartItemModel.cartItemModels.first().cartStringOrder,
                         shipmentCartItemModel
                     )
                     val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest

@@ -48,6 +48,7 @@ data class ShipmentCartItemModel(
     val shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",
+    var boUniqueId: String = "",
     var dropshiperName: String = "",
     var dropshiperPhone: String = "",
     val isInsurance: Boolean = false,

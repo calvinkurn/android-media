@@ -19,6 +19,7 @@ import rx.subjects.PublishSubject
 interface ShipmentAdapterActionListener {
     fun onCancelVoucherLogisticClicked(
         pslCode: String,
+        uniqueId: String,
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel
     )

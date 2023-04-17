@@ -8,7 +8,8 @@ data class NotEligiblePromoHolderdata(
     var iconType: Int = 0,
     var errorMessage: String = "",
     var showShopSection: Boolean = false,
-    var uniqueId: String = ""
+    var uniqueId: String = "",
+    var cartStringGroup: String = ""
 ) {
     companion object {
         @JvmStatic
