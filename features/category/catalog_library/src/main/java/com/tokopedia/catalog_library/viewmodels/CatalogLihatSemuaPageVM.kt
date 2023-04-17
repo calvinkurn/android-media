@@ -25,8 +25,8 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
     val catalogLihatLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogLihatLiveData
 
-    private val _brandNameLiveData = MutableLiveData<String>()
-    val brandNameLiveData: LiveData<String> =
+    private val _brandNameLiveData = MutableLiveData<String?>()
+    val brandNameLiveData: LiveData<String?> =
         _brandNameLiveData
 
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()

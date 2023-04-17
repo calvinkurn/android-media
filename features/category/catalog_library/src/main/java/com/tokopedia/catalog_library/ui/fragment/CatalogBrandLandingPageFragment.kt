@@ -172,7 +172,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         }
 
         brandLandingPageViewModel?.brandNameLiveData?.observe(viewLifecycleOwner){ brandName ->
-            if(brandName.isNotBlank()){
+            if(!brandName.isNullOrBlank()){
                 header?.headerTitle = brandName
                 brandNameStr = brandName
             }
