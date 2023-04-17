@@ -199,7 +199,7 @@ class DiscoveryFragment :
     private val trackingQueue: TrackingQueue by lazy {
         (context as DiscoveryActivity).trackingQueue
     }
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
@@ -677,6 +677,7 @@ class DiscoveryFragment :
                     setPageErrorState(it)
                 }
             }
+            mSwipeRefreshLayout.isEnabled = true
             mSwipeRefreshLayout.isRefreshing = false
         })
 

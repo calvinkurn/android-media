@@ -1,12 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -26,6 +28,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner), SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback {
+    private val delay: Long = 1000L
     private lateinit var quickFilterViewModel: QuickFilterViewModel
     private val quickSortFilter: SortFilter = itemView.findViewById(R.id.quick_sort_filter)
     private var sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
@@ -34,10 +37,31 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     }
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var componentName: String? = null
+    private var runnable = Runnable {
+        (fragment as DiscoveryFragment).mSwipeRefreshLayout.isEnabled = true
+    }
 
     init {
         quickSortFilter.dismissListener = {
             quickFilterViewModel.clearQuickFilters()
+        }
+    }
+
+    private fun setScrollListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            quickSortFilter.sortFilterHorizontalScrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+                try {
+                    if ((fragment as DiscoveryFragment).mSwipeRefreshLayout.isEnabled)
+                        fragment.mSwipeRefreshLayout.isEnabled = false
+                    quickSortFilter.removeCallbacks(runnable)
+                    runnable = Runnable {
+                        fragment.mSwipeRefreshLayout.isEnabled = true
+                    }
+                    quickSortFilter.postDelayed(runnable, delay)
+                } catch (e: Exception) {
+                    Utils.logException(e)
+                }
+            }
         }
     }
 
@@ -115,9 +139,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                     prop?.chipSize == Constant.ChipSize.LARGE -> ""
                     else -> fragment.getString(com.tokopedia.filter.R.string.filter)
                 }
-            if (prop?.chipSize == Constant.ChipSize.LARGE)
+            if (prop?.chipSize == Constant.ChipSize.LARGE) {
                 it.filterSize = SortFilter.SIZE_LARGE
-            else
+                setScrollListener()
+            } else
                 it.filterSize = SortFilter.SIZE_DEFAULT
             it.parentListener = {
                 if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
