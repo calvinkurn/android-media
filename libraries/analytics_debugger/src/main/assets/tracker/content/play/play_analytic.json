@@ -34,7 +34,7 @@
       "eventAction": "null",
       "eventCategory": "null",
       "eventLabel": "null",
-      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true|false)",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark true",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -531,6 +531,7 @@
         }
       ],
       "item_list": "/groupchat - featured product",
+      "item_list_name": "/groupchat - featured product",
       "currentSite": ".*",
       "userId": ".*",
       "businessUnit": "play"

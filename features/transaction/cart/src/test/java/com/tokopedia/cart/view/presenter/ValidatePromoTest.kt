@@ -61,20 +61,24 @@ class ValidatePromoTest : BaseCartTest() {
         every { view.getAllShopDataList() } returns shopList
 
         // WHEN
-        cartListPresenter.validateBoPromo(ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
-            voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    shippingId = 1,
-                    spId = 1,
-                    code = "asdf",
-                    type = "logistic",
-                    uniqueId = "123",
-                    messageUiModel = MessageUiModel(
-                        state = "green"
+        cartListPresenter.validateBoPromo(
+            ValidateUsePromoRevampUiModel(
+                promoUiModel = PromoUiModel(
+                    voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            shippingId = 1,
+                            spId = 1,
+                            code = "asdf",
+                            type = "logistic",
+                            uniqueId = "123",
+                            messageUiModel = MessageUiModel(
+                                state = "green"
+                            )
+                        )
                     )
-                ),
+                )
             )
-        )))
+        )
 
         // THEN
         verify(inverse = true) {
@@ -92,57 +96,61 @@ class ValidatePromoTest : BaseCartTest() {
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // WHEN
-        cartListPresenter.validateBoPromo(ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
-            voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    spId = 1,
-                    code = "asdf",
-                    type = "logistic",
-                    uniqueId = "123",
-                    messageUiModel = MessageUiModel(
-                        state = "green"
+        cartListPresenter.validateBoPromo(
+            ValidateUsePromoRevampUiModel(
+                promoUiModel = PromoUiModel(
+                    voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            spId = 1,
+                            code = "asdf",
+                            type = "logistic",
+                            uniqueId = "123",
+                            messageUiModel = MessageUiModel(
+                                state = "green"
+                            )
+                        ),
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            shippingId = 1,
+                            code = "asdf",
+                            type = "logistic",
+                            uniqueId = "123",
+                            messageUiModel = MessageUiModel(
+                                state = "green"
+                            )
+                        ),
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            shippingId = 1,
+                            spId = 1,
+                            code = "asdf",
+                            uniqueId = "123",
+                            messageUiModel = MessageUiModel(
+                                state = "green"
+                            )
+                        ),
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            shippingId = 1,
+                            spId = 1,
+                            code = "asdf",
+                            type = "logistic",
+                            uniqueId = "123",
+                            messageUiModel = MessageUiModel(
+                                state = "red"
+                            )
+                        ),
+                        PromoCheckoutVoucherOrdersItemUiModel(
+                            shippingId = 1,
+                            spId = 1,
+                            code = "asdf",
+                            type = "logistic",
+                            uniqueId = "321",
+                            messageUiModel = MessageUiModel(
+                                state = "green"
+                            )
+                        )
                     )
-                ),
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    shippingId = 1,
-                    code = "asdf",
-                    type = "logistic",
-                    uniqueId = "123",
-                    messageUiModel = MessageUiModel(
-                        state = "green"
-                    )
-                ),
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    shippingId = 1,
-                    spId = 1,
-                    code = "asdf",
-                    uniqueId = "123",
-                    messageUiModel = MessageUiModel(
-                        state = "green"
-                    )
-                ),
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    shippingId = 1,
-                    spId = 1,
-                    code = "asdf",
-                    type = "logistic",
-                    uniqueId = "123",
-                    messageUiModel = MessageUiModel(
-                        state = "red"
-                    )
-                ),
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    shippingId = 1,
-                    spId = 1,
-                    code = "asdf",
-                    type = "logistic",
-                    uniqueId = "321",
-                    messageUiModel = MessageUiModel(
-                        state = "green"
-                    )
-                ),
+                )
             )
-        )))
+        )
 
         // THEN
         verify(exactly = 1) {

@@ -101,10 +101,7 @@ data class InboxReputationResponseWrapper(
                         val minBadgeScore: Int = Int.ZERO,
                         @SerializedName("reputationBadgeUrl")
                         @Expose
-                        val reputationBadgeUrl: String = "",
-                        @SerializedName("isFavorited")
-                        @Expose
-                        var isFavorited: Int = Int.ZERO,
+                        val reputationBadgeUrl: String = ""
                     )
                 }
 

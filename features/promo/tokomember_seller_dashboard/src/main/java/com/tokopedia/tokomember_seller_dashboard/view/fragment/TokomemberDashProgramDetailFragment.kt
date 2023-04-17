@@ -27,6 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_ACTIVE
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_DETAIL_WAITING
 import com.tokopedia.tokomember_seller_dashboard.util.TM_DETAIL_BG
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
@@ -34,6 +35,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
+import kotlinx.android.synthetic.main.tm_program_detail_card.*
+import kotlinx.android.synthetic.main.tm_program_detail_tv_card.*
 import javax.inject.Inject
 
 class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
@@ -134,25 +137,49 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvProgramStatus.visibility = View.VISIBLE
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr
         when(membershipGetProgramForm?.programForm?.statusStr){
-            PROGRAM_DETAIL_ACTIVE ->{
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, true), tag).addToBackStack(tag).commit()
+            PROGRAM_DETAIL_ACTIVE -> {
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(
+                        arguments, true,
+                        PROGRAM_DETAIL_SCREEN
+                    ), tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
             PROGRAM_DETAIL_WAITING -> {
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList,
+                    TokomemberDashCouponFragment.newInstance(
+                        arguments,
+                        false,
+                        PROGRAM_DETAIL_SCREEN
+                    ),
+                    tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_YN400
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
             else -> {
-                childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments, false), tag).addToBackStack(tag).commit()
+                childFragmentManager.beginTransaction().add(
+                    R.id.frameCouponList,
+                    TokomemberDashCouponFragment.newInstance(
+                        arguments,
+                        false,
+                        PROGRAM_DETAIL_SCREEN
+                    ),
+                    tag
+                ).addToBackStack(tag).commit()
                 tvProgramStatus.backgroundTintList = context?.let {
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    )
                 }?.let { ColorStateList.valueOf(it) }
             }
         }

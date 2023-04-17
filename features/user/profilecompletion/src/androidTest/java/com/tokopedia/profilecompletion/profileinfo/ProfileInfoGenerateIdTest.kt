@@ -4,7 +4,7 @@ import com.tokopedia.profilecompletion.common.ViewIdGenerator
 import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test
 
-class ProfileInfoGenerateIdTest: ProfileInfoInstrumentTest() {
+class ProfileInfoGenerateIdTest : ProfileInfoInstrumentTest() {
     @Test
     fun generate_view_id_file() {
         runTest {

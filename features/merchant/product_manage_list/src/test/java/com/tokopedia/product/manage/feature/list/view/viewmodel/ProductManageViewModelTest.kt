@@ -51,7 +51,6 @@ import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.Edit
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.BROADCAST_CHAT

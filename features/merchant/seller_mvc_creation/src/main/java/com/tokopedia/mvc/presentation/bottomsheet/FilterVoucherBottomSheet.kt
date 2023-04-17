@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
@@ -36,10 +36,11 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(filter: FilterModel): FilterVoucherBottomSheet {
+        fun newInstance(filter: FilterModel, enableResetButton: Boolean): FilterVoucherBottomSheet {
             return FilterVoucherBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER, filter)
+                    putBoolean(BundleConstant.BUNDLE_KEY_ENABLE_RESET_FILTER, enableResetButton)
                 }
             }
         }
@@ -50,6 +51,7 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<SmvcBottomsheetFilterVoucherBinding>()
     private var listener: FilterVoucherBottomSheetListener? = null
     private val filter by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER) as? FilterModel }
+    private val enableResetButton by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_ENABLE_RESET_FILTER).orFalse() }
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -80,7 +82,7 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
                 }
             }
             binding?.setupContentViews(it)
-            view.post { bottomSheetAction.gone() }
+            view.post { bottomSheetAction.isVisible = enableResetButton }
         }
     }
 

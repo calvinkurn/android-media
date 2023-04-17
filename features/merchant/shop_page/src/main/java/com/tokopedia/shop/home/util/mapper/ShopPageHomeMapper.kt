@@ -400,27 +400,29 @@ object ShopPageHomeMapper {
         isLoggedIn: Boolean,
         isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
-        shopId: String
+        shopId: String,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
-            return mapToVoucherUiModel(widgetResponse)
+            return mapToVoucherUiModel(widgetResponse, widgetLayout)
         }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
-                mapToDisplayWidget(widgetResponse)
+                mapToDisplayWidget(widgetResponse, widgetLayout)
             }
             PRODUCT.toLowerCase() -> {
-                mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct, isEnableDirectPurchase)
+                mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct, isEnableDirectPurchase, widgetLayout)
             }
             CAMPAIGN.toLowerCase() -> {
                 if (isThematicWidgetShown) {
                     when (widgetResponse.name) {
-                        ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
-                        BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase)
+                        ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse, widgetLayout)
+                        BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse, widgetLayout)
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout)
                         NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse,
-                            isLoggedIn
+                            isLoggedIn,
+                            widgetLayout
                         )
                         else -> null
                     }
@@ -428,25 +430,28 @@ object ShopPageHomeMapper {
                     when (widgetResponse.name) {
                         FLASH_SALE_TOKO -> mapToFlashSaleUiModel(
                             widgetResponse,
-                            isEnableDirectPurchase
+                            isEnableDirectPurchase,
+                            widgetLayout
                         )
                         NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse,
-                            isLoggedIn
+                            isLoggedIn,
+                            widgetLayout
                         )
                         else -> null
                     }
                 }
             }
-            DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(
                 widgetResponse,
                 isMyOwnProduct,
-                isEnableDirectPurchase
+                isEnableDirectPurchase,
+                widgetLayout
             )
-            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
-            CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse)
-            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId)
+            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse, widgetLayout)
+            CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout)
+            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout)
             else -> {
                 null
             }
@@ -456,24 +461,28 @@ object ShopPageHomeMapper {
     private fun mapToProductPersonalizationUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
         isMyProduct: Boolean,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ) = ShopHomeCarousellProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase)
     )
 
     private fun mapToShowcaseListUiModel(
-        widgetResponse: ShopLayoutWidget.Widget
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ) = ShopHomeShowcaseListSliderUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
         showcaseListItem = mapToShowcaseListItemUiModel(
             widgetResponse.data,
             widgetResponse.name,
@@ -482,7 +491,8 @@ object ShopPageHomeMapper {
     )
 
     private fun mapToCardDonationUiModel(
-        widgetResponse: ShopLayoutWidget.Widget
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeCardDonationUiModel {
         val header = widgetResponse.header.copy(
             ctaLink = widgetResponse.header.ctaLink + "&need_login=true"
@@ -492,19 +502,22 @@ object ShopPageHomeMapper {
             layoutOrder = widgetResponse.layoutOrder,
             name = widgetResponse.name,
             type = widgetResponse.type,
-            header = mapToHeaderModel(header)
+            header = mapToHeaderModel(header),
+            isFestivity = widgetLayout?.isFestivity.orFalse(),
         )
     }
 
     private fun mapToProductBundleListUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        shopId: String
+        shopId: String,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ) = ShopHomeProductBundleListUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name, shopId)
     )
 
@@ -548,7 +561,8 @@ object ShopPageHomeMapper {
 
     private fun mapToNewProductLaunchCampaignUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        isLoggedIn: Boolean
+        isLoggedIn: Boolean,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeNewProductLaunchCampaignUiModel {
         return ShopHomeNewProductLaunchCampaignUiModel(
             widgetResponse.widgetID,
@@ -556,13 +570,15 @@ object ShopPageHomeMapper {
             widgetResponse.name,
             widgetResponse.type,
             mapToHeaderModel(widgetResponse.header),
+            widgetLayout?.isFestivity.orFalse(),
             mapToListNewProductLaunchCampaignItem(widgetResponse.data, isLoggedIn)
         )
     }
 
     private fun mapToFlashSaleUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeFlashSaleUiModel {
         return ShopHomeFlashSaleUiModel(
             widgetResponse.widgetID,
@@ -570,6 +586,7 @@ object ShopPageHomeMapper {
             widgetResponse.name,
             widgetResponse.type,
             mapToHeaderModel(widgetResponse.header),
+            widgetLayout?.isFestivity.orFalse(),
             mapToFlashSaleUiModelList(widgetResponse.data, isEnableDirectPurchase)
         )
     }
@@ -721,28 +738,39 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToVoucherUiModel(widgetResponse: ShopLayoutWidget.Widget): ShopHomeVoucherUiModel {
+    private fun mapToVoucherUiModel(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    ): ShopHomeVoucherUiModel {
         return ShopHomeVoucherUiModel(
             widgetResponse.widgetID,
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
-            mapToHeaderModel(widgetResponse.header)
+            mapToHeaderModel(widgetResponse.header),
+            widgetLayout?.isFestivity.orFalse()
         )
     }
 
-    private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {
+    private fun mapToDisplayWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    ): ShopHomeDisplayWidgetUiModel {
         return ShopHomeDisplayWidgetUiModel(
             widgetResponse.widgetID,
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
             mapToHeaderModel(widgetResponse.header),
+            widgetLayout?.isFestivity.orFalse(),
             mapToListDisplayWidgetItem(widgetResponse.data)
         )
     }
 
-    private fun mapToThematicWidget(widgetResponse: ShopLayoutWidget.Widget): ThematicWidgetUiModel {
+    private fun mapToThematicWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    ): ThematicWidgetUiModel {
         return ThematicWidgetUiModel(
             widgetId = widgetResponse.widgetID,
             layoutOrder = widgetResponse.layoutOrder,
@@ -777,13 +805,15 @@ object ShopPageHomeMapper {
                             url = labelGroup.url,
                             type = labelGroup.type
                         )
-                    }
+                    },
+                    rating = it.rating.toDoubleOrZero()
                 )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
             firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
             secondBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.secondColor.orEmpty(),
-            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty()
+            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty(),
+            isFestivity = widgetLayout?.isFestivity.orFalse()
         )
     }
 
@@ -809,7 +839,8 @@ object ShopPageHomeMapper {
     private fun mapToProductWidgetUiModel(
         widgetModel: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeCarousellProductUiModel {
         return ShopHomeCarousellProductUiModel(
             widgetModel.widgetID,
@@ -817,6 +848,7 @@ object ShopPageHomeMapper {
             widgetModel.name,
             widgetModel.type,
             mapToHeaderModel(widgetModel.header),
+            widgetLayout?.isFestivity.orFalse(),
             mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct, isEnableDirectPurchase)
         )
     }
@@ -951,12 +983,16 @@ object ShopPageHomeMapper {
     /*
      * Play widget
      */
-    private fun mapCarouselPlayWidget(model: ShopLayoutWidget.Widget) = CarouselPlayWidgetUiModel(
+    private fun mapCarouselPlayWidget(
+        model: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    ) = CarouselPlayWidgetUiModel(
         widgetId = model.widgetID,
         layoutOrder = model.layoutOrder,
         name = model.name,
         type = model.type,
-        header = mapToHeaderModel(model.header)
+        header = mapToHeaderModel(model.header),
+        widgetLayout?.isFestivity.orFalse()
     )
 
     fun mapToListShopHomeWidget(
@@ -965,11 +1001,12 @@ object ShopPageHomeMapper {
         isLoggedIn: Boolean,
         isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
-        shopId: String
+        shopId: String,
+        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true) }.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId })) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -998,6 +1035,7 @@ object ShopPageHomeMapper {
                     it.header.title,
                     it.widgetType,
                     it.widgetName,
+                    it.isFestivity,
                     ShopPageHeaderUiModel(
                         data = it.header.data.map {
                             ShopPageHeaderDataUiModel(
@@ -1037,7 +1075,8 @@ object ShopPageHomeMapper {
                     isLoggedIn,
                     isThematicWidgetShown,
                     isEnableDirectPurchase,
-                    shopId
+                    shopId,
+                    it
                 )?.let { resModel ->
                     when (resModel) {
                         is BaseShopHomeWidgetUiModel -> {
@@ -1065,7 +1104,10 @@ object ShopPageHomeMapper {
             ?: shopProductResponse.stock
     }
 
-    fun mapToShopHomeProductBundleDetailUiModel(bundleDetailUiModel: BundleDetailUiModel): ShopHomeProductBundleDetailUiModel {
+    fun mapToShopHomeProductBundleDetailUiModel(
+        bundleDetailUiModel: BundleDetailUiModel,
+        bundleListUiModel: ShopHomeProductBundleListUiModel?
+    ): ShopHomeProductBundleDetailUiModel {
         return ShopHomeProductBundleDetailUiModel(
             bundleId = bundleDetailUiModel.bundleId,
             originalPrice = bundleDetailUiModel.originalPrice,
@@ -1078,7 +1120,10 @@ object ShopPageHomeMapper {
             savingAmountWording = bundleDetailUiModel.savingAmountWording,
             minOrder = bundleDetailUiModel.minOrder,
             minOrderWording = bundleDetailUiModel.minOrderWording,
-            isSelected = bundleDetailUiModel.isSelected
+            isSelected = bundleDetailUiModel.isSelected,
+            isFestivity = bundleListUiModel?.isFestivity.orFalse(),
+            widgetId = bundleListUiModel?.widgetId.orEmpty(),
+            widgetMasterId = bundleListUiModel?.widgetMasterId.orEmpty()
         )
     }
 

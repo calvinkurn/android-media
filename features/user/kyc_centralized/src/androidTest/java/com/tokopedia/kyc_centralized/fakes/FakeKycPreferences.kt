@@ -14,4 +14,16 @@ class FakeKycPreferences: KycSharedPreference {
     override fun removeCache(key: String) {
         return
     }
+
+    override fun saveStringCache(key: String, value: String) {
+        return
+    }
+
+    override fun getStringCache(key: String): String {
+        return ""
+    }
+
+    override fun removeStringCache(key: String) {
+        return
+    }
 }

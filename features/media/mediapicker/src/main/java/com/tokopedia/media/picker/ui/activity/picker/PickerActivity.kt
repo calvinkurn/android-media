@@ -29,7 +29,8 @@ import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
-import com.tokopedia.media.picker.utils.isOppoManufacturer
+import com.tokopedia.media.picker.utils.parcelableArrayListExtra
+import com.tokopedia.media.picker.utils.parcelableExtra
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
@@ -41,8 +42,6 @@ import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -70,6 +69,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     private val startTimeInMillis = System.currentTimeMillis()
     private var loaderDialog: LoaderDialogWidget? = null
+    private var isOnVideoRecording = false
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -113,10 +113,20 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         setupParam()
     }
 
+    override fun onResume() {
+        super.onResume()
+        resetVideoRecordingState()
+    }
+
+    override fun onBackPressed() {
+        if (isOnVideoRecording) return
+        super.onBackPressed()
+    }
+
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
 
-        if (isOppoManufacturer()) {
+        if (isSplitInstallEnabled()) {
             SplitCompat.installActivity(this)
         }
     }
@@ -136,12 +146,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
-                eventBus.notifyDataOnChangedEvent(it)
-            }
+            data.parcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)
+                ?.toList()
+                ?.let {
+                    eventBus.notifyDataOnChangedEvent(it)
+                }
 
             // exit picker
-            data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
+            data.parcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
                 onRemoveSubSourceMedia()
 
                 val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
@@ -153,7 +165,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                 }
             }
         } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
-            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+            data.parcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
                 onFinishIntent(
                     PickerResult(it.originalPaths, editedImages = it.editedImages)
                 )
@@ -169,12 +181,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
-    private fun setupParam() {
-        val mParam = intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
+    private fun isSplitInstallEnabled(): Boolean {
+        return true
+    }
 
-        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName()
-                .isEmpty()
-        ) {
+    private fun resetVideoRecordingState() {
+        isOnVideoRecording = false
+        viewModel.isOnVideoRecording(isOnVideoRecording)
+    }
+
+    private fun setupParam() {
+        val mParam = intent?.parcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
+
+        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName().isEmpty()) {
             param.disposeSubPicker()
         }
 
@@ -300,14 +319,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.includeMedias.observe(this) { files ->
             if (files.isEmpty()) return@observe
 
-            val fileAsUiModelList = files.mapNotNull {
-                val mPickerFile = it?.asPickerFile()
-                mPickerFile?.toUiModel()
-            }
-
-            fileAsUiModelList.forEach {
-                eventBus.addMediaEvent(it)
-            }
+            files.filterNotNull()
+                .forEach {
+                    eventBus.addMediaEvent(it)
+                }
         }
 
         viewModel.connectionIssue.observe(this) { message ->
@@ -317,6 +332,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             Handler(Looper.getMainLooper()).postDelayed({
                 finish()
             }, TOAST_DELAYED)
+        }
+
+        viewModel.isOnVideoRecording.observe(this) { isRecord ->
+            navToolbar.setVisibility(isRecord.not())
+            isOnVideoRecording = isRecord
         }
     }
 
@@ -363,7 +383,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        return media.videoLength
+        return media.duration
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {

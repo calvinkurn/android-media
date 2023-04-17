@@ -8,6 +8,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -19,11 +20,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 
 object TokoChatConnection {
 
+    @Volatile
     var tokoChatConfigComponent: TokoChatConfigComponent? = null
+
+    @Volatile
     var courierConnection: CourierConnection? = null
 
     @Volatile
@@ -58,7 +61,18 @@ object TokoChatConnection {
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
 
         if (courierConnection != null) {
-            tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
+            try {
+                // Init courier connection
+                if (shouldInitCourier()) {
+                    courierConnection?.init(TokoChatBabbleCourierImpl.SOURCE_APP_INIT)
+                }
+
+                // Init conversation repository
+                tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                logToServer(throwable)
+            }
         }
 
         // Set initialization status to success
@@ -105,7 +119,17 @@ object TokoChatConnection {
             hasBeenInitialized = false
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            logToServer(throwable)
         }
+    }
+
+    fun getComponent(context: Context): TokoChatConfigComponent {
+        return tokoChatConfigComponent
+            ?: DaggerTokoChatConfigComponent.builder()
+                .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
+                .build().also {
+                    tokoChatConfigComponent = it
+                }
     }
 
     fun isTokoChatActive(): Boolean {
@@ -117,5 +141,18 @@ object TokoChatConnection {
         } catch (e: Throwable) {
             false
         }
+    }
+
+    /**
+     * Should init courier here or inside conversation repository
+     */
+    private fun shouldInitCourier(): Boolean {
+        return tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
+            TokoChatBabbleCourierImpl.COURIER_CONVERSATION_INIT
+        ) == true
+    }
+
+    private fun logToServer(throwable: Throwable) {
+        CourierEventLogger.logCourierErrorToServerLogger(throwable)
     }
 }

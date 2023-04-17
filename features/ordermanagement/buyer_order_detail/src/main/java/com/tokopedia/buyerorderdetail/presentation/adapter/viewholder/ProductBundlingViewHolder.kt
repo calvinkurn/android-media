@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +26,7 @@ class ProductBundlingViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_bundling
 
-        private const val PRODUCT_BUNDLING_IMAGE_ICON_URL = "https://images.tokopedia.net/img/android/others/ic_product_bundling.png"
+        private const val PRODUCT_BUNDLING_IMAGE_ICON_URL = TokopediaImageUrl.PRODUCT_BUNDLING_IMAGE_ICON_URL
     }
 
     private val bundleItemAdapter = ProductBundlingItemAdapter(this)

@@ -56,20 +56,6 @@ object ApplinkConstInternalSellerapp {
     //SellerSeamlessLoginFragment
     const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
-    //CreateMerchantVoucherStepsActivity
-    const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
-    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
-
-    //VoucherListActivity
-    const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
-    const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
-    const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
-    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
-
-    //VoucherDetailActivity
-    const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
-    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
-
     // Seller Shop Flash Sale - CampaignListActivity
     const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
@@ -101,6 +87,9 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_MVC_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/{voucher_type}/"
 
     const val SELLER_MVC_DETAIL = "$INTERNAL_SELLERAPP/seller-mvc/detail/{voucher_id}/"
+
+    const val SELLER_MVC_CREATE_PRODUCT_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/product/"
+    const val SELLER_MVC_CREATE_SHOP_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/shop/"
 
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
@@ -142,4 +131,11 @@ object ApplinkConstInternalSellerapp {
 
     //TokomemberMemberListActivity
     const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
+
+    //Seller Persona
+    const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
+
+    //Stock Reminder
+    const val SELLER_STOCK_REMINDER = "$INTERNAL_SELLERAPP/stock-reminder/{productId}/{productName}/{isVariant}/"
+
 }

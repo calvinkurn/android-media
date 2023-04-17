@@ -116,6 +116,16 @@ class GlobalBundlingViewHolder(
                     false
                 )
             }
+
+            override fun onBundleEmpty() {
+                super.onBundleEmpty()
+                listener.removeComponent(element.name())
+            }
+
+            override fun onError(it: Throwable) {
+                super.onError(it)
+                listener.removeComponent(element.name())
+            }
         }
         binding.pdpBundlingWidget.setListener(listener)
     }

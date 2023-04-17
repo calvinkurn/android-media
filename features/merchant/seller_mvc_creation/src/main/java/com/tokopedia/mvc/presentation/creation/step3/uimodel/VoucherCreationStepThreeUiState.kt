@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step3.uimodel
 
+import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 
@@ -22,7 +23,7 @@ data class VoucherCreationStepThreeUiState(
     val quotaErrorMsg: String = "",
     val fieldValidated: VoucherCreationStepThreeFieldValidation = VoucherCreationStepThreeFieldValidation.NONE,
     val isDiscountPromoTypeEnabled: Boolean = true,
-    val discountPromoTypeDisabledReason: String = ""
+    val tickers: List<RemoteTicker> = emptyList()
 ) {
     fun isInputValid(): Boolean {
         return if (voucherConfiguration.promoType == PromoType.FREE_SHIPPING) {

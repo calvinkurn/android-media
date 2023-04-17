@@ -203,7 +203,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -436,7 +437,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200",
+            status = "OK",
+            errorCode = "200",
             promoUiModel = PromoUiModel(
                 codes = listOf(promoCode),
                 messageUiModel = MessageUiModel(state = "green"),
@@ -554,7 +556,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val lastResponse = ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200",
+            status = "OK",
+            errorCode = "200",
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     PromoCheckoutVoucherOrdersItemUiModel(

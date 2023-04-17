@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.databinding.DiscoProductBundlingLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,12 +22,13 @@ import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
-import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoProductBundlingLayoutBinding = DiscoProductBundlingLayoutBinding.bind(itemView)
     private var productBundleList: ArrayList<BundleUiModel>? = null
     private var mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
+    private var mDiscoveryAdapter: DiscoveryRecycleAdapter
+    private var concatAdapter : ConcatAdapter
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mProductBundlingViewModel: ProductBundlingViewModel? = null
 
@@ -33,7 +36,10 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         with(binding) {
             productRv.layoutManager = linearLayoutManager
             mProductBundleRecycleAdapter = ProductBundleWidgetAdapter()
-            productRv.adapter = mProductBundleRecycleAdapter
+            mDiscoveryAdapter = DiscoveryRecycleAdapter(fragment)
+            concatAdapter = ConcatAdapter(mProductBundleRecycleAdapter,mDiscoveryAdapter)
+            productRv.adapter = concatAdapter
+
             mProductBundleRecycleAdapter.setListener(productBundleCallback())
         }
     }
@@ -46,6 +52,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         binding.productRv.show()
         binding.viewErrorState.hide()
         trackCarouselImpression()
+        handleShopCardPagination()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -54,6 +61,10 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
             mProductBundlingViewModel?.getBundledProductDataList()?.observe(it) { bundledProductList ->
                 mProductBundleRecycleAdapter.updateDataSet(bundledProductList)
                 productBundleList = bundledProductList
+            }
+
+            mProductBundlingViewModel?.paginationListData()?.observe(it){ list ->
+                mDiscoveryAdapter.setDataList(list)
             }
             mProductBundlingViewModel?.getEmptyBundleData()?.observe(it) { isBundledDataEmpty ->
                 if (isBundledDataEmpty) {
@@ -109,6 +120,22 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
+    private fun handleShopCardPagination() {
+        binding.productRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount: Int = linearLayoutManager.childCount
+                val totalItemCount: Int = linearLayoutManager.itemCount
+                val firstVisibleItemPosition: Int = linearLayoutManager.findFirstVisibleItemPosition()
+                if (mProductBundlingViewModel?.isLoadingData() == false && mProductBundlingViewModel?.isLastPage() == false) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
+                        mProductBundlingViewModel?.fetchProductBundlingPaginatedData()
+                    }
+                }
+            }
+        })
+    }
+
     private fun reloadComponent() {
         with(binding) {
             productRv.show()
@@ -133,6 +160,10 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
                 itemView.context?.let { context ->
                     RouteManager.route(context, selectedProduct.productAppLink)
                 }
+            }
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventBundleProductClicked(it, bundleType, bundle, selectedMultipleBundle, selectedProduct, productItemPosition)
             }
         }
 

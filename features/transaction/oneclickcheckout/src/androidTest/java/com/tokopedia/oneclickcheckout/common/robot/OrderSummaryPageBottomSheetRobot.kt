@@ -25,18 +25,19 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
-
 class OrderPriceSummaryBottomSheetRobot {
 
-    fun assertSummary(productPrice: String = "",
-                      productDiscount: String? = null,
-                      shippingPrice: String = "",
-                      shippingDiscount: String? = null,
-                      isBbo: Boolean = false,
-                      insurancePrice: String? = null,
-                      totalPrice: String = "",
-                      isInstallment: Boolean = false,
-                      paymentFeeDetails: List<OrderPaymentFee> = emptyList()) {
+    fun assertSummary(
+        productPrice: String = "",
+        productDiscount: String? = null,
+        shippingPrice: String = "",
+        shippingDiscount: String? = null,
+        isBbo: Boolean = false,
+        insurancePrice: String? = null,
+        totalPrice: String = "",
+        isInstallment: Boolean = false,
+        paymentFeeDetails: List<OrderPaymentFee> = emptyList()
+    ) {
         onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
         onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -107,11 +108,13 @@ class OrderPriceSummaryBottomSheetRobot {
         onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
     }
 
-    fun assertInstallmentSummary(installmentFee: String,
-                                 installmentTerm: String,
-                                 installmentPerPeriod: String,
-                                 installmentFirstDate: String,
-                                 installmentLastDate: String) {
+    fun assertInstallmentSummary(
+        installmentFee: String,
+        installmentTerm: String,
+        installmentPerPeriod: String,
+        installmentFirstDate: String,
+        installmentLastDate: String
+    ) {
         onView(withId(R.id.tv_total_installment_fee_price_value)).check(matches(withText(installmentFee)))
         onView(withId(R.id.tv_total_installment_term_value)).check(matches(withText(installmentTerm)))
         onView(withId(R.id.tv_total_installment_per_period_value)).check(matches(withText(installmentPerPeriod)))
@@ -170,18 +173,20 @@ class InstallmentDetailBottomSheetRobot {
 class GoCicilInstallmentDetailBottomSheetRobot {
 
     fun chooseInstallment(term: Int) {
-        onView(withText(object : BaseMatcher<String>() {
-            override fun describeTo(description: Description?) {
-                description?.appendText("match Cicil $term")
-            }
-
-            override fun matches(item: Any?): Boolean {
-                if (item is String) {
-                    return item.startsWith("Cicil $term")
+        onView(
+            withText(object : BaseMatcher<String>() {
+                override fun describeTo(description: Description?) {
+                    description?.appendText("match Cicil $term")
                 }
-                return false
-            }
-        })).perform(scrollTo()).check { view, noViewFoundException ->
+
+                override fun matches(item: Any?): Boolean {
+                    if (item is String) {
+                        return item.startsWith("Cicil $term")
+                    }
+                    return false
+                }
+            })
+        ).perform(scrollTo()).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             val parent = view.parent as ViewGroup
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
@@ -208,7 +213,7 @@ class OvoActivationBottomSheetRobot {
             noViewFoundException?.printStackTrace()
             (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
         }
-        //block main thread for webview processing
+        // block main thread for webview processing
         Thread.sleep(2000)
     }
 }

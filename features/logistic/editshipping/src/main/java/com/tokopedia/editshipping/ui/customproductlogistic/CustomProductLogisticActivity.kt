@@ -47,19 +47,19 @@ class CustomProductLogisticActivity : BaseSimpleActivity() {
     private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
         if (DeviceScreenInfo.isTablet(this)) {
             requestedOrientation =
-                    if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 
     private fun setActivityOrientation() {
         if (DeviceScreenInfo.isTablet(this)) {
             val isAccelerometerRotationEnabled = Settings.System.getInt(
-                    contentResolver,
-                    Settings.System.ACCELEROMETER_ROTATION,
-                    ROTATION_DEFAULT_VALUE
+                contentResolver,
+                Settings.System.ACCELEROMETER_ROTATION,
+                ROTATION_DEFAULT_VALUE
             ) == USE_ROTATION_VALUE
             requestedOrientation =
-                    if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 

@@ -45,7 +45,7 @@
             android:id="@+id/tvShcPostState"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="6dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"

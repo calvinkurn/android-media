@@ -53,8 +53,11 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding?.apply {
-            livenessToolbarIcon.setOnClickListener {
-                activity?.onBackPressed()
+            errorLivenessToolbar.apply {
+                setTitle(com.tokopedia.liveness.R.string.liveness_title)
+                setNavigationOnClickListener {
+                    activity?.onBackPressed()
+                }
             }
 
             button.setOnClickListener {

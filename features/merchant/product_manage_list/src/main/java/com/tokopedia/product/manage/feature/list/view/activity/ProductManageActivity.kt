@@ -1,8 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.activity
 
 import android.content.Context
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -13,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment

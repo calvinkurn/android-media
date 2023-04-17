@@ -6,13 +6,12 @@ import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import kotlinx.android.synthetic.main.item_add_card_payment.view.*
 
-class SettingListAddCardViewHolder(view : View?,
-                                   val listenerEmptyViewHolder: SettingListEmptyViewHolder.ListenerEmptyViewHolder)
+class SettingListAddCardViewHolder(view : View?, private val actionListener: SettingListActionListener)
     : AbstractViewHolder<SettingListAddCardModel>(view) {
 
     override fun bind(element: SettingListAddCardModel?) {
         itemView.buttonAddCard?.setOnClickListener{
-            listenerEmptyViewHolder.onClickAddCard()
+            actionListener.onClickAddCard()
         }
     }
 

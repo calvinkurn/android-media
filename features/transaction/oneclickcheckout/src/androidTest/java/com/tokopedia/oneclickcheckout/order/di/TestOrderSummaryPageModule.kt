@@ -5,7 +5,7 @@ import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
 import dagger.Provides
 import javax.inject.Named
 
-class TestOrderSummaryPageModule(activity: Activity): OrderSummaryPageModule(activity) {
+class TestOrderSummaryPageModule(activity: Activity) : OrderSummaryPageModule(activity) {
 
     @OrderSummaryPageScope
     @Provides

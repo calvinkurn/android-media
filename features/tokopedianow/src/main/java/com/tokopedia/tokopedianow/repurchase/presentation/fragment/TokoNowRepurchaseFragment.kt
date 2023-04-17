@@ -95,7 +95,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuC
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
-import com.tokopedia.tokopedianow.repurchase.presentation.listener.TokoNowSimilarProductTrackerCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
@@ -160,7 +160,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
-                tokoNowSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
+                productCardCompactSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
@@ -539,7 +539,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartAdd) {
+        observe(viewModel.addItemToCart) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -561,7 +561,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartUpdate) {
+        observe(viewModel.updateCartItem) {
             when(it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -576,7 +576,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartRemove) {
+        observe(viewModel.removeCartItem) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -623,7 +623,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartAdd) { result ->
+        observe(productRecommendationViewModel.addItemToCart) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -645,7 +645,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartUpdate) { result ->
+        observe(productRecommendationViewModel.updateCartItem) { result ->
             when (result) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -660,7 +660,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartRemove) { result ->
+        observe(productRecommendationViewModel.removeCartItem) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -1043,8 +1043,8 @@ class TokoNowRepurchaseFragment:
         )
     }
 
-    private fun createSimilarProductTrackerCallback(): TokoNowSimilarProductTrackerCallback {
-        return TokoNowSimilarProductTrackerCallback(analytics)
+    private fun createSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(analytics)
     }
 
     private fun createCategoryMenuCallback(): CategoryMenuCallback {

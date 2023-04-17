@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 
 class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
 
@@ -24,7 +22,8 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         initView()

@@ -6,12 +6,17 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoa
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class TickerUiModel(
-        val actionKey: String,
-        val actionText: String,
-        val actionUrl: String,
-        val description: String,
-        val type: String
+    val actionKey: String,
+    val actionText: String,
+    val actionUrl: String,
+    val description: String,
+    val type: String
 ) : BaseVisitableUiModel {
+
+    var marginBottom: Int? = null
+
+    var marginTop: Int? = null
+
     override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }

@@ -18,19 +18,20 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
 
     override fun getComponent(): PaymentComponent {
         return DaggerPaymentComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .paymentModule(PaymentModule())
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .paymentModule(PaymentModule())
+            .build()
     }
 
     override fun getNewFragment(): Fragment {
-        return PaymentListingFragment.newInstance(intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0),
-                intent.getStringExtra(EXTRA_ADDRESS_ID) ?: "",
-                intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: "",
-                intent.getStringExtra(EXTRA_PAYMENT_MERCHANT) ?: "",
-                intent.getStringExtra(EXTRA_PAYMENT_BID) ?: "",
-                intent.getStringExtra(EXTRA_ORDER_METADATA) ?: "",
-                intent.getStringExtra(EXTRA_PROMO_PARAM) ?: ""
+        return PaymentListingFragment.newInstance(
+            intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0),
+            intent.getStringExtra(EXTRA_ADDRESS_ID) ?: "",
+            intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: "",
+            intent.getStringExtra(EXTRA_PAYMENT_MERCHANT) ?: "",
+            intent.getStringExtra(EXTRA_PAYMENT_BID) ?: "",
+            intent.getStringExtra(EXTRA_ORDER_METADATA) ?: "",
+            intent.getStringExtra(EXTRA_PROMO_PARAM) ?: ""
         )
     }
 

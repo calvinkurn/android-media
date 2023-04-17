@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.view
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.View
@@ -27,6 +29,7 @@ class UploadPrescriptionViewHolder(
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
+        const val EPharmacyCountImageUrl = TokopediaImageUrl.E_PHARMACY_COUNT_IMAGE_URL
         const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/attach-prescription/"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10

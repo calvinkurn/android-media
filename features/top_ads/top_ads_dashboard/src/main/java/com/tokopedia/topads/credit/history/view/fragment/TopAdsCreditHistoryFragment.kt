@@ -42,6 +42,7 @@ import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivit
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickEntryPointKreditOtomatisEvent
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -122,7 +123,7 @@ class TopAdsCreditHistoryFragment :
                 is Fail -> onErrorGetCredit(it.throwable)
             }
         }
-        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner){
+        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetAutoTopUpStatus(it.data)
                 is Fail -> {
@@ -159,13 +160,16 @@ class TopAdsCreditHistoryFragment :
         cardAutoTopupStatus?.visibility = View.VISIBLE
         autoTopupStatus?.text = data.statusDesc
         context?.let {
-            autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
-                if (data.status == ACTIVE_STATUS) {
-                    com.tokopedia.topads.common.R.color.Unify_G500
-                } else {
-                    com.tokopedia.topads.common.R.color.Unify_N700_32
-                }
-            ))
+            autoTopupStatus?.setTextColor(
+                ContextCompat.getColor(
+                    it,
+                    if (data.status == ACTIVE_STATUS) {
+                        com.tokopedia.topads.common.R.color.Unify_G500
+                    } else {
+                        com.tokopedia.topads.common.R.color.Unify_N700_32
+                    }
+                )
+            )
         }
         autoTopUpBonus = data.statusBonus
         isAutoTopUpActive = data.status == ACTIVE_STATUS
@@ -180,7 +184,9 @@ class TopAdsCreditHistoryFragment :
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
         hariIni = view.findViewById(R.id.hari_ini)
@@ -225,16 +231,20 @@ class TopAdsCreditHistoryFragment :
         dateImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         nextImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hariIni?.apply {
-            chip_right_icon.setImageDrawable(ContextCompat.getDrawable(context,
-                com.tokopedia.iconunify.R.drawable.iconunify_chevron_down))
-            //called the listener just to show the right icon of chip
+            chip_right_icon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    com.tokopedia.iconunify.R.drawable.iconunify_chevron_down
+                )
+            )
+            // called the listener just to show the right icon of chip
             setChevronClickListener {}
         }
     }
 
     private fun initListeners() {
         cardAutoTopupStatus?.setOnClickListener {
-            TopadsTopupTracker.clickTambahKreditOtomatis()
+            sendClickEntryPointKreditOtomatisEvent()
             gotoAutoTopUp()
         }
         addCredit?.setOnClickListener {
@@ -278,8 +288,9 @@ class TopAdsCreditHistoryFragment :
         val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
         val dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
-        } else
+        } else {
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
+        }
         context?.let {
             datePickerSheet = DatePickerSheet.newInstance(it, datePickerIndex, dateRange)
             datePickerSheet?.show()
@@ -320,10 +331,9 @@ class TopAdsCreditHistoryFragment :
             CONST_0 -> context?.getString(R.string.topads_dash_hari_ini)
             CONST_2 -> context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> Utils.outputFormat.format(startDate ?: Utils.getStartDate()) + " - " +
-                    Utils.outputFormat.format(endDate ?: Utils.getEndDate())
+                Utils.outputFormat.format(endDate ?: Utils.getEndDate())
         }
     }
-
 
     private fun gotoAutoTopUp() {
         activity?.let {
@@ -359,7 +369,6 @@ class TopAdsCreditHistoryFragment :
     override fun getAdapterTypeFactory() = TopAdsCreditHistoryTypeFactory()
 
     override fun onItemClicked(t: CreditHistory?) {
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

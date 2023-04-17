@@ -165,6 +165,7 @@ class DiscoveryViewModelTest {
 
         verify { deleteCartUseCase.execute(any(), any()) }
     }
+
     @Test
     fun `test for addProductToCart when quantity is greater than 0 and isGeneralCartATC is false and product present in minicart so update must be called`() {
         val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
@@ -657,17 +658,17 @@ class DiscoveryViewModelTest {
     @Test
     fun `test for DiscoverySamePage being opened if no recomProdId present`() {
         viewModel.checkForSamePageOpened(mutableMapOf())
-        verify(inverse = true) { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
+        verify { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
     }
 
     @Test
-    fun `test for DiscoverySamePage being opened if recomProdId present and data mismatch`() {
+    fun `test for DiscoverySamePage being opened if QUERY_PARENT present and data mismatch`() {
         val map: MutableMap<String, String?> = mutableMapOf()
-        map[DiscoveryActivity.RECOM_PRODUCT_ID] = "123"
+        map[DiscoveryActivity.QUERY_PARENT] = "123"
         val mockResp: DiscoveryResponse = mockk()
         every { discoveryDataUseCase.getDiscoResponseIfPresent(any()) } returns mockResp
         val map2: MutableMap<String, String?> = mutableMapOf()
-        map2[DiscoveryActivity.RECOM_PRODUCT_ID] = "101"
+        map2[DiscoveryActivity.QUERY_PARENT] = "101"
         every { mockResp.queryParamMap } returns map2
         viewModel.checkForSamePageOpened(map)
         verify { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }

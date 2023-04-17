@@ -37,6 +37,9 @@ class SomDetailAdapterFactoryImpl(
             SomConsts.DETAIL_MVC_USAGE_TYPE -> {
                 SomDetailMVCUsageViewHolder.LAYOUT
             }
+            SomConsts.DETAIL_POF_DATA_TYPE -> {
+                SomDetailPofDataViewHolder.LAYOUT
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -83,6 +86,9 @@ class SomDetailAdapterFactoryImpl(
             }
             SomDetailDividerViewHolder.LAYOUT -> {
                 SomDetailDividerViewHolder(parent)
+            }
+            SomDetailPofDataViewHolder.LAYOUT -> {
+                SomDetailPofDataViewHolder(parent)
             }
             else -> super.createViewHolder(parent, type)
         }

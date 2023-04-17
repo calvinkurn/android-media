@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,45 +14,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="6dp"
             android:nestedScrollingEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/du_top"
+        <include
+            android:id="@+id/shop_info_header_layout"
+            layout="@layout/shop_info_layout"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_product_bundle_master" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_po_process_day"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
-            android:paddingBottom="4dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/du_top"
-            app:typographyType="body_3"
-            tools:text="Terjual 50 paket" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_product_bundle_master" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product_bundle_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingBottom="16dp"
             android:nestedScrollingEnabled="false"
+            android:paddingBottom="16dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="@+id/du_bottom"
-            app:layout_constraintTop_toBottomOf="@id/tv_po_process_day"
-            app:layout_constraintVertical_bias="0.0"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_constraintTop_toBottomOf="@id/shop_info_header_layout"
+            app:layout_constraintVertical_bias="0.0" />
 
         <View
             android:id="@+id/du_bottom"
@@ -83,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        app:globalerrors_type="PAGE_FULL"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_FULL" />
 
 </RelativeLayout>

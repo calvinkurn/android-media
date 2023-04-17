@@ -3,8 +3,7 @@ package com.tokopedia.product.manage.feature.violation.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.manage.feature.suspend.domain.usecase.SuspendReasonUseCase
-import com.tokopedia.product.manage.feature.violation.data.*
+import com.tokopedia.product.manage.feature.violation.data.ViolationReasonDetailResponse
 import com.tokopedia.product.manage.feature.violation.domain.mapper.ViolationReasonMapper
 import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
 import com.tokopedia.usecase.RequestParams

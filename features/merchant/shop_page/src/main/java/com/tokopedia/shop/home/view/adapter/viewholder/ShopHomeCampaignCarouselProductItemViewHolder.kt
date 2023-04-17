@@ -36,6 +36,8 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_carousel_product_card
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
+        // currently set to 1, since there's a clickable area on which is a part of the carousel
+        private const val NON_PRODUCT_CARD_ITEM = 1
     }
 
     private fun findViews(view: View) {
@@ -71,7 +73,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         productCard?.setOnClickListener {
             shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemClicked(
                 parentPosition,
-                adapterPosition,
+                ShopUtil.getActualPositionFromIndex(adapterPosition) - NON_PRODUCT_CARD_ITEM,
                 shopHomeNewProductLaunchCampaignUiModel,
                 shopHomeProductViewModel
             )
@@ -83,7 +85,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                     override fun onViewHint() {
                         shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemImpression(
                             parentPosition,
-                            adapterPosition,
+                            ShopUtil.getActualPositionFromIndex(adapterPosition) - NON_PRODUCT_CARD_ITEM,
                             shopHomeNewProductLaunchCampaignUiModel,
                             shopHomeProductViewModel
                         )

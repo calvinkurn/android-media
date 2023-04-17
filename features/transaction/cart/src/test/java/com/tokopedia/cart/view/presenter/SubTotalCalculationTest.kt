@@ -401,5 +401,4 @@ class SubTotalCalculationTest : BaseCartTest() {
             view.renderDetailInfoSubTotal("5", 1004.0, false)
         }
     }
-
 }

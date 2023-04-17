@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxde
 
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetInboxReputationUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -15,61 +14,13 @@ import javax.inject.Inject
  */
 class GetInboxReputationDetailUseCase @Inject constructor(
     private val getInboxReputationUseCase: GetInboxReputationUseCase,
-    private val getReviewUseCase: GetReviewUseCase,
-    private val checkShopFavoritedUseCase: CheckShopFavoritedUseCase
+    private val getReviewUseCase: GetReviewUseCase
 ) : UseCase<InboxReputationDetailDomain>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<InboxReputationDetailDomain> {
         val domain = InboxReputationDetailDomain()
         return getReputation(domain, getReputationParam(requestParams))
-            .flatMap(checkShopFavorited(requestParams))
             .flatMap(getReview(domain, getReviewParam(requestParams)))
-    }
-
-    private fun checkShopFavorited(requestParams: RequestParams): Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>> {
-        return object :
-            Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>> {
-            override fun call(inboxReputationDetailDomain: InboxReputationDetailDomain): Observable<InboxReputationDetailDomain> {
-                if (inboxReputationDetailDomain.inboxReputationResponse.reputationList.firstOrNull()?.revieweeData?.roleId ==
-                    InboxReputationItemUiModel.ROLE_SELLER) {
-                    return checkShopFavoritedUseCase.createObservable(
-                        getShopFavoritedParam(
-                            inboxReputationDetailDomain,
-                            requestParams
-                        )
-                    )
-                        .flatMap { checkShopFavoriteDomain ->
-                            inboxReputationDetailDomain.inboxReputationResponse
-                                .reputationList
-                                .firstOrNull()?.revieweeData?.shopBadge
-                                ?.isFavorited =
-                                if (checkShopFavoriteDomain.isShopFavorited) 1 else 0
-
-                            Observable.just(inboxReputationDetailDomain)
-                        }
-                        .onErrorResumeNext {
-                            inboxReputationDetailDomain.inboxReputationResponse
-                                .reputationList
-                                .firstOrNull()?.revieweeData?.shopBadge?.isFavorited = -1
-                            Observable.just(inboxReputationDetailDomain)
-                        }
-                } else {
-                    inboxReputationDetailDomain.inboxReputationResponse.reputationList
-                        .firstOrNull()?.revieweeData?.shopBadge?.isFavorited = -1
-                    return Observable.just(inboxReputationDetailDomain)
-                }
-            }
-        }
-    }
-
-    private fun getShopFavoritedParam(
-        domain: InboxReputationDetailDomain,
-        requestParams: RequestParams
-    ): RequestParams {
-        return CheckShopFavoritedUseCase.getParam(
-            requestParams.getString(GetReviewUseCase.PARAM_USER_ID, ""),
-            domain.inboxReputationResponse.reputationList.firstOrNull()?.shopIdStr ?:""
-        )
     }
 
     private fun getReputationParam(requestParams: RequestParams): RequestParams {

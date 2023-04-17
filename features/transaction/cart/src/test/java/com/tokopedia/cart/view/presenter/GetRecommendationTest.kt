@@ -23,7 +23,7 @@ class GetRecommendationTest : BaseCartTest() {
                         }
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
 
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
@@ -53,7 +53,7 @@ class GetRecommendationTest : BaseCartTest() {
                     [
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
 
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
@@ -96,7 +96,6 @@ class GetRecommendationTest : BaseCartTest() {
             view.setHasTriedToLoadRecommendation()
             view.stopAllCartPerformanceTrace()
         }
-
     }
 
     @Test
@@ -111,7 +110,7 @@ class GetRecommendationTest : BaseCartTest() {
                         }
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
 
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
@@ -131,5 +130,4 @@ class GetRecommendationTest : BaseCartTest() {
             view.showItemLoading()
         }
     }
-
 }

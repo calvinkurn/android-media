@@ -1,5 +1,6 @@
 package com.tokopedia.webview.ext
 
+import com.tokopedia.webview.WebViewHelper.normalizeSymbol
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -75,9 +76,9 @@ fun String.encodeQueryNested(): String {
             } else {
                 scheme = strBefore
             }
-            strAfter = url.substring(indexScheme + 3)
             if (isInQueryParam) {
-                encodedUrl = "$scheme://$strAfter".encode()
+                strAfter = url.substring(indexScheme + 3)
+                encodedUrl = "$scheme://$strAfter".encodeNormalized()
                 url = "${strBefore.substring(0, indexEqual)}=$encodedUrl"
             } else {
                 break
@@ -87,6 +88,17 @@ fun String.encodeQueryNested(): String {
         return url
     } catch (e: Exception) {
         return this
+    }
+}
+
+// case where url has parameter & after query param
+// example: back_url=https://tokopedia.com/help&user=abc
+private fun String.encodeNormalized(): String {
+    val strAfterNormalized = normalizeSymbol()
+    return if (strAfterNormalized != this) {
+        strAfterNormalized.encode() + "&" + substringAfter("&")
+    } else {
+        encode()
     }
 }
 

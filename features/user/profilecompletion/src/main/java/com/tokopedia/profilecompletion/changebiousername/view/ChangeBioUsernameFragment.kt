@@ -3,36 +3,35 @@ package com.tokopedia.profilecompletion.changebiousername.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
 import com.tokopedia.profilecompletion.common.SubmitProfileError
+import com.tokopedia.profilecompletion.common.getErrorMessage
 import com.tokopedia.profilecompletion.databinding.FragmentChangeBioUsernameBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
-import com.tokopedia.profilecompletion.common.getErrorMessage
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeed
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
-import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
-import com.tokopedia.unifycomponents.Toaster
 
 
 class ChangeBioUsernameFragment : BaseDaggerFragment() {

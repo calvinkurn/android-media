@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.media.R
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class ImagePreview(
@@ -34,7 +35,7 @@ class ImagePreview(
         return rootLayoutView(context).also {
             mImageViewRef = it.findViewById(R.id.img_preview)
 
-            mImageViewRef.loadImage(media.data.file?.path, properties = {
+            mImageViewRef.loadImageWithoutPlaceholder(media.data.file?.path) {
                 listener({ _, _ ->
                     mImageViewRef.post {
                         wrapperWidth = it.width
@@ -45,7 +46,7 @@ class ImagePreview(
                         assetHeight = mImageViewRef.drawable.intrinsicHeight
                     }
                 }, {})
-            })
+            }
 
             mScaleGestureDetector = ScaleGestureDetector(context, scaleGestureListener())
 
@@ -55,7 +56,7 @@ class ImagePreview(
 
     private fun scaleGestureListener() = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                detector?.let {
+                detector.let {
                     mScaleFactor *= it.scaleFactor
 
                     mScaleFactor = when {

@@ -22,7 +22,7 @@ object Logger {
 
     fun send(type: LogType, message: Map<String, String> = mapOf()) {
         ServerLogger.log(
-            Priority.P1,
+            Priority.P2,
             TAG_MEDIA_PICKER,
             mutableMapOf("type" to type.value).also {
                 if (message.isNotEmpty()) {

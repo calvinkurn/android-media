@@ -55,7 +55,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
@@ -107,7 +106,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -224,25 +222,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, String>>()
-    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, String>>
-        get() = _updatedImageVariant
-
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
-    val initialVariantData: LiveData<List<VariantCategory>?>
-        get() = _initialVariantData
-
     private val _singleVariantData = MutableLiveData<VariantCategory?>()
     val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
-
-    private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
-    val onVariantClickedData: LiveData<List<VariantCategory>?>
-        get() = _onVariantClickedData
 
     // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
     private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
@@ -501,51 +487,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
     fun processVariant(
         data: ProductVariant,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        shouldRenderSingleVariant: Boolean
+        mapOfSelectedVariant: MutableMap<String, String>?
     ) {
         launchCatchError(dispatcher.io, block = {
-            if (shouldRenderSingleVariant) {
-                _singleVariantData.postValue(
-                    ProductDetailVariantLogic.determineVariant(
-                        mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
-                        productVariant = data
-                    )
+            _singleVariantData.postValue(
+                ProductDetailVariantLogic.determineVariant(
+                    mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
+                    productVariant = data
                 )
-            } else {
-                _initialVariantData.postValue(
-                    VariantCommonMapper.processVariant(
-                        data,
-                        mapOfSelectedVariant
-                    )
-                )
-            }
-        }) {}
-    }
-
-    fun onVariantClicked(
-        data: ProductVariant?,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        isPartialySelected: Boolean,
-        variantLevel: Int,
-        variantId: String
-    ) {
-        launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val processedVariant = VariantCommonMapper.processVariant(
-                    data,
-                    mapOfSelectedVariant,
-                    variantLevel,
-                    isPartialySelected
-                )
-
-                if (isPartialySelected) {
-                    _updatedImageVariant.postValue(processedVariant to variantId)
-                    return@withContext
-                } else {
-                    _onVariantClickedData.postValue(processedVariant)
-                }
-            }
+            )
         }) {}
     }
 
@@ -1392,19 +1342,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun getChildOfVariantSelected(
-        singleVariant: ProductSingleVariantDataModel?,
-        optionalVariant: VariantDataModel?
-    ): VariantChild? {
-        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant
-            ?: optionalVariant?.mapOfSelectedVariant ?: mutableMapOf()
+    fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
+        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant ?: mutableMapOf()
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 
-        return VariantCommonMapper.selectedProductData(
-            variantData = variantDataNonNull,
-            selectedOptionIds = selectedOptionIds
-        )
+        return variantDataNonNull.children.firstOrNull {
+            it.optionIds == selectedOptionIds
+        }
     }
 
     /**
@@ -1481,16 +1426,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
-            is OneTimeMethodEvent.HitVariantTracker -> {
-                if (_oneTimeMethod.value.hitVariantTracker) return
-                _oneTimeMethod.update {
-                    it.copy(event = event, hitVariantTracker = true)
-                }
-            }
-            OneTimeMethodEvent.Empty -> {
-                //noop
+            else -> {
+                // noop
             }
         }
     }
-
 }

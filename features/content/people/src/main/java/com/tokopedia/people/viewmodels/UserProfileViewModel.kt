@@ -3,8 +3,8 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
+import com.tokopedia.content.common.producttag.util.extension.setValue
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
@@ -17,15 +17,21 @@ import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,7 +103,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
-    private val _videoPostContent = MutableStateFlow(UserPostModel())
+    private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
 
@@ -141,17 +147,19 @@ class UserProfileViewModel @AssistedInject constructor(
             )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
-            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
+            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.isRefresh)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
-            is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
-                action.channelId,
-                action.position,
-                action.isActive
-            )
+            is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channel)
             UserProfileAction.BlockUser -> handleBlockUser()
             UserProfileAction.UnblockUser -> handleUnblockUser()
+            is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channelId)
+            is UserProfileAction.UpdatePlayChannelInfo -> handleUpdatePlayChannelInfo(action.channelId, action.totalView, action.isReminderSet)
+            is UserProfileAction.ClickPlayVideoMenuAction -> handleClickPlayVideoMenuAction(action.channel)
+            is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
+            is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
+            is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
         }
     }
 
@@ -201,26 +209,36 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleLoadPlayVideo(cursor: String) {
+    private fun handleLoadPlayVideo(isRefresh: Boolean) {
         viewModelScope.launchCatchError(
             block = {
-                val data = repo.getPlayVideo(profileUserID, cursor)
-                val finalPosts = if (cursor.isEmpty()) {
-                    data.playGetContentSlot.data
-                } else {
-                    _videoPostContent.value.playGetContentSlot.data + data.playGetContentSlot.data
-                }
+                val currVideoPostModel = _videoPostContent.value
+
+                if(!isRefresh && currVideoPostModel.nextCursor.isEmpty()) return@launchCatchError
+                if(currVideoPostModel.isLoading) return@launchCatchError
 
                 _videoPostContent.update {
                     it.copy(
-                        playGetContentSlot = PlayGetContentSlot(
-                            data = finalPosts,
-                            playGetContentSlot = data.playGetContentSlot.playGetContentSlot
-                        )
+                        status = UserPlayVideoUiModel.Status.Loading,
+                        items = if(isRefresh) emptyList() else it.items
+                    )
+                }
+
+                val cursor = if(isRefresh) "" else currVideoPostModel.nextCursor
+                val result = repo.getPlayVideo(profileUserID, cursor, isSelfProfile)
+
+                _videoPostContent.update {
+                    it.copy(
+                        items = it.items + result.items,
+                        nextCursor = result.nextCursor,
+                        status = UserPlayVideoUiModel.Status.Success,
                     )
                 }
             },
             onError = {
+                _videoPostContent.update { videoPostContent ->
+                    videoPostContent.copy(status = UserPlayVideoUiModel.Status.Error)
+                }
                 _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
             }
         )
@@ -283,22 +301,28 @@ class UserProfileViewModel @AssistedInject constructor(
                 val data = _savedReminderData.value
 
                 if (data is SavedReminderData.Saved) {
-                    val result = repo.updateReminder(data.channelId, data.isActive)
+                    val reminderTypeAfterAction = data.channel.reminderType.switch()
+                    val result = repo.updateReminder(data.channel.channelId, reminderTypeAfterAction.reminded)
 
-                    _uiEvent.emit(
-                        when (result) {
-                            is MutationUiModel.Success -> {
-                                handleRemoveReminderActivityResult()
-                                UserProfileUiEvent.SuccessUpdateReminder(
-                                    result.message,
-                                    data.position
+                    when (result) {
+                        is MutationUiModel.Success -> {
+                            handleRemoveReminderActivityResult()
+                            updatePartialChannelInfo(data.channel.channelId) { channel ->
+                                channel.copy(
+                                    reminderType = reminderTypeAfterAction
                                 )
                             }
-                            is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(
-                                Exception(result.message)
+
+                            _uiEvent.emit(
+                                UserProfileUiEvent.SuccessUpdateReminder(result.message)
                             )
                         }
-                    )
+                        is MutationUiModel.Error -> {
+                            _uiEvent.emit(
+                                UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
+                            )
+                        }
+                    }
                 }
             },
             onError = {
@@ -307,17 +331,9 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleSaveReminderActivityResult(
-        channelId: String,
-        position: Int,
-        isActive: Boolean
-    ) {
+    private fun handleSaveReminderActivityResult(channel: PlayWidgetChannelUiModel) {
         _savedReminderData.update {
-            SavedReminderData.Saved(
-                channelId = channelId,
-                position = position,
-                isActive = isActive
-            )
+            SavedReminderData.Saved(channel)
         }
     }
 
@@ -345,7 +361,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     FOLLOW_TYPE_SHOP -> {
                         followRepo.followShop(
                             currentItem.id.toString(),
-                            if (currentState == FOLLOW) UnFollow else Follow
+                            ShopFollowAction.getActionByState(currentState == FOLLOW)
                         )
                     }
                     FOLLOW_TYPE_BUYER -> {
@@ -403,6 +419,71 @@ class UserProfileViewModel @AssistedInject constructor(
         _shopRecom.update { data ->
             data.copy(items = data.items.filterNot { it.id == itemID })
         }
+    }
+
+    private fun handleDeletePlayChannel(channelId: String) {
+        launchCatchError(block = {
+            val channelId = repo.deletePlayChannel(channelId, _profileInfo.value.userID)
+
+            _videoPostContent.update {
+                it.copy(
+                    items = it.items.filter { item -> item.channelId != channelId }
+                )
+            }
+            _uiEvent.emit(UserProfileUiEvent.SuccessDeleteChannel)
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorDeleteChannel(it))
+        }
+    }
+
+    private fun handleUpdatePlayChannelInfo(channelId: String, totalView: String, isReminderSet: Boolean) {
+        launchCatchError(block = {
+            val channels = _videoPostContent.value.items
+            val currChannel = channels.firstOrNull { it.channelId == channelId } ?: return@launchCatchError
+
+            val currTotalView = currChannel.totalView.totalViewFmt
+            val currIsReminderSet = currChannel.reminderType.reminded
+
+            if (totalView.isNotEmpty() && totalView != currTotalView) {
+                updatePartialChannelInfo(channelId) { channel ->
+                    channel.copy(
+                        totalView = channel.totalView.copy(
+                            totalViewFmt = totalView,
+                        )
+                    )
+                }
+            } else if (isReminderSet != currIsReminderSet) {
+                updatePartialChannelInfo(channelId) { channel ->
+                    channel.copy(
+                        reminderType = if(isReminderSet) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+                    )
+                }
+            }
+        }) { }
+    }
+
+    private fun handleClickPlayVideoMenuAction(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.OpenPlayVideoActionMenu(channel))
+        }) {}
+    }
+
+    private fun handleClickCopyLinkPlayChannel(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.CopyLinkPlayVideo(channel.share.fullShareContent))
+        }) {}
+    }
+
+    private fun handleClickSeePerformancePlayChannel(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.OpenPerformancePlayChannel(channel.performanceSummaryLink))
+        }) {}
+    }
+
+    private fun handleClickDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog(channel))
+        }) {}
     }
 
     /** Helper */
@@ -492,15 +573,19 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadNextPageShopRecom(nextCursor: String) {
-        viewModelScope.launchCatchError(
-            block = {
-                if (nextCursor.isEmpty()) return@launchCatchError
-                loadShopRecom(nextCursor)
-            },
-            onError = {
-                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
-            }
-        )
+        if (nextCursor.isEmpty()) return
+        loadShopRecom(nextCursor)
+    }
+
+    private fun updatePartialChannelInfo(channelId: String, fn: (PlayWidgetChannelUiModel) -> PlayWidgetChannelUiModel) {
+        _videoPostContent.update {
+            it.copy(
+                items = it.items.map { channel ->
+                    if(channel.channelId == channelId) fn(channel)
+                    else channel
+                }
+            )
+        }
     }
 
     companion object {

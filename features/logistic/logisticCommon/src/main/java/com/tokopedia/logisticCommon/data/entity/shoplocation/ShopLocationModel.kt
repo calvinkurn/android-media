@@ -4,56 +4,56 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
-data class ShopLocationModel (
-        var generalTicker: GeneralTickerModel = GeneralTickerModel(),
-        var listWarehouse: List<Warehouse> = emptyList()
+data class ShopLocationModel(
+    var generalTicker: GeneralTickerModel = GeneralTickerModel(),
+    var listWarehouse: List<Warehouse> = emptyList()
 )
 
 data class GeneralTickerModel(
-        var header: String = "",
-        var body: String = "",
-        var bodyLinkText: String = "",
-        var bodyLinkUrl: String = ""
+    var header: String = "",
+    var body: String = "",
+    var bodyLinkText: String = "",
+    var bodyLinkUrl: String = ""
 )
 
 @Parcelize
 data class Warehouse(
-        var warehouseId: Long = 0,
-        var warehouseName: String = "",
-        var warehouseType: Int = 0,
-        var shopId: ShopId = ShopId(),
-        var partnerId: PartnerId = PartnerId(),
-        var addressDetail: String = "",
-        var postalCode: String = "",
-        var latLon: String = "",
-        var districtId: Long = 0,
-        var districtName: String = "",
-        var cityId: Long = 0,
-        var cityName: String = "",
-        var provinceId: Long = 0,
-        var provinceName: String = "",
-        var country: String = "",
-        var status: Int = 0,
-        var isCoveredByCouriers: Boolean = false,
-        var ticker: Ticker = Ticker(),
-        var zipCodes: List<String> = ArrayList()
+    var warehouseId: Long = 0,
+    var warehouseName: String = "",
+    var warehouseType: Int = 0,
+    var shopId: ShopId = ShopId(),
+    var partnerId: PartnerId = PartnerId(),
+    var addressDetail: String = "",
+    var postalCode: String = "",
+    var latLon: String = "",
+    var districtId: Long = 0,
+    var districtName: String = "",
+    var cityId: Long = 0,
+    var cityName: String = "",
+    var provinceId: Long = 0,
+    var provinceName: String = "",
+    var country: String = "",
+    var status: Int = 0,
+    var isCoveredByCouriers: Boolean = false,
+    var ticker: Ticker = Ticker(),
+    var zipCodes: List<String> = ArrayList()
 ) : Parcelable
 
 @Parcelize
 data class ShopId(
-        var int64: Long = 0,
-        var valid: Boolean = false
+    var int64: Long = 0,
+    var valid: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class PartnerId(
-        var int64: Long = 0,
-        var valid: Boolean = false
+    var int64: Long = 0,
+    var valid: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class Ticker(
-        var textInactive: String = "",
-        var textCourierSetting: String = "",
-        var linkCourierSetting: String = ""
+    var textInactive: String = "",
+    var textCourierSetting: String = "",
+    var linkCourierSetting: String = ""
 ) : Parcelable

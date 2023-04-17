@@ -60,6 +60,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

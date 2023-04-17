@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.common.analytics
 
 import android.content.Context
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
@@ -927,6 +929,62 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE,
             "bundling_id:$bundlingId\nbundling_type:$bundlingType"
         )
+    }
+
+    // Cart Bundling Bottom Sheet
+    // TrackerId: 41253
+    fun eventViewCartBundlingBottomSheetBundle(
+        userId: String,
+        bundleId: String,
+        bundleType: String
+    ) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.IMPRESSION_BUNDLING_COMPONENT,
+            ExtraKey.EVENT_LABEL to "$bundleId - $bundleType",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE,
+            ExtraKey.USER_ID to userId
+        )
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+    }
+
+    // TrackerId: 41254
+    fun eventClickCartBundlingBottomSheetBundleWidgetAction(
+        userId: String,
+        bundleId: String,
+        bundleType: String,
+        promotions: List<Bundle>
+    ) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.CLICK_PRODUCT_BUNDLING,
+            ExtraKey.EVENT_LABEL to "$bundleId - $bundleType",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION,
+            ExtraKey.PROMOTIONS to promotions,
+            ExtraKey.USER_ID to userId
+        )
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
+    }
+
+    // Cart Shop Group Ticker
+    // TrackerId: 41252
+    fun eventClickCartShopGroupTickerForBundleCrossSell(tickerText: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_BUNDLING_WIDGET,
+            tickerText
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_CART_SHOP_GROUP_TICKER_BUNDLE_CROSS_SELL
+        sendGeneralEvent(gtmData)
     }
 
     // Bo Affordability

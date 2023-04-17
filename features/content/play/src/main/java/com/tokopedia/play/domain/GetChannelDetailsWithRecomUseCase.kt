@@ -167,6 +167,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     is_show_button
                   }
                   air_time
+                  performanceSummaryPageLink
                 }
               }
             }
