@@ -19,6 +19,7 @@ import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.Lo
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.home.LoginHelperActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -73,11 +74,12 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
 
     private fun FragmentLoginHelperAccountSettingsBinding.setUpHeader() {
         header.setUpHeader()
+        val currentEnv = getInstance().TYPE
         loginHelperTips.description = String.format(
             context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_add_account_tips)
                 .toBlankOrString(),
-            "ABC",
-            "ABC"
+            currentEnv.value,
+            currentEnv.value
         )
     }
 
