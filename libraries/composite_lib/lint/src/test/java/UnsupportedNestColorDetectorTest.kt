@@ -26,7 +26,7 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
     }
 
     @Test
-    fun `test`() {
+    fun `regex validation`() {
         val regex = UnsupportedNestColorDetector.REGEX_OLD_COLOR
 
         assertTrue(regex.containsMatchIn("Unify_N100_70"))
@@ -35,6 +35,11 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
         assertTrue(
             """
             com.tokopedia.unifyprinciples.R.color.Unify_G500
+            """.trimIndent().contains(regex)
+        )
+        assertTrue(
+            """
+            setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_G500))
             """.trimIndent().contains(regex)
         )
         assertTrue(
@@ -50,12 +55,11 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
         assertFalse("Unify_NN50".contains(regex))
         assertFalse(
             """
-            com.tokopedia.unifyprinciples.R.color.Unify_GB500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
             """.trimIndent().contains(regex)
         )
     }
 
-    @Test
     fun `given xml layout that implemented old color then show lint warning`() {
         lint().files(
             xml(
@@ -94,5 +98,24 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
         ).allowMissingSdk()
             .run()
             .expectWarningCount(0)
+    }
+
+    fun testJava() {
+        lint().files(
+            kotlin(
+                """
+                package test.pkg;
+                class TestClass1 {
+                    
+                    fun test() {
+                        val test = "com.tokopedia.unifyprinciples.R.color.Unify_G500"
+                    }
+                }
+                """.trimIndent()
+            )
+        )
+            .issues(UnsupportedNestColorDetector.JAVA_ISSUE)
+            .run()
+            .expectWarningCount(1)
     }
 }
