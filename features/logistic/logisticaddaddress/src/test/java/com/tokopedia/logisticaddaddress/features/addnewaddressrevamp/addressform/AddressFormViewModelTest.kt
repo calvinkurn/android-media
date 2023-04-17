@@ -19,6 +19,8 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +30,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import io.mockk.mockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -197,7 +200,6 @@ class AddressFormViewModelTest {
         coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
         val saveDataModel = SaveAddressDataModel(receiverName = "name", phone = "081222222222", address1 = "detail alamat draft")
         addressFormViewModel.addressId = addressId
-        val source = "source"
 
         // When
         addressFormViewModel.getAddressDetail(saveDataModel)
@@ -1231,5 +1233,39 @@ class AddressFormViewModelTest {
             addressFormViewModel.getCollectionId(),
             AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
         )
+    }
+
+    @Test
+    fun `verify when isDisableAddressImprovement is true`() {
+        // Inject
+        mockkStatic(RemoteConfigInstance::class)
+
+        // Given
+        coEvery {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
+                ""
+            )
+        } returns RollenceKey.KEY_ADDRESS_IMPROVEMENTS
+
+        // Then
+        Assert.assertTrue(addressFormViewModel.isDisableAddressImprovement)
+    }
+
+    @Test
+    fun `verify when isDisableAddressImprovement is false`() {
+        // Inject
+        mockkStatic(RemoteConfigInstance::class)
+
+        // Given
+        coEvery {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
+                ""
+            )
+        } returns ""
+
+        // Then
+        Assert.assertFalse(addressFormViewModel.isDisableAddressImprovement)
     }
 }
