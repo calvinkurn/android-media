@@ -13,8 +13,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.databinding.BsProductMediaRecomBinding
+import com.tokopedia.product.detail.tracking.CommonTracker
+import com.tokopedia.product.detail.tracking.ProductMediaRecomTracker
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -97,6 +100,8 @@ class ProductMediaRecomBottomSheetManager(
 
         private var binding by viewBinding(BsProductMediaRecomBinding::bind)
 
+        private var pdpListener: DynamicProductDetailListener? = null
+
         init {
             clearContentPadding = true
         }
@@ -130,7 +135,15 @@ class ProductMediaRecomBottomSheetManager(
             recomItem: RecommendationItem,
             itemPosition: Int,
             adapterPosition: Int
-        ) {}
+        ) {
+            pdpListener?.getTrackingQueueInstance()?.let {
+                ProductMediaRecomTracker.onImpressionProductCard(
+                    common = createCommonTracker(),
+                    item = recomItem,
+                    trackingQueue = it
+                )
+            }
+        }
 
         override fun onRecomProductCardClicked(
             data: RecommendationCarouselData,
@@ -144,6 +157,14 @@ class ProductMediaRecomBottomSheetManager(
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 recomItem.productId.toString()
             )
+
+            pdpListener?.getTrackingQueueInstance()?.let {
+                ProductMediaRecomTracker.onClickProductCard(
+                    common = createCommonTracker(),
+                    item = recomItem,
+                    trackingQueue = it
+                )
+            }
         }
 
         override fun onRecomBannerImpressed(
@@ -179,6 +200,7 @@ class ProductMediaRecomBottomSheetManager(
         ) {}
 
         fun setListener(listener: DynamicProductDetailListener) {
+            pdpListener = listener
             setOnDismissListener { listener.onProductMediaRecomBottomSheetDismissed() }
             binding?.globalErrorProductMedia?.setActionClickListener {
                 listener.onShowProductMediaRecommendationClicked()
@@ -219,7 +241,10 @@ class ProductMediaRecomBottomSheetManager(
 
         private fun setupBottomSheet() {
             (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(
-                HEADER_MARGIN.toPx(), Int.ZERO, HEADER_MARGIN.toPx(), Int.ZERO
+                HEADER_MARGIN.toPx(),
+                Int.ZERO,
+                HEADER_MARGIN.toPx(),
+                Int.ZERO
             )
         }
 
@@ -237,5 +262,11 @@ class ProductMediaRecomBottomSheetManager(
             )
             binding?.globalErrorProductMedia?.errorDescription?.text = errorMessage
         }
+
+        private fun createCommonTracker() = CommonTracker(
+            productInfo = pdpListener?.getProductInfo() ?: DynamicProductInfoP1(),
+            userId = pdpListener?.getUserSession()?.userId.orEmpty(),
+            userSession = pdpListener?.getUserSession()
+        )
     }
 }
