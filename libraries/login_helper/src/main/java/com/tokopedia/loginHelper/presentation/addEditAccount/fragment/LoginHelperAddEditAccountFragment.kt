@@ -1,10 +1,12 @@
 package com.tokopedia.loginHelper.presentation.addEditAccount.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -15,10 +17,14 @@ import com.tokopedia.loginHelper.R
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAddEditAccountBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.entity.PageMode
+import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.customview.SaveToLocalCoachmark
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperAddEditAccountViewModel
+import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
+import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.util.BundleConstants
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
@@ -74,12 +80,37 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        observeUiAction()
+    }
+
+    private fun observeUiAction() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiAction.collect { action ->
+                handleAction(action)
+            }
+        }
+    }
+
+    private fun handleAction(action: LoginHelperAddEditAccountAction) {
+        when (action) {
+            is LoginHelperAddEditAccountAction.TapBackAction -> {
+                goToAccountSettingsScreen()
+            }
+            is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
+            }
+        }
+    }
+
+    private fun goToAccountSettingsScreen() {
+        val intent = Intent(activity, LoginHelperAccountSettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun HeaderUnify.setUpHeader(headerTitle: String) {
         title = headerTitle
         setNavigationOnClickListener {
-            //   viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToLoginHelperHome)
+            viewModel.processEvent(LoginHelperAddEditAccountEvent.TapBackButton)
         }
     }
 
@@ -91,11 +122,9 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
     private fun FragmentLoginHelperAddEditAccountBinding.setUpButtonClickListeners() {
         btnSaveToDb.setOnClickListener {
-
         }
 
         btnSaveToLocal.setOnClickListener {
-
         }
     }
 
