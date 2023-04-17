@@ -25,8 +25,16 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
-import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
+import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -37,7 +45,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.init
 import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.RuntimeException
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -99,7 +106,9 @@ class DeveloperOptionActivity : BaseActivity() {
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
                 loginHelperListener = loginHelperListener(),
-                authorizeListener = checkAuthorize()
+                authorizeListener = checkAuthorize(),
+                userIdListener = userIdListener(),
+                shopIdListener = shopIdListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -254,14 +263,22 @@ class DeveloperOptionActivity : BaseActivity() {
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(this@DeveloperOptionActivity, getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@DeveloperOptionActivity,
+                getString(R.string.reset_onboarding),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
         override fun onClickSkipOnBoardingBtn() {
             userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity, getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@DeveloperOptionActivity,
+                getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -281,6 +298,46 @@ class DeveloperOptionActivity : BaseActivity() {
         }
     }
 
+    private fun userIdListener() = object : UserIdViewHolder.UserIdListener {
+        override fun onClickUserIdButton() {
+            userSession?.userId?.apply {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Copied UserId", this)
+                clipboard.setPrimaryClip(clip)
+                showToaster(
+                    String.format(
+                        resources.getString(
+                            R.string.copy_user_id,
+                            userSession?.userId
+                        ).toBlankOrString()
+                    )
+                )
+            }
+        }
+
+        override fun getUserId(): String = userSession?.userId.orEmpty()
+    }
+
+    private fun shopIdListener() = object : ShopIdViewHolder.ShopIdListener {
+        override fun onClickShopIdButton() {
+            userSession?.shopId?.apply {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Copied Shop Id ", this)
+                clipboard.setPrimaryClip(clip)
+                showToaster(
+                    String.format(
+                        resources.getString(
+                            R.string.copy_shop_id,
+                            userSession?.shopId
+                        ).toBlankOrString()
+                    )
+                )
+            }
+        }
+
+        override fun getShopId(): String = userSession?.shopId.orEmpty()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -294,7 +351,10 @@ class DeveloperOptionActivity : BaseActivity() {
     private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
         return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
             override fun onSubmitDevOptsPassword(password: String) {
-                val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+                val serverPassword = remoteConfig.getString(
+                    RemoteConfigKey.DEV_OPTS_AUTHORIZATION,
+                    ""
+                )
                 if (password == serverPassword) {
                     loginSession.setLoginSession(password)
                     adapter.setValueIsAuthorized(true)
