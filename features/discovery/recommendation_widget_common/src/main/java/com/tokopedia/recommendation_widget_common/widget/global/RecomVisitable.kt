@@ -1,8 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**

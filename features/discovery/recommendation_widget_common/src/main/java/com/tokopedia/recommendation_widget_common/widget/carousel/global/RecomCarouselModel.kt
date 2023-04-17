@@ -1,10 +1,9 @@
-package com.tokopedia.recommendation_widget_common.widget.global
+package com.tokopedia.recommendation_widget_common.widget.carousel.global
 
-import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselChipListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
-import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.recommendation_widget_common.widget.global.RecomTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.global.RecomVisitable
 
 /**
  * Created by frenzel on 27/03/23

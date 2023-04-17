@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget
+package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.recommendation_widget_common.widget.global.*
 import java.lang.Exception
 
 /**

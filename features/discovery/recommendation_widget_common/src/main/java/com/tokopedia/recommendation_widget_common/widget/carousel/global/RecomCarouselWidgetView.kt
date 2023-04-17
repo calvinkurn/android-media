@@ -1,9 +1,10 @@
-package com.tokopedia.recommendation_widget_common.widget.global
+package com.tokopedia.recommendation_widget_common.widget.carousel.global
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.recommendation_widget_common.databinding.LayoutWidgetRecommendationCarouselBinding
+import com.tokopedia.recommendation_widget_common.widget.global.BaseRecomWidgetView
 
 /**
  * Created by frenzel on 27/03/23

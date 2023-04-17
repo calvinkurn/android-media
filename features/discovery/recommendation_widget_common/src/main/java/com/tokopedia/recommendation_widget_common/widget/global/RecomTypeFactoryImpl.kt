@@ -1,6 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecomCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecomCarouselWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.ComparisonBpcWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecomComparisonBpcModel
 

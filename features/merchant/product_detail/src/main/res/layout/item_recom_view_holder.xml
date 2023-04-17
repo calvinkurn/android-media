@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.recommendation_widget_common.widget.RecomWidgetView
+<com.tokopedia.recommendation_widget_common.widget.global.RecomWidgetView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/recom_widget"
     android:layout_width="match_parent"
