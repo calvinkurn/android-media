@@ -244,7 +244,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
                         source = source,
-                        data = updateParam
+                        data = it.message
                     )
                 )
             }

@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -36,6 +34,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -531,12 +530,8 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                         if (it.source == SOURCE) {
-                            it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
-                                viewBinding?.recyclerViewPurchase?.post {
-                                    viewModel.updateCartId(updateParams, cartTokoFoodData)
-                                }
-
-                                val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
+                            (it.data as? String)?.let { message ->
+                                val toasterMessage = message.takeIf { cartMessage ->
                                     cartMessage.isNotBlank()
                                 } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
                                 showToaster(toasterMessage, getOkayMessage())
