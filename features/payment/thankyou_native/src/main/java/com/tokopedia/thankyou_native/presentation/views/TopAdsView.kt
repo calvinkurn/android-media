@@ -16,7 +16,9 @@ import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.thanks_topads_view.view.*
 
 class TopAdsView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val layout = R.layout.thanks_topads_view
@@ -30,15 +32,17 @@ class TopAdsView @JvmOverloads constructor(
     ) {
         if (!topAdsParams.topAdsUIModelList.isNullOrEmpty()) {
             visible()
-            if (topAdsParams.sectionTitle.isNotBlank())
+            if (topAdsParams.sectionTitle.isNotBlank()) {
                 findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.sectionTitle
-            else
+            } else {
                 findViewById<TextView>(R.id.tvFeatureTitle).gone()
+            }
 
-            if (topAdsParams.sectionDescription.isNullOrBlank())
+            if (topAdsParams.sectionDescription.isNullOrBlank()) {
                 findViewById<TextView>(R.id.tvFeatureDescription).gone()
-            else
+            } else {
                 findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.sectionDescription
+            }
 
             val topAdsImageViewModels = mutableListOf<TopAdsImageViewModel>()
             topAdsParams.topAdsUIModelList?.forEach {
@@ -48,8 +52,8 @@ class TopAdsView @JvmOverloads constructor(
             if (!tdnBannerList.isNullOrEmpty()) {
                 tdnBannerView?.renderTdnBanner(
                     tdnBannerList.first(),
-                    8.toPx(),
-                    ::onTdnBannerClicked,
+                    BANNER_CORNER_RADIUS_DP.toPx(),
+                    ::onTdnBannerClicked
                 )
             }
         } else {
@@ -59,5 +63,9 @@ class TopAdsView @JvmOverloads constructor(
 
     private fun onTdnBannerClicked(applink: String) {
         if (applink.isNotEmpty()) RouteManager.route(tdnBannerView.context, applink)
+    }
+
+    companion object {
+        private const val BANNER_CORNER_RADIUS_DP = 8
     }
 }
