@@ -151,6 +151,34 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
+    fun `add to cart success with status error`() = runBlocking {
+        val data = AddToCartDoneRecommendationItemDataModel(RecommendationItem(), true)
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 0), status = "ERROR")
+
+        every {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(data)
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `add to cart fail throws error`() = runBlocking {
+        val data = AddToCartDoneRecommendationItemDataModel(RecommendationItem(), true)
+        val error = Throwable("Some Message")
+
+        every {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } throws error
+
+        viewModel.addToCart(data)
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
