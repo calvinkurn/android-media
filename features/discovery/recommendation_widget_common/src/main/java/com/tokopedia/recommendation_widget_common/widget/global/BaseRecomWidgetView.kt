@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 
-abstract class BaseRecomWidget: FrameLayout {
+abstract class BaseRecomWidgetView<T>: FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -13,5 +13,5 @@ abstract class BaseRecomWidget: FrameLayout {
         defStyleAttr
     )
 
-    abstract fun bind(model: RecomVisitable)
+    abstract fun bind(model: T)
 }

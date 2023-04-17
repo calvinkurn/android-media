@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.databinding.LayoutWidgetRecomm
 /**
  * Created by frenzel on 27/03/23
  */
-class RecomCarouselWidgetView : BaseRecomWidget {
+class RecomCarouselWidgetView : BaseRecomWidgetView<RecomCarouselModel> {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -27,7 +27,7 @@ class RecomCarouselWidgetView : BaseRecomWidget {
         binding = LayoutWidgetRecommendationCarouselBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    override fun bind(model: RecomVisitable) {
+    override fun bind(model: RecomCarouselModel) {
         binding?.run {
 
         }

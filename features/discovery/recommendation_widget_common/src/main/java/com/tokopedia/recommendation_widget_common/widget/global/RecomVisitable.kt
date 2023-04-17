@@ -1,7 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by frenzel on 11/03/23
@@ -9,8 +11,15 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 interface RecomVisitable: Visitable<RecomTypeFactory> {
     val type: String
     val name: String
-    var recomWidgetData: RecommendationWidget?
-    val state: Int
-    val verticalPosition: Int
-    var isInitialized: Boolean
+    val state: RecomWidgetState
+    val recomWidgetMetadata: RecomWidgetMetadata
+    val recomWidgetTrackingModel: RecomWidgetTrackingModel
+    val recomWidgetAnalyticListener: RecomWidgetAnalyticListener?
+    var trackingQueue: TrackingQueue?
+}
+
+enum class RecomWidgetState {
+    STATE_LOADING,
+    STATE_READY,
+    STATE_FAILED
 }
