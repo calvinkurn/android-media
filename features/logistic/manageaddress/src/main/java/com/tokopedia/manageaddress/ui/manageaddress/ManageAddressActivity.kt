@@ -37,8 +37,6 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         binding = ActivityManageAddressBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         initViews()
-
-
     }
 
     private fun initViews() {
