@@ -69,8 +69,6 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.getAction
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.getType
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
@@ -470,8 +468,8 @@ object DynamicProductDetailMapper {
                 infoLink = it.infoLink,
                 showAtBottomSheet = it.showAtBottomSheet,
                 key = it.key,
-                type = it.getType(),
-                action = it.getAction(),
+                type = it.type,
+                action = it.action,
                 extParam = it.extParam
             )
         }

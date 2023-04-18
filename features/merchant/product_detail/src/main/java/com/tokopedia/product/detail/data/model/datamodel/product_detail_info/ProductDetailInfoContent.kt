@@ -23,15 +23,15 @@ data class ProductDetailInfoContent(
     val isAnnotation: Boolean = false,
     val showAtBottomSheet: Boolean = true,
     val key: String = "",
-    val type: Type = Type.DEFAULT,
-    val action: Action = Action.NONE,
+    val type: String = "",
+    val action: String = "",
     val extParam: String = ""
 ) : Parcelable {
 
     val isClickable: Boolean
-        get() = applink.isNotBlank() || type != Type.DEFAULT
+        get() = applink.isNotBlank() || type != Content.TYPE_DEFAULT
 
-    enum class Type(val value: String) {
+    /*enum class Type(val value: String) {
         DEFAULT(""),
         ACTION("action")
     }
@@ -40,7 +40,7 @@ data class ProductDetailInfoContent(
         NONE(""),
         APP_LINK("applink"),
         OPEN_PRODUCT_DETAIL_INFO("open_detail_product")
-    }
+    }*/
 
     fun routeOnClick(
         navigator: ProductDetailInfoNavigator
@@ -50,7 +50,7 @@ data class ProductDetailInfoContent(
             KEY_CATALOG -> navigator.toCatalog(appLink = applink, subTitle = subtitle)
             KEY_CATEGORY -> navigator.toCategory(appLink = applink)
             else -> when (type) { // new code for generalize
-                Type.ACTION -> routeAction(navigator = navigator)
+                Content.TYPE_ACTION -> routeAction(navigator = navigator)
                 else -> {
                     // no ops
                 }
@@ -60,10 +60,10 @@ data class ProductDetailInfoContent(
 
     private fun routeAction(navigator: ProductDetailInfoNavigator) {
         when (action) {
-            Action.APP_LINK -> {
+            Content.ACTION_APPLINK -> {
                 navigator.toAppLink(key = key, appLink = applink)
             }
-            Action.OPEN_PRODUCT_DETAIL_INFO -> {
+            Content.ACTION_OPEN_DETAIL_PRODUCT -> {
                 navigator.toProductDetailInfo(key = key, extParam = extParam)
             }
             else -> {
@@ -72,6 +72,7 @@ data class ProductDetailInfoContent(
         }
     }
 }
+/*
 
 fun Content.getType() = when (type) {
     ProductDetailInfoContent.Type.ACTION.value -> ProductDetailInfoContent.Type.ACTION
@@ -83,3 +84,4 @@ fun Content.getAction() = when (action) {
     ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO.value -> ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO
     else -> ProductDetailInfoContent.Action.NONE
 }
+*/
