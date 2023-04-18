@@ -1,7 +1,8 @@
-package com.tokopedia.logout.viewmodel
+package com.tokopedia.logout
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logout.LogoutViewModel
 import com.tokopedia.logout.domain.model.LogoutDataModel
 import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -26,11 +27,9 @@ class LogoutViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val logoutUseCase = mockk<LogoutUseCase>(relaxed = true)
-    private val observer = mockk<Observer<Result< LogoutDataModel>>>(relaxed = true)
+    private val observer = mockk<Observer<Result<LogoutDataModel>>>(relaxed = true)
 
     lateinit var viewModel: LogoutViewModel
-
-    val mockThrowable = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setup() {
@@ -41,47 +40,37 @@ class LogoutViewModelTest {
     @Test
     fun `do logout - success`() {
         val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
-
-        coEvery {
-            logoutUseCase.invoke(Unit)
-        } returns mockResponse
+        coEvery { logoutUseCase.invoke(Unit) } returns mockResponse
 
         viewModel.doLogout()
 
-        verify {
-            observer.onChanged(Success(mockResponse))
-        }
+        verify { observer.onChanged(Success(mockResponse)) }
     }
 
     @Test
     fun `do logout - failed`() {
         val mockErrorData = LogoutDataModel.Errors(message = "logout failed")
-        val mockResponseData = LogoutDataModel.Response(success = false, errors = mutableListOf(mockErrorData))
-        val mockResponse = Throwable(mockResponseData.errors[0].message)
+        val mockResponseData = LogoutDataModel(
+            LogoutDataModel.Response(
+                success = false,
+                errors = mutableListOf(mockErrorData)
+            )
+        )
 
-        coEvery {
-            logoutUseCase.invoke(Unit)
-        } throws mockResponse
+        coEvery { logoutUseCase.invoke(Unit) } returns mockResponseData
 
         viewModel.doLogout()
 
-        verify {
-            observer.onChanged(Fail(mockResponse))
-        }
+        verify(exactly = 1) { observer.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `do logout - error`() {
-
-        coEvery {
-            logoutUseCase.invoke(Unit)
-        } throws mockThrowable
-
+        val mockThrowable = Throwable()
+        coEvery { logoutUseCase.invoke(Unit) } throws mockThrowable
 
         viewModel.doLogout()
 
-        verify {
-            observer.onChanged(Fail(mockThrowable))
-        }
+        verify { observer.onChanged(Fail(mockThrowable)) }
     }
 }
