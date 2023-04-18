@@ -8,6 +8,7 @@ import com.tokopedia.catalog.model.datamodel.*
 import com.tokopedia.catalog.viewholder.components.CatalogForYouViewHolder
 import com.tokopedia.catalog.viewholder.components.CatalogInfoViewHolder
 import com.tokopedia.catalog.viewholder.components.CatalogStaggeredProductCardItemVH
+import com.tokopedia.catalog.viewholder.components.EntryBannerViewHolder
 import com.tokopedia.catalog.viewholder.containers.*
 import com.tokopedia.catalog.viewholder.shimmer.CatalogForYouShimmerCardItemVH
 import com.tokopedia.catalog.viewholder.shimmer.CatalogStaggeredShimmerCardItemVH
@@ -54,8 +55,13 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
         return CatalogComparisonContainerNewViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogEntryBannerDataModel): Int {
+        return EntryBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            EntryBannerViewHolder.LAYOUT -> EntryBannerViewHolder(view, catalogDetailListener)
             CatalogInfoViewHolder.LAYOUT -> CatalogInfoViewHolder(view, catalogDetailListener)
             CatalogSpecificationsContainerViewHolder.LAYOUT -> CatalogSpecificationsContainerViewHolder(view, catalogDetailListener)
             CatalogVideosContainerViewHolder.LAYOUT -> CatalogVideosContainerViewHolder(view, catalogDetailListener)

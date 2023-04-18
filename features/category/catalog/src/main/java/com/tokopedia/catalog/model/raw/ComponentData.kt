@@ -53,7 +53,15 @@ data class ComponentData(
         var specList: ArrayList<SpecList>? = arrayListOf(),
         @Expose
         @SerializedName("compared_data")
-        val comparedData: ComparedData? = null
+        val comparedData: ComparedData? = null,
+        @SerializedName("category_name")
+        val categoryName : String?,
+        @SerializedName("category_identifier")
+        val categoryIdentifier : String?,
+        @SerializedName("catalog_count")
+        val catalogCount : String?,
+        @SerializedName("catalogs")
+        var catalogs: ArrayList<ComparisonNewModel>? = arrayListOf(),
 
 ){
     @Parcelize
@@ -146,6 +154,7 @@ data class ComparisonNewModel(
         val name: String?,
         val price: String?,
         val imageUrl: String?,
+        val appLink : String?
 ) : Parcelable
 
 @Parcelize
