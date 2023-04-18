@@ -169,12 +169,12 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         return object : UElementHandler() {
             override fun visitField(node: UField) {
                 val value = node.text
-                validate(node = node, value = value, label = node::class.java.simpleName)
+                validate(node = node, value = value)
             }
 
             override fun visitLocalVariable(node: ULocalVariable) {
                 val value = node.text
-                validate(node = node, value = value, label = node::class.java.simpleName)
+                validate(node = node, value = value)
             }
 
             override fun visitCallExpression(node: UCallExpression) {
@@ -182,7 +182,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                     val resource = it.asSourceString()
                     shouldScanResource(value = resource)
                 }?.let {
-                    reportJavaError(context, it, label = node::class.java.simpleName)
+                    reportJavaError(context, it)
                 }
             }
 
@@ -193,8 +193,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                 if (shouldScanResource(resource)) {
                     reportJavaError(
                         context = context,
-                        psi = element,
-                        label = node::class.java.simpleName
+                        psi = element
                     )
                 }
             }
@@ -208,17 +207,16 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                         if (shouldScanResource(resource)) {
                             reportJavaError(
                                 context = context,
-                                psi = param,
-                                label = param::class.java.simpleName
+                                psi = param
                             )
                         }
                     }
                 }
             }
 
-            private fun validate(node: UVariable, value: String, label: String) {
+            private fun validate(node: UVariable, value: String) {
                 if (shouldScanResource(value = value)) {
-                    reportJavaError(context = context, node = node, label = label)
+                    reportJavaError(context = context, node = node)
                 }
             }
 
@@ -230,8 +228,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     private fun reportJavaError(
         context: JavaContext,
         node: UElement? = null,
-        psi: PsiElement? = null,
-        label: String
+        psi: PsiElement? = null
     ) {
         if (psi != null) {
             val source = psi.text.ifBlank { return }
@@ -242,7 +239,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                 JAVA_ISSUE,
                 psi,
                 location,
-                component.first + " label: $label",
+                component.first,
                 component.second
             )
         } else {
@@ -254,7 +251,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                 JAVA_ISSUE,
                 node,
                 location,
-                component.first + " label: $label",
+                component.first,
                 component.second
             )
         }
