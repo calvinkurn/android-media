@@ -63,6 +63,7 @@ ext {
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             floatingWindow          : ":libraries:floating_window",
+            foldable                : ":libraries:foldable",
             graphql                 : ":libraries:graphql",
             imageAssets             : ":libraries:image_assets",
             imagePicker             : ":libraries:image_picker",
