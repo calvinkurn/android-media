@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -85,11 +85,11 @@ object TokofoodExt {
         }
     }
 
-    fun Any.getSuccessUpdateResultPair(): Pair<UpdateParam, CartListBusinessData>? {
+    fun Any.getSuccessAddToCartResultPair(): Pair<UpdateParam, CartGeneralAddToCartData>? {
         return (this as? Pair<*, *>)?.let { pair ->
             (pair.first as? UpdateParam)?.let { updateParams ->
-                (pair.second as? CartListBusinessData)?.let { businessData ->
-                    updateParams to businessData
+                (pair.second as? CartGeneralAddToCartData)?.let { cartListData ->
+                    updateParams to cartListData
                 }
             }
         }

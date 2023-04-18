@@ -7,7 +7,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddress
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.response.ATCTokofoodResponse
-import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartDataData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import javax.inject.Inject
@@ -64,7 +64,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(AddToCartTokofood())
     }
 
-    suspend fun execute(params: UpdateParam): CartGeneralAddToCartDataData {
+    suspend fun execute(params: UpdateParam): CartGeneralAddToCartData {
         val param = generateParams(
             params,
             chosenAddressRequestHelper.getChosenAddress()
@@ -73,7 +73,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
 
         val response = executeOnBackground()
         if (response.isSuccess() || response.cartGeneralAddToCart.data.data.getIsShowBottomSheet()) {
-            return response.cartGeneralAddToCart.data.data
+            return response.cartGeneralAddToCart.data
         } else {
             throw MessageErrorException(response.cartGeneralAddToCart.data.message)
         }

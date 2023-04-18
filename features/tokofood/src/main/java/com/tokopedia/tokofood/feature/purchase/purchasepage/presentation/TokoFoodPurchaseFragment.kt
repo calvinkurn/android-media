@@ -56,7 +56,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
-import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessAddToCartResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -519,8 +519,8 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
-                            it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
-                                cartTokoFoodData.getAvailableSectionProducts().firstOrNull()?.let { product ->
+                            it.data?.getSuccessAddToCartResultPair()?.let { (_, cartTokoFoodData) ->
+                                cartTokoFoodData.data.getTokofoodBusinessData().getAvailableSectionProducts().firstOrNull()?.let { product ->
                                     viewBinding?.recyclerViewPurchase?.post {
                                         viewModel.updateNotes(product)
                                     }

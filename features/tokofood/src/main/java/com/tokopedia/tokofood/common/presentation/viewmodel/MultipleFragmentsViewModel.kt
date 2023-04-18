@@ -215,7 +215,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
                         source = source,
-                        data = updateParam to it.getTokofoodBusinessData()
+                        data = updateParam to it
                     )
                 )
             }
@@ -276,7 +276,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
                         source = source,
-                        data = updateParam to it.getTokofoodBusinessData()
+                        data = updateParam to it
                     )
                 )
             }
@@ -297,7 +297,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             withContext(dispatchers.io) {
                 addToCartTokoFoodUseCase.get().execute(updateParam)
             }.let {
-                val businessData = it.getTokofoodBusinessData()
+                val businessData = it.data.getTokofoodBusinessData()
                 if (businessData.customResponse.bottomSheet.isShowBottomSheet) {
                     cartDataValidationState.emit(
                         UiEvent(
@@ -318,7 +318,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                         UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
                             source = source,
-                            data = updateParam to it.getTokofoodBusinessData()
+                            data = updateParam to it
                         )
                     )
                 }

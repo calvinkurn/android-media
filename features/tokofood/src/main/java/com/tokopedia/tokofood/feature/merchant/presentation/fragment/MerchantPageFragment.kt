@@ -53,8 +53,8 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
-import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -65,7 +65,7 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
-import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessAddToCartResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -757,7 +757,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
                 UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                     if (it.source == SOURCE) {
-                        onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
+                        onSuccessAddCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
                 UiEvent.EVENT_PHONE_VERIFICATION -> {
@@ -774,7 +774,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
                 UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
                     if (it.source == SOURCE) {
-                        onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
+                        onSuccessUpdateCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
                 UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
@@ -782,8 +782,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
-                                    (pair.second as? CartListBusinessData)?.let { cartListBusinessData ->
-                                        cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
+                                    (pair.second as? CartGeneralAddToCartData)?.let { cartListData ->
+                                        cartListData.data.getTokofoodBusinessData()
+                                            .getAvailableSectionProducts()
+                                            .firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions =
                                                     viewModel.productMap[requestParam.productId]
@@ -797,14 +799,16 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                     }
                                                 }
                                             }
-                                    }
-                                    view?.let { view ->
-                                        Toaster.build(
-                                            view = view,
-                                            text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
-                                            duration = Toaster.LENGTH_SHORT,
-                                            type = Toaster.TYPE_NORMAL
-                                        ).show()
+
+
+                                        view?.let { view ->
+                                            Toaster.build(
+                                                view = view,
+                                                text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
+                                                duration = Toaster.LENGTH_SHORT,
+                                                type = Toaster.TYPE_NORMAL
+                                            ).show()
+                                        }
                                     }
                                 }
                         }
@@ -1069,10 +1073,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
 
-    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartListBusinessData>?) {
-        addCartData?.let { (updateParam, cartListBusinessData) ->
+    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartGeneralAddToCartData>?) {
+        addCartData?.let { (updateParam, cartListData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartListBusinessData.getAvailableSectionProducts().firstOrNull { product -> product.productId == requestParam.productId }
+                cartListData.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                    .firstOrNull { product -> product.productId == requestParam.productId }
                     ?.let { cart ->
                         val cardPositions = viewModel.productMap[requestParam.productId]
                         cardPositions?.run {
@@ -1096,25 +1101,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                             }
                         }
-                        showSuccessAddToCartToaster(cartListBusinessData.message)
+                        showSuccessAddToCartToaster(cartListData.message)
                     }
-            }
-
-            cartListBusinessData.message.takeIf { it.isNotBlank() }?.let { message ->
-                view?.let { view ->
-                    Toaster.build(
-                        view = view,
-                        text = message,
-                        duration = Toaster.LENGTH_SHORT,
-                        type = Toaster.TYPE_NORMAL
-                    ).show()
-                }
             }
         }
     }
 
     private fun showSuccessAddToCartToaster(message: String) {
-        if (message.isNotEmpty()) {
+        if (message.isNotBlank()) {
             view?.let { view ->
                 Toaster.build(
                     view = view,
@@ -1126,10 +1120,11 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartListBusinessData>?) {
-        updateCartData?.let { (updateParam, cartListBusinessData) ->
+    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartGeneralAddToCartData>?) {
+        updateCartData?.let { (updateParam, cartListData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartListBusinessData.getAvailableSectionProducts().filter { data -> data.productId == requestParam.productId }
+                cartListData.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                    .filter { data -> data.productId == requestParam.productId }
                     .let { cartTokoFoodList ->
                         val cardPositions =
                             viewModel.productMap[requestParam.productId]

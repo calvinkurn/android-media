@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartDataData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralRemoveCartData
@@ -97,7 +98,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
     }
 
     protected fun onAddToCart_shouldReturn(updateParam: UpdateParam,
-                                           response: CartGeneralAddToCartDataData) {
+                                           response: CartGeneralAddToCartData) {
         coEvery {
             addToCartTokoFoodUseCase.get().execute(updateParam)
         } returns response
@@ -112,7 +113,8 @@ abstract class MultipleFragmentsViewModelTestFixture {
 
     protected fun onUpdateCart_shouldReturn(updateParam: UpdateParam,
                                             source: String,
-                                            response: CartGeneralAddToCartDataData) {
+                                            response: CartGeneralAddToCartData
+    ) {
         coEvery {
             updateCartTokoFoodUseCase.get().execute(updateParam, source)
         } returns response
@@ -172,11 +174,14 @@ abstract class MultipleFragmentsViewModelTestFixture {
         job.cancel()
     }
 
-    protected fun getSuccessUpdateCartResponse(): CartGeneralAddToCartDataData {
-        return CartGeneralAddToCartDataData(
-            businessData = listOf(
-                CartListBusinessData(
-                    businessId = TokoFoodCartUtil.getBusinessId()
+    protected fun getSuccessUpdateCartResponse(): CartGeneralAddToCartData {
+        return CartGeneralAddToCartData(
+            success = 1,
+            data = CartGeneralAddToCartDataData(
+                businessData = listOf(
+                    CartListBusinessData(
+                        businessId = TokoFoodCartUtil.getBusinessId()
+                    )
                 )
             )
         )
