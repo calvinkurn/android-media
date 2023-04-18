@@ -2,12 +2,14 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -146,6 +148,7 @@ class ShipmentCostViewHolder(
         if (shipmentCost.productDiscountAmount > 0) {
             mTvProductDiscountLabel.text = mTvProductDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount)
             mTvProductDiscountPrice.text = getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, (shipmentCost.productDiscountAmount * -1).toDouble())
+            mTvProductDiscountPrice.setTextColor(ContextCompat.getColor(mTvProductDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         } else {
             mTvProductDiscountLabel.visibility = View.GONE
             mTvProductDiscountPrice.visibility = View.GONE
@@ -161,6 +164,7 @@ class ShipmentCostViewHolder(
                 mTvShippingDiscountLabel.visibility = View.GONE
             } else {
                 mTvShippingDiscountPrice.text = getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, (shipmentCost.shippingDiscountAmount * -1).toDouble())
+                mTvShippingDiscountPrice.setTextColor(ContextCompat.getColor(mTvShippingDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             }
         } else {
             mTvShippingDiscountLabel.visibility = View.GONE
@@ -171,6 +175,7 @@ class ShipmentCostViewHolder(
     private fun renderGeneralDiscount(shipmentCost: ShipmentCostModel) {
         mTvDiscountLabel.text = mTvDiscountLabel.context.getString(R.string.label_total_discount)
         mTvDiscountPrice.text = getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, (shipmentCost.discountAmount * -1).toDouble())
+        mTvDiscountPrice.setTextColor(ContextCompat.getColor(mTvDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
     private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
@@ -245,9 +250,11 @@ class ShipmentCostViewHolder(
                     mTvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
 
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 } else {
                     mTvPlatformSlashedFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 }
 
                 if (platformFeeModel.isShowTooltip) {
