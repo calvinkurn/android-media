@@ -11,6 +11,7 @@ import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.LintFix
+import com.android.tools.lint.detector.api.Location
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
@@ -24,7 +25,6 @@ import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UReturnExpression
-import org.jetbrains.uast.UVariable
 import org.w3c.dom.Attr
 
 class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
@@ -41,8 +41,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         private const val NEST_INDEX = 14
         private const val NEST_CHARACTER = "N"
         val REGEX_OLD_COLOR = "(Unify_[A-Z]\\d{1,4}_\\d{1,2})|(Unify_[A-Z]\\d{1,4})".toRegex()
-        val JAVA_REGEX_OLD_COLOR =
-            "(R.color.Unify_[A-Z]\\d{1,4}_\\d{1,2})|(R.color.Unify_[A-Z]\\d{1,4})".toRegex()
+        val JAVA_REGEX_OLD_COLOR = ".*R.color.Unify_[A-Z]\\d{1,4}.*".toRegex()
 
         val JAVA_ISSUE = Issue.create(
             id = ISSUE_ID,
@@ -166,13 +165,13 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitField(node: UField) {
-                val value = node.text
-                validate(node = node, value = value, label = "visitField")
+                val value = node.text.substringAfter("= ")
+                validate(node = node, value = value, label = node::class.java.simpleName)
             }
 
             override fun visitLocalVariable(node: ULocalVariable) {
-                val value = node.text
-                validate(node = node, value = value, label = "visitLocalVariable")
+                val value = node.text.substringAfter("= ")
+                validate(node = node, value = value, label = node::class.java.simpleName)
             }
 
             override fun visitCallExpression(node: UCallExpression) {
@@ -180,7 +179,11 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                     val resource = it.asSourceString()
                     shouldScanResource(value = resource)
                 }?.let {
-                    reportJavaError(context, it, label = "visitCallExpression")
+                    reportJavaError(
+                        context = context,
+                        node = it,
+                        label = node::class.java.simpleName
+                    )
                 }
             }
 
@@ -192,21 +195,30 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                     reportJavaError(
                         context = context,
                         psi = element,
-                        label = "visitReturnExpression"
+                        label = node::class.java.simpleName
                     )
                 }
             }
 
-            private fun validate(node: UVariable, value: String, label: String) {
+            private fun validate(node: UElement, value: String, label: String) {
                 if (shouldScanResource(value = value)) {
                     reportJavaError(context = context, node = node, label = label)
                 }
             }
 
-            private fun shouldScanResource(value: String) = value.contains(JAVA_REGEX_OLD_COLOR)
+            private fun shouldScanResource(value: String) = value.matches(JAVA_REGEX_OLD_COLOR)
         }
     }
-
+    private val locations = mutableListOf<String>()
+    private fun shouldToReport(location: Location): Boolean {
+        val key = location.file.absolutePath + location.start?.line + location.end?.line
+        return if (locations.contains(key)) {
+            false
+        } else {
+            locations.add(key)
+            true
+        }
+    }
     private fun reportJavaError(
         context: JavaContext,
         node: UElement? = null,
@@ -216,24 +228,31 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         if (psi != null) {
             val source = psi.text.ifBlank { return }
             val component = getJavaMessageAndQuickFix(source = source)
-            context.report(
-                JAVA_ISSUE,
-                psi,
-                context.getLocation(psi),
-                component.first + " label: $label",
-                component.second
-            )
+            val location = context.getLocation(psi)
+
+            if (shouldToReport(location = location)) {
+                context.report(
+                    JAVA_ISSUE,
+                    psi,
+                    location,
+                    component.first + " label: $label",
+                    component.second
+                )
+            }
         } else {
             val source = (node?.asSourceString() ?: return).ifBlank { return }
             val component = getJavaMessageAndQuickFix(source = source)
+            val location = context.getLocation(node)
 
-            context.report(
-                JAVA_ISSUE,
-                node,
-                context.getLocation(node),
-                component.first + " label: $label",
-                component.second
-            )
+            if (shouldToReport(location = location)) {
+                context.report(
+                    JAVA_ISSUE,
+                    node,
+                    location,
+                    component.first + " label: $label",
+                    component.second
+                )
+            }
         }
     }
 
