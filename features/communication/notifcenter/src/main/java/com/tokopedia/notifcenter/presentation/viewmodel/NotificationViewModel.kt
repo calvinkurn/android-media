@@ -375,7 +375,7 @@ class NotificationViewModel @Inject constructor(
             dispatcher.io,
             {
                 var type = role
-                if (userSessionInterface.shopId == DEFAULT_SHOP_ID) {
+                if (userSessionInterface.shopId == DEFAULT_SHOP_ID && role != RoleType.AFFILIATE) {
                     type = CLEAR_ALL_NOTIF_TYPE
                 }
                 clearNotifUseCase.clearNotifCounter(type).collect {
