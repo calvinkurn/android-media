@@ -996,6 +996,24 @@ class NotificationViewModelTest {
     }
 
     @Test
+    fun `clearNotifCounter propagate success data to liveData for affiliate`() {
+        // Given
+        val role = RoleType.AFFILIATE
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
     fun clearNotifCounter_reset_type_zero_when_user_does_not_have_shop() {
         // Given
         val role = RoleType.BUYER
