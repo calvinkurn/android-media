@@ -68,6 +68,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.InfoDilayaniTokopediaBottomSheet
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -1970,6 +1971,13 @@ open class ProductManageFragment :
         stockGuaranteeBottomSheet.show()
     }
 
+    override fun onClickDTIdentifier() {
+        val infoDilayaniTokopediaBottomSheet = InfoDilayaniTokopediaBottomSheet(
+            childFragmentManager
+        )
+        infoDilayaniTokopediaBottomSheet.show()
+    }
+
     override fun onClickEditStockButton(product: ProductUiModel) {
         if (product.hasStockReserved) {
             context?.run {
@@ -2027,7 +2035,8 @@ open class ProductManageFragment :
                 val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
                     product.id,
                     product.isProductBundling,
-                    ::onClickCampaignInfo
+                    ::onClickCampaignInfo,
+                    ::onClickDTIdentifier
                 ) { result ->
                     viewModel.editVariantsStock(result)
                 }

@@ -334,7 +334,7 @@ class ProductManageViewModel @Inject constructor(
                 }
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
-                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
                     val requestParams = GQLGetProductListUseCase.createRequestParams(
                         shopId,
                         warehouseId,

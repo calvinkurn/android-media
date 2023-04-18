@@ -53,6 +53,7 @@ class ProductViewHolder(
         showNotifyMeBuyer(product)
         showStockHintImage(product)
         showLabelGuaranteed(product)
+        showDTIdentifier(product)
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)
@@ -192,6 +193,13 @@ class ProductViewHolder(
         }
     }
 
+    private fun showDTIdentifier(product: ProductUiModel) {
+        binding?.ivDilayaniTokopedia
+            ?.showWithCondition(product.isDTInbound)
+        binding?.ivDilayaniTokopedia?.setOnClickListener {
+            listener.onClickDTIdentifier()
+        }
+    }
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
             ?.showWithCondition(product.haveNotifyMeOOS)
@@ -369,6 +377,7 @@ class ProductViewHolder(
         fun onClickNotifyMeBuyerInformation(product: ProductUiModel)
         fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
         fun onClickLabelGuarantee()
+        fun onClickDTIdentifier()
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)

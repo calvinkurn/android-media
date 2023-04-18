@@ -16,6 +16,7 @@
         android:maxLines="1"
         android:layout_marginTop="26dp"
         app:typographyType="body_2"
+        android:drawablePadding="4dp"
         app:typographyWeight="bold"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintWidth_default="wrap"
