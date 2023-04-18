@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
@@ -30,7 +31,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -65,7 +65,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
-    private val tokoNowSimilarProductTrackerListener: TokoNowSimilarProductTrackerListener,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     private val productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     private val productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     private val productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
@@ -118,7 +118,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(
                 itemView = view,
                 listener = productItemListener,
-                similarProductTrackerListener = tokoNowSimilarProductTrackerListener
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
             )
             BannerViewHolder.LAYOUT -> BannerViewHolder(
                 itemView = view,

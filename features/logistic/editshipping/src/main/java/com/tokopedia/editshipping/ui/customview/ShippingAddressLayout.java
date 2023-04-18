@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.EditShippingAddressLayoutBinding;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
@@ -26,13 +28,7 @@ import com.tokopedia.unifyprinciples.Typography;
  */
 public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         EditShippingPresenter,
-        EditShippingViewListener>{
-
-    EditText addressArea;
-    EditText chooseLocation;
-    Typography phoneNumber;
-    Typography phoneNumberTitle;
-    Typography phoneNumberButton;
+        EditShippingViewListener, EditShippingAddressLayoutBinding>{
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private EditShippingPresenter presenter;
@@ -51,23 +47,14 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     @Override
-    protected void bindView(View view) {
-        addressArea = (EditText) view.findViewById(R.id.address_text_field);
-
-        chooseLocation = (EditText) view.findViewById(R.id.value_location);
-
-        phoneNumber = (Typography) view.findViewById(R.id.shop_phone_number);
-        phoneNumberTitle = (Typography) view.findViewById(R.id.shop_phone_number_title);
-
-        phoneNumberButton = (Typography) view.findViewById(R.id.change_phone_number_button);
-
-        chooseLocation.setOnClickListener(new View.OnClickListener() {
+    protected void bindView(EditShippingAddressLayoutBinding view) {
+        view.editShippingMapView.valueLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainView.openGeoLocation();
             }
         });
-        addressArea.addTextChangedListener(new TextWatcher() {
+        view.addressTextField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -87,17 +74,17 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     @Override
-    protected int getLayoutView() {
-        return R.layout.edit_shipping_address_layout;
+    protected EditShippingAddressLayoutBinding getLayoutView(Context context) {
+        return EditShippingAddressLayoutBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override
     public void renderData(@NonNull ShopShipping data) {
-        addressArea.setText(data.addrStreet);
+        getBinding().addressTextField.setText(data.addrStreet);
     }
 
     public void renderGeoAddress(String address) {
-        chooseLocation.setText(address);
+        getBinding().editShippingMapView.valueLocation.setText(address);
     }
 
     @Override
@@ -117,7 +104,7 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
                 presenter.getShopInformation().setShopLatitude(locationPass.getLatitude());
                 presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
             }
-            chooseLocation.setText(getReverseGeocode(locationPass));
+            getBinding().editShippingMapView.valueLocation.setText(getReverseGeocode(locationPass));
         } else {
             SaveAddressDataModel addressData = data.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL);
             if (addressData != null) {
@@ -139,10 +126,10 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     public String getGoogleMapAddressString(){
-        return chooseLocation.getText().toString();
+        return getBinding().editShippingMapView.valueLocation.getText().toString();
     }
 
     public String getAddressData(){
-        return addressArea.getText().toString();
+        return getBinding().addressTextField.getText().toString();
     }
 }

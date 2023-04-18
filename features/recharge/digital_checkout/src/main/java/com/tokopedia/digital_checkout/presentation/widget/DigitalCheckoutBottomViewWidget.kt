@@ -37,8 +37,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
         true
     )
 
-    private var isConsentAvailable: Boolean = false
-
     var isGoToPlusCheckout: Boolean = false
         set(isGoToPlus) {
             field = isGoToPlus
@@ -129,7 +127,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     }
                 }
             }
-            isConsentAvailable = consentCollectionParam.collectionId.isNotEmpty()
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
         }
     }
@@ -186,12 +183,8 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     fun getCrossSellConsentPayload(): String =
         binding.viewUserConsentWidget.generatePayloadData()
 
-    fun showCrossSellConsentIfAvailable() {
-        if (isConsentAvailable) binding.viewUserConsentWidget.show()
-    }
-
-    fun hideCrossSellConsentIfAvailable() {
-        if (isConsentAvailable) binding.viewUserConsentWidget.hide()
+    fun showCrossSellConsent() {
+        binding.viewUserConsentWidget.show()
     }
 
     fun hideCrossSellConsent() {
