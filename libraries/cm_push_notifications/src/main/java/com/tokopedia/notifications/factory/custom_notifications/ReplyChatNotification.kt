@@ -102,11 +102,17 @@ class ReplyChatNotification(
         intent.putExtra(USER_ID, userSession.userId)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
-                context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                context,
+                notificationId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
             PendingIntent.getBroadcast(
-                context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT
+                context,
+                notificationId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
     }
@@ -143,6 +149,6 @@ class ReplyChatNotification(
         private const val NOTIFICATION_ID = "notification_id"
         private const val USER_ID = "user_id"
         private const val EMPTY_MESSAGE_ID = 0
-        private const val LIMIT_NOTIFICATION_ID = 4
+        private const val LIMIT_NOTIFICATION_ID = 9
     }
 }
