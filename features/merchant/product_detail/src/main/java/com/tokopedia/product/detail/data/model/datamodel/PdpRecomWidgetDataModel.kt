@@ -26,8 +26,10 @@ data class PdpRecomWidgetDataModel(
         return if (newData is PdpRecomWidgetDataModel) {
             recomWidgetModel.type == newData.recomWidgetModel.type &&
                 recomWidgetModel.name == newData.recomWidgetModel.name &&
-                recomWidgetModel.state == newData.recomWidgetModel.state &&
-                recomWidgetModel.recomWidgetMetadata == newData.recomWidgetModel.recomWidgetMetadata
+                recomWidgetModel.recomWidgetMetadata == newData.recomWidgetModel.recomWidgetMetadata &&
+                recomWidgetModel.recomWidgetMetadata.isInitialized == newData.recomWidgetModel.recomWidgetMetadata.isInitialized &&
+                recomWidgetModel.recomWidgetMetadata.pageName == newData.recomWidgetModel.recomWidgetMetadata.pageName &&
+                recomWidgetModel.recomWidgetMetadata.verticalPosition == newData.recomWidgetModel.recomWidgetMetadata.verticalPosition
         } else {
             false
         }

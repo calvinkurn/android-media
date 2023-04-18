@@ -6,18 +6,11 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 /**
  * Created by frenzel on 11/03/23
  */
-interface RecomVisitable: Visitable<RecomTypeFactory> {
+interface RecomVisitable : Visitable<RecomTypeFactory> {
     val type: String
     val name: String
-    val state: RecomWidgetState
     val recomWidgetMetadata: RecomWidgetMetadata
     val recomWidgetTrackingModel: RecomWidgetTrackingModel
     val recomWidgetAnalyticListener: RecomWidgetAnalyticListener?
     var trackingQueue: TrackingQueue?
-}
-
-enum class RecomWidgetState {
-    STATE_LOADING,
-    STATE_READY,
-    STATE_FAILED
 }

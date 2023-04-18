@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -21,41 +20,23 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
 
     fun bind(model: RecomVisitable) {
         val widget = typeFactory.createView(context, model)
-
-        val widgetView = addWidgetView { widget } ?: return
+        val widgetView = addWidgetView(widget) ?: return
         widgetView.bind(model)
     }
 
-    private fun addWidgetView(creator: () -> BaseRecomWidgetView<*>): BaseRecomWidgetView<RecomVisitable>? {
-        val firstChild = getFirstChild()
+    private fun addWidgetView(widgetView: BaseRecomWidgetView<*>): BaseRecomWidgetView<RecomVisitable>? {
         return try {
-            if (firstChild !is BaseRecomWidgetView<*>) {
-                removeCurrentView()
-                val widget = creator().apply {
-                    layoutParams = getChildLayoutParams()
-                }
-                addView(widget)
-
-                widget
-            } else {
-                firstChild
+            removeAllViews()
+            val widget = widgetView.apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             }
+            addView(widget)
+
+            widget
         } catch (e: Exception) {
             null
         } as? BaseRecomWidgetView<RecomVisitable>
     }
-
-    private fun getFirstChild(): View? = getChildAt(0)
-
-    private fun removeCurrentView() {
-        if (childCount > 0) removeViewAt(0)
-    }
-
-    private fun getChildLayoutParams() =
-        LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.WRAP_CONTENT
-        )
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {

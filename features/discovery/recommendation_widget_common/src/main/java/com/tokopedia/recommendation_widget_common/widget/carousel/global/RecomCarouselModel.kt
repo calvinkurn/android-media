@@ -10,9 +10,9 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecomVisitable
  */
 data class RecomCarouselModel(
     val recomVisitable: RecomVisitable,
-    val tokonowListener: RecommendationCarouselTokonowListener?,
+    val tokonowListener: RecommendationCarouselTokonowListener? = null,
     val chipListener: RecomCarouselChipListener? = null,
-    val isTokonow: Boolean = false,
+    val isTokonow: Boolean = false
 ) : RecomVisitable by recomVisitable {
     override fun type(typeFactory: RecomTypeFactory): Int {
         return typeFactory.type(this)
