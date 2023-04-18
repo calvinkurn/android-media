@@ -126,7 +126,7 @@ class ReplyChatNotification(
         return if (messageId == null) {
             EMPTY_MESSAGE_ID
         } else {
-            val result: Int = if (messageId.length > LIMIT_NOTIFICATION_ID) {
+            val result: Int = if (messageId.length >= LIMIT_NOTIFICATION_ID) {
                 val tempId =
                     messageId.substring(messageId.length - LIMIT_NOTIFICATION_ID, messageId.length)
                 tempId.toIntOrZero()
