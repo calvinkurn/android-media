@@ -1115,7 +1115,8 @@ class PromoCheckoutViewModel @Inject constructor(
                     shopId = order.shopId,
                     isPo = order.isPo,
                     poDuration = order.poDuration.toString(),
-                    warehouseId = order.warehouseId
+                    warehouseId = order.warehouseId,
+                    cartStringGroup = order.cartStringGroup
                 )
                 orders.add(clearOrder)
             }
