@@ -92,9 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        setContentView(R.layout.partial_empty_page_error);
-        findViewById(R.id.main_retry);
-
         new DebugApp().initDebug(this);
 
     }
