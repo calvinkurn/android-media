@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.R
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAddEditAccountBinding
@@ -23,7 +22,6 @@ import com.tokopedia.loginHelper.presentation.addEditAccount.customview.SaveToLo
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperAddEditAccountViewModel
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
-import com.tokopedia.loginHelper.presentation.home.LoginHelperActivity
 import com.tokopedia.loginHelper.util.BundleConstants
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -100,7 +98,6 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 goToAccountSettingsScreen()
             }
             is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
-                showSuccessToast()
             }
         }
     }
@@ -129,12 +126,6 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
         btnSaveToLocal.setOnClickListener {
         }
-    }
-
-    private fun showSuccessToast() {
-        showToast(context?.resources?.getString(R.string.login_helper_save_to_local).toBlankOrString())
-        val intent = Intent(activity, LoginHelperActivity::class.java)
-        startActivity(intent)
     }
 
     override fun getScreenName(): String {
