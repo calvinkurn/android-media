@@ -172,6 +172,10 @@ class BulkReviewItemViewHolder(
             override fun onExpandTextArea(text: String) {
                 listener.onExpandTextArea(inboxID, text)
             }
+
+            override fun onTextChanged(text: String) {
+                listener.onTextChanged(inboxID, text)
+            }
         })
     }
 
@@ -256,6 +260,7 @@ class BulkReviewItemViewHolder(
         fun onTextAreaGainFocus(inboxID: String, view: View)
         fun onTextAreaLostFocus(inboxID: String, view: View, text: String)
         fun onExpandTextArea(inboxID: String, text: String)
+        fun onTextChanged(inboxID: String, text: String)
         fun onSingleTapToDismissKeyboard()
         fun onAddMediaClicked(inboxID: String, enabled: Boolean)
         fun onRemoveMediaClicked(inboxID: String, media: CreateReviewMediaUiModel)

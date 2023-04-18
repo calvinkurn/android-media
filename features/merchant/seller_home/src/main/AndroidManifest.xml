@@ -92,25 +92,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.centralizedpromo.view.activity.CentralizedPromoActivity"
-            android:exported="false"
-            android:label="@string/centralized_promo_toolbar_title"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/CentralizedPromoTheme">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_sellerapp"
-                    android:path="@string/path_centralized_promo"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".view.activity.AdminRestrictionActivity"
             android:label="@string/sah_admin_restriction_label"
             android:theme="@style/SellerHomeTheme.Transparent"
@@ -131,23 +112,6 @@
             android:name=".settings.view.activity.SellerEduWebviewActivity"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.centralizedpromo.view.activity.FirstTimePromoActivity"
-            android:label="@string/centralized_promo_first_voucher_label"
-            android:theme="@style/SellerHomeTheme.Transparent"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_sellerapp"
-                    android:path="@string/path_centralized_promo_first_time"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name="com.tokopedia.commissionbreakdown.view.CommissionBreakdownActivity"

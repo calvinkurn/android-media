@@ -161,6 +161,7 @@ ext {
             cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
+			centralizedPromo				: ":features:merchant:centralized_promo",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewCommon                    : ":features:merchant:review_common",
@@ -188,7 +189,6 @@ ext {
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
-            voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
@@ -307,6 +307,7 @@ ext {
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
             watch                           : ":features:watch",
-            tokofood                        : ":features:tokofood"
+            tokofood                        : ":features:tokofood",
+            samples                         : ":features:samples",
     ]
 }

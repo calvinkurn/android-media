@@ -520,6 +520,7 @@ abstract class BaseSearchCategoryFragment:
                 is Success -> {
                     showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
                     getViewModel().refreshMiniCart()
+                    updateToolbarNotification(true)
                 }
                 is Fail -> {
                     activity?.apply {
@@ -558,6 +559,10 @@ abstract class BaseSearchCategoryFragment:
 
         productRecommendationViewModel.atcDataTracker.observe(viewLifecycleOwner) {
             sendAddToCartRecommendationTrackingEvent(it)
+        }
+
+        productRecommendationViewModel.updateToolbarNotification.observe(viewLifecycleOwner) {
+            updateToolbarNotification(it)
         }
     }
 

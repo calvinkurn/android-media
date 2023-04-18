@@ -22,7 +22,6 @@ import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
 import com.tokopedia.product.detail.postatc.tracker.CommonTracker
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
-import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
@@ -218,15 +217,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         RouteManager.route(context, appLink)
     }
 
-    override fun goToProduct(productId: String) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        dismiss()
-    }
-
     override fun refreshPage() {
         initData()
     }
@@ -258,7 +248,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
-        goToProduct(productId)
+        onClickProduct(productId)
     }
 
     override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {}
@@ -266,4 +256,13 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     /**
      * Listener Area - End
      */
+
+    var onClickProduct: (String) -> Unit = { productId ->
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        dismiss()
+    }
 }
