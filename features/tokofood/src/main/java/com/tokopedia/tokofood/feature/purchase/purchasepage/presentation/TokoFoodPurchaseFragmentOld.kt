@@ -474,6 +474,11 @@ class TokoFoodPurchaseFragmentOld :
                         navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
+                PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                    (it.data as? CheckoutTokoFood)?.let { checkoutTokoFood ->
+                        loadCartData(checkoutTokoFood)
+                    }
+                }
             }
         }
     }

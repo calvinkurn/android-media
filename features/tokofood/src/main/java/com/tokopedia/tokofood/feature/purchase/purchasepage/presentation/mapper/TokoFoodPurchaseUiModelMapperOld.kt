@@ -40,7 +40,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -418,6 +417,31 @@ object TokoFoodPurchaseUiModelMapperOld {
             isAtc = true,
             customOrderDetails = customOrderDetails
         )
+    }
+
+    fun getUpdatedNotesProduct(
+        initialData: CheckoutTokoFood?,
+        productId: String,
+        notes: String
+    ): CheckoutTokoFood? {
+        return initialData?.let {
+            it.copy(
+                data = it.data.copy(
+                    availableSection = it.data.availableSection.copy(
+                        products = it.data.availableSection.products.map { product ->
+                            val isUpdatedProduct = product.productId == productId
+                            if (isUpdatedProduct) {
+                                product.copy(
+                                    notes = notes
+                                )
+                            } else {
+                                product
+                            }
+                        }
+                    )
+                )
+            )
+        }
     }
 
     private fun mapGeneralTickerUiModel(message: String,

@@ -286,6 +286,20 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             })
     }
 
+    private fun updateCheckoutTokoFoodNotes(productId: String, notes: String) {
+        TokoFoodPurchaseUiModelMapper.getUpdatedNotesProduct(
+            checkoutTokoFoodResponse.value,
+            productId,
+            notes
+        )?.let { updatedResponse ->
+            checkoutTokoFoodResponse.value = updatedResponse
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                data = updatedResponse
+            )
+        }
+    }
+
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
         val dataList = getVisitablesValue().toMutableList()
         dataList.removeAll(visitables)
@@ -428,6 +442,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             newProductData.notes = product.metadata.notes
             newProductData.cartId = product.cartId
             dataList[it.first] = newProductData
+            updateCheckoutTokoFoodNotes(product.productId, product.metadata.notes)
             _visitables.value = dataList
         }
     }

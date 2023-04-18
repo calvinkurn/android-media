@@ -458,6 +458,54 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
+    fun getUpdatedNotesProduct(
+        initialData: CartGeneralCartListData?,
+        productId: String,
+        notes: String
+    ): CartGeneralCartListData? {
+        return initialData?.let {
+            it.copy(
+                data = it.data.copy(
+                    businessData = it.data.businessData.map { businessData ->
+                        if (businessData.businessId == TokoFoodCartUtil.getBusinessId()) {
+                            businessData.copy(
+                                cartGroups = businessData.cartGroups?.map { cartGroup ->
+                                    val isUpdatedProduct =
+                                        cartGroup.carts.any { cart -> cart.productId == productId }
+                                    if (isUpdatedProduct) {
+                                        val mutableCarts = cartGroup.carts.toMutableList()
+                                        val indexWithUpdateProduct = mutableCarts.indexOfFirst { cart ->
+                                            cart.productId == productId
+                                        }
+                                        if (indexWithUpdateProduct >= Int.ZERO) {
+                                            mutableCarts[indexWithUpdateProduct] = mutableCarts[indexWithUpdateProduct].let { updatedProduct ->
+                                                updatedProduct.copy(
+                                                    metadata = updatedProduct.metadata.copy(
+                                                        notes = notes
+                                                    ),
+                                                    nullableCustomResponse = updatedProduct.nullableCustomResponse?.copy(
+                                                        notes = notes
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        cartGroup.copy(
+                                            carts = mutableCarts
+                                        )
+                                    } else {
+                                        cartGroup
+                                    }
+                                }
+                            )
+                        } else {
+                            businessData
+                        }
+                    }
+                )
+            )
+        }
+    }
+
     private fun mapGeneralTickerUiModel(message: String,
                                         isError: Boolean): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {

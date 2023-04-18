@@ -535,7 +535,7 @@ data class CartListCartGroupCart(
 
 data class CartListCartMetadata(
     @SerializedName("notes")
-    val notes: String = String.EMPTY,
+    var notes: String = String.EMPTY,
     @SerializedName("variants")
     val variants: List<CartListCartMetadataVariant> = listOf()
 )
@@ -551,7 +551,7 @@ data class CartListCartGroupCartCustomResponse(
     @SerializedName("category_id")
     val categoryId: String = String.EMPTY,
     @SerializedName("notes")
-    val notes: String = String.EMPTY,
+    var notes: String = String.EMPTY,
     @SerializedName("variants")
     val variants: List<CartListCartGroupCartVariant> = listOf(),
     @SerializedName("name")

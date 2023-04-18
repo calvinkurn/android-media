@@ -35,7 +35,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelperOld.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelperOld.setCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelperOld.setCollapsedUnavailableProducts
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapperOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapperOld.updatePromoData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapperOld.updateShippingData
@@ -48,7 +47,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
@@ -416,9 +414,11 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()
-            newProductData.notes = product.getMetadata()?.notes.orEmpty()
+            val newNotes = product.getMetadata()?.notes.orEmpty()
+            newProductData.notes = newNotes
             newProductData.cartId = product.cartId
             dataList[it.first] = newProductData
+            updateCheckoutTokofoodNotes(product.productId, newNotes)
             _visitables.value = dataList
         }
     }
@@ -594,6 +594,20 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
         dataList.updateTickerErrorShopLevelData(partialData.tickerErrorShopLevelUiModel)
         dataList.updateTickersData(partialData.topTickerUiModel, partialData.bottomTickerUiModel)
         return dataList
+    }
+
+    private fun updateCheckoutTokofoodNotes(productId: String, notes: String) {
+        TokoFoodPurchaseUiModelMapperOld.getUpdatedNotesProduct(
+            checkoutTokoFoodResponse.value,
+            productId,
+            notes
+        )?.let { updatedResponse ->
+            checkoutTokoFoodResponse.value = updatedResponse
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                data = updatedResponse
+            )
+        }
     }
 
     private fun getExistingCheckoutData() = checkoutTokoFoodResponse.value?.data

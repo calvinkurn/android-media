@@ -478,6 +478,11 @@ class TokoFoodPurchaseFragment :
                         navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
+                PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                    (it.data as? CartGeneralCartListData)?.let { cartData ->
+                        loadCartData(cartData)
+                    }
+                }
             }
         }
     }
@@ -586,6 +591,7 @@ class TokoFoodPurchaseFragment :
                                         TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
                                     )
                                 )
+                                showToasterError(throwable)
                             }
                         }
                     }
