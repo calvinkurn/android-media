@@ -197,12 +197,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
             CreateContentType.CREATE_LIVE -> {
-                feedNavigationAnalytics.eventClickCreateLive()
+                feedNavigationAnalytics.eventClickCreateLive(feedMainViewModel.getCurrentTabType())
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
             CreateContentType.CREATE_POST -> {
-                feedNavigationAnalytics.eventClickCreatePost()
+                feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                 intent.putExtra(
@@ -226,7 +226,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
-                feedNavigationAnalytics.eventClickCreateVideo()
+                feedNavigationAnalytics.eventClickCreateVideo(feedMainViewModel.getCurrentTabType())
 
                 openCreateShorts.launch()
             }
@@ -519,17 +519,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         binding.btnFeedCreatePost.setOnClickListener {
-            feedNavigationAnalytics.eventClickCreationButton()
+            feedNavigationAnalytics.eventClickCreationButton(feedMainViewModel.getCurrentTabType())
             onCreatePostClicked()
         }
 
         binding.btnFeedLive.setOnClickListener {
-            feedNavigationAnalytics.eventClickLiveButton()
+            feedNavigationAnalytics.eventClickLiveButton(feedMainViewModel.getCurrentTabType())
             openAppLink.launch(meta.liveApplink)
         }
 
         binding.feedUserProfileImage.setOnClickListener {
-            feedNavigationAnalytics.eventClickProfileButton()
+            feedNavigationAnalytics.eventClickProfileButton(feedMainViewModel.getCurrentTabType())
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
             } else {
