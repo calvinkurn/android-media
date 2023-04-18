@@ -15,47 +15,22 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import junit.framework.TestCase
+import org.junit.Before
 import org.junit.Test
 
 class GenerateCouponListRequestParamTest {
 
+    private lateinit var cartFirstOrderList: MutableList<CartItemHolderData>
+    private lateinit var cartSecondOrderList: MutableList<CartItemHolderData>
+
+    @Before
+    fun setup() {
+        cartFirstOrderList = PromoRequestMapperTestHelper.getFirstCartOrder()
+        cartSecondOrderList = PromoRequestMapperTestHelper.getSecondCartOrder()
+    }
+
     @Test
     fun `WHEN promoData is null should generate correct params`() {
-        // GIVEN
-//        val promoData = LastApplyPromo(
-//            lastApplyPromoData = LastApplyPromoData(
-//                listVoucherOrders = listOf(
-//                    VoucherOrders(
-//                        uniqueId = "111111-KEY",
-//                        code = "",
-//                        shippingId = 1,
-//                        spId = 2,
-//                        type = "",
-//                        boCampaignId = "10",
-//                        shippingSubsidy = 10000,
-//                        benefitClass = "",
-//                        shippingPrice = 15000.0,
-//                        etaText = "",
-//                        shippingMetadata = "",
-//                        cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-//                    ),
-//                    VoucherOrders(
-//                        uniqueId = "222222-KEY",
-//                        code = "",
-//                        shippingId = 3,
-//                        spId = 4,
-//                        type = "",
-//                        boCampaignId = "10",
-//                        shippingSubsidy = 10000,
-//                        benefitClass = "",
-//                        shippingPrice = 15000.0,
-//                        etaText = "",
-//                        shippingMetadata = "",
-//                        cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-//                    )
-//                )
-//            )
-//        )
         val cartFirstOrderList = mutableListOf(
             CartItemHolderData(
                 isSelected = true,
@@ -141,7 +116,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 2,
                         uniqueId = "222222-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartSecondOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -157,7 +132,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 1,
                         uniqueId = "111111-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartFirstOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -298,7 +273,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 2,
                         uniqueId = "222222-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartSecondOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -314,7 +289,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 1,
                         uniqueId = "111111-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartFirstOrderList),
                         codes = mutableListOf("TESTBO"),
                         isChecked = true,
@@ -507,7 +482,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 2,
                         uniqueId = "222222-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartSecondOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -523,7 +498,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 1,
                         uniqueId = "111111-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartFirstOrderList),
                         codes = mutableListOf("TESTBO"),
                         isChecked = true,
@@ -539,7 +514,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 3,
                         uniqueId = "333333-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(secondProductUiModelList),
                         codes = mutableListOf("TESTBO2"),
                         isChecked = true,
@@ -690,7 +665,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 2,
                         uniqueId = "222222-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartSecondOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -706,7 +681,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 1,
                         uniqueId = "111111-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartFirstOrderList),
                         codes = mutableListOf("TESTBO"),
                         isChecked = true,
@@ -913,7 +888,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 2,
                         uniqueId = "222222-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartSecondOrderList),
                         codes = mutableListOf(),
                         isChecked = true,
@@ -929,7 +904,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 1,
                         uniqueId = "111111-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(cartFirstOrderList),
                         codes = mutableListOf("TESTBO"),
                         isChecked = true,
@@ -945,7 +920,7 @@ class GenerateCouponListRequestParamTest {
                     Order(
                         shopId = 3,
                         uniqueId = "333333-KEY",
-                        product_details = PromoRequestMapperTestUtil
+                        product_details = PromoRequestMapperTestHelper
                             .mapToCouponListProductDetailsItem(secondProductUiModelList),
                         codes = mutableListOf("TESTBO2"),
                         isChecked = true,
