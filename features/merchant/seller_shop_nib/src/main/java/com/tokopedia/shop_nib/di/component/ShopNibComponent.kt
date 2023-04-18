@@ -5,7 +5,7 @@ import com.tokopedia.shop_nib.di.module.ShopNibModule
 import com.tokopedia.shop_nib.di.module.ShopNibNetworkModule
 import com.tokopedia.shop_nib.di.module.ShopNibViewModelModule
 import com.tokopedia.shop_nib.di.scope.ShopNibScope
-import com.tokopedia.shop_nib.presentation.submission.NibSubmissionActivity
+import com.tokopedia.shop_nib.presentation.landing_page.LandingPageActivity
 import com.tokopedia.shop_nib.presentation.submission.NibSubmissionFragment
 import dagger.Component
 
@@ -15,7 +15,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ShopNibComponent {
-    fun inject(activity: NibSubmissionActivity)
+    fun inject(activity: LandingPageActivity)
     fun inject(fragment: NibSubmissionFragment)
 
 }

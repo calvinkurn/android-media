@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".presentation.submission.NibSubmissionActivity"
+            android:name=".presentation.landing_page.LandingPageActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"

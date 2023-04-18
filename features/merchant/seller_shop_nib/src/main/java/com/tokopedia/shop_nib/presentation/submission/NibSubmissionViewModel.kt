@@ -2,6 +2,7 @@ package com.tokopedia.shop_nib.presentation.submission
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop_nib.domain.usecase.SellerSubmitNIBStatusUseCase
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class NibSubmissionViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val uploadFileUseCase: UploadFileUseCase
+    private val uploadFileUseCase: UploadFileUseCase,
+    private val sellerSubmitNibStatusUseCase: SellerSubmitNIBStatusUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
