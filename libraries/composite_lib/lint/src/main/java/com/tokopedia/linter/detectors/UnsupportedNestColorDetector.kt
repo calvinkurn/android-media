@@ -23,6 +23,7 @@ import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
 import org.jetbrains.uast.ULocalVariable
+import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.UVariable
 import org.w3c.dom.Attr
@@ -159,7 +160,8 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
             UField::class.java,
             ULocalVariable::class.java,
             UCallExpression::class.java,
-            UReturnExpression::class.java
+            UReturnExpression::class.java,
+            UMethod::class.java
         )
     }
 
@@ -194,6 +196,23 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                         psi = element,
                         label = node::class.java.simpleName
                     )
+                }
+            }
+
+            override fun visitMethod(node: UMethod) {
+                if (node.parameters.isNotEmpty()) {
+                    node.uastParameters.forEach { param ->
+                        val element = param.sourcePsi?.lastChild
+                        val resource = element?.text.orEmpty()
+
+                        if (shouldScanResource(resource)) {
+                            reportJavaError(
+                                context = context,
+                                psi = param,
+                                label = param::class.java.simpleName
+                            )
+                        }
+                    }
                 }
             }
 
