@@ -198,7 +198,11 @@ class AddressFormViewModelTest {
     fun `WHEN user already editing address THEN dont hit detail address from BE again`() {
         // Given
         coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
-        val saveDataModel = SaveAddressDataModel(receiverName = "name", phone = "081222222222", address1 = "detail alamat draft")
+        val saveDataModel = SaveAddressDataModel(
+            receiverName = "name",
+            phone = "081222222222",
+            address1 = "detail alamat draft"
+        )
         addressFormViewModel.addressId = addressId
 
         // When
@@ -239,7 +243,7 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Pinpoint Validation Data Fail`() {
-        coEvery { repo.pinpointValidation(any(), any(), any(), any()) } throws defaultThrowable
+        coEvery { repo.pinpointValidation(any(), any(), any(), any()) } throws Exception()
         addressFormViewModel.validatePinpoint(saveAddressDataModel)
         verify { pinpointValidationObserver.onChanged(match { it is Fail }) }
     }
@@ -1056,12 +1060,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = latitude,
-            currentLong = longitude
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertFalse(
             addressFormViewModel.isDifferentLocation(
                 address1 = address,
@@ -1076,12 +1093,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = latitude,
-            currentLong = longitude
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertTrue(
             addressFormViewModel.isDifferentLocation(
                 address1 = "",
@@ -1096,12 +1126,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = latitude,
-            currentLong = longitude
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertTrue(
             addressFormViewModel.isDifferentLocation(
                 address1 = address,
@@ -1116,12 +1159,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = "",
-            currentLong = ""
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = "",
+                            longitude = ""
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertTrue(
             addressFormViewModel.isDifferentLocation(
                 address1 = address,
@@ -1136,12 +1192,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = "",
-            currentLong = longitude
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = "",
+                            longitude = longitude
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertTrue(
             addressFormViewModel.isDifferentLocation(
                 address1 = address,
@@ -1156,12 +1225,25 @@ class AddressFormViewModelTest {
         val latitude = "-6.175392"
         val longitude = "106.827153"
 
-        addressFormViewModel.setCurrentLocation(
-            address = address,
-            currentLat = latitude,
-            currentLong = ""
+        // Given
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+            keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
+                data = arrayListOf(
+                    spyk(
+                        KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(
+                            address1 = address,
+                            latitude = latitude,
+                            longitude = ""
+                        )
+                    )
+                )
+            )
         )
 
+        // When
+        addressFormViewModel.getAddressDetail(null)
+
+        // Then
         Assert.assertTrue(
             addressFormViewModel.isDifferentLocation(
                 address1 = address,

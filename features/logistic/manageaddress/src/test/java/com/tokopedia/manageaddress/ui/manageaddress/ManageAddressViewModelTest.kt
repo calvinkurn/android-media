@@ -609,10 +609,10 @@ class ManageAddressViewModelTest {
 
         // then
         val tickerState = manageAddressViewModel.tickerState.value
-        assert(tickerState is Success)
-        assert((tickerState as Success).data.item.first().priority == 1L)
-        assert(tickerState.data.item[1].priority == 2L)
-        assert(tickerState.data.item[2].priority == 3L)
+        assertTrue(tickerState is Success)
+        assertTrue((tickerState as Success).data.item.first().priority == 1L)
+        assertTrue(tickerState.data.item[1].priority == 2L)
+        assertTrue(tickerState.data.item[2].priority == 3L)
     }
 
     @Test
@@ -623,7 +623,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.getTargetedTicker()
 
         // then
-        assert(manageAddressViewModel.tickerState.value is Fail)
+        assertTrue(manageAddressViewModel.tickerState.value is Fail)
     }
 
     @Test
@@ -634,7 +634,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.getTargetedTicker("")
 
         // then
-        assert(manageAddressViewModel.tickerState.value is Fail)
+        assertTrue(manageAddressViewModel.tickerState.value is Fail)
     }
 
     @Test
@@ -649,7 +649,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.getTargetedTicker(firstTickerContent)
 
         // then
-        assert(manageAddressViewModel.tickerState.value is Success)
+        assertTrue(manageAddressViewModel.tickerState.value is Success)
     }
 
     @Test
@@ -665,7 +665,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
     }
 
     @Test
@@ -681,7 +681,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_WARNING)
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_WARNING)
     }
 
     @Test
@@ -697,7 +697,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_ERROR)
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ERROR)
     }
 
     @Test
@@ -713,7 +713,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
     }
 
     @Test
@@ -729,7 +729,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithAction.id }
-        assert(tickerUiModel?.content == expected)
+        assertTrue(tickerUiModel?.content == expected)
     }
 
     @Test
@@ -745,7 +745,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithoutAction?.id }
-        assert(tickerUiModel?.content == expected)
+        assertTrue(tickerUiModel?.content == expected)
     }
 
     @Test
@@ -761,7 +761,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithAppUrl?.id }
-        assert(tickerUiModel?.linkUrl == expected)
+        assertTrue(tickerUiModel?.linkUrl == expected)
     }
 
     @Test
@@ -777,7 +777,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithWebUrl?.id }
-        assert(tickerUiModel?.linkUrl == expected)
+        assertTrue(tickerUiModel?.linkUrl == expected)
     }
 
     @Test
@@ -793,7 +793,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemWithAppAndWebUrl?.id }
-        assert(tickerUiModel?.linkUrl == expected)
+        assertTrue(tickerUiModel?.linkUrl == expected)
     }
 
     @Test

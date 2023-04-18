@@ -1228,23 +1228,19 @@ class AddressFormFragment :
             binding?.userConsentWidget?.gone()
 
             context?.apply {
-                if (viewModel.isEdit) {
-                    LogisticUserConsentHelper.displayUserConsent(
-                        this,
-                        userSession.userId,
-                        binding?.userConsent,
-                        getString(R.string.btn_simpan),
+                LogisticUserConsentHelper.displayUserConsent(
+                    context = this,
+                    userId = userSession.userId,
+                    textView = binding?.userConsent,
+                    buttonText = getString(R.string.btn_simpan),
+                    screenName = if (viewModel.isEdit) {
                         EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE
-                    )
-                } else {
-                    LogisticUserConsentHelper.displayUserConsent(
-                        this,
-                        userSession.userId,
-                        binding?.userConsent,
-                        getString(R.string.btn_simpan),
-                        if (viewModel.isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
-                    )
-                }
+                    } else if (viewModel.isPositiveFlow) {
+                        LogisticUserConsentHelper.ANA_REVAMP_POSITIVE
+                    } else {
+                        LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
+                    }
+                )
             }
         } else {
             binding?.userConsent?.gone()

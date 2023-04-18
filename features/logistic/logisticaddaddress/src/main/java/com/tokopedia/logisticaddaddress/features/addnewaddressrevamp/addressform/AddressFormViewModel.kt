@@ -232,7 +232,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
 
                 _pinpointValidation.value =
                     Success(pinpointValidationResult.pinpointValidations.data)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 _pinpointValidation.value = Fail(e)
             }
         }
@@ -373,7 +373,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         return address1 != tempAddress1 || address2 != tempAddress2
     }
 
-    fun setCurrentLocation(
+    private fun setCurrentLocation(
         address: String,
         currentLat: String,
         currentLong: String
