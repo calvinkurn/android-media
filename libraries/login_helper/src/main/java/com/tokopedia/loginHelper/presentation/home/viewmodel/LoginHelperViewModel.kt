@@ -2,22 +2,27 @@ package com.tokopedia.loginHelper.presentation.home.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginHelper.data.mapper.toHeaderUiModel
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.loginHelper.data.mapper.LoginHelperHomeMapper
+import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.LocalUsersDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
+import com.tokopedia.loginHelper.util.CacheConstants
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.loginHelper.util.exception.ErrorGetAdminTypeException
 import com.tokopedia.loginHelper.util.exception.GoToActivationPageException
@@ -43,6 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.crypto.SecretKey
 import javax.inject.Inject
 
 class LoginHelperViewModel @Inject constructor(
@@ -53,7 +59,9 @@ class LoginHelperViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getProfileUseCase: GetProfileUseCase,
     private val getAdminTypeUseCase: GetAdminTypeUseCase,
-    private val aesEncryptorCBC: AESEncryptorCBC
+    private val aesEncryptorCBC: AESEncryptorCBC,
+    private val secretKey: SecretKey,
+    private val mapper: LoginHelperHomeMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())
@@ -119,26 +127,67 @@ class LoginHelperViewModel @Inject constructor(
     private fun storeUserDetailsInState(loginData: LoginDataResponse) {
         val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
 
-        val decryptedUserDetails = mutableListOf<UserDataResponse>()
-        loginData.users?.forEach {
-            decryptedUserDetails.add(
+//        val decryptedUserDetails = mutableListOf<UserDataResponse>()
+//        loginData.users?.forEach {
+//            decryptedUserDetails.add(
+//                UserDataResponse(
+//                    aesEncryptorCBC.decrypt(
+//                        it.email ?: "",
+//                        secretKey
+//                    ),
+//                    aesEncryptorCBC.decrypt(it.password ?: "", secretKey)
+//                )
+//            )
+//        }
+//        val sortedUserList = decryptedUserDetails.sortedBy {
+//            it.email
+//        }
+
+        val cacheManager = PersistentCacheManager.instance
+        val savedData = getLocalData(cacheManager)
+
+        val decryptedLocalUserDetails = mutableListOf<UserDataResponse>()
+
+        savedData?.userDataUiModel?.forEach {
+            decryptedLocalUserDetails.add(
                 UserDataResponse(
-                    aesEncryptorCBC.decrypt(
-                        it.email ?: "",
-                        secretKey
-                    ),
-                    aesEncryptorCBC.decrypt(it.password ?: "", secretKey)
+                    decrypt(it.email.toBlankOrString()),
+                    decrypt(it.password.toBlankOrString())
                 )
             )
         }
-        val sortedUserList = decryptedUserDetails.sortedBy {
-            it.email
-        }
 
         val userList =
-            LoginDataUiModel(loginData.count?.toHeaderUiModel(), sortedUserList.toUserDataUiModel())
+            LoginDataUiModel(
+                decryptedLocalUserDetails.size.toLocalUserHeaderUiModel(),
+                decryptedLocalUserDetails.toUserDataUiModel()
+            )
 
         updateUserDataList(Success(userList))
+    }
+
+    private fun encrypt(text: String): String {
+        return aesEncryptorCBC.encrypt(text, secretKey)
+    }
+
+    private fun decrypt(text: String): String {
+        return aesEncryptorCBC.decrypt(text, secretKey)
+    }
+
+    private fun getLocalData(cacheManager: PersistentCacheManager): LocalUsersDataUiModel? {
+        return if (_uiState.value.envType == LoginHelperEnvType.STAGING) {
+            cacheManager.get(
+                CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_STAGING,
+                LocalUsersDataUiModel::class.java,
+                LocalUsersDataUiModel()
+            )
+        } else {
+            cacheManager.get(
+                CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_PROD,
+                LocalUsersDataUiModel::class.java,
+                LocalUsersDataUiModel()
+            )
+        }
     }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
@@ -261,7 +310,9 @@ class LoginHelperViewModel @Inject constructor(
                         userDataUiModel.email?.contains(searchEmail) == true
                     }
 
-                    filteredUserList = Success(LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list))
+                    filteredUserList = Success(
+                        LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list)
+                    )
                 }
                 is Fail -> Unit
             }

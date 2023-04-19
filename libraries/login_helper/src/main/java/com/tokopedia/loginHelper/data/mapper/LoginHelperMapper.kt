@@ -8,7 +8,7 @@ import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
 
 fun LoginDataResponse.toLoginUiModel(): LoginDataUiModel {
     return LoginDataUiModel(
-        count = this.count?.toHeaderUiModel(),
+        count = this.count?.toLocalUserHeaderUiModel(),
         users = this.users?.toUserDataUiModel()
     )
 }
@@ -19,6 +19,15 @@ fun List<UserDataResponse>.toUserDataUiModel(): List<UserDataUiModel> {
     }
 }
 
-fun Int.toHeaderUiModel(): HeaderUiModel {
-    return HeaderUiModel(this)
+fun Int.toLocalUserHeaderUiModel(): HeaderUiModel {
+    return HeaderUiModel(this, "Local Users")
+}
+
+fun ArrayList<UserDataUiModel>.toUserDataResponse(): List<UserDataResponse> {
+    return this.map {
+        UserDataResponse(
+            it.email,
+            it.password
+        )
+    }
 }

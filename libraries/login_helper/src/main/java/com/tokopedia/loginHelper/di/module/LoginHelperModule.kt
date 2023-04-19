@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
+import javax.crypto.SecretKey
 
 @Module
 class LoginHelperModule {
@@ -68,5 +69,11 @@ class LoginHelperModule {
     @Provides
     fun provideEncryptor(): AESEncryptorCBC {
         return AESEncryptorCBC(ENCRYPTION_KEY)
+    }
+
+    @LoginHelperScope
+    @Provides
+    fun provideEncryptSecretKey(aesEncryptorCBC: AESEncryptorCBC): SecretKey {
+        return aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
     }
 }
