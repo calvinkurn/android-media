@@ -6,7 +6,7 @@ import com.tokopedia.loginHelper.presentation.home.adapter.factory.LoginHelperAd
 data class UserDataUiModel(
     val email: String?,
     val password: String?,
-    val tribe: String?
+    val tribe: String? = ""
 ) : Visitable<LoginHelperAdapterFactory> {
 
     override fun type(typeFactory: LoginHelperAdapterFactory): Int {

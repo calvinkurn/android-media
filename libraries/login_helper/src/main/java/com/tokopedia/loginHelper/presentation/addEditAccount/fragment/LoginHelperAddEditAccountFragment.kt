@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.R
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAddEditAccountBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
+import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.entity.PageMode
 import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.customview.SaveToLocalCoachmark
@@ -23,6 +24,8 @@ import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelp
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.util.BundleConstants
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -57,6 +60,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setEnvValue()
         binding?.apply {
             when (pageMode) {
                 PageMode.ADD -> {
@@ -83,6 +87,16 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
         observeUiAction()
     }
+
+    private fun setEnvValue() {
+        val currentEnv = TokopediaUrl.getInstance().TYPE
+        if (Env.STAGING == currentEnv) {
+            viewModel.processEvent(LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+        } else {
+            viewModel.processEvent(LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
+        }
+    }
+
 
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -125,6 +139,9 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         }
 
         btnSaveToLocal.setOnClickListener {
+            val email = binding?.etUsername?.editText?.text.toString()
+            val password = binding?.etPassword?.editText?.text.toString()
+            viewModel.processEvent(LoginHelperAddEditAccountEvent.AddUserToLocalDB(email, password))
         }
     }
 
