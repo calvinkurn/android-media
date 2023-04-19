@@ -15,6 +15,7 @@
     <string name="login_helper_btn_add_account">Add Account</string>
     <string name="login_helper_btn_edit_account">Edit Account</string>
     <string name="login_helper_btn_remove_account">Remove Account</string>
+    <string name="login_helper_btn_search_account">Search Account</string>
     <string name="login_helper_add_account_tips">Environment is chosen from Config. Current environment is %s All operations related to accounts will be on  %s. </string>
 
 
@@ -28,5 +29,10 @@
     <string name="login_helper_save_to_local">Save Account Locally</string>
     <string name="login_helper_save_to_local_successful">Account details has been successfully saved locally</string>
     <string name="login_helper_save_to_local_go_to_home">Go to Login Helper Home</string>
+
+    <string name="login_helper_account_removal">Account Removal</string>
+    <string name="login_helper_confirm_removal">Are you sure you want to remove %s account from the db?</string>
+    <string name="login_helper_btn_remove_account_cancel">Cancel</string>
+
 
 </resources>

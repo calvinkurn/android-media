@@ -32,15 +32,15 @@ class LoginHelperSearchAdapter(
         }
     }
 
-    fun clearDataList() {
-        val oldDataSize = data.size
-        data = mutableListOf()
-        notifyItemRangeRemoved(Int.ZERO, oldDataSize)
-    }
+//    fun clearDataList() {
+//        val oldDataSize = data.size
+//        data = mutableListOf()
+//        notifyItemRangeRemoved(Int.ZERO, oldDataSize)
+//    }
 
     fun addDataList(newData: List<UserDataUiModel>) {
-        val oldDataSize = data.size
+        data = mutableListOf()
         data.addAll(newData)
-        notifyItemRangeInserted(oldDataSize, oldDataSize + newData.size)
+        notifyItemRangeInserted(Int.ZERO, newData.size)
     }
 }
