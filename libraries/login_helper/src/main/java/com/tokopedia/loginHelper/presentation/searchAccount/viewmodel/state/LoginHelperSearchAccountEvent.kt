@@ -4,7 +4,7 @@ import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 
 sealed class LoginHelperSearchAccountEvent {
-    data class ChangeEnvType(val envType: LoginHelperEnvType) : LoginHelperSearchAccountEvent()
+    data class SetEnvType(val envType: LoginHelperEnvType) : LoginHelperSearchAccountEvent()
     object TapBackButton : LoginHelperSearchAccountEvent()
     object GetSearchAccountLoginData : LoginHelperSearchAccountEvent()
     data class QueryEmail(val email: String) : LoginHelperSearchAccountEvent()
