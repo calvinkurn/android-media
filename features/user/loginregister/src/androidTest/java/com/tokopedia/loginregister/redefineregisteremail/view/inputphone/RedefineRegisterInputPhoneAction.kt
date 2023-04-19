@@ -99,6 +99,7 @@ fun isDialogConfirmPhoneNumberShowing() {
 }
 
 fun isGlobalErrorShowing() {
+    Thread.sleep(200)
     isDisplayed(R.id.global_error)
 }
 

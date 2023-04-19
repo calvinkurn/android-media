@@ -344,6 +344,11 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
             .clientNumberWidgetInputField.editText.text.toString().replace(" ", "")
     }
 
+    fun getFormattedInputNumber(): String {
+        return binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
+            .clientNumberWidgetInputField.editText.text.toString()
+    }
+
     fun setContactName(contactName: String, needValidation: Boolean = true) {
         val label = if (needValidation) validateContactName(textFieldStaticLabel, contactName) else contactName
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = label
