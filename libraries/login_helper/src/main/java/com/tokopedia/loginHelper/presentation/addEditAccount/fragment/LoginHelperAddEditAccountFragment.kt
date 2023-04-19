@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -24,6 +26,7 @@ import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelp
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.util.BundleConstants
+import com.tokopedia.loginHelper.util.showToaster
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -91,12 +94,15 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     private fun setEnvValue() {
         val currentEnv = TokopediaUrl.getInstance().TYPE
         if (Env.STAGING == currentEnv) {
-            viewModel.processEvent(LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+            viewModel.processEvent(
+                LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.STAGING)
+            )
         } else {
-            viewModel.processEvent(LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
+            viewModel.processEvent(
+                LoginHelperAddEditAccountEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION)
+            )
         }
     }
-
 
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -112,6 +118,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 goToAccountSettingsScreen()
             }
             is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
+                showToastGoToHomePage()
             }
         }
     }
@@ -119,6 +126,17 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     private fun goToAccountSettingsScreen() {
         val intent = Intent(activity, LoginHelperAccountSettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun showToastGoToHomePage() {
+        context?.resources?.let {
+            binding?.footer?.showToaster(
+                it.getString(R.string.login_helper_save_to_local_successful),
+                it.getString(R.string.login_helper_save_to_local_go_to_home)
+            ) {
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
+            }
+        }
     }
 
     private fun HeaderUnify.setUpHeader(headerTitle: String) {

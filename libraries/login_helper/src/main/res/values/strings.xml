@@ -26,5 +26,7 @@
     <string name="login_helper_local_storage">By storing here, your account is not shared to everyone else. It is stored locally in your device and will be removed if you uninstall the app.</string>
     <string name="login_helper_save_to_db">Save Account to DB</string>
     <string name="login_helper_save_to_local">Save Account Locally</string>
+    <string name="login_helper_save_to_local_successful">Account details has been successfully saved locally</string>
+    <string name="login_helper_save_to_local_go_to_home">Go to Login Helper Home</string>
 
 </resources>

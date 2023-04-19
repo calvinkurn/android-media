@@ -97,6 +97,7 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                 gson.toJson(savedData)
             )
         }
+        handleGoToLoginHelperHome()
     }
 
     private fun encrypt(text: String): String {
@@ -106,5 +107,9 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
 
     private fun handleBackButtonTap() {
         _uiAction.tryEmit(LoginHelperAddEditAccountAction.TapBackAction)
+    }
+
+    private fun handleGoToLoginHelperHome() {
+        _uiAction.tryEmit(LoginHelperAddEditAccountAction.GoToLoginHelperHome)
     }
 }
