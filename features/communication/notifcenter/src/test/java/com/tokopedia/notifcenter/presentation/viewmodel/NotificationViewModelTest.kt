@@ -1033,6 +1033,25 @@ class NotificationViewModelTest {
     }
 
     @Test
+    fun clearNotifCounter_when_user_does_not_have_shop_and_is_affiliate() {
+        // Given
+        val role = RoleType.AFFILIATE
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+        every { userSessionInterface.shopId } returns DEFAULT_SHOP_ID
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
     fun should_load_not_change_topAdsBanner_value_when_empty_result() {
         val expectedResult: ArrayList<TopAdsImageViewModel> = arrayListOf()
         coEvery {
