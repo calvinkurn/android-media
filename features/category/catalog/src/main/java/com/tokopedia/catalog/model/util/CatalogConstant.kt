@@ -19,6 +19,7 @@ object CatalogConstant {
     const val COMPARISON_PRODUCT = "catalog-comparison-product"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
+    const val CATALOG_LIBRARY_ENRTY_POINT = "catalog-library-entrypoint"
     // Self Made
     const val CATALOG_INFO_NAME = "Catalog Info"
     const val CATALOG_INFO = "catalog-info"
@@ -63,5 +64,7 @@ object CatalogConstant {
 
     const val CATALOG_PRODUCT_BS_NEW_DESIGN = "catalog_product_list"
     const val DIGITS_RATING_DECIMAL = 3
+
+    const val APPLINK_CATALOG_LIBRARY = "tokopedia://catalog-library"
 
 }

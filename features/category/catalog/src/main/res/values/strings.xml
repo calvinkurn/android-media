@@ -38,4 +38,5 @@
     <string name="catalog_lainnya_disini">Cek katalog lainnya disini</string>
     <string name="catalog_product_count_view_text">%1$d Produk terkait</string>
     <string name="catalog_product_count_view_text_empty">Produk terkait</string>
+    <string name="catalog_katalog_tokopedia">Katalog Tokopedia</string>
 </resources>
