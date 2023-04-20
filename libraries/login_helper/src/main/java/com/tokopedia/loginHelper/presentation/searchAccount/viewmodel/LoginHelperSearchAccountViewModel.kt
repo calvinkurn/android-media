@@ -66,7 +66,8 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             decryptedUserDetails.add(
                 UserDataResponse(
                     decrypt(it.email.toBlankOrString()),
-                    decrypt(it.password.toBlankOrString())
+                    decrypt(it.password.toBlankOrString()),
+                    it.tribe
                 )
             )
         }
@@ -107,7 +108,12 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             when (this) {
                 is Success -> {
                     list = this.data.users?.filter { userDataUiModel ->
-                        userDataUiModel.email?.contains(searchEmail) == true
+                        (
+                            userDataUiModel.email?.lowercase()?.contains(searchEmail.lowercase()) == true ||
+                                userDataUiModel.tribe?.lowercase()?.contains(
+                                searchEmail.lowercase()
+                            ) == true
+                            )
                     }
 
                     filteredUserList = Success(
