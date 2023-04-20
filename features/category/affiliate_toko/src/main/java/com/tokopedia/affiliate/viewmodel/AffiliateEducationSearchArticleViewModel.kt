@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
@@ -15,10 +16,10 @@ import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationSearchResultUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.url.TokopediaUrl
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -54,65 +55,71 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
 
     fun fetchSearchData(pageType: String?, keyword: String?, categoryID: String? = null) {
         progressBar.value = true
-        launchCatchError(block = {
-            if (educationCategoryChip.value.isNullOrEmpty()) {
-                loadCategory(pageType)
-            }
-            val key = buildString {
-                append(categoryID ?: categoryId.toString()).append("_").append(keyword)
-            }
+        viewModelScope.launch {
+            try {
+                if (educationCategoryChip.value.isNullOrEmpty()) {
+                    loadCategory(pageType)
+                }
+                val key = buildString {
+                    append(categoryID ?: categoryId.toString()).append("_").append(keyword)
+                }
 
-            if (categoryToArticleCardMap.containsKey(key)) {
-                setVisitable(categoryToArticleCardMap[key], pageType)
-            } else {
-                val educationSearchArticleCards =
-                    educationSearchResultUseCase.getEducationSearchResultCards(
-                        limit = 10,
-                        offset,
-                        keyword,
-                        categoryID?.toLongOrNull() ?: categoryId
-                    )
-                categoryToArticleCardMap[key] = educationSearchArticleCards.searchEducation?.data
-                setVisitable(educationSearchArticleCards.searchEducation?.data, pageType)
-            }
-        }, onError = {
-                errorMessage.value = it.localizedMessage
+                if (categoryToArticleCardMap.containsKey(key)) {
+                    setVisitable(categoryToArticleCardMap[key], pageType)
+                } else {
+                    val educationSearchArticleCards =
+                        educationSearchResultUseCase.getEducationSearchResultCards(
+                            limit = 10,
+                            offset,
+                            keyword,
+                            categoryID?.toLongOrNull() ?: categoryId
+                        )
+                    categoryToArticleCardMap[key] =
+                        educationSearchArticleCards.searchEducation?.data
+                    setVisitable(educationSearchArticleCards.searchEducation?.data, pageType)
+                }
+            } catch (e: Exception) {
+                errorMessage.value = e.localizedMessage
                 progressBar.value = false
-                Timber.e(it)
-            })
+                Timber.e(e)
+            }
+        }
     }
 
     private fun setVisitable(
         data: AffiliateEducationSearchArticleCardsResponse.SearchEducation.Data?,
         pageType: String?
     ) {
-        launchCatchError(block = {
-            val totalItems = data?.results?.getOrNull(0)?.section?.filter { it?.id == "articles" }
-                ?.getOrNull(0)?.meta?.totalHits
-            if (totalItems.isZero()) {
-                val educationArticleCards = if (latestArticleCardMap.containsKey(type)) {
-                    latestArticleCardMap[type]
+        viewModelScope.launch {
+            try {
+                val totalItems =
+                    data?.results?.getOrNull(0)?.section?.filter { it?.id == "articles" }
+                        ?.getOrNull(0)?.meta?.totalHits
+                if (totalItems.isZero()) {
+                    val educationArticleCards = if (latestArticleCardMap.containsKey(type)) {
+                        latestArticleCardMap[type]
+                    } else {
+                        educationArticleCardsUseCase.getEducationArticleCards(
+                            type,
+                            offset = offset ?: 0,
+                            filter = "latest"
+                        ).also { latestArticleCardMap[type] = it }
+                    }
+                    totalCount.value = 0
+                    latestCardCount.value =
+                        educationArticleCards?.cardsArticle?.data?.cards?.get(0)?.totalCount ?: 0
+                    educationArticleCards?.let { convertToVisitableArticleCard(it, pageType) }
+                    progressBar.value = false
                 } else {
-                    educationArticleCardsUseCase.getEducationArticleCards(
-                        type,
-                        offset = offset ?: 0,
-                        filter = "latest"
-                    ).also { latestArticleCardMap[type] = it }
+                    convertToVisitableSearchResult(data, pageType)
+                    progressBar.value = false
                 }
-                totalCount.value = 0
-                latestCardCount.value =
-                    educationArticleCards?.cardsArticle?.data?.cards?.get(0)?.totalCount ?: 0
-                educationArticleCards?.let { convertToVisitableArticleCard(it, pageType) }
+            } catch (e: Exception) {
+                errorMessage.value = e.localizedMessage
                 progressBar.value = false
-            } else {
-                convertToVisitableSearchResult(data, pageType)
-                progressBar.value = false
+                Timber.e(e)
             }
-        }, onError = {
-                errorMessage.value = it.localizedMessage
-                progressBar.value = false
-                Timber.e(it)
-            })
+        }
     }
 
     private fun convertToVisitableArticleCard(
@@ -199,9 +206,6 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                                     }
                                 )
                             } else {
-//                                if(categoryId == (category?.id)) {
-//                                    category?.isSelected = true
-//                                }
                                 AffiliateEduCategoryChipModel(category)
                             }
                         }
