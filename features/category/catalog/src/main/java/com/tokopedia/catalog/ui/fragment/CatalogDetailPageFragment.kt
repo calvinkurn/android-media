@@ -34,6 +34,9 @@ import com.tokopedia.catalog.adapter.CatalogLinearLayoutManager
 import com.tokopedia.catalog.adapter.decorators.DividerItemDecorator
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.BUSINESS_UNIT_VALUE
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.CURRENT_SITE_VALUE
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_CATALOG_ID
 import com.tokopedia.catalog.analytics.CatalogUniversalShareAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
@@ -68,6 +71,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -974,6 +978,13 @@ class CatalogDetailPageFragment :
         }
     }
 
+    override fun sendWidgetTrackEvent(actionName: String, trackerId: String) {
+        if (!widgetTrackingSet.contains(actionName)) {
+            CatalogDetailAnalytics.sendWidgetTracking(userSession.userId,catalogId,catalogName,actionName,trackerId)
+            widgetTrackingSet.add(actionName)
+        }
+    }
+
     fun onBackPressed() {
         isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -1003,6 +1014,11 @@ class CatalogDetailPageFragment :
         if (!isScrollDownButtonClicked) {
             lastAttachItemPosition = adapterPosition
         }
+    }
+
+    override fun entryPointBannerClicked(categoryName: String) {
+        RouteManager.route(context,CatalogConstant.APPLINK_CATALOG_LIBRARY)
+        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
     }
 
     override fun onPause() {

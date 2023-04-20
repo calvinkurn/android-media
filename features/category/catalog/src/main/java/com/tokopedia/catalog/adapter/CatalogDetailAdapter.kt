@@ -14,7 +14,9 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogEntryBannerDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.viewholder.components.CatalogEntryBannerViewHolder
 import com.tokopedia.catalog.viewholder.components.CatalogForYouViewHolder
 import com.tokopedia.catalog.viewholder.components.CatalogInfoViewHolder
 import com.tokopedia.catalog.viewholder.containers.CatalogComparisonContainerNewViewHolder
@@ -88,6 +90,7 @@ class CatalogDetailAdapter(
             is CatalogReviewContainerViewHolder -> catalogDetailListener.sendWidgetTrackEvent(CatalogDetailAnalytics.ActionKeys.REVIEW_WIDGET_IMPRESSION)
             is CatalogComparisonContainerNewViewHolder -> catalogDetailListener.sendWidgetTrackEvent(CatalogDetailAnalytics.ActionKeys.COMPARISON_WIDGET_IMPRESSION)
             is CatalogInfoViewHolder -> catalogDetailListener.sendWidgetTrackEvent(CatalogDetailAnalytics.ActionKeys.DESCRIPTION_WIDGET_IMPRESSION)
+            is CatalogEntryBannerViewHolder -> catalogDetailListener.sendWidgetTrackEvent(CatalogDetailAnalytics.ActionKeys.IMPRESS_CATALOG_ENTRY_POINT,CatalogDetailAnalytics.TrackerId.IMPRESS_CATALOG_ENTRY_POINT)
         }
     }
 

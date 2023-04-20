@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.viewholder.components
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
@@ -10,8 +11,12 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class EntryBannerViewHolder(private val view : View,
-                                       private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogEntryBannerDataModel>(view) {
+class CatalogEntryBannerViewHolder(private val view : View,
+                                   private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogEntryBannerDataModel>(view) {
+
+    private val parentLayout : ConstraintLayout by lazy {
+        view.findViewById(R.id.entry_point_parent)
+    }
 
     private val categoryName : Typography by lazy {
         view.findViewById(R.id.catalog_lib_category_tv)
@@ -36,6 +41,9 @@ class EntryBannerViewHolder(private val view : View,
     override fun bind(element: CatalogEntryBannerDataModel) {
         renderText(element.categoryProductCount,element.categoryName)
         renderImages(element.catalogs)
+        parentLayout.setOnClickListener {
+            catalogDetailListener.entryPointBannerClicked(element.categoryName ?: "")
+        }
     }
 
     private fun renderText(categoryProductCount : String? , category : String?) {

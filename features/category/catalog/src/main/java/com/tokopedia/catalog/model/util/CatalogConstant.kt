@@ -65,4 +65,6 @@ object CatalogConstant {
     const val CATALOG_PRODUCT_BS_NEW_DESIGN = "catalog_product_list"
     const val DIGITS_RATING_DECIMAL = 3
 
+    const val APPLINK_CATALOG_LIBRARY = "tokopedia://catalog-library"
+
 }
