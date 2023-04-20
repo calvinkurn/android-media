@@ -1,8 +1,5 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
-import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoList
-import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListData
-import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListPage
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -13,15 +10,15 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.domain.model.MembershipGetSumUserCardMember
-import com.tokopedia.sellerhome.domain.model.SumUserCardMember
-import com.tokopedia.sellerhome.domain.model.TotalTokomemberResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
 import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoList
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListData
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListPage
 import com.tokopedia.shop.common.view.model.BadgeUiModel
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
