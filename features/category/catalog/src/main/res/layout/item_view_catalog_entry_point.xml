@@ -6,7 +6,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:layout_margin="12dp">
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginBottom="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -27,7 +30,7 @@
             app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/catalog_entry_point_background.png"
             />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/entry_point_icon"
             android:layout_width="15dp"
             android:layout_height="15dp"
@@ -35,6 +38,10 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
+            tools:ignore="ContentDescription"
+            app:imageDpiSupportType="singleDpi"
+            android:scaleType="fitXY"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png"
             />
 
         <com.tokopedia.unifyprinciples.Typography
