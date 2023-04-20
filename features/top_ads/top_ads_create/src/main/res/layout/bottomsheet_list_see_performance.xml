@@ -9,5 +9,5 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="Nama Produk" />
+        android:text="@string/topads_common_product_name" />
 </RelativeLayout>

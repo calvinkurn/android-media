@@ -11,7 +11,7 @@
         android:id="@+id/creditHistoryImage"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/iconunify_wallet"
+        app:srcCompat="@drawable/iconunify_wallet"
         android:tint="@color/Unify_NN900"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/credit_topads"

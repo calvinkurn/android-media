@@ -48,9 +48,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.unifyDependencies.calendar
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(path: ':libraries:base_list')
     implementation projectOrAar(rootProject.ext.features.filter)
     kapt rootProject.ext.miscDependencies.daggerCompiler

@@ -9,7 +9,7 @@
         android:id="@+id/block_1"
         android:layout_width="35dp"
         android:layout_height="4dp"
-        android:src="@drawable/rectangle_2" />
+        app:srcCompat="@drawable/rectangle_2" />
 
     <androidx.legacy.widget.Space
         android:layout_width="4dp"
@@ -19,7 +19,7 @@
         android:id="@+id/block_2"
         android:layout_width="35dp"
         android:layout_height="4dp"
-        android:src="@drawable/rectangle_2" />
+        app:srcCompat="@drawable/rectangle_2" />
 
     <androidx.legacy.widget.Space
         android:layout_width="4dp"
@@ -29,6 +29,6 @@
         android:id="@+id/block_3"
         android:layout_width="35dp"
         android:layout_height="4dp"
-        android:src="@drawable/rectangle_2" />
+        app:srcCompat="@drawable/rectangle_2" />
 
 </LinearLayout>

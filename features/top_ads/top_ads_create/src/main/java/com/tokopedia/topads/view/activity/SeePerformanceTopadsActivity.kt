@@ -157,7 +157,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
                         View.VISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = it.data.topadsDashboardDeposits.data.amountFmt
+                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = it.data.topadsDashboardDeposits.data.amountFmt.replace(" ","")
                 }
                 else -> {}
             }
@@ -275,7 +275,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
                         }
                         else -> {
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = "Rp ${
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = "Rp${
                                 convertToCurrency(
                                     it.response?.data?.get(
                                         0
@@ -284,8 +284,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             }"
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
                                 String.format(
-                                    "%s dari %s",
-                                    it.response?.data?.get(0)?.groupPriceDailySpentFmt,
+                                    "%s dari Rp%s",
+                                    it.response?.data?.get(0)?.groupPriceDailySpentFmt?.replace(" ",""),
                                     convertToCurrency(
                                         it.response?.data?.get(
                                             0

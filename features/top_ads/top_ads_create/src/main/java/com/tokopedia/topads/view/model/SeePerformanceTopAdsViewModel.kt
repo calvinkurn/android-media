@@ -100,9 +100,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             }
             _adId.postValue(response.data.adId)
             _topAdsGetProductManage.postValue(response)
-        }) {
-            _topAdsGetProductManage.postValue(null)
-        }
+        }) {}
     }
 
     fun getShopInfo() {
@@ -111,9 +109,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
                 topAdsGetShopInfoV1UseCase.executeOnBackground()
             }
             _topAdsGetShopInfo.postValue(response)
-        }) {
-            _topAdsGetShopInfo.postValue(null)
-        }
+        }) {}
     }
 
     fun getPromoInfo() {
@@ -186,13 +182,11 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
                     topAdsGetGroupInfoUseCase.executeOnBackground()
                 }
             )
-        }) {
-            _topAdsGetGroupInfo.postValue(null)
-        }
+        }) {}
     }
 
     fun checkIsSingleAds() {
-        _isSingleAds.value = _adId.value != "0" && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == "0")
+        _isSingleAds.value = _adId.value != EMPTY_AD_ID && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == EMPTY_GROUP_ID)
     }
 
     fun getAutoAdsInfo() {
@@ -202,9 +196,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
                     topAdsGetAutoAdsUseCase.executeOnBackground()
                 }
             )
-        }) {
-            _topAdsGetAutoAds.postValue(null)
-        }
+        }) {}
     }
 
     fun getWhiteListedUser() {
@@ -228,5 +220,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     companion object {
         private const val PARAM_KEY = "queryInput"
+        private const val EMPTY_AD_ID = "0"
+        private const val EMPTY_GROUP_ID = "0"
     }
 }
