@@ -4,6 +4,9 @@ const val ENCRYPTION_KEY = "Login_Helper_Dev"
 
 object BundleConstants {
     const val LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE = "add_edit_account"
+    const val LOGIN_HELPER_EMAIL = "edit_email"
+    const val LOGIN_HELPER_PASSWORD = "edit_password"
+    const val LOGIN_HELPER_TRIBE = "edit_tribe"
 }
 
 object CacheConstants {

@@ -3,7 +3,6 @@ package com.tokopedia.loginHelper.presentation.searchAccount.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,7 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.LoginHelperSearchAdapter
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.listener.LoginHelperSearchListener
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
@@ -216,7 +216,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     }
 
     override fun onEditAccount(user: UserDataUiModel) {
-        Log.d("FATAL", "onEditAccunt: edit called")
+        context?.let { LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(it , user.email, user.password, user.tribe) }
     }
 
     override fun onDeleteAccount(user: UserDataUiModel) {

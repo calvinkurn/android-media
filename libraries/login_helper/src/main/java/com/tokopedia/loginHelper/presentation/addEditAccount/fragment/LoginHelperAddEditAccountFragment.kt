@@ -51,6 +51,18 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstants.LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE) as? PageMode
     }
 
+    private val emailText by lazy {
+        arguments?.getString(BundleConstants.LOGIN_HELPER_EMAIL, "")
+    }
+
+    private val passwordText by lazy {
+        arguments?.getString(BundleConstants.LOGIN_HELPER_PASSWORD, "")
+    }
+
+    private val tribeText by lazy {
+        arguments?.getString(BundleConstants.LOGIN_HELPER_TRIBE, "")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,6 +96,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                     )
 
                     addGroup.hide()
+                    setUpTextFields()
                 }
             }
         }
@@ -163,6 +176,12 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun FragmentLoginHelperAddEditAccountBinding.setUpTextFields() {
+        etUsername.editText.setText(emailText)
+        etPassword.editText.setText(passwordText)
+        etTribe.editText.setText(tribeText)
+    }
+
     override fun getScreenName(): String {
         return context?.resources?.getString(R.string.login_helper_add_edit_header_title)
             .toBlankOrString()
@@ -184,10 +203,13 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(pageMode: PageMode): LoginHelperAddEditAccountFragment {
+        fun newInstance(pageMode: PageMode, email: String? , password: String? , tribe: String?): LoginHelperAddEditAccountFragment {
             return LoginHelperAddEditAccountFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstants.LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE, pageMode)
+                    putString(BundleConstants.LOGIN_HELPER_EMAIL, email)
+                    putString(BundleConstants.LOGIN_HELPER_PASSWORD, password)
+                    putString(BundleConstants.LOGIN_HELPER_TRIBE, tribe)
                 }
             }
         }

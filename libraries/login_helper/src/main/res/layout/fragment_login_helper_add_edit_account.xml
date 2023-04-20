@@ -30,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_password"
+        app:unify_text_field_input_type="textPassword"
         app:unify_text_field_label="@string/login_helper_enter_password"
         app:layout_constraintTop_toBottomOf="@id/et_username"
         app:layout_constraintStart_toStartOf="parent"
