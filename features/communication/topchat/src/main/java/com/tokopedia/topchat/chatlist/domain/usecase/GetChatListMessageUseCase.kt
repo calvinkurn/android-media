@@ -1,18 +1,19 @@
 package com.tokopedia.topchat.chatlist.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListResponse
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 open class GetChatListMessageUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
-        private val mapper: GetChatListMessageMapper,
-        private var dispatchers: CoroutineDispatchers
+    private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
+    private val mapper: GetChatListMessageMapper,
+    private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var hasNext = false
@@ -21,45 +22,47 @@ open class GetChatListMessageUseCase @Inject constructor(
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     open fun getChatList(
-            page: Int,
-            filter: String,
-            tab: String,
-            onSuccess: (ChatListPojo, List<String>, List<String>) -> Unit,
-            onError: (Throwable) -> Unit
+        page: Int,
+        filter: String,
+        tab: String,
+        onSuccess: (ChatListResponse) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
-        job = launchCatchError(dispatchers.io,
-                {
-                    val params = generateParams(page, filter, tab)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(ChatListPojo::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    hasNext = response.data.hasNext
-                    mapper.convertStrTimestampToLong(response)
-                    val pinnedChatMsgId = mapper.mapPinChat(response, page)
-                    val unPinnedChatMsgId = mapper.mapUnpinChat(response)
-                    withContext(dispatchers.main) {
-                        onSuccess(response, pinnedChatMsgId, unPinnedChatMsgId)
-                    }
-                },
-                {
-                    withContext(dispatchers.main) {
-                        onError(it)
-                    }
+        job = launchCatchError(
+            dispatchers.io,
+            {
+                val params = generateParams(page, filter, tab)
+                val response = gqlUseCase.apply {
+                    setTypeClass(ChatListPojo::class.java)
+                    setRequestParams(params)
+                    setGraphqlQuery(query)
+                }.executeOnBackground()
+                hasNext = response.data.hasNext
+                mapper.convertStrTimestampToLong(response)
+                val pinnedChatMsgId = mapper.mapPinChat(response, page)
+                val unPinnedChatMsgId = mapper.mapUnpinChat(response)
+                val res = ChatListResponse(response, pinnedChatMsgId, unPinnedChatMsgId)
+                withContext(dispatchers.main) {
+                    onSuccess(res)
                 }
+            },
+            {
+                withContext(dispatchers.main) {
+                    onError(it)
+                }
+            }
         )
     }
 
     private fun generateParams(
-            page: Int,
-            filter: String,
-            tab: String
+        page: Int,
+        filter: String,
+        tab: String
     ): Map<String, Any> {
         return mapOf(
-                paramPage to page,
-                paramFilter to filter,
-                paramTab to tab
+            paramPage to page,
+            paramFilter to filter,
+            paramTab to tab
         )
     }
 
