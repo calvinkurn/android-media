@@ -12,7 +12,12 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class CommonTopchatModule {
+class ChatListModule {
+
+    @Provides
+    @ChatListScope
+    @TopchatContext
+    fun provideContext(context: Context): Context = context
 
     @ChatListScope
     @Provides
@@ -31,4 +36,5 @@ class CommonTopchatModule {
     fun provideIrisSession(@ApplicationContext context: Context): Session {
         return IrisSession(context)
     }
+
 }

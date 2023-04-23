@@ -34,7 +34,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
@@ -54,7 +53,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment,
+open class ChatTabListFragment constructor() :
+    BaseDaggerFragment(),
+    ChatListContract.TabFragment,
     SellerHomeFragmentListener {
 
     override fun getScreenName(): String = "/new-inbox/chat"
@@ -171,8 +172,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     private fun initInjectorSellerApp() {
         DaggerChatListComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication?)?.baseAppComponent)
-            .chatListContextModule(context?.let { ChatListContextModule(it) })
+            .baseComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+            .context(requireContext())
             .build()
             .inject(this)
     }
@@ -225,7 +226,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner,
+        chatNotifCounterViewModel.chatNotifCounter.observe(
+            viewLifecycleOwner,
             Observer { result ->
                 when (result) {
                     is Success -> {
@@ -268,7 +270,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(
                 MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }
@@ -339,7 +342,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(
             MethodChecker.getColor(
-                context, textColor
+                context,
+                textColor
             )
         )
 
@@ -349,8 +353,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 icon?.setImageDrawable(
                     context?.let {
                         getIconUnifyDrawable(
-                            it, IconUnify.SHOP,
-                            context?.let { ContextCompat.getColor(it, iconColor) })
+                            it,
+                            IconUnify.SHOP,
+                            context?.let { ContextCompat.getColor(it, iconColor) }
+                        )
                     }
                 )
             }
@@ -358,12 +364,13 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 icon?.setImageDrawable(
                     context?.let {
                         getIconUnifyDrawable(
-                            it, IconUnify.SMILE,
-                            context?.let { ContextCompat.getColor(it, iconColor) })
+                            it,
+                            IconUnify.SMILE,
+                            context?.let { ContextCompat.getColor(it, iconColor) }
+                        )
                     }
                 )
             }
-
         }
     }
 
@@ -379,18 +386,17 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > 99) {
-                        "99+"
-                    } else {
-                        counter
-                    }
+                if (counter.toLongOrZero() > 99) {
+                    "99+"
+                } else {
+                    counter
+                }
 
             return if (title.length > MAX_LENGTH_TITLE) {
                 title.take(TITLE_LENGTH) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
             }
-
         }
         return MethodChecker.fromHtml(title)
     }
@@ -442,7 +448,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initWebsocketChatObserver() {
-        webSocketViewModel.itemChat.observe(this,
+        webSocketViewModel.itemChat.observe(
+            this,
             Observer { result ->
                 when (result) {
                     is Success -> {
@@ -536,7 +543,9 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
             !isFinishShowingCoachMarkOnBoarding ||
             activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
-        ) return
+        ) {
+            return
+        }
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
@@ -584,16 +593,16 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             return
         }
         tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                if (!isOnBoardingAlreadyShown()) {
-                    showOnBoarding()
-                } else {
-                    isFinishShowingCoachMarkOnBoarding = true
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    if (!isOnBoardingAlreadyShown()) {
+                        showOnBoarding()
+                    } else {
+                        isFinishShowingCoachMarkOnBoarding = true
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun showOnBoarding() {
@@ -624,7 +633,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
     }
 
-
     private fun stopLiveDataObserver() {
         if (::chatNotifCounterViewModel.isInitialized) {
             chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
@@ -654,11 +662,9 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
         private val UNSELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500
 
-
         @JvmStatic
         fun create(): ChatTabListFragment {
             return ChatTabListFragment()
         }
     }
-
 }

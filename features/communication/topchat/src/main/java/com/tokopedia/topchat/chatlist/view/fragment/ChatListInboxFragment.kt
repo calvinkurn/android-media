@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -34,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -51,7 +50,6 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
@@ -794,8 +792,8 @@ open class ChatListInboxFragment :
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
-        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-        .chatListContextModule(context?.let { ChatListContextModule(it) })
+        .baseComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+        .context(requireContext())
         .build()
 
     override fun loadData(page: Int) {

@@ -6,7 +6,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
+import com.tokopedia.topchat.chatlist.di.ChatListModule
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
@@ -25,8 +25,11 @@ import javax.inject.Inject
 
 abstract class ChatListTest {
     @get:Rule
-    var activityTestRule = IntentsTestRule(ChatListActivityStub::class.java,
-        false, false)
+    var activityTestRule = IntentsTestRule(
+        ChatListActivityStub::class.java,
+        false,
+        false
+    )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
@@ -69,7 +72,7 @@ abstract class ChatListTest {
             .build()
         chatListComponentStub = DaggerChatListComponentStub.builder()
             .fakeBaseAppComponent(baseComponent)
-            .chatListContextModule(ChatListContextModule(context))
+            .chatListContextModule(ChatListModule(context))
             .build()
         chatListComponentStub!!.inject(this)
     }
