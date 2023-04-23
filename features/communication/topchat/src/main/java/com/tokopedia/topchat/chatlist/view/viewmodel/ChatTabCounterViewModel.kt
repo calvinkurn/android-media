@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -18,7 +19,7 @@ import javax.inject.Inject
  */
 
 class ChatTabCounterViewModel @Inject constructor(
-    private val getChatNotificationUseCase: GetChatNotificationUseCase,
+    private val getChatNotification: GetChatNotificationUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -27,31 +28,29 @@ class ChatTabCounterViewModel @Inject constructor(
     val chatNotifCounter: LiveData<Result<NotificationsPojo>>
         get() = _mutateChatNotification
 
-
     fun queryGetNotifCounter(shopId: String) {
-        getChatNotificationUseCase.getChatNotification(
-                shopId,
-                {
-                    _mutateChatNotification.value = Success(it)
-                },
-                {
-                    _mutateChatNotification.value = Fail(it)
-                }
-        )
+        launch {
+            try {
+                val result = getChatNotification(shopId)
+                _mutateChatNotification.value = Success(result)
+            } catch (e: Exception) {
+                _mutateChatNotification.value = Fail(e)
+            }
+        }
     }
 
     fun setLastVisitedTab(context: Context, position: Int) {
         context.getSharedPreferences(PREF_CHAT_LIST_TAB, Context.MODE_PRIVATE)
-                .edit()
-                .apply {
-                    putInt(KEY_LAST_POSITION, position)
-                    apply()
-                }
+            .edit()
+            .apply {
+                putInt(KEY_LAST_POSITION, position)
+                apply()
+            }
     }
 
     fun getLastVisitedTab(context: Context): Int {
         return context.getSharedPreferences(PREF_CHAT_LIST_TAB, Context.MODE_PRIVATE)
-                .getInt(KEY_LAST_POSITION, -1)
+            .getInt(KEY_LAST_POSITION, -1)
     }
 
     fun isSearchOnBoardingTooltipHasShown(): Boolean {
