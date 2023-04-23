@@ -35,7 +35,7 @@ interface ChatListComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun context(context: Context): ChatListComponent.Builder
+        fun context(context: Context): Builder
         fun baseComponent(component: BaseAppComponent): Builder
         fun build(): ChatListComponent
     }

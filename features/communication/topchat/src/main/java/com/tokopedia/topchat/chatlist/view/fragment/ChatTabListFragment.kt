@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.view.fragment
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -226,22 +224,20 @@ open class ChatTabListFragment constructor() :
     }
 
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(
-            viewLifecycleOwner,
-            Observer { result ->
-                when (result) {
-                    is Success -> {
-                        tabList[0].counter =
-                            result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                        if (tabList.size > 1) {
-                            tabList[1].counter =
-                                result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
-                        }
-                        setNotificationCounterOnTab()
+        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    tabList[0].counter =
+                        result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
+                    if (tabList.size > 1) {
+                        tabList[1].counter =
+                            result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
                     }
+                    setNotificationCounterOnTab()
                 }
+                else -> {}
             }
-        )
+        }
     }
 
     private fun bindView(view: View) {
@@ -288,9 +284,7 @@ open class ChatTabListFragment constructor() :
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tabLayout?.elevation = 0f
-        }
+        tabLayout?.elevation = 0f
         tabLayout?.background = context?.let {
             ContextCompat.getDrawable(it, R.drawable.bg_chat_list_tab_layout)
         }
@@ -448,19 +442,17 @@ open class ChatTabListFragment constructor() :
     }
 
     private fun initWebsocketChatObserver() {
-        webSocketViewModel.itemChat.observe(
-            this,
-            Observer { result ->
-                when (result) {
-                    is Success -> {
-                        when (result.data) {
-                            is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
-                            is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
-                        }
+        webSocketViewModel.itemChat.observe(this) { result ->
+            when (result) {
+                is Success -> {
+                    when (result.data) {
+                        is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
+                        is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
                     }
                 }
+                else -> {}
             }
-        )
+        }
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
