@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.di
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
@@ -17,7 +18,7 @@ class ChatListSettingModule {
     fun provideGraphQlRepository(): GraphqlRepository =
         GraphqlInteractor.getInstance().graphqlRepository
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -42,19 +43,19 @@ import java.util.concurrent.TimeUnit
 @Module
 class ChatListNetworkModule {
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideWebSocketParser(): WebSocketParser {
         return DefaultWebSocketParser()
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideWebSocketStateHandler(): WebSocketStateHandler {
         return DefaultWebSocketStateHandler()
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideChatRetrofit(
         @ApplicationContext context: Context,
@@ -75,25 +76,25 @@ class ChatListNetworkModule {
         )
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(
@@ -104,19 +105,19 @@ class ChatListNetworkModule {
         )
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideResponseInterceptor(): ErrorResponseInterceptor {
         return HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideFingerprintInterceptor(
         networkRouter: NetworkRouter,
@@ -126,7 +127,7 @@ class ChatListNetworkModule {
         return FingerprintInterceptor(networkRouter, userSessionInterface)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideTkpdAuthInterceptor(
         @ApplicationContext context: Context,
@@ -137,7 +138,7 @@ class ChatListNetworkModule {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideOkHttpClient(
         retryPolicy: OkHttpRetryPolicy,
@@ -162,7 +163,7 @@ class ChatListNetworkModule {
         return builder.build()
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideTopChatWebSocket(
         @ApplicationContext context: Context,
@@ -186,7 +187,7 @@ class ChatListNetworkModule {
         )
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideAbTestPlatform(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform

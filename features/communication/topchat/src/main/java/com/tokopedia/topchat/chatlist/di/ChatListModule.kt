@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -15,26 +16,25 @@ import dagger.Provides
 class ChatListModule {
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     @TopchatContext
     fun provideContext(context: Context): Context = context
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
         return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
 
-    @ChatListScope
+    @ActivityScope
     @Provides
     fun provideIrisSession(@ApplicationContext context: Context): Session {
         return IrisSession(context)
     }
-
 }

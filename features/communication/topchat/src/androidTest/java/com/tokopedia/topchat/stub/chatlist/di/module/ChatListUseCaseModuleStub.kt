@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.stub.chatlist.di.module
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
@@ -24,58 +24,59 @@ import dagger.Provides
 object ChatListUseCaseModuleStub {
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideGraphqlUseCase(
         graphqlRepository: GraphqlRepository
     ): GraphqlUseCase<*> = GraphqlUseCase<Any>(graphqlRepository)
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatListMessageStub(
         graphqlUseCase: GraphqlUseCase<ChatListPojo>
     ): GetChatListMessageUseCaseStub = GetChatListMessageUseCaseStub(
-        graphqlUseCase, GetChatListMessageMapper()
+        graphqlUseCase,
+        GetChatListMessageMapper()
     )
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatListMessage(
         stubUseCase: GetChatListMessageUseCaseStub
     ): GetChatListMessageUseCase = stubUseCase
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatNotificationUseCaseStub(
         graphqlUseCase: GraphqlUseCase<NotificationsPojo>
     ): GetChatNotificationUseCaseStub = GetChatNotificationUseCaseStub(graphqlUseCase)
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatNotificationUseCase(
         stubUseCase: GetChatNotificationUseCaseStub
     ): GetChatNotificationUseCase = stubUseCase
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatWhiteListFeatureUseCaseStub(
         graphqlUseCase: GraphqlUseCase<ChatWhitelistFeatureResponse>
     ): GetChatWhitelistFeatureStub = GetChatWhitelistFeatureStub(graphqlUseCase)
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideChatWhiteListFeatureUseCase(
         stubUseCase: GetChatWhitelistFeatureStub
     ): GetChatWhitelistFeature = stubUseCase
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideGetOperationalInsightUseCaseStub(
         repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
     ): GetOperationalInsightUseCaseStub = GetOperationalInsightUseCaseStub(repository, dispatchers)
 
     @Provides
-    @ChatListScope
+    @ActivityScope
     fun provideGetOperationalInsightUseCase(
         stubUseCase: GetOperationalInsightUseCaseStub
     ): GetOperationalInsightUseCase = stubUseCase

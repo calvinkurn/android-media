@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
@@ -13,7 +14,7 @@ import dagger.Component
  * @author : Steven 2019-08-07
  */
 
-@ChatListScope
+@ActivityScope
 @Component(
     modules = [
         ChatListNetworkModule::class,
