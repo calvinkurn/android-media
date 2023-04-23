@@ -13,7 +13,12 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ChatlistCommonModule {
+class ChatListModuleStub {
+
+    @Provides
+    @ChatListScope
+    @TopchatContext
+    fun provideContext(context: Context): Context = context
 
     @ChatListScope
     @Provides

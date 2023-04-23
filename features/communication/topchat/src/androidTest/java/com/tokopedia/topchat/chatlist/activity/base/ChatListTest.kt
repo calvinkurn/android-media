@@ -6,7 +6,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatlist.di.ChatListModule
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
@@ -71,8 +70,8 @@ abstract class ChatListTest {
             .fakeAppModule(FakeAppModule(applicationContext))
             .build()
         chatListComponentStub = DaggerChatListComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatListContextModule(ChatListModule(context))
+            .baseComponent(baseComponent)
+            .context(context)
             .build()
         chatListComponentStub!!.inject(this)
     }
