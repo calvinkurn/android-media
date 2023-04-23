@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationUseCase
@@ -32,9 +31,9 @@ object ChatListUseCaseModuleStub {
     @Provides
     @ActivityScope
     fun provideChatListMessageStub(
-        graphqlUseCase: GraphqlUseCase<ChatListPojo>
+        graphqlRepository: GraphqlRepository
     ): GetChatListMessageUseCaseStub = GetChatListMessageUseCaseStub(
-        graphqlUseCase,
+        graphqlRepository,
         GetChatListMessageMapper()
     )
 

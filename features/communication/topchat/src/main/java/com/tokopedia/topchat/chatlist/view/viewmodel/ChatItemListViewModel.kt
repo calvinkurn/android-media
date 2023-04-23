@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SEL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
@@ -162,21 +163,19 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
-        getChatListUseCase.getChatList(
-            page,
-            filter,
-            tab,
-            {
+        val p = ChatListParam(page, filter, tab)
+        launch {
+            try {
+                val result = getChatListUseCase(p)
                 if (page == 1) {
-                    pinnedMsgId.addAll(it.pinned)
+                    pinnedMsgId.addAll(result.pinned)
                 }
-                unpinnedMsgId.addAll(it.unpinned)
-                _mutateChatList.value = Success(it.chatListPojo)
-            },
-            {
-                _mutateChatList.value = Fail(it)
+                unpinnedMsgId.addAll(result.unpinned)
+                _mutateChatList.value = Success(result.chatListPojo)
+            } catch (e: Exception) {
+                _mutateChatList.value = Fail(e)
             }
-        )
+        }
     }
 
     fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
@@ -404,7 +403,6 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun cancelAllUseCase() {
-        getChatListUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
     }
 

@@ -29,7 +29,7 @@ interface ChatListComponentStub : ChatListComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun context(context: Context): ChatListComponentStub.Builder
+        fun context(context: Context): Builder
         fun baseComponent(component: FakeBaseAppComponent): Builder
         fun build(): ChatListComponentStub
     }

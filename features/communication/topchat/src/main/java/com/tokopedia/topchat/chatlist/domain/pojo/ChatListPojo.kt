@@ -21,6 +21,12 @@ data class ChatListPojo(
     )
 }
 
+data class ChatListParam(
+    val page: Int,
+    val filter: String,
+    val tab: String
+)
+
 data class ChatListResponse(
     val chatListPojo: ChatListPojo,
     val pinned: List<String>,
