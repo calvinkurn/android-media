@@ -6,7 +6,6 @@ import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.di.*
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
-import com.tokopedia.topchat.stub.chatlist.di.module.ChatListSettingModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListUseCaseModuleStub
 import com.tokopedia.topchat.stub.common.di.FakeBaseAppComponent
 import dagger.BindsInstance
@@ -17,7 +16,6 @@ import dagger.Component
     modules = [
         ChatListModuleStub::class,
         ChatListNetworkModuleStub::class,
-        ChatListSettingModuleStub::class,
         ChatListUseCaseModuleStub::class,
         ChatListViewsModelModule::class
     ],

@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -11,9 +13,19 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @Module
 class ChatListModule {
+
+    @Provides
+    fun provideGraphQlRepository(): GraphqlRepository =
+        GraphqlInteractor.getInstance().graphqlRepository
+
+    @ActivityScope
+    @Provides
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
     @ActivityScope

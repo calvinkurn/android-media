@@ -18,7 +18,6 @@ import dagger.Component
 @Component(
     modules = [
         ChatListNetworkModule::class,
-        ChatListSettingModule::class,
         ChatListViewsModelModule::class,
         ChatListModule::class
     ],
