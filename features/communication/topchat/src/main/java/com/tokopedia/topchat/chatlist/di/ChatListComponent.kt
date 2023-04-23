@@ -20,7 +20,6 @@ import dagger.Component
         ChatListNetworkModule::class,
         ChatListSettingModule::class,
         ChatListUseCaseModule::class,
-        ChatNotificationsUseCaseModule::class,
         ChatListViewsModelModule::class,
         ChatListModule::class
     ],

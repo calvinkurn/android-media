@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
-import com.tokopedia.topchat.chatlist.domain.pojo.param.NotificationParam
 import javax.inject.Inject
 
 open class GetChatNotificationUseCase @Inject constructor(
@@ -15,22 +14,22 @@ open class GetChatNotificationUseCase @Inject constructor(
 ) : CoroutineUseCase<String, NotificationsPojo>(dispatchers.io) {
 
     override fun graphqlQuery(): String = """
-        query get_chat_notif($$PARAM_INPUT: NotificationRequest) {
-          notifications(input: $$PARAM_INPUT){
-              chat {
-                unreadsSeller
-                unreadsUser
-              }
+        query get_chat_notif($$PARAM_SHOP_ID: String) {
+          notifications(input: {shop_id: $$PARAM_SHOP_ID}) {
+            chat {
+              unreadsSeller
+              unreadsUser
             }
+          }
         }
     """.trimIndent()
 
     override suspend fun execute(params: String): NotificationsPojo {
-        val i = mapOf(PARAM_INPUT to NotificationParam(params))
+        val i = mapOf(PARAM_SHOP_ID to params)
         return graphql.request(graphqlQuery(), i)
     }
 
     companion object {
-        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

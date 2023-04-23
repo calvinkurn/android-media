@@ -19,7 +19,6 @@ import dagger.Component
         ChatListNetworkModuleStub::class,
         ChatListSettingModuleStub::class,
         ChatListUseCaseModuleStub::class,
-        ChatNotificationsUseCaseModule::class,
         ChatListViewsModelModule::class
     ],
     dependencies = [FakeBaseAppComponent::class]
