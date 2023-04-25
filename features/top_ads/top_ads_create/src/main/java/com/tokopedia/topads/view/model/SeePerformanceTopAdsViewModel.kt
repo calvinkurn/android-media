@@ -35,17 +35,27 @@ import javax.inject.Inject
 
 class SeePerformanceTopAdsViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val topAdsGetDepositUseCase: TopAdsGetDepositUseCase,
-    private val topAdsGetProductManageUseCase: TopAdsGetProductManageUseCase,
-    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-    private val topAdsGetShopInfoV1UseCase: TopAdsGetShopInfoV1UseCase,
-    private val topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase,
-    private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
-    private val topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>,
-    private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
-    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
+
+    @Inject
+    lateinit var topAdsGetDepositUseCase: TopAdsGetDepositUseCase
+    @Inject
+    lateinit var topAdsGetProductManageUseCase: TopAdsGetProductManageUseCase
+    @Inject
+    lateinit var topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase
+    @Inject
+    lateinit var topAdsGetShopInfoV1UseCase: TopAdsGetShopInfoV1UseCase
+    @Inject
+    lateinit var topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase
+    @Inject
+    lateinit var topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase
+    @Inject
+    lateinit var topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>
+    @Inject
+    lateinit var topAdsProductActionUseCase: TopAdsProductActionUseCase
+    @Inject
+    lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
 
     private val _topAdsDeposits: MutableLiveData<Result<Deposit>> = MutableLiveData()
     val topAdsDeposits: LiveData<Result<Deposit>> = _topAdsDeposits
