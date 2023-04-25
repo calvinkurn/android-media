@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -28,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.ChatListPreference
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
@@ -68,6 +68,9 @@ open class ChatTabListFragment constructor() :
 
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
+    @Inject
+    lateinit var chatListPref: ChatListPreference
 
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var webSocketViewModel: WebSocketViewModel
@@ -152,11 +155,11 @@ open class ChatTabListFragment constructor() :
      * set to `protected open` so that it can be disabled on UI test
      */
     protected open fun initToolTip() {
-        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
+        searchToolTip = ToolTipSearchPopupWindow(context, chatListPref)
     }
 
     protected open fun isOnBoardingAlreadyShown(): Boolean {
-        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
+        return chatListPref.coachMarkShown
     }
 
     override fun initInjector() {
@@ -528,7 +531,7 @@ open class ChatTabListFragment constructor() :
 
     override fun showSearchOnBoardingTooltip() {
         if (
-            chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
+            chatListPref.searchTooltipShown ||
             !isFinishShowingCoachMarkOnBoarding ||
             activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
         ) {
@@ -618,7 +621,7 @@ open class ChatTabListFragment constructor() :
             showSearchOnBoardingTooltip()
         }
         coachMarkOnBoarding.show(activity, TAG_ONBOARDING, tutorials)
-        context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
+        chatListPref.coachMarkShown = true
     }
 
     private fun stopLiveDataObserver() {
@@ -636,7 +639,7 @@ open class ChatTabListFragment constructor() :
     }
 
     companion object {
-        private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+        val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
         private const val LIMIT_NOTIFICATION = 99
         private const val LIMIT_NOTIFICATION_STRING = "99+"
         private const val MAX_LENGTH_TITLE = 10

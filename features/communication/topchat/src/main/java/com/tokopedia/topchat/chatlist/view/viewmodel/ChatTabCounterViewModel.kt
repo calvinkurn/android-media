@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -20,8 +19,7 @@ import javax.inject.Inject
 
 class ChatTabCounterViewModel @Inject constructor(
     private val getChatNotification: GetChatNotificationUseCase,
-    private val sharedPref: SharedPreferences,
-    private val dispatcher: CoroutineDispatcher
+    dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val _mutateChatNotification = MutableLiveData<Result<NotificationsPojo>>()
@@ -53,17 +51,8 @@ class ChatTabCounterViewModel @Inject constructor(
             .getInt(KEY_LAST_POSITION, -1)
     }
 
-    fun isSearchOnBoardingTooltipHasShown(): Boolean {
-        return sharedPref.getBoolean(SEARCH_TOOLTIP_ONBOARDING, false)
-    }
-
-    fun toolTipOnBoardingShown() {
-        sharedPref.edit().putBoolean(SEARCH_TOOLTIP_ONBOARDING, true).apply()
-    }
-
     companion object {
         private const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
         private const val KEY_LAST_POSITION = "key_last_seen_tab_position"
-        const val SEARCH_TOOLTIP_ONBOARDING = "search_tooltip_onboarding"
     }
 }
