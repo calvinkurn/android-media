@@ -14,7 +14,6 @@ import com.tokopedia.topchat.stub.chatlist.di.FakeActivityComponentFactory
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
-import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -30,9 +29,6 @@ abstract class ChatListTest {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
 
     lateinit var fakeComponent: FakeActivityComponentFactory
 
@@ -62,11 +58,6 @@ abstract class ChatListTest {
 
     @Before
     fun setup() {
-        setupDaggerComponent()
-        setUserSessionData()
-    }
-
-    private fun setupDaggerComponent() {
         fakeComponent = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponent
         fakeComponent.chatListComponent.inject(this)
@@ -89,12 +80,6 @@ abstract class ChatListTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-    }
-
-    private fun setUserSessionData() {
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
     }
 
     companion object {
