@@ -8,7 +8,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import javax.inject.Inject
 
-open class GetChatNotificationUseCase @Inject constructor(
+class GetChatNotificationUseCase @Inject constructor(
     @ApplicationContext private val graphql: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<String, NotificationsPojo>(dispatchers.io) {

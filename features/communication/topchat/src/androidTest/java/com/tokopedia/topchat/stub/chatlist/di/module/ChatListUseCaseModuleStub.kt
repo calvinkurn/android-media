@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.stub.chatlist.di.module
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -9,11 +8,9 @@ import com.tokopedia.topchat.chatlist.ChatListPreference
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
-import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
-import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
@@ -54,18 +51,6 @@ object ChatListUseCaseModuleStub {
     fun provideChatListMessage(
         stubUseCase: GetChatListMessageUseCaseStub
     ): GetChatListMessageUseCase = stubUseCase
-
-    @Provides
-    @ActivityScope
-    fun provideChatNotificationUseCaseStub(
-        @ApplicationContext graphqlRepository: GraphqlRepository
-    ): GetChatNotificationUseCaseStub = GetChatNotificationUseCaseStub(graphqlRepository)
-
-    @Provides
-    @ActivityScope
-    fun provideChatNotificationUseCase(
-        stubUseCase: GetChatNotificationUseCaseStub
-    ): GetChatNotificationUseCase = stubUseCase
 
     @Provides
     @ActivityScope

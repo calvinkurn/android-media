@@ -50,7 +50,7 @@ class ChatListModuleStub {
 
     @ActivityScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @ActivityScope
     @Provides

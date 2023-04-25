@@ -4,7 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
+import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import timber.log.Timber
 
 class FakeGraphqlRepository : GraphqlRepository {
@@ -15,8 +17,13 @@ class FakeGraphqlRepository : GraphqlRepository {
     ): GraphqlResponse {
         Timber.d("Pass through FakeGraphql $requests")
         return when (GqlQueryParser.parse(requests).first()) {
-            "registerCheck" -> {
-                TODO()
+            "notifications" -> {
+                val mockedNotif = NotificationsPojo().apply {
+                    notification = NotificationsPojo.Notification(
+                        NotificationsPojo.Notification.Chat(19, 45)
+                    )
+                }
+                GqlMockUtil.createSuccessResponse(mockedNotif)
             }
             else -> throw IllegalArgumentException()
         }
