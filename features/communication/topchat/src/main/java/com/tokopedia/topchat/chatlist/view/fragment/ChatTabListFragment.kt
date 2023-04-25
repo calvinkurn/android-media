@@ -50,7 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment constructor() :
+class ChatTabListFragment constructor() :
     BaseDaggerFragment(),
     ChatListContract.TabFragment,
     SellerHomeFragmentListener {
