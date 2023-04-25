@@ -151,14 +151,11 @@ open class ChatTabListFragment constructor() :
         searchToolTip?.dismiss()
     }
 
-    /**
-     * set to `protected open` so that it can be disabled on UI test
-     */
-    protected open fun initToolTip() {
+    private fun initToolTip() {
         searchToolTip = ToolTipSearchPopupWindow(context, chatListPref)
     }
 
-    protected open fun isOnBoardingAlreadyShown(): Boolean {
+    private fun isOnBoardingAlreadyShown(): Boolean {
         return chatListPref.coachMarkShown
     }
 
