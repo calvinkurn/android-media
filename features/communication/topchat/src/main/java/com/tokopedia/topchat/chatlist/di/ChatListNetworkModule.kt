@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
-import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -37,7 +36,6 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 @Module
@@ -53,27 +51,6 @@ class ChatListNetworkModule {
     @Provides
     fun provideWebSocketStateHandler(): WebSocketStateHandler {
         return DefaultWebSocketStateHandler()
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideChatRetrofit(
-        @ApplicationContext context: Context,
-        userSession: UserSession
-    ): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException(
-                "Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-            context,
-            ChatUrl.TOPCHAT,
-            context as NetworkRouter,
-            userSession
-        )
     }
 
     @ActivityScope

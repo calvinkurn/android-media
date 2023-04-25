@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
-import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -25,13 +24,11 @@ import com.tokopedia.topchat.common.websocket.DefaultWebSocketStateHandler
 import com.tokopedia.topchat.common.websocket.TopchatWebSocket
 import com.tokopedia.topchat.common.websocket.WebSocketParser
 import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 @Module
@@ -41,20 +38,6 @@ class ChatListNetworkModuleStub {
     private val NET_WRITE_TIMEOUT = 60
     private val NET_CONNECT_TIMEOUT = 60
     private val NET_RETRY = 1
-
-    @ActivityScope
-    @Provides
-    fun provideChatRetrofit(
-        @ApplicationContext context: Context,
-        userSession: UserSession
-    ): Retrofit {
-        return CommonNetwork.createRetrofit(
-            context,
-            ChatUrl.TOPCHAT,
-            context as NetworkRouter,
-            userSession
-        )
-    }
 
     @ActivityScope
     @Provides
