@@ -323,6 +323,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                             }
                         }
                     }
+                    UiEvent.EVENT_FAILED_ADD_TO_CART, UiEvent.EVENT_FAILED_UPDATE_CART -> {
+                        binding?.atcButton?.isLoading = false
+                        showErrorMessage(it.throwable?.message)
+                    }
                 }
             }
         }
@@ -359,11 +363,13 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         this.productUiModel = productUiParcelable.copyParcelable()
     }
 
-    private fun showErrorMessage() {
+    private fun showErrorMessage(errorMessage: String? = null) {
+        val message = errorMessage
+            ?: getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
-                text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                text = message,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()

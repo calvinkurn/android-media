@@ -10,7 +10,6 @@ import io.mockk.coVerify
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
-import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 class ShopSetOperationalHoursViewModelTest : ShopSetOperationalHoursViewModelTestFixture() {

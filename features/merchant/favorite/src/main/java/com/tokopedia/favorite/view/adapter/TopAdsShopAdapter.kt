@@ -211,9 +211,6 @@ class TopAdsShopAdapter(
         var shopLocation: TextView
         var shopInfo: LinearLayout
         var favButton: ImageView
-        fun getContext(): Context {
-            return itemView.context
-        }
 
         init {
             mainContent = itemView.findViewById<View>(R.id.main_content) as LinearLayout
