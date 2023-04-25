@@ -27,8 +27,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.ChatListPreference
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
+import com.tokopedia.topchat.chatlist.data.ChatListPreference
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent

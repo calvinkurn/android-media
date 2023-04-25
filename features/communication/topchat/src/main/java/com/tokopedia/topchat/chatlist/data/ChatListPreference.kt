@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist
+package com.tokopedia.topchat.chatlist.data
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
