@@ -524,6 +524,7 @@
     <string name="top_ads_tool_tip_auto_description">Fitur yang membantumu untuk tambah kredit secara otomatis, agar iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
+    <string name="topads_layout_chips_text">Semua</string>
 
 </resources>
 

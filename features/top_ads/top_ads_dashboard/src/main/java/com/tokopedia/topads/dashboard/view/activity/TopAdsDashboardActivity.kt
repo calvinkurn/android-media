@@ -59,6 +59,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragme
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
+import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
@@ -202,6 +203,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                                 checkVisibility()
                             }
                             setMultiActionButtonEnabled(insightMultiActionButtonEnabled)
+                            bottom?.hide()
+                            hideButton(true)
                         }
                         HEADLINE_ADS_TAB -> {
                             removeBtn()
@@ -433,7 +436,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         list.add(
             FragmentTabItem(
                 resources.getString(R.string.topads_dash_recommend),
-                TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)
+                RecommendationFragment()
             )
         )
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)

@@ -2,6 +2,9 @@ package com.tokopedia.topads.dashboard.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFragment
+import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment
+import com.tokopedia.topads.dashboard.recommendation.fragment.SaranTabsFragment
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
@@ -61,4 +64,6 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsChooseCreditBottomSheet: TopAdsChooseCreditBottomSheet)
     fun inject(topAdsRecomGroupBottomSheet: TopAdsRecomGroupBottomSheet)
     fun inject(topAdsDashDeletedGroupFragment: TopAdsDashDeletedGroupFragment)
+    fun inject(recommendationFragment: RecommendationFragment)
+    fun inject(saranTabsFragment: SaranTabsFragment)
 }
