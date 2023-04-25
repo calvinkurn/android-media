@@ -45,7 +45,7 @@ open class InboxNotificationUseCase @Inject constructor(
     }
 
     private val query = """
-        query notifications_inbox_counter($$PARAM_INPUT: NotificationRequest) {
+        query notifications_inbox_counter($$PARAM_INPUT: String) {
           notifications(input: {shop_id: $$PARAM_INPUT}){
             total_cart
             chat{
