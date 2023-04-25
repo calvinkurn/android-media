@@ -6,16 +6,15 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
-import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
+import com.tokopedia.topchat.stub.chatlist.di.FakeActivityComponentFactory
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
-import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -25,7 +24,7 @@ import javax.inject.Inject
 abstract class ChatListTest {
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        ChatListActivityStub::class.java,
+        ChatListActivity::class.java,
         false,
         false
     )
@@ -34,6 +33,8 @@ abstract class ChatListTest {
     protected val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
+
+    lateinit var fakeComponent: FakeActivityComponentFactory
 
     @Inject
     protected lateinit var chatListUseCase: GetChatListMessageUseCaseStub
@@ -47,7 +48,7 @@ abstract class ChatListTest {
     @Inject
     protected lateinit var userSession: UserSessionInterface
 
-    protected lateinit var activity: ChatListActivityStub
+    protected lateinit var activity: ChatListActivity
 
     protected val exEmptyChatListPojo = ChatListPojo()
     protected var exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
@@ -66,14 +67,9 @@ abstract class ChatListTest {
     }
 
     private fun setupDaggerComponent() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatListComponentStub = DaggerChatListComponentStub.builder()
-            .baseComponent(baseComponent)
-            .context(context)
-            .build()
-        chatListComponentStub!!.inject(this)
+        fakeComponent = FakeActivityComponentFactory()
+        ActivityComponentFactory.instance = fakeComponent
+        fakeComponent.chatListComponent.inject(this)
     }
 
     @After

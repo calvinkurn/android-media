@@ -25,5 +25,4 @@ class UserSessionStub(context: Context?) : UserSession(context) {
     override fun isLoggedIn(): Boolean {
         return loggedIn
     }
-
 }

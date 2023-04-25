@@ -3,13 +3,12 @@ package com.tokopedia.topchat.chatlist.view.activity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment
 
 open class ChatListActivity :
@@ -47,10 +46,8 @@ open class ChatListActivity :
     }
 
     protected open fun initializeChatListComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder()
-            .baseComponent((application as BaseMainApplication).baseAppComponent)
-            .context(this)
-            .build().also {
+        return ActivityComponentFactory.instance.createChatListComponent(application, this)
+            .also {
                 chatListComponent = it
             }
     }
