@@ -104,8 +104,8 @@ fun HeaderProfileTypePreview() {
     ) {
         HeaderProfileType(
             properties = NestHeaderType.Profile().copy(
-                title = "Jakarta",
-                subTitle = "Search for location"
+                title = "Tokopedia Official",
+                subTitle = "Pilih Akun"
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600
@@ -121,6 +121,8 @@ fun HeaderProfileTypeNonBackButtonPreview() {
     ) {
         HeaderProfileType(
             properties = NestHeaderType.Profile().copy(
+                title = "Tokopedia Official",
+                subTitle = "Pilih Akun",
                 backButtonEnabled = false
             ),
             iconColor = NestTheme.colors.NN._900,

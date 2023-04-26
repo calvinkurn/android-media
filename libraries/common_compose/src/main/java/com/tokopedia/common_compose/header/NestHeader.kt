@@ -37,7 +37,6 @@ fun NestHeader(
                 properties = type,
                 iconColor = iconColor
             )
-
             is NestHeaderType.DoubleLine -> HeaderDoubleLineType(
                 properties = type,
                 contentSecondaryColor = contentSecondaryColor,
@@ -54,8 +53,6 @@ fun NestHeader(
                 iconColor = iconColor
             )
             is NestHeaderType.Search -> {
-            }
-            else -> {
             }
         }
     }
