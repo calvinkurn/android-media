@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat.test.robot.message_bubble
 
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
@@ -19,7 +19,7 @@ object MessageBubbleResult {
         } else {
             ViewAssertions.doesNotExist()
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_layout_image_bubble)
         ).check(matcher)
@@ -31,7 +31,7 @@ object MessageBubbleResult {
         } else {
             matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_tv_image_bubble_error)
         ).check(matcher)
@@ -43,7 +43,7 @@ object MessageBubbleResult {
         } else {
             matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_icon_image_bubble_error_upload)
         ).check(matcher)
@@ -55,7 +55,7 @@ object MessageBubbleResult {
         } else {
             matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_loader_image_bubble)
         ).check(matcher)
@@ -67,35 +67,35 @@ object MessageBubbleResult {
         } else {
             ViewAssertions.doesNotExist()
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_layout_item_msg_bubble)
         ).check(matcher)
     }
 
     fun assertMessageBubbleText(position: Int, text: String) {
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_tv_msg)
         ).check(matches(withText(text)))
     }
 
     fun assertMessageBubbleCheckMark(position: Int) {
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_iv_msg_check_mark)
         ).check(matches(isDisplayed()))
     }
 
     fun assertMessageBubbleReadMoreText(position: Int) {
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_tv_msg_read_more)
         ).check(matches(isDisplayed()))
     }
 
     fun assertMessageBubbleBottomSheet() {
-        Espresso.onView(
+        onView(
             withId(R.id.tokochat_tv_long_message)
         ).check(matches(isDisplayed()))
     }
@@ -106,21 +106,21 @@ object MessageBubbleResult {
         } else {
             ViewAssertions.doesNotExist()
         }
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_layout_item_msg_censor)
         ).check(matcher)
     }
 
     fun assertMessageBubbleCensoredText(position: Int, text: String) {
-        Espresso.onView(
+        onView(
             withRecyclerView(R.id.tokochat_chatroom_rv)
                 .atPositionOnView(position, R.id.tokochat_tv_msg_censor)
         ).check(matches(withText(text)))
     }
 
     fun assertGuideChatBottomSheet() {
-        Espresso.onView(
+        onView(
             withId(R.id.tokochat_tv_subtitle_guide_chat)
         ).check(matches(isDisplayed()))
     }

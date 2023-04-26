@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat_common.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatHeaderDateDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatImageBubbleDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatMessageBubbleDelegate
@@ -31,14 +30,11 @@ open class TokoChatBaseAdapter(
     }
 
     fun getImageAttachmentPairWithId(id: String): Pair<Int, TokoChatImageBubbleUiModel>? {
-        var result: Pair<Int, TokoChatImageBubbleUiModel>? = null
-        for (i in Int.ZERO until itemList.size) {
-            val item = itemList[i]
+        itemList.forEachIndexed { index, item ->
             if (item is TokoChatImageBubbleUiModel && item.imageId == id) {
-                result = Pair(i, item)
-                break
+                return Pair(index, item)
             }
         }
-        return result
+        return null
     }
 }

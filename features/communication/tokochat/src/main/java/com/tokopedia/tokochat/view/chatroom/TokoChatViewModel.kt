@@ -451,7 +451,8 @@ class TokoChatViewModel @Inject constructor(
                     // Compress & Rename Image to local UUID
                     val localImage = preprocessingImage(filePath = filePath, newFileName = localUUID)
                     // Add transient (dummy) message
-                    addTransientExtensionMessage(
+                    sendMessageUseCase.addTransientMessage(
+                        channel = channelId,
                         extensionMessage = createExtensionMessage(localUUID = localUUID)
                     )
                     // Handle loading dummy
@@ -546,28 +547,15 @@ class TokoChatViewModel @Inject constructor(
                 )
                 replaceCacheImageData(newImageId, localUUID)
                 // Send transient message and change the payload from UUID to image Id
-                sendTransientExtensionMessage(
-                    createExtensionMessage(
+                sendMessageUseCase.sendTransientMessage(
+                    channel = channelId,
+                    extensionMessage = createExtensionMessage(
                         localUUID = localUUID,
                         extensionId = newImageId
                     )
                 )
             }
         }
-    }
-
-    private fun addTransientExtensionMessage(extensionMessage: ExtensionMessage) {
-        sendMessageUseCase.addTransientMessage(
-            channel = channelId,
-            extensionMessage = extensionMessage
-        )
-    }
-
-    private fun sendTransientExtensionMessage(extensionMessage: ExtensionMessage) {
-        sendMessageUseCase.sendTransientMessage(
-            channel = channelId,
-            extensionMessage = extensionMessage
-        )
     }
 
     private fun createExtensionMessage(

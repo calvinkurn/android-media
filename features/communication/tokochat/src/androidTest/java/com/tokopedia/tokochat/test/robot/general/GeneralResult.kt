@@ -1,13 +1,14 @@
 package com.tokopedia.tokochat.test.robot.general
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 
 object GeneralResult {
 
     fun assertSnackBarWithSubText(msg: String) {
-        Espresso.onView(ViewMatchers.withSubstring(msg))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withSubstring(msg))
+            .check(matches(isDisplayed()))
     }
 }
