@@ -7,7 +7,9 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -36,7 +38,7 @@ class GqlSymbolProcessor(
         val unableToProcess = symbols.filterNot { it.validate() }
         val dependencies = Dependencies(false, *resolver.getAllFiles().toList().toTypedArray())
 
-        symbols.filter { it is KSClassDeclaration && it.validate() }
+        symbols.filter { (it is KSClassDeclaration || it is KSFunctionDeclaration) && it.validate() }
             .forEach { it.accept(GqlSymbolVisitor(dependencies), Unit) }
 
         return unableToProcess.toList()
@@ -50,34 +52,58 @@ class GqlSymbolProcessor(
             }
 
             if (classDeclaration.annotations.toList().isEmpty()) {
-                logger.error("not found annotations")
+                logger.error("annotations not found")
             }
 
             val packageName = classDeclaration.packageName.asString()
 
             val annotation = classDeclaration.annotations.first()
-            val queryName = annotation.arguments[QUERY_NAME_INDEX].value as String
-            val queryValue = annotation.arguments[QUERY_VALUE_INDEX].value as String
+            generateFile(packageName, annotation, dependencies)
+        }
 
-            val outputStream: OutputStream = codeGenerator.createNewFile(
-                dependencies = dependencies,
-                packageName,
-                fileName = queryName.capitalize()
-            )
-
-            val singleLineQuery = queryValue.formatToSingleLineString()
-            val topOperationName = singleLineQuery.getTopQueryName()
-
-            val queryInside = queryValue.getQueryInside().map { "\"$it\"" }
-
-            val operationName = if (queryInside.isEmpty()) {
-                "emptyList()"
-            } else {
-                "listOf(${queryInside.joinToString(",")})"
+        override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
+            if (function.isAbstract) {
+                logger.error("should not use abstract method")
+            }
+            if (function.annotations.toList().isEmpty()) {
+                logger.error("annotations not found")
             }
 
-            outputStream.write(
-                """
+            val packageName = function.packageName.asString()
+
+            val annotation = function.annotations.first()
+
+            generateFile(packageName, annotation, dependencies)
+        }
+    }
+
+    private fun generateFile(
+        packageName: String,
+        annotation: KSAnnotation,
+        dependencies: Dependencies
+    ) {
+        val queryName = annotation.arguments[QUERY_NAME_INDEX].value as String
+        val queryValue = annotation.arguments[QUERY_VALUE_INDEX].value as String
+
+        val outputStream: OutputStream = codeGenerator.createNewFile(
+            dependencies = dependencies,
+            packageName,
+            fileName = queryName.capitalize()
+        )
+
+        val singleLineQuery = queryValue.formatToSingleLineString()
+        val topOperationName = singleLineQuery.getTopQueryName()
+
+        val queryInside = queryValue.getQueryInside().map { "\"$it\"" }
+
+        val operationName = if (queryInside.isEmpty()) {
+            "emptyList()"
+        } else {
+            "listOf(${queryInside.joinToString(",")})"
+        }
+
+        outputStream.write(
+            """
                 |package $packageName
                 
                 |import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -94,18 +120,17 @@ class GqlSymbolProcessor(
                 
                 |    override fun getTopOperationName(): String = "$topOperationName"
                 |}
-                """.trimMargin().toByteArray()
-            )
+            """.trimMargin().toByteArray()
+        )
 
-            outputStream.close()
-        }
+        outputStream.close()
     }
 
     private fun String.formatToSingleLineString(): String {
         return this
             .replace("\\n", "")
             .replace("\\t", "")
-            .replace("\\", "")
+            .replace("\"", "")
             .replace("+", "")
             .replace("\\s+".toRegex(), " ")
             .replace(System.getProperty("line.separator"), "")
