@@ -4328,8 +4328,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         showLoaderTotalPayment();
         updateCost();
-
-        new Handler().postDelayed(() -> getPaymentFee(), 500);
+        getPaymentFee();
     }
 
     @Override
