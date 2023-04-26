@@ -2,7 +2,6 @@ package com.tokopedia.favorite.data.source.apis.converterfactory
 
 import com.google.gson.Gson
 import com.tokopedia.favorite.data.source.apis.response.GeneratedHost
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -16,7 +15,6 @@ import java.lang.reflect.Type
 class GeneratedHostConverter : Converter.Factory() {
 
     companion object {
-        private val TAG = GeneratedHostConverter::class.java.simpleName
         private val MEDIA_TYPE = "text/plain".toMediaTypeOrNull()
     }
 

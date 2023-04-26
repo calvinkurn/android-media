@@ -79,6 +79,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RETURN_TO_SHIPPER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SEARCH_NEW_DRIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
@@ -835,6 +836,7 @@ open class SomDetailFragment :
                             KEY_RETURN_TO_SHIPPER,
                             true
                         ) -> SomNavigator.goToReturnToShipper(this@SomDetailFragment, orderId)
+                        key.equals(KEY_SEARCH_NEW_DRIVER, true) -> SomNavigator.goToFindNewDriver(this, orderId, detailResponse?.invoice)
                     }
                 }
             }
@@ -1058,6 +1060,8 @@ open class SomDetailFragment :
             handleReschedulePickupResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_RETURN_TO_SHIPPER) {
             handleReturnToShipperResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_FIND_NEW_DRIVER) {
+            handleFindNewDriverResult(resultCode, data)
         }
     }
 
@@ -1228,6 +1232,12 @@ open class SomDetailFragment :
                 setResult(Activity.RESULT_OK, Intent())
                 finish()
             }
+        }
+    }
+
+    protected open fun handleFindNewDriverResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            loadDetail()
         }
     }
 

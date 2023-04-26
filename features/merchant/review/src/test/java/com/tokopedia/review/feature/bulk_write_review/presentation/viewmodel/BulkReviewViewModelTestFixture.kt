@@ -37,6 +37,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkR
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemMediaUrisUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemRatingUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemTestimonyUiModel
+import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewCancelReviewSubmissionDialogUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewExpandedTextAreaBottomSheetUiState
@@ -622,6 +623,16 @@ abstract class BulkReviewViewModelTestFixture {
             viewModel.badRatingCategoryBottomSheetToasterQueue.toList(toasterQueue)
         }
         block(toasterQueue)
+        uiStateCollectorJob.cancel()
+    }
+
+    protected fun runCollectingReviewItemScrollRequest(block: (List<BulkReviewItemUiModel>) -> Unit) {
+        val reviewItems = mutableListOf<BulkReviewItemUiModel>()
+        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
+        val uiStateCollectorJob = scope.launch {
+            viewModel.reviewItemScrollRequest.toList(reviewItems)
+        }
+        block(reviewItems)
         uiStateCollectorJob.cancel()
     }
 }

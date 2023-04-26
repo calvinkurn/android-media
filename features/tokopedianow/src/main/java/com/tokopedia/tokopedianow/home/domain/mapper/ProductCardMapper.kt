@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
 
 object ProductCardMapper {
@@ -15,13 +15,13 @@ object ProductCardMapper {
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
         needToChangeMaxLinesName: Boolean
-    ): List<TokoNowProductCardCarouselItemUiModel> {
+    ): List<ProductCardCompactCarouselItemUiModel> {
         return recomWidget.recommendationItemList.map { product ->
             val productId = product.productId.toString()
             val quantity = getAddToCartQuantity(productId, miniCartData)
             val parentId = product.parentID.toString()
 
-            TokoNowProductCardCarouselItemUiModel(
+            ProductCardCompactCarouselItemUiModel(
                 shopId = product.shopId.toString(),
                 shopName = product.shopName,
                 shopType = product.shopType,

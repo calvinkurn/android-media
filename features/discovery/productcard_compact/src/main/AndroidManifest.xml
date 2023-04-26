@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.productcard.compact">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.productcard.compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Transparent"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+
+</manifest>
