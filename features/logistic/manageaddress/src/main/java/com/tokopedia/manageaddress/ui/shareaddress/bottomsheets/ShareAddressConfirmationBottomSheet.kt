@@ -20,7 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
-import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
+import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
@@ -55,7 +55,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initInjector() {
-        DaggerShareAddressComponent.builder()
+        DaggerManageAddressComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
     }
