@@ -48,7 +48,6 @@ import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
-import com.tokopedia.tokochat.view.chatroom.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
@@ -62,6 +61,7 @@ import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
 import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment

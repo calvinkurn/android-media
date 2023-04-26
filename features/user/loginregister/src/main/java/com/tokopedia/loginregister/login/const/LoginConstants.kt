@@ -24,7 +24,6 @@ object LoginConstants {
     object RemoteConfigKey {
         const val KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         const val KEY_BANNER = "android_user_banner_login"
-        const val KEY_LOGIN_FP = "android_user_fingerprint_login_new"
         const val KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page"
     }
 
