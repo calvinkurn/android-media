@@ -51,13 +51,11 @@ fun HeaderDoubleLineTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
-        Column {
-            HeaderDoubleLineType(
-                properties = NestHeaderType.DoubleLine(),
-                iconColor = NestTheme.colors.NN._900,
-                contentSecondaryColor = NestTheme.colors.NN._600
-            )
-        }
+        HeaderDoubleLineType(
+            properties = NestHeaderType.DoubleLine(),
+            iconColor = NestTheme.colors.NN._900,
+            contentSecondaryColor = NestTheme.colors.NN._600
+        )
     }
 }
 
@@ -67,15 +65,13 @@ fun HeaderDoubleLineTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
-        Column {
-            HeaderDoubleLineType(
-                properties = NestHeaderType.DoubleLine().copy(
-                    backButtonEnabled = false
-                ),
-                iconColor = NestTheme.colors.NN._900,
-                contentSecondaryColor = NestTheme.colors.NN._600
-            )
-        }
+        HeaderDoubleLineType(
+            properties = NestHeaderType.DoubleLine().copy(
+                backButtonEnabled = false
+            ),
+            iconColor = NestTheme.colors.NN._900,
+            contentSecondaryColor = NestTheme.colors.NN._600
+        )
     }
 }
 
@@ -85,15 +81,13 @@ fun HeaderDoubleLineTypeOverFlowPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
-        Column {
-            HeaderDoubleLineType(
-                properties = NestHeaderType.DoubleLine().copy(
-                    title = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia ",
-                    subTitle = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia "
-                ),
-                iconColor = NestTheme.colors.NN._900,
-                contentSecondaryColor = NestTheme.colors.NN._600
-            )
-        }
+        HeaderDoubleLineType(
+            properties = NestHeaderType.DoubleLine().copy(
+                title = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia ",
+                subTitle = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia "
+            ),
+            iconColor = NestTheme.colors.NN._900,
+            contentSecondaryColor = NestTheme.colors.NN._600
+        )
     }
 }

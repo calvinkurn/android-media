@@ -40,6 +40,7 @@ fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
     val constraints = remember { mutableStateOf(Constraints()) }
+    val text = remember { mutableStateOf("") }
     val bringIntoViewRequester = BringIntoViewRequester()
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -49,10 +50,18 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestHeader(type = NestHeaderType.SingleLine().copy(
-                title = "Tokopedia Test App",
+
+            NestHeader(type = NestHeaderType.Search().copy(
+                value = text.value,
+                hint = "Cari di Tokopedia",
+                onSearchChanges = {
+                    text.value = it
+                },
                 onBackClicked = {
                     Timber.tag("header").d("click back")
+                },
+                onSearchKeyPressed = {
+                    Timber.tag("header").d(text.value)
                 }
             ))
             val urlBgColor = if (model.urlState.contains("live", true)) {

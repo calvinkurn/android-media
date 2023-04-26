@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.header
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -36,12 +35,10 @@ fun HeaderSingleLineTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
-        Column {
-            HeaderSingleLineType(
-                properties = NestHeaderType.SingleLine(),
-                iconColor = NestTheme.colors.NN._900
-            )
-        }
+        HeaderSingleLineType(
+            properties = NestHeaderType.SingleLine(),
+            iconColor = NestTheme.colors.NN._900
+        )
     }
 }
 
@@ -51,13 +48,11 @@ fun HeaderSingleLineTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
-        Column {
-            HeaderSingleLineType(
-                properties = NestHeaderType.SingleLine().copy(
-                    backButtonEnabled = false
-                ),
-                iconColor = NestTheme.colors.NN._900
-            )
-        }
+        HeaderSingleLineType(
+            properties = NestHeaderType.SingleLine().copy(
+                backButtonEnabled = false
+            ),
+            iconColor = NestTheme.colors.NN._900
+        )
     }
 }

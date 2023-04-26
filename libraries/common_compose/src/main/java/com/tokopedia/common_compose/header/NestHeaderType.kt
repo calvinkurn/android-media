@@ -47,7 +47,9 @@ sealed interface NestHeaderType {
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         val hint: String = "",
-        val onSearchChanges: (String) -> Unit = {}
+        val value: String = "",
+        val onSearchChanges: (String) -> Unit = {},
+        val onSearchKeyPressed: () -> Unit = {}
     ) : NestHeaderType, NestHeaderAttr
 }
 
