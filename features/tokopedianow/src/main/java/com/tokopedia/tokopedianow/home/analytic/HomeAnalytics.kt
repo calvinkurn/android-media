@@ -165,6 +165,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_BUNDLE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_MULTIPLE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_SINGLE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
@@ -172,9 +174,11 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_BUNDLING
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_NOW
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
@@ -295,6 +299,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val NOW15M = "now15"
         const val LEGO_6_BANNER = "lego 6 banner"
         const val LEGO_4_BANNER = "lego 4 - banner"
+        const val SLASH_NOW = "/now"
+        const val PRODUCT_BUNDLING = "product bundling"
+        const val BUNDLE_TYPE_SINGLE = "single"
+        const val BUNDLE_TYPE_MULTIPLE = "multiple"
     }
 
     object TrackerId {
@@ -1708,22 +1716,16 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         bundlePriceCut: String,
         position: Int
     ) {
-        /*
-          type bundle formatnya mau bagaimana?
-          di event label perlu tau isFestivity
-          creative namenya apa?
-          /shoppage yakin?
-         */
-
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "multiple")
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
         val promotionsDataLayer = promotionsDataLayer(
             creativeName = String.EMPTY,
             creativeSlot = position,
             itemId = bundleId,
             itemName = bundleName,
             dimension40 = itemListValue,
-            dimension117 = "multiple",
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
             dimension118 = bundleId
         )
         val dataLayer = getDataLayer(
@@ -1734,8 +1736,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             trackerId = ID_IMPRESSION_MULTIPLE_BUNDLE_WIDGET,
             businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
             currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-        )
-        dataLayer.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        ).apply {
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
@@ -1749,17 +1752,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        /*
-          type bundle formatnya mau bagaimana?
-          di event label perlu tau isFestivity
-          creative namenya apa?
-          /shoppage yakin?
-          itemVariant apa
-          itemBrand apa
-          itemCategory apa
-         */
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "multiple")
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
         val itemsDataLayer = itemsDataLayer(
             position = position,
             itemBrand = String.EMPTY,
@@ -1768,7 +1763,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             itemName = bundleName,
             itemVariant = String.EMPTY,
             dimension40 = itemListValue,
-            dimension117 = "multiple",
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
             dimension118 = bundleId,
             price = bundlePrice
         )
@@ -1798,14 +1793,15 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int
     ) {
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "multiple")
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
         val promotionsDataLayer = promotionsDataLayer(
             creativeName = String.EMPTY,
             creativeSlot = position,
             itemId = bundleId,
             itemName = bundleName,
             dimension40 = itemListValue,
-            dimension117 = "multiple",
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
             dimension118 = bundleId
         )
 
@@ -1817,8 +1813,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             trackerId = ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON,
             businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
             currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-        )
-        dataLayer.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        ).apply {
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
@@ -1831,22 +1828,16 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        /*
-          type bundle formatnya mau bagaimana?
-          di event label perlu tau isFestivity
-          creative namenya apa?
-          /shoppage yakin?
-         */
-
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "single")
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
+
         val promotionsDataLayer = promotionsDataLayer(
-            creativeName = "",
+            creativeName = String.EMPTY,
             creativeSlot = position,
             itemId = bundleId,
             itemName = bundleName,
             dimension40 = itemListValue,
-            dimension117 = "single",
+            dimension117 = BUNDLE_TYPE_SINGLE,
             dimension118 = bundleId
         )
         val dataLayer = getDataLayer(
@@ -1857,8 +1848,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             trackerId = ID_IMPRESSION_SINGLE_BUNDLE_WIDGET,
             businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
             currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-        )
-        dataLayer.apply {
+        ).apply {
             putString(KEY_PRODUCT_ID, productId)
             putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
         }
@@ -1901,17 +1891,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        /*
-          type bundle formatnya mau bagaimana?
-          di event label perlu tau isFestivity
-          creative namenya apa?
-          /shoppage yakin?
-          itemVariant apa
-          itemBrand apa
-          itemCategory apa
-         */
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "single", packageVariant)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE, packageVariant)
+
         val itemsDataLayer = itemsDataLayer(
             position = position,
             itemBrand = String.EMPTY,
@@ -1920,7 +1902,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             itemName = bundleName,
             itemVariant = String.EMPTY,
             dimension40 = itemListValue,
-            dimension117 = "single",
+            dimension117 = BUNDLE_TYPE_SINGLE,
             dimension118 = bundleId,
             price = bundlePrice
         )
@@ -1951,14 +1933,15 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         productId: String
     ) {
         val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash("/shoppage", "product bundling", "single")
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
+
         val promotionsDataLayer = promotionsDataLayer(
             creativeName = String.EMPTY,
             creativeSlot = position,
             itemId = bundleId,
             itemName = bundleName,
             dimension40 = itemListValue,
-            dimension117 = "single",
+            dimension117 = BUNDLE_TYPE_SINGLE,
             dimension118 = bundleId
         )
 
