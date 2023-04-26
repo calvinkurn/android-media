@@ -782,7 +782,8 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
-            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
+            CATEGORY -> mapToProductBundleLayout(response, notLoadedState)
+//            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             PRODUCT_BUNDLING_RECOM -> mapToProductBundleLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
