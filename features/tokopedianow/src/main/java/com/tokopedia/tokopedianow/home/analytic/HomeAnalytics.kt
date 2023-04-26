@@ -174,6 +174,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NULL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_BUNDLING
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
@@ -303,6 +304,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val PRODUCT_BUNDLING = "product bundling"
         const val BUNDLE_TYPE_SINGLE = "single"
         const val BUNDLE_TYPE_MULTIPLE = "multiple"
+        const val NULL = "null"
     }
 
     object TrackerId {
@@ -1716,7 +1718,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         bundlePriceCut: String,
         position: Int
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
         val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
 
         val promotionsDataLayer = promotionsDataLayer(
@@ -1752,7 +1754,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
         val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
 
         val itemsDataLayer = itemsDataLayer(
@@ -1792,7 +1794,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         bundlePriceCut: String,
         position: Int
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
         val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
 
         val promotionsDataLayer = promotionsDataLayer(
@@ -1828,7 +1830,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
         val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
 
         val promotionsDataLayer = promotionsDataLayer(
@@ -1864,7 +1866,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         packageVariant: String,
         productId: String
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut, packageVariant)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, packageVariant, NULL)
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_GROCERIES,
@@ -1891,8 +1893,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
-        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE, packageVariant)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, packageVariant, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
 
         val itemsDataLayer = itemsDataLayer(
             position = position,
@@ -1932,7 +1934,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         productId: String
     ) {
-        val label = joinDash(bundleId, bundleName, bundlePriceCut)
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
         val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
 
         val promotionsDataLayer = promotionsDataLayer(
