@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
 
 class AffiliateEducationSearchActivity : BaseSimpleActivity() {
 

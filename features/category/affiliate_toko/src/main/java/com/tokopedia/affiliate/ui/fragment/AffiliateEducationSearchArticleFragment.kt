@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.AFFILIATE_SCROLL_DELAY
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -35,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
@@ -68,8 +68,6 @@ class AffiliateEducationSearchArticleFragment :
         )
     }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
     private var affiliateEducationSearchSharedViewModel: AffiliateEducationSearchViewModel? = null
     private var affiliateEducationSearchArticleViewModel: AffiliateEducationSearchArticleViewModel? =
         null
@@ -113,8 +111,6 @@ class AffiliateEducationSearchArticleFragment :
         }
         setObservers()
         setUpRecyclerView()
-//        affiliateEducationSearchArticleViewModel?.fetchSearchData(identifier, affiliateEducationSearchSharedViewModel?.searchKeyword?.value)
-
     }
 
     private fun setUpRecyclerView() {
@@ -146,13 +142,15 @@ class AffiliateEducationSearchArticleFragment :
                 categoryChipAdapter.setVisitables(it)
                 view?.findViewById<RecyclerView>(R.id.rv_education_search_article_category_chip)
                     ?.let { rv ->
-                        rv.post {
-                            rv.smoothScrollToPosition(
-                                categoryChipAdapter.list.indexOfFirst { visitable ->
-                                    (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
-                                }
-                            )
+                        var position = categoryChipAdapter.list.indexOfFirst { visitable ->
+                            (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
                         }
+                        position = maxOf(position, 0)
+                        rv.postDelayed({
+                            rv.smoothScrollToPosition(
+                                position
+                            )
+                        }, AFFILIATE_SCROLL_DELAY)
                     }
             }
         affiliateEducationSearchArticleViewModel?.getTotalCount()?.observe(viewLifecycleOwner) {

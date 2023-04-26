@@ -129,8 +129,8 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationArticleCards.cardsArticle?.data?.cards?.let {
             if (it.isNotEmpty()) {
-                offset = it[0]?.offset.orZero()
-                it[0]?.articles?.mapNotNull { data ->
+                offset = it.firstOrNull()?.offset.orZero()
+                it.firstOrNull()?.articles?.mapNotNull { data ->
                     tempList.add(
                         AffiliateEducationSeeAllUiModel(
                             data,
@@ -138,7 +138,7 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                         )
                     )
                 }
-                offset = it[0]?.offset.orZero() + tempList.size
+                offset = it.firstOrNull()?.offset.orZero() + tempList.size
             }
             educationSearchPageData.value = tempList
         }
