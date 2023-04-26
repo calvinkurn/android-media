@@ -156,6 +156,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
@@ -242,6 +243,7 @@ class TokoNowHomeFragment : Fragment(),
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
+        val bundleWidgetCallback = createBundleWidgetCallback()
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
@@ -267,7 +269,9 @@ class TokoNowHomeFragment : Fragment(),
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
-                claimCouponWidgetListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetListener = createClaimCouponWidgetCallback(),
+                productBundleWidgetListener = bundleWidgetCallback,
+                tokoNowBundleWidgetListener = bundleWidgetCallback
             ),
             differ = HomeListDiffer()
         )
@@ -1930,6 +1934,10 @@ class TokoNowHomeFragment : Fragment(),
 
     private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
         return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
+    private fun createBundleWidgetCallback(): BundleWidgetCallback {
+        return BundleWidgetCallback(viewModelTokoNow, analytics)
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {

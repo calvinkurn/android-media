@@ -172,7 +172,8 @@ class ProductBundleMultipleViewHolder(
         buttonAtc?.setOnClickListener {
             listener?.onMultipleBundleActionButtonClicked(
                 bundleDetail,
-                products
+                products,
+                adapterPosition
             )
         }
     }

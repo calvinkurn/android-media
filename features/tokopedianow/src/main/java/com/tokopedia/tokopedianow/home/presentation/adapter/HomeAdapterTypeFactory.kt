@@ -37,6 +37,7 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowBundleTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
@@ -55,6 +56,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowBundleWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowBundleWidgetViewHolder.TokoNowBundleWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -134,7 +136,9 @@ class HomeAdapterTypeFactory(
     private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
     private val claimCouponWidgetItemListener: HomeClaimCouponWidgetItemListener? = null,
     private val claimCouponWidgetItemTracker: HomeClaimCouponWidgetItemTracker? = null,
-    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null
+    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null,
+    private val productBundleWidgetListener: ProductBundleWidgetListener? = null,
+    private val tokoNowBundleWidgetListener: TokoNowBundleWidgetListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -203,7 +207,7 @@ class HomeAdapterTypeFactory(
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener, productRecommendationBindOocListener)
-            TokoNowBundleWidgetViewHolder.LAYOUT -> TokoNowBundleWidgetViewHolder(view)
+            TokoNowBundleWidgetViewHolder.LAYOUT -> TokoNowBundleWidgetViewHolder(view, productBundleWidgetListener, tokoNowBundleWidgetListener)
             // endregion
 
             // region TokoNow Home Component

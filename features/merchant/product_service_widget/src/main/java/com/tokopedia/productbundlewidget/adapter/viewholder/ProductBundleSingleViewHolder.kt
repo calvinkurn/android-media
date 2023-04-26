@@ -114,7 +114,7 @@ class ProductBundleSingleViewHolder(
             )
         }
 
-        updateActionButtonListener(bundleDetail, product)
+        updateActionButtonListener(bundleDetail, product, adapterPosition)
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
@@ -125,7 +125,7 @@ class ProductBundleSingleViewHolder(
                 selectedBundle,
                 bundle.bundleName
             )
-            updateActionButtonListener(selectedBundle, product)
+            updateActionButtonListener(selectedBundle, product, adapterPosition)
         }
     }
 
@@ -193,10 +193,11 @@ class ProductBundleSingleViewHolder(
 
     private fun updateActionButtonListener(
         bundleDetail: BundleDetailUiModel,
-        product: BundleProductUiModel
+        product: BundleProductUiModel,
+        bundlePosition: Int
     ) {
         buttonAtc?.setOnClickListener {
-            listener?.onSingleBundleActionButtonClicked(bundleDetail, product)
+            listener?.onSingleBundleActionButtonClicked(bundleDetail, product, bundlePosition)
         }
     }
 
