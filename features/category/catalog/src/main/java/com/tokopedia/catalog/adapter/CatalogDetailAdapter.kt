@@ -14,7 +14,6 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogEntryBannerDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.viewholder.components.CatalogEntryBannerViewHolder
 import com.tokopedia.catalog.viewholder.components.CatalogForYouViewHolder

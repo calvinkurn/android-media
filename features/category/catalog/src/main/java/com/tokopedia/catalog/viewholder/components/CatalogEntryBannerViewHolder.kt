@@ -14,23 +14,23 @@ import com.tokopedia.unifyprinciples.Typography
 class CatalogEntryBannerViewHolder(private val view : View,
                                    private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogEntryBannerDataModel>(view) {
 
-    private val parentLayout : ConstraintLayout by lazy {
+    private val parentLayout: ConstraintLayout by lazy {
         view.findViewById(R.id.entry_point_parent)
     }
 
-    private val categoryName : Typography by lazy {
+    private val categoryName: Typography by lazy {
         view.findViewById(R.id.catalog_lib_category_tv)
     }
 
-    private val productCountText : Typography by lazy {
+    private val productCountText: Typography by lazy {
         view.findViewById(R.id.catalog_lib_product_count_tv)
     }
 
-    private val imageLeft : ImageUnify by lazy {
+    private val imageLeft: ImageUnify by lazy {
         view.findViewById(R.id.catalog_image_left)
     }
 
-    private val imageRight : ImageUnify by lazy {
+    private val imageRight: ImageUnify by lazy {
         view.findViewById(R.id.catalog_image_right)
     }
 
@@ -39,7 +39,7 @@ class CatalogEntryBannerViewHolder(private val view : View,
     }
 
     override fun bind(element: CatalogEntryBannerDataModel) {
-        renderText(element.categoryProductCount,element.categoryName)
+        renderText(element.categoryProductCount, element.categoryName)
         renderImages(element.catalogs)
         parentLayout.setOnClickListener {
             catalogDetailListener.entryPointBannerClicked(element.categoryName ?: "")
@@ -47,8 +47,8 @@ class CatalogEntryBannerViewHolder(private val view : View,
     }
 
     private fun renderText(categoryProductCount : String? , category : String?) {
-        productCountText.text = "Temukan ${categoryProductCount} Katalog lainnya"
-        categoryName.text = "di ${category}"
+        productCountText.text =  view.context.getString(R.string.catalog_entry_banner_product_count, categoryProductCount)
+        categoryName.text = view.context.getString(R.string.catalog_entry_banner_title, category)
     }
 
     private fun renderImages(catalogs: ArrayList<ComparisonNewModel>?) {

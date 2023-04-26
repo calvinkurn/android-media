@@ -110,7 +110,7 @@ object CatalogDetailMapper {
 
     private fun mapIntoEntryPointData(name: String, type: String, crudeEntryPointData: List<ComponentData>?): BaseCatalogDataModel {
         val data = crudeEntryPointData?.firstOrNull()
-        return CatalogEntryBannerDataModel(name,type,data?.categoryName,data?.catalogCount,data?.catalogs)
+        return CatalogEntryBannerDataModel(name, type, data?.categoryName, data?.catalogCount, data?.catalogs)
     }
 
     private fun getNewComparisonComponent(
