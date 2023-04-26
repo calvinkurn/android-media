@@ -23,8 +23,18 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.START
 import com.tokopedia.shop.score.common.ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
-import com.tokopedia.shop.score.penalty.domain.response.*
-import com.tokopedia.shop.score.penalty.presentation.model.*
+import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummary
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypes
+import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -39,6 +49,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
             deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
             endDateDetail = itemPenaltyUiModel.endDateDetail,
             prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
+            productName = itemPenaltyUiModel.productName,
             stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -292,6 +303,10 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                         typePenalty = it.typeName,
                         invoicePenalty = it.invoiceNumber,
                         reasonPenalty = it.reason,
+                        productName = mapPenaltyDetailToProductInfo(
+                            it.penaltyTypeGroup,
+                            it.productDetail
+                        ),
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
                         descStatusPenalty = descStatusPenaltyDetail
@@ -398,6 +413,17 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                     )
                 )
             }
+        }
+    }
+
+    private fun mapPenaltyDetailToProductInfo(
+        penaltyTypeGroup: Int,
+        productDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.ProductDetail
+    ): String? {
+        return if (penaltyTypeGroup == ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.PENALTY_TYPE_PRODUCT) {
+            productDetail.name.takeIf { it.isNotBlank() }
+        } else {
+            null
         }
     }
 
