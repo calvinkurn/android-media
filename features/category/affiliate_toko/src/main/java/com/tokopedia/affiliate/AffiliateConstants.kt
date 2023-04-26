@@ -52,6 +52,7 @@ const val ON_BOARDING_TUTORIAL_IMAGE_3 =
     "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"
 
 const val AFFILIATE_SPLASH_TIME = 4000L
+const val AFFILIATE_SCROLL_DELAY = 500L
 
 const val PROJECT_ID = 20
 
