@@ -31,7 +31,7 @@ open class SuggestionUseCase(
         getShopAdsSuggestionUseCase?.execute(
             ::onSuccessGetShopAds,
             ::onErrorGetShopAds,
-            useCaseRequestParams,
+            useCaseRequestParams
         )
     }
 
@@ -51,18 +51,16 @@ open class SuggestionUseCase(
         return suggestionUniverse
     }
 
+    @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
     private suspend fun getSuggestionResponse(): SuggestionResponse {
         suggestionGraphqlUseCase.prepare(
-            getGraphqlQuery(),
+            SuggestionUseCaseQuery(),
             SuggestionResponse::class.java,
-            createGraphqlRequestParams(useCaseRequestParams),
+            createGraphqlRequestParams(useCaseRequestParams)
         )
 
         return suggestionGraphqlUseCase.executeOnBackground()
     }
-
-    @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
-    protected open fun getGraphqlQuery() = SuggestionUseCaseQuery.GQL_QUERY
 
     protected open fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
         val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
