@@ -3,14 +3,11 @@ package com.tokopedia.iris.data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.PowerManager
-import android.telephony.TelephonyManager
 import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceConnectionInfo.isPowerSaveMode
-import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.WhiteList.CM_REALTIME_EVENT_LIST
 import com.tokopedia.iris.data.db.IrisDb
@@ -30,9 +27,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -53,10 +48,14 @@ class TrackingRepository private constructor(
     }
 
     fun getRemoteConfig(): RemoteConfig {
-        if (firebaseRemoteConfig == null) {
-            firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        var remoteConfig = firebaseRemoteConfig
+        if (remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(context)
+            firebaseRemoteConfig = remoteConfig
+            return remoteConfig
+        } else {
+            return remoteConfig
         }
-        return firebaseRemoteConfig!!
     }
 
     private fun getLineDBFlush()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH, 5000)
@@ -135,7 +134,7 @@ class TrackingRepository private constructor(
     }
 
     private fun setRelicLog(queryName: String, queryParam: String) {
-        if (getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
+        if (getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
             val relicMap = mapOf(
                 "queryName" to queryName,
                 "detail" to queryParam

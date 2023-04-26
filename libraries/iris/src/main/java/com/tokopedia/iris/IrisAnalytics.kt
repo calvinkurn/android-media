@@ -7,6 +7,7 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
+import com.tokopedia.iris.model.PerfConfiguration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisWorker
 import com.tokopedia.logger.ServerLogger
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.roundToInt
 
 /**
  * @author okasurya on 10/2/18.
@@ -29,6 +31,7 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
+    private var perfConfiguration: PerfConfiguration? = null
     private var isAlarmOn: Boolean = false
 
     private val gson = Gson()
@@ -70,8 +73,11 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         val irisPerformanceEnable =
             remoteConfig?.getBoolean(RemoteConfigKey.IRIS_PERFORMANCE_TOGGLE, true)
                 ?: true
+        val irisPerformanceConfig =
+            remoteConfig?.getString(RemoteConfigKey.IRIS_PERF_CONFIG, DEFAULT_PERF_CONFIG)
+                ?: ""
 
-        setService(irisConfig, irisEnable, irisPerformanceEnable)
+        setService(irisConfig, irisEnable, irisPerformanceConfig, irisPerformanceEnable)
     }
 
     override fun initialize() {
@@ -82,19 +88,22 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
     }
 
     private fun setService(
-        config: String, isEnabled: Boolean,
+        config: String,
+        isEnabled: Boolean,
+        irisPerfConfig: String,
         isPerformanceEnabled: Boolean
     ) {
         try {
             cache.setEnabled(isEnabled)
             cache.setPerformanceEnabled(isPerformanceEnabled)
-            val confParse = ConfigurationMapper().parse(config)
+            val confParse = ConfigurationMapper.parse(config)
             if (confParse != null) {
                 this.configuration = confParse
             } else {
                 this.configuration = Configuration()
             }
             this.configuration?.isEnabled = isEnabled
+            this.perfConfiguration = ConfigurationMapper.parsePerf(irisPerfConfig)
         } catch (ignored: Exception) {
         }
     }
@@ -129,7 +138,9 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         if (cache.isPerformanceEnabled()) {
             launch(coroutineContext) {
                 try {
-                    saveEventPerformance(irisPerformanceData)
+                    if (isInSamplingArea(perfConfiguration)) {
+                        saveEventPerformance(irisPerformanceData)
+                    }
                 } catch (e: Exception) {
                     ServerLogger.log(
                         Priority.P1,
@@ -137,6 +148,20 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
                         mapOf("type" to "saveEventPerf", "err" to e.toString())
                     )
                 }
+            }
+        }
+    }
+
+    private fun isInSamplingArea(perfConfiguration: PerfConfiguration?): Boolean {
+        return when (val samplingRateInt = perfConfiguration?.samplingRateInt ?: 100) {
+            100 -> {
+                true
+            }
+            0 -> {
+                false
+            }
+            else -> {
+                (0..100).random() < samplingRateInt
             }
         }
     }
