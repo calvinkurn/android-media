@@ -13,15 +13,16 @@ sealed interface NestHeaderType {
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
+        override val onTitleClicked: () -> Unit = {},
         override val subTitle: String = "Sub-title"
-    ) : NestHeaderType, NestHeaderLineAttr
+    ) : NestHeaderType, NestDoubleLineClickableAttr
 
     data class SingleLine(
         override val backButtonEnabled: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title"
-    ) : NestHeaderType, NestHeaderTitleAttr
+    ) : NestHeaderType, NestHeaderSingleLineAttr
 
     data class DoubleLine(
         override val backButtonEnabled: Boolean = true,
@@ -29,7 +30,7 @@ sealed interface NestHeaderType {
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
         override val subTitle: String = "Sub-title"
-    ) : NestHeaderType, NestHeaderLineAttr
+    ) : NestHeaderType, NestDoubleLineAttr
 
     data class Profile(
         override val backButtonEnabled: Boolean = true,
@@ -37,8 +38,9 @@ sealed interface NestHeaderType {
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
         override val subTitle: String = "Sub-title",
-        val icon: String = ""
-    ) : NestHeaderType, NestHeaderLineAttr
+        override val onTitleClicked: () -> Unit = {},
+        val icon: String = "",
+    ) : NestHeaderType, NestDoubleLineClickableAttr
 
     data class Search(
         override val backButtonEnabled: Boolean = true,
@@ -55,11 +57,14 @@ interface NestHeaderAttr {
     val buttonOptions: @Composable () -> Unit
 }
 
-interface NestHeaderTitleAttr: NestHeaderAttr {
+interface NestHeaderSingleLineAttr: NestHeaderAttr {
     val title: String
 }
 
-interface NestHeaderLineAttr: NestHeaderTitleAttr {
+interface NestDoubleLineAttr: NestHeaderSingleLineAttr {
     val subTitle: String
 }
 
+interface NestDoubleLineClickableAttr: NestDoubleLineAttr {
+    val onTitleClicked: () -> Unit
+}

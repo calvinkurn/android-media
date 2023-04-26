@@ -36,7 +36,7 @@ internal fun HeaderDoubleLineType(
             HeaderTitle(title = properties.title)
 
             HeaderSubTitle(
-                subTitle = properties.title,
+                subTitle = properties.subTitle,
                 contentSecondaryColor = contentSecondaryColor
             )
         }

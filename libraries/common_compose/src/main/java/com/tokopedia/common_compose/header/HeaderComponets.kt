@@ -82,9 +82,11 @@ fun HeaderContainer(
  */
 @Composable
 fun HeaderTitle(
+    modifier: Modifier = Modifier,
     title: String
 ) {
     NestTypography(
+        modifier = modifier,
         text = title,
         textStyle = NestTheme.typography.display1.copy(
             fontWeight = FontWeight.Bold
@@ -99,10 +101,12 @@ fun HeaderTitle(
  */
 @Composable
 fun HeaderSubTitle(
+    modifier: Modifier = Modifier,
     subTitle: String,
     contentSecondaryColor: Color
 ) {
     NestTypography(
+        modifier = modifier,
         text = subTitle,
         textStyle = NestTheme.typography.display3.copy(
             color = contentSecondaryColor
