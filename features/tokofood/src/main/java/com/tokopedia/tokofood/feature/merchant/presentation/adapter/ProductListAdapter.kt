@@ -84,10 +84,21 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
 
     fun getProductUiModel(cartId: String): ProductUiModel? {
         return productListItems.find {
-            it.productUiModel.customOrderDetails.any { customOrderDetail ->
-                customOrderDetail.cartId == cartId
-            }
+            it.productUiModel.cartId == cartId ||
+                it.productUiModel.customOrderDetails.any { customOrderDetail ->
+                    customOrderDetail.cartId == cartId
+                }
         }?.productUiModel
+    }
+
+    fun getProductUiModelPositions(productId: String): List<Int> {
+        val dataSetPositions: MutableList<Int> = mutableListOf()
+        productListItems.forEachIndexed { index, productListItem ->
+            if (productListItem.productUiModel.id == productId) {
+                dataSetPositions.add(index)
+            }
+        }
+        return dataSetPositions
     }
 
     fun updateProductUiModel(

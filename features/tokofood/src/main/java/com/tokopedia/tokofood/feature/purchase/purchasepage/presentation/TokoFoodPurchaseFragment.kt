@@ -535,14 +535,16 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                         if (it.source == SOURCE) {
-                            (it.data as? String)?.let { message ->
-                                val toasterMessage = message.takeIf { cartMessage ->
-                                    cartMessage.isNotBlank()
-                                } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
-                                showToaster(toasterMessage, getOkayMessage())
-                            }
-                            viewBinding?.recyclerViewPurchase?.post {
-                                viewModel.refreshPartialCartInformation()
+                            (it.data as? Pair<*, *>)?.let { pair ->
+                                (pair.first as? String)?.let { message ->
+                                    val toasterMessage = message.takeIf { cartMessage ->
+                                        cartMessage.isNotBlank()
+                                    } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
+                                    showToaster(toasterMessage, getOkayMessage())
+                                }
+                                viewBinding?.recyclerViewPurchase?.post {
+                                    viewModel.refreshPartialCartInformation()
+                                }
                             }
                         }
                     }

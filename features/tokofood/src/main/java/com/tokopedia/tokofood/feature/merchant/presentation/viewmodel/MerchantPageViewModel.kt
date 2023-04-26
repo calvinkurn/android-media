@@ -20,7 +20,17 @@ import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodGetMerchantData
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
@@ -29,7 +39,15 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,7 +61,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 class MerchantPageViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
@@ -66,8 +83,7 @@ class MerchantPageViewModel @Inject constructor(
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
 
-    // map of cartId to card positions info <dataset,adapter>
-    val productCartMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
+    var sameProductList: List<String> = listOf()
 
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 
@@ -124,6 +140,7 @@ class MerchantPageViewModel @Inject constructor(
             }
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
+            setProductsWithSameId(result.tokofoodGetMerchantData.categories.flatMap { it.catalogs })
             getMerchantDataResultLiveData.value = Success(result)
             _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
@@ -293,11 +310,11 @@ class MerchantPageViewModel @Inject constructor(
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
             if (entry.value.first().customResponse.variants.isNotEmpty()) {
-                val selectedProductListItem = mutableProductListItems.firstOrNull { productListItem ->
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                if (selectedProductListItem != null) {
-                    with(selectedProductListItem.productUiModel) {
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
                         isAtc = true
                         customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
                     }
@@ -305,11 +322,11 @@ class MerchantPageViewModel @Inject constructor(
             } else {
                 // NON-VARIANT PRODUCT ORDER
                 val selectedProduct = entry.value.first()
-                val selectedProductListItem = mutableProductListItems.firstOrNull { productListItem ->
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                if (selectedProductListItem != null) {
-                    with(selectedProductListItem.productUiModel) {
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
                         isAtc = true
                         cartId = selectedProduct.cartId
                         orderQty = selectedProduct.quantity
@@ -415,6 +432,11 @@ class MerchantPageViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    private fun setProductsWithSameId(productList: List<TokoFoodCatalogDetail>) {
+        val sameProducts = productList.groupingBy { it.id }.eachCount().filter { it.value > Int.ONE }.keys.toList()
+        sameProductList = sameProducts
     }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {

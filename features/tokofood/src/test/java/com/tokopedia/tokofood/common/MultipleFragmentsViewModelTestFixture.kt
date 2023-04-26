@@ -199,15 +199,18 @@ abstract class MultipleFragmentsViewModelTestFixture {
         )
     }
 
-    protected fun getPhoneVerificationAddToCartResponse(): CartGeneralAddToCartDataData {
-        return CartGeneralAddToCartDataData(
-            businessData = listOf(
-                CartListBusinessData(
-                    businessId = TokoFoodCartUtil.getBusinessId(),
-                    nullableCustomResponse = CartListBusinessDataCustomResponse(
-                        bottomSheet = CartListBusinessDataBottomSheet(
-                            isShowBottomSheet = true,
-                            title = "Need phone verification"
+    protected fun getPhoneVerificationAddToCartResponse(): CartGeneralAddToCartData {
+        return CartGeneralAddToCartData(
+            success = 1,
+            data = CartGeneralAddToCartDataData(
+                businessData = listOf(
+                    CartListBusinessData(
+                        businessId = TokoFoodCartUtil.getBusinessId(),
+                        nullableCustomResponse = CartListBusinessDataCustomResponse(
+                            bottomSheet = CartListBusinessDataBottomSheet(
+                                isShowBottomSheet = true,
+                                title = "Need phone verification"
+                            )
                         )
                     )
                 )
