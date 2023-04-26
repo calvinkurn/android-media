@@ -106,6 +106,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                 if (lastTimestampCalled + delay >= currentTimestamp) {
                     return@Runnable
                 }
+                lastTimestampCalled = System.currentTimeMillis()
 
                 val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
 
