@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
+import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
@@ -55,7 +56,13 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getImageUrlUseCase: TokoChatGetImageUseCase
 
     @RelaxedMockK
+    protected lateinit var uploadImageUseCase: TokoChatUploadImageUseCase
+
+    @RelaxedMockK
     protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
+
+    @RelaxedMockK
+    protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
 
     @RelaxedMockK
     protected lateinit var cacheManager: TokoChatCacheManager
@@ -67,7 +74,7 @@ abstract class TokoChatViewModelTestFixture {
     protected val throwableDummy = Throwable("Oops!")
 
     @Before
-    fun setup() {
+    open fun setup() {
         MockKAnnotations.init(this)
         viewModel = spyk(
             TokoChatViewModel(
@@ -81,8 +88,11 @@ abstract class TokoChatViewModelTestFixture {
                 getTokoChatRoomTickerUseCase,
                 getTokoChatOrderProgressUseCase,
                 getImageUrlUseCase,
+                uploadImageUseCase,
                 getNeedConsentUseCase,
                 viewUtil,
+                imageAttachmentExtensionProvider,
+                cacheManager,
                 CoroutineTestDispatchersProvider
             )
         )
