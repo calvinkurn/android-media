@@ -15,25 +15,21 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
-import com.tokopedia.manageaddress.di.ShareAddressComponent
+import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
-import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
-import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
-import com.tokopedia.media.loader.loadImage
 
-class ShareAddressConfirmationBottomSheet :
-    BottomSheetUnify(),
-    HasComponent<ShareAddressComponent> {
+class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
 
     private var binding by autoCleared<BottomsheetShareAddressConfirmationBinding>()
 
@@ -51,12 +47,6 @@ class ShareAddressConfirmationBottomSheet :
         ViewModelProvider(this, viewModelFactory)[ShareAddressConfirmationViewModel::class.java]
     }
 
-    override fun getComponent(): ShareAddressComponent {
-        return DaggerShareAddressComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -65,7 +55,9 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun initInjector() {
-        component.inject(this)
+        DaggerShareAddressComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun hideHeader() {
