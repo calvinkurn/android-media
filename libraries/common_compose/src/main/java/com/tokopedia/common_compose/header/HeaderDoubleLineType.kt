@@ -24,7 +24,7 @@ internal fun HeaderDoubleLineType(
     HeaderContainer {
         HeaderMarginArea()
 
-        if (properties.backButtonEnabled) {
+        if (properties.showBackButton) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
@@ -67,7 +67,7 @@ fun HeaderDoubleLineTypeNonBackButtonPreview() {
     ) {
         HeaderDoubleLineType(
             properties = NestHeaderType.DoubleLine().copy(
-                backButtonEnabled = false
+                showBackButton = false
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600

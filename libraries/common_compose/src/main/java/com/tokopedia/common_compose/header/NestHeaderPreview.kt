@@ -33,7 +33,8 @@ fun NestHeaderSingleLineDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.SingleLine().copy(
-                title = "Header Single Line Default"
+                title = "Header Single Line Default",
+                showBackButton = false
             )
         )
     }
@@ -59,7 +60,8 @@ fun NestHeaderSingleLineTransparentDarkPreview() {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.SingleLine().copy(
-                title = "Header Single Line Transparent"
+                title = "Header Single Line Transparent",
+                showBackButton = false
             )
         )
     }
@@ -67,6 +69,9 @@ fun NestHeaderSingleLineTransparentDarkPreview() {
 
 // endregion
 
+/**
+ * DOUBLE LINE
+ */
 // region double line preview
 @Preview
 @Composable
@@ -86,7 +91,8 @@ fun NestHeaderDoubleLineDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.DoubleLine().copy(
-                title = "Header Double Line Default"
+                title = "Header Double Line Default",
+                showBackButton = false
             )
         )
     }
@@ -112,7 +118,192 @@ fun NestHeaderDoubleLineTransparentDarkPreview() {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.DoubleLine().copy(
-                title = "Header Double Line Transparent"
+                title = "Header Double Line Transparent",
+                showBackButton = false
+            )
+        )
+    }
+}
+// endregion
+
+/**
+ * LOCATION
+ */
+// region location preview
+@Preview
+@Composable
+fun NestHeaderLocationDefaultPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Location().copy(
+                title = "Header Location Default",
+                subTitle = "Pilih Lokasi"
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderLocationDefaultDarkPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Location().copy(
+                title = "Header Location Default",
+                subTitle = "Pilih Lokasi",
+                showBackButton = false
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NestHeaderLocationTransparentPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Location().copy(
+                title = "Header Location Transparent",
+                subTitle = "Pilih Lokasi"
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderLocationTransparentDarkPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Location().copy(
+                title = "Header Location Transparent",
+                subTitle = "Pilih Lokasi",
+                showBackButton = false
+            )
+        )
+    }
+}
+// endregion
+
+/**
+ * PROFILE
+ */
+// region profile preview
+@Preview
+@Composable
+fun NestHeaderProfileDefaultPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Profile().copy(
+                title = "Header Profile Default",
+                subTitle = "Pilih Akun",
+                imageSource = ProfileSource.Url(url = "")
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderProfileDefaultDarkPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Profile().copy(
+                title = "Header Profile Default",
+                subTitle = "Pilih Akun",
+                imageSource = ProfileSource.Url(url = ""),
+                showBackButton = false
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NestHeaderProfileTransparentPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Profile().copy(
+                title = "Header Profile Transparent",
+                subTitle = "Pilih Akun",
+                imageSource = ProfileSource.Url(url = "")
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderProfileTransparentDarkPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Profile().copy(
+                title = "Header Profile Transparent",
+                subTitle = "Pilih Akun",
+                imageSource = ProfileSource.Url(url = ""),
+                showBackButton = false
+            )
+        )
+    }
+}
+// endregion
+
+/**
+ * SEARCH
+ */
+// region search preview
+@Preview
+@Composable
+fun NestHeaderSearchDefaultPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Search().copy(
+                hint = "Cari di Tokopedia"
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderSearchDefaultDarkPreview() {
+    NestTheme {
+        NestHeader(
+            type = NestHeaderType.Search().copy(
+                hint = "Cari di Tokopedia",
+                showBackButton = false
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NestHeaderSearchTransparentPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Search().copy(
+                hint = "Cari di Tokopedia",
+                showBackButton = true
+            )
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NestHeaderSearchTransparentDarkPreview() {
+    NestTheme {
+        NestHeader(
+            variant = NestHeaderVariant.Transparent,
+            type = NestHeaderType.Search().copy(
+                hint = "Cari di Tokopedia",
+                showBackButton = false
             )
         )
     }

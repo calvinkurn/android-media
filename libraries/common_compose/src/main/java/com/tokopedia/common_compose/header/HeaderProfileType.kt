@@ -33,7 +33,7 @@ internal fun HeaderProfileType(
     HeaderContainer {
         HeaderMarginArea()
 
-        if (properties.backButtonEnabled) {
+        if (properties.showBackButton) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
@@ -123,7 +123,7 @@ fun HeaderProfileTypeNonBackButtonPreview() {
             properties = NestHeaderType.Profile().copy(
                 title = "Tokopedia Official",
                 subTitle = "Pilih Akun",
-                backButtonEnabled = false
+                showBackButton = false
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600

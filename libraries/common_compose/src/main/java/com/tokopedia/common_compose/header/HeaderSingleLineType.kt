@@ -19,7 +19,7 @@ internal fun HeaderSingleLineType(
     HeaderContainer {
         HeaderMarginArea()
 
-        if (properties.backButtonEnabled) {
+        if (properties.showBackButton) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
@@ -50,7 +50,7 @@ fun HeaderSingleLineTypeNonBackButtonPreview() {
     ) {
         HeaderSingleLineType(
             properties = NestHeaderType.SingleLine().copy(
-                backButtonEnabled = false
+                showBackButton = false
             ),
             iconColor = NestTheme.colors.NN._900
         )

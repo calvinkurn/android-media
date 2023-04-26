@@ -24,7 +24,7 @@ internal fun HeaderLocationType(
     HeaderContainer {
         HeaderMarginArea()
 
-        if (properties.backButtonEnabled) {
+        if (properties.showBackButton) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
@@ -69,7 +69,7 @@ fun HeaderLocationTypeNonBackButtonPreview() {
     ) {
         HeaderLocationType(
             properties = NestHeaderType.Location().copy(
-                backButtonEnabled = false
+                showBackButton = false
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600

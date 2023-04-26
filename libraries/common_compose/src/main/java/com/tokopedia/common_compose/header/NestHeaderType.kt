@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 
 sealed interface NestHeaderType {
     data class Location(
-        override val backButtonEnabled: Boolean = true,
+        override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
@@ -18,14 +18,14 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestDoubleLineClickableAttr
 
     data class SingleLine(
-        override val backButtonEnabled: Boolean = true,
+        override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title"
     ) : NestHeaderType, NestHeaderSingleLineAttr
 
     data class DoubleLine(
-        override val backButtonEnabled: Boolean = true,
+        override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
@@ -33,7 +33,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestDoubleLineAttr
 
     data class Profile(
-        override val backButtonEnabled: Boolean = true,
+        override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
@@ -43,7 +43,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestDoubleLineClickableAttr
 
     data class Search(
-        override val backButtonEnabled: Boolean = true,
+        override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
         val hint: String = "",
@@ -54,7 +54,7 @@ sealed interface NestHeaderType {
 }
 
 interface NestHeaderAttr {
-    val backButtonEnabled: Boolean
+    val showBackButton: Boolean
     val onBackClicked: () -> Unit
     val buttonOptions: @Composable () -> Unit
 }

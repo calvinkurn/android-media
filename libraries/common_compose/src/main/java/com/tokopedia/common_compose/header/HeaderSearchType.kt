@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.header
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -42,11 +44,14 @@ internal fun HeaderSearchType(
     HeaderContainer {
         HeaderMarginArea()
 
-        if (properties.backButtonEnabled) {
+        if (properties.showBackButton) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
-        SearchTextField(properties = properties, contentSecondaryColor = contentSecondaryColor)
+        SearchTextField(
+            properties = properties,
+            contentSecondaryColor = contentSecondaryColor
+        )
 
         HeaderMarginArea()
     }
@@ -113,10 +118,13 @@ private fun SearchTextFieldLayout(
     textField: @Composable () -> Unit
 ) {
     Box(
-        modifier = Modifier.border(
-            border = BorderStroke(1.dp, color = NestTheme.colors.NN._200),
-            shape = RoundedCornerShape(8.dp)
-        )
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(NestTheme.colors.NN._0)
+            .border(
+                border = BorderStroke(1.dp, color = NestTheme.colors.NN._200),
+                shape = RoundedCornerShape(8.dp)
+            )
     )
 
     Row(
@@ -168,7 +176,7 @@ fun HeaderSearchTypeNonBackButtonPreview() {
             properties = NestHeaderType.Search().copy(
                 hint = "Cari di Tokopedia",
                 value = "",
-                backButtonEnabled = false
+                showBackButton = false
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600
