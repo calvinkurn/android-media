@@ -4,7 +4,6 @@ import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -12,10 +11,10 @@ import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
+import com.tokopedia.tokochat.stub.common.UserSessionStub
 import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -27,7 +26,7 @@ object TokoChatModuleStub {
     @Provides
     @ActivityScope
     fun provideUserSessionInterface(@TokoChatQualifier context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ActivityScope

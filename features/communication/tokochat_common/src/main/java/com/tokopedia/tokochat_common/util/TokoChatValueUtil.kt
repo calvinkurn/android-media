@@ -1,5 +1,9 @@
 package com.tokopedia.tokochat_common.util
 
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+
 object TokoChatValueUtil {
     /**
      * Role Value
@@ -52,4 +56,20 @@ object TokoChatValueUtil {
      * Tokochat Attachment Menu
      */
     const val ATTACHMENT_IMAGE = "Gambar"
+
+    /**
+     * TokoChat Consent
+     */
+    private const val CONSENT_ID_PROD = "365acb97-61a9-44d8-9a68-464dc9465ec7"
+    private const val CONSENT_ID_STAGING = "1f829d46-e138-42b6-8bcc-d74ada5ada04"
+    val consentParam = ConsentCollectionParam(
+        collectionId = getCollectionId()
+    )
+    private fun getCollectionId(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            CONSENT_ID_STAGING
+        } else {
+            CONSENT_ID_PROD
+        }
+    }
 }

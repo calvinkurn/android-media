@@ -7,6 +7,7 @@ import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
@@ -58,6 +59,9 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var uploadImageUseCase: TokoChatUploadImageUseCase
 
     @RelaxedMockK
+    protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
+
+    @RelaxedMockK
     protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
 
     @RelaxedMockK
@@ -85,6 +89,7 @@ abstract class TokoChatViewModelTestFixture {
                 getTokoChatOrderProgressUseCase,
                 getImageUrlUseCase,
                 uploadImageUseCase,
+                getNeedConsentUseCase,
                 viewUtil,
                 imageAttachmentExtensionProvider,
                 cacheManager,

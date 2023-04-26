@@ -64,4 +64,7 @@ object TokoChatAnalyticsConstants {
 
     const val CLICK_RETRY_IMAGE = "click retry image"
     const val TRACKER_ID_43073 = "43073"
+
+    const val CLICK_CLOSE_ON_CHAT_WITH_DRIVER_CONSENT_TICKER = "click close on chat with driver consent bottomsheet"
+    const val TRACKER_ID_42872 = "42872"
 }
