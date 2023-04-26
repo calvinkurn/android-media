@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.header
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -138,4 +139,37 @@ fun HeaderIconBack(
     }
 
     Spacer(modifier = Modifier.width(12.dp))
+}
+
+@Composable
+internal fun HeaderLocationContent(
+    properties: NestDoubleLineClickableAttr,
+    contentSecondaryColor: Color,
+    iconColor: Color
+) {
+    HeaderSubTitle(
+        subTitle = properties.subTitle,
+        contentSecondaryColor = contentSecondaryColor
+    )
+
+    Row(
+        modifier = Modifier.clickable {
+            properties.onTitleClicked.invoke()
+        },
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HeaderTitle(
+            modifier = Modifier.weight(1f, fill = false),
+            title = properties.title
+        )
+
+        Icon(
+            painter = painterResource(id = R.drawable.ic_chevron_down),
+            tint = iconColor,
+            contentDescription = "chevron_down"
+        )
+
+        Spacer(modifier = Modifier)
+    }
 }

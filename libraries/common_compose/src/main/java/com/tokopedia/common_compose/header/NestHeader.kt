@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.header.HeaderDoubleLineType
 import com.tokopedia.common_compose.header.HeaderLocationType
+import com.tokopedia.common_compose.header.HeaderProfileType
 import com.tokopedia.common_compose.header.HeaderSingleLineType
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.header.NestHeaderVariant
@@ -47,11 +48,12 @@ fun NestHeader(
                 contentSecondaryColor = contentSecondaryColor,
                 iconColor = iconColor
             )
-            is NestHeaderType.Profile -> {
-
-            }
+            is NestHeaderType.Profile -> HeaderProfileType(
+                properties = type,
+                contentSecondaryColor = contentSecondaryColor,
+                iconColor = iconColor
+            )
             is NestHeaderType.Search -> {
-
             }
             else -> {
             }
