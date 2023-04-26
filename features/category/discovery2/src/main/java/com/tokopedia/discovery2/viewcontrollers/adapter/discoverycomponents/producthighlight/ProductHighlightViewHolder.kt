@@ -1,10 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
+import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.MultiBannerLayoutBinding
@@ -68,12 +72,31 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
 
     private fun addProductHighlightCard(data: List<DataItem>, compType: String?) {
         val constraintSet = ConstraintSet()
-        val itemWeight = 1.0f
         val properties = mProductHighlightViewModel?.components?.properties
 
-        for ((index, productHighlightItem) in data.withIndex()) {
+        val mutableData = data.toMutableList()
+
+
+        if (compType == DOUBLE && mutableData.size == 1) {
+            mutableData.firstOrNull()?.typeProductHighlightComponentCard = DOUBLE
+            mutableData.add(DataItem(typeProductHighlightComponentCard = DOUBLESINGLEEMPTY))
+        } else if (compType == TRIPLE && mutableData.size == 1) {
+            mutableData.firstOrNull()?.typeProductHighlightComponentCard = TRIPLE
+            mutableData.add(DataItem(typeProductHighlightComponentCard = TRIPLEDOUBLEEMPTY))
+        } else if (compType == TRIPLE && mutableData.size == 2) {
+            mutableData.forEach { dataItem ->
+                dataItem.typeProductHighlightComponentCard = TRIPLE
+            }
+            mutableData.add(DataItem(typeProductHighlightComponentCard = TRIPLESINGLEEMPTY))
+        } else {
+            mutableData.forEach { dataItem ->
+                dataItem.typeProductHighlightComponentCard = compType
+            }
+        }
+
+        for ((index, productHighlightItem) in mutableData.withIndex()) {
             var productHighlightView: ProductHighlightItem
-            val isLastItem = index == data.size - 1
+            val isLastItem = index == mutableData.size - 1
             if (productHighlightItem.parentComponentName.isNullOrEmpty()) {
                 productHighlightItem.parentComponentName = bannerName
             }
@@ -82,12 +105,12 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             }
             if (index == 0) {
                 productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, itemWeight, index,
+                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
                     null, itemView.context, isLastItem, compType
                 )
             } else {
                 productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, itemWeight, index,
+                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
                     productHighlightItemList[index - 1], itemView.context, isLastItem, compType
                 )
             }
@@ -100,7 +123,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
 
     private fun sendImpressionEventForProductHighlight(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoProductHighlightImpression(
-            data
+            data, mProductHighlightViewModel?.components
         )
     }
 

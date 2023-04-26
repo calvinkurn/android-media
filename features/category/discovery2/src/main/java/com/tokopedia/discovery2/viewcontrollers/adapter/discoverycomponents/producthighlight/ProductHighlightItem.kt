@@ -11,27 +11,39 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
+import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.PROMO
+import com.tokopedia.discovery2.Constant.ProductHighlight.SINGLE
+import com.tokopedia.discovery2.Constant.ProductHighlight.STATUS
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.databinding.DiscoItemMultiProductHighlightBinding
 import com.tokopedia.discovery2.databinding.DiscoItemSingleProductHighlightBinding
+import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightDoubleBinding
+import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightSingleBinding
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.mvcwidget.setMargin
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
 
 class ProductHighlightItem(private val productHighlightData: DataItem, private val properties: Properties?,
-                           private val constraintLayout: ConstraintLayout, private val constraintSet: ConstraintSet, private val viewWeight: Float? = Utils.DEFAULT_BANNER_WEIGHT,
+                           private val constraintLayout: ConstraintLayout, private val constraintSet: ConstraintSet,
                            private val index: Int, private val previousProductHighlightItem: ProductHighlightItem?, val context: Context, private val islastItem: Boolean, val compType: String? = null) {
 
     var productHighlightView = View(context)
     var singleBinding: DiscoItemSingleProductHighlightBinding? = null
     var multipleBinding: DiscoItemMultiProductHighlightBinding? = null
+    var emptySingleBinding: EmptyStateProductHighlightSingleBinding? = null
+    var emptyDoubleBinding: EmptyStateProductHighlightDoubleBinding? = null
 
     init {
         addItemConstrains()
@@ -46,9 +58,8 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
         constraintSet.constrainWidth(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.WRAP_CONTENT)
 
-
-        if (viewWeight != null) {
-            constraintSet.setHorizontalWeight(productHighlightView.id, viewWeight)
+        if (productHighlightData.typeProductHighlightComponentCard == "tripleDoubleEmpty") {
+            constraintSet.setHorizontalWeight(productHighlightView.id, 2.0f)
         } else {
             constraintSet.setHorizontalWeight(productHighlightView.id, 1.0f)
         }
@@ -82,15 +93,11 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
 
     private fun setDataInCard() {
 
-        if (compType == "single") {
+        if (productHighlightData.typeProductHighlightComponentCard == SINGLE) {
             singleBinding = DiscoItemSingleProductHighlightBinding.inflate(LayoutInflater.from(context))
             productHighlightView = singleBinding?.root as ConstraintLayout
             with(singleBinding) {
                 if (this != null) {
-
-                    if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = "Terjual Habis"
-                    }
 
                     bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
 
@@ -134,10 +141,10 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                     }
 
                     productHighlightData.labelsGroupList?.forEach { labels ->
-                        if (labels.position == "status") {
+                        if (labels.position == STATUS) {
                             phImageTextBottom.visible()
                             phImageTextBottom.text = labels.title
-                        } else if (labels.position == "promo") {
+                        } else if (labels.position == PROMO) {
                             if (labels.type.contains("green", ignoreCase = true)) {
                                 phProductDiscount.backgroundTintList = ColorStateList.valueOf(
                                     ContextCompat.getColor(
@@ -182,6 +189,17 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                     }
                 }
             }
+        } else if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY || productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
+            emptySingleBinding = EmptyStateProductHighlightSingleBinding.inflate(LayoutInflater.from(context))
+            productHighlightView = emptySingleBinding?.root as CardUnify2
+            with(emptySingleBinding) {
+                if (this != null) {
+                    setEmptyStateMargin(this)
+                }
+            }
+        } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLEDOUBLEEMPTY) {
+            emptyDoubleBinding = EmptyStateProductHighlightDoubleBinding.inflate(LayoutInflater.from(context))
+            productHighlightView = emptyDoubleBinding?.root as CardUnify2
         } else {
             multipleBinding = DiscoItemMultiProductHighlightBinding.inflate(LayoutInflater.from(context))
             productHighlightView = multipleBinding?.root as ConstraintLayout
@@ -232,10 +250,10 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                     setMargin(this)
 
                     productHighlightData.labelsGroupList?.forEach { labels ->
-                        if (labels.position == "status") {
+                        if (labels.position == STATUS) {
                             phImageTextBottom.visible()
                             phImageTextBottom.text = labels.title
-                        } else if (labels.position == "promo") {
+                        } else if (labels.position == PROMO) {
                             if (labels.type.contains("green", ignoreCase = true)) {
                                 phProductDiscount.backgroundTintList = ColorStateList.valueOf(
                                     ContextCompat.getColor(
@@ -285,16 +303,28 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
     }
 
     private fun setMargin(discoItemMultiProductHighlightBinding: DiscoItemMultiProductHighlightBinding) {
-        if (compType == "double") {
+        if (productHighlightData.typeProductHighlightComponentCard == DOUBLE) {
             with(discoItemMultiProductHighlightBinding) {
                 productHighlightImage.layoutParams.width = getScreenWidth() / 2 - context.resources.getDimensionPixelSize(R.dimen.dp_36)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_56), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
-        } else if (compType == "triple") {
+        } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLE) {
             with(discoItemMultiProductHighlightBinding) {
                 guideline.setGuidelinePercent(0.4f)
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
+            }
+        }
+    }
+
+    private fun setEmptyStateMargin(emptyStateProductHighlightSingleBinding: EmptyStateProductHighlightSingleBinding) {
+        if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY) {
+            with(emptyStateProductHighlightSingleBinding) {
+                space.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.dp_8)
+            }
+        } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
+            with(emptyStateProductHighlightSingleBinding) {
+                space.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.dp_12)
             }
         }
     }

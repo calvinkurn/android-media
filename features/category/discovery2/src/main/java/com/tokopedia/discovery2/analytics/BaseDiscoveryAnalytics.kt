@@ -171,6 +171,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>, totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
     open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
-    open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>) {}
+    open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>,components: ComponentsItem?) {}
     open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {}
 }

@@ -2633,19 +2633,18 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     // product highlight will use same tracker as Product card thats why trackerId is also same.
-    override fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>) {
+    override fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>,components: ComponentsItem?) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        productHighlightData.forEachIndexed { index, it ->
-            val productTypeName = getProductName(it.typeProductCard)
+        productHighlightData.forEach { it ->
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = convertRupiahToInt(it.price ?: "")
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
-            productMap[KEY_POSITION] = index + 1
-            productMap[LIST] = it.gtmItemName?.replace("#POSITION",(index+1).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
+            productMap[KEY_POSITION] = (components?.position ?: 0) + 1
+            productMap[LIST] = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -2681,7 +2680,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val listMap = HashMap<String, Any>()
             var productItemList = ""
             productHighlightData.let {
-                val productTypeName = getProductName(it.typeProductCard)
                 productItemList = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
                 productCardImpressionLabel = EMPTY_STRING
                 listMap[KEY_NAME] = it.name.toString()

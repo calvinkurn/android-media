@@ -565,7 +565,9 @@ data class DataItem(
 
     var wishlistUrl: String? = "",
 
-    var itemWeight: Float? = 1.0f
+    var itemWeight: Float? = 1.0f,
+
+    var typeProductHighlightComponentCard: String? = "",
 ) {
     val leftMargin: Int
         get() {

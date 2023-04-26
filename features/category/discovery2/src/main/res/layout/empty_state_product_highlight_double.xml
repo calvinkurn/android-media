@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_highlight_card_image_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    app:cardElevation="@dimen/unify_space_2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN50">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/empty_state_product_highlight_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:lineHeight="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:text="Yuk, cari lagi produk paling oke!"
+            android:lines="2"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <androidx.legacy.widget.Space
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/empty_state_product_highlight_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            android:id="@+id/content_card_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_32"
+            android:contentDescription="@string/content_card_image"
+            android:scaleType="fitEnd"
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/space"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            app:imageDpiSupportType="singleDpi"
+            app:completeUrl="https://images.tokopedia.net/img/discovery2/drawable/ic_empty_content_card.png"
+            app:unify_image_type="rect" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>
