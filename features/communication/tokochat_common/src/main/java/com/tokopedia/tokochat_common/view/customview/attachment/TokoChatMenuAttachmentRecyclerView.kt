@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat_common.view.customview.attachment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,15 +19,19 @@ import com.tokopedia.tokochat_common.view.uimodel.TokoChatAttachmentType
 class TokoChatMenuAttachmentRecyclerView : RecyclerView {
 
     private val manager = GridLayoutManager(
-        context, getTabCount(), GridLayoutManager.HORIZONTAL, false)
+        context,
+        getTabCount(),
+        GridLayoutManager.HORIZONTAL,
+        false
+    )
     private val adapter = AttachmentMenuAdapter()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
-            context,
-            attrs,
-            defStyle
+        context,
+        attrs,
+        defStyle
     )
 
     init {
@@ -35,6 +40,7 @@ class TokoChatMenuAttachmentRecyclerView : RecyclerView {
         setAdapter(adapter)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateAttachmentMenu(
         listener: TokoChatAttachmentMenuListener,
         showImageAttachment: Boolean = false
