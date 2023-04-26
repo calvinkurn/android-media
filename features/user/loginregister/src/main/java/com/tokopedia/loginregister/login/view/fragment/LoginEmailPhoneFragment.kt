@@ -90,6 +90,7 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.di.LoginComponent
+import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
@@ -107,7 +108,6 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -369,7 +369,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         initObserver()
         prepareView()
         setupToolbar()
-        checkSeamless()
+        checkLoginOption()
+
         prepareArgData()
         viewModel.discoverLogin()
 
@@ -404,6 +405,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             viewModel.checkSeamlessEligiblity()
         } else {
             hideLoadingOverlay()
+        }
+    }
+
+    private fun checkLoginOption() {
+        if (isEnableDirectBiometric()) {
+            viewModel.checkLoginOption()
+            showLoadingOverlay()
+        } else {
+            checkFingerprintAvailability()
+            checkSeamless()
         }
     }
 
@@ -587,14 +598,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             onSuccessLogin()
         }
+
+        viewModel.getLoginOption.observe(viewLifecycleOwner) {
+            handleLoginOption(it)
+        }
+    }
+
+    private fun handleLoginOption(data: LoginOption) {
+        if (data.isEnableSeamless) routeToGojekSeamlessPage()
+        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData)
+        hideLoadingOverlay()
     }
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
-            if (isEnableDirectBiometric()) {
-                hideLoadingOverlay()
-            }
-
             if (isEnableFingerprint && data.isRegistered) {
                 enableFingerprint()
             } else {
@@ -702,8 +719,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             socmedBottomSheet?.show(parentFragmentManager, context?.resources?.getString(R.string.bottom_sheet_show))
         }
 
-        checkFingerprintAvailability()
-
         viewBinding?.loginInputView?.buttonContinue?.text = getString(R.string.next)
         viewBinding?.loginInputView?.buttonContinue?.contentDescription = getString(R.string.content_desc_register_btn)
         viewBinding?.loginInputView?.buttonContinue?.setOnClickListener {
@@ -790,11 +805,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+//    private fun checkFingerprintAvailability() {
+//        if (!GlobalConfig.isSellerApp()) {
+//            if (isEnableDirectBiometric()) {
+//                showLoadingOverlay()
+//            } else {
+//                viewModel.registerCheckFingerprint()
+//
+//            }
+//        }
+//    }
+
     private fun checkFingerprintAvailability() {
         if (!GlobalConfig.isSellerApp()) {
-            if (isEnableDirectBiometric()) {
-                showLoadingOverlay()
-            }
             viewModel.registerCheckFingerprint()
         }
     }
@@ -821,7 +844,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun isEnableDirectBiometric(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
+        return true
     }
 
     private fun setLeftDrawableForFingerprint() {
