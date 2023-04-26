@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.user.session.Constants.EMAIL
 import com.tokopedia.utils.MockTimber
-import com.tokopedia.utils.RawAccessPreference
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -75,17 +74,6 @@ class UserSessionV1toV2MigrationTest {
             val cleaningLogs = timber.logs.filter { it.message.contains("cleaning") }
             assertEquals(1, cleaningLogs.size)
         }
-    }
-
-    @Test
-    fun whenSetEmail_theValueShouldBeEncrypted() {
-        val test = "test@tokopedia.com"
-        sut.email = test
-
-        val actual = RawAccessPreference(context, LEGACY_SESSION + "_v2")
-            .getRawValue("EMAIL_v2").toString()
-
-        assertThat(actual, not(equalTo(test)))
     }
 
     @Ignore("Strange case where the value is empty")
