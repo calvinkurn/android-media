@@ -18,7 +18,7 @@ class AffiliateEducationSeeAllActivity :
         fun createIntent(
             context: Context,
             pageType: String?,
-            categoryId: String?
+            categoryId: String?,
         ): Intent {
             val intent = Intent(context, AffiliateEducationSeeAllActivity::class.java)
             intent.putExtra(PARAM_PAGE_TYPE, pageType)
@@ -40,7 +40,7 @@ class AffiliateEducationSeeAllActivity :
     private fun getAffiliateEducationSeeAllFragment(): Fragment {
         return AffiliateEducationSeeAllFragment.newInstance(
             intent?.getStringExtra(PARAM_PAGE_TYPE),
-            intent?.getStringExtra(PARAM_CATEGORY_ID),
+            intent?.getStringExtra(PARAM_CATEGORY_ID)
         )
     }
 

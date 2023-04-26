@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProd
 object RepurchaseProductMapper {
     private fun mapRepurchaseProductToProductCard(
         product: RepurchaseProduct
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
         imageUrl = product.imageUrl,
         minOrder = product.minOrder,

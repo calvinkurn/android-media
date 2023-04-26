@@ -10,6 +10,14 @@ class TokoChatAnalytics @Inject constructor() {
     private val tracking: ContextAnalytics by lazy(LazyThreadSafetyMode.NONE) { TrackApp.getInstance().gtm }
     private val pendingTracker: ArrayList<MutableMap<String, String>> = arrayListOf()
 
+    fun getStringRole(isSender: Boolean): String {
+        return if (isSender) {
+            TokoChatAnalyticsConstants.BUYER
+        } else {
+            TokoChatAnalyticsConstants.DRIVER
+        }
+    }
+
     fun clickCallButtonFromChatRoom(
         orderStatus: String,
         orderId: String,
@@ -279,6 +287,41 @@ class TokoChatAnalytics @Inject constructor() {
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
             TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderStatus - $orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39079,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickAddImageAttachment(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_ADD_IMAGE_ATTACHMENT,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43070,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickRetryImage(
+        attachmentId: String,
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_RETRY_IMAGE,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43073,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
         )

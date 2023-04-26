@@ -39,4 +39,6 @@
     <string name="tokochat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
     <string name="tokochat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
 
+    <string name="tokochat_retry">Coba Lagi</string>
+
 </resources>
