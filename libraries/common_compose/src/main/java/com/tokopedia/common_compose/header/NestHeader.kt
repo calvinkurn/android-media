@@ -1,11 +1,10 @@
 package com.tokopedia.common_compose.principles
 
-import android.util.Log
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.header.HeaderDoubleLineType
 import com.tokopedia.common_compose.header.HeaderSingleLineType
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.header.NestHeaderVariant
@@ -33,23 +32,18 @@ fun NestHeader(
     ) {
         when (type) {
             is NestHeaderType.SingleLine -> HeaderSingleLineType(
-                properties = type, iconColor = iconColor
+                properties = type,
+                iconColor = iconColor
             )
-            else -> {
 
+            is NestHeaderType.DoubleLine -> HeaderDoubleLineType(
+                properties = type,
+                contentSecondaryColor = contentSecondaryColor,
+                iconColor = iconColor
+            )
+
+            else -> {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun NestHeaderPreview() {
-    NestHeader(
-        type = NestHeaderType.SingleLine().copy(
-            onBackClicked = {
-                Log.d("preview","click")
-            }
-        )
-    )
 }

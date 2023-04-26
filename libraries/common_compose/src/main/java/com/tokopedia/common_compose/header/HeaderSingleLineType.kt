@@ -18,14 +18,15 @@ internal fun HeaderSingleLineType(
     iconColor: Color
 ) {
     HeaderContainer {
-
-        HeaderMarginStart()
+        HeaderMarginArea()
 
         if (properties.backButtonEnabled) {
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
         HeaderTitle(title = properties.title)
+
+        HeaderMarginArea()
     }
 }
 
@@ -33,7 +34,7 @@ internal fun HeaderSingleLineType(
 @Composable
 fun HeaderSingleLineTypePreview() {
     Surface(
-        contentColor = NestTheme.colors.NN._950,
+        contentColor = NestTheme.colors.NN._950
     ) {
         Column {
             HeaderSingleLineType(
@@ -48,7 +49,7 @@ fun HeaderSingleLineTypePreview() {
 @Composable
 fun HeaderSingleLineTypeNonBackButtonPreview() {
     Surface(
-        contentColor = NestTheme.colors.NN._950,
+        contentColor = NestTheme.colors.NN._950
     ) {
         Column {
             HeaderSingleLineType(

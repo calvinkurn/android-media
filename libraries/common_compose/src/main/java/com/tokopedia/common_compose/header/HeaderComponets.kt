@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestTypography
@@ -55,8 +56,10 @@ internal fun getHeaderIconColor(variant: NestHeaderVariant) = when (variant) {
 }
 
 @Composable
-fun HeaderMarginStart() {
-    Spacer(modifier = Modifier.width(16.dp))
+fun HeaderMarginArea(
+    modifier: Modifier = Modifier
+) {
+    Spacer(modifier = modifier.width(16.dp))
 }
 
 @Composable
@@ -85,7 +88,9 @@ fun HeaderTitle(
         text = title,
         textStyle = NestTheme.typography.display1.copy(
             fontWeight = FontWeight.Bold
-        )
+        ),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -101,7 +106,9 @@ fun HeaderSubTitle(
         text = subTitle,
         textStyle = NestTheme.typography.display3.copy(
             color = contentSecondaryColor
-        )
+        ),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
