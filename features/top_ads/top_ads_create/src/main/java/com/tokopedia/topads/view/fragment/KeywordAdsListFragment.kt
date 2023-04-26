@@ -341,7 +341,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
                     searchBar?.searchBarTextField?.text.toString()
             ))
-            manualAdTxt?.setTextColorCompat(R.color.Unify_NN700)
+            manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_NN700)
             manualAd?.setOnClickListener {
                 addManualKeyword()
                 searchBar?.searchBarTextField?.text?.clear()
@@ -350,7 +350,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 manualAdTxt?.visible()
                 dividerManual?.visible()
                 manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_already_exists_alert_msg)
-                manualAdTxt?.setTextColorCompat(R.color.Unify_RN500)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
             }
     }
 
@@ -404,12 +404,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 manualAdTxt?.visible()
                 dividerManual?.visible()
                 manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_max_length_alert_msg)
-                manualAdTxt?.setTextColorCompat(R.color.Unify_RN500)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
             } else if(!Regex(VALID_CHARACTERS_REGEX).matches(searchBar?.searchBarTextField?.text.toString())){
                 manualAdTxt?.visible()
                 dividerManual?.visible()
                 manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_invalid_characters_alert_msg)
-                manualAdTxt?.setTextColorCompat(R.color.Unify_RN500)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
             } else {
                 setSearchLayout()
                 viewModel.searchKeyword(
