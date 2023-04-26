@@ -115,6 +115,7 @@ class AffiliateEducationLandingPage :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setSearchListener(searchBar)
+        eduViewModel?.getEducationLandingPageData()
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
                 AffiliateAdapter(
@@ -176,9 +177,9 @@ class AffiliateEducationLandingPage :
         }
     }
 
-    override fun onSeeMoreClick(pageType: String, categoryId: String) {
+    override fun onSeeMoreClick(pageType: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, null))
         }
     }
 
