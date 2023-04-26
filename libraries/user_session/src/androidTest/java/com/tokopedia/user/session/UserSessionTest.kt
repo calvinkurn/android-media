@@ -9,6 +9,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
+import timber.log.Timber
 
 class UserSessionTest {
 
@@ -28,6 +29,17 @@ class UserSessionTest {
             context.applicationContext.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE)
         sharedPrefs2.edit().clear().commit()
         sut = UserSession(context)
+    }
+
+    @Test
+    fun setAndGetStressTest() {
+        val start = System.currentTimeMillis()
+        repeat(1_000) {
+            sut.email = "foo-$it@bar.com"
+            sut.name = "Foo bar $it"
+            Timber.d("Getting user session, name: ${sut.name} email: ${sut.email}")
+        }
+        Timber.i("Took ${System.currentTimeMillis() - start} ms")
     }
 
     @Test
