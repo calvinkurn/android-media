@@ -13,3 +13,10 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
+
+project.ext {
+    artifactId = 'gqlKspProcessor'
+    groupId = 'com.tokopedia.gqlquery_ksp_processor'
+    versionName = "0.0.1"
+    artifactName = "gqlKspProcessor"
+}
