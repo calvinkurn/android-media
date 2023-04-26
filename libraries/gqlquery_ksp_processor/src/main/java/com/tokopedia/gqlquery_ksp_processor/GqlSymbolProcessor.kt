@@ -23,8 +23,6 @@ class GqlSymbolProcessor(
 ) : SymbolProcessor {
 
     companion object {
-        private const val QUERY_NAME_INDEX = 0
-        private const val QUERY_VALUE_INDEX = 1
         private const val GROUP = 1
         private const val regexQueryList = "(?:\\{|[}]|\\W )(?: *?|\\t*?)*(\\w*?|_*?) *?\\("
         private const val regexOpName = """(\w*?|_*?) *?\("""
@@ -57,7 +55,9 @@ class GqlSymbolProcessor(
 
             val packageName = classDeclaration.packageName.asString()
 
-            val annotation = classDeclaration.annotations.first()
+            val annotation = classDeclaration.annotations.first { annotation ->
+                annotation.shortName.asString() == GqlQuery::class.simpleName
+            }
             generateFile(packageName, annotation, dependencies)
         }
 
@@ -71,7 +71,9 @@ class GqlSymbolProcessor(
 
             val packageName = function.packageName.asString()
 
-            val annotation = function.annotations.first()
+            val annotation = function.annotations.first { annotation ->
+                annotation.shortName.asString() == GqlQuery::class.simpleName
+            }
 
             generateFile(packageName, annotation, dependencies)
         }
@@ -82,8 +84,12 @@ class GqlSymbolProcessor(
         annotation: KSAnnotation,
         dependencies: Dependencies
     ) {
-        val queryName = annotation.arguments[QUERY_NAME_INDEX].value as String
-        val queryValue = annotation.arguments[QUERY_VALUE_INDEX].value as String
+        val queryName = annotation.arguments.first {
+            it.name?.asString() == GqlQuery::queryName.name
+        }.value as String
+        val queryValue = annotation.arguments.first {
+            it.name?.asString() == GqlQuery::queryValue.name
+        }.value as String
 
         val outputStream: OutputStream = codeGenerator.createNewFile(
             dependencies = dependencies,
