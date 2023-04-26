@@ -710,7 +710,7 @@ object DynamicProductDetailMapper {
         }
     }
 
-    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+    private fun isBebasOngkir(type: Int) = type != BebasOngkirType.NON_BO.value
 
     private fun mapBebasOngkirType(type: Int): String {
         return when (type) {
