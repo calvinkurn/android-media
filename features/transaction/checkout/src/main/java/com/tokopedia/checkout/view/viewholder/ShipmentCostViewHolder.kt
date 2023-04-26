@@ -222,7 +222,7 @@ class ShipmentCostViewHolder(
             mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
             mTickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    shipmentAdapterActionListener.refetchPlatformFee()
+                    shipmentAdapterActionListener.checkPlatformFee()
                 }
 
                 override fun onDismiss() { }

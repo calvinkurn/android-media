@@ -160,7 +160,5 @@ public interface ShipmentAdapterActionListener {
 
     void checkPlatformFee();
 
-    void refetchPlatformFee();
-
     void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel);
 }

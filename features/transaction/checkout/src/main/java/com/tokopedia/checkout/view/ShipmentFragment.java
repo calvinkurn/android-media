@@ -4322,16 +4322,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void refetchPlatformFee() {
-        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
-        platformFeeModel.setLoading(true);
-        shipmentAdapter.setPlatformFeeData(platformFeeModel);
-        showLoaderTotalPayment();
-        updateCost();
-        getPaymentFee();
-    }
-
-    @Override
     public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel) {
         View childView = View.inflate(getContext(), R.layout.bottom_sheet_platform_fee_info, null);
         Typography tvPlatformFeeInfo = childView.findViewById(R.id.tv_platform_fee_info);
