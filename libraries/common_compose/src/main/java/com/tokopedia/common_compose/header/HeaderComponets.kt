@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.header
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -10,14 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
@@ -134,18 +139,15 @@ internal fun HeaderIconBack(
     iconColor: Color,
     onClick: () -> Unit
 ) {
-    IconButton(
+    Icon(
         modifier = Modifier
             .height(24.dp)
-            .width(24.dp),
-        onClick = onClick
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.iconunify_arrow_back),
-            tint = iconColor,
-            contentDescription = "BackButton"
-        )
-    }
+            .width(24.dp)
+            .rippleClickable(onClick = onClick),
+        painter = painterResource(id = R.drawable.iconunify_arrow_back),
+        tint = iconColor,
+        contentDescription = "BackButton"
+    )
 
     Spacer(modifier = Modifier.width(12.dp))
 }
@@ -186,6 +188,20 @@ internal fun HeaderLocationContent(
 /**
  * Header Options Button
  */
+fun Modifier.rippleClickable(
+    radius: Dp = 16.dp,
+    enable: Boolean = true,
+    onClick: () -> Unit
+): Modifier = composed {
+    this.clickable(
+        onClick = onClick,
+        enabled = enable,
+        role = Role.Button,
+        interactionSource = remember { MutableInteractionSource() },
+        indication = rememberRipple(bounded = false, radius = radius)
+    )
+}
+
 @Composable
 internal fun HeaderOptionsButton(
     optionsButton: List<HeaderOptionals>,
@@ -204,32 +220,25 @@ internal fun HeaderOptionsButton(
         optionsButton.forEach { options ->
             when (options) {
                 is HeaderActionButton -> {
-                    IconButton(
+                    HeaderIcon(
                         modifier = Modifier
                             .size(24.dp)
-                            .tag(options.contentDescription),
-                        onClick = { options.onClicked.invoke() }
-                    ) {
-                        HeaderIcon(
-                            imageSource = options.icon,
-                            contentDescription = options.contentDescription,
-                            iconColor = iconColor
-                        )
-                    }
+                            .tag(options.contentDescription)
+                            .rippleClickable(onClick = options.onClicked),
+                        imageSource = options.icon,
+                        contentDescription = options.contentDescription,
+                        iconColor = iconColor
+                    )
                 }
                 is HeaderTextButton -> {
-                    IconButton(
-                        modifier = Modifier.tag(options.contentDescription),
-                        onClick = { options.onClicked.invoke() }
-                    ) {
-                        NestTypography(
-                            text = options.text,
-                            textStyle = NestTheme.typography.display2.copy(
-                                color = options.color,
-                                fontWeight = FontWeight.Bold
-                            )
+                    NestTypography(
+                        modifier = Modifier.rippleClickable(onClick = options.onClicked),
+                        text = options.text,
+                        textStyle = NestTheme.typography.display2.copy(
+                            color = options.color,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
+                    )
                 }
                 else -> {
                     // no-ops
@@ -237,4 +246,17 @@ internal fun HeaderOptionsButton(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun HeaderOptionsButtonPreview() {
+    HeaderOptionsButton(
+        optionsButton = listOf(
+            HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_bell))),
+            HeaderTextButton(text = "Action"),
+            HeaderTextButton(text = "Add")
+        ),
+        iconColor = NestTheme.colors.NN._900
+    )
 }
