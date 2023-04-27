@@ -405,20 +405,22 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 dividerManual?.visible()
                 manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_max_length_alert_msg)
                 manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
+                manualAd?.gone()
             } else if(!Regex(VALID_CHARACTERS_REGEX).matches(searchBar?.searchBarTextField?.text.toString())){
                 manualAdTxt?.visible()
                 dividerManual?.visible()
                 manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_invalid_characters_alert_msg)
                 manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
+                manualAd?.gone()
             } else {
+                manualAdTxt?.gone()
+                dividerManual?.gone()
                 setSearchLayout()
                 viewModel.searchKeyword(
                     searchBar?.searchBarTextField?.text.toString(),
                     getProductIds(),
                     ::showSearchResult
                 )
-                manualAdTxt?.gone()
-                dividerManual?.gone()
             }
         }
     }
