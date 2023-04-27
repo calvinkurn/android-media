@@ -164,7 +164,7 @@ class NotificationViewModel @Inject constructor(
                 if (!hasFilter() && role == RoleType.BUYER) {
                     loadTopAdsBannerData()
                 }
-                if (role == RoleType.AFFILIATE) {
+                if (role!! == RoleType.AFFILIATE) {
                     loadAffiliateEducationArticles()
                 }
             },
@@ -474,8 +474,8 @@ class NotificationViewModel @Inject constructor(
                         }
                     }
                 }
-            } catch (e: Exception) {
-                Timber.e(e)
+            } catch (throwable: Throwable) {
+                Timber.e(throwable)
             }
         }
     }

@@ -316,6 +316,46 @@ class NotificationViewModelTest {
     }
 
     @Test
+    fun `loadFirstPageNotification as affiliate should return data properly even without education articles`() {
+        // given
+        val expectedThrowable = Throwable("Oops!")
+        val notifResponse = NotifcenterDetailMapper().mapFirstPage(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
+        )
+
+        val role = RoleType.AFFILIATE
+        viewModel.reset() // filter id
+
+        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } throws expectedThrowable
+
+        every {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
+            )
+        } answers {
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(notifResponse)
+        }
+
+        // when
+        viewModel.loadFirstPageNotification(role)
+
+        // then
+        verify {
+            notificationItemsObserver.onChanged(Success(notifResponse))
+        }
+        Assert.assertEquals(
+            null,
+            viewModel.affiliateEducationArticle.value
+        )
+    }
+
+    @Test
     fun `loadFirstPageNotification should throw the Fail state`() {
         // given
         val expectedValue = Throwable("")
