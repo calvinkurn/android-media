@@ -75,8 +75,8 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         // When
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
         )
 
         // Then
@@ -144,8 +144,8 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         // When
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
         )
 
         // Then
@@ -211,8 +211,8 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         // When
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-            recipientAddressModel, isForceReload, skipMvc, "", emptyList()
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
         )
 
         // Then

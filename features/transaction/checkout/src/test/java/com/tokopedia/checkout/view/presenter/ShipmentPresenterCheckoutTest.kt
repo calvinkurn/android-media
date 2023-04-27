@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.checkout.R
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
@@ -109,7 +108,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         val mockContext = mockk<FragmentActivity>()
         val errorMessage = "error"
-        every { mockContext.getString(R.string.message_error_checkout_empty) } returns errorMessage
+        every { mockContext.getString(any()) } returns errorMessage
         every { view.activity } returns mockContext
 
         // When
@@ -312,6 +311,20 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
             ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 //        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
 //        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "-0-301643",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "-0-301643",
+                        cartStringOrder = "239594-0-301643"
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(
+                    selectedCourier = CourierItemData()
+                )
+            )
+        )
         presenter.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }

@@ -421,7 +421,6 @@ class ShipmentFragment :
         shipmentPresenter.deviceId = deviceId
         shipmentPresenter.checkoutLeasingId = checkoutLeasingId
         shipmentPresenter.isPlusSelected = isPlusSelected
-        shipmentPresenter.checkoutPageSource = checkoutPageSource
         shipmentPresenter.processInitialLoadCheckoutPage(
             isReloadData = false,
             skipUpdateOnboardingState = true,
@@ -3019,10 +3018,10 @@ class ShipmentFragment :
             shipmentDetailData.isTradein = isTradeIn
             shipmentPresenter.processGetCourierRecommendation(
                 shipperId, spId, itemPosition, shipmentDetailData,
-                shipmentCartItemModel, shopShipmentList, true,
+                shipmentCartItemModel, shopShipmentList,
                 shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                 shipmentCartItemModel.cartStringGroup, isTradeInDropOff,
-                shipmentAdapter.addressShipmentData, false, false,
+                shipmentAdapter.addressShipmentData, false,
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
                     shipmentPresenter.getGroupProductsForRatesRequest(

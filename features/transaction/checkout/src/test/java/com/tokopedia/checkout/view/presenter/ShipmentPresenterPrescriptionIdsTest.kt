@@ -256,19 +256,19 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds)
     }
 
-//    @Test
-//    fun `GIVEN failed prepare epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
-//        // Given
-//        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-//            (secondArg() as (Throwable) -> Unit).invoke(Throwable())
-//        }
-//
-//        // When
-//        presenter.fetchEpharmacyData()
-//
-//        // Then
-//        assertEquals(null, presenter.uploadPrescriptionUiModel)
-//    }
+    @Test
+    fun `GIVEN failed prepare epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (secondArg() as (Throwable) -> Unit).invoke(Throwable())
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
 
     @Test
     fun `GIVEN null epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {

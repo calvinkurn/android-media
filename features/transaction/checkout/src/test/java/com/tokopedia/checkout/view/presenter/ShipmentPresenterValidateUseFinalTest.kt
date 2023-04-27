@@ -509,4 +509,21 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         }
         testSubscriber.assertCompleted()
     }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request THEN should return with correct number of order`() {
+        // Given
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "123", cartStringOrder = "1"), CartItemModel(cartStringGroup = "123", cartStringOrder = "2"))
+        )
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(2, couponListRecommendationRequest.orders.size)
+    }
 }

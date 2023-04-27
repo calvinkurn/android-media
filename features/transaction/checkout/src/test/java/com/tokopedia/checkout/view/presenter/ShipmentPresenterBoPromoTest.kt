@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -1528,6 +1529,87 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         // Then
         verifyOrder {
             view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
+            getRatesUseCase.execute(any())
+            view.setSelectedCourier(itemPosition, any(), true, false)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates with owoc order success THEN should render success`() {
+        // Given
+        presenter.initializePresenterData(
+            CartShipmentAddressFormData(
+                cod = CodModel(counterCod = 1),
+                groupAddress = listOf(
+                    GroupAddress()
+                )
+            )
+        )
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
+        val itemPosition = 0
+        val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
+            code = "WGOIN",
+            shippingId = 1,
+            spId = 1,
+            cartStringGroup = "1"
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            groupType = GROUP_TYPE_OWOC,
+            cartStringGroup = "1",
+            isLeasingProduct = true,
+            shopShipmentList = listOf(),
+            cartItemModels = listOf(
+                CartItemModel(cartStringGroup = "1", cartStringOrder = "2"),
+                CartItemModel(cartStringGroup = "1", cartStringOrder = "3")
+            ),
+            selectedShipmentDetailData = ShipmentDetailData(
+                shipmentCartData = ShipmentCartData(
+                    originDistrictId = "1",
+                    originPostalCode = "1",
+                    originLatitude = "1",
+                    originLongitude = "1",
+                    weight = 1.0,
+                    weightActual = 1.0
+                )
+            )
+        )
+        presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
+        )
+
+        // Then
+        verifyOrder {
             getRatesUseCase.execute(any())
             view.setSelectedCourier(itemPosition, any(), true, false)
         }
