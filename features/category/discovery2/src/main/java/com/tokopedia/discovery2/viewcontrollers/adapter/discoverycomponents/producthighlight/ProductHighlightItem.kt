@@ -35,9 +35,17 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
 
-class ProductHighlightItem(private val productHighlightData: DataItem, private val properties: Properties?,
-                           private val constraintLayout: ConstraintLayout, private val constraintSet: ConstraintSet,
-                           private val index: Int, private val previousProductHighlightItem: ProductHighlightItem?, val context: Context, private val islastItem: Boolean, val compType: String? = null) {
+class ProductHighlightItem(
+    private val productHighlightData: DataItem,
+    private val properties: Properties?,
+    private val constraintLayout: ConstraintLayout,
+    private val constraintSet: ConstraintSet,
+    private val index: Int,
+    private val previousProductHighlightItem: ProductHighlightItem?,
+    val context: Context,
+    private val islastItem: Boolean,
+    val compType: String? = null
+) {
 
     var productHighlightView = View(context)
     var singleBinding: DiscoItemSingleProductHighlightBinding? = null
@@ -58,6 +66,10 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
         constraintSet.constrainWidth(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.WRAP_CONTENT)
 
+        if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY || productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
+            constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
+        }
+
         if (productHighlightData.typeProductHighlightComponentCard == TRIPLEDOUBLEEMPTY) {
             constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
             constraintSet.setHorizontalWeight(productHighlightView.id, 2.0f)
@@ -66,25 +78,46 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
         }
 
         if (previousProductHighlightItem == null) {
-            constraintSet.connect(productHighlightView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
-                context.resources.getDimensionPixelSize(R.dimen.dp_16))
+            constraintSet.connect(
+                productHighlightView.id,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START,
+                context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            )
         } else {
-            constraintSet.connect(previousProductHighlightItem.productHighlightView.id, ConstraintSet.END, productHighlightView.id, ConstraintSet.START,
-                context.resources.getDimensionPixelSize(R.dimen.dp_4))
-            constraintSet.connect(productHighlightView.id, ConstraintSet.START, previousProductHighlightItem.productHighlightView.id, ConstraintSet.END,
-                context.resources.getDimensionPixelSize(R.dimen.dp_4))
+            constraintSet.connect(
+                previousProductHighlightItem.productHighlightView.id,
+                ConstraintSet.END,
+                productHighlightView.id,
+                ConstraintSet.START,
+                context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            )
+            constraintSet.connect(
+                productHighlightView.id,
+                ConstraintSet.START,
+                previousProductHighlightItem.productHighlightView.id,
+                ConstraintSet.END,
+                context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            )
         }
 
         if (islastItem) {
-            constraintSet.connect(productHighlightView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
-                context.resources.getDimensionPixelSize(R.dimen.dp_16))
+            constraintSet.connect(
+                productHighlightView.id,
+                ConstraintSet.END,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.END,
+                context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            )
         }
         constraintSet.connect(productHighlightView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, context.resources.getDimensionPixelSize(R.dimen.dp_16))
         constraintSet.connect(productHighlightView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(R.dimen.dp_4))
         if (!productHighlightData.imageUrlDynamicMobile.isNullOrEmpty()) {
             try {
-                if (context.isValidGlideContext())
+                if (context.isValidGlideContext()) {
                     (productHighlightView as ImageUnify).loadImage(productHighlightData.imageUrlDynamicMobile)
+                }
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -93,13 +126,11 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
     }
 
     private fun setDataInCard() {
-
         if (productHighlightData.typeProductHighlightComponentCard == SINGLE) {
             singleBinding = DiscoItemSingleProductHighlightBinding.inflate(LayoutInflater.from(context))
             productHighlightView = singleBinding?.root as ConstraintLayout
             with(singleBinding) {
                 if (this != null) {
-
                     bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
@@ -201,7 +232,6 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
             productHighlightView = multipleBinding?.root as ConstraintLayout
             with(multipleBinding) {
                 if (this != null) {
-
                     bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
@@ -292,7 +322,6 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                         productHighlightImage.colorFilter = filter
                         phShopLogo.colorFilter = filter
                     }
-
                 }
             }
         }
