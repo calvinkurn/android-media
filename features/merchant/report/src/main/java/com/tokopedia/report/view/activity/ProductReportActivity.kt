@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,6 +22,7 @@ import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class ProductReportActivity : AppCompatActivity() {
@@ -52,13 +55,25 @@ class ProductReportActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
+                LaunchedEffect(key1 = viewModel.uiEvent, block = {
+                    viewModel.uiEvent.collectLatest {
+                        when (it) {
+                            is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
+                            is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
+                            is ProductReportUiEvent.OnGoToForm -> gotoForm(it.reason)
+                            is ProductReportUiEvent.OnBackPressed -> finish()
+                            is ProductReportUiEvent.OnToasterError -> showToasterError(it.error)
+                            else -> {
+                            }
+                        }
+                    }
+                })
+
+                val state = viewModel.uiState.collectAsState()
+
                 ProductReportScreen(
-                    viewModel = viewModel,
-                    onFooterClicked = ::onFooterClicked,
-                    onScrollTop = ::onScrollTop,
-                    onGoToForm = ::gotoForm,
-                    onFinish = ::finish,
-                    onToasterError = ::showToasterError
+                    uiState = state.value,
+                    onEvent = viewModel::onEvent
                 )
             }
         }
