@@ -8,29 +8,12 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PRODUCT_ID
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SHOPID
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManageResponse
+import com.tokopedia.topads.common.domain.query.GetProductManageV2
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-const val QUERY_TOP_ADS_PRODUCT_MANAGE = """
-            query topAdsGetProductManageV2(${'$'}productID :String!,${'$'}shopID:String!){
-               	topAdsGetProductManageV2(type:1, shop_id:${'$'}shopID,item_id:${'$'}productID,source: "topads.see_ads_performance"){
-            			data {
-            			  ad_id
-            			  ad_type
-            			  is_enable_ad
-            			  item_id
-            			  item_image
-            			  item_name
-            			  shop_id
-            			  manage_link
-            			}
-                }
-            }
-        """
-
-@GqlQuery("GetProductManageQuery", QUERY_TOP_ADS_PRODUCT_MANAGE)
 class TopAdsGetProductManageUseCase @Inject constructor(
     val userSession: UserSessionInterface,
     private val graphqlUseCase: MultiRequestGraphqlUseCase
@@ -40,7 +23,7 @@ class TopAdsGetProductManageUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): TopAdsGetProductManage {
         val gqlRequest = GraphqlRequest(
-            GetProductManageQuery(),
+            GetProductManageV2,
             TopAdsGetProductManageResponse::class.java,
             params.parameters
         )

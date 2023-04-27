@@ -52,7 +52,6 @@ import javax.inject.Inject
 
 private const val ROTATION_0 = 0f
 private const val ROTATION_180 = 180f
-private const val REQUEST_CODE = 99
 private const val TIPS_VIEW_MORE =
     "https://seller.tokopedia.com/edu/cara-meningkatkan-persentase-klik-iklan-topads/"
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.model.AdGroupsParams
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
@@ -138,12 +137,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         endDate: String,
         goalId: Int
     ) {
-        topAdsGetProductStatisticsUseCase.setGraphqlQuery(
-            GraphqlHelper.loadRawString(
-                resources,
-                com.tokopedia.topads.common.R.raw.gql_query_product_statistics
-            )
-        )
         topAdsGetProductStatisticsUseCase.setParams(
             startDate,
             endDate,
