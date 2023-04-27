@@ -58,7 +58,8 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
         constraintSet.constrainWidth(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.WRAP_CONTENT)
 
-        if (productHighlightData.typeProductHighlightComponentCard == "tripleDoubleEmpty") {
+        if (productHighlightData.typeProductHighlightComponentCard == TRIPLEDOUBLEEMPTY) {
+            constraintSet.constrainHeight(productHighlightView.id, ConstraintSet.MATCH_CONSTRAINT)
             constraintSet.setHorizontalWeight(productHighlightView.id, 2.0f)
         } else {
             constraintSet.setHorizontalWeight(productHighlightView.id, 1.0f)
@@ -192,11 +193,6 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
         } else if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY || productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
             emptySingleBinding = EmptyStateProductHighlightSingleBinding.inflate(LayoutInflater.from(context))
             productHighlightView = emptySingleBinding?.root as CardUnify2
-            with(emptySingleBinding) {
-                if (this != null) {
-                    setEmptyStateMargin(this)
-                }
-            }
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLEDOUBLEEMPTY) {
             emptyDoubleBinding = EmptyStateProductHighlightDoubleBinding.inflate(LayoutInflater.from(context))
             productHighlightView = emptyDoubleBinding?.root as CardUnify2
@@ -313,18 +309,6 @@ class ProductHighlightItem(private val productHighlightData: DataItem, private v
                 guideline.setGuidelinePercent(0.4f)
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
-            }
-        }
-    }
-
-    private fun setEmptyStateMargin(emptyStateProductHighlightSingleBinding: EmptyStateProductHighlightSingleBinding) {
-        if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY) {
-            with(emptyStateProductHighlightSingleBinding) {
-                space.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.dp_8)
-            }
-        } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
-            with(emptyStateProductHighlightSingleBinding) {
-                space.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.dp_12)
             }
         }
     }
