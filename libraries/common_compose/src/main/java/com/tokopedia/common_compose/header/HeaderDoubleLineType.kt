@@ -51,7 +51,7 @@ internal fun HeaderDoubleLineType(
 
 @Preview
 @Composable
-fun HeaderDoubleLineTypePreview() {
+private fun HeaderDoubleLineTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -71,7 +71,7 @@ fun HeaderDoubleLineTypePreview() {
 
 @Preview
 @Composable
-fun HeaderDoubleLineTypeNonBackButtonPreview() {
+private fun HeaderDoubleLineTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -87,7 +87,7 @@ fun HeaderDoubleLineTypeNonBackButtonPreview() {
 
 @Preview
 @Composable
-fun HeaderDoubleLineTypeOverFlowPreview() {
+private fun HeaderDoubleLineTypeOverFlowPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {

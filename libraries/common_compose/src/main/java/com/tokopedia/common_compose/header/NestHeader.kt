@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.principles
 
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.tokopedia.common_compose.header.HeaderDoubleLineType
@@ -8,6 +7,7 @@ import com.tokopedia.common_compose.header.HeaderLocationType
 import com.tokopedia.common_compose.header.HeaderProfileType
 import com.tokopedia.common_compose.header.HeaderSearchType
 import com.tokopedia.common_compose.header.HeaderSingleLineType
+import com.tokopedia.common_compose.header.HeaderSurface
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.header.NestHeaderVariant
 import com.tokopedia.common_compose.header.getHeaderBackgroundColor
@@ -28,7 +28,7 @@ fun NestHeader(
     val iconColor = getHeaderIconColor(variant = variant)
     val elevation = getHeaderElevation(variant = variant, type = type)
 
-    Surface(
+    HeaderSurface(
         color = headerBackground,
         elevation = elevation,
         modifier = modifier,

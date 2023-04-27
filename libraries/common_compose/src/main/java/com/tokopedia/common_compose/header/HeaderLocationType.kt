@@ -50,7 +50,7 @@ internal fun HeaderLocationType(
 
 @Preview
 @Composable
-fun HeaderLocationTypePreview() {
+private fun HeaderLocationTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -72,7 +72,7 @@ fun HeaderLocationTypePreview() {
 
 @Preview
 @Composable
-fun HeaderLocationTypeNonBackButtonPreview() {
+private fun HeaderLocationTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -88,7 +88,7 @@ fun HeaderLocationTypeNonBackButtonPreview() {
 
 @Preview
 @Composable
-fun HeaderLocationTypeOverFlowPreview() {
+private fun HeaderLocationTypeOverFlowPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {

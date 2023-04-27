@@ -77,7 +77,7 @@ private fun ProfileImage(headerImageSource: HeaderImageSource) {
 
 @Preview
 @Composable
-fun HeaderProfileTypePreview() {
+private fun HeaderProfileTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -99,7 +99,7 @@ fun HeaderProfileTypePreview() {
 
 @Preview
 @Composable
-fun HeaderProfileTypeNonBackButtonPreview() {
+private fun HeaderProfileTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -117,7 +117,7 @@ fun HeaderProfileTypeNonBackButtonPreview() {
 
 @Preview
 @Composable
-fun HeaderProfileTypeOverFlowPreview() {
+private fun HeaderProfileTypeOverFlowPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {

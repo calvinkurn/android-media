@@ -62,20 +62,20 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestHeaderAttr
 }
 
-interface NestHeaderAttr {
+internal interface NestHeaderAttr {
     val showBackButton: Boolean
     val onBackClicked: () -> Unit
     val optionsButton: List<HeaderOptionals>
 }
 
-interface NestHeaderSingleLineAttr : NestHeaderAttr {
+internal interface NestHeaderSingleLineAttr : NestHeaderAttr {
     val title: String
 }
 
-interface NestHeaderDoubleLineAttr : NestHeaderSingleLineAttr {
+internal interface NestHeaderDoubleLineAttr : NestHeaderSingleLineAttr {
     val subTitle: String
 }
 
-interface NestHeaderDoubleLineClickableAttr : NestHeaderDoubleLineAttr {
+internal interface NestHeaderDoubleLineClickableAttr : NestHeaderDoubleLineAttr {
     val onTitleClicked: () -> Unit
 }

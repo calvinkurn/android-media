@@ -153,7 +153,7 @@ private fun SearchTextFieldLayout(
 
 @Preview
 @Composable
-fun HeaderSearchTypePreview() {
+private fun HeaderSearchTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -170,7 +170,7 @@ fun HeaderSearchTypePreview() {
 
 @Preview
 @Composable
-fun HeaderSearchTypeNonBackButtonPreview() {
+private fun HeaderSearchTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {

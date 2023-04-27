@@ -39,7 +39,7 @@ internal fun HeaderSingleLineType(
 
 @Preview
 @Composable
-fun HeaderSingleLineTypePreview() {
+private fun HeaderSingleLineTypePreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
@@ -59,7 +59,7 @@ fun HeaderSingleLineTypePreview() {
 
 @Preview
 @Composable
-fun HeaderSingleLineTypeNonBackButtonPreview() {
+private fun HeaderSingleLineTypeNonBackButtonPreview() {
     Surface(
         contentColor = NestTheme.colors.NN._950
     ) {
