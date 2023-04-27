@@ -28,7 +28,7 @@ fun ProductReportComposeContent(
     ) {
         item {
             ProductReportReasonHeader(
-                text = uiState.title.getString().orEmpty()
+                text = uiState.title.getString()
             )
         }
 
@@ -41,7 +41,7 @@ fun ProductReportComposeContent(
                 reason = item,
                 subtitleVisible = uiState.isSubtitleVisible(reason = item),
                 onClick = {
-                    onEvent.invoke(ProductReportUiEvent.OnItemClicked(it))
+                    onEvent(ProductReportUiEvent.OnItemClicked(it))
                 }
             )
         }
@@ -50,7 +50,7 @@ fun ProductReportComposeContent(
             ProductReportReasonFooter(
                 text = stringResource(id = R.string.product_report_see_all_types),
                 onClick = {
-                    onEvent.invoke(ProductReportUiEvent.OnFooterClicked(it))
+                    onEvent(ProductReportUiEvent.OnFooterClicked(it))
                 }
             )
         }

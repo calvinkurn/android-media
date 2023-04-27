@@ -35,7 +35,7 @@ fun ProductReportReasonItem(
     ConstraintLayout(
         modifier = modifier
             .clickable {
-                onClick.invoke(reason)
+                onClick(reason)
             }
             .fillMaxWidth()
     ) {

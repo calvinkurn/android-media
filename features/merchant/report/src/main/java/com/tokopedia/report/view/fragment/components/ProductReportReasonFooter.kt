@@ -30,7 +30,7 @@ fun ProductReportReasonFooter(
             .fillMaxWidth()
             .padding(16.dp)
             .clickable {
-                onClick.invoke(text)
+                onClick(text)
             },
         text = composeSpannable(),
         textStyle = NestTheme.typography.body3
