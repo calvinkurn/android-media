@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.header
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -17,7 +16,7 @@ sealed interface NestHeaderType {
         override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
-        override val buttonOptions: @Composable () -> Unit = {},
+        override val optionsButton: List<HeaderOptionals> = emptyList(),
         override val title: String = "Title",
         override val onTitleClicked: () -> Unit = {},
         override val subTitle: String = "Sub-title"
@@ -27,7 +26,7 @@ sealed interface NestHeaderType {
         override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
-        override val buttonOptions: @Composable () -> Unit = {},
+        override val optionsButton: List<HeaderOptionals> = emptyList(),
         override val title: String = "Title"
     ) : NestHeaderType, NestHeaderSingleLineAttr
 
@@ -35,7 +34,7 @@ sealed interface NestHeaderType {
         override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
-        override val buttonOptions: @Composable () -> Unit = {},
+        override val optionsButton: List<HeaderOptionals> = emptyList(),
         override val title: String = "Title",
         override val subTitle: String = "Sub-title"
     ) : NestHeaderType, NestHeaderDoubleLineAttr
@@ -44,7 +43,7 @@ sealed interface NestHeaderType {
         override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
-        override val buttonOptions: @Composable () -> Unit = {},
+        override val optionsButton: List<HeaderOptionals> = emptyList(),
         override val title: String = "Title",
         override val subTitle: String = "Sub-title",
         override val onTitleClicked: () -> Unit = {},
@@ -55,7 +54,7 @@ sealed interface NestHeaderType {
         override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
-        override val buttonOptions: @Composable () -> Unit = {},
+        override val optionsButton: List<HeaderOptionals> = emptyList(),
         val hint: String = "",
         val value: String = "",
         val onSearchChanges: (String) -> Unit = {},
@@ -66,7 +65,7 @@ sealed interface NestHeaderType {
 interface NestHeaderAttr {
     val showBackButton: Boolean
     val onBackClicked: () -> Unit
-    val buttonOptions: @Composable () -> Unit
+    val optionsButton: List<HeaderOptionals>
 }
 
 interface NestHeaderSingleLineAttr : NestHeaderAttr {
