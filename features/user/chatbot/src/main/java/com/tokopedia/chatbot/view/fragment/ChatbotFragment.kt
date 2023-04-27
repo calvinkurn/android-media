@@ -2452,10 +2452,13 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
+        showUploadImageButton = true
         if (state) {
+            showUploadVideoButton = state
             checkCoachMarkStatus()
             handleAddAttachmentButtonViewState(showAddAttachmentMenu)
         }
+        createAttachmentMenus()
     }
 
     override fun disableSendButton() {
