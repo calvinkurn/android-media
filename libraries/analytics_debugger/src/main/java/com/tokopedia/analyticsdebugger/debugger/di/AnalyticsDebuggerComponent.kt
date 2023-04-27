@@ -23,13 +23,10 @@ interface AnalyticsDebuggerComponent {
     fun inject(fragment: ApplinkDebuggerFragment?)
     fun inject(fragment: TopAdsDebuggerFragment?)
 
-    @get:Named(NAMED_FPM_ANALYTICS)
     val fpmPresenter: FpmDebugger.Presenter
 
-    @get:Named(NAMED_APPLINK)
     val applinkPresenter: ApplinkDebugger.Presenter
 
-    @get:Named(NAMED_TOPADS)
     val topAdsPresenter: TopAdsDebugger.Presenter
 
     @get:Named(NAMED_IRIS_SAVE)

@@ -14,7 +14,6 @@ import javax.inject.Named
 class AnalyticsDebuggerModule {
 
     @Provides
-    @Named(NAMED_FPM_ANALYTICS)
     fun provideFpmPresenter(
         getFpmLogUseCase: GetFpmLogUseCase,
         deleteFpmLogUseCase: DeleteFpmLogUseCase,
@@ -24,7 +23,6 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
-    @Named(NAMED_APPLINK)
     fun provideApplinkPresenter(
         getApplinkLogUseCase: GetApplinkLogUseCase,
         deleteApplinkLogUseCase: DeleteApplinkLogUseCase
@@ -33,7 +31,6 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
-    @Named(NAMED_TOPADS)
     fun provideTopAdsPresenter(
         getTopAdsLogUseCase: GetTopAdsLogUseCase,
         deleteTopAdsLogUseCase: DeleteTopAdsLogUseCase
