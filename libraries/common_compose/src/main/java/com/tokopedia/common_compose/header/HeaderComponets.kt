@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestTypography
@@ -55,6 +56,12 @@ internal fun getHeaderIconColor(variant: NestHeaderVariant) = when (variant) {
     is NestHeaderVariant.Transparent -> NestNN.light._0
     else -> NestTheme.colors.NN._900
 }
+
+@Composable
+internal fun getHeaderElevation(
+    variant: NestHeaderVariant,
+    type: NestHeaderType
+): Dp = if (variant == NestHeaderVariant.Transparent) 0.dp else type.elevation
 
 @Composable
 fun HeaderMarginArea(

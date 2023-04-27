@@ -13,6 +13,7 @@ import com.tokopedia.common_compose.header.NestHeaderVariant
 import com.tokopedia.common_compose.header.getHeaderBackgroundColor
 import com.tokopedia.common_compose.header.getHeaderContentColor
 import com.tokopedia.common_compose.header.getHeaderContentSecondaryColor
+import com.tokopedia.common_compose.header.getHeaderElevation
 import com.tokopedia.common_compose.header.getHeaderIconColor
 
 @Composable
@@ -25,10 +26,11 @@ fun NestHeader(
     val contentColor = getHeaderContentColor(variant = variant)
     val contentSecondaryColor = getHeaderContentSecondaryColor(variant = variant)
     val iconColor = getHeaderIconColor(variant = variant)
+    val elevation = getHeaderElevation(variant = variant, type = type)
 
     Surface(
         color = headerBackground,
-        elevation = type.elevation,
+        elevation = elevation,
         modifier = modifier,
         contentColor = contentColor
     ) {

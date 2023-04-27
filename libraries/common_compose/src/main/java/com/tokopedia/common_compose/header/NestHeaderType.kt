@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
  **/
 
 sealed interface NestHeaderType {
+    // elevation will be automatically set to 0dp when nest header variants are transparent
     val elevation: Dp
 
     data class Location(
