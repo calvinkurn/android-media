@@ -18,7 +18,11 @@ import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
-fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
+fun NestNotification(
+    modifier: Modifier = Modifier,
+    text: String,
+    colorType: Color = Color.PRIMARY
+) {
     val color = getNotificationColor(colorType)
     var textFinal = text
     val isText = try {
@@ -35,7 +39,7 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
         .let { if (isText) it.copy(fontSize = 7.sp) else it }
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .height(height)
             .defaultMinSize(minWidth = 16.dp),
         shape = RoundedCornerShape(rad)
@@ -74,7 +78,7 @@ fun NotificationPreview() {
         Surface {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Notification: ")
-                NestNotification("12")
+                NestNotification(text = "12")
                 NestNotification(text = "122", colorType = Color.SECONDARY)
                 NestNotification(text = "NEW")
             }

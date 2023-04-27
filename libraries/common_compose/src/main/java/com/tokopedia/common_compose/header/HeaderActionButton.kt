@@ -14,8 +14,8 @@ interface HeaderOptionals {
 }
 
 data class HeaderNotification(
-    val counter: Int,
-    val color: Color
+    val value: String,
+    val color: com.tokopedia.common_compose.components.Color
 )
 
 data class HeaderActionButton(

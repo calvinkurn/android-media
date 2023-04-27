@@ -1,31 +1,29 @@
 package com.tokopedia.common_compose.header
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.components.NestNotification
+import com.tokopedia.common_compose.extensions.rippleClickable
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestNN
@@ -188,20 +186,6 @@ internal fun HeaderLocationContent(
 /**
  * Header Options Button
  */
-fun Modifier.rippleClickable(
-    radius: Dp = 16.dp,
-    enable: Boolean = true,
-    onClick: () -> Unit
-): Modifier = composed {
-    this.clickable(
-        onClick = onClick,
-        enabled = enable,
-        role = Role.Button,
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(bounded = false, radius = radius)
-    )
-}
-
 @Composable
 internal fun HeaderOptionsButton(
     optionsButton: List<HeaderOptionals>,
@@ -220,15 +204,7 @@ internal fun HeaderOptionsButton(
         optionsButton.forEach { options ->
             when (options) {
                 is HeaderActionButton -> {
-                    HeaderIcon(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .tag(options.contentDescription)
-                            .rippleClickable(onClick = options.onClicked),
-                        imageSource = options.icon,
-                        contentDescription = options.contentDescription,
-                        iconColor = iconColor
-                    )
+                    HeaderActionButtonLayout(options, iconColor)
                 }
                 is HeaderTextButton -> {
                     NestTypography(
@@ -248,15 +224,32 @@ internal fun HeaderOptionsButton(
     }
 }
 
-@Preview
 @Composable
-fun HeaderOptionsButtonPreview() {
-    HeaderOptionsButton(
-        optionsButton = listOf(
-            HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_bell))),
-            HeaderTextButton(text = "Action"),
-            HeaderTextButton(text = "Add")
-        ),
-        iconColor = NestTheme.colors.NN._900
-    )
+private fun HeaderActionButtonLayout(
+    options: HeaderActionButton,
+    iconColor: Color
+) {
+    val notification = options.notification
+
+    Box(
+        modifier = Modifier
+            .tag(options.contentDescription)
+            .rippleClickable(onClick = options.onClicked),
+        contentAlignment = Alignment.TopEnd
+    ) {
+        HeaderIcon(
+            modifier = Modifier.size(24.dp),
+            imageSource = options.icon,
+            contentDescription = options.contentDescription,
+            iconColor = iconColor
+        )
+
+        if (notification != null) {
+            NestNotification(
+                modifier = Modifier.offset(x = 4.dp, y = (-4).dp),
+                text = notification.value,
+                colorType = notification.color
+            )
+        }
+    }
 }
