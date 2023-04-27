@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
@@ -77,11 +76,8 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
-                .builder()
-                .baseAppComponent(
-                        (requireActivity().application as BaseMainApplication).baseAppComponent
-                ).build()
+        val component = DaggerAnalyticsDebuggerComponent.builder()
+            .context(activity!!.application).build()
 
         injectToFragment(component)
         presenter?.attachView(this)
@@ -100,7 +96,6 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {

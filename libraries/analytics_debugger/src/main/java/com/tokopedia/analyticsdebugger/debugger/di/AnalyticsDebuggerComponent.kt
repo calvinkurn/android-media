@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.debugger.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import android.content.Context
 import com.tokopedia.analytics.debugger.ui.fragment.ApplinkDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.TopAdsDebuggerFragment
@@ -8,13 +8,14 @@ import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger
+import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Named
 
 /**
  * @author okasurya on 5/17/18.
  */
-@Component(modules = [AnalyticsDebuggerModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [AnalyticsDebuggerModule::class])
 @AnalyticsDebuggerScope
 interface AnalyticsDebuggerComponent {
     fun inject(fragment: FpmDebuggerFragment?)
@@ -35,4 +36,11 @@ interface AnalyticsDebuggerComponent {
 
     @get:Named(NAMED_IRIS_SEND)
     val gtmIrisSendPresenter: AnalyticsDebugger.Presenter
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun context(context: Context): Builder
+        fun build(): AnalyticsDebuggerComponent
+    }
 }

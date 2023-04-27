@@ -16,8 +16,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
@@ -88,11 +86,8 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
-                .builder()
-                .baseAppComponent(
-                        (activity!!.application as BaseMainApplication).baseAppComponent
-                ).build()
+        val component = DaggerAnalyticsDebuggerComponent.builder()
+            .context(activity!!.application).build()
 
         injectToFragment(component)
         presenter?.attachView(this)
@@ -111,7 +106,6 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
@@ -149,7 +143,6 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     private fun showSaveToDiskDialog() {
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
 
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -161,11 +154,11 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
             startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
         } else {
             Toast.makeText(
-                    requireContext(), R.string.fpm_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
+                requireContext(),
+                R.string.fpm_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
