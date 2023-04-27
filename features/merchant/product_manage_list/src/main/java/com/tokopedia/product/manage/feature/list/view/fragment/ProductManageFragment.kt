@@ -2148,7 +2148,7 @@ open class ProductManageFragment :
                 ProductManageTracking.eventSettingsReminder(productId)
             }
             is Delete -> {
-                clickDeleteProductMenu(productName, productId)
+                showNotAllowedToDeleteProductDT(productName, productId)
                 ProductManageTracking.eventSettingsDelete(productId)
             }
             is SetTopAds -> {
@@ -3448,6 +3448,24 @@ open class ProductManageFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun showNotAllowedToDeleteProductDT(productName: String, productId: String) {
+        context?.let { it ->
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_title
+                    )
+                )
+                setDescription(getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc))
+                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.oke))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+
+            }.show()
         }
     }
 

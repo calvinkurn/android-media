@@ -48,7 +48,13 @@ class QuickEditVariantStockBottomSheet(
     }
 
     private val variantStockAdapter by lazy {
-        ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this, this,onClickDilayaniTokopediaIdentifier))
+        ProductVariantAdapter(
+            ProductVariantStockAdapterFactoryImpl(
+                this,
+                this,
+                onClickDilayaniTokopediaIdentifier
+            )
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,7 +97,7 @@ class QuickEditVariantStockBottomSheet(
 
     private fun observeViewState() {
         observe(viewModel.tickerList) { data ->
-            if(data.isNotEmpty()) {
+            if (data.isNotEmpty()) {
                 val tickerList = mapToTickerData(context, data)
                 variantStockAdapter.showTicker(tickerList)
             } else {
@@ -99,7 +105,7 @@ class QuickEditVariantStockBottomSheet(
             }
         }
         observe(viewModel.showStockInfo) { showStockInfo ->
-            if(showStockInfo) {
+            if (showStockInfo) {
                 variantStockAdapter.showStockInfo()
             } else {
                 variantStockAdapter.hideStockInfo()

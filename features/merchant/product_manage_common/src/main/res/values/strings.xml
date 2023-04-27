@@ -55,4 +55,13 @@
     <string name="product_manage_stock_description_information_stock_available" tools:keep="@string/product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
     <string name="product_manage_stock_available" tools:keep="@string/product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
 
+    <string name="product_manage_dialog_edit_dt_products_inactive_title">Produk ini terdaftar dalam gudang Dilayani Tokopedia</string>
+    <string name="product_manage_dialog_edit_dt_products_inactive_desc"><![CDATA[Jika menonaktifkan, kamu berpotensi tetap harus membayar biaya Dilayani Tokopedia meski produk dinonaktifkan.
+    <font color=\"#42b549\">Baca Artikel</font>]]></string>
+    <string name="product_manage_edit_dt_products_inactive_button">Tetap Nonaktifkan</string>
+    <string name="product_manage_edit_dt_products_inactive_cancel_button">Batal</string>
+
+    <string name="product_manage_deletion_product_dt_title">Produk Dilayani Tokopedia belum bisa dihapus</string>
+    <string name="product_manage_deletion_product_dt_desc">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
+
 </resources>

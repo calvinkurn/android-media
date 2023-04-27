@@ -26,7 +26,8 @@ data class ProductVariant(
     val stockAlertStatus: Int,
     val stockAlertCount: Int,
     val isBelowStockAlert: Boolean,
-    val hasDTStock: Boolean
+    val hasDTStock: Boolean,
+    val isTokoCabang: Boolean
 ) : Visitable<ProductVariantAdapterFactory> {
 
     companion object {

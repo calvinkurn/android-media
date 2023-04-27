@@ -21,6 +21,7 @@ internal object GetProductVariant {
                 stockAlertStatus
                 isBelowStockAlert
                 hasDTStock
+                isTokoCabang
                 notifymeCount
                 pictures {
                   picID

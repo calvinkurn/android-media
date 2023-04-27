@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
@@ -34,6 +35,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductMan
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import javax.inject.Inject
 
@@ -47,17 +49,20 @@ class ProductManageQuickEditStockFragment(
         private const val TOGGLE_NOT_ACTIVE = "not active"
         private const val KEY_CACHE_MANAGER_ID = "product_edit_cache_manager"
         private const val KEY_PRODUCT = "product"
-
         fun createInstance(
             context: Context,
             product: ProductUiModel,
             onFinishedListener: OnFinishedListener,
-            campaignListener: ProductCampaignInfoListener,
+            campaignListener: ProductCampaignInfoListener
+
         ): ProductManageQuickEditStockFragment {
             SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
                 put(KEY_PRODUCT, product)
             }
-            return ProductManageQuickEditStockFragment(onFinishedListener, campaignListener)
+            return ProductManageQuickEditStockFragment(
+                onFinishedListener,
+                campaignListener
+            )
         }
     }
 
@@ -197,6 +202,7 @@ class ProductManageQuickEditStockFragment(
         if (product.hasEditStockAccess() || product.hasEditProductAccess()) {
             binding?.quickEditStockSaveButton?.setOnClickListener {
                 onClickSaveBtn()
+
             }
             binding?.quickEditStockSaveButton?.show()
         } else {
@@ -224,13 +230,39 @@ class ProductManageQuickEditStockFragment(
                 saveStockAndStatus(inputStock, inputStatus)
             }
             shouldSaveStock -> saveProductStock(inputStock)
-            shouldSaveStatus -> saveProductStatus(inputStatus)
+            shouldSaveStatus -> {
+                if (inputStatus == ProductStatus.INACTIVE){
+                    showEditProductsInActiveConfirmationDialogDT()
+                }else{
+                    saveProductStatus(inputStatus)
+                }
+            }
         }
 
         removeObservers()
         dismiss()
 
         ProductManageTracking.eventEditStockSave(product.getId())
+    }
+
+    private fun showEditProductsInActiveConfirmationDialogDT() {
+        context?.let { it ->
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        R.string.product_manage_dialog_edit_dt_products_inactive_title
+                    )
+                )
+                setDescription(getString(R.string.product_manage_dialog_edit_dt_products_inactive_desc))
+                setPrimaryCTAText(getString(R.string.product_manage_edit_dt_products_inactive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_edit_dt_products_inactive_cancel_button))
+                setPrimaryCTAClickListener {
+                    saveProductStatus(ProductStatus.INACTIVE)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
     }
 
     private fun saveStockAndStatus(stock: Int, status: ProductStatus) {
@@ -508,7 +540,7 @@ class ProductManageQuickEditStockFragment(
                 setZeroStockInfo()
             }
             product?.stockAlertActive.orFalse() ||
-                    (currentStock < product?.stockAlertCount.orZero() && product?.hasStockAlert.orFalse()) -> {
+                (currentStock < product?.stockAlertCount.orZero() && product?.hasStockAlert.orFalse()) -> {
                 setStockAlertActiveInfo()
             }
             product?.hasStockAlert.orFalse() -> {

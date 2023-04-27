@@ -54,7 +54,8 @@ object ProductManageVariantMapper {
                 it.stockAlertStatus,
                 stockAlertCount,
                 it.isBelowStockAlert,
-                it.hasDTStock
+                it.hasDTStock,
+                it.isTokoCabang
             )
         }
 
