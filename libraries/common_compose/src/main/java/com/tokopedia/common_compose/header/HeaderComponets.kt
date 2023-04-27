@@ -143,7 +143,7 @@ fun HeaderIconBack(
 
 @Composable
 internal fun HeaderLocationContent(
-    properties: NestDoubleLineClickableAttr,
+    properties: NestHeaderDoubleLineClickableAttr,
     contentSecondaryColor: Color,
     iconColor: Color
 ) {

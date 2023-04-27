@@ -37,7 +37,7 @@ internal fun HeaderProfileType(
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
-        ProfileImage(source = properties.imageSource)
+        ProfileImage(profileSource = properties.imageSource)
 
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -58,21 +58,21 @@ internal fun HeaderProfileType(
 }
 
 @Composable
-private fun ProfileImage(source: ProfileSource) {
+private fun ProfileImage(profileSource: ProfileSource) {
     val scale = ContentScale.Crop
     val contentDescription = "profile_image"
     val modifier = Modifier
         .size(32.dp)
         .clip(CircleShape)
 
-    when (source) {
-        is ProfileSource.Url -> {
-            NestImage(modifier = modifier, imageUrl = source.url)
+    when (profileSource) {
+        is ProfileSource.Remote -> {
+            NestImage(modifier = modifier, imageUrl = profileSource.source)
         }
         is ProfileSource.Painter -> {
             Image(
                 modifier = modifier,
-                painter = source.painter,
+                painter = profileSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )
@@ -80,7 +80,7 @@ private fun ProfileImage(source: ProfileSource) {
         is ProfileSource.ImageBitmap -> {
             Image(
                 modifier = modifier,
-                bitmap = source.bitmap,
+                bitmap = profileSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )
@@ -88,7 +88,7 @@ private fun ProfileImage(source: ProfileSource) {
         is ProfileSource.ImageVector -> {
             Image(
                 modifier = modifier,
-                imageVector = source.vector,
+                imageVector = profileSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )

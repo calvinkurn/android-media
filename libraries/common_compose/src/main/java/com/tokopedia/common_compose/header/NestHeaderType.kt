@@ -15,7 +15,7 @@ sealed interface NestHeaderType {
         override val title: String = "Title",
         override val onTitleClicked: () -> Unit = {},
         override val subTitle: String = "Sub-title"
-    ) : NestHeaderType, NestDoubleLineClickableAttr
+    ) : NestHeaderType, NestHeaderDoubleLineClickableAttr
 
     data class SingleLine(
         override val showBackButton: Boolean = true,
@@ -30,7 +30,7 @@ sealed interface NestHeaderType {
         override val buttonOptions: @Composable () -> Unit = {},
         override val title: String = "Title",
         override val subTitle: String = "Sub-title"
-    ) : NestHeaderType, NestDoubleLineAttr
+    ) : NestHeaderType, NestHeaderDoubleLineAttr
 
     data class Profile(
         override val showBackButton: Boolean = true,
@@ -39,8 +39,8 @@ sealed interface NestHeaderType {
         override val title: String = "Title",
         override val subTitle: String = "Sub-title",
         override val onTitleClicked: () -> Unit = {},
-        val imageSource: ProfileSource = ProfileSource.Url(url = "")
-    ) : NestHeaderType, NestDoubleLineClickableAttr
+        val imageSource: ProfileSource = ProfileSource.Remote(source = "")
+    ) : NestHeaderType, NestHeaderDoubleLineClickableAttr
 
     data class Search(
         override val showBackButton: Boolean = true,
@@ -63,25 +63,25 @@ interface NestHeaderSingleLineAttr : NestHeaderAttr {
     val title: String
 }
 
-interface NestDoubleLineAttr : NestHeaderSingleLineAttr {
+interface NestHeaderDoubleLineAttr : NestHeaderSingleLineAttr {
     val subTitle: String
 }
 
-interface NestDoubleLineClickableAttr : NestDoubleLineAttr {
+interface NestHeaderDoubleLineClickableAttr : NestHeaderDoubleLineAttr {
     val onTitleClicked: () -> Unit
 }
 
 sealed interface ProfileSource {
-    data class Url(val url: String) : ProfileSource
+    data class Remote(val source: String) : ProfileSource
     data class Painter(
-        val painter: androidx.compose.ui.graphics.painter.Painter
+        val source: androidx.compose.ui.graphics.painter.Painter
     ) : ProfileSource
 
     data class ImageVector(
-        val vector: androidx.compose.ui.graphics.vector.ImageVector
+        val source: androidx.compose.ui.graphics.vector.ImageVector
     ) : ProfileSource
 
     data class ImageBitmap(
-        val bitmap: androidx.compose.ui.graphics.ImageBitmap
+        val source: androidx.compose.ui.graphics.ImageBitmap
     ) : ProfileSource
 }
