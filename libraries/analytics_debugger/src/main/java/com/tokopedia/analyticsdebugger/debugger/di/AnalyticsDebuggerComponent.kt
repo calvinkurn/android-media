@@ -11,12 +11,13 @@ import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Named
+import javax.inject.Singleton
 
 /**
  * @author okasurya on 5/17/18.
  */
 @Component(modules = [AnalyticsDebuggerModule::class])
-@AnalyticsDebuggerScope
+@Singleton
 interface AnalyticsDebuggerComponent {
     fun inject(fragment: FpmDebuggerFragment?)
     fun inject(fragment: ApplinkDebuggerFragment?)
