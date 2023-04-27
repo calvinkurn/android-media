@@ -7,12 +7,16 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogEntryBannerDataModel
 import com.tokopedia.catalog.model.raw.ComparisonNewModel
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogEntryBannerViewHolder(private val view : View,
-                                   private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogEntryBannerDataModel>(view) {
+class CatalogEntryBannerViewHolder(
+    private val view: View,
+    private val catalogDetailListener: CatalogDetailListener
+) : AbstractViewHolder<CatalogEntryBannerDataModel>(view) {
 
     private val parentLayout: ConstraintLayout by lazy {
         view.findViewById(R.id.entry_point_parent)
@@ -46,15 +50,29 @@ class CatalogEntryBannerViewHolder(private val view : View,
         }
     }
 
-    private fun renderText(categoryProductCount : String? , category : String?) {
-        productCountText.text =  view.context.getString(R.string.catalog_entry_banner_product_count, categoryProductCount)
+    private fun renderText(categoryProductCount: String?, category: String?) {
+        productCountText.text = view.context.getString(R.string.catalog_entry_banner_product_count, categoryProductCount)
         categoryName.text = view.context.getString(R.string.catalog_entry_banner_title, category)
     }
 
     private fun renderImages(catalogs: ArrayList<ComparisonNewModel>?) {
         val leftImageUrl = catalogs?.firstOrNull()?.imageUrl ?: ""
-        imageLeft.loadImage(leftImageUrl)
-        val rightImageUrl = catalogs?.get(1)?.imageUrl ?: ""
-        imageRight.loadImage(rightImageUrl)
+        if (leftImageUrl.isNotBlank()) {
+            imageLeft.show()
+            imageLeft.loadImage(leftImageUrl)
+        } else {
+            imageLeft.hide()
+        }
+        if ((catalogs?.size ?: 0) > 1) {
+            val rightImageUrl = catalogs?.get(1)?.imageUrl ?: ""
+            if (rightImageUrl.isNotBlank()) {
+                imageRight.show()
+                imageRight.loadImage(rightImageUrl)
+            } else {
+                imageRight.hide()
+            }
+        } else {
+            imageRight.hide()
+        }
     }
 }
