@@ -15,12 +15,16 @@ import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.ocl.GetOclStatusParam
+import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -31,6 +35,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -60,6 +65,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
     private val offerInterruptUseCase: OfferInterruptUseCase,
     private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    private val getOclStatusUseCase: GetOclStatusUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -113,6 +119,13 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopediaPlusData: LiveData<Result<TokopediaPlusDataModel>>
         get() = _tokopediaPlusData
 
+    private val _getOclStatus = MutableLiveData<OclStatus>()
+    val getOclStatus: LiveData<OclStatus>
+        get() = _getOclStatus
+
+    private val _logoutDialog = SingleLiveEvent<Boolean>()
+    val logoutDialog: LiveData<Boolean> get() = _logoutDialog
+
     fun refreshUserProfile() {
         launch {
             try {
@@ -140,11 +153,21 @@ class HomeAccountUserViewModel @Inject constructor(
             if (result.isSuccess && result.errorMessage.isEmpty()) {
                 mutableCheckFingerprintStatus.postValue(Success(result))
             } else {
-                mutableCheckFingerprintStatus.value = Fail(Throwable("Gagal"))
+                mutableCheckFingerprintStatus.value = Fail(MessageErrorException(result.errorMessage))
             }
         }, onError = {
                 mutableCheckFingerprintStatus.value = Fail(it)
             })
+    }
+
+    fun getOclStatus() {
+        launch {
+            try {
+                val param = GetOclStatusParam()
+                val result = getOclStatusUseCase(param)
+                _getOclStatus.value = result
+            } catch (ignored: Exception) { }
+        }
     }
 
     fun setSafeMode(isActive: Boolean) {

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountViewModel
+import com.tokopedia.chooseaccount.viewmodel.OclChooseAccountViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -33,4 +34,8 @@ abstract class ChooseAccountViewModelModule{
     @ViewModelKey(ChooseAccountFingerprintViewModel::class)
     internal abstract fun chooseAccountFingerprintViewModel(viewModel: ChooseAccountFingerprintViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(OclChooseAccountViewModel::class)
+    internal abstract fun chooseAccountOclViewModel(viewModel: OclChooseAccountViewModel): ViewModel
 }

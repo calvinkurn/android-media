@@ -22,6 +22,8 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
+    const val PARAM_IS_SAVE_SESSION = "is_save_session"
+
     //LoginActivity
     const val LOGIN = "$NEW_INTERNAL_USER/login"
     const val LOGIN_EMAIL = "${LOGIN}?method=$METHOD_LOGIN_EMAIL&e={email}&source={source}"
@@ -109,6 +111,12 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
      **/
     const val CHOOSE_ACCOUNT_FINGERPRINT = "${NEW_INTERNAL_USER}/choose-account-fingerprint"
+
+    /**
+     * OclChooseAccountActivity
+     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     **/
+    const val CHOOSE_ACCOUNT_OCL = "${NEW_INTERNAL_USER}/choose-account-ocl"
 
     /**
      * VerificationActivity

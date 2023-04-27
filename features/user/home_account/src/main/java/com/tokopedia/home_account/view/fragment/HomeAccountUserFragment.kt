@@ -59,6 +59,7 @@ import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
@@ -117,6 +118,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -195,6 +197,8 @@ open class HomeAccountUserFragment :
     var memberLocalLoad: LocalLoad? = null
     var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
+
+    private var bottomSheetBinding by autoClearedNullable<BottomSheetOclBinding>()
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -1028,6 +1032,7 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
+        viewModel.getOclStatus()
     }
 
     private fun onRefresh() {
@@ -1313,12 +1318,7 @@ open class HomeAccountUserFragment :
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                if (isEnableBiometricOffering()) {
-                    homeAccountAnalytic.trackOnClickLogoutDialog()
-                    viewModel.getFingerprintStatus()
-                } else {
-                    showDialogLogout()
-                }
+                checkLogoutOffering()
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
@@ -1360,6 +1360,50 @@ open class HomeAccountUserFragment :
                 goToApplink(item.applink)
             }
         }
+    }
+
+    private fun checkLogoutOffering() {
+        if(viewModel.getOclStatus.value?.isShowing == true) {
+            showOclBtmSheet()
+        } else {
+            if (isEnableBiometricOffering()) {
+                homeAccountAnalytic.trackOnClickLogoutDialog()
+                viewModel.getFingerprintStatus()
+            } else {
+                showDialogLogout()
+            }
+        }
+    }
+
+    private fun showOclBtmSheet() {
+
+        val child = BottomSheetOclBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
+        child.btmSheetOclPositiveBtn.setOnClickListener {
+            doLogoutAndSaveSession()
+        }
+
+        child.btmSheetOclNegativeBtn.setOnClickListener {
+            doLogout()
+        }
+
+        BottomSheetUnify().apply {
+//            ImageUtils.loadImage(imagePrimary)
+            setChild(child.root)
+            setCloseClickListener {
+                doLogout()
+                dismiss()
+            }
+        }.show(parentFragmentManager, "one_click_login")
+    }
+
+    private fun doLogoutAndSaveSession() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGOUT)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_SAVE_SESSION, true)
+        startActivity(intent)
     }
 
     private fun doLogout() {

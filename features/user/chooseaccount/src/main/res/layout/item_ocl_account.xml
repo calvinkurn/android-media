@@ -30,10 +30,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/deleteIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:icon_name="DELETE"
-            android:padding="8dp"
+            android:paddingRight="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
