@@ -17,7 +17,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 // region single line preview
 @Preview
 @Composable
-fun NestHeaderSingleLineDefaultPreview() {
+private fun NestHeaderSingleLineDefaultPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.SingleLine().copy(
@@ -29,7 +29,7 @@ fun NestHeaderSingleLineDefaultPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderSingleLineDefaultDarkPreview() {
+private fun NestHeaderSingleLineDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.SingleLine().copy(
@@ -42,7 +42,7 @@ fun NestHeaderSingleLineDefaultDarkPreview() {
 
 @Preview
 @Composable
-fun NestHeaderSingleLineTransparentPreview() {
+private fun NestHeaderSingleLineTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -55,7 +55,7 @@ fun NestHeaderSingleLineTransparentPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderSingleLineTransparentDarkPreview() {
+private fun NestHeaderSingleLineTransparentDarkPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -75,7 +75,7 @@ fun NestHeaderSingleLineTransparentDarkPreview() {
 // region double line preview
 @Preview
 @Composable
-fun NestHeaderDoubleLineDefaultPreview() {
+private fun NestHeaderDoubleLineDefaultPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.DoubleLine().copy(
@@ -87,7 +87,7 @@ fun NestHeaderDoubleLineDefaultPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderDoubleLineDefaultDarkPreview() {
+private fun NestHeaderDoubleLineDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.DoubleLine().copy(
@@ -100,7 +100,7 @@ fun NestHeaderDoubleLineDefaultDarkPreview() {
 
 @Preview
 @Composable
-fun NestHeaderDoubleLineTransparentPreview() {
+private fun NestHeaderDoubleLineTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -113,7 +113,7 @@ fun NestHeaderDoubleLineTransparentPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderDoubleLineTransparentDarkPreview() {
+private fun NestHeaderDoubleLineTransparentDarkPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -132,7 +132,7 @@ fun NestHeaderDoubleLineTransparentDarkPreview() {
 // region location preview
 @Preview
 @Composable
-fun NestHeaderLocationDefaultPreview() {
+private fun NestHeaderLocationDefaultPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Location().copy(
@@ -145,7 +145,7 @@ fun NestHeaderLocationDefaultPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderLocationDefaultDarkPreview() {
+private fun NestHeaderLocationDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Location().copy(
@@ -159,7 +159,7 @@ fun NestHeaderLocationDefaultDarkPreview() {
 
 @Preview
 @Composable
-fun NestHeaderLocationTransparentPreview() {
+private fun NestHeaderLocationTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -173,7 +173,7 @@ fun NestHeaderLocationTransparentPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderLocationTransparentDarkPreview() {
+private fun NestHeaderLocationTransparentDarkPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -193,7 +193,7 @@ fun NestHeaderLocationTransparentDarkPreview() {
 // region profile preview
 @Preview
 @Composable
-fun NestHeaderProfileDefaultPreview() {
+private fun NestHeaderProfileDefaultPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Profile().copy(
@@ -207,7 +207,7 @@ fun NestHeaderProfileDefaultPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderProfileDefaultDarkPreview() {
+private fun NestHeaderProfileDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Profile().copy(
@@ -222,7 +222,7 @@ fun NestHeaderProfileDefaultDarkPreview() {
 
 @Preview
 @Composable
-fun NestHeaderProfileTransparentPreview() {
+private fun NestHeaderProfileTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -237,7 +237,7 @@ fun NestHeaderProfileTransparentPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderProfileTransparentDarkPreview() {
+private fun NestHeaderProfileTransparentDarkPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -258,7 +258,7 @@ fun NestHeaderProfileTransparentDarkPreview() {
 // region search preview
 @Preview
 @Composable
-fun NestHeaderSearchDefaultPreview() {
+private fun NestHeaderSearchDefaultPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Search().copy(
@@ -270,7 +270,7 @@ fun NestHeaderSearchDefaultPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderSearchDefaultDarkPreview() {
+private fun NestHeaderSearchDefaultDarkPreview() {
     NestTheme {
         NestHeader(
             type = NestHeaderType.Search().copy(
@@ -283,7 +283,7 @@ fun NestHeaderSearchDefaultDarkPreview() {
 
 @Preview
 @Composable
-fun NestHeaderSearchTransparentPreview() {
+private fun NestHeaderSearchTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
@@ -297,7 +297,7 @@ fun NestHeaderSearchTransparentPreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestHeaderSearchTransparentDarkPreview() {
+private fun NestHeaderSearchTransparentDarkPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
