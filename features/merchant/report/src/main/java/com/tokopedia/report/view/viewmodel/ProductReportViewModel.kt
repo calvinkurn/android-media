@@ -76,8 +76,8 @@ class ProductReportViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductReportUiState())
     val uiState get() = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>(replay = 1)
-    val uiEvent get() = _uiEvent.asSharedFlow()
+    private val _uiEffect = MutableSharedFlow<ProductReportUiEvent>(replay = 1)
+    val uiEffect get() = _uiEffect.asSharedFlow()
 
     fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
         when (event) {
@@ -88,7 +88,7 @@ class ProductReportViewModel @Inject constructor(
             is ProductReportUiEvent.OnBackPressed -> {
                 onBackPressed()
             }
-            else -> _uiEvent.emit(event)
+            else -> _uiEffect.emit(event)
         }
     }
 
@@ -102,7 +102,7 @@ class ProductReportViewModel @Inject constructor(
             state.copy(data = list, allData = list)
         )
     }) { throwable ->
-        _uiEvent.emit(ProductReportUiEvent.OnToasterError(throwable))
+        _uiEffect.emit(ProductReportUiEvent.OnToasterError(throwable))
     }
 
     private fun onItemClicked(reason: ProductReportReason) = viewModelScope.launch {
@@ -122,7 +122,7 @@ class ProductReportViewModel @Inject constructor(
                 reason
             }
 
-            _uiEvent.emit(ProductReportUiEvent.OnGoToForm(fieldReason))
+            _uiEffect.emit(ProductReportUiEvent.OnGoToForm(fieldReason))
         }
     }
 
@@ -142,7 +142,7 @@ class ProductReportViewModel @Inject constructor(
         updateState(
             state.copy(baseParent = baseParent, filterId = filterId)
         )
-        _uiEvent.emit(ProductReportUiEvent.OnScrollTop(reason = reason))
+        _uiEffect.emit(ProductReportUiEvent.OnScrollTop(reason = reason))
     }
 
     private fun onBackPressed() = viewModelScope.launch {
@@ -150,7 +150,7 @@ class ProductReportViewModel @Inject constructor(
         val filterId = state.filterId.toMutableList()
 
         if (filterId.isEmpty()) {
-            _uiEvent.emit(ProductReportUiEvent.OnBackPressed)
+            _uiEffect.emit(ProductReportUiEvent.OnBackPressed)
         } else {
             filterId.removeLast()
             updateState(

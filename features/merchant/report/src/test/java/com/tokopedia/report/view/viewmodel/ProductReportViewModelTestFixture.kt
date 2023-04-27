@@ -61,7 +61,7 @@ abstract class ProductReportViewModelTestFixture {
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
         val uiEvent = mutableListOf<ProductReportUiEvent>()
         val uiEventCollectorJob = scope.launch {
-            viewModel.uiEvent.toList(uiEvent)
+            viewModel.uiEffect.toList(uiEvent)
         }
         block.invoke(uiEvent)
         uiEventCollectorJob.cancel()

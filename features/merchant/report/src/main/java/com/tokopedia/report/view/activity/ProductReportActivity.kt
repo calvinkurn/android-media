@@ -55,8 +55,8 @@ class ProductReportActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
-                LaunchedEffect(key1 = viewModel.uiEvent, block = {
-                    viewModel.uiEvent.collectLatest {
+                LaunchedEffect(key1 = viewModel.uiEffect, block = {
+                    viewModel.uiEffect.collectLatest {
                         when (it) {
                             is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
                             is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
